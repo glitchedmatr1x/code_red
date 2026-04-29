@@ -1,0 +1,545 @@
+Code RED Broad RPF Recon — Pass 12 Update
+======================================================================
+Goal: note additional useful RPF discoveries for future faction-war/world-life passes. This scan prioritizes readable or string-discoverable resources relevant to events, camps, AI, shops, vehicles, trains, nav, and wilderness population.
+
+RPFs available from uploaded/source zips:
+- fragments.zip: fragments.rpf (2,009,600,704)
+- fragments2.zip: fragments2.rpf (55,087,872)
+- redemption part1.zip: territory_swall/blackwater.rpf (75,734,960)
+- territory_swall dlc.zip: dlc08x.rpf (36,928), dlc09x.rpf (6,208), dlc10x.rpf (6,208), dlc01x.rpf (1,260,288), dlc02x.rpf (6,966,128), dlc03x.rpf (6,208), dlc04x.rpf (6,208), dlc05x.rpf (2,262,656) ...
+- terrainlodres.zip: terrainlodres.rpf (581,062,464)
+- game 1.zip: camera.rpf (629,600), fonts.rpf (1,275,376), psocache.rpf (2,210,912), act.rpf (3,410,960), vfx.rpf (3,606,464), shaders.rpf (8,496,160), treeres.rpf (9,021,696), naturalmotion.rpf (96,544) ...
+- mapres.zip: mapres.rpf (324,068,912)
+- terrainboundres.zip: terrainboundres.rpf (212,549,008)
+- CodeRedFactionWar_DropIn_RPF_Pass11.zip: CodeRedFactionWar_DropIn_RPF_Pass11/DROP_IN_PERSISTENT_CAMPS_AND_REFGROUPS/content.rpf (22,019,843), CodeRedFactionWar_DropIn_RPF_Pass11/DROP_IN_PERSISTENT_CAMPS_AND_REFGROUPS/tune_d11generic.rpf (19,591,527)
+- CodeRedFactionWar_DropIn_RPF_Pass12.zip: CodeRedFactionWar_DropIn_RPF_Pass12/DROP_IN_WILDERNESS_EVENTS_AND_PLAYER_POSSE/content.rpf (22,037,517), CodeRedFactionWar_DropIn_RPF_Pass12/DROP_IN_WILDERNESS_EVENTS_AND_PLAYER_POSSE/tune_d11generic.rpf (19,641,614)
+- navres.zip: navres.rpf (225,172,944)
+
+## content.rpf (21,923,760 bytes)
+Entries/files/dirs/resolved: 1,636/1,320/316/1,558
+Top extensions: .wsc:886, .sco:197, .xml:177, .tr:25, .strtbl:14, .txt:10
+Path hits: 556; sampled: 160; text/string samples: 25
+Notable hits:
+- root/content/ambient/factionrelations.xml [.xml, file, score 3838]
+    <facFactionMgrLoaded>
+    <Factions>
+    <Item type="ParsableFaction">
+    <FactionName content="ascii">NoFaction</FactionName>
+- root/content/ambient/placementglobals.xml [.xml, file, score 197]
+    <PlacementData>
+    <Events>
+    <Name>event_roadside_ambush</Name>
+    <Name>beat_roadside_robbery</Name>
+- root/content/ai/shopkeeper_reactions.tr [.tr, file, score 113]
+    // Rules and programs for shopkeeper reactions
+    rules ShopkeeperRules
+    BaseCanReactToWeapon(x) && (!IsIndoors || IsInMyShopVolume(x))
+    -> BaseCanReactToWeaponInMyShop(x);
+- root/content/release64/scripting/gringo/gringobrains/gringobrainscripts/shopkeeper_brain.wsc [.wsc, RSC/resource, score 7]
+- root/content/release64/0x06C35575/zombiepack/0x72440E09/tall_trees/pacific_union_railroad_camp/pacificunionrailroadcamp_z.sco [.sco, file, score 4]
+- root/content/release64/0x06C35575/zombiepack/0x72440E09/tall_trees/pacific_union_railroad_camp/pacificunionrailroadcamp_z.wsc [.wsc, RSC/resource, score 4]
+- root/content/release64/0xC06BF8AB/roaming/event_roadside_prisoners.wsc [.wsc, RSC/resource, score 4]
+- root/content/release64/frontier/0xDCF649E3/outlaw01/outlaw01.wsc [.wsc, RSC/resource, score 4]
+- root/content/release64/frontier/0xDCF649E3/outlaw02/outlaw02.wsc [.wsc, RSC/resource, score 4]
+- root/content/release64/frontier/0xDCF649E3/outlaw03/outlaw03.wsc [.wsc, RSC/resource, score 4]
+
+## tune_d11generic.rpf (19,247,616 bytes)
+Entries/files/dirs/resolved: 2,017/1,915/102/1,719
+Top extensions: .refgroup:585, .xml:243, .mtl:186, .rmptx:113, .dds:88, .txt:80, .vehmodel:42, .vehstuck:42, .vehsim:42, .vehgyro:42, .vehinput:42, .vehdraft:21
+Path hits: 599; sampled: 160; text/string samples: 160
+Notable hits:
+- root/tune/template/actions_templates.xml [.xml, file, score 230]
+    <TriggerAction>
+    <StateAction type="enum" value="EnableCondition" choices="DisableCondition,EnableCondition" />
+    <ActorFX name="">
+    <Actors type="string" value="" maxlength="512" />
+- root/tune/refgroups/battlesets/pun_battleset01x.refgroup [.refgroup, file, score 59]
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_wagon05x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate03x.mb
+- root/tune/refgroups/battlesets/gap_battleset01x.refgroup [.refgroup, file, score 57]
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate01x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate01x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_wagon01x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate01x.mb
+- root/tune/refgroups/battlesets/gap_battleset02x.refgroup [.refgroup, file, score 56]
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_wagon02x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate02x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate01x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate03x.mb
+- root/tune/refgroups/battlesets/gri_battleset01x.refgroup [.refgroup, file, score 56]
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_wagon05x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate03x.mb
+- root/tune/refgroups/battlesets/gre_battleset01x.refgroup [.refgroup, file, score 55]
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_wagon05x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate03x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_wagon02x.mb
+- root/tune/refgroups/battlesets/per_battleset03x.refgroup [.refgroup, file, score 53]
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_wagon05x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate03x.mb
+- root/tune/refgroups/battlesets/gap_battlesetenemy01x.refgroup [.refgroup, file, score 52]
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate03x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate01x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate02x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate02x.mb
+- root/tune/refgroups/battlesets/gri_battleset02x.refgroup [.refgroup, file, score 49]
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_potMoonshine01x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_bucket01x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_wagon03x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate05x.mb
+- root/tune/refgroups/battlesets/rio_battleset03x.refgroup [.refgroup, file, score 47]
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_wagon05x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+    reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate03x.mb
+
+## camera.rpf (629,600 bytes)
+Entries/files/dirs/resolved: 784/778/6/784
+Top extensions: .txt:767, .cmt:3, .cinematiccamerashotcollection:3, .cm:2, .camdynamicboomtunemanager:1, .ccm:1, .xml:1
+Path hits: 200; sampled: 160; text/string samples: 160
+Notable hits:
+- root/camera/traincinematic.cinematiccamerashotcollection [.cinematiccamerashotcollection, file, score 56]
+    TrainCinematicCameraShotData
+    Name		"CinTrainRight"
+    TuningName		"CinTrainRight"
+    TrainCinematicCameraShotData
+- root/camera/horsecinematic.cinematiccamerashotcollection [.cinematiccamerashotcollection, file, score 47]
+    VehicleCinematicCameraShotData
+    Name		"HorseFace"
+    TuningName		"HorseFace"
+    InputMapping		Driver	PlayerGuid
+- root/camera/cutscenes/outlaw02_cutscene04.txt [.txt, file, score 31]
+    Name		"Outlaw02_Cutscene04"
+    ScriptPath		"content/frontier/missions/outlaw02/outlaw02"
+    Name		"Outlaw02_IrishLean_0"
+    Name		"Outlaw02_IrishLean_1"
+- root/camera/cutscenes/hogtie_pickuphorse_r.txt [.txt, file, score 30]
+    Name		"Hogtie_PickupHorse_R"
+    TransitionEventList
+    TransitionEventGameCameraReset
+    EventTime		5.000000
+- root/camera/cutscenes/hogtie_pickuphorse.txt [.txt, file, score 26]
+    Name		"Hogtie_PickupHorse"
+    Name		"Hogtie_PickupHorse_0"
+    InputTarget		PlayerGuid
+    ExcludeFlags		ExcludeVehicle	ExcludeMount	ExcludeInventoryItems	ExcludeMoverInsts	ExcludeGameCameraExclusionListInsts	HogTieVictimOnShoulder
+- root/camera/cutscenes/hogtie_putonhorse.txt [.txt, file, score 26]
+    Name		"Hogtie_PutOnHorse"
+    Name		"Hogtie_PutOnHorse_0"
+    InputTarget		PlayerGuid
+    ExcludeFlags		ExcludeVehicle	ExcludeMount	ExcludeInventoryItems	ExcludeMoverInsts	ExcludeGameCameraExclusionListInsts	HogTieVictimOnShoulder
+- root/camera/cutscenes/hogtie_putonhorse_r.txt [.txt, file, score 26]
+    Name		"Hogtie_PutOnHorse_R"
+    Name		"Hogtie_PutOnHorse_R_0"
+    InputTarget		PlayerGuid
+    ExcludeFlags		ExcludeVehicle	ExcludeMount	ExcludeInventoryItems	ExcludeMoverInsts	ExcludeGameCameraExclusionListInsts	HogTieVictimOnShoulder
+- root/camera/cutscenes/outlaw01_cs03.txt [.txt, file, score 26]
+    Name		"Outlaw01_CS03"
+    ScriptPath		"content/frontier/missions/outlaw01/Outlaw01"
+    InputTarget		PlayerGuid
+    TransitionEventList
+- root/camera/cutscenes/outlaw02_cutscene05.txt [.txt, file, score 25]
+    Name		"Outlaw02_Cutscene05"
+    ScriptPath		"content/frontier/missions/outlaw02/outlaw02"
+    Name		"Outlaw02_CrateOutOfCart_0"
+    Name		"Outlaw02_CrateOutOfCart_1"
+- root/camera/cutscenes/outlaw01_cs02.txt [.txt, file, score 22]
+    Name		"Outlaw01_CS02"
+    ScriptPath		"content/frontier/missions/outlaw01/Outlaw01"
+    InputTarget		PlayerGuid
+    Name		"Outlaw01_CS02_Billboard"
+
+## mapres.rpf (44,433,408 bytes)
+Entries/files/dirs/resolved: 2,350/2,348/2/1
+Top extensions: 
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## terrainboundres.rpf (212,549,008 bytes)
+Entries/files/dirs/resolved: 5,381/5,378/3/5,381
+Top extensions: .wtb:5376, .txt:2
+Path hits: 0; sampled: 2; text/string samples: 2
+No strong readable gameplay hooks found in sampled candidates.
+
+## act.rpf (3,410,960 bytes)
+Entries/files/dirs/resolved: 1,035/1,026/9/1,032
+Top extensions: .wat:1022, .txt:2
+Path hits: 179; sampled: 160; text/string samples: 85
+Notable hits:
+- root/act/actres/0x18B7442F/custom/lasso_hogtie.wat [.wat, RSC/resource, score 36]
+    hogtie_pickup_hrs_vctm_right
+    hogtie_pickup_hrs_right
+    hogtie_pickup_vctm_alt
+    hogtie_pickup_hrs_vctm
+- root/act/actres/0x18B7442F/custom/fix_car.wat [.wat, RSC/resource, score 19]
+    fix_car_before_mid_car
+    fix_car_before_pre_car
+    fix_car_before_pst_car
+    fix_car_after_pst_car
+- root/act/actres/0x18B7442F/companion/storeowner.wat [.wat, RSC/resource, score 17]
+    talk_to_genStore
+    AM_CARBINE_DES
+    BOLTACTION_DES
+    AM_CARANCO_DES
+- root/act/actres/0x18B7442F/custom/train_sit.wat [.wat, RSC/resource, score 13]
+    train_sit_sleep_pre
+    Ptrain_sit_sleep_pst
+    train_sit_flyswat
+    train_sit_scratch
+- root/act/actres/0x18B7442F/custom/store.wat [.wat, RSC/resource, score 12]
+    player_exit_RT
+    StoreExitRight
+    player_look_E
+    player_look_A
+- root/act/actres/0x18B7442F/custom/carve_corpse.wat [.wat, RSC/resource, score 11]
+    CarveMeat_A_gup
+    CarveMeat_B_pre
+    CarveMeat_A_bag
+    CarveMeat_B_mid
+- root/act/actres/0x18B7442F/custom/close_wagon.wat [.wat, RSC/resource, score 10]
+    for01_deputy_close_wag_L
+    wagongatling_for01_close
+    for01_deputy_close_wag_R
+    for01_deputy_close_wag_B
+- root/act/actres/0x18B7442F/custom/sit_ground_play_cards.wat [.wat, RSC/resource, score 10]
+    tsit_playing_cards_B_gup
+    sit_playing_cards_A_mid
+    sit_playing_cards_A_gup
+    sit_playing_cards_B_mid
+- root/act/actres/0x18B7442F/custom/cutscene_marshal03.wat [.wat, RSC/resource, score 9]
+    mar03_outlaw_rfl_pushed
+    mar03_outlaw_ptl_pushed
+    mar03_player_ptl_push
+    mar03_deputy_rfl_push
+- root/act/actres/0x18B7442F/custom/car_wash.wat [.wat, RSC/resource, score 8]
+    hnd_stn_car_wipe2_pre
+    hnd_stn_car_wipe2_mid
+    hnd_stn_car_wipe2_pst
+    hnd_stn_car_wipe_pst
+
+## gringores.rpf (369,680 bytes)
+Entries/files/dirs/resolved: 41/39/2/41
+Top extensions: .wgd:39
+Path hits: 39; sampled: 39; text/string samples: 28
+Notable hits:
+- root/gringores/zombiepackgringos.wgd [.wgd, RSC/resource, score 198]
+    Pcontent\scripting\gringo\CommonScripts\Rand_Idle_Sit_Ground_Player
+    content\DLC\ZombiePack\Gringos\Scripts\DLC_player_burn_coffin
+    content\DLC\ZombiePack\Gringos\Scripts\ZombiePack_SleepGringo
+    content\DLC\ZombiePack\Gringos\Scripts\ZombiePack_SleepGringo
+- root/gringores/armadillo.wgd [.wgd, RSC/resource, score 197]
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Bartender_Brain
+- root/gringores/chuparosa.wgd [.wgd, RSC/resource, score 166]
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Bartender_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+- root/gringores/escalera.wgd [.wgd, RSC/resource, score 163]
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Bartender_Brain
+- root/gringores/blackwater.wgd [.wgd, RSC/resource, score 155]
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+- root/gringores/thieveslanding.wgd [.wgd, RSC/resource, score 135]
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+- root/gringores/hennigansranch.wgd [.wgd, RSC/resource, score 125]
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+- root/gringores/lashermanas.wgd [.wgd, RSC/resource, score 117]
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\gen_brain
+- root/gringores/pacificunionrailroadcamp.wgd [.wgd, RSC/resource, score 112]
+    Pcontent\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+- root/gringores/manzanitapost.wgd [.wgd, RSC/resource, score 101]
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Shopkeeper_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+    content\scripting\gringo\GringoBrains\GringoBrainScripts\Gen_Brain
+
+## naturalmotion.rpf (96,544 bytes)
+Entries/files/dirs/resolved: 13/11/2/13
+Top extensions: .xml:3, .art:3, .prt:3, .seq:2
+Path hits: 5; sampled: 5; text/string samples: 5
+Notable hits:
+- root/naturalmotion/cowboy.nmbehaviours.xml [.xml, file, score 207]
+    <rage__NMBehaviorPool>
+    <behaviors>
+    <Item type="rage__NMBehavior">
+    <Item type="rage__NMBehavior">
+- root/naturalmotion/behaviours.xml [.xml, file, score 190]
+    <rage__NMBehaviorPool>
+    <behaviors>
+    <Item type="rage__NMBehavior">
+    <Item type="rage__NMBehavior">
+- root/naturalmotion/horse.nmbehaviours.xml [.xml, file, score 10]
+    <rage__NMBehaviorPool>
+    <behaviors>
+    <Item type="rage__NMBehavior">
+    <Item type="rage__NMBehavior">
+- root/naturalmotion/horse.art [.art, file, score 1]
+- root/naturalmotion/horse.prt [.prt, file, score 1]
+
+## psocache.rpf (2,210,912 bytes)
+Entries/files/dirs/resolved: 2,302/2,300/2/2,302
+Top extensions: .xml:2299, .list:1
+Path hits: 0; sampled: 160; text/string samples: 160
+Notable hits:
+- root/psocache/1306356257.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_billboard" techniqueName="ImpostorShadow" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+- root/psocache/1320131015.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_traintrack" techniqueName="shadowdepth_draw_packed" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+- root/psocache/135322222.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_billboard" techniqueName="ImpostorShadow" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+- root/psocache/1438885099.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_traintrack" techniqueName="shadowdepth_draw_packed" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+- root/psocache/1696947336.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_traintrack_low_lod" techniqueName="shadowdepth_draw_packed" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+- root/psocache/1816048844.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_traintrack" techniqueName="shadowdepth_draw_packed" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+- root/psocache/1912859673.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_traintrack" techniqueName="shadowdepth_draw_packed" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+- root/psocache/2115570994.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_traintrack" techniqueName="shadowdepth_draw_packed" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+- root/psocache/2364839212.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_traintrack" techniqueName="shadowdepth_draw_packed" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+- root/psocache/2549026122.xml [.xml, file, score 2]
+    <ShaderProgram filename="rdr2_billboard" techniqueName="ImpostorShadow" pass="0" />
+    <BlendState AlphaToCoverageEnable="0" IndependentBlendEnable="0">
+
+## vfx.rpf (3,606,464 bytes)
+Entries/files/dirs/resolved: 162/151/11/157
+Top extensions: .dds:95, .xml:16, .txt:5, .raw:5, .fxlist:4, .ptxlist:3, .emitlist:3, .shaderlist:3, .fullfxlist:3, .texlist:3, .wpfl:3, .modellist:2
+Path hits: 1; sampled: 22; text/string samples: 22
+Notable hits:
+- root/vfx/materials/fxmaterials.xml [.xml, file, score 1234]
+    <TrailFxNameAnimal>animal_distant_trail</TrailFxNameAnimal>
+    <FireballSplashFxName>exp_firetrail_splat</FireballSplashFxName>
+    <FireballSplashFxName>exp_firetrail_splat</FireballSplashFxName>
+    <FootstepFxNameAnimal>animal_dirt</FootstepFxNameAnimal>
+- root/vfx/config/fireconfig.xml [.xml, file, score 20]
+    <mActorFireDuration x="11.000000" y="15.000000"/>
+    <mActorFireDamage x="1.300000" y="2.000000"/>
+    <mActorFireDamageInterval x="0.650000" y="1.000000"/>
+    <mPlayerFireDuration x="3.000000" y="4.200000"/>
+- root/vfx/clipregions.txt [.txt, file, score 1]
+    knife_trail 1 1 0 1 0 1
+- root/vfx/pip.xml [.xml, file, score 1]
+    <Name>PIP_PostCard</Name>
+- root/vfx/rmptfx/textures/knife_trail.dds [.dds, file, score 1]
+- root/vfx/rmptfx/textures/rdr2_regiontextures.txt [.txt, file, score 1]
+    knife_trail 1 1
+- root/vfx/rmptfx/textures/rdr2_regiontexturesraw.txt [.txt, file, score 1]
+    knife_trail.dds
+
+## treeres.rpf (9,021,696 bytes)
+Entries/files/dirs/resolved: 660/658/2/660
+Top extensions: .wsp:645, .txt:12, .dds:1
+Path hits: 4; sampled: 12; text/string samples: 12
+Notable hits:
+- root/treeres/masterobject_monkeypostexport.txt [.txt, file, score 2]
+    Filename "st_catClaw01.spt"  -bbox=-1.324390,-0.038844,-1.346095,1.560011,2.246154,1.486382
+- root/treeres/masterobject_o_08_x.txt [.txt, file, score 2]
+    Filename "st_catClaw01.spt"
+- root/treeres/masterobject_rdr2.txt [.txt, file, score 2]
+    Filename "st_catClaw01.spt"  -bbox=-1.324390,-0.038844,-1.346095,1.560011,2.246154,1.486382
+- root/treeres/masterobject_terrain_playground.txt [.txt, file, score 2]
+    Filename "st_catClaw01.spt"  -bbox=-1.324390,-0.038844,-1.346095,1.560011,2.246154,1.486382
+- root/treeres/validinstance_monkeypostexport.txt [.txt, file, score 2]
+    MasterObjectFile: $\treeRes\masterObject_MonkeyPostExport.txt
+- root/treeres/validinstance_o_08_x.txt [.txt, file, score 2]
+    MasterObjectFile: $\treeRes\masterObject_o_08_x.txt
+- root/treeres/validinstance_rdr2.txt [.txt, file, score 2]
+    MasterObjectFile: $\treeRes\masterObject_RDR2.txt
+- root/treeres/validinstance_terrain_playground.txt [.txt, file, score 2]
+    MasterObjectFile: $\treeRes\masterObject_terrain_playground.txt
+
+## grassres.rpf (78,370,496 bytes)
+Entries/files/dirs/resolved: 1,637/1,635/2/1,637
+Top extensions: .wsg:1621, .wtd:10, .txt:3, .dds:1
+Path hits: 0; sampled: 3; text/string samples: 3
+No strong readable gameplay hooks found in sampled candidates.
+
+## blackwater.rpf (75,734,960 bytes)
+Entries/files/dirs/resolved: 840/616/224/839
+Top extensions: .wvd:420, .wbd:195, .wsi:1
+Path hits: 105; sampled: 105; text/string samples: 57
+Notable hits:
+- root/blackwater/blk_trainstation_int_props01x/blk_trainstation_int_props01x.wvd [.wvd, RSC/resource, score 28]
+    0:i_gen_trainstationsign02_n.dds
+    0:i_gen_trainstationsign01_n.dds
+    0:i_gen_trainstationsign02_so.dds
+    0:i_gen_trainstationsign01_so.dds
+- root/blackwater/blk_trainstation_int_01x/blk_trainstation_int_01x.wvd [.wvd, RSC/resource, score 26]
+    0:blk_ao_trainstation01c.dds
+    0:blk_ao_trainstation01b.dds
+    0:blk_ao_trainstation01a.dds
+    blk_ao_trainstation01a.dds
+- root/blackwater/blk_drugstore01props01x/blk_drugstore01props01x.wvd [.wvd, RSC/resource, score 17]
+    0:i_gen_trainstationsign01_n.dds
+    0:i_gen_trainstationsign01_so.dds
+    0:i_gen_trainstationsign01.dds
+    i_gen_trainStationSign01_so.dds
+- root/blackwater/blk_gunshop01x/blk_gunshop01x.wvd [.wvd, RSC/resource, score 13]
+    0:blk_cs_signsshops04.dds
+    0:blk_ao_gunshop01.dds
+    blk_cs_signsShops04.dds
+    blk_cs_signsShops04.dds
+- root/blackwater/blk_gunshop01x/blk_gunshop01x_med.wvd [.wvd, RSC/resource, score 10]
+    0:blk_cs_signsshops04.dds
+    0:blk_ao_gunshop01.dds
+    blk_cs_signsShops04.dds
+    blk_ao_gunshop01.dds
+- root/blackwater/blk_drugstore01x/blk_drugstore01x_med.wvd [.wvd, RSC/resource, score 8]
+    0:blk_ao_drugstore01.dds
+    blk_cs_signsShops02.dds
+    blk_ao_drugStore01.dds
+    blk_ao_drugStore01.dds
+- root/blackwater/blk_feedstore01x/blk_feedstore01x_med.wvd [.wvd, RSC/resource, score 8]
+    0:blk_ao_feedstore01.dds
+    blk_cs_signsShops02.dds
+    blk_cs_signsShops01.dds
+    blk_ao_feedStore01.dds
+- root/blackwater/blk_furniturestore01x/blk_furniturestore01x_med.wvd [.wvd, RSC/resource, score 7]
+    0:blk_ao_furniturestore01x.dds
+    blk_ao_furnitureStore01x.dds
+    blk_ao_furnitureStore01x.dds
+    blk_ao_furnitureStore01x.dds
+- root/blackwater/blk_generalstore01x/blk_generalstore01x_med.wvd [.wvd, RSC/resource, score 7]
+    0:blk_cs_signgenstorewallad.dds
+    0:blk_ao_generalstore01.dds
+    Eblk_cs_SignGenStoreWallAd.dds
+    blk_ao_generalStore01.dds
+- root/blackwater/blk_feedstore01props01x/blk_feedstore01props01x.wvd [.wvd, RSC/resource, score 5]
+    i_gen_crateCover01_so.dds
+    i_gen_crateCover01_n.dds
+    i_gen_crateCover01.dds
+
+## navres.rpf (225,172,944 bytes)
+Entries/files/dirs/resolved: 986/978/8/984
+Top extensions: .wnm:692, .wcg:242, .wcs:37, .xml:3, .txt:1, .wprp:1
+Path hits: 978; sampled: 160; text/string samples: 1
+Notable hits:
+- root/navres/battlesets.txt [.txt, file, score 274]
+    $/tune/refGroups/battleSets/cho_battleSet01x $/navres/rsc_battlesets_#/cho_battleSet01x
+    $/tune/refGroups/battleSets/cho_battleSet02x $/navres/rsc_battlesets_#/cho_battleSet02x
+    $/tune/refGroups/battleSets/cho_battleSet03x $/navres/rsc_battlesets_#/cho_battleSet03x
+    $/tune/refGroups/battleSets/cho_battleSetEnemy01x $/navres/rsc_battlesets_#/cho_battleSetEnemy01x
+
+## dlc01x.rpf (1,260,288 bytes)
+Entries/files/dirs/resolved: 31/17/14/30
+Top extensions: .wbd:11, .wvd:4, .dlc:1, .wsi:1
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## dlc02x.rpf (6,966,128 bytes)
+Entries/files/dirs/resolved: 35/23/12/34
+Top extensions: .wvd:12, .wbd:9, .dlc:1, .wsi:1
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## dlc03x.rpf (6,208 bytes)
+Entries/files/dirs/resolved: 4/1/3/3
+Top extensions: .wsi:1
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## dlc04x.rpf (6,208 bytes)
+Entries/files/dirs/resolved: 4/1/3/3
+Top extensions: .wsi:1
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## dlc05x.rpf (2,262,656 bytes)
+Entries/files/dirs/resolved: 61/41/20/60
+Top extensions: .wvd:22, .wbd:17, .dlc:1, .wsi:1
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## dlc06x.rpf (31,570,912 bytes)
+Entries/files/dirs/resolved: 88/61/27/87
+Top extensions: .wvd:38, .wbd:21, .dlc:1, .wsi:1
+Path hits: 3; sampled: 3; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## dlc07x.rpf (6,208 bytes)
+Entries/files/dirs/resolved: 4/1/3/3
+Top extensions: .wsi:1
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## dlc08x.rpf (36,928 bytes)
+Entries/files/dirs/resolved: 4/1/3/3
+Top extensions: .wsi:1
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## dlc09x.rpf (6,208 bytes)
+Entries/files/dirs/resolved: 4/1/3/3
+Top extensions: .wsi:1
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+## dlc10x.rpf (6,208 bytes)
+Entries/files/dirs/resolved: 4/1/3/3
+Top extensions: .wsi:1
+Path hits: 0; sampled: 0; text/string samples: 0
+No strong readable gameplay hooks found in sampled candidates.
+
+Cross-archive notes
+- Best direct gameplay patch targets remain content.rpf + tune_d11generic.rpf: placementglobals, factionrelations, AI .tr files, level.pop, default.traffic, refgroups, vehicle/turret/trainmanager/tune files.
+- navres.rpf is a validation/safety layer: battleSet mappings, cover/nav resources, and movable nav entries for cars, trucks, Gatling/prison wagons, trains, boats, minecarts.
+- gringores.rpf is small but valuable for location-specific shop/saloon/patron gringo context, especially thieveslanding.wgd.
+- act.rpf contains many WAT/RSC action resources for lasso, hogtie, robbery, shopkeeping, vehicles, coward/duck behavior, lawman help, and bandito/outlaw actions. Treat as reference until Code RED has a safer WAT decoder/rebuilder.
+- naturalmotion.rpf can make combat feel better through Euphoria/NaturalMotion behaviours; it should polish hits/falls/horse reactions, not drive spawning.
+- vfx.rpf is likely a future polish target for muzzle smoke, fire, explosion, dust, impact, and train/battle chaos visuals.
+- treeres/grassres can support wilderness visual density, but they are not likely to control events directly.
+- mapres, psocache, shaders, fonts, textures are mostly render/UI/cache/media resources and are low priority for faction-war logic.
+- blackwater.rpf and the DLC rpfs are worth targeted study for region-specific Blackwater/territory content, but broad scan did not make them higher priority than content/tune/gringores/act/navres.
+
+Recommended next technical upgrade for Code RED
+Add a Resource Discovery tab that classifies each RPF entry as XML/TR/brace DSL/table/RSC-with-Zstandard/binary/media, then tags it with gameplay terms like event, camp, vehicle, train, lasso, shop, faction, nav, cover, or VFX. This would make these scans repeatable from the UI.
+Additional targeted checks after broad scan
+-----------------------------------------
+strings_d11generic.rpf:
+- Inventory: 8,954 entries / 8,939 files; mostly .wst and .strtbl.
+- Useful as a naming/dialog/reference source, not a gameplay patch target.
+- Confirmed strings related to Outlaw missions, bandits, law tutorials, train mission lines, Dutch/Bill references, and global law/outlaw speech keys.
+- Could help resolve actor/event names and locate story-character references, but it does not directly spawn companions or events.
+
+fragments2.rpf:
+- Inventory: 150 entries / 148 files; .wfd, .wft, and .wedt resources.
+- Mostly zombie/gore overlay fragments for NPC archetypes: bandito, Mexican rebel, prisoner, cattle rustler, treasure hunter, posse, prostitute, criminal, rancher, gunslinger, drunk-n-dirty.
+- Useful for gore/visual-character research and possible undead/gore overlay lanes, but not a primary event-spawn or camp-persistence control file.
+- The names still help identify which human archetypes have fragment support if later passes add more violent battle aftermath or undead-style chaos variants.
