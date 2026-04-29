@@ -1,0 +1,14 @@
+{
+  "player_name": "CodeRedTester",
+  "session_name": "Code RED Ghost Menu Test",
+  "host_ip": "127.0.0.1",
+  "port": 6677,
+  "world": "lobby_lan",
+  "boot_target": "NetConf_PlayLAN",
+  "route_note": "Networking -> Play LAN -> PlayMpConf(LAN) -> Lobby / TaskMachine",
+  "content_rpf": "",
+  "target_rpf": "",
+  "game_dir": "",
+  "game_exe": "",
+  "startup_mode": "Single Player Host"
+}

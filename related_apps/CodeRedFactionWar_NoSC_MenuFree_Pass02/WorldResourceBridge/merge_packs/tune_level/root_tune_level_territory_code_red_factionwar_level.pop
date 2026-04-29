@@ -1,0 +1,278 @@
+version 2
+{
+	// Code RED Faction War population bridge generated from v26 seed data.
+	// Matches the level.pop condition/profile style found in tune_d11generic.rpf.
+	Conditions
+	{
+		Condition "cond_codered_night"
+		{
+			Expression "TimeOfDay(night)"
+		}
+		Condition "cond_codered_cholla_springs"
+		{
+			Expression "Neighborhood(cholla_springs)"
+		}
+		Condition "cond_codered_gaptooth_ridge"
+		{
+			Expression "Neighborhood(gaptooth_ridge)"
+		}
+		Condition "cond_codered_hennigans_stead"
+		{
+			Expression "Neighborhood(hennigans_stead)"
+		}
+		Condition "cond_codered_rio_bravo"
+		{
+			Expression "Neighborhood(rio_bravo)"
+		}
+		Condition "cond_codered_USLawEnforcement"
+		{
+			Expression "Faction(USLawEnforcement)"
+		}
+		Condition "cond_codered_CattleRustler"
+		{
+			Expression "Faction(CattleRustler)"
+		}
+		Condition "cond_codered_TreasureHunter"
+		{
+			Expression "Faction(TreasureHunter)"
+		}
+		Condition "cond_codered_GenericCriminal"
+		{
+			Expression "Faction(GenericCriminal)"
+		}
+		Condition "cond_codered_MexicanBandito"
+		{
+			Expression "Faction(MexicanBandito)"
+		}
+		Condition "cond_codered_PlayerNeutral"
+		{
+			Expression "Faction(PlayerNeutral)"
+		}
+		Condition "cond_codered_PlayerFriendly"
+		{
+			Expression "Faction(PlayerFriendly)"
+		}
+		Condition "cond_codered_IndianRaider"
+		{
+			Expression "Faction(IndianRaider)"
+		}
+	}
+	Profiles
+	{
+		Profile "codered_gang_muster"
+		{
+			Label "gang_muster"
+			SpawnBias 1.000000
+		}
+		Profile "codered_marshal_heavy"
+		{
+			Label "marshal_heavy"
+			SpawnBias 1.000000
+		}
+		Profile "codered_mixed_frontier"
+		{
+			Label "mixed_frontier"
+			SpawnBias 1.000000
+		}
+		Profile "codered_scavengers_and_miners"
+		{
+			Label "scavengers_and_miners"
+			SpawnBias 1.000000
+		}
+		Profile "codered_settlers_and_traders"
+		{
+			Label "settlers_and_traders"
+			SpawnBias 1.000000
+		}
+		Profile "codered_smuggler_wagons"
+		{
+			Label "smuggler_wagons"
+			SpawnBias 1.000000
+		}
+	}
+	Nodes
+	{
+		Node "armadillo"
+		{
+			DisplayName "Armadillo"
+			Region "cholla_springs"
+			Controller "USLawEnforcement"
+			Context "law_town"
+			PopulationProfile "codered_marshal_heavy"
+			CivilianArchetype "AE_Caucasian_Male_TownFolk02"
+			OutlawArchetype "AE_MISC_Outlaw_01"
+			LawArchetype "AE_Law_Caucasian_TownPosse_Easy01"
+			BasePressure 55
+			BaseHeat 15
+			StrategicTags "law_hub,civilian_pressure,transport_post"
+		}
+		Node "ridgewood_farm"
+		{
+			DisplayName "Ridgewood Farm"
+			Region "cholla_springs"
+			Controller "PlayerNeutral"
+			Context "ranch_homestead"
+			PopulationProfile "codered_settlers_and_traders"
+			CivilianArchetype "AE_Caucasian_Male_Rancher01"
+			OutlawArchetype "AE_Caucasian_GenericCriminal_Easy01"
+			LawArchetype "AE_Law_Caucasian_Sheriff_Medium01"
+			BasePressure 55
+			BaseHeat 6
+			StrategicTags "supply_node,civilian_defense"
+		}
+		Node "twin_rocks"
+		{
+			DisplayName "Twin Rocks"
+			Region "cholla_springs"
+			Controller "CattleRustler"
+			Context "rustler_hideout"
+			PopulationProfile "codered_gang_muster"
+			CivilianArchetype "AE_Caucasian_Male_Traveler01"
+			OutlawArchetype "AE_Gang_CATTLERUSTLER_Medium01"
+			LawArchetype "AE_Law_Caucasian_TownPosse_Easy02"
+			BasePressure 70
+			BaseHeat 6
+			StrategicTags "ambush_ground,outlaw_hideout"
+		}
+		Node "benedict_point"
+		{
+			DisplayName "Benedict Point"
+			Region "gaptooth_ridge"
+			Controller "USLawEnforcement"
+			Context "rail_checkpoint"
+			PopulationProfile "codered_marshal_heavy"
+			CivilianArchetype "AE_Caucasian_Male_RailroadStaff01"
+			OutlawArchetype "AE_Caucasian_GenericCriminal_Medium01"
+			LawArchetype "AE_Law_Caucasian_USMarshal_Hard01"
+			BasePressure 55
+			BaseHeat 6
+			StrategicTags "rail_node,checkpoint,transport_post"
+		}
+		Node "gaptooth_breach"
+		{
+			DisplayName "Gaptooth Breach"
+			Region "gaptooth_ridge"
+			Controller "TreasureHunter"
+			Context "mine_hideout"
+			PopulationProfile "codered_gang_muster"
+			CivilianArchetype "AE_Caucasian_Male_MineWorker01"
+			OutlawArchetype "AE_Gang_CRAZYMINER_Medium01"
+			LawArchetype "AE_Law_Caucasian_USMarshal_Hard02"
+			BasePressure 70
+			BaseHeat 6
+			StrategicTags "mine_hideout,resource_node"
+		}
+		Node "rathskeller_fork"
+		{
+			DisplayName "Rathskeller Fork"
+			Region "gaptooth_ridge"
+			Controller "PlayerNeutral"
+			Context "border_crossing"
+			PopulationProfile "codered_mixed_frontier"
+			CivilianArchetype "AE_Caucasian_Male_Traveler02"
+			OutlawArchetype "AE_Caucasian_GenericCriminal_Easy02"
+			LawArchetype "AE_Law_Caucasian_TownPosse_Easy03"
+			BasePressure 45
+			BaseHeat 6
+			StrategicTags "border_crossing,transport_post"
+		}
+		Node "solomons_folly"
+		{
+			DisplayName "Solomons Folly"
+			Region "gaptooth_ridge"
+			Controller "CattleRustler"
+			Context "roadside_robbery"
+			PopulationProfile "codered_gang_muster"
+			CivilianArchetype "AE_Caucasian_Male_Traveler05"
+			OutlawArchetype "AE_Gang_CATTLERUSTLER_Hard01"
+			LawArchetype "AE_Law_Caucasian_USMarshal_Hard03"
+			BasePressure 70
+			BaseHeat 6
+			StrategicTags "roadside_robbery,outlaw_hideout"
+		}
+		Node "tumbleweed"
+		{
+			DisplayName "Tumbleweed"
+			Region "gaptooth_ridge"
+			Controller "PlayerNeutral"
+			Context "ghost_town"
+			PopulationProfile "codered_scavengers_and_miners"
+			CivilianArchetype "AE_Caucasian_Old_Male_Beggar01"
+			OutlawArchetype "AE_MISC_Outlaw_01"
+			LawArchetype "AE_Law_Caucasian_Sheriff_Medium02"
+			BasePressure 55
+			BaseHeat 6
+			StrategicTags "ghost_town,loot_zone"
+		}
+		Node "hennigans_ranch"
+		{
+			DisplayName "Hennigans Ranch"
+			Region "hennigans_stead"
+			Controller "PlayerFriendly"
+			Context "escort_crossroads"
+			PopulationProfile "codered_mixed_frontier"
+			CivilianArchetype "AE_Caucasian_Male_Rancher01"
+			OutlawArchetype "AE_Caucasian_GenericCriminal_Easy03"
+			LawArchetype "AE_Law_Caucasian_Sheriff_Medium03"
+			BasePressure 55
+			BaseHeat 6
+			StrategicTags "crossroads,escort_routes,transport_post"
+		}
+		Node "pikes_basin"
+		{
+			DisplayName "Pikes Basin"
+			Region "hennigans_stead"
+			Controller "CattleRustler"
+			Context "camp_hideout"
+			PopulationProfile "codered_gang_muster"
+			CivilianArchetype "AE_Caucasian_Male_Traveler06"
+			OutlawArchetype "AE_Gang_CATTLERUSTLER_Medium02"
+			LawArchetype "AE_Law_Caucasian_USMarshal_Hard04"
+			BasePressure 70
+			BaseHeat 6
+			StrategicTags "hideout,raid_origin"
+		}
+		Node "thieves_landing"
+		{
+			DisplayName "Thieves Landing"
+			Region "hennigans_stead"
+			Controller "GenericCriminal"
+			Context "black_market"
+			PopulationProfile "codered_smuggler_wagons"
+			CivilianArchetype "AE_Caucasian_Male_DocksWorker01"
+			OutlawArchetype "AE_Black_GenericCriminal_Medium01"
+			LawArchetype "AE_Law_Caucasian_TownPosse_Easy04"
+			BasePressure 70
+			BaseHeat 6
+			StrategicTags "black_market,criminal_overlap,transport_post"
+		}
+		Node "fort_mercer"
+		{
+			DisplayName "Fort Mercer"
+			Region "rio_bravo"
+			Controller "MexicanBandito"
+			Context "fort_war"
+			PopulationProfile "codered_gang_muster"
+			CivilianArchetype "AE_Hispanic_Male_Laborer01"
+			OutlawArchetype "AE_Gang_BANDITO_Hard01"
+			LawArchetype "AE_Caucasian_Army_Hard01"
+			BasePressure 70
+			BaseHeat 6
+			StrategicTags "fortified_outpost,war_anchor"
+		}
+		Node "plainview"
+		{
+			DisplayName "Plainview"
+			Region "rio_bravo"
+			Controller "MexicanBandito"
+			Context "bandito_outpost"
+			PopulationProfile "codered_smuggler_wagons"
+			CivilianArchetype "AE_Hispanic_Male_Traveler01"
+			OutlawArchetype "AE_Gang_BANDITO_Medium01"
+			LawArchetype "AE_Caucasian_Army_Medium01"
+			BasePressure 60
+			BaseHeat 6
+			StrategicTags "wilderness_outpost,transport_post"
+		}
+	}
+}

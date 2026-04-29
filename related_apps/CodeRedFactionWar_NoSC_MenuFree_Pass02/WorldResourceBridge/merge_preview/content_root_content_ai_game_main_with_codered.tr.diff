@@ -1,0 +1,19 @@
+--- /mnt/data/content_text_export/root__content__ai__game_main.tr.txt
++++ /mnt/data/fw_pass02/CodeRedFactionWar_NoSC_MenuFree_Pass02/WorldResourceBridge/merge_preview/content_root_content_ai_game_main_with_codered.tr
+@@ -30,6 +30,7 @@
+ // to move more stuff in there. /FF
+ #include "tasks.tr"
+ 
++#include "code_red_factionwar_world.tr"
+ constants
+ {
+ 	//int kReportStateCombat = 0;
+@@ -67,7 +68,7 @@
+ 	RetreatingUnarmed && Player(x) && (Enemy(x) || WantToHurt(x)) -> HandsUpThenFlee(x);
+ 	RetreatingUnarmed && ObjectClassCreatureRaceHuman(x) && (Enemy(x) || WantToHurt(x)) -> HandsUpThenFlee(x);
+ 	
+-	TRUE	->	Main0, PerformExternalGoals, UpdateHostility, ConstrainValidSpacePriorityHighest, RespectStandGoalPriorityHighest, SeekToEvadeExplosives, CombatIdle, WarnOthers, AudioTestSpeechEvents, trRememberComplexEvents;
++	TRUE	->	Main0, PerformExternalGoals, UpdateHostility, ConstrainValidSpacePriorityHighest, RespectStandGoalPriorityHighest, SeekToEvadeExplosives, CombatIdle, WarnOthers, AudioTestSpeechEvents, trRememberComplexEvents, CodeRedFactionWarWorld WITH 1.0;
+ }
+ 
+ 

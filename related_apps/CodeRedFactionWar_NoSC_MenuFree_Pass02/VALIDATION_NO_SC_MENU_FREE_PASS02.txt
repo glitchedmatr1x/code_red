@@ -1,0 +1,14 @@
+Code RED Faction War No-SC Menu-Free Pass02 validation
+
+cpp_brace_balance=0
+marker_NoSC_MenuFree_Pass02=True
+debug_hotkeys_disabled=True
+hud_toasts_disabled=True
+world_bridge_pass02_present=True
+generated_tr_present=True
+merge_preview_present=True
+
+Notes:
+- Linux environment cannot build the Windows RedHook .red project.
+- Resource bridge files were regenerated and static-validated.
+- The first recommended archive test remains tune-side game_main.tr because the diff is smaller than content-side game_main.tr.

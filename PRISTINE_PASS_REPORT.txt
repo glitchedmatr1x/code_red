@@ -1,0 +1,41 @@
+Code RED Pristine Lite Pass Report
+==================================
+by GLITCHED MATRIX Prototype Lab
+
+Package goal
+------------
+Keep the current working Code RED package intact while removing large editor/build clutter, stale local paths, stale tuner-folder references, and obvious non-shipping cache files.
+
+Kept
+----
+- Main Code RED workbench: main.py, python_workbench.py, Run_Code_RED.bat.
+- CodeRED Tuner current folder: related_apps/CodeRED_Tuner/.
+- Code Red Arcade demo and runtime/arcade_settings.json.
+- Tuner stock vehicle files, input profile, mod packs, baked wire asset, and replaceable audio folders.
+- MP Companion v19.
+- RPF edit lab and related launchers.
+- CodeX/XML bundle tools.
+- Prepared Faction War source/reference runtime and final .red output.
+
+Removed / cleaned
+-----------------
+- Visual Studio .vs cache and database files.
+- Intermediate x64 Release build cache: .pch, .obj, .iobj, .ipdb, .pdb, .tlog, .log, recipe files.
+- Python __pycache__ files.
+- Temporary selftest output folders/logs.
+- Old stale tuner-folder references in launch/probe paths.
+- test-machine absolute paths from MP Companion default configs.
+- Oversized nested SC-CL-master.zip cache from the experimental compile bundle.
+- SCCL temporary compile output logs.
+- Long 60-second demo engine loop was trimmed to a compact loop-safe version so the demo still has engine audio without shipping an oversized placeholder loop.
+
+Validation performed
+--------------------
+- Python syntax compile check passed for the main workbench, tuner, arcade, MP companion, RPF lab, cleanroom world, launcher files, and helper probe/importer scripts.
+- CodeRED Tuner selftest passed and exported a temporary patch package, then the temporary output was removed to keep the zip clean.
+- Code Red Arcade no-window selftest passed with runtime/arcade_settings.json.
+- Runtime probe verified the current CodeRED_Tuner path and detected both bundled mod packs.
+
+Notes
+-----
+Panda3D is not installed in this sandbox, so live renderer screenshots were not generated here. The package includes dependency installers and requirements files for user machines. The no-window arcade selftest passed against the shipped runtime settings.

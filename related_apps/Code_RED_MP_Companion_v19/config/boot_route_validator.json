@@ -1,0 +1,80 @@
+{
+  "ts": "2026-04-19T06:28:15",
+  "mode_key": "lan",
+  "mode_label": "LAN Multiplayer",
+  "content_source": "",
+  "boot_target": "NetConf_PlayLAN",
+  "world": "lobby_lan",
+  "route_note": "Networking -> Play LAN -> PlayMpConf(LAN) -> Lobby / TaskMachine Portable default: choose a content source in-app before validating against real files.",
+  "network_route": "NetConf_PlayLAN",
+  "entry_route_chain": [
+    "networking.sc.xml",
+    "PlayMpConf.sc (LAN)",
+    "taskmachine.sc.xml",
+    "hudsceneonline.sc.xml"
+  ],
+  "ok": true,
+  "checked_paths": 5,
+  "checks": [
+    {
+      "path": "root/content/ui/net/main.sc.xml",
+      "present": true,
+      "required_count": 1,
+      "matched_count": 1,
+      "matched_strings": [
+        "playerlist"
+      ],
+      "missing_strings": [],
+      "ok": true
+    },
+    {
+      "path": "root/content/ui/net/taskmachine.sc.xml",
+      "present": true,
+      "required_count": 2,
+      "matched_count": 2,
+      "matched_strings": [
+        "NetMachine.StartMultiplayer()",
+        "NetTaskMachine id=\"NetMachine\""
+      ],
+      "missing_strings": [],
+      "ok": true
+    },
+    {
+      "path": "root/content/ui/pausemenu/networking.sc.xml",
+      "present": true,
+      "required_count": 3,
+      "matched_count": 3,
+      "matched_strings": [
+        "NetConf_PlayLAN",
+        "LAN Multiplayer",
+        "net.modeLAN"
+      ],
+      "missing_strings": [],
+      "ok": true
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/0x2B5C38A8",
+      "present": true,
+      "required_count": 2,
+      "matched_count": 2,
+      "matched_strings": [
+        "NetConf_StartGame",
+        "playerlist"
+      ],
+      "missing_strings": [],
+      "ok": true
+    },
+    {
+      "path": "root/content/ui/net/hudsceneonline.sc.xml",
+      "present": true,
+      "required_count": 2,
+      "matched_count": 2,
+      "matched_strings": [
+        "net.modeLAN",
+        "multiplayerIcons"
+      ],
+      "missing_strings": [],
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+Code RED Faction War No-SC Menu-Free Pass 01 validation
+cpp_brace_balance=0
+cpp_brace_min_balance=0
+has_menu_free_constant=True
+has_debug_hotkeys_disabled=True
+has_hud_toasts_disabled=True
+hotkey_block_wrapped=True
+overlay_render_guarded=True
+world_bridge_files=7
+old_built_red_present=False
+redtrainer_reference_present=False

@@ -1,0 +1,9 @@
+source_exists: True
+brace_balance: True
+paren_balance: True
+has_main_loop: True
+has_visible_menu: True
+has_vehicle_spawn: True
+has_live_tune: True
+missing_symbols: []
+RESULT: PASS

@@ -1,0 +1,18 @@
+Code RED Faction War WorldResourceBridge Pass02 validation
+
+tune_ai/code_red_factionwar_world.tr: bytes=4481 brace_balance=0
+tune_level/code_red_factionwar_level.pop: bytes=7522 brace_balance=0
+tune_settings/code_red_factionwar.traffic: bytes=2614 brace_balance=0
+world_state_bridge.ini: bytes=3146 brace_balance=0
+TR unsupported-token check: passed
+
+Changed files:
+WorldResourceBridge/tune_ai/code_red_factionwar_world.tr
+WorldResourceBridge/merge_packs/content_ai/root_content_ai_code_red_factionwar_world.tr
+WorldResourceBridge/merge_packs/tune_ai/root_tune_ai_code_red_factionwar_world.tr
+WorldResourceBridge/tune_level/code_red_factionwar_level.pop
+WorldResourceBridge/merge_packs/tune_level/root_tune_level_territory_code_red_factionwar_level.pop
+WorldResourceBridge/tune_settings/code_red_factionwar.traffic
+WorldResourceBridge/merge_packs/tune_settings/root_tune_settings_code_red_factionwar.traffic
+WorldResourceBridge/world_state_bridge.ini
+WorldResourceBridge/patch_recipes/code_red_factionwar_world_bridge_recipe.json

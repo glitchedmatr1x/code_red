@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sagVehModelTune>
+	<WheelCount value="0"/>
+	<WheelIndex content="char_array">
+		-1
+		-1
+		-1
+		-1
+	</WheelIndex>
+	<HubIndex content="char_array">
+		-1
+		-1
+		-1
+		-1
+	</HubIndex>
+	<ArmCount value="0"/>
+	<ArmIndex content="char_array">
+		-1
+		-1
+		-1
+		-1
+	</ArmIndex>
+	<ShockCount value="0"/>
+	<ShockIndex content="char_array">
+		-1
+		-1
+		-1
+		-1
+	</ShockIndex>
+	<AxleCount value="0"/>
+	<AxleIndex content="char_array">
+		-1
+		-1
+	</AxleIndex>
+</sagVehModelTune>

@@ -1,0 +1,6 @@
+cryptography
+pillow
+numpy
+matplotlib
+panda3d
+pygame
