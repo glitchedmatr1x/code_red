@@ -1,0 +1,38 @@
+^D:\GAMES\RED DEAD REDEMPTION\CODE RED\CODE_RED\DATA\CODE_RED_SCCL_ATTEMPT_BUNDLE_V1\CODE_RED_SCCL_WINDOWS_BUILD_KIT_V1\OUTPUT\SCCL_CMAKE_BUILD\CMAKEFILES\AB8AB8B2B5E57BE83DB6156E9AD3968C\OMP.H.INC.RULE
+setlocal
+..\..\..\..\MinSizeRel\bin\llvm-tblgen.exe --gen-directive-decl -I "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/include/llvm/Frontend/OpenMP" "-ID:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/include" "-ID:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/include" --long-string-literals=0 "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/include/llvm/Frontend/OpenMP/OMP.td" -o "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/include/llvm/Frontend/OpenMP/OMP.h.inc"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES\RED DEAD REDEMPTION\CODE RED\CODE_RED\DATA\CODE_RED_SCCL_ATTEMPT_BUNDLE_V1\CODE_RED_SCCL_WINDOWS_BUILD_KIT_V1\OUTPUT\SCCL_CMAKE_BUILD\CMAKEFILES\AB8AB8B2B5E57BE83DB6156E9AD3968C\OMP.INC.RULE
+setlocal
+..\..\..\..\MinSizeRel\bin\llvm-tblgen.exe --gen-directive-impl -I "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/include/llvm/Frontend/OpenMP" "-ID:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/include" "-ID:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/include" --long-string-literals=0 "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/include/llvm/Frontend/OpenMP/OMP.td" -o "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/include/llvm/Frontend/OpenMP/OMP.inc"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES\RED DEAD REDEMPTION\CODE RED\CODE_RED\DATA\CODE_RED_SCCL_ATTEMPT_BUNDLE_V1\CODE_RED_SCCL_WINDOWS_BUILD_KIT_V1\OUTPUT\SCCL_CMAKE_BUILD\CMAKEFILES\5BF120A3E497FEA4D09CDE5CCA967246\OMP_GEN.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES\RED DEAD REDEMPTION\CODE RED\CODE_RED\DATA\CODE_RED_SCCL_ATTEMPT_BUNDLE_V1\CODE_RED_SCCL_WINDOWS_BUILD_KIT_V1\OUTPUT\SC-CL-MASTER\LLVM-14.0.0.SRC\INCLUDE\LLVM\FRONTEND\OPENMP\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SD:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src" "-BD:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build" --check-stamp-file "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/include/llvm/Frontend/OpenMP/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

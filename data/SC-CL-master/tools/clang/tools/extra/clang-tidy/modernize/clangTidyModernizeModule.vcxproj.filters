@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\modernize\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\AvoidBindCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\AvoidCArraysCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\ConcatNestedNamespacesCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\DeprecatedHeadersCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\DeprecatedIosBaseAliasesCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\LoopConvertCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\LoopConvertUtils.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\MakeSharedCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\MakeSmartPtrCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\MakeUniqueCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\ModernizeTidyModule.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\PassByValueCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\RawStringLiteralCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\RedundantVoidArgCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\ReplaceAutoPtrCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\ReplaceDisallowCopyAndAssignMacroCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\ReplaceRandomShuffleCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\ReturnBracedInitListCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\ShrinkToFitCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UnaryStaticAssertCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseAutoCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseBoolLiteralsCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseDefaultMemberInitCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseEmplaceCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseEqualsDefaultCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseEqualsDeleteCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseNodiscardCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseNoexceptCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseNullptrCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseOverrideCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseTrailingReturnTypeCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseTransparentFunctorsCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseUncaughtExceptionsCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\modernize\obj.clangTidyModernizeModule.dir\$(Configuration)\UseUsingCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Object Libraries">
+      <UniqueIdentifier>{0AE485DF-7FB2-32F4-BFD2-D1CADC8CDB24}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

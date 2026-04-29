@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\obj.clangTidy.dir\$(Configuration)\ClangTidy.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\obj.clangTidy.dir\$(Configuration)\ClangTidyCheck.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\obj.clangTidy.dir\$(Configuration)\ClangTidyModule.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\obj.clangTidy.dir\$(Configuration)\ClangTidyDiagnosticConsumer.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\obj.clangTidy.dir\$(Configuration)\ClangTidyOptions.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\obj.clangTidy.dir\$(Configuration)\ClangTidyProfiling.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\obj.clangTidy.dir\$(Configuration)\ExpandModularHeadersPPCallbacks.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\obj.clangTidy.dir\$(Configuration)\GlobList.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\tools\extra\clang-tidy\obj.clangTidy.dir\$(Configuration)\NoLintDirectiveHandler.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Object Libraries">
+      <UniqueIdentifier>{0AE485DF-7FB2-32F4-BFD2-D1CADC8CDB24}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

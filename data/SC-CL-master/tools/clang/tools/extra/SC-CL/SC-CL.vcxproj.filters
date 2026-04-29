@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\SC-CL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\ASTConsumer.cpp">
+      <Filter>Source Files\ClangParsing</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\ASTFrontendAction.cpp">
+      <Filter>Source Files\ClangParsing</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\ASTVisitorGlobal.cpp">
+      <Filter>Source Files\ClangParsing</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\ASTVisitorLocal.cpp">
+      <Filter>Source Files\ClangParsing</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\CommandLineOptions.cpp">
+      <Filter>Source Files\ClangParsing</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\GlobalDecls.cpp">
+      <Filter>Source Files\ClangParsing</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\Helpers\FunctionData.cpp">
+      <Filter>Source Files\ClangParsing\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\Helpers\Script.cpp">
+      <Filter>Source Files\ClangParsing\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\Helpers\StaticData.cpp">
+      <Filter>Source Files\ClangParsing\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\Utils.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\ClangUtils.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Compiler\Compiler.cpp">
+      <Filter>Source Files\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Compiler\Opcode.cpp">
+      <Filter>Source Files\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Crypto\aes256.c">
+      <Filter>Source Files\Crypto</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\ASTConsumer.h">
+      <Filter>Header Files\ClangParsing</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\ASTFrontendAction.h">
+      <Filter>Header Files\ClangParsing</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\ASTVisitorGlobal.h">
+      <Filter>Header Files\ClangParsing</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\ASTVisitorLocal.h">
+      <Filter>Header Files\ClangParsing</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\CommandLineOptions.h">
+      <Filter>Header Files\ClangParsing</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\GlobalDecls.h">
+      <Filter>Header Files\ClangParsing</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\Helpers\FunctionData.h">
+      <Filter>Header Files\ClangParsing\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\Helpers\Script.h">
+      <Filter>Header Files\ClangParsing\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\ClangParsing\Helpers\StaticData.h">
+      <Filter>Header Files\ClangParsing\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Compiler\BuildTarget.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Compiler\Compiler.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Compiler\Opcode.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Compiler\OpcodeConsts.h">
+      <Filter>Header Files\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Compression\zconf.h">
+      <Filter>Header Files\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Compression\zlib.h">
+      <Filter>Header Files\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Crypto\aes256.h">
+      <Filter>Header Files\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\ClangUtils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\ConsoleColor.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\ConstExpr.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\Utils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\rapidxml\rapidxml.hpp">
+      <Filter>Header Files\Utils\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\rapidxml\rapidxml_iterators.hpp">
+      <Filter>Header Files\Utils\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\rapidxml\rapidxml_print.hpp">
+      <Filter>Header Files\Utils\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\Include\Utils\rapidxml\rapidxml_utils.hpp">
+      <Filter>Header Files\Utils\rapidxml</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\CMakeLists.txt">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\resources\windows_version_resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2646F2BE-B953-3110-BE77-E73A9667C1AB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ClangParsing">
+      <UniqueIdentifier>{B4F61A45-CA9A-3AC2-868C-17CE66225182}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ClangParsing\Helpers">
+      <UniqueIdentifier>{F0DA3626-C0E7-385D-94E4-2C5291B7022D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Compiler">
+      <UniqueIdentifier>{D57DE4DF-035D-3EF4-841A-F7FD7FFF56A6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Compression">
+      <UniqueIdentifier>{417C50C5-9DB1-38C6-BD0C-6D84FFA02BCA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Crypto">
+      <UniqueIdentifier>{3B4CF514-9C02-3EC6-B82D-142BF2BBA7F1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{96064460-2B0A-334D-B5F7-A95AB3FC4DBA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils\rapidxml">
+      <UniqueIdentifier>{105C4624-6F04-309D-A040-1F0ADD2D53D0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{3198AD8A-AA04-3A4D-84A3-8AF87059F7BB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{539B23F3-1AA3-3AF1-906F-2169A4B62364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ClangParsing">
+      <UniqueIdentifier>{44805C20-1D28-3839-8D4C-2DDB425E7028}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ClangParsing\Helpers">
+      <UniqueIdentifier>{3887908A-B1DB-3353-A0F9-D0A583EDBD0C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Compiler">
+      <UniqueIdentifier>{4B1520A1-4B9D-3E7D-8EF5-D4C1FF3A14C4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Crypto">
+      <UniqueIdentifier>{F1220545-6BF3-3F86-A61E-BF1B6E9641E1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{0E600547-8B74-3A4E-BFBD-49D8BE183197}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

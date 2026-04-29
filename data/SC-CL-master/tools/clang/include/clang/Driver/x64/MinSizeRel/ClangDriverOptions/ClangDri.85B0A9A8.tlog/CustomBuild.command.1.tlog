@@ -1,0 +1,28 @@
+^D:\GAMES\RED DEAD REDEMPTION\CODE RED\CODE_RED\DATA\CODE_RED_SCCL_ATTEMPT_BUNDLE_V1\CODE_RED_SCCL_WINDOWS_BUILD_KIT_V1\OUTPUT\SCCL_CMAKE_BUILD\CMAKEFILES\D9C9D7B1DB18B3DF21FB4A0EF40D0F6B\OPTIONS.INC.RULE
+setlocal
+..\..\..\..\..\MinSizeRel\bin\llvm-tblgen.exe -gen-opt-parser-defs -I "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/include/clang/Driver" "-ID:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/include" "-ID:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/tools/clang/include" "-ID:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/include" "-ID:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/include" --long-string-literals=0 "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/include/clang/Driver/Options.td" -o "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/tools/clang/include/clang/Driver/Options.inc"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES\RED DEAD REDEMPTION\CODE RED\CODE_RED\DATA\CODE_RED_SCCL_ATTEMPT_BUNDLE_V1\CODE_RED_SCCL_WINDOWS_BUILD_KIT_V1\OUTPUT\SCCL_CMAKE_BUILD\CMAKEFILES\073AF5F356189CE2AA4064285A421168\CLANGDRIVEROPTIONS.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\GAMES\RED DEAD REDEMPTION\CODE RED\CODE_RED\DATA\CODE_RED_SCCL_ATTEMPT_BUNDLE_V1\CODE_RED_SCCL_WINDOWS_BUILD_KIT_V1\OUTPUT\SC-CL-MASTER\LLVM-14.0.0.SRC\TOOLS\CLANG\INCLUDE\CLANG\DRIVER\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SD:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src" "-BD:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build" --check-stamp-file "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/tools/clang/include/clang/Driver/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,6 +1,0 @@
-- Added `IS_KEY_DOWN` native (Use this if you don't want to rely on a custom input hook)
-- Added `IS_KEY_PRESSED` native (Use this if you don't want to rely on a custom input hook)
-- Added `IS_KEY_RELEASED` native (Use this if you don't want to rely on a custom input hook)
-- Added a new config line `InternalConsole` to enable/disable the ingame F8 debug console (Set to `true` by default)
-- Fixed issue with not being able to move the mouse around when the internal console was open
-- Fixed a critical crash when initializing a large amount of `.red` plugins at game launch

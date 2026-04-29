@@ -1,0 +1,12 @@
+Code RED Faction War Pass12 Research Notes
+
+Scope:
+- More events in empty wilderness/roadless areas by strengthening placementglobals wilderness sets.
+- More population pressure in wilderness regions through level.pop.
+- A best-effort player-posse layer that uses low-density respawning ally/law defenders and a TR pulse that follows/helps the player when the engine exposes the player as an ally target.
+
+Important limitation:
+The staged content/tune archives did not expose direct Dutch/Javier/Bill actor templates. The pass therefore uses named companion-proxy pool names but stock safe templates. This avoids unknown actor/entity IDs that could fail to spawn.
+
+Next deeper target:
+- companion_brain.wsc, external task/squad objective files, and any actor template archives that contain named story characters.
