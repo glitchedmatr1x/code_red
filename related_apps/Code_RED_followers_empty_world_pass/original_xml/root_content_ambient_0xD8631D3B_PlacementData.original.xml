@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	
+<PlacementData>
+	<Events>
+		<Item>
+			<Name>beacon_transport_defend</Name>
+      <Slope value="0.0"/>
+      <Bump value="1.0"/>
+      <Size value="5.0"/>
+		</Item>
+		<Item>
+			<Name>beacon_transport_simple</Name>
+      <Slope value="0.0"/>
+      <Bump value="1.0"/>
+      <Size value="5.0"/>
+    </Item>
+		<Item>
+			<Name>event_roadside_ambush</Name>
+		</Item>
+		<Item>
+			<Name>beat_roadside_robbery</Name>
+		</Item>
+		<Item>
+			<Name>event_raodside_prisoners</Name>
+		</Item>
+		<Item>
+			<Name>beat_crime_wagonthief</Name>
+		</Item>
+		<Item>
+			<Name>event_roadside_dig_grave</Name>
+		</Item>
+		<Item>
+			<Name>event_roadside_execution</Name>
+		</Item>
+		<Item>
+			<Name>event_roadside_eating</Name>
+		</Item>
+		<Item>
+			<Name>event_roadside_aftermath</Name>
+		</Item>
+		<Item>
+			<Name>beacon_wilderness_dynomite</Name>
+		</Item>
+		<Item>
+			<Name>event_gnrc_rescue_beacon</Name>
+		</Item>
+		<Item>
+			<Name>beacon_escort_criminals</Name>
+		</Item>
+		<Item>
+			<Name>event_coyote_chase</Name>
+		</Item>
+		<Item>
+			<Name>event_loot_dead_body</Name>
+		</Item>
+		<Item>
+			<Name>event_wild_animals</Name>
+		</Item>
+		<Item>
+			<Name>event_stickup</Name>
+		</Item>
+		<Item>
+			<Name>event_crazy_hermit</Name>
+		</Item>
+		<Item>
+			<Name>event_wilderness_drunks</Name>
+		</Item>
+		<Item>
+			<Name>event_wilderness_dynomite</Name>
+		</Item>
+		<Item>
+			<Name>event_lone_stranger</Name>
+		</Item>
+		<Item>
+			<Name>event_night_procession</Name>
+		</Item>
+		<Item>
+			<Name>event_criminal_chase</Name>
+		</Item>
+		<Item>
+			<Name>event_hanging</Name>
+		</Item>
+		<Item>
+			<Name>event_treasurehunter_intro</Name>
+		</Item>
+		<Item>
+			<Name>event_herbalist_intro</Name>
+		</Item>
+		<Item>
+			<Name>event_hunter_intro</Name>
+		</Item>
+		<Item>
+			<Name>event_sharpshooter_challenge</Name>
+		</Item>
+		<Item>
+			<Name>mexican_rev_rebelCamp</Name>
+		</Item>
+		<Item>
+			<Name>event_broken_wagon01</Name>
+		</Item>
+		<Item>
+			<Name>event_campfire01</Name>
+		</Item>
+		<Item>
+			<Name>event_landmark_attack</Name>
+		</Item>
+	</Events>
+	<AllowEventSets>
+		<Item>
+        <Name>All Events</Name>
+     
+        <EventNames>
+				<Name>beacon_transport_defend</Name>
+				<Name>beacon_transport_simple</Name>
+				<Name>event_roadside_ambush</Name>
+				<Name>beat_roadside_robbery</Name>
+				<Name>event_raodside_prisoners</Name>
+				<Name>beat_crime_wagonthief</Name>
+				<Name>event_roadside_dig_grave</Name>
+				<Name>event_roadside_execution</Name>
+				<Name>event_roadside_eating</Name>
+				<Name>event_roadside_aftermath</Name>
+				<Name>beacon_wilderness_dynomite</Name>
+				<Name>event_gnrc_rescue_beacon</Name>
+				<Name>beacon_escort_criminals</Name>
+				<Name>event_coyote_chase</Name>
+				<Name>event_loot_dead_body</Name>
+				<Name>event_wild_animals</Name>
+				<Name>event_stickup</Name>
+				<Name>event_crazy_hermit</Name>
+				<Name>event_wilderness_drunks</Name>
+				<Name>event_wilderness_dynomite</Name>
+				<Name>event_lone_stranger</Name>
+				<Name>event_night_procession</Name>
+				<Name>event_criminal_chase</Name>
+				<Name>event_hanging</Name>
+				<Name>event_treasurehunter_intro</Name>
+				<Name>event_herbalist_intro</Name>
+				<Name>event_hunter_intro</Name>
+				<Name>event_sharpshooter_challenge</Name>
+				<Name>mexican_rev_rebelCamp</Name>
+				<Name>event_broken_wagon01</Name>
+				<Name>event_campfire01</Name>
+				<Name>event_landmark_attack</Name>
+			</EventNames>
+		</Item>
+		<Item>
+			<Name>Roadside Events</Name>
+
+      <DistanceRoadMin value="2.0"/>
+      <DistanceRoadMax value="4.0"/>
+
+      <EventNames>
+				<Name>beacon_transport_defend</Name>
+				<Name>beacon_transport_simple</Name>
+				<Name>event_roadside_ambush</Name>
+				<Name>beat_roadside_robbery</Name>
+				<Name>event_raodside_prisoners</Name>
+				<Name>beat_crime_wagonthief</Name>
+				<Name>event_roadside_dig_grave</Name>
+				<Name>event_roadside_execution</Name>
+				<Name>event_roadside_eating</Name>
+				<Name>event_roadside_aftermath</Name>
+			</EventNames>
+		</Item>
+		<Item>
+			<Name>Trailside Events</Name>
+      <EventNames>
+				<Name>event_roadside_eating</Name>
+				<Name>beat_crime_wagonthief</Name>
+				<Name>event_roadside_execution</Name>
+				<Name>event_coyote_chase</Name>
+				<Name>event_loot_dead_body</Name>
+				<Name>event_wild_animals</Name>
+				<Name>event_stickup</Name>
+				<Name>event_lone_stranger</Name>
+				<Name>event_hanging</Name>
+			</EventNames>
+		</Item>
+		<Item>
+			<Name>Wilderness Normal (30-60m from any road/train/path)</Name>
+      <DistanceRoadMin value="30.0"/>
+      <DistanceTrainMin value="30.0"/>
+      <DistanceHorseTrailMin value="30.0"/>
+      <EventNames>
+				<Name>beacon_wilderness_dynomite</Name>
+				<Name>event_gnrc_rescue_beacon</Name>
+				<Name>beacon_escort_criminals</Name>
+				<Name>event_coyote_chase</Name>
+				<Name>event_loot_dead_body</Name>
+				<Name>event_wild_animals</Name>
+				<Name>event_stickup</Name>
+				<Name>event_wilderness_drunks</Name>
+				<Name>event_wilderness_dynomite</Name>
+				<Name>event_lone_stranger</Name>
+				<Name>event_night_procession</Name>
+				<Name>event_criminal_chase</Name>
+				<Name>event_hanging</Name>
+				<Name>event_treasurehunter_intro</Name>
+				<Name>event_herbalist_intro</Name>
+				<Name>event_hunter_intro</Name>
+				<Name>event_sharpshooter_challenge</Name>
+				<Name>event_campfire01</Name>
+				<Name>event_landmark_attack</Name>
+			</EventNames>
+		</Item>
+		<Item>
+			<Name>Wilderness Isolated (60m from any road/train/path)</Name>
+      <DistanceRoadMin value="60.0"/>
+      <DistanceTrainMin value="60.0"/>
+      <DistanceHorseTrailMin value="60.0"/>
+      <EventNames>
+				<Name>beacon_wilderness_dynomite</Name>
+				<Name>event_gnrc_rescue_beacon</Name>
+				<Name>beacon_escort_criminals</Name>
+				<Name>event_coyote_chase</Name>
+				<Name>event_loot_dead_body</Name>
+				<Name>event_wild_animals</Name>
+				<Name>event_stickup</Name>
+				<Name>event_crazy_hermit</Name>
+				<Name>event_wilderness_drunks</Name>
+				<Name>event_wilderness_dynomite</Name>
+				<Name>event_lone_stranger</Name>
+				<Name>event_night_procession</Name>
+				<Name>event_criminal_chase</Name>
+				<Name>event_hanging</Name>
+				<Name>event_treasurehunter_intro</Name>
+				<Name>event_herbalist_intro</Name>
+				<Name>event_hunter_intro</Name>
+				<Name>event_sharpshooter_challenge</Name>
+				<Name>mexican_rev_rebelCamp</Name>
+				<Name>event_campfire01</Name>
+				<Name>event_landmark_attack</Name>
+			</EventNames>
+		</Item>
+	</AllowEventSets>
+	<DenyEventSets>
+		<Item>
+			<Name>Tree Problems</Name>
+			<EventNames>
+				<Name>event_sharpshooter_challenge</Name>
+			</EventNames>
+		</Item>
+		<Item>
+			<Name>Approach Events / Pathfinding issues</Name>
+			<EventNames>
+				<Name>event_stickup</Name>
+				<Name>event_lone_stranger</Name>
+				<Name>beat_crime_wagonthief</Name>
+				<Name>event_gnrc_rescue_beacon</Name>
+				<Name>event_hanging</Name>
+			</EventNames>
+		</Item>
+				
+	</DenyEventSets>
+	<Slope content="float_array">
+    5.0
+    10.0
+    15.0
+    20.0
+  </Slope>
+	<Bump content="float_array">
+		0.05
+		0.06
+		0.08
+		0.10
+	</Bump>
+</PlacementData>

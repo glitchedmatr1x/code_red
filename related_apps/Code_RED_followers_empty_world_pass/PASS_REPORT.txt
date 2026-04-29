@@ -1,0 +1,145 @@
+Code RED - Followers + Empty World Events Pass
+by GLITCHED MATRIX Prototype Lab
+
+Built: 2026-04-29T18:48:07.158080+00:00
+
+What this pass changes
+----------------------
+This is a content-side ambient-event pass. It does not touch tune_d11generic.rpf.
+
+Patched archive:
+- content.rpf
+
+Patched RPF entry:
+- root/content/ambient/0xD8631D3B
+- Entry index: 48
+- Resource role: PlacementData ambient event placement controller
+- Original compressed size: 929 bytes
+- New compressed size: 926 bytes
+- Original uncompressed XML size: 7356 bytes
+- New uncompressed XML size: 7310 bytes
+- Patch style: in-place data replacement + encrypted TOC size/flag update
+
+Main gameplay intent
+--------------------
+1. Make the empty wilderness less empty.
+2. Let more ambient activity be eligible far from roads, train routes, and horse trails.
+3. Loosen the blocker that was denying several approach/follow/escort-style events.
+4. Keep the pass conservative by only reusing event names that already exist in the original PlacementData file.
+
+Added / boosted wilderness activity
+-----------------------------------
+The two original wilderness allow sets now also include more of the active roadside/transport pool:
+
+- beacon_transport_defend
+- beacon_transport_simple
+- beat_crime_wagonthief
+- event_roadside_ambush
+- beat_roadside_robbery
+- event_raodside_prisoners
+- event_roadside_dig_grave
+- event_roadside_execution
+- event_roadside_eating
+- event_roadside_aftermath
+- event_broken_wagon01
+- event_campfire01
+- event_landmark_attack
+
+New allow set
+-------------
+Added:
+
+- CodeRED Empty World Activity
+
+Distance rules:
+- DistanceRoadMin = 90.0
+- DistanceTrainMin = 70.0
+- DistanceHorseTrailMin = 70.0
+
+Events in this set:
+- beacon_transport_defend
+- beacon_transport_simple
+- event_gnrc_rescue_beacon
+- beacon_escort_criminals
+- beat_crime_wagonthief
+- event_broken_wagon01
+- event_campfire01
+- event_criminal_chase
+- event_coyote_chase
+- event_loot_dead_body
+- event_wild_animals
+- event_lone_stranger
+- event_hanging
+- event_landmark_attack
+
+Follower / companion status
+---------------------------
+This pass makes the existing escort, rescue, transport, wagon, chase, and lone-stranger style events more eligible in the wilderness.
+
+The old deny set named "Approach Events / Pathfinding issues" originally blocked:
+- event_stickup
+- event_lone_stranger
+- beat_crime_wagonthief
+- event_gnrc_rescue_beacon
+- event_hanging
+
+This pass leaves only event_stickup in that deny set, so the less hostile approach/follower-like events can try to run.
+
+Important:
+- This does not inject Dutch/Javier/Bill as guaranteed permanent companions.
+- This does not invent new character templates.
+- It is the safest current step toward follower-like world behavior because it unlocks existing event routes without corrupting downstream scripts or unknown spawn templates.
+- True permanent named followers likely needs a script/taskmachine hook or a known companion/freemode template path.
+
+Related source checks
+---------------------
+Checked the prior source notes and the live archive structure before patching.
+
+Relevant internal findings from this pass:
+- root/content/ambient/0xD8631D3B decompresses as PlacementData.
+- root/content/0x1230F707/0x3008C430/0x18F783CE decompresses as invManager.
+- invManager contains SpawnTemplate, EntityTypeName, LocatorName, and HORSE_DUTCH entries, but no safe Dutch/Javier/Bill follower template was found there.
+- content.rpf is RPF6 with encrypted TOC.
+- The patched TOC was re-encrypted after the entry size and uncompressed-size flag were updated.
+
+Install / test order
+--------------------
+1. Back up your original content.rpf.
+2. Replace the test copy of content.rpf with the included patched content.rpf.
+3. Start the game in a clean test environment.
+4. Go to wilderness / empty areas far from roads and major paths.
+5. Let time pass and travel through different terrain bands.
+6. Watch for:
+   - rescue beacons
+   - escort/criminal transport style activity
+   - wagon thief activity
+   - broken wagon events
+   - campfire activity
+   - criminal chase / animal chase activity
+   - landmark attacks
+
+If the game crashes or hangs:
+1. Restore the original content.rpf.
+2. Report whether the crash happened on boot, region load, or event spawn.
+3. Keep the pass report and manifest so we can narrow the next edit.
+
+Validation performed
+--------------------
+- RPF6 header parsed after patch.
+- Encrypted TOC decrypted after patch.
+- Patched entry 48 extracted at the same offset.
+- Patched entry 48 zstd-decompressed successfully.
+- Patched PlacementData XML parsed successfully.
+- New CodeRED Empty World Activity set found.
+- Wilderness Normal includes beat_crime_wagonthief after patch.
+- Approach deny set now only contains event_stickup.
+- File size unchanged for safe drop-in replacement.
+
+Files included
+--------------
+- content.rpf
+- PASS_REPORT.txt
+- README_TEST_ORDER.txt
+- manifests/patch_manifest.json
+- original_xml/root_content_ambient_0xD8631D3B_PlacementData.original.xml
+- modified_xml/root_content_ambient_0xD8631D3B_PlacementData.xml
