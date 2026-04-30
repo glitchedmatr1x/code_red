@@ -4,17 +4,20 @@
 This is a conservative pre-launch hook. It does not hook process memory and it
 never edits the source archive in place unless `activate` is explicitly used.
 
-Primary job:
+Primary jobs:
 - read the current content.rpf
-- extract the current PlayMpConf SCXML
-- build a donor-style MP override patch from the live file
-- apply that patch to a copied content.rpf through the bundled Code RED runtime
-- write proof reports and state files for the MP Companion / Workbench
+- extract current-version multiplayer UI SCXML files
+- build a donor-style PlayMpConf bypass from the live file
+- optionally merge safe MP UI update files while preserving single-player boot
+- apply the patch folder to a copied content.rpf through the Code RED runtime
+- write proof reports and bridge state files for the MP Companion / Workbench
 
-The override is intentionally small: PlayMpConf auth failures are routed to
-NetMachine.TriggerMultiplayerLoad(arg2), preserving the rest of the current
-version file. This matches the working.zip research clue without bulk merging
-mixed-version UI files.
+The default override is intentionally small: PlayMpConf auth failures are routed
+to NetMachine.TriggerMultiplayerLoad(arg2), preserving the rest of the current
+version file. The SP/MP merged mode keeps the stock single-player boot path and
+adds multiplayer/freemode launch pressure through PlayMpConf plus companion
+bridge descriptors, instead of replacing the whole boot UI with a mixed-version
+donor file.
 """
 from __future__ import annotations
 
@@ -31,10 +34,17 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+BOOT_PATH = "root/content/ui/boot.sc.xml"
 PLAYMPCONF_PATH = "root/content/ui/pausemenu/0x007B97C6/plaympconf.sc.xml"
 NETWORKING_PATH = "root/content/ui/pausemenu/networking.sc.xml"
+OFFLINEMENU_PATH = "root/content/ui/pausemenu/0x007B97C6/offlinemenu.sc.xml"
+LANMENU_PATH = "root/content/ui/pausemenu/0x007B97C6/lanmenu.sc.xml"
+PUBLICMENU_PATH = "root/content/ui/pausemenu/0x007B97C6/publicmenu.sc.xml"
+PRIVATEMENU_PATH = "root/content/ui/pausemenu/0x007B97C6/privatemenu.sc.xml"
 TASKMACHINE_PATH = "root/content/ui/net/taskmachine.sc.xml"
+MAIN_NET_PATH = "root/content/ui/net/main.sc.xml"
 LOBBY_PATH = "root/content/ui/pausemenu/lobby/0x2B5C38A8"
+PLAYER_CONTEXT_PATH = "root/content/ui/pausemenu/lobby/netplayercontextmenu.sc.xml"
 HUDONLINE_PATH = "root/content/ui/net/hudsceneonline.sc.xml"
 STATE_FILE = "mp_python_hook_state.json"
 
@@ -54,8 +64,58 @@ CORE_MP_MARKERS = [
     "MULTI_FREE_ROAM",
     "NetMachine.SetGameWish",
     "NetConf_StartGame",
+    "NetConf_PlayLAN",
+    "NetConf_PlayPublic",
+    "NetConf_PlayPrivate",
     "HudSceneOnline",
+    "PlayMpConf.sc",
 ]
+
+UI_SCAN_PATHS = [
+    BOOT_PATH,
+    PLAYMPCONF_PATH,
+    NETWORKING_PATH,
+    OFFLINEMENU_PATH,
+    LANMENU_PATH,
+    PUBLICMENU_PATH,
+    PRIVATEMENU_PATH,
+    TASKMACHINE_PATH,
+    MAIN_NET_PATH,
+    LOBBY_PATH,
+    PLAYER_CONTEXT_PATH,
+    HUDONLINE_PATH,
+]
+
+SAFE_UI_UPDATE_DESTINATIONS = {
+    NETWORKING_PATH,
+    OFFLINEMENU_PATH,
+    LANMENU_PATH,
+    PUBLICMENU_PATH,
+    PRIVATEMENU_PATH,
+    LOBBY_PATH,
+    PLAYER_CONTEXT_PATH,
+    HUDONLINE_PATH,
+    MAIN_NET_PATH,
+}
+
+BLOCKED_DONOR_DESTINATIONS = {BOOT_PATH, TASKMACHINE_PATH, PLAYMPCONF_PATH}
+
+NAME_TO_DESTINATION = {
+    "boot.sc.xml": BOOT_PATH,
+    "plaympconf.sc.xml": PLAYMPCONF_PATH,
+    "0x1374443b.xml": PLAYMPCONF_PATH,
+    "networking.sc.xml": NETWORKING_PATH,
+    "offlinemenu.sc.xml": OFFLINEMENU_PATH,
+    "0x118473d0.xml": OFFLINEMENU_PATH,
+    "lanmenu.sc.xml": LANMENU_PATH,
+    "publicmenu.sc.xml": PUBLICMENU_PATH,
+    "privatemenu.sc.xml": PRIVATEMENU_PATH,
+    "taskmachine.sc.xml": TASKMACHINE_PATH,
+    "main.sc.xml": MAIN_NET_PATH,
+    "hudsceneonline.sc.xml": HUDONLINE_PATH,
+    "netplayercontextmenu.sc.xml": PLAYER_CONTEXT_PATH,
+    "0x2b5c38a8": LOBBY_PATH,
+}
 
 
 @dataclass
@@ -83,6 +143,8 @@ class BuildResult:
     xml_valid_after: bool
     applied: int
     blocked: int
+    merged_ui_updates: int
+    bridge_descriptor: str
     warnings: list[str]
 
 
@@ -216,13 +278,17 @@ def xml_is_valid(text: str) -> bool:
         return False
 
 
+def marker_hits(text: str) -> dict[str, int]:
+    return {marker: text.count(marker) for marker in CORE_MP_MARKERS if marker in text}
+
+
 def patch_plaympconf_text(text: str, mode: str = "override-auth-failures") -> tuple[str, int, list[str]]:
     """Patch PlayMpConf while keeping the live file as the base."""
     warnings: list[str] = []
     if "NetMachine.TriggerMultiplayerLoad(arg2)" not in text:
         warnings.append("Base PlayMpConf did not contain the stock success TriggerMultiplayerLoad action.")
 
-    if mode not in {"override-auth-failures", "lan-research"}:
+    if mode not in {"override-auth-failures", "lan-research", "sp-mp-merged"}:
         raise ValueError(f"Unsupported mode: {mode}")
 
     changed = 0
@@ -237,10 +303,12 @@ def patch_plaympconf_text(text: str, mode: str = "override-auth-failures") -> tu
                 continue
             warnings.append(f"Expected action not found for {event}: {old_expr}")
             continue
+        before = new_text
         new_text = new_text.replace(f'<action expr="{old_expr}"></action>', '<action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>')
         new_text = new_text.replace(f'<action expr="{old_expr}" ></action>', '<action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>')
         new_text = new_text.replace(f'<action expr="{old_expr}"           ></action>', '<action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>')
-        changed += 1
+        if new_text != before:
+            changed += 1
 
     for event, old_expr in AUTH_FAILURE_ALERTS.items():
         transition_pattern = rf'(<transition[^>]+event="{re.escape(event)}"[^>]*>[\s\S]*?</transition>)'
@@ -262,7 +330,11 @@ def patch_plaympconf_text(text: str, mode: str = "override-auth-failures") -> tu
 
     if mode == "lan-research":
         warnings.append(
-            "lan-research mode currently builds the same PlayMpConf auth-failure override because this SCXML file receives Public/Private/LAN through arg2; use copied archive proof before activation."
+            "lan-research mode builds the PlayMpConf auth-failure override because this SCXML file receives Public/Private/LAN through arg2; use copied archive proof before activation."
+        )
+    if mode == "sp-mp-merged":
+        warnings.append(
+            "sp-mp-merged mode preserves stock single-player boot and pushes multiplayer through PlayMpConf/freemode bridge descriptors. It intentionally blocks mixed-version boot replacement."
         )
     return new_text, changed, warnings
 
@@ -274,8 +346,175 @@ def write_text_patch(patch_root: Path, internal_path: str, text: str) -> Path:
     return output
 
 
-def marker_hits(text: str) -> dict[str, int]:
-    return {marker: text.count(marker) for marker in CORE_MP_MARKERS if marker in text}
+def default_ui_update_roots(repo_root: Path, companion_root: Path) -> list[Path]:
+    return [
+        companion_root / "patches" / "content.rpf",
+        companion_root / "patches" / "_runtime" / "content.rpf",
+        companion_root / "hotswap" / "staged",
+        repo_root / "patches" / "content.rpf",
+        repo_root / "updates",
+        repo_root / "combine updates",
+    ]
+
+
+def destination_for_update_file(path: Path) -> str | None:
+    normalized = path.as_posix().lower()
+    for known in UI_SCAN_PATHS:
+        if normalized.endswith(known.lower()):
+            return known
+    name = path.name.lower()
+    if name in NAME_TO_DESTINATION:
+        dest = NAME_TO_DESTINATION[name]
+        if name == "0x2b5c38a8" and "lobby" not in normalized:
+            return None
+        return dest
+    return None
+
+
+def read_text_file(path: Path) -> tuple[bool, str, str]:
+    try:
+        raw = path.read_bytes()
+    except Exception as exc:
+        return False, "", str(exc)
+    for encoding in ("utf-8", "utf-8-sig", "latin-1"):
+        try:
+            return True, raw.decode(encoding), ""
+        except UnicodeDecodeError:
+            continue
+    return False, "", "text decode failed"
+
+
+def scan_ui_update_files(roots: list[Path]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    seen: set[Path] = set()
+    suffixes = {".xml", ".sc", ".txt"}
+    for root in roots:
+        if not root or not root.exists():
+            continue
+        files = [root] if root.is_file() else [p for p in root.rglob("*") if p.is_file()]
+        for file_path in files:
+            try:
+                resolved = file_path.resolve()
+            except Exception:
+                resolved = file_path
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            dest = destination_for_update_file(file_path)
+            name_lower = file_path.name.lower()
+            if dest is None and file_path.suffix.lower() not in suffixes and not name_lower.startswith("0x"):
+                continue
+            ok, text, error = read_text_file(file_path)
+            if not ok:
+                if dest:
+                    rows.append({"source": str(file_path), "destination": dest, "read_ok": False, "error": error})
+                continue
+            hits = marker_hits(text)
+            if dest is None and not hits:
+                continue
+            xml_valid = xml_is_valid(text) if text.lstrip().startswith("<") else False
+            blocked = dest in BLOCKED_DONOR_DESTINATIONS
+            reason = ""
+            if dest == BOOT_PATH:
+                reason = "boot donor/update is intentionally scan-only; stock single-player boot is preserved"
+            elif dest == TASKMACHINE_PATH:
+                reason = "taskmachine is scan-only; current content already contains native NetMachine.StartMultiplayer route"
+            elif dest == PLAYMPCONF_PATH:
+                reason = "PlayMpConf is patched from the live file instead of copied wholesale"
+            elif dest in SAFE_UI_UPDATE_DESTINATIONS:
+                reason = "safe merge candidate" if xml_valid or hits else "candidate lacks XML/MP marker proof"
+            rows.append(
+                {
+                    "source": str(file_path),
+                    "destination": dest or "",
+                    "read_ok": True,
+                    "size": len(text),
+                    "xml_valid": xml_valid,
+                    "marker_hits": hits,
+                    "blocked": blocked,
+                    "reason": reason,
+                }
+            )
+    return rows
+
+
+def should_merge_ui_update(row: dict[str, Any]) -> bool:
+    dest = row.get("destination") or ""
+    if dest not in SAFE_UI_UPDATE_DESTINATIONS:
+        return False
+    if row.get("blocked"):
+        return False
+    hits = row.get("marker_hits") or {}
+    if dest == NETWORKING_PATH:
+        return bool(row.get("xml_valid") and "PlayMpConf.sc" in hits and "NetConf_PlayLAN" in hits)
+    if dest == LOBBY_PATH:
+        return bool("MULTI_FREE_ROAM" in hits and "NetMachine.SetGameWish" in hits)
+    if dest == HUDONLINE_PATH:
+        return bool(row.get("xml_valid") and "HudSceneOnline" in hits)
+    if dest in {OFFLINEMENU_PATH, LANMENU_PATH, PUBLICMENU_PATH, PRIVATEMENU_PATH, PLAYER_CONTEXT_PATH, MAIN_NET_PATH}:
+        return bool(row.get("xml_valid") and (hits or "menu" in Path(row.get("source", "")).name.lower()))
+    return False
+
+
+def merge_safe_ui_updates(patch_root: Path, scan_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    merged: list[dict[str, Any]] = []
+    used_destinations: set[str] = {PLAYMPCONF_PATH}
+    for row in scan_rows:
+        dest = row.get("destination") or ""
+        if dest in used_destinations:
+            continue
+        if not should_merge_ui_update(row):
+            continue
+        ok, text, error = read_text_file(Path(row["source"]))
+        if not ok:
+            row = dict(row)
+            row["merge_error"] = error
+            merged.append(row)
+            continue
+        write_text_patch(patch_root, dest, text)
+        used_destinations.add(dest)
+        row = dict(row)
+        row["merged"] = True
+        merged.append(row)
+    return merged
+
+
+def write_bridge_descriptors(companion_root: Path, output_root: Path, result: dict[str, Any]) -> Path:
+    descriptor = {
+        "schema": "codered.sp_mp_merged_bridge.v1",
+        "generated_at": result.get("generated_at"),
+        "mode": result.get("mode"),
+        "startup_mode": "Recovered Freemode",
+        "singleplayer_preserved": True,
+        "boot_replacement_allowed": False,
+        "game_wish": "MULTI_FREE_ROAM",
+        "boot_target": "MULTI_FREE_ROAM",
+        "world_label": "singleplayer_plus_multiplayer",
+        "content_override": result.get("working_copy"),
+        "patch_root": result.get("patch_root"),
+        "plaympconf_override": "auth.fail_* -> NetMachine.TriggerMultiplayerLoad(arg2)",
+        "notes": [
+            "Use this as a pre-launch route descriptor for the MP Companion.",
+            "The stock single-player boot route is kept live; MP is opened through the PlayMpConf/NetMachine route.",
+            "This does not prove native multiplayer runtime acceptance until tested in-game.",
+        ],
+    }
+    report_copy = output_root / "reports" / "synthetic_freemode_bridge.json"
+    write_json(report_copy, descriptor)
+    config_dir = companion_root / "config"
+    write_json(config_dir / "synthetic_freemode_bridge.json", descriptor)
+    write_json(
+        config_dir / "synthetic_activation_request.json",
+        {
+            "schema": "codered.synthetic_activation_request.v1",
+            "generated_at": result.get("generated_at"),
+            "request": "start_sp_mp_hybrid_freemode",
+            "game_wish": "MULTI_FREE_ROAM",
+            "content_override": result.get("working_copy"),
+            "state_report": result.get("report_json"),
+        },
+    )
+    return report_copy
 
 
 def build_report_md(result: dict[str, Any]) -> str:
@@ -296,6 +535,8 @@ def build_report_md(result: dict[str, Any]) -> str:
         f"- XML valid after: `{result.get('xml_valid_after')}`",
         f"- Runtime applied: `{result.get('applied')}`",
         f"- Runtime blocked: `{result.get('blocked')}`",
+        f"- Merged safe UI updates: `{len(result.get('merged_ui_updates') or [])}`",
+        f"- Bridge descriptor: `{result.get('bridge_descriptor') or ''}`",
         "",
         "## MP Marker Hits",
         "",
@@ -310,8 +551,18 @@ def build_report_md(result: dict[str, Any]) -> str:
     else:
         lines.append("No marker hits were collected.")
         lines.append("")
+    scan_rows = result.get("ui_update_scan") or []
+    lines.extend(["## UI Update Scan", ""])
+    if scan_rows:
+        for row in scan_rows[:200]:
+            dest = row.get("destination") or "unmapped"
+            blocked = "blocked" if row.get("blocked") else "safe-check"
+            merged = "merged" if row.get("merged") else "scan-only"
+            lines.append(f"- `{Path(row.get('source', '')).name}` -> `{dest}` | {blocked} | {merged} | {row.get('reason', '')}")
+    else:
+        lines.append("No UI update files were found in the scanned roots.")
     warnings = result.get("warnings") or []
-    lines.extend(["## Warnings", ""])
+    lines.extend(["", "## Warnings", ""])
     if warnings:
         lines.extend(f"- {warning}" for warning in warnings)
     else:
@@ -321,8 +572,9 @@ def build_report_md(result: dict[str, Any]) -> str:
             "",
             "## Guardrails",
             "",
-            "- The source `content.rpf` was not modified by `build`.",
+            "- The source `content.rpf` is not modified by `build`.",
             "- The override starts from the current-version PlayMpConf file and changes only the auth-failure route actions.",
+            "- Mixed-version `boot.sc.xml` and `taskmachine.sc.xml` files are scan-only and blocked from automatic merge.",
             "- `activate` is a separate explicit command that creates a timestamped backup before replacing a target archive.",
         ]
     )
@@ -353,7 +605,7 @@ def build_hook(args: argparse.Namespace) -> BuildResult:
     reports_root.mkdir(parents=True, exist_ok=True)
     patch_root.mkdir(parents=True, exist_ok=True)
 
-    extracted = {path: extract_text_from_archive(source_archive, path, rpf6_cls) for path in [PLAYMPCONF_PATH, NETWORKING_PATH, TASKMACHINE_PATH, LOBBY_PATH, HUDONLINE_PATH]}
+    extracted = {path: extract_text_from_archive(source_archive, path, rpf6_cls) for path in UI_SCAN_PATHS}
     play = extracted[PLAYMPCONF_PATH]
     if not play.found or not play.decode_ok:
         raise RuntimeError(f"Could not extract PlayMpConf from archive: {play.error}")
@@ -376,10 +628,31 @@ def build_hook(args: argparse.Namespace) -> BuildResult:
     write_text_patch(patch_root, PLAYMPCONF_PATH, patched_text)
     (reports_root / "plaympconf_override.diff").write_text(diff_text, encoding="utf-8")
 
+    ui_roots = [Path(item).resolve() for item in (args.ui_update_dir or [])]
+    if args.scan_default_ui_roots or args.mode == "sp-mp-merged":
+        ui_roots.extend(default_ui_update_roots(repo_root, companion_root))
+    ui_scan = scan_ui_update_files(ui_roots)
+    merge_updates = bool(args.merge_ui_updates or args.mode == "sp-mp-merged")
+    merged_updates = merge_safe_ui_updates(patch_root, ui_scan) if merge_updates else []
+    merged_sources = {row.get("source") for row in merged_updates if row.get("merged")}
+    for row in ui_scan:
+        if row.get("source") in merged_sources:
+            row["merged"] = True
+
     marker_report: dict[str, dict[str, int]] = {}
     for path, item in extracted.items():
         if item.found and item.decode_ok:
             marker_report[path] = marker_hits(item.text)
+        else:
+            warnings.append(f"UI route not extracted: {path} ({item.error})")
+
+    if extracted.get(TASKMACHINE_PATH) and "NetMachine.StartMultiplayer" not in extracted[TASKMACHINE_PATH].text:
+        warnings.append("TaskMachine extraction did not show NetMachine.StartMultiplayer; MP native bridge may not be present in this archive.")
+    if extracted.get(LOBBY_PATH) and "MULTI_FREE_ROAM" not in extracted[LOBBY_PATH].text:
+        warnings.append("Lobby extraction did not show MULTI_FREE_ROAM; freemode wish route may be missing in this archive.")
+    blocked_boot_updates = [row for row in ui_scan if row.get("destination") == BOOT_PATH]
+    if blocked_boot_updates:
+        warnings.append(f"Found {len(blocked_boot_updates)} boot UI update file(s), but boot replacement was blocked to preserve single-player startup.")
 
     patch_result: dict[str, Any] = {}
     working_copy = output_root / f"content__mp_python_hook_{stamp}.rpf"
@@ -419,15 +692,27 @@ def build_hook(args: argparse.Namespace) -> BuildResult:
         "applied": applied,
         "blocked": blocked,
         "patch_result": patch_result,
-        "extracted": {path: asdict(item) | {"text": f"<omitted {len(item.text)} chars>"} for path, item in extracted.items()},
+        "extracted": {path: {**asdict(item), "text": f"<omitted {len(item.text)} chars>"} for path, item in extracted.items()},
         "marker_hits": marker_report,
+        "ui_update_roots": [str(root) for root in ui_roots],
+        "ui_update_scan": ui_scan,
+        "merged_ui_updates": merged_updates,
         "warnings": warnings,
     }
+    bridge_descriptor = ""
+    if args.mode == "sp-mp-merged":
+        bridge_descriptor = str(write_bridge_descriptors(companion_root, output_root, result_dict))
+        result_dict["bridge_descriptor"] = bridge_descriptor
+    else:
+        result_dict["bridge_descriptor"] = ""
+
     report_json = reports_root / "mp_python_hook_report.json"
     report_md = reports_root / "mp_python_hook_report.md"
     state_path = companion_root / "config" / STATE_FILE
     write_json(report_json, result_dict)
     report_md.write_text(build_report_md(result_dict), encoding="utf-8")
+    result_dict["report_json"] = str(report_json)
+    result_dict["report_md"] = str(report_md)
     write_json(state_path, result_dict)
 
     return BuildResult(
@@ -444,6 +729,8 @@ def build_hook(args: argparse.Namespace) -> BuildResult:
         xml_valid_after=xml_after,
         applied=applied,
         blocked=blocked,
+        merged_ui_updates=len([row for row in merged_updates if row.get("merged")]),
+        bridge_descriptor=bridge_descriptor,
         warnings=warnings,
     )
 
@@ -507,12 +794,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Build/activate Code RED MP Python hook overrides")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    q = sub.add_parser("build", help="Build a copied content.rpf with the PlayMpConf MP override")
+    q = sub.add_parser("build", help="Build a copied content.rpf with the PlayMpConf or SP/MP merged override")
     q.add_argument("--content", required=True, help="Path to source content.rpf")
     q.add_argument("--repo-root", default="", help="Code RED repository root. Defaults to current tree search.")
     q.add_argument("--companion-root", default="", help="Code_RED_MP_Companion_v19 root. Defaults to related_apps path.")
     q.add_argument("--outdir", default="", help="Output folder for patch root, reports, and copied archive.")
-    q.add_argument("--mode", choices=["override-auth-failures", "lan-research"], default="override-auth-failures")
+    q.add_argument("--mode", choices=["override-auth-failures", "lan-research", "sp-mp-merged"], default="override-auth-failures")
+    q.add_argument("--ui-update-dir", action="append", default=[], help="Folder/file containing previous UI update files to scan and optionally merge. Can be repeated.")
+    q.add_argument("--scan-default-ui-roots", action="store_true", help="Also scan standard Code RED companion patch/update folders for UI update files.")
+    q.add_argument("--merge-ui-updates", action="store_true", help="Merge safe XML-valid MP UI update candidates. sp-mp-merged enables this automatically.")
     q.set_defaults(fn=lambda ns: print_build_result(build_hook(ns)))
 
     q = sub.add_parser("activate", help="Explicitly replace a target archive with the built copy after backing it up")
