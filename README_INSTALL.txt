@@ -1,55 +1,32 @@
-Code RED — WSI ↔ WGD Gringo Correlator Pass 2
+Code RED — WSI Host Placement Resolver Pass
 
-Copy these files into the Code_RED repository root:
+Install:
+1. Copy tools/codered_wsi_host_placement_resolver.py into the Code_RED repo tools/ folder.
+2. Copy logs/CodeRED_WSI_Host_Placement_Resolver_Pass_2026-04-30.md into the repo logs/ folder.
+3. Keep the reports folder as proof/reference output.
 
-  tools/codered_wsi_gringo_correlator.py
-  logs/CodeRED_Map_Layer_Correlator_Pass_2026-04-29.md
-  logs/CodeRED_WSI_Gringo_Correlator_Pass_2026-04-30.md
-  logs/CodeRED_WSI_Gringo_Correlator_Blackwater_Run_2026-04-30.md
+Run with decoded Blackwater WSI:
 
-Purpose:
-  Read-only research/export tool to correlate WSI references with WGD gringo components before any vehicle-generator patching is attempted.
+python tools/codered_wsi_host_placement_resolver.py ^
+  --wsi-decoded exports/blackwater_type134/0224_0x19839F99.wsi.decoded ^
+  --default-priority-hosts ^
+  --outdir exports/wsi_host_placement_resolver
 
-Fixes in this pass:
-  - Ignores null/noisy hash values 0x00000000 and 0xFFFFFFFF.
-  - Adds --max-hash-match-rows safety cap.
-  - Adds WSI annotation host exports:
-      wsi_gringo_annotation_hosts.csv
-      wsi_annotation_candidate_hosts.csv
+Run from an archive, if codered_wsi_explorer.py is beside this tool:
 
-Example workflow:
+python tools/codered_wsi_host_placement_resolver.py ^
+  --wsi-archive blackwater.rpf ^
+  --default-priority-hosts ^
+  --outdir exports/wsi_host_placement_resolver
 
-  python tools/codered_gringo_wgd_export.py commongringos.wgd.decoded blackwater.wgd.decoded --outdir exports/gringo_wgd_export
+Important:
+- This pass is read-only.
+- Do not patch original RPF files.
+- Do not bulk patch WSI, WGD, WVD, or WBD.
+- Use copied archives only after exact field layout proof.
 
-  python tools/codered_wsi_gringo_correlator.py ^
-    --wsi-archive blackwater.rpf ^
-    --wgd-components exports/gringo_wgd_export/all_components.csv ^
-    --outdir exports/wsi_gringo_correlation
-
-If the WSI archive has unresolved debug names or you already decoded WSI manually, use:
-
-  python tools/codered_wsi_gringo_correlator.py ^
-    --wsi-decoded blackwater.wsi.decoded ^
-    --wgd-components exports/gringo_wgd_export/all_components.csv ^
-    --outdir exports/wsi_gringo_correlation
-
-Key outputs:
-  exports/wsi_gringo_correlation/wsi_sector_context.csv
-  exports/wsi_gringo_correlation/wsi_keyword_string_hits.csv
-  exports/wsi_gringo_correlation/wsi_hash_matches_to_wgd.csv
-  exports/wsi_gringo_correlation/wgd_keyword_components.csv
-  exports/wsi_gringo_correlation/wsi_wgd_correlations.csv
-  exports/wsi_gringo_correlation/wsi_gringo_annotation_hosts.csv
-  exports/wsi_gringo_correlation/wsi_annotation_candidate_hosts.csv
-  exports/wsi_gringo_correlation/safe_candidate_gringo_hosts.csv
-  exports/wsi_gringo_correlation/wsi_gringo_correlation_master.json
-
-Blackwater result:
-  No direct WSI -> Vehicle_Generator WGD match was proven by this pass.
-  The useful result is the annotation host list, especially carts, parked wagons, wagon parts, hitching posts, and existing gringo-bearing prop hosts.
-
-Next pass:
-  Build the WSI Host Placement Resolver to turn host strings/hashes into actual WSI placement/transform records.
-
-Rule:
-  This pass does not patch anything. Patch only copied RPFs after a safe host and exact placement record are proven.
+Best current candidate from the included Blackwater run:
+- Host: i_gen_wagonBroken02x
+- Record kind: drawable_instance_0xE0
+- Record offset: 0x0011C7E0
+- Position: [723.793213, 79.2099, 1419.701904]

@@ -1,27 +1,28 @@
-Validation performed in this environment:
+Code RED WSI Host Placement Resolver Pass validation
 
-- Python 3.13 parser syntax check via python -S -m py_compile: PASS
-- Fake decoded WSI + fake WGD component smoke test from prior pass: PASS
-- Real source extraction:
-  - game 1.zip -> gringores.rpf: PASS
-  - redemption part1.zip -> territory_swall/blackwater.rpf: PASS
-- RPF6 read/decode with openssl/zstd fallback:
-  - commongringos.wgd decoded: PASS, 806,912 bytes
-  - blackwater.wgd decoded: PASS, 53,248 bytes
-  - blackwater WSI resource_type 134 decoded: PASS, 2,465,792 bytes
-- WGD export:
-  - commongringos.wgd: 2,524 components
-  - blackwater.wgd: 780 components
-  - combined export: 3,304 components
-- Correlator Blackwater run:
-  - WSI sector headers: 218
-  - WSI keyword string hits: 271
-  - WSI hash matches to WGD: 0 after null-hash fix
-  - WSI annotation/host rows: 99
-  - WSI annotation candidate hosts: 92
-- Regression fix:
-  - ignored 0x00000000 and 0xFFFFFFFF hash matches to prevent false match explosion: PASS
+Syntax:
+- Python 3.13 direct compile(): PASS
 
-Note:
-- The container's normal Python startup can hang on site initialization, so validation uses Python 3.13 with -S plus CLI zstd/openssl fallbacks.
-- Direct Vehicle_Generator patching is still held. The next required pass is host-string/hash to actual WSI placement/transform resolution.
+Actual Blackwater decoded WSI run:
+- decoded input: /mnt/data/codered_run/blackwater_type134/0224_0x19839F99.wsi.decoded
+- decoded size: 2465792
+- decoded sha1: b573a802ce71fba9facdb3cf7a9639e99e276754
+- sectors parsed: 218
+- priority hosts scanned: 11
+- candidate rows produced: 34
+- safe candidate rows produced: 23
+- unresolved hosts: 2
+
+Resolved layout evidence:
+- props records: likely 0x30 stride, name pointer at +0x00, position float3 at +0x10
+- drawable_instances records: likely 0xE0 stride, name pointer at +0xB8, transform at +0x40/+0x70
+
+Best candidate:
+- i_gen_wagonBroken02x
+- drawable_instance_0xE0
+- record offset 0x0011C7E0
+- drawable_instances index 9
+- position [723.793213, 79.2099, 1419.701904]
+
+Zip integrity:
+- generated after validation
