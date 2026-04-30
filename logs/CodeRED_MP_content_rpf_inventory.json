@@ -1,0 +1,1008 @@
+{
+  "content_rpf": "/mnt/data/content.rpf",
+  "content_rpf_size": 21923760,
+  "entry_count": 1636,
+  "file_count": 1320,
+  "dir_count": 316,
+  "resolved_count": 1558,
+  "extension_counts": {
+    ".wsc": 886,
+    ".sco": 197,
+    ".xml": 177,
+    ".tr": 25,
+    ".strtbl": 14,
+    ".txt": 10
+  },
+  "key_ui_files": [
+    {
+      "name": "boot.sc.xml",
+      "path": "root/content/ui/boot.sc.xml",
+      "note": "Valid stock boot flow; start-screen invite/online flow, not LAN auto-start."
+    },
+    {
+      "name": "networking.sc.xml",
+      "path": "root/content/ui/pausemenu/networking.sc.xml",
+      "note": "Public/Private/LAN confirmation boxes; includes net/PlayMpConf.sc."
+    },
+    {
+      "name": "plaympconf.sc.xml",
+      "path": "root/content/ui/pausemenu/0x007B97C6/plaympconf.sc.xml",
+      "note": "Stock auth gate; only auth.success calls TriggerMultiplayerLoad(arg2)."
+    },
+    {
+      "name": "taskmachine.sc.xml",
+      "path": "root/content/ui/net/taskmachine.sc.xml",
+      "note": "Runtime bridge: net.StartOnline -> HudSceneOnline -> NM_JoinProcess -> StartMultiplayer; join path calls RequestJoin."
+    },
+    {
+      "name": "hudsceneonline.sc.xml",
+      "path": "root/content/ui/net/hudsceneonline.sc.xml",
+      "note": "Online HUD/movie streaming layer; working.zip did not include this donor."
+    },
+    {
+      "name": "0x118473D0 / offlinemenu.sc.xml",
+      "path": "root/content/ui/pausemenu/0x007B97C6/offlinemenu.sc.xml",
+      "note": "Resolved hash; identical to working 0x118473D0.xml."
+    },
+    {
+      "name": "0x1374443B / plaympconf.sc.xml",
+      "path": "root/content/ui/pausemenu/0x007B97C6/plaympconf.sc.xml",
+      "note": "Resolved hash; working also had a stripped hash-named copy and a bypassed named copy."
+    },
+    {
+      "name": "lobby/0x2B5C38A8",
+      "path": "root/content/ui/pausemenu/lobby/0x2B5C38A8",
+      "note": "Online lobby menu; contains MULTI_FREE_ROAM, playlist, Go Public/Private, posse context."
+    }
+  ],
+  "ui_compare": [
+    {
+      "file": "boot.sc.xml",
+      "content_path": "root/content/ui/boot.sc.xml",
+      "content_size": 36553,
+      "working_size": 29082,
+      "same": false,
+      "working_added_lines_vs_content": 4,
+      "working_removed_lines_vs_content": 158,
+      "content_xml": "ok",
+      "working_xml": "mismatched tag: line 608, column 2"
+    },
+    {
+      "file": "generalmenus.sc.xml",
+      "content_path": "root/content/ui/generalmenus.sc.xml",
+      "content_size": 48838,
+      "working_size": 45235,
+      "same": false,
+      "working_added_lines_vs_content": 129,
+      "working_removed_lines_vs_content": 227,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "hudscene.sc.xml",
+      "content_path": "root/content/ui/hudscene.sc.xml",
+      "content_size": 30041,
+      "working_size": 28440,
+      "same": false,
+      "working_added_lines_vs_content": 41,
+      "working_removed_lines_vs_content": 65,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "hudsceneonline.sc.xml",
+      "content_path": "root/content/ui/net/hudsceneonline.sc.xml",
+      "content_size": 8645,
+      "working_counterpart": null
+    },
+    {
+      "file": "lanmenu.sc.xml",
+      "content_path": "root/content/ui/pausemenu/0x007B97C6/lanmenu.sc.xml",
+      "content_size": 1290,
+      "working_size": 1286,
+      "same": false,
+      "working_added_lines_vs_content": 1,
+      "working_removed_lines_vs_content": 1,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "net_profile.sc.xml",
+      "content_path": "root/content/ui/pausemenu/net_profile.sc.xml",
+      "content_size": 3632,
+      "working_size": 3621,
+      "same": false,
+      "working_added_lines_vs_content": 1,
+      "working_removed_lines_vs_content": 1,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "networking.sc.xml",
+      "content_path": "root/content/ui/pausemenu/networking.sc.xml",
+      "content_size": 15914,
+      "working_size": 20820,
+      "same": false,
+      "working_added_lines_vs_content": 148,
+      "working_removed_lines_vs_content": 42,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "options.sc.xml",
+      "content_path": "root/content/ui/pausemenu/options.sc.xml",
+      "content_size": 67413,
+      "working_size": 25979,
+      "same": false,
+      "working_added_lines_vs_content": 149,
+      "working_removed_lines_vs_content": 968,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "pausemenuscene.sc.xml",
+      "content_path": "root/content/ui/pausemenu/pausemenuscene.sc.xml",
+      "content_size": 16833,
+      "working_size": 20709,
+      "same": false,
+      "working_added_lines_vs_content": 145,
+      "working_removed_lines_vs_content": 64,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "plaympconf.sc.xml",
+      "content_path": "root/content/ui/pausemenu/0x007B97C6/plaympconf.sc.xml",
+      "content_size": 2331,
+      "working_size": 1942,
+      "same": false,
+      "working_added_lines_vs_content": 5,
+      "working_removed_lines_vs_content": 13,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "privatemenu.sc.xml",
+      "content_path": "root/content/ui/pausemenu/0x007B97C6/privatemenu.sc.xml",
+      "content_size": 1380,
+      "working_size": 1376,
+      "same": false,
+      "working_added_lines_vs_content": 1,
+      "working_removed_lines_vs_content": 1,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "prompts.sc.xml",
+      "content_path": "root/content/ui/prompts.sc.xml",
+      "content_size": 568,
+      "working_size": 568,
+      "same": true,
+      "working_added_lines_vs_content": 0,
+      "working_removed_lines_vs_content": 0,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "publicmenu.sc.xml",
+      "content_path": "root/content/ui/pausemenu/0x007B97C6/publicmenu.sc.xml",
+      "content_size": 1382,
+      "working_size": 1378,
+      "same": false,
+      "working_added_lines_vs_content": 1,
+      "working_removed_lines_vs_content": 1,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "savegame.sc.xml",
+      "content_path": "root/content/ui/savegame.sc.xml",
+      "content_size": 61441,
+      "working_size": 7231,
+      "same": false,
+      "working_added_lines_vs_content": 135,
+      "working_removed_lines_vs_content": 1228,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "socialclub.sc.xml",
+      "content_path": "root/content/ui/pausemenu/socialclub.sc.xml",
+      "content_size": 8343,
+      "working_size": 30237,
+      "same": false,
+      "working_added_lines_vs_content": 445,
+      "working_removed_lines_vs_content": 56,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "taskmachine.sc.xml",
+      "content_path": "root/content/ui/net/taskmachine.sc.xml",
+      "content_size": 28084,
+      "working_size": 28084,
+      "same": true,
+      "working_added_lines_vs_content": 0,
+      "working_removed_lines_vs_content": 0,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    },
+    {
+      "file": "userinterface.sc.xml",
+      "content_path": "root/content/ui/userinterface.sc.xml",
+      "content_size": 1827,
+      "working_size": 1827,
+      "same": true,
+      "working_added_lines_vs_content": 0,
+      "working_removed_lines_vs_content": 0,
+      "content_xml": "ok",
+      "working_xml": "ok"
+    }
+  ],
+  "mp_related_entries": [
+    {
+      "path": "root/content/ui/net/main.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 282,
+      "total_size": 459
+    },
+    {
+      "path": "root/content/ui/net/taskmachine.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 3632,
+      "total_size": 28084
+    },
+    {
+      "path": "root/content/ui/net/hudsceneonline.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 2161,
+      "total_size": 8645
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/0x2B5C38A8",
+      "extension": "",
+      "size_in_archive": 2218,
+      "total_size": 16741
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 760,
+      "total_size": 10062
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles/dlc2.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 356,
+      "total_size": 3736
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles/weapon.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 264,
+      "total_size": 1701
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles/stat.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 235,
+      "total_size": 803
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles/dlc1.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 356,
+      "total_size": 3736
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles/dlc3.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 402,
+      "total_size": 4850
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles/xp.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 404,
+      "total_size": 3602
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles/ambient.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 481,
+      "total_size": 5149
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles/dlc4.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 326,
+      "total_size": 3845
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles/pvp.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 462,
+      "total_size": 6672
+    },
+    {
+      "path": "root/content/ui/pausemenu/networking.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 2501,
+      "total_size": 15914
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/0x2B5C38A8",
+      "extension": "",
+      "size_in_archive": 2736,
+      "total_size": 15426
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/netplayercontextmenu.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 423,
+      "total_size": 890
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/friends.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 1251,
+      "total_size": 4680
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/currentgamers.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 1108,
+      "total_size": 4437
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/recentgamers.sc.xml",
+      "extension": ".xml",
+      "size_in_archive": 653,
+      "total_size": 2091
+    },
+    {
+      "path": "root/content/release64/0xC06BF8AB/crimeresponse/event_law_repsonse_posse.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 25566,
+      "total_size": 69632
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/gringos/scripts/mp_coffinpick.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 8280,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/gringos/scripts/mp_coffinpick.sco",
+      "extension": ".sco",
+      "size_in_archive": 8465,
+      "total_size": 8465
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/mp_graveyard/gy_blk/blackwater_mp_gy.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 51168,
+      "total_size": 126976
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/mp_graveyard/gy_cot/cootschapel_mp_gy.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 51237,
+      "total_size": 126976
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/mp_graveyard/gy_odd/oddfellowsrest_mp_gy.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 51043,
+      "total_size": 126976
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/mp_graveyard/gy_sep/sepulcro_mp_gy.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 51107,
+      "total_size": 126976
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/mp_graveyard/gy_tmb/tumbleweed_mp_gy.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 51307,
+      "total_size": 126976
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/regions/wwbasic.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 9389,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/regions/sepbasic.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 10944,
+      "total_size": 24576
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/regions/oddbasic.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 10941,
+      "total_size": 24576
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/regions/tmbbasic.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 10937,
+      "total_size": 24576
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/regions/cotbasic.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 10941,
+      "total_size": 24576
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/mp/regions/blkbasic.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 10942,
+      "total_size": 24576
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/0x72440E09/tall_trees/pacific_union_railroad_camp/pacificunionrailroadcamp_z.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 28456,
+      "total_size": 73728
+    },
+    {
+      "path": "root/content/release64/0x06C35575/zombiepack/0x72440E09/tall_trees/pacific_union_railroad_camp/pacificunionrailroadcamp_z.sco",
+      "extension": ".sco",
+      "size_in_archive": 30358,
+      "total_size": 30358
+    },
+    {
+      "path": "root/content/release64/frontier/0x96E04D47/liarsdice_thi/mp_liarsdice_thi.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 4932,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/frontier/0x96E04D47/poker_arm/mp_poker_arm.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 5349,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/frontier/0x96E04D47/poker_hen/mp_poker_hen.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 5314,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/frontier/0x96E04D47/poker_thi/mp_poker_thi.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 5081,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/mexico/0x96E04D47/liarsdice_cas/mp_liarsdice_cas.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 4910,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/mexico/0x96E04D47/liarsdice_esc/mp_liarsdice_esc.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 4876,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/mexico/0x96E04D47/poker_cas/mp_poker_cas.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 5084,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/mexico/0x96E04D47/poker_chu/mp_poker_chu.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 5057,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/north/0x96E04D47/poker_beh/mp_poker_beh.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 5087,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/north/0x96E04D47/poker_blk/mp_poker_blk.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 5141,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/scripting/0x604B6817/socialclub/sc_mp_aa_challenge.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 4259,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/scripting/0x604B6817/socialclub/multiplayer/actionareas/sc_mp_aa_challenge_wrapper.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 2997,
+      "total_size": 12288
+    },
+    {
+      "path": "root/content/release64/scripting/gringo/commonscripts/mp_rig_tnt.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 8793,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/scripting/gringo/commonscripts/mp_fakelockpick.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 9140,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/scripting/gringo/commonscripts/mp_rezbuddy.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 9543,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/release64/scripting/gringo/commonscripts/mp_ignite_bomb.wsc",
+      "extension": ".wsc",
+      "size_in_archive": 8759,
+      "total_size": 20480
+    },
+    {
+      "path": "root/content/dlc/0x22398628/zombiepack_mp_ps3.strtbl",
+      "extension": ".strtbl",
+      "size_in_archive": 160544,
+      "total_size": 160544
+    },
+    {
+      "path": "root/content/dlc/0x22398628/0xD42AEB21/mp_opencoffin.xml",
+      "extension": ".xml",
+      "size_in_archive": 1470,
+      "total_size": 24153
+    }
+  ],
+  "file_hits_summary": [
+    {
+      "path": "root/content/init/inventory/inventory.xml",
+      "extension": ".xml",
+      "size": 123723,
+      "hits": {
+        "MPLA": 193
+      }
+    },
+    {
+      "path": "root/content/ui/net/taskmachine.sc.xml",
+      "extension": ".xml",
+      "size": 28084,
+      "hits": {
+        "StartMultiplayer": 1,
+        "TriggerMultiplayerLoad": 3,
+        "RequestJoin": 2,
+        "ReturnToFreeRoam": 3,
+        "NetSessionObject": 1,
+        "net.readyForInvite": 3,
+        "MULTIPLAYER": 13,
+        "multiplayer": 13,
+        "FreeRoam": 3,
+        "lobby": 3,
+        "playlist": 5,
+        "posse": 26,
+        "POSSE": 26,
+        "net_": 4,
+        "NET_": 4,
+        "Session": 3,
+        "SESSION": 3
+      }
+    },
+    {
+      "path": "root/content/dlc/0x22398628/zombiepack_ps3.strtbl",
+      "extension": ".strtbl",
+      "size": 883688,
+      "hits": {
+        "posse": 16,
+        "POSSE": 16,
+        "net_": 10,
+        "NET_": 10,
+        "graveyard": 7,
+        "coffin": 6,
+        "region": 1
+      }
+    },
+    {
+      "path": "root/content/dlc/0x22398628/zombiepack.strtbl",
+      "extension": ".strtbl",
+      "size": 883572,
+      "hits": {
+        "posse": 16,
+        "POSSE": 16,
+        "net_": 10,
+        "NET_": 10,
+        "graveyard": 7,
+        "coffin": 6,
+        "region": 1
+      }
+    },
+    {
+      "path": "root/content/init/inventory/dlc_inventory.xml",
+      "extension": ".xml",
+      "size": 41281,
+      "hits": {
+        "MPLA": 64
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/0x2B5C38A8",
+      "extension": "",
+      "size": 15426,
+      "hits": {
+        "freemode": 1,
+        "FreeMode": 1,
+        "FREE_ROAM": 5,
+        "MPLA": 1,
+        "lobby": 16,
+        "playlist": 14,
+        "posse": 10,
+        "POSSE": 10,
+        "gametype": 1,
+        "Session": 1,
+        "SESSION": 1
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/journal.sc.xml",
+      "extension": ".xml",
+      "size": 41795,
+      "hits": {
+        "Coop": 28,
+        "COOP": 28
+      }
+    },
+    {
+      "path": "root/content/ambient/factionrelations.xml",
+      "extension": ".xml",
+      "size": 72656,
+      "hits": {
+        "Coop": 20,
+        "COOP": 20
+      }
+    },
+    {
+      "path": "root/content/dlc/0x22398628/0xD42AEB21/mp_opencoffin.xml",
+      "extension": ".xml",
+      "size": 24153,
+      "hits": {
+        "coffin": 37
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/networking.sc.xml",
+      "extension": ".xml",
+      "size": 15914,
+      "hits": {
+        "MULTIPLAYER": 7,
+        "multiplayer": 7,
+        "net_": 10,
+        "NET_": 10
+      }
+    },
+    {
+      "path": "root/content/ui/generalmenus.sc.xml",
+      "extension": ".xml",
+      "size": 48838,
+      "hits": {
+        "freemode": 1,
+        "FreeMode": 1,
+        "MP_FM": 17,
+        "MPLA": 2,
+        "playlist": 2,
+        "posse": 5,
+        "POSSE": 5
+      }
+    },
+    {
+      "path": "root/content/ui/net/hudsceneonline.sc.xml",
+      "extension": ".xml",
+      "size": 8645,
+      "hits": {
+        "MULTIPLAYER": 3,
+        "multiplayer": 3,
+        "lobby": 7,
+        "net_": 9,
+        "NET_": 9
+      }
+    },
+    {
+      "path": "root/content/dlc/0x22398628/zombiepack_mp_ps3.strtbl",
+      "extension": ".strtbl",
+      "size": 160544,
+      "hits": {
+        "net_": 10,
+        "NET_": 10,
+        "graveyard": 2,
+        "coffin": 2
+      }
+    },
+    {
+      "path": "root/content/dlc/0x22398628/zombiepack_mp.strtbl",
+      "extension": ".strtbl",
+      "size": 160426,
+      "hits": {
+        "net_": 10,
+        "NET_": 10,
+        "graveyard": 2,
+        "coffin": 2
+      }
+    },
+    {
+      "path": "root/content/ui/boot.sc.xml",
+      "extension": ".xml",
+      "size": 36553,
+      "hits": {
+        "MULTIPLAYER": 11,
+        "multiplayer": 11
+      }
+    },
+    {
+      "path": "root/content/ui/hudscene.sc.xml",
+      "extension": ".xml",
+      "size": 30041,
+      "hits": {
+        "MULTIPLAYER": 1,
+        "multiplayer": 1,
+        "MPLA": 7,
+        "net_": 6,
+        "NET_": 6
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/currentgamers.sc.xml",
+      "extension": ".xml",
+      "size": 4437,
+      "hits": {
+        "MPLA": 1,
+        "lobby": 3,
+        "posse": 6,
+        "POSSE": 6
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/0x007B97C6/offlinemenu.sc.xml",
+      "extension": ".xml",
+      "size": 4262,
+      "hits": {
+        "MULTIPLAYER": 1,
+        "multiplayer": 1,
+        "MPLA": 4,
+        "net_": 3,
+        "NET_": 3
+      }
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/0x2B5C38A8",
+      "extension": "",
+      "size": 16741,
+      "hits": {
+        "MULTIPLAYER": 3,
+        "multiplayer": 3,
+        "MPLA": 1,
+        "playlist": 4
+      }
+    },
+    {
+      "path": "root/content/ui/net/profileeditor/titles.sc.xml",
+      "extension": ".xml",
+      "size": 10062,
+      "hits": {
+        "playlist": 9
+      }
+    },
+    {
+      "path": "root/content/dlc/0x22398628/0xD42AEB21/dlc_player_burn_coffin.xml",
+      "extension": ".xml",
+      "size": 10554,
+      "hits": {
+        "coffin": 9
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/netstats/boards.sc.xml",
+      "extension": ".xml",
+      "size": 9563,
+      "hits": {
+        "Coop": 4,
+        "COOP": 4
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/0x007B97C6/lanmenu.sc.xml",
+      "extension": ".xml",
+      "size": 1290,
+      "hits": {
+        "MULTIPLAYER": 2,
+        "multiplayer": 2,
+        "net_": 2,
+        "NET_": 2
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/net_titles.sc.xml",
+      "extension": ".xml",
+      "size": 26013,
+      "hits": {
+        "freemode": 1,
+        "FreeMode": 1,
+        "net_": 2,
+        "NET_": 2
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/net_profile.sc.xml",
+      "extension": ".xml",
+      "size": 3632,
+      "hits": {
+        "MPLA": 1,
+        "net_": 2,
+        "NET_": 2
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/0x007B97C6/publicmenu.sc.xml",
+      "extension": ".xml",
+      "size": 1382,
+      "hits": {
+        "net_": 2,
+        "NET_": 2
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/0x007B97C6/privatemenu.sc.xml",
+      "extension": ".xml",
+      "size": 1380,
+      "hits": {
+        "net_": 2,
+        "NET_": 2
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/0x007B97C6/plaympconf.sc.xml",
+      "extension": ".xml",
+      "size": 2331,
+      "hits": {
+        "TriggerMultiplayerLoad": 1,
+        "MULTIPLAYER": 1,
+        "multiplayer": 1,
+        "lobby": 1
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/friends.sc.xml",
+      "extension": ".xml",
+      "size": 4680,
+      "hits": {
+        "MPLA": 1,
+        "lobby": 2
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/options.sc.xml",
+      "extension": ".xml",
+      "size": 67413,
+      "hits": {
+        "MULTIPLAYER": 1,
+        "multiplayer": 1
+      }
+    },
+    {
+      "path": "root/content/ui/net/main.sc.xml",
+      "extension": ".xml",
+      "size": 459,
+      "hits": {
+        "net_": 1,
+        "NET_": 1
+      }
+    },
+    {
+      "path": "root/content/dlc/0x22398628/0xD42AEB21/zombiepackgringos.txt",
+      "extension": ".txt",
+      "size": 4868,
+      "hits": {
+        "coffin": 2
+      }
+    },
+    {
+      "path": "root/content/ai/tasks.tr",
+      "extension": ".tr",
+      "size": 46497,
+      "hits": {
+        "posse": 1,
+        "POSSE": 1
+      }
+    },
+    {
+      "path": "root/content/ai/oldunused/guard.tr",
+      "extension": ".tr",
+      "size": 3922,
+      "hits": {
+        "posse": 1,
+        "POSSE": 1
+      }
+    },
+    {
+      "path": "root/content/ai/human_reactions.tr",
+      "extension": ".tr",
+      "size": 60055,
+      "hits": {
+        "MPLA": 2
+      }
+    },
+    {
+      "path": "root/content/ai/animal_main.tr",
+      "extension": ".tr",
+      "size": 77295,
+      "hits": {
+        "Coop": 1,
+        "COOP": 1
+      }
+    },
+    {
+      "path": "root/content/ui/userinterface.sc.xml",
+      "extension": ".xml",
+      "size": 1827,
+      "hits": {
+        "lobby": 1
+      }
+    },
+    {
+      "path": "root/content/ui/shop.sc.xml",
+      "extension": ".xml",
+      "size": 2893,
+      "hits": {
+        "MPLA": 1
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/pausemenuscene.sc.xml",
+      "extension": ".xml",
+      "size": 16833,
+      "hits": {
+        "MPLA": 1
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/outfit.sc.xml",
+      "extension": ".xml",
+      "size": 2611,
+      "hits": {
+        "MPLA": 1
+      }
+    },
+    {
+      "path": "root/content/ui/pausemenu/lobby/recentgamers.sc.xml",
+      "extension": ".xml",
+      "size": 2091,
+      "hits": {
+        "MPLA": 1
+      }
+    },
+    {
+      "path": "root/content/dlc/0x22398628/0xD42AEB21/zombiepackmpgringos.txt",
+      "extension": ".txt",
+      "size": 52,
+      "hits": {
+        "coffin": 1
+      }
+    },
+    {
+      "path": "root/content/ai/game_main.tr",
+      "extension": ".tr",
+      "size": 47117,
+      "hits": {
+        "MPLA": 1
+      }
+    }
+  ]
+}
