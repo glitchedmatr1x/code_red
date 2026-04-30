@@ -1,0 +1,27 @@
+Validation performed in this environment:
+
+- Python 3.13 parser syntax check via python -S -m py_compile: PASS
+- Fake decoded WSI + fake WGD component smoke test from prior pass: PASS
+- Real source extraction:
+  - game 1.zip -> gringores.rpf: PASS
+  - redemption part1.zip -> territory_swall/blackwater.rpf: PASS
+- RPF6 read/decode with openssl/zstd fallback:
+  - commongringos.wgd decoded: PASS, 806,912 bytes
+  - blackwater.wgd decoded: PASS, 53,248 bytes
+  - blackwater WSI resource_type 134 decoded: PASS, 2,465,792 bytes
+- WGD export:
+  - commongringos.wgd: 2,524 components
+  - blackwater.wgd: 780 components
+  - combined export: 3,304 components
+- Correlator Blackwater run:
+  - WSI sector headers: 218
+  - WSI keyword string hits: 271
+  - WSI hash matches to WGD: 0 after null-hash fix
+  - WSI annotation/host rows: 99
+  - WSI annotation candidate hosts: 92
+- Regression fix:
+  - ignored 0x00000000 and 0xFFFFFFFF hash matches to prevent false match explosion: PASS
+
+Note:
+- The container's normal Python startup can hang on site initialization, so validation uses Python 3.13 with -S plus CLI zstd/openssl fallbacks.
+- Direct Vehicle_Generator patching is still held. The next required pass is host-string/hash to actual WSI placement/transform resolution.
