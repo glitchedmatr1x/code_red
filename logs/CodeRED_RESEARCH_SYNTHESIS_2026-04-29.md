@@ -6,6 +6,7 @@ Date: 2026-04-29
 
 This summary organizes the existing Code RED logs plus the new generated research outputs:
 
+- User-added master chat/source notes in `CodeRED_Project_Research_Master_Chat_Source_2026-04-29.md`.
 - Live PC RPF car/truck metadata inventory.
 - Extracted root scan from `D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root`.
 - Existing gringo vehicle research pass.
@@ -20,6 +21,8 @@ Detailed machine-readable data is kept in:
 - `extracted_root_research/cutscenes_findings.csv`
 - `extracted_root_research/gringos_findings.csv`
 - `extracted_root_research/strings_findings.csv`
+
+Use `CodeRED_Project_Research_Master_Chat_Source_2026-04-29.md` as the source/intake companion to this synthesis. It preserves the broader WSI, gringo vehicle, map expansion, cutscene/FBI, and multiplayer research lanes that may not all fit into the focused vehicle metadata reports.
 
 ## Current Best Vehicle Spawn Map
 
@@ -165,4 +168,3 @@ Build a focused `Vehicle_Generator` trace:
 3. Search traffic and mission scripts for vehicle token strings such as `VEHICLE_Coach01`, `VEHICLE_Cart01`, `VEHICLE_Wagon02`, and `VEHICLE_WagonPrison01`.
 4. Compare a known working wagon/stagecoach spawn path to the car/truck template path.
 5. Only then attempt a WSI/gringo placement swap.
-

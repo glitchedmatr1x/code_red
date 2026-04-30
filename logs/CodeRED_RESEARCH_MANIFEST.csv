@@ -1,6 +1,7 @@
 topic,title,path,format,notes
 status,Code RED Stage Report,code_red_stage_report_latest.md,md,Current readiness and staging snapshot
 index,Code RED Log Index,CodeRED_LOG_INDEX.md,md,Categorized top-level log index
+source,Project Research Master Chat Source,CodeRED_Project_Research_Master_Chat_Source_2026-04-29.md,md,User-added master chat and source notes for WSI gringos map expansion cutscenes FBI missions and multiplayer lanes
 synthesis,Vehicle Spawning Cutscenes Gringos Strings Synthesis,CodeRED_RESEARCH_SYNTHESIS_2026-04-29.md,md,Consolidated research summary
 vehicle,Car Truck Live RPF Inventory,car_truck_inventory/car_truck_inventory.md,md,Human-readable live RPF and extracted reference inventory
 vehicle,Car Truck Live RPF Entries,car_truck_inventory/live_rpf_entries.csv,csv,Flat live RPF matches

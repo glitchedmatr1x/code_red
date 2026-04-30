@@ -7,10 +7,30 @@ Generated/organized: 2026-04-29
 | Topic | File or Folder | Notes |
 |---|---|---|
 | Current status | `code_red_stage_report_latest.md` | Readiness, live branch, staging paths, next actions. |
+| Master source notes | `CodeRED_Project_Research_Master_Chat_Source_2026-04-29.md` | User-added master chat/source notes covering WSI, gringos, map expansion, cutscenes/FBI, and multiplayer lanes. |
 | Research synthesis | `CodeRED_RESEARCH_SYNTHESIS_2026-04-29.md` | Consolidated vehicle spawning, cutscene, gringo, and string findings. |
 | Car/truck live RPF inventory | `car_truck_inventory/car_truck_inventory.md` | Live RPF hash matches plus extracted reference comparisons. |
 | Extracted root research | `extracted_root_research/extracted_root_research.md` | Full extracted-root scan summary. |
 | Gringo vehicle research | `CodeRED_Gringo_Vehicle_Research_Pass_2026-04-29.md` | Existing gringo/WGD vehicle spawn research pass. |
+
+## Recommended Read Order
+
+| Step | File | Why |
+|---|---|---|
+| 1 | `code_red_stage_report_latest.md` | Current operational state and live branch. |
+| 2 | `CodeRED_Project_Research_Master_Chat_Source_2026-04-29.md` | Broad context gathered from chat/source notes. |
+| 3 | `CodeRED_RESEARCH_SYNTHESIS_2026-04-29.md` | Condensed answer map for vehicle spawning, cutscenes, gringos, and strings. |
+| 4 | `car_truck_inventory/car_truck_inventory.md` | Exact car/truck RPF and extracted reference inventory. |
+| 5 | `extracted_root_research/extracted_root_research.md` | Full extracted-root category summary and generated CSV links. |
+
+## Source And Synthesis
+
+| File | Purpose |
+|---|---|
+| `CodeRED_Project_Research_Master_Chat_Source_2026-04-29.md` | Master source/intake document for project chat notes, source lanes, and next-pass guidance. |
+| `CodeRED_RESEARCH_SYNTHESIS_2026-04-29.md` | Research digest built from existing logs, generated scans, and the current vehicle/gringo/cutscene/string focus. |
+| `CodeRED_RESEARCH_MANIFEST.csv` | Machine-friendly list of indexed log assets for Code RED UI lookup. |
+| `README.md` | Human entry point and log-folder conventions. |
 
 ## Vehicle And Spawning
 
@@ -75,4 +95,3 @@ Generated/organized: 2026-04-29
 | `external_patch_status.md` | External patch status summary. |
 | `external_patch_status.json` | External patch status data. |
 | `CodeRed_USArmy_Companion_AI_Research_Pass12.txt` | Companion AI research pass. |
-
