@@ -1,0 +1,34 @@
+{
+  "archives": [
+    {
+      "archive": {
+        "archive": "/mnt/data/model_rpf_inputs/fragments2.rpf",
+        "entry_count": 150,
+        "file_count": 148,
+        "dir_count": 2,
+        "encrypted_toc": true,
+        "debug_offset_word": 6885120,
+        "extensions": {}
+      },
+      "candidate_count": 3
+    }
+  ],
+  "counts": {
+    "candidate_resources": 3,
+    "virtual_pointer_rows": 90,
+    "string_rows": 40,
+    "vft_rows": 30,
+    "roundtrip_rows": 1,
+    "errors": 0
+  },
+  "outputs": {
+    "model_inventory": "model_inventory.csv",
+    "virtual_pointer_map": "virtual_pointer_map.csv",
+    "strings": "strings.csv",
+    "vft_histogram": "vft_histogram.csv",
+    "roundtrip_results": "roundtrip_results.csv",
+    "scan_errors": "scan_errors.csv",
+    "report": "model_extract_report.md"
+  },
+  "safety": "read-only; no RPF mutation; no semantic recompilation yet"
+}

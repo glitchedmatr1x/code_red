@@ -1,28 +1,27 @@
-Code RED WSI Host Placement Resolver Pass validation
+Code RED Pass 7 Validation
 
-Syntax:
-- Python 3.13 direct compile(): PASS
+Tool syntax check:
+PASS - Python 3.13 compile() syntax check passed.
 
-Actual Blackwater decoded WSI run:
-- decoded input: /mnt/data/codered_run/blackwater_type134/0224_0x19839F99.wsi.decoded
-- decoded size: 2465792
-- decoded sha1: b573a802ce71fba9facdb3cf7a9639e99e276754
-- sectors parsed: 218
-- priority hosts scanned: 11
-- candidate rows produced: 34
-- safe candidate rows produced: 23
-- unresolved hosts: 2
+Real archive scan:
+PASS - fragments2.rpf opened through RPF6 parser.
+PASS - encrypted TOC decoded.
+PASS - resource candidates detected.
+PASS - type 11 candidate decoded to 8192-byte payloads.
+PASS - type 1 candidate decoded to 2097152-byte payload.
+PASS - decoded root VFT signatures exported.
+PASS - virtual pointer maps exported.
+PASS - string samples exported.
+PASS - VFT histograms exported.
+PASS - decoded payload samples exported.
 
-Resolved layout evidence:
-- props records: likely 0x30 stride, name pointer at +0x00, position float3 at +0x10
-- drawable_instances records: likely 0xE0 stride, name pointer at +0xB8, transform at +0x40/+0x70
+Compression roundtrip:
+PASS - one decoded type-11 payload recompressed/decompressed with zstd and matched original decoded SHA1.
 
-Best candidate:
-- i_gen_wagonBroken02x
-- drawable_instance_0xE0
-- record offset 0x0011C7E0
-- drawable_instances index 9
-- position [723.793213, 79.2099, 1419.701904]
+Safety:
+PASS - no RPF mutation.
+PASS - no compiled model rebuild claimed.
+PASS - no game-test RPF produced.
 
-Zip integrity:
-- generated after validation
+Known boundary:
+The pass proves extraction and compression roundtrip, not semantic WFT/WEDT recompilation. The next step is a decoded-payload no-op rebuilder and/or same-size texture proof in a copied archive.

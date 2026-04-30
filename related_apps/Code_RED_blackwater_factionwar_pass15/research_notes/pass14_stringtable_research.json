@@ -1,0 +1,318 @@
+{
+  "global_strtbl": {
+    "path": "root/tune/stringtable/global.strtbl",
+    "bytes": 200874,
+    "offset": 18835456,
+    "ascii_candidate_count": 4850,
+    "keyword_hits": {
+      "blackwater": {
+        "count": 1,
+        "sample": [
+          "grtv_blackwater"
+        ]
+      },
+      "duel": {
+        "count": 2,
+        "sample": [
+          "duel_help",
+          "proc_duel_first_help"
+        ]
+      },
+      "law": {
+        "count": 85,
+        "sample": [
+          "AE_Companion_OutLaw",
+          "AE_Law_Caucasian_Sheriff_Medium01",
+          "AE_Law_Caucasian_Sheriff_Medium02",
+          "AE_Law_Caucasian_Sheriff_Medium03",
+          "AE_Law_Caucasian_Sheriff_Medium04",
+          "AE_Law_Caucasian_Sheriff_Medium05",
+          "AE_Law_Caucasian_Sheriff_Medium06",
+          "AE_Law_Caucasian_TownPosse_Easy01",
+          "AE_Law_Caucasian_TownPosse_Easy02",
+          "AE_Law_Caucasian_TownPosse_Easy03",
+          "AE_Law_Caucasian_TownPosse_Easy04",
+          "AE_Law_Caucasian_TownPosse_Easy05",
+          "AE_Law_Caucasian_TownPosse_Easy06",
+          "AE_Law_Caucasian_USMarshal_Hard01",
+          "AE_Law_Caucasian_USMarshal_Hard02",
+          "AE_Law_Caucasian_USMarshal_Hard03",
+          "AE_Law_Caucasian_USMarshal_Hard04",
+          "AE_Law_Caucasian_USMarshal_Hard05",
+          "AE_Law_Caucasian_USMarshal_Hard06",
+          "AE_Law_Mexican_CorruptOfficial_Medium01",
+          "AE_Law_Mexican_CorruptOfficial_Medium02",
+          "AE_Law_Mexican_CorruptOfficial_Medium03",
+          "AE_Law_Mexican_CorruptOfficial_Medium04",
+          "AE_Law_Mexican_CorruptOfficial_Medium05",
+          "AE_Law_Mexican_CorruptOfficial_Medium06",
+          "AE_Law_Mexican_PuebloPosse_Easy01",
+          "AE_Law_Mexican_PuebloPosse_Easy02",
+          "AE_Law_Mexican_PuebloPosse_Easy03",
+          "AE_Law_Mexican_PuebloPosse_Easy04",
+          "AE_Law_Mexican_PuebloPosse_Easy05",
+          "AE_Law_Mexican_PuebloPosse_Easy06",
+          "AE_MISC_Outlaw_01",
+          "comp_intro_outlaw01",
+          "CRM_ASSLT_LAW",
+          "CRM_KIDNAP_LAW",
+          "CRM_MURDR_LAW",
+          "CRM_THREAT_LAW",
+          "law_bounty_amount",
+          "law_bounty_amount_add",
+          "law_bounty_cleared"
+        ]
+      },
+      "lasso": {
+        "count": 1,
+        "sample": [
+          "LASSO"
+        ]
+      },
+      "sheriff": {
+        "count": 6,
+        "sample": [
+          "AE_Law_Caucasian_Sheriff_Medium01",
+          "AE_Law_Caucasian_Sheriff_Medium02",
+          "AE_Law_Caucasian_Sheriff_Medium03",
+          "AE_Law_Caucasian_Sheriff_Medium04",
+          "AE_Law_Caucasian_Sheriff_Medium05",
+          "AE_Law_Caucasian_Sheriff_Medium06"
+        ]
+      },
+      "marshal": {
+        "count": 21,
+        "sample": [
+          "AE_Companion_Marshal",
+          "AE_Law_Caucasian_USMarshal_Hard01",
+          "AE_Law_Caucasian_USMarshal_Hard02",
+          "AE_Law_Caucasian_USMarshal_Hard03",
+          "AE_Law_Caucasian_USMarshal_Hard04",
+          "AE_Law_Caucasian_USMarshal_Hard05",
+          "AE_Law_Caucasian_USMarshal_Hard06",
+          "AE_MISC_Deputy_Marshal01",
+          "AE_MISC_Deputy_Marshal02",
+          "AE_MISC_Deputy_Marshal03",
+          "comp_intro_marshal01",
+          "Marshal_abandoned",
+          "Marshal_attacked",
+          "Marshal_attacked_horse",
+          "Marshal_dead",
+          "Marshal_horse_dead",
+          "Marshal_return",
+          "trainmarshal_help",
+          "tutorial_law_marshal_end",
+          "tutorial_law_marshal_generated",
+          "tutorial_law_marshal_spawn"
+        ]
+      },
+      "gang": {
+        "count": 59,
+        "sample": [
+          "AE_Gang_BANDITO_Easy01",
+          "AE_Gang_BANDITO_Easy02",
+          "AE_Gang_BANDITO_Easy03",
+          "AE_Gang_BANDITO_Hard01",
+          "AE_Gang_BANDITO_Hard02",
+          "AE_Gang_BANDITO_Hard03",
+          "AE_Gang_BANDITO_Medium01",
+          "AE_Gang_BANDITO_Medium02",
+          "AE_Gang_BANDITO_Medium03",
+          "AE_Gang_CATTLERUSTLER_Easy01",
+          "AE_Gang_CATTLERUSTLER_Easy02",
+          "AE_Gang_CATTLERUSTLER_Easy03",
+          "AE_Gang_CATTLERUSTLER_Hard01",
+          "AE_Gang_CATTLERUSTLER_Hard02",
+          "AE_Gang_CATTLERUSTLER_Hard03",
+          "AE_Gang_CATTLERUSTLER_Medium01",
+          "AE_Gang_CATTLERUSTLER_Medium02",
+          "AE_Gang_CATTLERUSTLER_Medium03",
+          "AE_Gang_CRAZYMINER_Easy01",
+          "AE_Gang_CRAZYMINER_Easy02",
+          "AE_Gang_CRAZYMINER_Easy03",
+          "AE_Gang_CRAZYMINER_Hard01",
+          "AE_Gang_CRAZYMINER_Hard02",
+          "AE_Gang_CRAZYMINER_Hard03",
+          "AE_Gang_CRAZYMINER_Medium01",
+          "AE_Gang_CRAZYMINER_Medium02",
+          "AE_Gang_CRAZYMINER_Medium03",
+          "AE_Gang_DRUNKNDIRTY_Easy01",
+          "AE_Gang_DRUNKNDIRTY_Easy02",
+          "AE_Gang_DRUNKNDIRTY_Easy03",
+          "AE_Gang_DRUNKNDIRTY_Hard01",
+          "AE_Gang_DRUNKNDIRTY_Hard02",
+          "AE_Gang_DRUNKNDIRTY_Hard03",
+          "AE_Gang_DRUNKNDIRTY_Medium01",
+          "AE_Gang_DRUNKNDIRTY_Medium02",
+          "AE_Gang_DRUNKNDIRTY_Medium03",
+          "AE_Gang_IndianRAIDER_Easy01",
+          "AE_Gang_IndianRAIDER_Easy02",
+          "AE_Gang_IndianRAIDER_Easy03",
+          "AE_Gang_IndianRAIDER_Hard01"
+        ]
+      },
+      "wanted": {
+        "count": 7,
+        "sample": [
+          "Camp_Not_WANTED",
+          "get_wanted_poster",
+          "get_wanted_poster_ground",
+          "law_wanted",
+          "missionFail_playerWanted",
+          "tutorial_law_rewanted",
+          "WANTED_POSTER"
+        ]
+      },
+      "weapon": {
+        "count": 3,
+        "sample": [
+          "Open_WeaponBox",
+          "stat_new_weapon",
+          "Use_Weapon"
+        ]
+      },
+      "standoff": {
+        "count": 0,
+        "sample": []
+      },
+      "unarmed": {
+        "count": 0,
+        "sample": []
+      },
+      "holster": {
+        "count": 0,
+        "sample": []
+      },
+      "alert": {
+        "count": 2,
+        "sample": [
+          "Common_Alert",
+          "NetBlockAlert_PriveledgesMP"
+        ]
+      },
+      "crime": {
+        "count": 1,
+        "sample": [
+          "tutorial_unlock_crimes"
+        ]
+      },
+      "bounty": {
+        "count": 17,
+        "sample": [
+          "bounty_clear_no_funds",
+          "bounty_cleared",
+          "bounty_cleared_partial",
+          "clear_bounty",
+          "job_type_bounty_fro",
+          "job_type_bounty_mex",
+          "job_type_bounty_nor",
+          "law_bounty_amount",
+          "law_bounty_amount_add",
+          "law_bounty_cleared",
+          "mission_clear_bounty",
+          "proc_bounty_first_help",
+          "tutorial_bounty_clear_first",
+          "tutorial_bounty_clear_first2",
+          "tutorial_law_bounty_end",
+          "tutorial_law_bounty_generated",
+          "tutorial_law_bounty_spawn"
+        ]
+      }
+    }
+  },
+  "tune_stringtable_entries": [
+    {
+      "path": "root/tune/stringtable",
+      "bytes": 0,
+      "offset": 17179882760
+    },
+    {
+      "path": "root/tune/stringtable/global.strtbl",
+      "bytes": 200874,
+      "offset": 18835456
+    }
+  ],
+  "content_stringtable_entries": [
+    {
+      "path": "root/content/dlc/mooutfitspack/dlctuerrormsg.strtbl",
+      "bytes": 2422,
+      "offset": 19164824
+    },
+    {
+      "path": "root/content/dlc/mooutfitspack/mooutfitspack_ps3.strtbl",
+      "bytes": 37017,
+      "offset": 19215528
+    },
+    {
+      "path": "root/content/dlc/mooutfitspack/dlctuerrormsg_ps3.strtbl",
+      "bytes": 2610,
+      "offset": 19168408
+    },
+    {
+      "path": "root/content/dlc/mooutfitspack/mooutfitspack.strtbl",
+      "bytes": 37017,
+      "offset": 19171024
+    },
+    {
+      "path": "root/content/dlc/zombiepack/dlctuerrormsg.strtbl",
+      "bytes": 2422,
+      "offset": 19252832
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack.strtbl",
+      "bytes": 883572,
+      "offset": 19369984
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack_statoverload.strtbl",
+      "bytes": 18425,
+      "offset": 21840072
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack_mp.strtbl",
+      "bytes": 160426,
+      "offset": 20410368
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack_sp_fix_ps3.strtbl",
+      "bytes": 27209,
+      "offset": 21675080
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack_standalone_ps3.strtbl",
+      "bytes": 61228,
+      "offset": 21778840
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack_ps3.strtbl",
+      "bytes": 883688,
+      "offset": 20756480
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack_standalone.strtbl",
+      "bytes": 61228,
+      "offset": 21702296
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack_mp_ps3.strtbl",
+      "bytes": 160544,
+      "offset": 20594688
+    },
+    {
+      "path": "root/content/dlc/zombiepack/dlctuerrormsg_ps3.strtbl",
+      "bytes": 2610,
+      "offset": 19256416
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack_statoverload_ps3.strtbl",
+      "bytes": 18425,
+      "offset": 21861104
+    },
+    {
+      "path": "root/content/dlc/zombiepack/zombiepack_sp_fix.strtbl",
+      "bytes": 27183,
+      "offset": 21640176
+    }
+  ],
+  "standalone_stringtables_rpf": "No standalone stringtables.rpf file was present/extracted in the workspace; accessible string-table coverage was global.strtbl plus content DLC .strtbl entries."
+}

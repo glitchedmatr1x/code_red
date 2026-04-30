@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PlacementData>
+  <!--Code RED Pass15: Pass12 base + Pass13 empty-world activity + Pass14 Blackwater law/duel/lasso research merge.-->
+  <Events>
+    <Item>
+      <Name>beacon_transport_defend</Name>
+      <Slope value="0.0" />
+      <Bump value="1.0" />
+      <Size value="5.0" />
+    </Item>
+    <Item>
+      <Name>beacon_transport_simple</Name>
+      <Slope value="0.0" />
+      <Bump value="1.0" />
+      <Size value="5.0" />
+    </Item>
+    <Item>
+      <Name>event_roadside_ambush</Name>
+    </Item>
+    <Item>
+      <Name>beat_roadside_robbery</Name>
+    </Item>
+    <Item>
+      <Name>event_raodside_prisoners</Name>
+    </Item>
+    <Item>
+      <Name>beat_crime_wagonthief</Name>
+    </Item>
+    <Item>
+      <Name>event_roadside_dig_grave</Name>
+    </Item>
+    <Item>
+      <Name>event_roadside_execution</Name>
+    </Item>
+    <Item>
+      <Name>event_roadside_eating</Name>
+    </Item>
+    <Item>
+      <Name>event_roadside_aftermath</Name>
+    </Item>
+    <Item>
+      <Name>beacon_wilderness_dynomite</Name>
+    </Item>
+    <Item>
+      <Name>event_gnrc_rescue_beacon</Name>
+    </Item>
+    <Item>
+      <Name>beacon_escort_criminals</Name>
+    </Item>
+    <Item>
+      <Name>event_coyote_chase</Name>
+    </Item>
+    <Item>
+      <Name>event_loot_dead_body</Name>
+    </Item>
+    <Item>
+      <Name>event_wild_animals</Name>
+    </Item>
+    <Item>
+      <Name>event_stickup</Name>
+    </Item>
+    <Item>
+      <Name>event_crazy_hermit</Name>
+    </Item>
+    <Item>
+      <Name>event_wilderness_drunks</Name>
+    </Item>
+    <Item>
+      <Name>event_wilderness_dynomite</Name>
+    </Item>
+    <Item>
+      <Name>event_lone_stranger</Name>
+    </Item>
+    <Item>
+      <Name>event_night_procession</Name>
+    </Item>
+    <Item>
+      <Name>event_criminal_chase</Name>
+    </Item>
+    <Item>
+      <Name>event_hanging</Name>
+    </Item>
+    <Item>
+      <Name>event_treasurehunter_intro</Name>
+    </Item>
+    <Item>
+      <Name>event_herbalist_intro</Name>
+    </Item>
+    <Item>
+      <Name>event_hunter_intro</Name>
+    </Item>
+    <Item>
+      <Name>event_sharpshooter_challenge</Name>
+    </Item>
+    <Item>
+      <Name>mexican_rev_rebelCamp</Name>
+      <Slope value="0.0" />
+      <Bump value="0.8" />
+      <Size value="12.0" />
+    </Item>
+    <Item>
+      <Name>event_broken_wagon01</Name>
+      <Slope value="0.0" />
+      <Bump value="0.9" />
+      <Size value="10.0" />
+    </Item>
+    <Item>
+      <Name>event_campfire01</Name>
+      <Slope value="0.0" />
+      <Bump value="0.6" />
+      <Size value="9.0" />
+    </Item>
+    <Item>
+      <Name>event_landmark_attack</Name>
+    </Item>
+    <Item>
+      <Name>tevent_rowdy_gangs</Name>
+    </Item>
+    <Item>
+      <Name>tevent_lone_lawman</Name>
+    </Item>
+    <Item>
+      <Name>event_law_report_crime</Name>
+    </Item>
+    <Item>
+      <Name>event_law_repsonse_ai</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>event_law_repsonse_local</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>event_law_repsonse_posse</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>event_law_repsonse_bounty</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>event_law_repsonse_special</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>event_law_repsonse_stickup</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>job_nightwatch</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>event_bountyhunter</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>event_wanted_poster</Name>
+    </Item>
+    <Item>
+      <Name>beat_crime_holdup</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>beat_crime_horsethief</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>beat_town_abduction</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>beat_duel_notoriety</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>beat_duel_rude</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>beat_duel_lowhonor</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>first_time_duel</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+    <Item>
+      <Name>event_generic_1v1</Name>
+      <Slope value="0.000000" />
+      <Bump value="1.000000" />
+      <Size value="3.000000" />
+    </Item>
+  </Events>
+  <AllowEventSets>
+    <Item>
+      <Name>All Events</Name>
+      <EventNames>
+        <Name>beacon_transport_defend</Name>
+        <Name>beacon_transport_simple</Name>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_raodside_prisoners</Name>
+        <Name>beat_crime_wagonthief</Name>
+        <Name>event_roadside_dig_grave</Name>
+        <Name>event_roadside_execution</Name>
+        <Name>event_roadside_eating</Name>
+        <Name>event_roadside_aftermath</Name>
+        <Name>beacon_wilderness_dynomite</Name>
+        <Name>event_gnrc_rescue_beacon</Name>
+        <Name>beacon_escort_criminals</Name>
+        <Name>event_coyote_chase</Name>
+        <Name>event_loot_dead_body</Name>
+        <Name>event_wild_animals</Name>
+        <Name>event_stickup</Name>
+        <Name>event_crazy_hermit</Name>
+        <Name>event_wilderness_drunks</Name>
+        <Name>event_wilderness_dynomite</Name>
+        <Name>event_lone_stranger</Name>
+        <Name>event_night_procession</Name>
+        <Name>event_criminal_chase</Name>
+        <Name>event_hanging</Name>
+        <Name>event_treasurehunter_intro</Name>
+        <Name>event_herbalist_intro</Name>
+        <Name>event_hunter_intro</Name>
+        <Name>event_sharpshooter_challenge</Name>
+        <Name>mexican_rev_rebelCamp</Name>
+        <Name>event_broken_wagon01</Name>
+        <Name>event_campfire01</Name>
+        <Name>event_landmark_attack</Name>
+        <Name>tevent_rowdy_gangs</Name>
+        <Name>tevent_lone_lawman</Name>
+        <Name>event_law_report_crime</Name>
+        <Name>event_law_repsonse_ai</Name>
+        <Name>event_law_repsonse_local</Name>
+        <Name>event_law_repsonse_posse</Name>
+        <Name>event_law_repsonse_bounty</Name>
+        <Name>event_law_repsonse_special</Name>
+        <Name>event_law_repsonse_stickup</Name>
+        <Name>job_nightwatch</Name>
+        <Name>event_bountyhunter</Name>
+        <Name>event_wanted_poster</Name>
+        <Name>beat_crime_holdup</Name>
+        <Name>beat_crime_horsethief</Name>
+        <Name>beat_town_abduction</Name>
+        <Name>beat_duel_notoriety</Name>
+        <Name>beat_duel_rude</Name>
+        <Name>beat_duel_lowhonor</Name>
+        <Name>first_time_duel</Name>
+        <Name>event_generic_1v1</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>Roadside Events</Name>
+      <DistanceRoadMin value="2.0" />
+      <DistanceRoadMax value="6.0" />
+      <EventNames>
+        <Name>beacon_transport_defend</Name>
+        <Name>beacon_transport_simple</Name>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_raodside_prisoners</Name>
+        <Name>beat_crime_wagonthief</Name>
+        <Name>event_roadside_dig_grave</Name>
+        <Name>event_roadside_execution</Name>
+        <Name>event_roadside_eating</Name>
+        <Name>event_roadside_aftermath</Name>
+        <Name>event_campfire01</Name>
+        <Name>mexican_rev_rebelCamp</Name>
+        <Name>event_broken_wagon01</Name>
+        <Name>event_gnrc_rescue_beacon</Name>
+        <Name>event_predator_prey</Name>
+        <Name>event_hanging</Name>
+        <Name>event_crazy_hermit</Name>
+        <Name>tevent_rowdy_gangs</Name>
+        <Name>tevent_lone_lawman</Name>
+        <Name>event_law_report_crime</Name>
+        <Name>event_law_repsonse_ai</Name>
+        <Name>event_law_repsonse_local</Name>
+        <Name>event_law_repsonse_posse</Name>
+        <Name>event_law_repsonse_bounty</Name>
+        <Name>event_law_repsonse_special</Name>
+        <Name>event_law_repsonse_stickup</Name>
+        <Name>job_nightwatch</Name>
+        <Name>event_bountyhunter</Name>
+        <Name>event_wanted_poster</Name>
+        <Name>beat_crime_holdup</Name>
+        <Name>beat_crime_horsethief</Name>
+        <Name>beat_town_abduction</Name>
+        <Name>beat_duel_notoriety</Name>
+        <Name>beat_duel_rude</Name>
+        <Name>beat_duel_lowhonor</Name>
+        <Name>first_time_duel</Name>
+        <Name>event_generic_1v1</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>Trailside Events</Name>
+      <EventNames>
+        <Name>event_roadside_eating</Name>
+        <Name>beat_crime_wagonthief</Name>
+        <Name>event_roadside_execution</Name>
+        <Name>event_coyote_chase</Name>
+        <Name>event_loot_dead_body</Name>
+        <Name>event_wild_animals</Name>
+        <Name>event_stickup</Name>
+        <Name>event_lone_stranger</Name>
+        <Name>event_hanging</Name>
+        <Name>event_campfire01</Name>
+        <Name>mexican_rev_rebelCamp</Name>
+        <Name>event_broken_wagon01</Name>
+        <Name>event_landmark_attack</Name>
+        <Name>beacon_transport_defend</Name>
+        <Name>beacon_transport_simple</Name>
+        <Name>event_gnrc_rescue_beacon</Name>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_predator_prey</Name>
+        <Name>tevent_rowdy_gangs</Name>
+        <Name>tevent_lone_lawman</Name>
+        <Name>event_law_report_crime</Name>
+        <Name>event_law_repsonse_ai</Name>
+        <Name>event_law_repsonse_local</Name>
+        <Name>event_law_repsonse_posse</Name>
+        <Name>event_law_repsonse_bounty</Name>
+        <Name>event_law_repsonse_special</Name>
+        <Name>event_law_repsonse_stickup</Name>
+        <Name>job_nightwatch</Name>
+        <Name>event_bountyhunter</Name>
+        <Name>event_wanted_poster</Name>
+        <Name>beat_crime_holdup</Name>
+        <Name>beat_crime_horsethief</Name>
+        <Name>beat_town_abduction</Name>
+        <Name>beat_duel_notoriety</Name>
+        <Name>beat_duel_rude</Name>
+        <Name>beat_duel_lowhonor</Name>
+        <Name>first_time_duel</Name>
+        <Name>event_generic_1v1</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>Wilderness Normal (30-60m from any road/train/path)</Name>
+      <DistanceRoadMin value="22.0" />
+      <DistanceTrainMin value="22.0" />
+      <DistanceHorseTrailMin value="22.0" />
+      <EventNames>
+        <Name>beacon_wilderness_dynomite</Name>
+        <Name>event_gnrc_rescue_beacon</Name>
+        <Name>beacon_escort_criminals</Name>
+        <Name>event_coyote_chase</Name>
+        <Name>event_loot_dead_body</Name>
+        <Name>event_wild_animals</Name>
+        <Name>event_stickup</Name>
+        <Name>event_wilderness_drunks</Name>
+        <Name>event_wilderness_dynomite</Name>
+        <Name>event_lone_stranger</Name>
+        <Name>event_night_procession</Name>
+        <Name>event_criminal_chase</Name>
+        <Name>event_hanging</Name>
+        <Name>event_treasurehunter_intro</Name>
+        <Name>event_herbalist_intro</Name>
+        <Name>event_hunter_intro</Name>
+        <Name>event_sharpshooter_challenge</Name>
+        <Name>event_campfire01</Name>
+        <Name>event_landmark_attack</Name>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_raodside_prisoners</Name>
+        <Name>beat_crime_wagonthief</Name>
+        <Name>event_roadside_execution</Name>
+        <Name>event_roadside_aftermath</Name>
+        <Name>event_roadside_dig_grave</Name>
+        <Name>event_roadside_eating</Name>
+        <Name>beacon_transport_defend</Name>
+        <Name>beacon_transport_simple</Name>
+        <Name>event_predator_prey</Name>
+        <Name>mexican_rev_rebelCamp</Name>
+        <Name>event_broken_wagon01</Name>
+        <Name>event_crazy_hermit</Name>
+        <Name>tevent_rowdy_gangs</Name>
+        <Name>tevent_lone_lawman</Name>
+        <Name>event_law_repsonse_posse</Name>
+        <Name>event_law_repsonse_bounty</Name>
+        <Name>event_bountyhunter</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>Wilderness Isolated (60m from any road/train/path)</Name>
+      <DistanceRoadMin value="38.0" />
+      <DistanceTrainMin value="38.0" />
+      <DistanceHorseTrailMin value="38.0" />
+      <EventNames>
+        <Name>beacon_wilderness_dynomite</Name>
+        <Name>event_gnrc_rescue_beacon</Name>
+        <Name>beacon_escort_criminals</Name>
+        <Name>event_coyote_chase</Name>
+        <Name>event_loot_dead_body</Name>
+        <Name>event_wild_animals</Name>
+        <Name>event_stickup</Name>
+        <Name>event_crazy_hermit</Name>
+        <Name>event_wilderness_drunks</Name>
+        <Name>event_wilderness_dynomite</Name>
+        <Name>event_lone_stranger</Name>
+        <Name>event_night_procession</Name>
+        <Name>event_criminal_chase</Name>
+        <Name>event_hanging</Name>
+        <Name>event_treasurehunter_intro</Name>
+        <Name>event_herbalist_intro</Name>
+        <Name>event_hunter_intro</Name>
+        <Name>event_sharpshooter_challenge</Name>
+        <Name>mexican_rev_rebelCamp</Name>
+        <Name>event_campfire01</Name>
+        <Name>event_landmark_attack</Name>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_raodside_prisoners</Name>
+        <Name>beat_crime_wagonthief</Name>
+        <Name>event_roadside_execution</Name>
+        <Name>event_roadside_aftermath</Name>
+        <Name>event_roadside_dig_grave</Name>
+        <Name>event_roadside_eating</Name>
+        <Name>beacon_transport_defend</Name>
+        <Name>beacon_transport_simple</Name>
+        <Name>event_predator_prey</Name>
+        <Name>event_broken_wagon01</Name>
+        <Name>tevent_rowdy_gangs</Name>
+        <Name>tevent_lone_lawman</Name>
+        <Name>event_law_repsonse_posse</Name>
+        <Name>event_law_repsonse_bounty</Name>
+        <Name>event_bountyhunter</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>CodeRed Thieves Landing Chaos Events</Name>
+      <DistanceRoadMin value="1.0" />
+      <DistanceRoadMax value="8.0" />
+      <EventNames>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_stickup</Name>
+        <Name>event_criminal_chase</Name>
+        <Name>event_roadside_execution</Name>
+        <Name>event_loot_dead_body</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>CodeRed Rail Corridor Robbery Events</Name>
+      <DistanceTrainMin value="0.0" />
+      <DistanceTrainMax value="16.0" />
+      <DistanceRoadMin value="0.0" />
+      <DistanceRoadMax value="18.0" />
+      <EventNames>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_stickup</Name>
+        <Name>event_roadside_ambush</Name>
+        <Name>beacon_transport_defend</Name>
+        <Name>beacon_transport_simple</Name>
+        <Name>beacon_escort_criminals</Name>
+        <Name>event_criminal_chase</Name>
+        <Name>event_raodside_prisoners</Name>
+        <Name>event_loot_dead_body</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>CodeRed Daily Rival Gang Showdown Events</Name>
+      <DistanceRoadMin value="0.0" />
+      <DistanceRoadMax value="20.0" />
+      <EventNames>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_stickup</Name>
+        <Name>event_criminal_chase</Name>
+        <Name>beacon_transport_defend</Name>
+        <Name>beacon_transport_simple</Name>
+        <Name>beacon_escort_criminals</Name>
+        <Name>event_raodside_prisoners</Name>
+        <Name>event_roadside_execution</Name>
+        <Name>event_loot_dead_body</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>CodeRed Persistent Camps And War Debris</Name>
+      <DistanceRoadMin value="6.0" />
+      <DistanceRoadMax value="125.0" />
+      <DistanceTrainMin value="8.0" />
+      <DistanceHorseTrailMin value="0.0" />
+      <EventNames>
+        <Name>event_campfire01</Name>
+        <Name>mexican_rev_rebelCamp</Name>
+        <Name>event_broken_wagon01</Name>
+        <Name>event_landmark_attack</Name>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_stickup</Name>
+        <Name>event_loot_dead_body</Name>
+        <Name>event_wild_animals</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>CodeRed Wilderness Living World Events</Name>
+      <DistanceRoadMin value="18.0" />
+      <DistanceRoadMax value="180.0" />
+      <DistanceTrainMin value="18.0" />
+      <DistanceHorseTrailMin value="6.0" />
+      <EventNames>
+        <Name>event_campfire01</Name>
+        <Name>mexican_rev_rebelCamp</Name>
+        <Name>event_broken_wagon01</Name>
+        <Name>event_landmark_attack</Name>
+        <Name>event_wild_animals</Name>
+        <Name>event_predator_prey</Name>
+        <Name>event_coyote_chase</Name>
+        <Name>event_gnrc_rescue_beacon</Name>
+        <Name>beacon_escort_criminals</Name>
+        <Name>beacon_wilderness_dynomite</Name>
+        <Name>event_wilderness_dynomite</Name>
+        <Name>event_wilderness_drunks</Name>
+        <Name>event_crazy_hermit</Name>
+        <Name>event_lone_stranger</Name>
+        <Name>event_night_procession</Name>
+        <Name>event_hanging</Name>
+        <Name>event_criminal_chase</Name>
+        <Name>event_loot_dead_body</Name>
+        <Name>event_stickup</Name>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_raodside_prisoners</Name>
+        <Name>beat_crime_wagonthief</Name>
+        <Name>beacon_transport_defend</Name>
+        <Name>beacon_transport_simple</Name>
+        <Name>event_treasurehunter_intro</Name>
+        <Name>event_herbalist_intro</Name>
+        <Name>event_hunter_intro</Name>
+        <Name>event_sharpshooter_challenge</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>CodeRed Empty Country Trouble Events</Name>
+      <DistanceRoadMin value="40.0" />
+      <DistanceRoadMax value="260.0" />
+      <DistanceTrainMin value="40.0" />
+      <DistanceHorseTrailMin value="12.0" />
+      <EventNames>
+        <Name>event_wild_animals</Name>
+        <Name>event_predator_prey</Name>
+        <Name>event_crazy_hermit</Name>
+        <Name>event_wilderness_dynomite</Name>
+        <Name>beacon_wilderness_dynomite</Name>
+        <Name>event_campfire01</Name>
+        <Name>mexican_rev_rebelCamp</Name>
+        <Name>event_broken_wagon01</Name>
+        <Name>event_lone_stranger</Name>
+        <Name>event_night_procession</Name>
+        <Name>event_hanging</Name>
+        <Name>event_loot_dead_body</Name>
+        <Name>event_criminal_chase</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>CodeRED Empty World Activity</Name>
+      <DistanceRoadMin value="90.0" />
+      <DistanceTrainMin value="70.0" />
+      <DistanceHorseTrailMin value="70.0" />
+      <EventNames>
+        <Name>beacon_transport_defend</Name>
+        <Name>beacon_transport_simple</Name>
+        <Name>event_gnrc_rescue_beacon</Name>
+        <Name>beacon_escort_criminals</Name>
+        <Name>beat_crime_wagonthief</Name>
+        <Name>event_broken_wagon01</Name>
+        <Name>event_campfire01</Name>
+        <Name>event_criminal_chase</Name>
+        <Name>event_coyote_chase</Name>
+        <Name>event_loot_dead_body</Name>
+        <Name>event_wild_animals</Name>
+        <Name>event_lone_stranger</Name>
+        <Name>event_hanging</Name>
+        <Name>event_landmark_attack</Name>
+        <Name>tevent_rowdy_gangs</Name>
+        <Name>tevent_lone_lawman</Name>
+        <Name>event_law_report_crime</Name>
+        <Name>event_law_repsonse_ai</Name>
+        <Name>event_law_repsonse_local</Name>
+        <Name>event_law_repsonse_posse</Name>
+        <Name>event_law_repsonse_bounty</Name>
+        <Name>event_law_repsonse_special</Name>
+        <Name>event_law_repsonse_stickup</Name>
+        <Name>job_nightwatch</Name>
+        <Name>event_bountyhunter</Name>
+        <Name>event_wanted_poster</Name>
+        <Name>beat_crime_holdup</Name>
+        <Name>beat_crime_horsethief</Name>
+        <Name>beat_town_abduction</Name>
+        <Name>beat_duel_notoriety</Name>
+        <Name>beat_duel_rude</Name>
+        <Name>beat_duel_lowhonor</Name>
+        <Name>first_time_duel</Name>
+        <Name>event_generic_1v1</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>CodeRED Blackwater Chaos Main Roads</Name>
+      <EventNames>
+        <Name>tevent_lone_lawman</Name>
+        <Name>tevent_rowdy_gangs</Name>
+        <Name>event_law_report_crime</Name>
+        <Name>event_law_repsonse_ai</Name>
+        <Name>event_law_repsonse_local</Name>
+        <Name>event_law_repsonse_posse</Name>
+        <Name>event_law_repsonse_bounty</Name>
+        <Name>event_law_repsonse_special</Name>
+        <Name>event_law_repsonse_stickup</Name>
+        <Name>job_nightwatch</Name>
+        <Name>event_bountyhunter</Name>
+        <Name>event_wanted_poster</Name>
+        <Name>beat_crime_holdup</Name>
+        <Name>beat_crime_horsethief</Name>
+        <Name>beat_town_abduction</Name>
+        <Name>beat_duel_notoriety</Name>
+        <Name>beat_duel_rude</Name>
+        <Name>beat_duel_lowhonor</Name>
+        <Name>first_time_duel</Name>
+        <Name>event_generic_1v1</Name>
+        <Name>beacon_transport_defend</Name>
+        <Name>beat_crime_wagonthief</Name>
+        <Name>event_roadside_ambush</Name>
+        <Name>beat_roadside_robbery</Name>
+        <Name>event_criminal_chase</Name>
+      </EventNames>
+    </Item>
+  </AllowEventSets>
+  <DenyEventSets>
+    <Item>
+      <Name>Tree Problems</Name>
+      <EventNames>
+        <Name>event_sharpshooter_challenge</Name>
+      </EventNames>
+    </Item>
+    <Item>
+      <Name>Approach Events / Pathfinding issues</Name>
+      <EventNames>
+        <Name>event_stickup</Name>
+      </EventNames>
+    </Item>
+  </DenyEventSets>
+  <Slope content="float_array">
+    5.0
+    10.0
+    15.0
+    20.0
+  </Slope>
+  <Bump content="float_array">
+		0.05
+		0.06
+		0.08
+		0.10
+	</Bump>
+  <Item>
+    <Name>CodeRed Thieves Landing Posse Robbery Events</Name>
+    <DistanceRoadMin value="0.0" />
+    <DistanceRoadMax value="10.0" />
+    <EventNames>
+      <Name>beat_roadside_robbery</Name>
+      <Name>event_stickup</Name>
+      <Name>event_roadside_ambush</Name>
+      <Name>beat_crime_wagonthief</Name>
+      <Name>beacon_transport_defend</Name>
+      <Name>event_criminal_chase</Name>
+      <Name>event_loot_dead_body</Name>
+    </EventNames>
+  </Item>
+</PlacementData>

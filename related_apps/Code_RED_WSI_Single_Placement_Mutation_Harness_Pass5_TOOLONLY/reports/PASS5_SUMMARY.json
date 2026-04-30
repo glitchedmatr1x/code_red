@@ -1,0 +1,21 @@
+{
+  "pass": "WSI Single-Placement Mutation Harness Pass 5",
+  "target_host": "i_gen_wagonBroken02x",
+  "record_offset": "0x0011C7E0",
+  "no_op_validation": true,
+  "nudge_validation": true,
+  "position_before": [
+    723.793213,
+    79.2099,
+    1419.701904,
+    NaN
+  ],
+  "position_after": [
+    723.793213,
+    79.2099,
+    1419.951904,
+    NaN
+  ],
+  "included_experimental_rpf": "EXPERIMENTAL_COPY_DO_NOT_OVERWRITE/blackwater_nudge_z025_single_placement_test.rpf",
+  "safety": "copied archive only; no in-place edit; one placement changed"
+}

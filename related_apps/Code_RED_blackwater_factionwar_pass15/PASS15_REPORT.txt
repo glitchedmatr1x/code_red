@@ -1,0 +1,64 @@
+Code RED Pass 15 Report
+=======================
+
+Base: Pass 12 drop-in archives
+Layered: Pass 13 empty-world placement + Pass 14 Blackwater/lasso tuning
+
+Files patched:
+- root/content/ambient/placementglobals.xml | relocated=True | codec=zstd-18 | new_payload=23601 | new_slot=1789
+- root/tune/settings/lasso.tune | relocated=False | codec=zstd-18 | new_payload=2128 | new_slot=388
+- root/tune/settings/weapons/base_lasso.weap | relocated=True | codec=zstd-18 | new_payload=4004 | new_slot=1044
+- root/tune/asd/sheriff.xml | relocated=True | codec=zstd-18 | new_payload=12366 | new_slot=2444
+
+Validation:
+- content_rpf_reopens: True
+- tune_rpf_reopens: True
+- placement_xml_parses: True
+- placement_brace_balance: 0
+- pass12_wilderness_living_world_set: True
+- pass12_empty_country_trouble_set: True
+- pass13_empty_world_activity_set: True
+- pass14_blackwater_chaos_set: True
+- pass14_rowdy_gangs_present: True
+- pass14_lone_lawman_present: True
+- pass14_duels_present: True
+- pass14_law_high_alert_present: True
+- pathfinding_deny_loosened: True
+- playerally_gang_relations_preserved: True
+- content_companion_ai_pulse_preserved: True
+- tune_companion_ai_pulse_preserved: True
+- level_pop_wilderness_population_preserved: True
+- default_traffic_routes_preserved: True
+- ambient_actor_cap_130_preserved: True
+- lasso_pass14_applied: True
+- base_lasso_pass14_applied: True
+- sheriff_pass14_applied: True
+- level_pop_brace_balance: 0
+- traffic_brace_balance: 0
+- tune_game_main_brace_balance: 0
+- content_game_main_brace_balance: 0
+- all_required_checks_pass: True
+
+Placement additions from Pass14:
+- event: tevent_rowdy_gangs
+- event: tevent_lone_lawman
+- event: event_law_report_crime
+- event: event_law_repsonse_ai
+- event: event_law_repsonse_local
+- event: event_law_repsonse_posse
+- event: event_law_repsonse_bounty
+- event: event_law_repsonse_special
+- event: event_law_repsonse_stickup
+- event: job_nightwatch
+- event: event_bountyhunter
+- event: event_wanted_poster
+- event: beat_crime_holdup
+- event: beat_crime_horsethief
+- event: beat_town_abduction
+- event: beat_duel_notoriety
+- event: beat_duel_rude
+- event: beat_duel_lowhonor
+- event: first_time_duel
+- event: event_generic_1v1
+- allow set: CodeRED Empty World Activity
+- allow set: CodeRED Blackwater Chaos Main Roads

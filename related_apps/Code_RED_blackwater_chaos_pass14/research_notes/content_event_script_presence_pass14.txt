@@ -1,0 +1,59 @@
+beat_duel_notoriety: 1 match(es)
+  root/content/release64/ambient/town/beat_duel_notoriety.wsc
+
+beat_duel_rude: 1 match(es)
+  root/content/release64/ambient/town/beat_duel_rude.wsc
+
+beat_duel_lowhonor: 1 match(es)
+  root/content/release64/ambient/town/beat_duel_lowhonor.wsc
+
+first_time_duel: 1 match(es)
+  root/content/release64/ambient/town/first_time_duel.wsc
+
+event_generic_1v1: 1 match(es)
+  root/content/release64/ambient/roaming/event_generic_1v1.wsc
+
+event_law_repsonse_ai: 1 match(es)
+  root/content/release64/ambient/crimeresponse/event_law_repsonse_ai.wsc
+
+event_law_repsonse_bounty: 1 match(es)
+  root/content/release64/ambient/crimeresponse/event_law_repsonse_bounty.wsc
+
+event_law_repsonse_local: 1 match(es)
+  root/content/release64/ambient/crimeresponse/event_law_repsonse_local.wsc
+
+event_law_repsonse_special: 1 match(es)
+  root/content/release64/ambient/crimeresponse/event_law_repsonse_special.wsc
+
+event_law_repsonse_wild: 1 match(es)
+  root/content/release64/ambient/crimeresponse/event_law_repsonse_wild.wsc
+
+event_law_repsonse_posse: 1 match(es)
+  root/content/release64/ambient/crimeresponse/event_law_repsonse_posse.wsc
+
+event_law_repsonse_stickup: 1 match(es)
+  root/content/release64/ambient/crimeresponse/event_law_repsonse_stickup.wsc
+
+event_bountyhunter: 3 match(es)
+  root/content/release64/ambient/pointofinterest/event_bountyhunter.wsc
+  root/content/release64/dlc/zombiepack/missingpersons/event_bountyhunter_z.sco
+  root/content/release64/dlc/zombiepack/missingpersons/event_bountyhunter_z.wsc
+
+job_nightwatch: 1 match(es)
+  root/content/release64/ambient/jobsystem/job_nightwatch.wsc
+
+beat_crime_holdup: 1 match(es)
+  root/content/release64/ambient/town/beat_crime_holdup.wsc
+
+beat_crime_horsethief: 1 match(es)
+  root/content/release64/ambient/town/beat_crime_horsethief.wsc
+
+beat_town_abduction: 1 match(es)
+  root/content/release64/ambient/town/beat_town_abduction.wsc
+
+tevent_rowdy_gangs: 1 match(es)
+  root/content/release64/ambient/traffic/tevent_rowdy_gangs.wsc
+
+tevent_lone_lawman: 1 match(es)
+  root/content/release64/ambient/traffic/tevent_lone_lawman.wsc
+

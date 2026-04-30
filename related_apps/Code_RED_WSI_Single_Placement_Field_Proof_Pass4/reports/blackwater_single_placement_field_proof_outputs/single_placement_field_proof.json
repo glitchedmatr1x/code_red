@@ -1,0 +1,69 @@
+{
+  "mode": "decoded_wsi_single_placement_field_proof",
+  "decoded_wsi": "/mnt/data/codered_run/blackwater_type134/0224_0x19839F99.wsi.decoded",
+  "decoded_size": 2465792,
+  "decoded_sha1": "b573a802ce71fba9facdb3cf7a9639e99e276754",
+  "record_offset": 1165280,
+  "record_offset_hex": "0x0011C7E0",
+  "record_size": 224,
+  "expected_host": "i_gen_wagonBroken02x",
+  "expected_host_matched": true,
+  "record": {
+    "record_offset": 1165280,
+    "record_offset_hex": "0x0011C7E0",
+    "record_size": 224,
+    "record_vft_hex": "0x01913300",
+    "matrix_row0_guess": [
+      0.239398,
+      -0.253135,
+      -0.937343,
+      "nan"
+    ],
+    "matrix_row1_guess": [
+      0.109574,
+      0.966292,
+      -0.232967,
+      "nan"
+    ],
+    "matrix_row2_guess": [
+      0.964719,
+      -0.046936,
+      0.259066,
+      "nan"
+    ],
+    "matrix_row3_position_guess": [
+      723.793213,
+      79.2099,
+      1419.701904,
+      "nan"
+    ],
+    "position_guess": [
+      723.793213,
+      79.2099,
+      1419.701904
+    ],
+    "bbox_min_guess": [
+      719.840637,
+      79.106247,
+      1418.24707,
+      3.450572
+    ],
+    "bbox_max_guess": [
+      724.79303,
+      81.841583,
+      1422.198975,
+      1.367668
+    ],
+    "instance_hash_guess_hex": "0xAC84C193",
+    "drawable_flags_guess_hex": "0xCD000009",
+    "name_ptr_rel_guess": 184,
+    "record_name_ptr_hex": "0x5022891B",
+    "record_name_offset_hex": "0x0022891B",
+    "record_name": "i_gen_wagonBroken02x",
+    "raw_name_lane_hex": "090000cdcdcdcdcd1b89225000000000",
+    "record_sha1": "1bb6fdf8f9a60738085cce949988aea124e574c5"
+  },
+  "record_bytes_hex": "00339101000080bf00000000000000007f9618cbf02374c9804fc3c709080000e0c77f2b00000000000000000000000000000000ffff00000000000000000000c024753ee99a81beb6f56fbf0100807f5568e03dea5e773fe78e6ebe0100807fd3f7763ff73f40bd4ca4843e0100807fc4f23444786b9e427676b1440100807fcdf5334466369e42e847b1442dd65c40c1323544e4aea3425ec6b144c00faf3f93c184ac010000000100000000000000090000cdcdcdcdcd1b892250000000000000000000000000000000000000000000000000000000000000000000000000",
+  "validation_passed": true,
+  "next_safe_action": "Use this exact decoded record as the first one-placement test target. Build archive rewrite only after final field choice is known."
+}

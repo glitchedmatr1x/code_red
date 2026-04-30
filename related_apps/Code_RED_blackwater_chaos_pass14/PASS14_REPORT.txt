@@ -1,0 +1,90 @@
+Code RED Blackwater Chaos Pass 14
+================================
+
+Status: built and validated.
+
+Goal
+----
+Make Blackwater and the main-road zone as chaotic as possible while keeping every working Pass 13 lane intact.
+
+Archives included
+-----------------
+- archives/content.rpf
+- archives/tune_d11generic.rpf
+
+Regression policy
+-----------------
+Nothing from Pass 13 was intentionally removed. The validation pass confirmed the working empty-world/event lanes are still present:
+{
+  "CodeRED Empty World Activity": true,
+  "beacon_transport_defend": true,
+  "beacon_transport_simple": true,
+  "beat_crime_wagonthief": true,
+  "event_broken_wagon01": true,
+  "event_criminal_chase": true,
+  "tevent_rowdy_gangs": true,
+  "tevent_lone_lawman": true,
+  "event_roadside_ambush": true,
+  "beat_roadside_robbery": true
+}
+
+Content-side Blackwater chaos additions
+---------------------------------------
+Added/retained event placement eligibility for:
+- law/high-alert: event_law_report_crime, event_law_repsonse_ai/local/posse/bounty/special/stickup, event_bountyhunter, job_nightwatch, event_wanted_poster
+- main-road crimes: beat_crime_holdup, beat_crime_horsethief, beat_town_abduction
+- duel/standoff pressure: beat_duel_notoriety, beat_duel_rude, beat_duel_lowhonor, first_time_duel, event_generic_1v1
+- faction-war/world activity retained: rowdy gangs, lone lawman, transport defense/simple, wagon thief, broken wagon, chase, rescue/wilderness lanes from Pass 13
+
+Grounding check
+---------------
+Every new Blackwater event name used by the placement XML was checked against existing script/resource names in content.rpf. Summary:
+{
+  "beat_duel_notoriety": 1,
+  "beat_duel_rude": 1,
+  "beat_duel_lowhonor": 1,
+  "first_time_duel": 1,
+  "event_generic_1v1": 1,
+  "event_law_repsonse_ai": 1,
+  "event_law_repsonse_bounty": 1,
+  "event_law_repsonse_local": 1,
+  "event_law_repsonse_special": 1,
+  "event_law_repsonse_wild": 1,
+  "event_law_repsonse_posse": 1,
+  "event_law_repsonse_stickup": 1,
+  "event_bountyhunter": 3,
+  "job_nightwatch": 1,
+  "beat_crime_holdup": 1,
+  "beat_crime_horsethief": 1,
+  "beat_town_abduction": 1,
+  "tevent_rowdy_gangs": 1,
+  "tevent_lone_lawman": 1
+}
+
+Tune/lasso changes
+------------------
+- root/tune/settings/lasso.tune: RopeLen 10 -> 18, StretchStrength 10000 -> 15000, StretchDamping 200 -> 260.
+- root/tune/settings/weapons/base_lasso.weap: AI max range 20 -> 35, desired range 10 -> 18, min aim time 0.5 -> 0.25, fire delay 0.309989 -> 0.15.
+- root/tune/asd/sheriff.xml: lasso breakout time 5 -> 8, lasso break damage threshold 25 -> 35, sheriff duel initial draw time 2.5 -> 1.5.
+
+String-table research
+---------------------
+- Checked root/tune/stringtable/global.strtbl.
+- global.strtbl raw bytes: 200874
+- ASCII candidate strings: 4850
+- Useful hits: blackwater=1, duel=2, law=85, lasso=1, sheriff=6, marshal=21, gang=59, wanted=7, bounty=17.
+- Standalone stringtables.rpf: not present as a separate extracted/uploaded file in this workspace. I still scanned the accessible string-table lanes in tune/content and wrote the findings to research_notes/.
+
+Validation
+----------
+- content.rpf magic: RPF6
+- content.rpf entries: 1636
+- tune_d11generic.rpf magic: RPF6
+- tune_d11generic.rpf entries: 2017
+- placementglobals.xml parses after patch: yes
+- Blackwater additions present: True
+- tune edits extract and contain expected values: True
+
+Notes
+-----
+The lasso edits make lasso stronger and easier for AI to use when selected. I did not byte-edit compiled scripts or force weapon-set assignment inside WSC bytecode in this pass, so lawmen lasso behavior still depends on AI/equipment selection. The safe target here is tune-side lasso usability plus content-side law/duel/standoff event eligibility.

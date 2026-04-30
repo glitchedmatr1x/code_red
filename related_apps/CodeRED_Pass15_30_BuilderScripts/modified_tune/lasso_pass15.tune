@@ -1,0 +1,85 @@
+LassoTune
+{
+	Density		10.000000
+	StretchStrength		15000.000000
+	StretchDamping		260.000000
+	AirFriction		8.000000
+	BendStrength		100.000000
+	BendDamping		1.000000
+	RopeLen		18.000000
+	LOD0ZDist		4.000000
+	LOD0Width		5
+	LOD0Length		40
+	LOD0UVScale		1.000000 100.000000
+	LOD0DistanceMappingScale		35.000000
+	LOD1ZDist		12.000000
+	LOD1Width		4
+	LOD1Length		15
+	LOD1UVScale		1.000000 100.000000
+	LOD1DistanceMappingScale		10.000000
+	LOD2ZDist		80.000000
+	LOD2Width		3
+	LOD2Length		10
+	LOD2UVScale		1.000000 100.000000
+	LOD2DistanceMappingScale		10.000000
+	LOD3ZDist		6.000000
+	LOD3Width		3
+	LOD3Length		100
+	LOD3UVScale		1.000000 100.000000
+	LOD3DistanceMappingScale		0.000000
+	LOD4ZDist		13.000000
+	LOD4Width		4
+	LOD4Length		50
+	LOD4UVScale		1.000000 100.000000
+	LOD4DistanceMappingScale		0.000000
+	LOD5ZDist		19.000000
+	LOD5Width		3
+	LOD5Length		20
+	LOD5UVScale		1.000000 100.000000
+	LOD5DistanceMappingScale		0.000000
+	LOD6ZDist		6.000000
+	LOD6Width		5
+	LOD6Length		25
+	LOD6UVScale		1.000000 100.000000
+	LOD6DistanceMappingScale		1.500000
+	LOD7ZDist		26.000000
+	LOD7Width		4
+	LOD7Length		18
+	LOD7UVScale		1.000000 100.000000
+	LOD7DistanceMappingScale		0.000000
+	LOD8ZDist		150.000000
+	LOD8Width		3
+	LOD8Length		10
+	LOD8UVScale		1.000000 100.000000
+	LOD8DistanceMappingScale		0.000000
+	LOD9ZDist		4.000000
+	LOD9Width		5
+	LOD9Length		40
+	LOD9UVScale		1.000000 100.000000
+	LOD9DistanceMappingScale		5.000000
+	LOD10ZDist		12.000000
+	LOD10Width		4
+	LOD10Length		15
+	LOD10UVScale		1.000000 100.000000
+	LOD10DistanceMappingScale		5.000000
+	LOD11ZDist		80.000000
+	LOD11Width		3
+	LOD11Length		10
+	LOD11UVScale		1.000000 100.000000
+	LOD11DistanceMappingScale		5.000000
+	LOD12ZDist		4.000000
+	LOD12Width		5
+	LOD12Length		40
+	LOD12UVScale		1.000000 100.000000
+	LOD12DistanceMappingScale		35.000000
+	LOD13ZDist		12.000000
+	LOD13Width		4
+	LOD13Length		15
+	LOD13UVScale		1.000000 100.000000
+	LOD13DistanceMappingScale		10.000000
+	LOD14ZDist		80.000000
+	LOD14Width		3
+	LOD14Length		10
+	LOD14UVScale		1.000000 100.000000
+	LOD14DistanceMappingScale		10.000000
+}

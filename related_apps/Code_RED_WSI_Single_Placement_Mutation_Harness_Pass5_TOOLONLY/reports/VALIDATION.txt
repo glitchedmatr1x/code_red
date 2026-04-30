@@ -1,0 +1,17 @@
+Code RED — Pass 5 Validation
+
+Syntax parse: passed
+No-op copied-RPF run: passed
+Nudge copied-RPF run: passed
+Original archive modified: no
+In-place edits allowed: no
+Target host: i_gen_wagonBroken02x
+Record offset: 0x0011C7E0
+Mode: nudge-position
+Position before: [723.793213, 79.2099, 1419.701904, nan]
+Position after: [723.793213, 79.2099, 1419.951904, nan]
+Changed ranges: 1
+Output archive: EXPERIMENTAL_COPY_DO_NOT_OVERWRITE/blackwater_nudge_z025_single_placement_test.rpf
+
+Result:
+Pass 5 is ready for a first tiny visual field experiment.

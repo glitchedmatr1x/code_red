@@ -1,0 +1,278 @@
+{
+  "tool": "codered_wsi_single_placement_mutation_harness.py",
+  "purpose": "copied-RPF one-placement mutation/reopen proof",
+  "source_archive": "/mnt/data/codered_run/blackwater.rpf",
+  "output_archive": "reports/blackwater_single_placement_mutation_outputs/blackwater_nudge_z025_single_placement_test.rpf",
+  "source_archive_sha1": "f1f83ed55295b203e8f19c0f05733a166be50c4d",
+  "output_archive_sha1": "37af502b60f7e9f405c70c92f0468416feecca64",
+  "source_archive_size": 64487424,
+  "output_archive_size": 64990274,
+  "wsi_entry_before": {
+    "index": 224,
+    "name_hash": 428056473,
+    "name": "0x19839F99",
+    "path": "root/0x3EC4B1F5/0x3EC4B1F5/0x19839F99",
+    "parent_index": 56,
+    "type": "file",
+    "start": 0,
+    "count": 0,
+    "size": 457998,
+    "offset_raw": 2694,
+    "offset": 20480,
+    "flag1": 3221236013,
+    "flag2": 0,
+    "resource": true,
+    "compressed": true,
+    "resource_type": 134,
+    "total": 172032,
+    "ext": ""
+  },
+  "wsi_entry_after_reopen": {
+    "index": 224,
+    "name_hash": 428056473,
+    "name": "0x19839F99",
+    "path": "root/0x3EC4B1F5/0x3EC4B1F5/0x19839F99",
+    "parent_index": 56,
+    "type": "file",
+    "start": 0,
+    "count": 0,
+    "size": 502850,
+    "offset_raw": 8061062,
+    "offset": 64487424,
+    "flag1": 3221236013,
+    "flag2": 0,
+    "resource": true,
+    "compressed": true,
+    "resource_type": 134,
+    "total": 172032,
+    "ext": ""
+  },
+  "decoded_sha1_before": "b573a802ce71fba9facdb3cf7a9639e99e276754",
+  "decoded_sha1_after": "7bc1540b4ff2b1d04d72cc08aa78979923b1a366",
+  "decoded_sha1_after_reopen": "7bc1540b4ff2b1d04d72cc08aa78979923b1a366",
+  "rsc_header_hex": "52534305860300002d2900c0",
+  "old_resource_size": 457998,
+  "new_resource_size": 502850,
+  "new_resource_archive_offset": 64487424,
+  "new_resource_archive_offset_hex": "0x03D80000",
+  "record_offset": 1165280,
+  "record_offset_hex": "0x0011C7E0",
+  "expected_host": "i_gen_wagonBroken02x",
+  "record_before": {
+    "record_offset": 1165280,
+    "record_offset_hex": "0x0011C7E0",
+    "record_size": 224,
+    "record_vft_hex": "0x01913300",
+    "matrix_row0_guess": [
+      0.239398,
+      -0.253135,
+      -0.937343,
+      "nan"
+    ],
+    "matrix_row1_guess": [
+      0.109574,
+      0.966292,
+      -0.232967,
+      "nan"
+    ],
+    "matrix_row2_guess": [
+      0.964719,
+      -0.046936,
+      0.259066,
+      "nan"
+    ],
+    "matrix_row3_position_guess": [
+      723.793213,
+      79.2099,
+      1419.701904,
+      "nan"
+    ],
+    "position_guess": [
+      723.793213,
+      79.2099,
+      1419.701904
+    ],
+    "bbox_min_guess": [
+      719.840637,
+      79.106247,
+      1418.24707,
+      3.450572
+    ],
+    "bbox_max_guess": [
+      724.79303,
+      81.841583,
+      1422.198975,
+      1.367668
+    ],
+    "instance_hash_guess_hex": "0xAC84C193",
+    "drawable_flags_guess_hex": "0xCD000009",
+    "name_ptr_rel_guess": 184,
+    "record_name_ptr_hex": "0x5022891B",
+    "record_name_offset_hex": "0x0022891B",
+    "record_name": "i_gen_wagonBroken02x",
+    "record_sha1": "1bb6fdf8f9a60738085cce949988aea124e574c5"
+  },
+  "record_after": {
+    "record_offset": 1165280,
+    "record_offset_hex": "0x0011C7E0",
+    "record_size": 224,
+    "record_vft_hex": "0x01913300",
+    "matrix_row0_guess": [
+      0.239398,
+      -0.253135,
+      -0.937343,
+      "nan"
+    ],
+    "matrix_row1_guess": [
+      0.109574,
+      0.966292,
+      -0.232967,
+      "nan"
+    ],
+    "matrix_row2_guess": [
+      0.964719,
+      -0.046936,
+      0.259066,
+      "nan"
+    ],
+    "matrix_row3_position_guess": [
+      723.793213,
+      79.2099,
+      1419.951904,
+      "nan"
+    ],
+    "position_guess": [
+      723.793213,
+      79.2099,
+      1419.951904
+    ],
+    "bbox_min_guess": [
+      719.840637,
+      79.106247,
+      1418.24707,
+      3.450572
+    ],
+    "bbox_max_guess": [
+      724.79303,
+      81.841583,
+      1422.198975,
+      1.367668
+    ],
+    "instance_hash_guess_hex": "0xAC84C193",
+    "drawable_flags_guess_hex": "0xCD000009",
+    "name_ptr_rel_guess": 184,
+    "record_name_ptr_hex": "0x5022891B",
+    "record_name_offset_hex": "0x0022891B",
+    "record_name": "i_gen_wagonBroken02x",
+    "record_sha1": "2409836a7f62a26fa79940258fb2e371a4d7ea63"
+  },
+  "record_after_reopen": {
+    "record_offset": 1165280,
+    "record_offset_hex": "0x0011C7E0",
+    "record_size": 224,
+    "record_vft_hex": "0x01913300",
+    "matrix_row0_guess": [
+      0.239398,
+      -0.253135,
+      -0.937343,
+      "nan"
+    ],
+    "matrix_row1_guess": [
+      0.109574,
+      0.966292,
+      -0.232967,
+      "nan"
+    ],
+    "matrix_row2_guess": [
+      0.964719,
+      -0.046936,
+      0.259066,
+      "nan"
+    ],
+    "matrix_row3_position_guess": [
+      723.793213,
+      79.2099,
+      1419.951904,
+      "nan"
+    ],
+    "position_guess": [
+      723.793213,
+      79.2099,
+      1419.951904
+    ],
+    "bbox_min_guess": [
+      719.840637,
+      79.106247,
+      1418.24707,
+      3.450572
+    ],
+    "bbox_max_guess": [
+      724.79303,
+      81.841583,
+      1422.198975,
+      1.367668
+    ],
+    "instance_hash_guess_hex": "0xAC84C193",
+    "drawable_flags_guess_hex": "0xCD000009",
+    "name_ptr_rel_guess": 184,
+    "record_name_ptr_hex": "0x5022891B",
+    "record_name_offset_hex": "0x0022891B",
+    "record_name": "i_gen_wagonBroken02x",
+    "record_sha1": "2409836a7f62a26fa79940258fb2e371a4d7ea63"
+  },
+  "record_bytes_before_hex": "00339101000080bf00000000000000007f9618cbf02374c9804fc3c709080000e0c77f2b00000000000000000000000000000000ffff00000000000000000000c024753ee99a81beb6f56fbf0100807f5568e03dea5e773fe78e6ebe0100807fd3f7763ff73f40bd4ca4843e0100807fc4f23444786b9e427676b1440100807fcdf5334466369e42e847b1442dd65c40c1323544e4aea3425ec6b144c00faf3f93c184ac010000000100000000000000090000cdcdcdcdcd1b892250000000000000000000000000000000000000000000000000000000000000000000000000",
+  "record_bytes_after_hex": "00339101000080bf00000000000000007f9618cbf02374c9804fc3c709080000e0c77f2b00000000000000000000000000000000ffff00000000000000000000c024753ee99a81beb6f56fbf0100807f5568e03dea5e773fe78e6ebe0100807fd3f7763ff73f40bd4ca4843e0100807fc4f23444786b9e42767eb1440100c07fcdf5334466369e42e847b1442dd65c40c1323544e4aea3425ec6b144c00faf3f93c184ac010000000100000000000000090000cdcdcdcdcd1b892250000000000000000000000000000000000000000000000000000000000000000000000000",
+  "mutation": {
+    "mode": "nudge-position",
+    "position_field_offset": 1165392,
+    "position_field_offset_hex": "0x0011C850",
+    "before_position": [
+      723.793213,
+      79.2099,
+      1419.701904,
+      NaN
+    ],
+    "after_position": [
+      723.793213,
+      79.2099,
+      1419.951904,
+      NaN
+    ],
+    "changed_ranges": [
+      {
+        "field": "matrix_row3_position_guess",
+        "decoded_offset": 1165392,
+        "decoded_offset_hex": "0x0011C850",
+        "old_hex": "c4f23444786b9e427676b1440100807f",
+        "new_hex": "c4f23444786b9e42767eb1440100c07f",
+        "before_position": [
+          723.793213,
+          79.2099,
+          1419.701904,
+          NaN
+        ],
+        "after_position": [
+          723.793213,
+          79.2099,
+          1419.951904,
+          NaN
+        ]
+      }
+    ],
+    "changed_byte_count": 16
+  },
+  "verification": {
+    "archive_reopened": true,
+    "wsi_entry_path_preserved": true,
+    "decoded_payload_matches_written_payload": true,
+    "record_sha1_matches_after": true,
+    "host_name_preserved": true,
+    "mode": "nudge-position"
+  },
+  "validation_passed": true,
+  "rollback": {
+    "delete_output_archive": "reports/blackwater_single_placement_mutation_outputs/blackwater_nudge_z025_single_placement_test.rpf",
+    "original_archive_was_not_modified": true
+  },
+  "next_safe_action": "Use mode nudge-position as the first visual-only copied-RPF test. Do not attempt Vehicle_Generator binding until this exact placement change is confirmed in-game."
+}

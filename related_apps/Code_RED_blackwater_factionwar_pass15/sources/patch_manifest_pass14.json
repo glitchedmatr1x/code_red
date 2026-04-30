@@ -1,0 +1,488 @@
+{
+  "name": "Code RED Blackwater Chaos Pass 14",
+  "based_on": "Code_RED_faction_war_pass13_combined",
+  "principle": "Retain every successful Pass 13 lane, then append Blackwater law/duel/standoff pressure and lasso tuning.",
+  "outputs": {
+    "archives/content.rpf": {
+      "bytes": 21924960,
+      "sha256": "456098ccc6d930c9acb86425ff5be5d391b2e7e003541eb5990588af9aa98539"
+    },
+    "archives/tune_d11generic.rpf": {
+      "bytes": 19251492,
+      "sha256": "e73e8a24d7734fbf4df55f7991fd496f4bbfadae9756907b0c4cf7d6185c6081"
+    }
+  },
+  "content_changes": [
+    "Retained Pass 13 empty-world/faction-war event placement lanes.",
+    "Added CodeRED Blackwater Chaos Main Roads allow set.",
+    "Injected law response, bountyhunter, wanted-poster, nightwatch, holdup, horsethief, abduction, duel, and 1v1 event names into road/trail/all placement sets.",
+    "Injected posse/bountyhunter/rowdy-gang/lone-lawman pressure into wilderness sets while retaining transport/rescue/campfire/wagon/chase lanes.",
+    "Used append relocation for placementglobals.xml to avoid same-slot compressed payload limits."
+  ],
+  "tune_changes": [
+    "lasso.tune: longer/stronger rope physics.",
+    "base_lasso.weap: longer AI range, faster aim/fire, longer desired engagement distance.",
+    "sheriff.xml: stronger lasso hold and faster duel initial draw timing."
+  ],
+  "stringtable_research": {
+    "global_strtbl": {
+      "path": "root/tune/stringtable/global.strtbl",
+      "bytes": 200874,
+      "offset": 18835456,
+      "ascii_candidate_count": 4850,
+      "keyword_hits": {
+        "blackwater": {
+          "count": 1,
+          "sample": [
+            "grtv_blackwater"
+          ]
+        },
+        "duel": {
+          "count": 2,
+          "sample": [
+            "duel_help",
+            "proc_duel_first_help"
+          ]
+        },
+        "law": {
+          "count": 85,
+          "sample": [
+            "AE_Companion_OutLaw",
+            "AE_Law_Caucasian_Sheriff_Medium01",
+            "AE_Law_Caucasian_Sheriff_Medium02",
+            "AE_Law_Caucasian_Sheriff_Medium03",
+            "AE_Law_Caucasian_Sheriff_Medium04",
+            "AE_Law_Caucasian_Sheriff_Medium05",
+            "AE_Law_Caucasian_Sheriff_Medium06",
+            "AE_Law_Caucasian_TownPosse_Easy01",
+            "AE_Law_Caucasian_TownPosse_Easy02",
+            "AE_Law_Caucasian_TownPosse_Easy03",
+            "AE_Law_Caucasian_TownPosse_Easy04",
+            "AE_Law_Caucasian_TownPosse_Easy05",
+            "AE_Law_Caucasian_TownPosse_Easy06",
+            "AE_Law_Caucasian_USMarshal_Hard01",
+            "AE_Law_Caucasian_USMarshal_Hard02",
+            "AE_Law_Caucasian_USMarshal_Hard03",
+            "AE_Law_Caucasian_USMarshal_Hard04",
+            "AE_Law_Caucasian_USMarshal_Hard05",
+            "AE_Law_Caucasian_USMarshal_Hard06",
+            "AE_Law_Mexican_CorruptOfficial_Medium01",
+            "AE_Law_Mexican_CorruptOfficial_Medium02",
+            "AE_Law_Mexican_CorruptOfficial_Medium03",
+            "AE_Law_Mexican_CorruptOfficial_Medium04",
+            "AE_Law_Mexican_CorruptOfficial_Medium05",
+            "AE_Law_Mexican_CorruptOfficial_Medium06",
+            "AE_Law_Mexican_PuebloPosse_Easy01",
+            "AE_Law_Mexican_PuebloPosse_Easy02",
+            "AE_Law_Mexican_PuebloPosse_Easy03",
+            "AE_Law_Mexican_PuebloPosse_Easy04",
+            "AE_Law_Mexican_PuebloPosse_Easy05",
+            "AE_Law_Mexican_PuebloPosse_Easy06",
+            "AE_MISC_Outlaw_01",
+            "comp_intro_outlaw01",
+            "CRM_ASSLT_LAW",
+            "CRM_KIDNAP_LAW",
+            "CRM_MURDR_LAW",
+            "CRM_THREAT_LAW",
+            "law_bounty_amount",
+            "law_bounty_amount_add",
+            "law_bounty_cleared"
+          ]
+        },
+        "lasso": {
+          "count": 1,
+          "sample": [
+            "LASSO"
+          ]
+        },
+        "sheriff": {
+          "count": 6,
+          "sample": [
+            "AE_Law_Caucasian_Sheriff_Medium01",
+            "AE_Law_Caucasian_Sheriff_Medium02",
+            "AE_Law_Caucasian_Sheriff_Medium03",
+            "AE_Law_Caucasian_Sheriff_Medium04",
+            "AE_Law_Caucasian_Sheriff_Medium05",
+            "AE_Law_Caucasian_Sheriff_Medium06"
+          ]
+        },
+        "marshal": {
+          "count": 21,
+          "sample": [
+            "AE_Companion_Marshal",
+            "AE_Law_Caucasian_USMarshal_Hard01",
+            "AE_Law_Caucasian_USMarshal_Hard02",
+            "AE_Law_Caucasian_USMarshal_Hard03",
+            "AE_Law_Caucasian_USMarshal_Hard04",
+            "AE_Law_Caucasian_USMarshal_Hard05",
+            "AE_Law_Caucasian_USMarshal_Hard06",
+            "AE_MISC_Deputy_Marshal01",
+            "AE_MISC_Deputy_Marshal02",
+            "AE_MISC_Deputy_Marshal03",
+            "comp_intro_marshal01",
+            "Marshal_abandoned",
+            "Marshal_attacked",
+            "Marshal_attacked_horse",
+            "Marshal_dead",
+            "Marshal_horse_dead",
+            "Marshal_return",
+            "trainmarshal_help",
+            "tutorial_law_marshal_end",
+            "tutorial_law_marshal_generated",
+            "tutorial_law_marshal_spawn"
+          ]
+        },
+        "gang": {
+          "count": 59,
+          "sample": [
+            "AE_Gang_BANDITO_Easy01",
+            "AE_Gang_BANDITO_Easy02",
+            "AE_Gang_BANDITO_Easy03",
+            "AE_Gang_BANDITO_Hard01",
+            "AE_Gang_BANDITO_Hard02",
+            "AE_Gang_BANDITO_Hard03",
+            "AE_Gang_BANDITO_Medium01",
+            "AE_Gang_BANDITO_Medium02",
+            "AE_Gang_BANDITO_Medium03",
+            "AE_Gang_CATTLERUSTLER_Easy01",
+            "AE_Gang_CATTLERUSTLER_Easy02",
+            "AE_Gang_CATTLERUSTLER_Easy03",
+            "AE_Gang_CATTLERUSTLER_Hard01",
+            "AE_Gang_CATTLERUSTLER_Hard02",
+            "AE_Gang_CATTLERUSTLER_Hard03",
+            "AE_Gang_CATTLERUSTLER_Medium01",
+            "AE_Gang_CATTLERUSTLER_Medium02",
+            "AE_Gang_CATTLERUSTLER_Medium03",
+            "AE_Gang_CRAZYMINER_Easy01",
+            "AE_Gang_CRAZYMINER_Easy02",
+            "AE_Gang_CRAZYMINER_Easy03",
+            "AE_Gang_CRAZYMINER_Hard01",
+            "AE_Gang_CRAZYMINER_Hard02",
+            "AE_Gang_CRAZYMINER_Hard03",
+            "AE_Gang_CRAZYMINER_Medium01",
+            "AE_Gang_CRAZYMINER_Medium02",
+            "AE_Gang_CRAZYMINER_Medium03",
+            "AE_Gang_DRUNKNDIRTY_Easy01",
+            "AE_Gang_DRUNKNDIRTY_Easy02",
+            "AE_Gang_DRUNKNDIRTY_Easy03",
+            "AE_Gang_DRUNKNDIRTY_Hard01",
+            "AE_Gang_DRUNKNDIRTY_Hard02",
+            "AE_Gang_DRUNKNDIRTY_Hard03",
+            "AE_Gang_DRUNKNDIRTY_Medium01",
+            "AE_Gang_DRUNKNDIRTY_Medium02",
+            "AE_Gang_DRUNKNDIRTY_Medium03",
+            "AE_Gang_IndianRAIDER_Easy01",
+            "AE_Gang_IndianRAIDER_Easy02",
+            "AE_Gang_IndianRAIDER_Easy03",
+            "AE_Gang_IndianRAIDER_Hard01"
+          ]
+        },
+        "wanted": {
+          "count": 7,
+          "sample": [
+            "Camp_Not_WANTED",
+            "get_wanted_poster",
+            "get_wanted_poster_ground",
+            "law_wanted",
+            "missionFail_playerWanted",
+            "tutorial_law_rewanted",
+            "WANTED_POSTER"
+          ]
+        },
+        "weapon": {
+          "count": 3,
+          "sample": [
+            "Open_WeaponBox",
+            "stat_new_weapon",
+            "Use_Weapon"
+          ]
+        },
+        "standoff": {
+          "count": 0,
+          "sample": []
+        },
+        "unarmed": {
+          "count": 0,
+          "sample": []
+        },
+        "holster": {
+          "count": 0,
+          "sample": []
+        },
+        "alert": {
+          "count": 2,
+          "sample": [
+            "Common_Alert",
+            "NetBlockAlert_PriveledgesMP"
+          ]
+        },
+        "crime": {
+          "count": 1,
+          "sample": [
+            "tutorial_unlock_crimes"
+          ]
+        },
+        "bounty": {
+          "count": 17,
+          "sample": [
+            "bounty_clear_no_funds",
+            "bounty_cleared",
+            "bounty_cleared_partial",
+            "clear_bounty",
+            "job_type_bounty_fro",
+            "job_type_bounty_mex",
+            "job_type_bounty_nor",
+            "law_bounty_amount",
+            "law_bounty_amount_add",
+            "law_bounty_cleared",
+            "mission_clear_bounty",
+            "proc_bounty_first_help",
+            "tutorial_bounty_clear_first",
+            "tutorial_bounty_clear_first2",
+            "tutorial_law_bounty_end",
+            "tutorial_law_bounty_generated",
+            "tutorial_law_bounty_spawn"
+          ]
+        }
+      }
+    },
+    "tune_stringtable_entries": [
+      {
+        "path": "root/tune/stringtable",
+        "bytes": 0,
+        "offset": 17179882760
+      },
+      {
+        "path": "root/tune/stringtable/global.strtbl",
+        "bytes": 200874,
+        "offset": 18835456
+      }
+    ],
+    "content_stringtable_entries": [
+      {
+        "path": "root/content/dlc/mooutfitspack/dlctuerrormsg.strtbl",
+        "bytes": 2422,
+        "offset": 19164824
+      },
+      {
+        "path": "root/content/dlc/mooutfitspack/mooutfitspack_ps3.strtbl",
+        "bytes": 37017,
+        "offset": 19215528
+      },
+      {
+        "path": "root/content/dlc/mooutfitspack/dlctuerrormsg_ps3.strtbl",
+        "bytes": 2610,
+        "offset": 19168408
+      },
+      {
+        "path": "root/content/dlc/mooutfitspack/mooutfitspack.strtbl",
+        "bytes": 37017,
+        "offset": 19171024
+      },
+      {
+        "path": "root/content/dlc/zombiepack/dlctuerrormsg.strtbl",
+        "bytes": 2422,
+        "offset": 19252832
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack.strtbl",
+        "bytes": 883572,
+        "offset": 19369984
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack_statoverload.strtbl",
+        "bytes": 18425,
+        "offset": 21840072
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack_mp.strtbl",
+        "bytes": 160426,
+        "offset": 20410368
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack_sp_fix_ps3.strtbl",
+        "bytes": 27209,
+        "offset": 21675080
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack_standalone_ps3.strtbl",
+        "bytes": 61228,
+        "offset": 21778840
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack_ps3.strtbl",
+        "bytes": 883688,
+        "offset": 20756480
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack_standalone.strtbl",
+        "bytes": 61228,
+        "offset": 21702296
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack_mp_ps3.strtbl",
+        "bytes": 160544,
+        "offset": 20594688
+      },
+      {
+        "path": "root/content/dlc/zombiepack/dlctuerrormsg_ps3.strtbl",
+        "bytes": 2610,
+        "offset": 19256416
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack_statoverload_ps3.strtbl",
+        "bytes": 18425,
+        "offset": 21861104
+      },
+      {
+        "path": "root/content/dlc/zombiepack/zombiepack_sp_fix.strtbl",
+        "bytes": 27183,
+        "offset": 21640176
+      }
+    ],
+    "standalone_stringtables_rpf": "No standalone stringtables.rpf file was present/extracted in the workspace; accessible string-table coverage was global.strtbl plus content DLC .strtbl entries."
+  },
+  "validation": {
+    "content_magic": "RPF6",
+    "content_entries": 1636,
+    "tune_magic": "RPF6",
+    "tune_entries": 2017,
+    "placement_entry_index": 48,
+    "placement_offset": 21923760,
+    "placement_compressed_size": 1200,
+    "placement_uncompressed_size": 13270,
+    "placement_xml_parse": true,
+    "pass13_retained": {
+      "CodeRED Empty World Activity": true,
+      "beacon_transport_defend": true,
+      "beacon_transport_simple": true,
+      "beat_crime_wagonthief": true,
+      "event_broken_wagon01": true,
+      "event_criminal_chase": true,
+      "tevent_rowdy_gangs": true,
+      "tevent_lone_lawman": true,
+      "event_roadside_ambush": true,
+      "beat_roadside_robbery": true
+    },
+    "pass14_blackwater_added": {
+      "CodeRED Blackwater Chaos Main Roads": true,
+      "event_law_report_crime": true,
+      "event_law_repsonse_ai": true,
+      "event_law_repsonse_local": true,
+      "event_law_repsonse_posse": true,
+      "event_law_repsonse_bounty": true,
+      "event_law_repsonse_special": true,
+      "event_law_repsonse_stickup": true,
+      "job_nightwatch": true,
+      "event_bountyhunter": true,
+      "event_wanted_poster": true,
+      "beat_crime_holdup": true,
+      "beat_crime_horsethief": true,
+      "beat_town_abduction": true,
+      "beat_duel_notoriety": true,
+      "beat_duel_rude": true,
+      "beat_duel_lowhonor": true,
+      "first_time_duel": true,
+      "event_generic_1v1": true
+    },
+    "script_presence": {
+      "beat_duel_notoriety": [
+        "root/content/release64/ambient/town/beat_duel_notoriety.wsc"
+      ],
+      "beat_duel_rude": [
+        "root/content/release64/ambient/town/beat_duel_rude.wsc"
+      ],
+      "beat_duel_lowhonor": [
+        "root/content/release64/ambient/town/beat_duel_lowhonor.wsc"
+      ],
+      "first_time_duel": [
+        "root/content/release64/ambient/town/first_time_duel.wsc"
+      ],
+      "event_generic_1v1": [
+        "root/content/release64/ambient/roaming/event_generic_1v1.wsc"
+      ],
+      "event_law_repsonse_ai": [
+        "root/content/release64/ambient/crimeresponse/event_law_repsonse_ai.wsc"
+      ],
+      "event_law_repsonse_bounty": [
+        "root/content/release64/ambient/crimeresponse/event_law_repsonse_bounty.wsc"
+      ],
+      "event_law_repsonse_local": [
+        "root/content/release64/ambient/crimeresponse/event_law_repsonse_local.wsc"
+      ],
+      "event_law_repsonse_special": [
+        "root/content/release64/ambient/crimeresponse/event_law_repsonse_special.wsc"
+      ],
+      "event_law_repsonse_wild": [
+        "root/content/release64/ambient/crimeresponse/event_law_repsonse_wild.wsc"
+      ],
+      "event_law_repsonse_posse": [
+        "root/content/release64/ambient/crimeresponse/event_law_repsonse_posse.wsc"
+      ],
+      "event_law_repsonse_stickup": [
+        "root/content/release64/ambient/crimeresponse/event_law_repsonse_stickup.wsc"
+      ],
+      "event_bountyhunter": [
+        "root/content/release64/ambient/pointofinterest/event_bountyhunter.wsc",
+        "root/content/release64/dlc/zombiepack/missingpersons/event_bountyhunter_z.sco",
+        "root/content/release64/dlc/zombiepack/missingpersons/event_bountyhunter_z.wsc"
+      ],
+      "job_nightwatch": [
+        "root/content/release64/ambient/jobsystem/job_nightwatch.wsc"
+      ],
+      "beat_crime_holdup": [
+        "root/content/release64/ambient/town/beat_crime_holdup.wsc"
+      ],
+      "beat_crime_horsethief": [
+        "root/content/release64/ambient/town/beat_crime_horsethief.wsc"
+      ],
+      "beat_town_abduction": [
+        "root/content/release64/ambient/town/beat_town_abduction.wsc"
+      ],
+      "tevent_rowdy_gangs": [
+        "root/content/release64/ambient/traffic/tevent_rowdy_gangs.wsc"
+      ],
+      "tevent_lone_lawman": [
+        "root/content/release64/ambient/traffic/tevent_lone_lawman.wsc"
+      ]
+    },
+    "tune_checks": {
+      "root/tune/settings/lasso.tune": {
+        "extracts": true,
+        "size": 393,
+        "offset": 19247616,
+        "contains_expected": {
+          "35.000000": true,
+          "18.000000": true,
+          "15000.000000": true,
+          "8.000000": true,
+          "1.500000": true
+        }
+      },
+      "root/tune/settings/weapons/base_lasso.weap": {
+        "extracts": true,
+        "size": 1045,
+        "offset": 19248016,
+        "contains_expected": {
+          "35.000000": true,
+          "18.000000": true,
+          "15000.000000": false,
+          "8.000000": true,
+          "1.500000": false
+        }
+      },
+      "root/tune/asd/sheriff.xml": {
+        "extracts": true,
+        "size": 2428,
+        "offset": 19249064,
+        "contains_expected": {
+          "35.000000": true,
+          "18.000000": false,
+          "15000.000000": false,
+          "8.000000": true,
+          "1.500000": true
+        }
+      }
+    }
+  }
+}

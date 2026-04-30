@@ -1,0 +1,514 @@
+{
+  "pass": "Vehicle Spawn Research / Trainer-Style Runtime Path",
+  "mode": "read-only research",
+  "counts": {
+    "vehicle_spawn_strings": 164,
+    "vehicle_tokens": 7,
+    "gringo_vehicle_callsite_candidates": 37,
+    "candidate_wsc_scripts": 94
+  },
+  "top_strings": [
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 18844465,
+      "raw_offset_hex": "0x011F8B31",
+      "text": "AE_Companion_FBI",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "companion|fbi",
+      "score": 5
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 18876445,
+      "raw_offset_hex": "0x0120081D",
+      "text": "tutorial_law_posse_spawn",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "spawn|posse",
+      "score": 5
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 4821294,
+      "raw_offset_hex": "0x0049912E",
+      "text": "*v)fBI",
+      "source": "raw_strings_scan",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 9184288,
+      "raw_offset_hex": "0x008C2420",
+      "text": "~,Fbi",
+      "source": "raw_strings_scan",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 10158191,
+      "raw_offset_hex": "0x009B006F",
+      "text": "&fbI",
+      "source": "raw_strings_scan",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 19397955,
+      "raw_offset_hex": "0x0127FD43",
+      "text": "mp_gy_safe_spawned",
+      "source": "raw_strings_scan",
+      "keyword_hits": "spawn",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 19398093,
+      "raw_offset_hex": "0x0127FDCD",
+      "text": "mp_gy_weapon_spawned",
+      "source": "raw_strings_scan",
+      "keyword_hits": "spawn",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 20411300,
+      "raw_offset_hex": "0x013773A4",
+      "text": "mp_gy_safe_spawned",
+      "source": "raw_strings_scan",
+      "keyword_hits": "spawn",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 20411438,
+      "raw_offset_hex": "0x0137742E",
+      "text": "mp_gy_weapon_spawned",
+      "source": "raw_strings_scan",
+      "keyword_hits": "spawn",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 20595620,
+      "raw_offset_hex": "0x013A43A4",
+      "text": "mp_gy_safe_spawned",
+      "source": "raw_strings_scan",
+      "keyword_hits": "spawn",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 20595758,
+      "raw_offset_hex": "0x013A442E",
+      "text": "mp_gy_weapon_spawned",
+      "source": "raw_strings_scan",
+      "keyword_hits": "spawn",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 20784451,
+      "raw_offset_hex": "0x013D2543",
+      "text": "mp_gy_safe_spawned",
+      "source": "raw_strings_scan",
+      "keyword_hits": "spawn",
+      "score": 4
+    },
+    {
+      "archive": "content.rpf",
+      "raw_offset": 20784589,
+      "raw_offset_hex": "0x013D25CD",
+      "text": "mp_gy_weapon_spawned",
+      "source": "raw_strings_scan",
+      "keyword_hits": "spawn",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 3182219,
+      "raw_offset_hex": "0x00308E8B",
+      "text": "fBiK",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 3770112,
+      "raw_offset_hex": "0x00398700",
+      "text": "Fbiw",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 5955783,
+      "raw_offset_hex": "0x005AE0C7",
+      "text": "FBI,\\4Z",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 6338654,
+      "raw_offset_hex": "0x0060B85E",
+      "text": "6FBI",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 9035113,
+      "raw_offset_hex": "0x0089DD69",
+      "text": "j=(-/(FBi",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 9384465,
+      "raw_offset_hex": "0x008F3211",
+      "text": "xFbi",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 11359573,
+      "raw_offset_hex": "0x00AD5555",
+      "text": "fBi(",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 12475400,
+      "raw_offset_hex": "0x00BE5C08",
+      "text": "1FbiW",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 13734709,
+      "raw_offset_hex": "0x00D19335",
+      "text": "LfBI",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 15587969,
+      "raw_offset_hex": "0x00EDDA81",
+      "text": "FBi@",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 18851768,
+      "raw_offset_hex": "0x011FA7B8",
+      "text": "AE_MISC_FBI_Agent01",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    },
+    {
+      "archive": "tune_d11generic.rpf",
+      "raw_offset": 18851792,
+      "raw_offset_hex": "0x011FA7D0",
+      "text": "AE_MISC_FBI_Agent02",
+      "source": "raw_strings_scan_head",
+      "keyword_hits": "fbi",
+      "score": 4
+    }
+  ],
+  "top_gringo_calls": [
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x0003BED0",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator",
+      "activation_radius": "200.0",
+      "child_count": "2",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "0"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x0003CF24",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator",
+      "activation_radius": "200.0",
+      "child_count": "2",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "0"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x0003D398",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\car_gringo",
+      "activation_radius": "200.0",
+      "child_count": "0",
+      "instanced_item_count": "0",
+      "critical": "1",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x0003D93C",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator",
+      "activation_radius": "200.0",
+      "child_count": "2",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "0"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x0003F570",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TrainGringo.sc",
+      "activation_radius": "20.0",
+      "child_count": "1",
+      "instanced_item_count": "3",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x000420A8",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Vehicle_Brain",
+      "activation_radius": "2147483648.0",
+      "child_count": "0",
+      "instanced_item_count": "0",
+      "critical": "1",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00042308",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Train_Brain",
+      "activation_radius": "2147483648.0",
+      "child_count": "7",
+      "instanced_item_count": "0",
+      "critical": "1",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x000436A0",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\ClimbOntoWagon",
+      "activation_radius": "0.75",
+      "child_count": "1",
+      "instanced_item_count": "3",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00044150",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TrainSitGringo",
+      "activation_radius": "0.0",
+      "child_count": "2",
+      "instanced_item_count": "8",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00045B70",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator",
+      "activation_radius": "200.0",
+      "child_count": "2",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "0"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x000461F8",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TurretAttachMover",
+      "activation_radius": "0.0",
+      "child_count": "3",
+      "instanced_item_count": "12",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00046374",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\train_conductor",
+      "activation_radius": "0.0",
+      "child_count": "1",
+      "instanced_item_count": "7",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x000466B8",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TurretAttachMover",
+      "activation_radius": "0.0",
+      "child_count": "4",
+      "instanced_item_count": "16",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x000467E8",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TurretAttachMover",
+      "activation_radius": "0.0",
+      "child_count": "1",
+      "instanced_item_count": "5",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x000471B4",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TrainGringo",
+      "activation_radius": "100.0",
+      "child_count": "1",
+      "instanced_item_count": "3",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x000474AC",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TrainGringo",
+      "activation_radius": "100.0",
+      "child_count": "1",
+      "instanced_item_count": "3",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00047D94",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TrainGringo",
+      "activation_radius": "100.0",
+      "child_count": "1",
+      "instanced_item_count": "3",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00048598",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TrainFootlocker",
+      "activation_radius": "100.0",
+      "child_count": "1",
+      "instanced_item_count": "8",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00049508",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator",
+      "activation_radius": "200.0",
+      "child_count": "2",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "0"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00049768",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\trainCar_gringo",
+      "activation_radius": "200.0",
+      "child_count": "0",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x000497B4",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\trainCarArmored_gringo",
+      "activation_radius": "200.0",
+      "child_count": "0",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00049930",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\trainCarBaggage_gringo",
+      "activation_radius": "200.0",
+      "child_count": "0",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00049A60",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\trainCarBox01_gringo",
+      "activation_radius": "200.0",
+      "child_count": "0",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00049AAC",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\TrainSitGringo",
+      "activation_radius": "0.0",
+      "child_count": "2",
+      "instanced_item_count": "7",
+      "critical": "0",
+      "maintain_state": "1"
+    },
+    {
+      "source_file": "commongringos.wgd.decoded",
+      "offset_hex": "0x00049AF8",
+      "component_type": "ItemGringo",
+      "script_name": "content\\scripting\\gringo\\CommonScripts\\trainCarBox02_gringo",
+      "activation_radius": "200.0",
+      "child_count": "0",
+      "instanced_item_count": "0",
+      "critical": "0",
+      "maintain_state": "1"
+    }
+  ]
+}

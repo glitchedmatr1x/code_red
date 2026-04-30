@@ -1,0 +1,28 @@
+Code RED WSI Host Placement Resolver Pass validation
+
+Syntax:
+- Python 3.13 direct compile(): PASS
+
+Actual Blackwater decoded WSI run:
+- decoded input: /mnt/data/codered_run/blackwater_type134/0224_0x19839F99.wsi.decoded
+- decoded size: 2465792
+- decoded sha1: b573a802ce71fba9facdb3cf7a9639e99e276754
+- sectors parsed: 218
+- priority hosts scanned: 11
+- candidate rows produced: 34
+- safe candidate rows produced: 23
+- unresolved hosts: 2
+
+Resolved layout evidence:
+- props records: likely 0x30 stride, name pointer at +0x00, position float3 at +0x10
+- drawable_instances records: likely 0xE0 stride, name pointer at +0xB8, transform at +0x40/+0x70
+
+Best candidate:
+- i_gen_wagonBroken02x
+- drawable_instance_0xE0
+- record offset 0x0011C7E0
+- drawable_instances index 9
+- position [723.793213, 79.2099, 1419.701904]
+
+Zip integrity:
+- generated after validation

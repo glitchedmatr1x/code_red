@@ -1,0 +1,60 @@
+{
+  "output_archive": "reports/blackwater_single_placement_mutation_outputs/blackwater_nudge_z025_single_placement_test.rpf",
+  "proof": "reports/blackwater_single_placement_mutation_outputs/nudge_z025_single_placement_proof.json",
+  "validation_passed": true,
+  "mode": "nudge-position",
+  "record_after": {
+    "record_offset": 1165280,
+    "record_offset_hex": "0x0011C7E0",
+    "record_size": 224,
+    "record_vft_hex": "0x01913300",
+    "matrix_row0_guess": [
+      0.239398,
+      -0.253135,
+      -0.937343,
+      "nan"
+    ],
+    "matrix_row1_guess": [
+      0.109574,
+      0.966292,
+      -0.232967,
+      "nan"
+    ],
+    "matrix_row2_guess": [
+      0.964719,
+      -0.046936,
+      0.259066,
+      "nan"
+    ],
+    "matrix_row3_position_guess": [
+      723.793213,
+      79.2099,
+      1419.951904,
+      "nan"
+    ],
+    "position_guess": [
+      723.793213,
+      79.2099,
+      1419.951904
+    ],
+    "bbox_min_guess": [
+      719.840637,
+      79.106247,
+      1418.24707,
+      3.450572
+    ],
+    "bbox_max_guess": [
+      724.79303,
+      81.841583,
+      1422.198975,
+      1.367668
+    ],
+    "instance_hash_guess_hex": "0xAC84C193",
+    "drawable_flags_guess_hex": "0xCD000009",
+    "name_ptr_rel_guess": 184,
+    "record_name_ptr_hex": "0x5022891B",
+    "record_name_offset_hex": "0x0022891B",
+    "record_name": "i_gen_wagonBroken02x",
+    "record_sha1": "2409836a7f62a26fa79940258fb2e371a4d7ea63"
+  }
+}

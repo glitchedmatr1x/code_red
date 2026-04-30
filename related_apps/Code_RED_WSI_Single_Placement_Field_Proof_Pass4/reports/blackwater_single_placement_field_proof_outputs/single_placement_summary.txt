@@ -1,0 +1,10 @@
+Code RED decoded WSI single-placement field proof
+decoded_wsi=/mnt/data/codered_run/blackwater_type134/0224_0x19839F99.wsi.decoded
+decoded_size=2465792
+record_offset=0x0011C7E0
+record_name=i_gen_wagonBroken02x
+expected_host=i_gen_wagonBroken02x
+expected_host_matched=True
+position_guess=[723.793213, 79.2099, 1419.701904]
+record_sha1=1bb6fdf8f9a60738085cce949988aea124e574c5
+validation_passed=True
