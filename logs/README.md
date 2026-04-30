@@ -20,6 +20,7 @@ This folder is the working research index for Code RED. Keep dated research pass
 
 - `car_truck_inventory/` - live RPF car/truck metadata inventory, CSVs, and JSON.
 - `extracted_root_research/` - full extracted-root scan focused on vehicle spawning, cutscenes, gringos, and strings.
+- `terrainboundres_inventory/` - live `terrainboundres.rpf` WTB tile inventory and decoded sample report.
 
 ## Conventions
 

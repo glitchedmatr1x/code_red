@@ -75,6 +75,8 @@ Generated/organized: 2026-04-29
 | `CodeRED_WSI_Explorer_Pass_2026-04-29.md` | WSI explorer pass. |
 | `CodeRED_WSI_Semantic_Exporter_Pass_2026-04-29.md` | WSI semantic export pass. |
 | `CodeRED_WSI_Array_Walker_Pass_2026-04-29.md` | WSI array walker pass. |
+| `CodeRED_Terrainboundres_Tooling_Changelog_2026-04-30.md` | Terrain-bound RPF viewer/editor tooling changelog and usage. |
+| `terrainboundres_inventory/terrainboundres_inventory.md` | Live `terrainboundres.rpf` WTB inventory summary. |
 | `CodeRed_Navres_Terrain_Navigation_Findings_Pass12.txt` | Terrain/navres findings. |
 | `CodeRed_Navres_Psocache_Findings_Pass12_Update.txt` | Navres/psocache findings. |
 | `CodeRed_Refgroup_Parent_File_Findings_Pass12.txt` | Refgroup parent file findings. |
@@ -86,6 +88,7 @@ Generated/organized: 2026-04-29
 |---|---|
 | `car_truck_inventory/` | `car_truck_inventory.json`, `car_truck_inventory.md`, `live_rpf_entries.csv`, `reference_entries.csv` |
 | `extracted_root_research/` | `extracted_root_research.json`, `extracted_root_research.md`, `extracted_root_findings.csv`, `vehicle_spawning_findings.csv`, `cutscenes_findings.csv`, `gringos_findings.csv`, `strings_findings.csv`, `category_counts.csv`, `extension_counts.csv` |
+| `terrainboundres_inventory/` | `terrainboundres_inventory.json`, `terrainboundres_inventory.md`, `terrainboundres_entries.csv`, `terrainboundres_wtb_tiles.csv`, `terrainboundres_txt_sidecars.csv` |
 
 ## Operational Logs
 

@@ -28,4 +28,4 @@ Grid extent guess: x=1024..7616 y=6656..11712 cell=64
 - Source archives are never modified by this tool.
 - Use `export` to create a patchable extracted folder.
 - Use `patch-folder` to apply edited `.wtb` resources to a copied archive and verify by re-reading.
-- Decoded payload size must stay equal to the original entry total unless the RPF resource flag updater is extended for changed resource page totals.
+- Decoded payload size must stay equal to the original decoded WTB payload unless the RPF resource flag updater is extended for changed resource page totals.

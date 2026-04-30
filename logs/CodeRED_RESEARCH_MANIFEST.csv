@@ -23,6 +23,11 @@ content,MP Content RPF Research Addendum,CodeRED_MP_content_rpf_research_addendu
 world,WSI Explorer Pass,CodeRED_WSI_Explorer_Pass_2026-04-29.md,md,WSI explorer notes
 world,WSI Semantic Exporter Pass,CodeRED_WSI_Semantic_Exporter_Pass_2026-04-29.md,md,WSI semantic exporter notes
 world,WSI Array Walker Pass,CodeRED_WSI_Array_Walker_Pass_2026-04-29.md,md,WSI array walker notes
+terrain,Terrainboundres Tooling Changelog,CodeRED_Terrainboundres_Tooling_Changelog_2026-04-30.md,md,WTB terrain-bound viewer editor inventory and copied-archive patch workflow
+terrain,Terrainboundres Inventory Summary,terrainboundres_inventory/terrainboundres_inventory.md,md,Live terrainboundres RPF summary and decoded sample tiles
+terrain,Terrainboundres Inventory Data,terrainboundres_inventory/terrainboundres_inventory.json,json,Full terrainboundres inventory data
+terrain,Terrainboundres WTB Tiles,terrainboundres_inventory/terrainboundres_wtb_tiles.csv,csv,Flat WTB tile inventory with grid coordinate metadata
+terrain,Terrainboundres Entries,terrainboundres_inventory/terrainboundres_entries.csv,csv,All terrainboundres archive entries
 nav,Navres Terrain Navigation Findings,CodeRed_Navres_Terrain_Navigation_Findings_Pass12.txt,txt,Navres terrain navigation notes
 nav,Navres Psocache Findings,CodeRed_Navres_Psocache_Findings_Pass12_Update.txt,txt,Navres psocache notes
 world,Refgroup Parent File Findings,CodeRed_Refgroup_Parent_File_Findings_Pass12.txt,txt,Refgroup parent file findings
