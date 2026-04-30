@@ -1,0 +1,18 @@
+[
+  {
+    "source": "D:\\Games\\RDR-SteamGG.NET\\game\\content.rpf",
+    "output": "D:\\Games\\RDR-SteamGG.NET\\game\\codered_update_thread_hybrids_20260427_031059\\content_sp_owner.rpf",
+    "operations": [
+      {
+        "target": "root/content/release64/dlc/zombiepack/system/long_update_thread_z.wsc",
+        "target_suffix": "dlc/zombiepack/system/long_update_thread_z.wsc",
+        "donor": "root/content/release64/scripting/designerdefined/long_update_thread.wsc",
+        "donor_suffix": "scripting/designerdefined/long_update_thread.wsc",
+        "bytes": 84419,
+        "new_offset": 21523696,
+        "verified_raw_readback": true
+      }
+    ],
+    "variant": "sp_owner"
+  }
+]

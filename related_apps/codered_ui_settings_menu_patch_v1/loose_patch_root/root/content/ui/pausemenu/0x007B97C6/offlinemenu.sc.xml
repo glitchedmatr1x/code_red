@@ -1,0 +1,77 @@
+<scxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://t:\mc4\assets\tune\ui\scxml_mc4.xsd">
+  <onunfocused expr="Exit(Net_ContentLayer)"></onunfocused>
+  <UIPanel id="Net_ContentLayer" movie="quest_log"  AllowWrap="true">
+    <onactivate	  expr="StreamMovie('quest_log')"></onactivate>
+    <ondeactivate	expr="UnstreamMovie('quest_log')"></ondeactivate>
+    <onactivate	  expr="StreamMovie('list')"></onactivate>
+    <ondeactivate	expr="UnstreamMovie('list')"></ondeactivate>
+
+    <onunfocused expr="Exit(OnlineInbox)"       ></onunfocused>
+    <onunfocused expr="Exit(NetContent_Public)" ></onunfocused>
+    <onunfocused expr="Exit(NetContent_Private)"></onunfocused>
+    <onunfocused expr="Exit(NetContent_LAN)"    ></onunfocused>
+    <onunfocused expr="Exit(NetContent_Party)"  ></onunfocused>
+
+    <onpaint expr="SetFlashInt('pause_main','pausetransition.type',5)"></onpaint>
+    <onpaint expr="SetFlashInt('pause_main','pausetransition.visibility',1)"></onpaint>
+    <onunfocused expr="SetFlashInt('pause_main','pausetransition.visibility',0)"></onunfocused>
+
+    <UILayer movie="quest_log">
+      <UIPanel id="NetContent_EnterTitlePanel" movie="quest_log">
+        <UILabel id="NetContent_EnterTitle" flashObject="menu.title" text="Common_Null"></UILabel>
+        <UILabel flashObject="menu"></UILabel>
+      </UIPanel>
+      <UILabel id="NetContent_InboxTitle" flashObject="top_title" movie="list" text="net_invites_title"></UILabel>
+    </UILayer>
+
+    <UILayer>
+      
+      <NetInvitesList id="OnlineInbox" movie="list" flashObject="menu" MaxHeight="8">
+        <onshow expr="Select(NetContent_InboxTitle)"></onshow>
+        <onshow expr="Include(NetInbox_AcceptInvite)"></onshow>
+        <onshow expr="OnlineInbox.FillList()"></onshow>
+        <onfocused expr="Select(NetPrompts_Inbox)"></onfocused>
+
+        <onfocused expr="NetMachine.Authenticate('Online Multiplayer')"></onfocused>
+        <transition event="auth.fail_NotOnline" target="NetMachine.ShowSignInUI(true)"></transition>
+
+        <transition event="net.signedOffline" consume="false" target="SendEvent('net.invitereceived')"></transition>
+        <transition event="net.signedOnline"  consume="false" target="SendEvent('net.invitereceived')"></transition>
+
+        <transition event="net.invitereceived">
+          <action expr="Include(NetInbox_AcceptInvite)"></action>
+          <action expr="OnlineInbox.FillList()"></action>
+        </transition>
+
+        <transition event="net.noinvites" target="Exclude(NetInbox_AcceptInvite)" ></transition>
+      </NetInvitesList>
+
+      <UIScrollableList id="NetContent_Public"  flashObject="content">
+        <onpaint expr="SetFlashInt('quest_log','template',18)"></onpaint>
+        <onshow expr="Select(NetContent_EnterTitlePanel)"></onshow>
+        <onshow expr="SetTextCB(NetContent_EnterTitle,'mp_fe_play_online')"></onshow>
+        <UILabel text="mp_fe_play_online_detail"  ></UILabel>
+      </UIScrollableList>
+      <UIScrollableList id="NetContent_Private" flashObject="content">
+        <onpaint expr="SetFlashInt('quest_log','template',18)"></onpaint>
+        <onshow expr="Select(NetContent_EnterTitlePanel)"></onshow>
+        <onshow expr="SetTextCB(NetContent_EnterTitle,'mp_fe_play_private')"></onshow>
+        <UILabel text="mp_fe_play_private_detail" ></UILabel>
+      </UIScrollableList>
+      <UIScrollableList id="NetContent_LAN"     flashObject="content">
+        <onpaint expr="SetFlashInt('quest_log','template',18)"></onpaint>
+        <onshow expr="Select(NetContent_EnterTitlePanel)"></onshow>
+        <onshow expr="SetTextCB(NetContent_EnterTitle,'Common_Settings')"></onshow>
+        <UILabel text="Common_Null"            ></UILabel>
+      </UIScrollableList>
+      <UIScrollableList id="NetContent_Party"   flashObject="content">
+        <onpaint expr="SetFlashInt('quest_log','template',18)"></onpaint>
+        <UILabel text="mp_fe_partyui_detail"      ></UILabel>
+        <onshow expr="Select(NetContent_EnterTitlePanel)"></onshow>
+        <onshow expr="SetTextCB(NetContent_EnterTitle,'mp_fe_partyui')"></onshow>
+      </UIScrollableList>
+    </UILayer>
+      
+  </UIPanel>
+  
+</scxml>
