@@ -63,7 +63,6 @@ CATEGORY_PATTERNS = {
         "cinematic",
         "cinvehicle",
         "camera",
-        "shot",
         "intro_sequence",
         "intro_01",
     ],
@@ -174,9 +173,16 @@ def extract_ascii_strings(data: bytes, limit: int = 80) -> list[str]:
 
 
 def categorize(path: Path, rel: str, data: bytes | None, text: str | None) -> tuple[list[str], list[str], list[str]]:
-    haystacks = [rel.lower(), path.name.lower()]
+    rel_lower = rel.lower()
+    name_lower = path.name.lower()
+    path_parts = [part.lower() for part in path.parts]
+    is_stringtable = "stringtable" in path_parts or path.suffix.lower() in {".cst", ".strtbl", ".stbl"}
+
+    haystacks = [rel_lower, name_lower]
     if text:
-        haystacks.append(text[:250000].lower())
+        # String tables are useful as string assets, but their full text is too
+        # broad for category matching and makes every generic word look relevant.
+        haystacks.append("" if is_stringtable else text[:250000].lower())
     combined = "\n".join(haystacks)
     categories: set[str] = set()
     reasons: list[str] = []
@@ -190,15 +196,23 @@ def categorize(path: Path, rel: str, data: bytes | None, text: str | None) -> tu
                 reasons.append(f"{category}:{pat}")
 
     suffix = path.suffix.lower()
-    parts = [part.lower() for part in path.parts]
-    if suffix in STRING_EXTS or "stringtable" in parts:
+    if suffix in STRING_EXTS or "stringtable" in path_parts:
         categories.add("strings")
         reasons.append("strings:string_extension_or_folder")
-    if "camera" in parts or "cutscene" in parts or suffix in {".cutbin", ".csc"}:
-        if "cutscene" in combined or "camera" in combined or suffix in {".cutbin", ".csc"}:
-            categories.add("cutscenes")
-            reasons.append("cutscenes:path_or_extension")
-    if "gringo" in combined or "gringores" in parts:
+    if (
+        "camera" in path_parts
+        or "cutscene" in path_parts
+        or suffix == ".cutbin"
+        or any(term in rel_lower for term in ("cutscene", "cinvehicle", "cinematic", "intro_sequence", "intro_01"))
+    ):
+        categories.add("cutscenes")
+        reasons.append("cutscenes:strong_path_or_extension")
+    elif "cutscenes" in categories and not any(
+        term in combined for term in ("cutscene", "cinvehicle", "cinematic", "intro_sequence", "intro_01")
+    ):
+        categories.discard("cutscenes")
+        reasons = [r for r in reasons if not r.startswith("cutscenes:")]
+    if "gringo" in combined or "gringores" in path_parts:
         categories.add("gringos")
         reasons.append("gringos:path_or_name")
     if suffix in {".cft", ".cfd", ".ctd", ".cnm"} and any(t in combined for t in ("car", "truck", "wagon", "train", "vehicle")):
@@ -474,6 +488,37 @@ def main(argv: list[str] | None = None) -> int:
         [{"extension": k, "count": v} for k, v in summary["extension_counts"].items()],
         ["extension", "count"],
     )
+    flat_rows = [
+        {
+            **asdict(f),
+            "categories": ";".join(f.categories),
+            "match_reasons": ";".join(f.match_reasons),
+            "matched_terms": ";".join(f.matched_terms),
+            "line_hits": json.dumps(f.line_hits, ensure_ascii=False),
+            "strings_sample": json.dumps(f.strings_sample, ensure_ascii=False),
+            "metadata": json.dumps(f.metadata, ensure_ascii=False),
+        }
+        for f in findings
+    ]
+    for category in ("vehicle_spawning", "cutscenes", "gringos", "strings"):
+        write_csv(
+            outdir / f"{category}_findings.csv",
+            [row for row in flat_rows if category in row["categories"].split(";")],
+            [
+                "categories",
+                "relative_path",
+                "path",
+                "name",
+                "extension",
+                "size",
+                "sha1",
+                "match_reasons",
+                "matched_terms",
+                "line_hits",
+                "strings_sample",
+                "metadata",
+            ],
+        )
     print(f"Wrote {outdir / 'extracted_root_research.json'}")
     print(f"Wrote {outdir / 'extracted_root_research.md'}")
     print(f"Wrote {outdir / 'extracted_root_findings.csv'}")
