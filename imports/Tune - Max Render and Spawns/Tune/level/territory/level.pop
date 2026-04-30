@@ -1,0 +1,609 @@
+version 2
+{
+	Conditions
+	{
+		Condition "cond_night"
+		{
+			Expression "TimeOfDay(night)"
+		}
+		Condition "cond_Hennigans_Ranch"
+		{
+			Expression "Neighborhood(t_Hennigans_Ranch)"
+		}
+		Condition "cond_Armadillo"
+		{
+			Expression "Neighborhood(t_Armadillo)"
+		}		
+		Condition "cond_Tumbleweed"
+		{
+			Expression "Neighborhood(a_Tumbleweed)"
+		}
+		Condition "cond_Escalera"
+		{
+			Expression "Neighborhood(t_Escalera)"
+		}
+		Condition "cond_Town_Border"
+		{
+			Expression "Neighborhood(t_Town_Border)"
+		}
+		Condition "cond_Generic_Wilderness"
+		{
+			Expression "Neighborhood(w_Generic_Wilderness)"
+		}
+		Condition "cond_Painted_Sands"
+		{
+			Expression "Neighborhood(w_Painted_Sands)"
+		}
+		Condition "cond_Gaptooth_Ridge"
+		{
+			Expression "Neighborhood(w_Gaptooth_Ridge)"
+		}
+		Condition "cond_Perdido"
+		{
+			Expression "Neighborhood(w_Perdido)"
+		}
+		Condition "cond_Tierra_Marcada"
+		{
+			Expression "Neighborhood(w_Tierra_Marcada)"
+		}
+		Condition "cond_Hennigans_Stead"
+		{
+			Expression "Neighborhood(w_Hennigans_Stead)"
+		}
+		Condition "cond_Cholla_Springs"
+		{
+			Expression "Neighborhood(w_Cholla_Springs)"
+		}
+		Condition "cond_Diegos_Bluff"
+		{
+			Expression "Neighborhood(w_Diegos_Bluff)"
+		}
+		Condition "cond_Diez_Coronas"
+		{
+			Expression "Neighborhood(w_Diez_Coronas)"
+		}
+		Condition "cond_Thieves_Landing"
+		{
+			Expression "Neighborhood(t_Thieves_Landing)"
+		}
+		Condition "cond_Fort_Mercer"
+		{
+			Expression "Neighborhood(a_Fort_Mercer)"
+		}
+		Condition "cond_Ridgewood_Farm"
+		{
+			Expression "Neighborhood(a_Ridgewood_Farm)"
+		}
+		Condition "cond_Twin_Rocks"
+		{
+			Expression "Neighborhood(a_Twin_Rocks)"
+		}
+	}
+
+	Spawn
+	{
+		Peds
+		{
+			Condition "cond_Cholla_Springs"
+			{
+				Density 100.000
+				Ref "ped_wilderness"
+			}
+			Condition "cond_Armadillo"
+			{
+				Density 100.000
+				Ref "ped_armadillo"
+			}
+			Condition "cond_Escalera"
+			{
+				Density 100.000
+				Ref "ped_escalera"
+			}
+			Condition "cond_Hennigans_Ranch"
+			{
+				Density 100.000
+				Ref "ped_hennigans_ranch"
+			}
+			Condition "cond_Tumbleweed"
+			{
+				Density 100.000
+				Ref "ped_tumbleweed"
+			}
+			Condition "cond_Town_Border"
+			{
+				Density 100.000
+				Ref "ped_wilderness"
+			}
+			Condition "cond_Thieves_Landing"
+			{
+				Density 100.000
+				Ref "ped_thieves_landing"
+			}
+			Condition "cond_Fort_Mercer"
+			{
+				Density 100.000
+				Ref "ped_fort_mercer"
+			}
+			Condition "cond_Ridgewood_Farm"
+			{
+				Density 100.000
+				Ref "ped_ridgewood_farm"
+			}
+			Condition "cond_Twin_Rocks"
+			{
+				Density 100.000
+				Ref "ped_twin_rocks"
+			}
+			Default
+			{
+				Density 100.000
+				Ref "ped_random"
+			}
+		}
+	}
+
+
+	Objects
+	{
+		PedWithEquipmentRandom "ped_random"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 50
+					Ref "ped_generic_male"
+				}
+				Alternative
+				{	Probability 50
+					Ref "ped_generic_female"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_armadillo_lite"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 60
+					Ref "ped_farmer"
+				}
+				Alternative
+				{	Probability 40
+					Ref "ped_prostitute"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_armadillo"
+		{
+			Default
+			{			
+				Alternative
+				{	Probability 12
+					Ref "ped_gambler"
+				}
+				Alternative
+				{	Probability 3
+					Ref "ped_banker"
+				}
+				Alternative
+				{	Probability 2
+					Ref "ped_young_banker"
+				}
+				Alternative
+				{	Probability 2
+					Ref "ped_nun"
+				}
+				Alternative
+				{	Probability 15
+					Ref "ped_farmer"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_hillbilly"
+				}
+				Alternative
+				{	Probability 15
+					Ref "ped_cowboy"
+				}
+				Alternative
+				{	Probability 9
+					Ref "ped_generic_male"
+				}
+				Alternative
+				{	Probability 25
+					Ref "ped_generic_female"
+				}
+				Alternative
+				{	Probability 5
+					Ref "ped_law_WesternDeputy"
+				}
+				Alternative
+				{	Probability 1
+					Ref "ped_coyote"
+				}
+				Alternative
+				{	Probability 1
+					Ref "ped_outlaw_bully"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_saloon"
+		{
+			Default
+			{			
+				Alternative
+				{	Probability 25
+					Ref "ped_gambler"
+				}
+				Alternative
+				{	Probability 5
+					Ref "ped_banker"
+				}
+				Alternative
+				{	Probability 20
+					Ref "ped_farmer"
+				}
+				Alternative
+				{	Probability 30
+					Ref "ped_cowboy"
+				}
+				Alternative
+				{	Probability 20
+					Ref "ped_generic_male"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_arm_int"
+		{
+			Default
+			{			
+				Alternative
+				{	Probability 15
+					Ref "ped_gambler"
+				}
+				Alternative
+				{	Probability 5
+					Ref "ped_banker"
+				}
+				Alternative
+				{	Probability 25
+					Ref "ped_generic_female"
+				}
+				Alternative
+				{	Probability 15
+					Ref "ped_farmer"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_hillbilly"
+				}				
+				Alternative
+				{	Probability 20
+					Ref "ped_cowboy"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_generic_male"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_arm_prostitute"
+		{
+			Default
+			{			
+				Alternative
+				{	Probability 50
+					Ref "ped_prostitute01"
+				}
+				Alternative
+				{	Probability 50
+					Ref "ped_prostitute"
+				}
+			}
+		}
+		
+		PedWithEquipmentRandom "ped_campfire"
+		{
+			Default
+			{			
+				Alternative
+				{	Probability 50
+					Ref "ped_farmer"
+				}
+				Alternative
+				{	Probability 50
+					Ref "ped_cowboy"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_escalera"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 25
+					Ref "ped_farmer"
+				}
+				Alternative
+				{	Probability 25
+					Ref "ped_cowboy"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_gambler"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_generic_male"
+				}
+				Alternative
+				{	Probability 20
+					Ref "ped_generic_female"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_prostitute"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_hennigans_ranch"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 25
+					Ref "ped_farmer"
+				}
+				Alternative
+				{	Probability 25
+					Ref "ped_cowboy"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_gambler"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_generic_male"
+				}
+				Alternative
+				{	Probability 20
+					Ref "ped_generic_female"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_prostitute"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_tumbleweed"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 100
+					Ref "ped_outlaw_bully"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_thieves_landing"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 25
+					Ref "ped_farmer"
+				}
+				Alternative
+				{	Probability 25
+					Ref "ped_cowboy"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_gambler"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_generic_male"
+				}
+				Alternative
+				{	Probability 20
+					Ref "ped_generic_female"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_prostitute"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_fort_mercer"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 80
+					Ref "ped_bandito_desperado"
+				}
+				Alternative
+				{	Probability 20
+					Ref "ped_bandito_pistolero"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_ridgewood_farm"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 90
+					Ref "ped_specific_ridgewoodfarm_rancher_male"
+				}
+				Alternative
+				{	Probability 05
+					Ref "ped_generic_horse"
+				}
+				Alternative
+				{	Probability 05
+					Ref "ped_coyote"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_twin_rocks"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 60
+					Ref "ped_outlaw_bully"
+				}
+				Alternative
+				{	Probability 10
+					Ref "ped_outlaw_boss"
+				}
+				Alternative
+				{	Probability 30
+					Ref "ped_generic_horse"
+				}
+			}
+		}
+
+		PedWithEquipmentRandom "ped_wilderness"
+		{
+			Default
+			{
+				Alternative
+				{	Probability 25
+					Ref "ped_generic_horse"
+				}
+				Alternative
+				{	Probability 75
+					Ref "ped_coyote"
+				}
+			}
+		}
+
+		PedWithEquipmentSpecific "ped_banker"
+		{
+			ActorTemplate	"template_innocent_Banker"
+			ActorEntities	1 { Deputy001 }
+		}
+		
+		PedWithEquipmentSpecific "ped_young_banker"
+		{
+			ActorTemplate	"template_innocent_Banker001"
+			ActorEntities	1 { Deputy001 }
+		}
+
+		PedWithEquipmentSpecific "ped_farmer"
+		{
+			ActorTemplate	"template_innocent_Farmer000"
+			ActorEntities	2 { Deputy001 Deputy001 }
+		}
+		
+		PedWithEquipmentSpecific "ped_hillbilly"
+		{
+			ActorTemplate	"template_innocent_Farmer003"
+			ActorEntities	2 { Deputy001 Deputy001 }
+		}
+
+		PedWithEquipmentSpecific "ped_cowboy"
+		{
+			ActorTemplate	"template_innocent_Farmer001"
+			ActorEntities	2 { Deputy001 Deputy001 }
+		}
+
+		PedWithEquipmentSpecific "ped_gambler"
+		{
+			ActorTemplate	"template_Gambler"
+			ActorEntities	1 { Deputy001 }
+		}
+		
+		PedWithEquipmentSpecific "ped_nun"
+		{
+			ActorTemplate	"template_innocent_Nun"
+			ActorEntities	1 { Deputy001 }
+		}
+		
+		PedWithEquipmentSpecific "ped_prostitute"
+		{
+			ActorTemplate	"template_innocent_Prostitute"
+			ActorEntities	1 { Deputy001 }
+		}	
+		PedWithEquipmentSpecific "ped_prostitute01"
+		{
+			ActorTemplate	"template_innocent_Prostitute01"
+			ActorEntities	1 { Deputy001 }
+		}
+		PedWithEquipmentSpecific "ped_generic_male"
+		{
+			ActorTemplate	"template_innocent_HomesteadMan001"
+			ActorEntities	2 { Deputy001 Deputy001 }
+		}
+		
+		PedWithEquipmentSpecific "ped_generic_female"
+		{
+			ActorTemplate	"template_innocent_HomesteadWoman"
+			ActorEntities	1 { Deputy001 }
+		}
+
+		PedWithEquipmentSpecific "ped_law_WesternDeputy"
+		{
+			ActorTemplate	"template_law_WesternDeputy"
+			ActorEntities	1 { Deputy001 }
+		}
+
+		PedWithEquipmentSpecific "ped_outlaw_bully"
+		{
+			ActorTemplate	"template_enemy_OutlawBully"
+			ActorEntities	1 { Deputy001 }
+		}	
+		
+		PedWithEquipmentSpecific "ped_outlaw_boss"
+		{
+			ActorTemplate	"template_enemy_OutlawBoss"
+			ActorEntities	1 { Deputy001 }
+		}	
+		
+		PedWithEquipmentSpecific "ped_bandito_desperado"
+		{
+			ActorTemplate	"template_enemy_BanditoDesperado"
+			ActorEntities	2 { Deputy001 Deputy001 }
+		}	
+		
+		PedWithEquipmentSpecific "ped_bandito_pistolero"
+		{
+			ActorTemplate	"template_enemy_BanditoPistolero"
+			ActorEntities	1 { Deputy001 }
+		}	
+		
+		PedWithEquipmentSpecific "ped_generic_horse"
+		{
+			ActorTemplate	"template_horse"
+			ActorEntities	3 { Horse018 Horse019 Horse020 }
+		}
+		
+		PedWithEquipmentSpecific "ped_coyote"
+		{
+			ActorTemplate	"template_coyote"
+			ActorEntities	1 { Bear000 }
+		}
+		
+		PedWithEquipmentSpecific "ped_specific_ridgewoodfarm_rancher_male"
+		{
+			ActorTemplate	"template_innocent_Farmer001"
+			ActorEntities	3 { Deputy001 Deputy001 Deputy001 }
+		}
+	}
+}

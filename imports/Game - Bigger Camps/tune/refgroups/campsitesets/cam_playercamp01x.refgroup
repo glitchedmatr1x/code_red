@@ -1,0 +1,135 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bedRollOpen01x.mb
+transform -8.03141487 1.082330446 2.111568518 0 89.35037647 r
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/c_gen_tentcochinay01x.mb
+transform -4.03141487 -1 4.111568518 0 89.35037647 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/c_gen_tentfrontier01x.mb
+transform 5.03141487 -1 4.111568518 7 -90.35037647 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/c_gen_tentnorth01x.mb
+transform 10 -1 -9 0 -60 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/c_gen_tentmexico01x.mb
+transform 6 -1 -16 0 -60 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_fire01x.mb
+transform 0 0 0 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_testbox001x.mb
+transform 8.817843768 0 6.562415489 0 23.27590657 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string flat
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_cookfireStructure02x.mb
+transform 9.102528005 1 -0.8908454939 0 -6.874375565 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_herbsDry01x.mb
+transform 11.50844148 2.037175309 -0.6150442337 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_herbsDry01x.mb
+transform 11.07634349 2.037175309 -0.6841558969 0 -203.1448755 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_herbsDry01x.mb
+transform 9.797911902 2.037175309 -0.8426500086 0 82.6692986 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_herbsDry01x.mb
+transform 10.04038143 2.037175309 -3.106668577 0 -10.03390486 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_herbsDry01x.mb
+transform 10.36773327 2.037175309 -3.048747861 0 -226.1528399 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_herbsDry01x.mb
+transform 11.67489088 2.037175309 -2.968668437 0 177.7768975 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_herbsDry01x.mb
+transform 11.03141487 2.037175309 -2.111568518 0 -89.35037647 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_gatlingGun01x.mb
+transform -2.035350066 2.840085096 -11.113156303 0 20.6011028 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_cannon02x.mb
+transform 9.035350066 1.840085096 18.113156303 0 -125.6011028 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_gatlingMaxim02x.mb
+transform -8.035350066 2.840085096 9.113156303 0 150.6011028 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_firesignal01x.mb
+transform 18.035350066 2.840085096 15.113156303 0 20 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string flat
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_deadpokerplayer01x.mb
+transform 4.026409497 0 2.6367469367 0 -90 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_chairrockingcorpse01x.mb
+transform 4.026409497 0 1.6367469367 0 -110 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_firesticks03x.mb
+transform -6.585966885 0 -5.100042424 0 159.5499505 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_firesticks03x.mb
+transform -6.585966885 0 -5.100042424 0 159.5499505 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_zombieHanging01x.mb
+transform -6.31778829 2.840085 -6.112002702 0 226.6736872 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_zombieHanging02x.mb
+transform -6.31778829 2.840085 -6.112002702 0 226.6736872 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_waterPump02x.mb
+transform 7.817843768 0 10.462415489 0 23.27590657 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpsePile02x.mb
+transform -20.817843768 0 20.462415489 0 23.27590657 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_firesignal01x.mb
+transform 6.817843768 0 -20.462415489 0 23.27590657 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_campfireCombined01x.mb
+transform -2.7990031466 3 -6.09684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string flat
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_well01x.mb
+transform 0.7990031466 1 -7.09684090558 0 40 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_table36x.mb
+transform 2.7990031466 1 7.09684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_glider02x.mb
+transform -17.7990031466 1 0.09684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_grc_tent01x.mb
+transform 19.7990031466 0 6.09684090558 0 -90 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_wagonwrecked01x.mb
+transform 18.7990031466 1 -18.09684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_tumbleweedtree01x.mb
+transform 16.7990031466 -1 -2.09684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_fishhanging01x.mb
+transform 4.7990031466 0 -3.09684090558 0 -90.35037647 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_chuckwagonbreak01x.mb
+transform 22.7990031466 0 -3.09684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_chuckwagon01x.mb
+transform 22.7990031466 0 1.09684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_footlockerfull01x.mb
+transform 14.7990031466 0 -8.09684090558 0 -60 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_guncase02x.mb
+transform 10.7990031466 0 -15.09684090558 0 -60 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_indianshrine01x.mb
+transform 9.7990031466 0 -22.09684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_maskolmec01x.mb
+transform 9.5990031466 1 -22.05684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_indianartifact01x.mb
+transform 9.6990031466 0 -22.03684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_guitar01x.mb
+transform 8.5990031466 1 7.05684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_fiddle01x.mb
+transform 11.0 1 -8.0 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_grindingwheel01x.mb
+transform 15.0 0 -2.0 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_bat_wall01x.mb
+transform 0.0 0 12.0 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/gringo/p_gen_barricade01x.mb
+transform -3.0 0 9.0 0 60 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
