@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import argparse
+import io
 import json
 import os
 import re
@@ -42,6 +43,13 @@ try:
 except Exception:
     np = None
     _HAVE_NUMPY = False
+
+try:
+    import zstandard as _zstd
+    _HAVE_ZSTD = True
+except Exception:
+    _zstd = None
+    _HAVE_ZSTD = False
 
 try:
     import matplotlib
@@ -1299,6 +1307,35 @@ def _looks_like_zlib_payload(data: bytes) -> bool:
     return data[:2] in {b"x\x9c", b"x\xda", b"x\x01", b"x^", b"\x78\x5e", b"\x78\x9c", b"\x78\xda"}
 
 
+def _codered_try_zstd_decompress(data: bytes, expected_size: int = 0) -> tuple[Optional[bytes], str]:
+    if not data or not data.startswith(b'\x28\xB5\x2F\xFD'):
+        return None, ''
+    if _HAVE_ZSTD and _zstd is not None:
+        dctx = _zstd.ZstdDecompressor()
+        try:
+            return dctx.decompress(data), 'python-zstandard'
+        except Exception:
+            if expected_size > 0:
+                try:
+                    return dctx.decompress(data, max_output_size=expected_size), f'python-zstandard(max_output_size={expected_size})'
+                except Exception:
+                    pass
+            try:
+                with dctx.stream_reader(io.BytesIO(data)) as reader:
+                    return reader.read(), 'python-zstandard(stream)'
+            except Exception:
+                pass
+    zstd_bin = shutil.which('zstd')
+    if zstd_bin:
+        try:
+            proc = subprocess.run([zstd_bin, '-d', '-q', '--stdout'], input=data, capture_output=True, check=True)
+            if proc.stdout:
+                return proc.stdout, 'zstd-cli'
+        except Exception:
+            pass
+    return None, ''
+
+
 def extract_resource_payload(data: bytes, resource: Optional[dict] = None) -> dict:
     resource = resource or parse_resource_header(data)
     if not resource:
@@ -1342,12 +1379,8 @@ def extract_resource_payload(data: bytes, resource: Optional[dict] = None) -> di
     codec = None
     if coded_payload:
         if zstd_frame:
-            try:
-                proc = subprocess.run(['zstd', '-d', '-q', '--stdout'], input=coded_payload, capture_output=True, check=True)
-                if proc.stdout:
-                    decompressed_payload = proc.stdout
-                    codec = 'zstd'
-            except Exception:
+            decompressed_payload, codec = _codered_try_zstd_decompress(coded_payload, int(resource.get('total_size') or 0))
+            if decompressed_payload is None:
                 notes.append('Zstandard payload detected but fallback decompression failed.')
         if decompressed_payload is None and (_looks_like_zlib_payload(coded_payload) or resource.get('is_compressed')):
             for wbits in (-15, 15, 31):
@@ -2162,20 +2195,114 @@ class AudioModule(ModuleBase):
         return OperationResult(True, "Audio validation partial", "DAT or unknown audio-family asset routed successfully.")
 
 
+WTB_TILE_RE = re.compile(r'^(?P<x>[0-9a-fA-F]{4})(?P<y>[0-9a-fA-F]{4})_bnd\.wtb$')
+
+
+def _codered_signed16_from_hex(text: str) -> int:
+    value = int(text, 16)
+    return value - 0x10000 if value & 0x8000 else value
+
+
+def _codered_wtb_tile_metadata(path: Path) -> dict:
+    match = WTB_TILE_RE.match(path.name)
+    if not match:
+        return {}
+    x_hex = match.group('x').lower()
+    y_hex = match.group('y').lower()
+    x = _codered_signed16_from_hex(x_hex)
+    y = _codered_signed16_from_hex(y_hex)
+    return {
+        'grid_x_hex': x_hex,
+        'grid_y_hex': y_hex,
+        'grid_x_s16': x,
+        'grid_y_s16': y,
+        'grid_x_u16': int(x_hex, 16),
+        'grid_y_u16': int(y_hex, 16),
+        'cell_size_guess': 0x40,
+        'world_min_guess': f'{x}, {y}',
+        'world_max_guess': f'{x + 0x40}, {y + 0x40}',
+    }
+
+
+def _codered_float3_samples(data: bytes, limit: int = 24) -> list[str]:
+    rows: list[str] = []
+    for off in range(0, max(0, len(data) - 12), 4):
+        x, y, z = struct.unpack_from('<3f', data, off)
+        if all(-100000.0 <= v <= 100000.0 and v == v for v in (x, y, z)) and max(abs(x), abs(y), abs(z)) >= 1.0:
+            rows.append(f'- 0x{off:06X}: {x:.6g}, {y:.6g}, {z:.6g}')
+            if len(rows) >= limit:
+                break
+    return rows
+
+
 class WorldModule(ModuleBase):
     name = "World"
-    extensions = (".wsi", ".wtl", ".wsg", ".wsp", ".wnm", ".wcg", ".wgd")
-    summary = "World/runtime resource inspection lane."
+    extensions = (".wsi", ".wtb", ".wtl", ".wsg", ".wsp", ".wnm", ".wcg", ".wgd")
+    summary = "World/runtime resource inspection lane, including terrain-bound WTB resources."
     capabilities = [
         FormatCapability(".wsi", "World", "V/E/X/I/P", "High-value sector/world target."),
+        FormatCapability(".wtb", "World", "V/E/X/I/P", "Terrain-bound tile resource; RSC05/zstd payload inspection and archive-copy replacement are available."),
         FormatCapability(".wnm", "World", "V/E/P", "Navmesh inspection target."),
     ]
 
     def inspect(self, path: Path) -> ModuleInspection:
         data = read_bytes(path)
-        return ModuleInspection(self.name, f"World - {path.name}", "World/runtime resource inspection routed successfully.", f"Path: {path}\nSize: {path.stat().st_size:,} bytes\nExtension: {path.suffix.lower()}", "Deep world/map services remain part of the longer host merge path.", hex_preview(data))
+        suffix = path.suffix.lower()
+        resource = parse_resource_header(data)
+        payload_info = extract_resource_payload(data, resource) if resource else {'payload': data, 'notes': ['No RSC header detected.']}
+        payload = payload_info.get('payload', data) or data
+        details = [
+            f"Path: {path}",
+            f"Size: {path.stat().st_size:,} bytes",
+            f"Extension: {suffix}",
+        ]
+        append_resource_lines(details, resource)
+        if suffix == '.wtb':
+            tile = _codered_wtb_tile_metadata(path)
+            if tile:
+                details.extend([
+                    'Terrain-bound tile metadata:',
+                    f"- Grid hex: {tile['grid_x_hex']}, {tile['grid_y_hex']}",
+                    f"- Grid signed: {tile['grid_x_s16']}, {tile['grid_y_s16']}",
+                    f"- Grid unsigned: {tile['grid_x_u16']}, {tile['grid_y_u16']}",
+                    f"- Cell size guess: {tile['cell_size_guess']}",
+                    f"- World bounds guess: {tile['world_min_guess']} -> {tile['world_max_guess']}",
+                ])
+            if resource:
+                details.append('Resource payload processing:')
+                details.extend(f"- {note}" for note in payload_info.get('notes', []))
+            details.extend([
+                f"Decoded/analysis payload size: {len(payload):,} bytes",
+                f"Decoded/analysis payload SHA1: {_codered_sha1_hex(payload)}",
+            ])
+            strings = extract_candidate_strings(payload, limit=24)
+            if strings:
+                details.append('Candidate strings:')
+                details.extend(f"- {item}" for item in strings[:24])
+            float_lines = _codered_float3_samples(payload)
+            if float_lines:
+                details.append('Float3 candidate sample:')
+                details.extend(float_lines)
+            warning = "WTB semantic editing is still conservative. Use Archive Browser replacement or tools/codered_terrainboundres_tool.py to patch only copied archives with verification."
+            return ModuleInspection(self.name, f"World WTB - {path.name}", "Terrain-bound WTB inspection routed with RSC/zstd payload analysis.", "\n".join(details), warning, hex_preview(payload))
+        if resource:
+            details.append('Resource payload processing:')
+            details.extend(f"- {note}" for note in payload_info.get('notes', []))
+        return ModuleInspection(self.name, f"World - {path.name}", "World/runtime resource inspection routed successfully.", "\n".join(details), "Deep world/map services remain part of the longer host merge path.", hex_preview(payload))
 
     def validate(self, path: Path) -> OperationResult:
+        if path.suffix.lower() == '.wtb':
+            data = read_bytes(path)
+            resource = parse_resource_header(data)
+            if not resource:
+                return OperationResult(False, "WTB validation failed", "Missing RSC05 resource header.")
+            if resource.get('resource_type') != 36:
+                return OperationResult(False, "WTB validation failed", f"Expected resource type 36, got {resource.get('resource_type')}.")
+            payload_info = extract_resource_payload(data, resource)
+            payload = payload_info.get('payload') or b''
+            if not payload:
+                return OperationResult(False, "WTB validation failed", "WTB resource payload could not be decoded.")
+            return OperationResult(True, "WTB validation passed", f"RSC resource type 36 decoded for inspection. Payload size={len(payload):,} bytes.")
         return OperationResult(path.stat().st_size > 0, "World validation partial" if path.stat().st_size > 0 else "World validation failed", "World asset is present." if path.stat().st_size > 0 else "File is empty.")
 
 
@@ -8219,4 +8346,3 @@ def _codered_v44_inspect_extracted_entry(self, temp_path: Path, archive_entry: d
 WorkbenchApp.module_action = _codered_v44_module_action
 WorkbenchApp.inspect_extracted_entry = _codered_v44_inspect_extracted_entry
 # --- end Code RED World WSI Studio patch (v44) ---
-
