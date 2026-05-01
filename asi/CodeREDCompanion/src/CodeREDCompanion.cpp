@@ -15,6 +15,7 @@
 namespace {
 
 constexpr const wchar_t* kPluginName = L"CodeREDCompanion";
+constexpr const wchar_t* kPluginVersion = L"0.1.0-loader-proof";
 constexpr const wchar_t* kLogFolderName = L"CodeRED_ASI_Logs";
 constexpr const wchar_t* kLogFileName = L"CodeREDCompanion_loader_proof.log";
 
@@ -83,8 +84,8 @@ void LoaderProofWorker() {
     const auto modulePath = GetModulePath(g_module);
     const auto processPath = GetProcessPath();
 
-    AppendLogLine(L"CodeREDCompanion loader proof started.");
-    AppendLogLine(L"Version: " + std::wstring(CODERED_COMPANION_VERSION));
+    AppendLogLine(std::wstring(kPluginName) + L" loader proof started.");
+    AppendLogLine(L"Version: " + std::wstring(kPluginVersion));
     AppendLogLine(L"Plugin path: " + modulePath.wstring());
     AppendLogLine(L"Host process: " + processPath.wstring());
     AppendLogLine(L"Hooks installed: false");
