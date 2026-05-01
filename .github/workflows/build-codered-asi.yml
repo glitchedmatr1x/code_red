@@ -7,6 +7,8 @@ on:
       - "asi/CodeREDCompanion/**"
       - ".github/workflows/build-codered-asi.yml"
       - "tools/codered_companion_command_writer.py"
+      - "tools/codered_companion_command_panel.py"
+      - "Run_CodeRED_Companion_Command_Panel.bat"
 
 jobs:
   build-codered-companion-asi:
@@ -47,6 +49,7 @@ jobs:
         run: |
           py -3 tools/codered_companion_command_writer.py SPAWN_ACTOR --actor ACTOR_VEHICLE_Car01 --dry-run
           py -3 tools/codered_companion_command_writer.py PING --dry-run
+          py -3 -m py_compile tools/codered_companion_command_writer.py tools/codered_companion_command_panel.py
 
       - name: Write proof manifest
         shell: pwsh
@@ -54,18 +57,22 @@ jobs:
           $out = "build/codered-asi/dist/RELEASE/CodeREDCompanion_ASI_manifest.txt"
           @(
             "CodeREDCompanion ASI build manifest",
-            "Version: 0.3.0-polling-id-whitelist-proof",
+            "Version: 0.4.0-archive-bridge-stub-proof",
             "Artifact: CodeREDCompanion.asi",
             "Platform: Windows x64",
             "Command file: data/codered/companion_commands.txt",
             "Status file: CodeRED_ASI_Logs/companion_status.json",
+            "Archive file: CodeRED_ASI_Logs/companion_command_archive.jsonl",
+            "Trainer bridge stub file: CodeRED_ASI_Logs/trainer_bridge_stub.json",
+            "Writer history file: CodeRED_ASI_Logs/companion_command_writer_history.jsonl",
             "Poll interval ms: 3000",
             "Safe commands: PING, STATUS, VERSION, HELP",
-            "Future actor commands: recognized, actor-whitelist checked, and blocked",
+            "Future actor commands: recognized, actor-whitelist checked, archived, bridge-stub logged, and blocked",
             "Command IDs: ID= prefix supported; duplicates skipped",
             "Hooks installed: false",
             "Memory patches applied: false",
             "Game files modified: false",
+            "Trainer calls enabled: false",
             "Actor spawning enabled: false",
             "Build source: asi/CodeREDCompanion"
           ) | Set-Content -Path $out -Encoding UTF8
@@ -73,7 +80,7 @@ jobs:
       - name: Upload ASI artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CodeREDCompanion-ASI-polling-id-whitelist-proof
+          name: CodeREDCompanion-ASI-archive-bridge-stub-proof
           path: |
             build/codered-asi/dist/RELEASE/CodeREDCompanion.asi
             build/codered-asi/dist/RELEASE/CodeREDCompanion_ASI_manifest.txt
