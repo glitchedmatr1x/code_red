@@ -2,12 +2,14 @@
 setlocal
 
 rem CodeRED ScriptHookRDR AI Menu build helper.
-rem Run from the repository root in a Visual Studio Developer Command Prompt.
+rem Run from the repository root in a Visual Studio x64 Native Tools Command Prompt.
 
 set OUTDIR=related_apps\Code_RED_ScriptHookRDR_AI_Menu\build
 set SRC=related_apps\Code_RED_ScriptHookRDR_AI_Menu\CodeRED_AI_Menu.cpp
 set OUT=%OUTDIR%\CodeRED_AI_Menu.asi
 set OBJ=%OUTDIR%\CodeRED_AI_Menu.obj
+set PDB=%OUTDIR%\CodeRED_AI_Menu.pdb
+set IMPLIB=%OUTDIR%\CodeRED_AI_Menu.lib
 
 if not exist "%OUTDIR%" mkdir "%OUTDIR%"
 
@@ -18,7 +20,7 @@ if errorlevel 1 (
   exit /b 1
 )
 
-cl /std:c++17 /EHsc /LD /nologo /Fo:"%OBJ%" "%SRC%" /Fe:"%OUT%" /link /OUT:"%OUT%" /MACHINE:X64
+cl /std:c++17 /EHsc /LD /nologo "%SRC%" /Fo"%OBJ%" /Fd"%PDB%" /Fe"%OUT%" /link /OUT:"%OUT%" /IMPLIB:"%IMPLIB%"
 if errorlevel 1 (
   echo [ERROR] Build failed.
   exit /b 1
@@ -26,5 +28,6 @@ if errorlevel 1 (
 
 echo.
 echo Built: %OUT%
+echo Build side files are contained in: %OUTDIR%
 echo Copy CodeRED_AI_Menu.asi and CodeRED_AI_Menu.ini beside RDR.exe for testing.
 endlocal

@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "tool": "1.0.0-trainer-ai-npc-switcher",
+  "updated_at": "2026-05-01T12:41:15+00:00",
+  "active": false,
+  "entity": {
+    "label": "CodeRED_AI_01",
+    "handle": null,
+    "spawn_requested": false,
+    "model": "amb_fh_farmer06",
+    "model_category": "ambient",
+    "model_index": 4
+  },
+  "behavior": {
+    "mode": "offline",
+    "target": "player",
+    "follow_distance": 8.0,
+    "guard_radius": 14.0,
+    "warp_distance": 80.0,
+    "attack_hostiles": true,
+    "avoid_friendly_fire": true,
+    "respawn_if_dead": true
+  },
+  "npc_roster": {
+    "count": 1120,
+    "selected_index": 4,
+    "selected_model": "amb_fh_farmer06",
+    "selected_category": "ambient",
+    "filter": ""
+  },
+  "requests": [],
+  "bridge_notes": [
+    "Game-side bridge should spawn or swap the actor model named entity.model when supported.",
+    "If a model fails, bridge should report invalid_model and keep the previous valid actor alive."
+  ]
+}

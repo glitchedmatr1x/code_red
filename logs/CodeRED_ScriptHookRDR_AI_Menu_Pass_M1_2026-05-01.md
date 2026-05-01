@@ -1,13 +1,13 @@
 # CodeRED ScriptHookRDR AI Menu — Pass M1
 
 Date: 2026-05-01
-Branch: `ai-menu-pass`
+Branch: `main`
 
 ## Goal
 
 Prepare a conservative in-game CodeRED AI menu scaffold for Red Dead Redemption PC using ScriptHookRDR.
 
-## Added
+## Added / updated
 
 - `related_apps/Code_RED_ScriptHookRDR_AI_Menu/README.md`
 - `related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp`
@@ -21,6 +21,7 @@ This pass is source-only and intentionally avoids risky native calls.
 
 It only:
 
+- Resolves ScriptHookRDR exports dynamically with `GetProcAddress`.
 - Registers a ScriptHookRDR script loop.
 - Registers a keyboard handler.
 - Draws a CodeRED overlay with `drawRect` / `drawText`.
