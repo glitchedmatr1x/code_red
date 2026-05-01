@@ -6,6 +6,7 @@ on:
     paths:
       - "asi/CodeREDCompanion/**"
       - ".github/workflows/build-codered-asi.yml"
+      - "tools/codered_companion_command_writer.py"
 
 jobs:
   build-codered-companion-asi:
@@ -41,19 +42,27 @@ jobs:
           }
           Get-Item $artifact | Format-List Name,Length,FullName
 
+      - name: Smoke test command writer
+        shell: pwsh
+        run: |
+          py -3 tools/codered_companion_command_writer.py SPAWN_ACTOR --actor ACTOR_VEHICLE_Car01 --dry-run
+          py -3 tools/codered_companion_command_writer.py PING --dry-run
+
       - name: Write proof manifest
         shell: pwsh
         run: |
           $out = "build/codered-asi/dist/RELEASE/CodeREDCompanion_ASI_manifest.txt"
           @(
             "CodeREDCompanion ASI build manifest",
-            "Version: 0.2.0-command-status-proof",
+            "Version: 0.3.0-polling-id-whitelist-proof",
             "Artifact: CodeREDCompanion.asi",
             "Platform: Windows x64",
             "Command file: data/codered/companion_commands.txt",
             "Status file: CodeRED_ASI_Logs/companion_status.json",
+            "Poll interval ms: 3000",
             "Safe commands: PING, STATUS, VERSION, HELP",
-            "Future actor commands: recognized but blocked",
+            "Future actor commands: recognized, actor-whitelist checked, and blocked",
+            "Command IDs: ID= prefix supported; duplicates skipped",
             "Hooks installed: false",
             "Memory patches applied: false",
             "Game files modified: false",
@@ -64,7 +73,7 @@ jobs:
       - name: Upload ASI artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CodeREDCompanion-ASI-command-status-proof
+          name: CodeREDCompanion-ASI-polling-id-whitelist-proof
           path: |
             build/codered-asi/dist/RELEASE/CodeREDCompanion.asi
             build/codered-asi/dist/RELEASE/CodeREDCompanion_ASI_manifest.txt
