@@ -1,0 +1,34 @@
+# CodeRED NPC roster seed
+# Add one model/fragment name per line.
+# Categories expected later: gent, gped, amb, special/named fragments.
+
+amb_fh_farmer06
+amb_cowboy
+amb_worker
+amb_townswoman
+amb_townsman
+amb_mexican
+amb_rancher
+amb_miner
+amb_prostitute
+gent_default
+gent_rancher
+gent_worker
+gped_default
+gped_lawman
+gped_bandito
+player_bandito
+player_lawman
+player_marston
+player_dutch
+player_javier
+player_bill
+law_sheriff
+law_deputy
+misc_rancher
+misc_bountyhunter
+com_companion
+crm_outlaw
+crm_bandit
+anc_oldman
+zombie_default
