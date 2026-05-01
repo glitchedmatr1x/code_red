@@ -5,7 +5,7 @@
 Current pass:
 
 ```text
-0.3.0-polling-id-whitelist-proof
+0.4.0-archive-bridge-stub-proof
 ```
 
 This pass is still intentionally harmless:
@@ -18,9 +18,19 @@ This pass is still intentionally harmless:
 - no actor spawning yet
 - no trainer commands executed yet
 
-## What Pass 0.3 adds
+## What Pass 0.4 adds
 
-Pass 0.3 upgrades the ASI from a one-time startup scan to a low-rate live proof loop:
+Pass 0.4 keeps the Pass 0.3 polling/id/whitelist proof and adds:
+
+```text
+command archive: CodeRED_ASI_Logs/companion_command_archive.jsonl
+trainer bridge stub: CodeRED_ASI_Logs/trainer_bridge_stub.json
+standalone GUI panel: tools/codered_companion_command_panel.py
+root launcher: Run_CodeRED_Companion_Command_Panel.bat
+writer history: CodeRED_ASI_Logs/companion_command_writer_history.jsonl
+```
+
+The ASI still polls:
 
 ```text
 poll interval: 3000 ms
@@ -29,7 +39,7 @@ status file: CodeRED_ASI_Logs/companion_status.json
 log file: CodeRED_ASI_Logs/CodeREDCompanion_loader_proof.log
 ```
 
-It now tracks command IDs so the same command does not get processed repeatedly every poll.
+## Command IDs and archive
 
 Supported command line format:
 
@@ -41,9 +51,27 @@ ID=my_unique_command_id HELP
 ID=my_unique_command_id SPAWN_ACTOR ACTOR_CAUCASIAN_ARMY_Easy01
 ```
 
-If no `ID=` prefix is present, the ASI generates a stable automatic ID from the command body. That means identical repeated lines are treated as duplicates.
+New command IDs are appended to:
 
-Only these commands are accepted in Pass 0.3:
+```text
+CodeRED_ASI_Logs/companion_command_archive.jsonl
+```
+
+Duplicate command IDs are skipped and are not re-archived.
+
+## Trainer bridge stub
+
+Future commands are still blocked, but intended actor/trainer actions are now summarized in:
+
+```text
+CodeRED_ASI_Logs/trainer_bridge_stub.json
+```
+
+This file is proof-only. It logs what would be sent to a trainer bridge later. It does not call a trainer, does not spawn actors, and does not patch memory.
+
+## Accepted commands
+
+Only these commands are accepted in Pass 0.4:
 
 ```text
 PING
@@ -52,9 +80,7 @@ VERSION
 HELP
 ```
 
-They are still no-op proof commands. They only prove that the plugin can safely read, validate, and de-duplicate Code RED command text.
-
-These future commands are recognized but blocked:
+These future commands are recognized, whitelist-checked, archived, and bridge-stub logged, but blocked:
 
 ```text
 SPAWN_ACTOR
@@ -68,7 +94,7 @@ TELEPORT
 SET_FORMATION
 ```
 
-Actor-style future commands are checked against this whitelist before being reported:
+Actor-style future commands are checked against this whitelist:
 
 ```text
 ACTOR_CAUCASIAN_ARMY_Easy01
@@ -83,11 +109,34 @@ ACTOR_VEHICLE_Wagon02
 ACTOR_VEHICLE_Coach01
 ```
 
-Whitelisted future commands are still blocked. The whitelist only proves validation is working before we attempt any real trainer/actor lane.
+Whitelisted future commands are still blocked. The whitelist only proves validation is working before real trainer/actor work.
 
-## Helper command writer
+## GUI command panel
 
-A helper script was added:
+Run from the repo root:
+
+```bat
+Run_CodeRED_Companion_Command_Panel.bat
+```
+
+Or directly:
+
+```bat
+py -3 tools\codered_companion_command_panel.py
+```
+
+The panel can:
+
+- choose the game folder
+- write command IDs
+- dry-run commands
+- write safe commands and future blocked commands
+- open the ASI logs folder
+- read `companion_status.json`
+
+## CLI command writer
+
+A helper script is still available:
 
 ```text
 tools/codered_companion_command_writer.py
@@ -108,7 +157,7 @@ Dry run:
 py -3 tools\codered_companion_command_writer.py SPAWN_ACTOR --actor ACTOR_VEHICLE_Car01 --dry-run
 ```
 
-The helper refuses unsupported commands and refuses future actor commands with actors outside the Pass 0.3 whitelist.
+The helper refuses unsupported commands and refuses future actor commands with actors outside the Pass 0.4 whitelist.
 
 ## Build from Windows
 
@@ -146,7 +195,7 @@ It builds on a Windows runner and uploads `CodeREDCompanion.asi` plus `CodeREDCo
 1. Build `CodeREDCompanion.asi`.
 2. Place it next to the target game's executable only in a backed-up test folder.
 3. Make sure your ASI loader is installed for that game/runtime.
-4. Create commands with the helper or copy:
+4. Create commands with the panel, the helper, or copy:
 
 ```text
 asi/CodeREDCompanion/samples/companion_commands.txt
@@ -164,22 +213,24 @@ data/codered/companion_commands.txt
 ```text
 CodeRED_ASI_Logs/CodeREDCompanion_loader_proof.log
 CodeRED_ASI_Logs/companion_status.json
+CodeRED_ASI_Logs/companion_command_archive.jsonl
+CodeRED_ASI_Logs/trainer_bridge_stub.json
 ```
 
-A good Pass 0.3 proof contains:
+A good Pass 0.4 proof contains:
 
 ```text
 Hooks installed: false
 Memory patches applied: false
 Game files modified: false
 Actor spawning enabled: false
+Trainer calls enabled: false
+trainer_bridge_stub_only: true
 actor_whitelist_enforced: true
 poll_count increasing over time
-future commands blocked
+future commands archived and bridge-stub logged, not executed
 repeated command IDs skipped
 ```
-
-The sample `SPAWN_ACTOR` and `FOLLOW` lines should be validated and blocked, not executed.
 
 ## Safety behavior
 
@@ -187,12 +238,12 @@ The plugin caps command intake to 32 non-comment commands per poll. Each line is
 
 ## Next pass after proof
 
-After polling and ID proof work, the next safe additions should be:
+After the ASI artifact is tested in-game, the next safe additions should be:
 
-1. Add a small GUI tab/button in Code RED for companion commands.
-2. Add a command archive file so completed IDs can be reviewed outside the ASI.
-3. Add a trainer bridge stub that logs intended actor actions without calling game functions.
-4. Keep actor/trainer commands disabled until the ASI artifact has been tested in-game.
+1. Add a Code RED workbench button that launches `Run_CodeRED_Companion_Command_Panel.bat`.
+2. Add a true trainer bridge adapter interface, still stubbed by default.
+3. Add per-command enable flags so actor commands can be enabled one at a time.
+4. Keep all game execution disabled until one command is proven in a backed-up test folder.
 
 ## Credit
 
