@@ -1,0 +1,22 @@
+Proof run completed in this environment:
+
+python -m py_compile tools/codered_npc_roster.py tools/codered_trainer_ai_controller_v1.py
+PASS
+
+python tools/codered_npc_roster.py validate
+loaded=42
+ambient: 6
+animal_or_mount: 6
+named_fragment: 15
+player_like: 10
+zombie: 5
+
+python tools/codered_trainer_ai_controller_v1.py npc-set player_bandito
+selected player_bandito (27)
+
+python tools/codered_trainer_ai_controller_v1.py spawn
+status=spawn_requested active=True model=player_bandito index=27/41 category=player_like roster=42
+
+Action-plan model check:
+"model": "player_bandito"
+PASS
