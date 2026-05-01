@@ -5,7 +5,7 @@
 Current pass:
 
 ```text
-0.5.0-override-manifest-proof
+0.6.0-override-editor-validator-proof
 ```
 
 This pass is intentionally harmless:
@@ -20,13 +20,14 @@ This pass is intentionally harmless:
 - no actor spawning yet
 - no trainer commands executed yet
 
-## What Pass 0.5 adds
+## What Pass 0.6 adds
 
-Pass 0.5 keeps command polling, command IDs, command archiving, and the trainer bridge stub, then adds proof-only override manifest scanning:
+Pass 0.6 keeps command polling, command IDs, command archiving, the trainer bridge stub, and proof-only override scanning. It adds a stronger override editor/validator lane:
 
 ```text
 override root: CodeRED_Overrides/
 override manifest: CodeRED_Overrides/manifest.json
+override validation report: CodeRED_ASI_Logs/override_manifest_validation_report.json
 override proof report: CodeRED_ASI_Logs/file_override_stub.json
 override event log: CodeRED_ASI_Logs/file_override_events.jsonl
 command archive: CodeRED_ASI_Logs/companion_command_archive.jsonl
@@ -47,7 +48,7 @@ log file: CodeRED_ASI_Logs/CodeREDCompanion_loader_proof.log
 
 ## Override proof command
 
-New safe command:
+Safe command:
 
 ```text
 SCAN_OVERRIDES
@@ -63,7 +64,7 @@ This only scans and reports. It does not redirect files.
 
 ## Override manifest tool
 
-New helper:
+Helper:
 
 ```text
 tools/codered_override_manifest_tool.py
@@ -75,28 +76,61 @@ Initialize a proof manifest:
 py -3 tools\codered_override_manifest_tool.py --game-root "D:\Games\Red Dead Redemption\RDR-SteamGG.NET" --replace init
 ```
 
-Add a proof override file:
+List presets:
 
 ```bat
-py -3 tools\codered_override_manifest_tool.py --game-root "D:\Games\Red Dead Redemption\RDR-SteamGG.NET" add my_test.xtbl content/tune/refgroups/my_test.xtbl
+py -3 tools\codered_override_manifest_tool.py presets
 ```
 
-Scan without writing:
+Add a proof override file by virtual path:
 
 ```bat
-py -3 tools\codered_override_manifest_tool.py --game-root "D:\Games\Red Dead Redemption\RDR-SteamGG.NET" scan
+py -3 tools\codered_override_manifest_tool.py --game-root "D:\Games\Red Dead Redemption\RDR-SteamGG.NET" --replace add my_test.xtbl content/tune/refgroups/my_test.xtbl
 ```
 
-The manifest is generated with:
+Add a proof override with a preset:
+
+```bat
+py -3 tools\codered_override_manifest_tool.py --game-root "D:\Games\Red Dead Redemption\RDR-SteamGG.NET" --replace add-preset tune-refgroup blackwater my_test.xtbl
+```
+
+Validate and write a report:
+
+```bat
+py -3 tools\codered_override_manifest_tool.py --game-root "D:\Games\Red Dead Redemption\RDR-SteamGG.NET" validate
+py -3 tools\codered_override_manifest_tool.py --game-root "D:\Games\Red Dead Redemption\RDR-SteamGG.NET" write-report
+```
+
+Enable or disable proof rules by id or virtual path:
+
+```bat
+py -3 tools\codered_override_manifest_tool.py --game-root "D:\Games\Red Dead Redemption\RDR-SteamGG.NET" enable content/tune/refgroups/blackwater.xtbl
+py -3 tools\codered_override_manifest_tool.py --game-root "D:\Games\Red Dead Redemption\RDR-SteamGG.NET" disable content/tune/refgroups/blackwater.xtbl
+```
+
+The manifest is forced to remain proof-only:
 
 ```text
 enabled: false
 mode: proof_only
 file_redirects_enabled: false
 archive_writes_enabled: false
+redirect_adapter.enabled: false
+redirect_adapter.mode: disabled_proof_only
 ```
 
-Allowed extensions in Pass 0.5:
+Virtual path presets:
+
+```text
+tune-refgroup -> content/tune/refgroups/{name}.xtbl
+tune-table    -> content/tune/{name}.xtbl
+string-table  -> content/strings/{name}.strtbl
+script-source -> content/scripts/{name}.wsc
+config-json   -> content/config/{name}.json
+text-note     -> content/notes/{name}.txt
+```
+
+Allowed extensions in Pass 0.6:
 
 ```text
 .xtbl
@@ -171,6 +205,10 @@ The panel can:
 - write command IDs
 - dry-run commands
 - initialize `CodeRED_Overrides/manifest.json`
+- add override files by virtual path
+- add override files by preset
+- validate the manifest
+- write the validation report
 - write `SCAN_OVERRIDES`
 - open the ASI logs folder
 - read `companion_status.json`
@@ -213,9 +251,10 @@ It builds on a Windows runner and uploads `CodeREDCompanion.asi` plus `CodeREDCo
 3. Make sure your ASI loader is installed for that game/runtime.
 4. Run the panel or initialize the manifest manually.
 5. Add test files under `CodeRED_Overrides/`.
-6. Write a `SCAN_OVERRIDES` command.
-7. Launch the game or wait for the ASI poll loop if already loaded.
-8. Check for:
+6. Validate the manifest and write a report.
+7. Write a `SCAN_OVERRIDES` command.
+8. Launch the game or wait for the ASI poll loop if already loaded.
+9. Check for:
 
 ```text
 CodeRED_ASI_Logs/CodeREDCompanion_loader_proof.log
@@ -224,9 +263,10 @@ CodeRED_ASI_Logs/companion_command_archive.jsonl
 CodeRED_ASI_Logs/trainer_bridge_stub.json
 CodeRED_ASI_Logs/file_override_stub.json
 CodeRED_ASI_Logs/file_override_events.jsonl
+CodeRED_ASI_Logs/override_manifest_validation_report.json
 ```
 
-A good Pass 0.5 proof contains:
+A good Pass 0.6 proof contains:
 
 ```text
 Hooks installed: false
@@ -239,6 +279,8 @@ Trainer calls enabled: false
 override root scanned
 override manifest detected if initialized
 allowed and rejected override candidate counts
+validation report written
+redirect adapter disabled
 SCAN_OVERRIDES archived and logged
 ```
 
@@ -250,10 +292,9 @@ The plugin caps command intake to 32 non-comment commands per poll. Each line is
 
 After the ASI artifact is tested in-game, the next safe additions should be:
 
-1. Add manifest rule editing to the panel.
-2. Add richer validation for virtual RPF paths.
-3. Add a redirect adapter interface, still disabled by default.
-4. Only then consider one controlled Windows file-open redirect experiment for loose files, not RPF internals yet.
+1. Add a disabled redirect adapter interface in C++ with explicit per-rule gates.
+2. Add one controlled loose-file redirect experiment for non-archive files only.
+3. Keep RPF internals untouched until loose-file redirection is proven safe.
 
 ## Credit
 
