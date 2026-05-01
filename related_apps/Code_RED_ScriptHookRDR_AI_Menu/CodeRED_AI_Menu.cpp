@@ -1,20 +1,47 @@
 // CodeRED_AI_Menu.cpp
 // Conservative ScriptHookRDR in-game menu scaffold.
+//
+// Codex/build-ready note:
+// This source resolves ScriptHookRDR exports dynamically with GetProcAddress instead
+// of linking against a ScriptHookRDR import .lib. That keeps the first-pass build
+// simple: cl.exe can produce a .asi DLL using only Windows SDK + the repo source.
+//
 // This pass draws an overlay, loads an editable NPC roster, and writes action-plan JSON.
 // It does not spawn actors or call risky native behavior functions yet.
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+#include <algorithm>
+#include <ctime>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <ctime>
-
-#include "../../ScriptHookRDR/sdk/inc/main.h"
-#include "../../ScriptHookRDR/sdk/inc/enums.h"
 
 namespace codered {
+
+using KeyboardHandler = void(*)(DWORD, WORD, BYTE, BOOL, BOOL, BOOL, BOOL);
+using ScriptRegisterFn = void(*)(HMODULE, void(*)());
+using ScriptUnregisterFn = void(*)(HMODULE);
+using KeyboardHandlerRegisterFn = void(*)(KeyboardHandler);
+using KeyboardHandlerUnregisterFn = void(*)(KeyboardHandler);
+using ScriptWaitFn = void(*)(DWORD);
+using DrawRectFn = void(*)(float, float, float, float, int, int, int, int, float);
+using DrawTextFn = void(*)(float, float, const char*, int, int, int, int, int, float, int);
+
+// ScriptHookRDR font/justification ids from sdk/inc/enums.h.
+constexpr int FONT_REDEMPTION = 2;
+constexpr int JUSTIFY_LEFT = 0;
+
+static HMODULE g_scriptHook = nullptr;
+static ScriptRegisterFn g_scriptRegister = nullptr;
+static ScriptUnregisterFn g_scriptUnregister = nullptr;
+static KeyboardHandlerRegisterFn g_keyboardHandlerRegister = nullptr;
+static KeyboardHandlerUnregisterFn g_keyboardHandlerUnregister = nullptr;
+static ScriptWaitFn g_scriptWait = nullptr;
+static DrawRectFn g_drawRect = nullptr;
+static DrawTextFn g_drawText = nullptr;
 
 static bool g_menuOpen = false;
 static int g_menuIndex = 0;
@@ -37,6 +64,49 @@ static std::vector<std::string> g_actions = {
     "dismiss_ai_guest_request",
     "status_request"
 };
+
+static FARPROC resolveExport(const char* name) {
+    if (!g_scriptHook) return nullptr;
+    return GetProcAddress(g_scriptHook, name);
+}
+
+static bool resolveScriptHook() {
+    if (!g_scriptHook) {
+        g_scriptHook = GetModuleHandleA("ScriptHookRDR.dll");
+        if (!g_scriptHook) {
+            g_scriptHook = LoadLibraryA("ScriptHookRDR.dll");
+        }
+    }
+    if (!g_scriptHook) return false;
+
+    g_scriptRegister = reinterpret_cast<ScriptRegisterFn>(resolveExport("scriptRegister"));
+    g_scriptUnregister = reinterpret_cast<ScriptUnregisterFn>(resolveExport("scriptUnregister"));
+    g_keyboardHandlerRegister = reinterpret_cast<KeyboardHandlerRegisterFn>(resolveExport("keyboardHandlerRegister"));
+    g_keyboardHandlerUnregister = reinterpret_cast<KeyboardHandlerUnregisterFn>(resolveExport("keyboardHandlerUnregister"));
+    g_scriptWait = reinterpret_cast<ScriptWaitFn>(resolveExport("scriptWait"));
+    g_drawRect = reinterpret_cast<DrawRectFn>(resolveExport("drawRect"));
+    g_drawText = reinterpret_cast<DrawTextFn>(resolveExport("drawText"));
+
+    return g_scriptRegister && g_scriptUnregister &&
+           g_keyboardHandlerRegister && g_keyboardHandlerUnregister &&
+           g_scriptWait && g_drawRect && g_drawText;
+}
+
+static void waitFrame(DWORD ms) {
+    if (g_scriptWait) {
+        g_scriptWait(ms);
+    } else {
+        Sleep(ms);
+    }
+}
+
+static void drawRectSafe(float x, float y, float width, float height, int r, int g, int b, int a, float rounding) {
+    if (g_drawRect) g_drawRect(x, y, width, height, r, g, b, a, rounding);
+}
+
+static void drawTextSafe(float x, float y, const char* text, int r, int g, int b, int a, int fontId, float fontSize, int justification) {
+    if (g_drawText) g_drawText(x, y, text, r, g, b, a, fontId, fontSize, justification);
+}
 
 static std::string trim(const std::string& value) {
     size_t first = value.find_first_not_of(" \t\r\n");
@@ -109,6 +179,8 @@ static std::string selectedAction() {
 }
 
 static void writeActionPlan() {
+    CreateDirectoryA("scratch", nullptr);
+
     std::ofstream file(g_actionPlanPath.c_str(), std::ios::trunc);
     if (!file) {
         g_status = "Could not write action plan";
@@ -165,12 +237,14 @@ static void onKey(DWORD key, WORD, BYTE, BOOL isDown, BOOL, BOOL, BOOL) {
     }
 
     if (key == VK_LEFT) {
+        ensureDefaultRoster();
         g_npcIndex--;
         if (g_npcIndex < 0) g_npcIndex = static_cast<int>(g_roster.size()) - 1;
         return;
     }
 
     if (key == VK_RIGHT) {
+        ensureDefaultRoster();
         g_npcIndex++;
         if (g_npcIndex >= static_cast<int>(g_roster.size())) g_npcIndex = 0;
         return;
@@ -188,19 +262,19 @@ static void onKey(DWORD key, WORD, BYTE, BOOL isDown, BOOL, BOOL, BOOL) {
 }
 
 static void drawLine(float x, float y, const std::string& text, int r = 235, int g = 235, int b = 235, float size = 0.35f) {
-    drawText(x, y, text.c_str(), r, g, b, 255, FontID::Redemption, size, TextJustification::Left);
+    drawTextSafe(x, y, text.c_str(), r, g, b, 255, FONT_REDEMPTION, size, JUSTIFY_LEFT);
 }
 
 static void drawMenu() {
     if (!g_menuOpen) {
-        drawText(0.015f, 0.955f, "CodeRED AI Bridge: F8", 210, 60, 60, 180, FontID::Redemption, 0.26f, TextJustification::Left);
+        drawTextSafe(0.015f, 0.955f, "CodeRED AI Bridge: F8", 210, 60, 60, 180, FONT_REDEMPTION, 0.26f, JUSTIFY_LEFT);
         return;
     }
 
     if (g_dirtyRoster) loadRoster();
 
-    drawRect(0.25f, 0.40f, 0.46f, 0.60f, 8, 8, 8, 205, 0.01f);
-    drawRect(0.25f, 0.105f, 0.46f, 0.055f, 95, 0, 0, 220, 0.01f);
+    drawRectSafe(0.25f, 0.40f, 0.46f, 0.60f, 8, 8, 8, 205, 0.01f);
+    drawRectSafe(0.25f, 0.105f, 0.46f, 0.055f, 95, 0, 0, 220, 0.01f);
 
     drawLine(0.035f, 0.078f, "CodeRED AI Menu", 255, 70, 70, 0.42f);
     drawLine(0.035f, 0.135f, "NPC: " + selectedNpc(), 255, 230, 190, 0.32f);
@@ -224,7 +298,7 @@ static void drawMenu() {
 static void mainLoop() {
     while (true) {
         drawMenu();
-        WAIT(0);
+        waitFrame(0);
     }
 }
 
@@ -233,11 +307,17 @@ static void mainLoop() {
 BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID) {
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(module);
-        scriptRegister(module, codered::mainLoop);
-        keyboardHandlerRegister(codered::onKey);
+        if (codered::resolveScriptHook()) {
+            codered::g_scriptRegister(module, codered::mainLoop);
+            codered::g_keyboardHandlerRegister(codered::onKey);
+        }
     } else if (reason == DLL_PROCESS_DETACH) {
-        keyboardHandlerUnregister(codered::onKey);
-        scriptUnregister(module);
+        if (codered::g_keyboardHandlerUnregister) {
+            codered::g_keyboardHandlerUnregister(codered::onKey);
+        }
+        if (codered::g_scriptUnregister) {
+            codered::g_scriptUnregister(module);
+        }
     }
     return TRUE;
 }
