@@ -13,6 +13,9 @@
 #include <windows.h>
 
 #include <algorithm>
+#include <cstdarg>
+#include <cstdio>
+#include <cstring>
 #include <ctime>
 #include <fstream>
 #include <sstream>
@@ -42,6 +45,9 @@ static KeyboardHandlerUnregisterFn g_keyboardHandlerUnregister = nullptr;
 static ScriptWaitFn g_scriptWait = nullptr;
 static DrawRectFn g_drawRect = nullptr;
 static DrawTextFn g_drawText = nullptr;
+static HMODULE g_module = nullptr;
+static volatile LONG g_stopRequested = 0;
+static volatile LONG g_registered = 0;
 
 static bool g_menuOpen = false;
 static int g_menuIndex = 0;
@@ -65,12 +71,66 @@ static std::vector<std::string> g_actions = {
     "status_request"
 };
 
-static FARPROC resolveExport(const char* name) {
-    if (!g_scriptHook) return nullptr;
-    return GetProcAddress(g_scriptHook, name);
+static std::string logPath() {
+    char exePath[MAX_PATH] = {};
+    DWORD len = GetModuleFileNameA(nullptr, exePath, MAX_PATH);
+    if (len == 0 || len >= MAX_PATH) {
+        return "CodeRED_AI_Menu.log";
+    }
+
+    std::string path(exePath);
+    size_t slash = path.find_last_of("\\/");
+    if (slash == std::string::npos) {
+        return "CodeRED_AI_Menu.log";
+    }
+    return path.substr(0, slash + 1) + "CodeRED_AI_Menu.log";
 }
 
-static bool resolveScriptHook() {
+static void writeLog(const char* format, ...) {
+    char message[1024] = {};
+    va_list args;
+    va_start(args, format);
+    vsnprintf_s(message, sizeof(message), _TRUNCATE, format, args);
+    va_end(args);
+
+    SYSTEMTIME now = {};
+    GetLocalTime(&now);
+
+    char line[1280] = {};
+    snprintf(line, sizeof(line),
+             "[%04u-%02u-%02u %02u:%02u:%02u] %s\r\n",
+             now.wYear, now.wMonth, now.wDay, now.wHour, now.wMinute,
+             now.wSecond, message);
+
+    std::string path = logPath();
+    HANDLE file = CreateFileA(path.c_str(), FILE_APPEND_DATA,
+                              FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                              OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (file == INVALID_HANDLE_VALUE) {
+        return;
+    }
+
+    DWORD written = 0;
+    WriteFile(file, line, static_cast<DWORD>(strlen(line)), &written, nullptr);
+    CloseHandle(file);
+}
+
+static FARPROC resolveExport(const char* name, const char* decoratedName = nullptr) {
+    if (!g_scriptHook) return nullptr;
+    FARPROC proc = GetProcAddress(g_scriptHook, name);
+    if (!proc && decoratedName) {
+        proc = GetProcAddress(g_scriptHook, decoratedName);
+    }
+    return proc;
+}
+
+static void logMissingExport(const char* name, FARPROC proc) {
+    if (!proc) {
+        writeLog("Missing ScriptHookRDR export: %s", name);
+    }
+}
+
+static bool resolveScriptHook(bool logMissingExports) {
     if (!g_scriptHook) {
         g_scriptHook = GetModuleHandleA("ScriptHookRDR.dll");
         if (!g_scriptHook) {
@@ -79,13 +139,36 @@ static bool resolveScriptHook() {
     }
     if (!g_scriptHook) return false;
 
-    g_scriptRegister = reinterpret_cast<ScriptRegisterFn>(resolveExport("scriptRegister"));
-    g_scriptUnregister = reinterpret_cast<ScriptUnregisterFn>(resolveExport("scriptUnregister"));
-    g_keyboardHandlerRegister = reinterpret_cast<KeyboardHandlerRegisterFn>(resolveExport("keyboardHandlerRegister"));
-    g_keyboardHandlerUnregister = reinterpret_cast<KeyboardHandlerUnregisterFn>(resolveExport("keyboardHandlerUnregister"));
-    g_scriptWait = reinterpret_cast<ScriptWaitFn>(resolveExport("scriptWait"));
-    g_drawRect = reinterpret_cast<DrawRectFn>(resolveExport("drawRect"));
-    g_drawText = reinterpret_cast<DrawTextFn>(resolveExport("drawText"));
+    FARPROC scriptRegisterProc =
+        resolveExport("scriptRegister", "?scriptRegister@@YAXPEAUHINSTANCE__@@P6AXXZ@Z");
+    FARPROC scriptUnregisterProc =
+        resolveExport("scriptUnregister", "?scriptUnregister@@YAXPEAUHINSTANCE__@@@Z");
+    FARPROC keyboardRegisterProc = resolveExport(
+        "keyboardHandlerRegister", "?keyboardHandlerRegister@@YAXP6AXKGEHHHH@Z@Z");
+    FARPROC keyboardUnregisterProc = resolveExport(
+        "keyboardHandlerUnregister", "?keyboardHandlerUnregister@@YAXP6AXKGEHHHH@Z@Z");
+    FARPROC scriptWaitProc = resolveExport("scriptWait", "?scriptWait@@YAXK@Z");
+    FARPROC drawRectProc = resolveExport("drawRect", "?drawRect@@YAXMMMMHHHHM@Z");
+    FARPROC drawTextProc =
+        resolveExport("drawText", "?drawText@@YAXMMPEBDHHHHHMH@Z");
+
+    if (logMissingExports) {
+        logMissingExport("scriptRegister", scriptRegisterProc);
+        logMissingExport("scriptUnregister", scriptUnregisterProc);
+        logMissingExport("keyboardHandlerRegister", keyboardRegisterProc);
+        logMissingExport("keyboardHandlerUnregister", keyboardUnregisterProc);
+        logMissingExport("scriptWait", scriptWaitProc);
+        logMissingExport("drawRect", drawRectProc);
+        logMissingExport("drawText", drawTextProc);
+    }
+
+    g_scriptRegister = reinterpret_cast<ScriptRegisterFn>(scriptRegisterProc);
+    g_scriptUnregister = reinterpret_cast<ScriptUnregisterFn>(scriptUnregisterProc);
+    g_keyboardHandlerRegister = reinterpret_cast<KeyboardHandlerRegisterFn>(keyboardRegisterProc);
+    g_keyboardHandlerUnregister = reinterpret_cast<KeyboardHandlerUnregisterFn>(keyboardUnregisterProc);
+    g_scriptWait = reinterpret_cast<ScriptWaitFn>(scriptWaitProc);
+    g_drawRect = reinterpret_cast<DrawRectFn>(drawRectProc);
+    g_drawText = reinterpret_cast<DrawTextFn>(drawTextProc);
 
     return g_scriptRegister && g_scriptUnregister &&
            g_keyboardHandlerRegister && g_keyboardHandlerUnregister &&
@@ -302,22 +385,84 @@ static void mainLoop() {
     }
 }
 
+static DWORD WINAPI registrationThread(LPVOID param) {
+    HMODULE module = reinterpret_cast<HMODULE>(param);
+    writeLog("Registration worker started");
+
+    const ULONGLONG deadline = GetTickCount64() + 30000;
+    bool loggedDllMissing = false;
+    bool loggedDllFound = false;
+    bool loggedMissingExports = false;
+
+    while (!InterlockedCompareExchange(&g_stopRequested, 0, 0) &&
+           GetTickCount64() <= deadline) {
+        const bool resolved = resolveScriptHook(!loggedMissingExports);
+
+        if (!g_scriptHook) {
+            if (!loggedDllMissing) {
+                writeLog("ScriptHookRDR.dll not found yet");
+                loggedDllMissing = true;
+            }
+        } else if (!loggedDllFound) {
+            writeLog("ScriptHookRDR.dll found");
+            loggedDllFound = true;
+        }
+
+        if (g_scriptHook && !resolved && !loggedMissingExports) {
+            loggedMissingExports = true;
+        }
+
+        if (resolved) {
+            g_scriptRegister(module, codered::mainLoop);
+            g_keyboardHandlerRegister(codered::onKey);
+            InterlockedExchange(&g_registered, 1);
+            writeLog("Registration succeeded");
+            return 0;
+        }
+
+        Sleep(500);
+    }
+
+    if (InterlockedCompareExchange(&g_stopRequested, 0, 0)) {
+        writeLog("Registration worker stopped before registration");
+    } else {
+        resolveScriptHook(true);
+        writeLog("Registration failed: ScriptHookRDR exports were not ready within 30 seconds");
+    }
+    return 1;
+}
+
 } // namespace codered
 
 BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID) {
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(module);
-        if (codered::resolveScriptHook()) {
-            codered::g_scriptRegister(module, codered::mainLoop);
-            codered::g_keyboardHandlerRegister(codered::onKey);
+        codered::g_module = module;
+        InterlockedExchange(&codered::g_stopRequested, 0);
+        codered::writeLog("ASI attached");
+        HANDLE thread = CreateThread(nullptr, 0, codered::registrationThread,
+                                     module, 0, nullptr);
+        if (thread) {
+            CloseHandle(thread);
+        } else {
+            codered::writeLog("Registration worker creation failed: %lu",
+                              GetLastError());
         }
     } else if (reason == DLL_PROCESS_DETACH) {
-        if (codered::g_keyboardHandlerUnregister) {
+        InterlockedExchange(&codered::g_stopRequested, 1);
+        codered::writeLog("ASI detach requested");
+        if (InterlockedCompareExchange(&codered::g_registered, 0, 0) &&
+            codered::g_keyboardHandlerUnregister) {
             codered::g_keyboardHandlerUnregister(codered::onKey);
+            codered::writeLog("Keyboard handler unregistered");
         }
-        if (codered::g_scriptUnregister) {
+        if (InterlockedCompareExchange(&codered::g_registered, 0, 0) &&
+            codered::g_scriptUnregister) {
             codered::g_scriptUnregister(module);
+            codered::writeLog("Script unregistered");
         }
+        InterlockedExchange(&codered::g_registered, 0);
+        codered::writeLog("ASI detached");
     }
     return TRUE;
 }
