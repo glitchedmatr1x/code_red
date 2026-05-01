@@ -1,0 +1,13 @@
+# CodeREDCompanion Pass 0.2 safe command/status proof sample.
+# Copy this file to the game folder as:
+# data/codered/companion_commands.txt
+
+PING
+STATUS
+VERSION
+HELP
+
+# Future commands are recognized but blocked in Pass 0.2.
+# This should show as recognized_future_command_disabled_in_pass_0_2.
+SPAWN_ACTOR ACTOR_CAUCASIAN_ARMY_Easy01
+FOLLOW ACTOR_CAUCASIAN_ARMY_Easy01
