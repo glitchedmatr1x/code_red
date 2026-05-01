@@ -1,0 +1,13 @@
+CodeRED_AI_Menu integration note
+================================
+
+Add these actions later after the standalone DualGunLab proves attachment/fire:
+
+- dualgun_toggle_request
+- dualgun_attach_left_pistol_request
+- dualgun_detach_left_pistol_request
+- dualgun_left_fire_test_request
+- dualgun_save_offset_preset_request
+- dualgun_debug_draw_request
+
+For now, keep the DualGunLab as a separate .asi so it cannot regress the current F8 AI menu or actor spawn path.
