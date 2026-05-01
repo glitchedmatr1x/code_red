@@ -8,6 +8,7 @@ on:
       - ".github/workflows/build-codered-asi.yml"
       - "tools/codered_companion_command_writer.py"
       - "tools/codered_companion_command_panel.py"
+      - "tools/codered_override_manifest_tool.py"
       - "Run_CodeRED_Companion_Command_Panel.bat"
 
 jobs:
@@ -44,12 +45,14 @@ jobs:
           }
           Get-Item $artifact | Format-List Name,Length,FullName
 
-      - name: Smoke test command writer
+      - name: Smoke test command and override tools
         shell: pwsh
         run: |
           py -3 tools/codered_companion_command_writer.py SPAWN_ACTOR --actor ACTOR_VEHICLE_Car01 --dry-run
-          py -3 tools/codered_companion_command_writer.py PING --dry-run
-          py -3 -m py_compile tools/codered_companion_command_writer.py tools/codered_companion_command_panel.py
+          py -3 tools/codered_companion_command_writer.py SCAN_OVERRIDES --dry-run
+          py -3 tools/codered_override_manifest_tool.py --game-root "$env:RUNNER_TEMP\codered-test-root" --replace init
+          py -3 tools/codered_override_manifest_tool.py --game-root "$env:RUNNER_TEMP\codered-test-root" scan
+          py -3 -m py_compile tools/codered_companion_command_writer.py tools/codered_companion_command_panel.py tools/codered_override_manifest_tool.py
 
       - name: Write proof manifest
         shell: pwsh
@@ -57,17 +60,23 @@ jobs:
           $out = "build/codered-asi/dist/RELEASE/CodeREDCompanion_ASI_manifest.txt"
           @(
             "CodeREDCompanion ASI build manifest",
-            "Version: 0.4.0-archive-bridge-stub-proof",
+            "Version: 0.5.0-override-manifest-proof",
             "Artifact: CodeREDCompanion.asi",
             "Platform: Windows x64",
             "Command file: data/codered/companion_commands.txt",
             "Status file: CodeRED_ASI_Logs/companion_status.json",
             "Archive file: CodeRED_ASI_Logs/companion_command_archive.jsonl",
             "Trainer bridge stub file: CodeRED_ASI_Logs/trainer_bridge_stub.json",
+            "Override root: CodeRED_Overrides/",
+            "Override manifest: CodeRED_Overrides/manifest.json",
+            "Override proof file: CodeRED_ASI_Logs/file_override_stub.json",
+            "Override events file: CodeRED_ASI_Logs/file_override_events.jsonl",
             "Writer history file: CodeRED_ASI_Logs/companion_command_writer_history.jsonl",
             "Poll interval ms: 3000",
-            "Safe commands: PING, STATUS, VERSION, HELP",
+            "Safe commands: PING, STATUS, VERSION, HELP, SCAN_OVERRIDES",
             "Future actor commands: recognized, actor-whitelist checked, archived, bridge-stub logged, and blocked",
+            "File redirects: disabled/proof-only",
+            "Archive writes: disabled/proof-only",
             "Command IDs: ID= prefix supported; duplicates skipped",
             "Hooks installed: false",
             "Memory patches applied: false",
@@ -80,7 +89,7 @@ jobs:
       - name: Upload ASI artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CodeREDCompanion-ASI-archive-bridge-stub-proof
+          name: CodeREDCompanion-ASI-override-manifest-proof
           path: |
             build/codered-asi/dist/RELEASE/CodeREDCompanion.asi
             build/codered-asi/dist/RELEASE/CodeREDCompanion_ASI_manifest.txt
