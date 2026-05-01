@@ -2,7 +2,7 @@
 """Code RED Companion Command Panel.
 
 Small standalone Tk panel for writing CodeREDCompanion ASI proof commands.
-Pass 0.5 writes command files and override manifests only. It does not execute game actions or enable file redirects.
+Pass 0.6 writes command files and override manifests only. It does not execute game actions or enable file redirects.
 """
 
 from __future__ import annotations
@@ -21,6 +21,7 @@ DEFAULT_GAME_ROOT = Path.cwd()
 
 SAFE_COMMANDS = ["PING", "STATUS", "VERSION", "HELP", "SCAN_OVERRIDES"]
 FUTURE_COMMANDS = ["SPAWN_ACTOR", "FOLLOW", "GUARD", "ATTACK", "DISMISS", "MOUNT", "WAYPOINT", "TELEPORT", "SET_FORMATION"]
+PRESETS = ["tune-refgroup", "tune-table", "string-table", "script-source", "config-json", "text-note"]
 ACTORS = [
     "ACTOR_CAUCASIAN_ARMY_Easy01",
     "AE_CAUCASIAN_ARMY_EASY01",
@@ -39,8 +40,8 @@ class CompanionCommandPanel(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("Code RED Companion Command Panel")
-        self.geometry("900x660")
-        self.minsize(760, 540)
+        self.geometry("980x740")
+        self.minsize(820, 620)
         self.configure(bg="#120202")
 
         self.game_root = tk.StringVar(value=str(DEFAULT_GAME_ROOT))
@@ -49,6 +50,11 @@ class CompanionCommandPanel(tk.Tk):
         self.extra_args = tk.StringVar(value="")
         self.command_id = tk.StringVar(value="")
         self.replace_file = tk.BooleanVar(value=False)
+        self.override_source = tk.StringVar(value="")
+        self.override_virtual_path = tk.StringVar(value="content/tune/refgroups/example.xtbl")
+        self.override_preset = tk.StringVar(value=PRESETS[0])
+        self.override_preset_name = tk.StringVar(value="example")
+        self.override_rule = tk.StringVar(value="")
 
         self._build_ui()
         self._refresh_paths()
@@ -71,7 +77,7 @@ class CompanionCommandPanel(tk.Tk):
         tk.Label(root, text="Code RED Companion Command Panel", bg="#120202", fg="#ff3b3b", font=("Segoe UI", 17, "bold")).pack(anchor="w")
         tk.Label(
             root,
-            text="Pass 0.5 proof lane: commands + override manifests only. Actor execution and file redirects remain disabled.",
+            text="Pass 0.6 proof lane: commands + override manifest editor. Actor execution and file redirects remain disabled.",
             bg="#120202",
             fg="#f0c0c0",
             font=("Segoe UI", 10),
@@ -114,14 +120,39 @@ class CompanionCommandPanel(tk.Tk):
         self.hint = tk.Label(grid, text="", bg="#120202", fg="#ffd0d0", justify="left")
         self.hint.grid(row=5, column=0, columnspan=2, sticky="w", pady=(8, 0))
 
+        override = ttk.LabelFrame(root, text="Override manifest proof editor")
+        override.pack(fill="x", pady=(0, 10))
+        og = ttk.Frame(override, padding=8)
+        og.pack(fill="x")
+        og.columnconfigure(1, weight=1)
+        og.columnconfigure(3, weight=1)
+        ttk.Label(og, text="Source file").grid(row=0, column=0, sticky="w")
+        ttk.Entry(og, textvariable=self.override_source).grid(row=0, column=1, sticky="ew", padx=(6, 6))
+        ttk.Button(og, text="Browse", command=self._browse_override_source).grid(row=0, column=2, padx=(0, 10))
+        ttk.Label(og, text="Virtual path").grid(row=0, column=3, sticky="w")
+        ttk.Entry(og, textvariable=self.override_virtual_path).grid(row=0, column=4, sticky="ew", padx=(6, 0))
+        ttk.Label(og, text="Preset").grid(row=1, column=0, sticky="w", pady=(8, 0))
+        ttk.Combobox(og, textvariable=self.override_preset, values=PRESETS, state="readonly").grid(row=1, column=1, sticky="ew", padx=(6, 6), pady=(8, 0))
+        ttk.Label(og, text="Preset name").grid(row=1, column=2, sticky="w", pady=(8, 0))
+        ttk.Entry(og, textvariable=self.override_preset_name).grid(row=1, column=3, sticky="ew", padx=(6, 6), pady=(8, 0))
+        ttk.Label(og, text="Rule id/path").grid(row=1, column=4, sticky="w", pady=(8, 0))
+        ttk.Entry(og, textvariable=self.override_rule).grid(row=1, column=5, sticky="ew", padx=(6, 0), pady=(8, 0))
+
         buttons = ttk.Frame(root)
         buttons.pack(fill="x", pady=(0, 10))
-        ttk.Button(buttons, text="Write Command", command=self._write_command).pack(side="left")
-        ttk.Button(buttons, text="Dry Run", command=lambda: self._write_command(dry_run=True)).pack(side="left", padx=8)
-        ttk.Button(buttons, text="Init Override Manifest", command=self._init_override_manifest).pack(side="left", padx=8)
-        ttk.Button(buttons, text="Scan Overrides Command", command=self._scan_overrides_command).pack(side="left")
-        ttk.Button(buttons, text="Open Logs", command=self._open_logs).pack(side="left", padx=8)
-        ttk.Button(buttons, text="Read Status", command=self._read_status).pack(side="left")
+        for label, command in [
+            ("Write Command", self._write_command),
+            ("Dry Run", lambda: self._write_command(dry_run=True)),
+            ("Init Manifest", self._init_override_manifest),
+            ("Add Override", self._add_override),
+            ("Add Preset", self._add_override_preset),
+            ("Validate Manifest", self._validate_manifest),
+            ("Write Report", self._write_manifest_report),
+            ("Scan Overrides Command", self._scan_overrides_command),
+            ("Open Logs", self._open_logs),
+            ("Read Status", self._read_status),
+        ]:
+            ttk.Button(buttons, text=label, command=command).pack(side="left", padx=(0, 6))
 
         out_frame = ttk.LabelFrame(root, text="Output")
         out_frame.pack(fill="both", expand=True)
@@ -151,7 +182,7 @@ class CompanionCommandPanel(tk.Tk):
         self.paths_text.insert("end", f"Override manifest: {self._override_root() / 'manifest.json'}\n")
         self.paths_text.insert("end", f"ASI logs:       {self._logs_folder()}\n")
         self.paths_text.insert("end", f"Status JSON:    {self._status_file()}\n")
-        self.paths_text.insert("end", f"Writer:         {WRITER}\n")
+        self.paths_text.insert("end", f"Validation report: {self._logs_folder() / 'override_manifest_validation_report.json'}\n")
 
     def _refresh_hint(self) -> None:
         cmd = self.command.get().upper()
@@ -168,6 +199,11 @@ class CompanionCommandPanel(tk.Tk):
         if chosen:
             self.game_root.set(chosen)
             self._refresh_paths()
+
+    def _browse_override_source(self) -> None:
+        chosen = filedialog.askopenfilename(title="Choose override source file")
+        if chosen:
+            self.override_source.set(chosen)
 
     def _writer_args(self, dry_run: bool) -> list[str]:
         args = [sys.executable, str(WRITER), self.command.get(), "--game-root", str(self._game_root_path())]
@@ -200,16 +236,28 @@ class CompanionCommandPanel(tk.Tk):
         self.output.see("end")
 
     def _write_command(self, dry_run: bool = False) -> None:
-        if not WRITER.exists():
-            messagebox.showerror("Missing writer", f"Could not find {WRITER}")
-            return
         self._run(self._writer_args(dry_run))
 
     def _init_override_manifest(self) -> None:
-        if not OVERRIDE_TOOL.exists():
-            messagebox.showerror("Missing override tool", f"Could not find {OVERRIDE_TOOL}")
-            return
         self._run([sys.executable, str(OVERRIDE_TOOL), "--game-root", str(self._game_root_path()), "--replace", "init"])
+
+    def _add_override(self) -> None:
+        if not self.override_source.get().strip():
+            messagebox.showwarning("Missing source", "Choose an override source file first.")
+            return
+        self._run([sys.executable, str(OVERRIDE_TOOL), "--game-root", str(self._game_root_path()), "--replace", "add", self.override_source.get(), self.override_virtual_path.get()])
+
+    def _add_override_preset(self) -> None:
+        if not self.override_source.get().strip():
+            messagebox.showwarning("Missing source", "Choose an override source file first.")
+            return
+        self._run([sys.executable, str(OVERRIDE_TOOL), "--game-root", str(self._game_root_path()), "--replace", "add-preset", self.override_preset.get(), self.override_preset_name.get(), self.override_source.get()])
+
+    def _validate_manifest(self) -> None:
+        self._run([sys.executable, str(OVERRIDE_TOOL), "--game-root", str(self._game_root_path()), "validate"])
+
+    def _write_manifest_report(self) -> None:
+        self._run([sys.executable, str(OVERRIDE_TOOL), "--game-root", str(self._game_root_path()), "write-report"])
 
     def _scan_overrides_command(self) -> None:
         self.command.set("SCAN_OVERRIDES")
