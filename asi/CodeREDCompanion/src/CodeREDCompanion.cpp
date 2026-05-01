@@ -1,5 +1,5 @@
 // CodeREDCompanion.asi
-// Pass 0.3 polling/id/whitelist proof layer for Code RED.
+// Pass 0.4 archive/bridge-stub proof layer for Code RED.
 // This build is intentionally harmless: no hooks, no memory patches, no game writes.
 
 #include <windows.h>
@@ -21,10 +21,12 @@
 namespace {
 
 constexpr const wchar_t* kPluginName = L"CodeREDCompanion";
-constexpr const wchar_t* kPluginVersion = L"0.3.0-polling-id-whitelist-proof";
+constexpr const wchar_t* kPluginVersion = L"0.4.0-archive-bridge-stub-proof";
 constexpr const wchar_t* kLogFolderName = L"CodeRED_ASI_Logs";
 constexpr const wchar_t* kLogFileName = L"CodeREDCompanion_loader_proof.log";
 constexpr const wchar_t* kStatusFileName = L"companion_status.json";
+constexpr const wchar_t* kArchiveFileName = L"companion_command_archive.jsonl";
+constexpr const wchar_t* kTrainerBridgeFileName = L"trainer_bridge_stub.json";
 constexpr const wchar_t* kCommandFileRelativePath = L"data\\codered\\companion_commands.txt";
 constexpr DWORD kInitialDelayMs = 250;
 constexpr DWORD kPollIntervalMs = 3000;
@@ -53,6 +55,7 @@ struct RuntimeState {
     std::uint64_t poll_count = 0;
     std::uint64_t total_new_commands = 0;
     std::uint64_t total_skipped_duplicates = 0;
+    std::uint64_t total_bridge_stub_intents = 0;
 };
 
 std::wstring NowStamp() {
@@ -106,6 +109,14 @@ std::filesystem::path GetLogPath() {
 
 std::filesystem::path GetStatusPath() {
     return GetLogDir() / kStatusFileName;
+}
+
+std::filesystem::path GetArchivePath() {
+    return GetLogDir() / kArchiveFileName;
+}
+
+std::filesystem::path GetTrainerBridgePath() {
+    return GetLogDir() / kTrainerBridgeFileName;
 }
 
 std::filesystem::path GetCommandPath() {
@@ -271,6 +282,10 @@ bool IsWhitelistedActor(const std::wstring& actorName) {
            actor == L"ACTOR_VEHICLE_WAGON02" || actor == L"ACTOR_VEHICLE_COACH01";
 }
 
+bool IsBridgeStubIntent(const CommandResult& command) {
+    return IsFutureCommand(command.verb) && !command.skipped_duplicate;
+}
+
 CommandResult ParseCommandLine(const std::wstring& rawLine, RuntimeState& state) {
     CommandResult result{};
     std::wstring body;
@@ -320,11 +335,21 @@ CommandResult ParseCommandLine(const std::wstring& rawLine, RuntimeState& state)
         }
     } else if (IsFutureCommand(result.verb)) {
         result.accepted = false;
-        result.reason = result.actor_whitelisted ? L"recognized_future_command_whitelisted_actor_but_disabled_in_pass_0_3"
-                                                  : L"recognized_future_command_disabled_or_actor_not_whitelisted_in_pass_0_3";
+        if (result.actor_whitelisted) {
+            result.action = L"trainer_bridge_stub_log_only";
+            result.reason = L"recognized_future_command_logged_to_trainer_bridge_stub_but_disabled_in_pass_0_4";
+        } else {
+            result.action = L"blocked_noop";
+            result.reason = L"recognized_future_command_blocked_actor_missing_or_not_whitelisted_in_pass_0_4";
+        }
     } else {
         result.accepted = false;
+        result.action = L"blocked_noop";
         result.reason = L"unknown_command";
+    }
+
+    if (IsBridgeStubIntent(result)) {
+        ++state.total_bridge_stub_intents;
     }
 
     return result;
@@ -360,6 +385,81 @@ std::vector<CommandResult> ReadCommands(RuntimeState& state, bool& commandFileFo
     return commands;
 }
 
+void WriteCommandJsonObject(std::wofstream& out, const CommandResult& command, bool includeTrailingComma) {
+    out << L"    {\n";
+    out << L"      \"raw\": \"" << JsonEscape(command.raw) << L"\",\n";
+    out << L"      \"command_id\": \"" << JsonEscape(command.command_id) << L"\",\n";
+    out << L"      \"explicit_id\": " << JsonBool(command.explicit_id) << L",\n";
+    out << L"      \"skipped_duplicate\": " << JsonBool(command.skipped_duplicate) << L",\n";
+    out << L"      \"verb\": \"" << JsonEscape(command.verb) << L"\",\n";
+    out << L"      \"args\": \"" << JsonEscape(command.args) << L"\",\n";
+    out << L"      \"actor_candidate\": \"" << JsonEscape(command.actor_candidate) << L"\",\n";
+    out << L"      \"actor_whitelisted\": " << JsonBool(command.actor_whitelisted) << L",\n";
+    out << L"      \"accepted\": " << JsonBool(command.accepted) << L",\n";
+    out << L"      \"action\": \"" << JsonEscape(command.action) << L"\",\n";
+    out << L"      \"reason\": \"" << JsonEscape(command.reason) << L"\"\n";
+    out << L"    }" << (includeTrailingComma ? L"," : L"") << L"\n";
+}
+
+void AppendCommandArchive(const RuntimeState& state, const std::vector<CommandResult>& commands) {
+    std::wofstream out(GetArchivePath(), std::ios::app);
+    if (!out) {
+        AppendLogLine(L"Could not append companion_command_archive.jsonl");
+        return;
+    }
+
+    for (const auto& command : commands) {
+        if (command.skipped_duplicate) {
+            continue;
+        }
+        out << L"{"
+            << L"\"timestamp\":\"" << JsonEscape(NowStamp()) << L"\","
+            << L"\"plugin_version\":\"" << JsonEscape(kPluginVersion) << L"\","
+            << L"\"poll_count\":" << state.poll_count << L",";
+        out << L"\"command_id\":\"" << JsonEscape(command.command_id) << L"\","
+            << L"\"verb\":\"" << JsonEscape(command.verb) << L"\","
+            << L"\"args\":\"" << JsonEscape(command.args) << L"\","
+            << L"\"actor_candidate\":\"" << JsonEscape(command.actor_candidate) << L"\","
+            << L"\"actor_whitelisted\":" << JsonBool(command.actor_whitelisted) << L","
+            << L"\"accepted\":" << JsonBool(command.accepted) << L","
+            << L"\"action\":\"" << JsonEscape(command.action) << L"\","
+            << L"\"reason\":\"" << JsonEscape(command.reason) << L"\"}"
+            << L"\n";
+    }
+}
+
+void WriteTrainerBridgeStubJson(const RuntimeState& state, const std::vector<CommandResult>& commands) {
+    std::vector<CommandResult> intents;
+    for (const auto& command : commands) {
+        if (IsBridgeStubIntent(command)) {
+            intents.push_back(command);
+        }
+    }
+
+    std::wofstream out(GetTrainerBridgePath(), std::ios::trunc);
+    if (!out) {
+        AppendLogLine(L"Could not write trainer_bridge_stub.json");
+        return;
+    }
+
+    out << L"{\n";
+    out << L"  \"plugin_name\": \"" << JsonEscape(kPluginName) << L"\",\n";
+    out << L"  \"plugin_version\": \"" << JsonEscape(kPluginVersion) << L"\",\n";
+    out << L"  \"timestamp\": \"" << JsonEscape(NowStamp()) << L"\",\n";
+    out << L"  \"bridge_mode\": \"stub_log_only\",\n";
+    out << L"  \"trainer_calls_enabled\": false,\n";
+    out << L"  \"actor_spawning_enabled\": false,\n";
+    out << L"  \"poll_count\": " << state.poll_count << L",\n";
+    out << L"  \"total_bridge_stub_intents\": " << state.total_bridge_stub_intents << L",\n";
+    out << L"  \"intents_this_poll\": " << intents.size() << L",\n";
+    out << L"  \"intents\": [\n";
+    for (std::size_t i = 0; i < intents.size(); ++i) {
+        WriteCommandJsonObject(out, intents[i], i + 1 < intents.size());
+    }
+    out << L"  ]\n";
+    out << L"}\n";
+}
+
 void WriteStatusJson(
     const RuntimeState& state,
     const std::filesystem::path& modulePath,
@@ -381,6 +481,9 @@ void WriteStatusJson(
     out << L"  \"host_process\": \"" << JsonEscape(processPath.wstring()) << L"\",\n";
     out << L"  \"plugin_path\": \"" << JsonEscape(modulePath.wstring()) << L"\",\n";
     out << L"  \"command_file\": \"" << JsonEscape(GetCommandPath().wstring()) << L"\",\n";
+    out << L"  \"status_file\": \"" << JsonEscape(GetStatusPath().wstring()) << L"\",\n";
+    out << L"  \"archive_file\": \"" << JsonEscape(GetArchivePath().wstring()) << L"\",\n";
+    out << L"  \"trainer_bridge_stub_file\": \"" << JsonEscape(GetTrainerBridgePath().wstring()) << L"\",\n";
     out << L"  \"command_file_found\": " << JsonBool(commandFileFound) << L",\n";
     out << L"  \"command_limit_reached\": " << JsonBool(commandLimitReached) << L",\n";
     out << L"  \"poll_interval_ms\": " << kPollIntervalMs << L",\n";
@@ -389,11 +492,14 @@ void WriteStatusJson(
     out << L"  \"processed_command_id_count\": " << state.processed_command_ids.size() << L",\n";
     out << L"  \"total_new_commands\": " << state.total_new_commands << L",\n";
     out << L"  \"total_skipped_duplicates\": " << state.total_skipped_duplicates << L",\n";
+    out << L"  \"total_bridge_stub_intents\": " << state.total_bridge_stub_intents << L",\n";
     out << L"  \"safety\": {\n";
     out << L"    \"hooks_installed\": false,\n";
     out << L"    \"memory_patches_applied\": false,\n";
     out << L"    \"game_files_modified\": false,\n";
     out << L"    \"actor_spawning_enabled\": false,\n";
+    out << L"    \"trainer_calls_enabled\": false,\n";
+    out << L"    \"trainer_bridge_stub_only\": true,\n";
     out << L"    \"future_commands_blocked\": true,\n";
     out << L"    \"actor_whitelist_enforced\": true\n";
     out << L"  },\n";
@@ -412,20 +518,7 @@ void WriteStatusJson(
     out << L"  \"commands\": [\n";
 
     for (std::size_t i = 0; i < commands.size(); ++i) {
-        const auto& command = commands[i];
-        out << L"    {\n";
-        out << L"      \"raw\": \"" << JsonEscape(command.raw) << L"\",\n";
-        out << L"      \"command_id\": \"" << JsonEscape(command.command_id) << L"\",\n";
-        out << L"      \"explicit_id\": " << JsonBool(command.explicit_id) << L",\n";
-        out << L"      \"skipped_duplicate\": " << JsonBool(command.skipped_duplicate) << L",\n";
-        out << L"      \"verb\": \"" << JsonEscape(command.verb) << L"\",\n";
-        out << L"      \"args\": \"" << JsonEscape(command.args) << L"\",\n";
-        out << L"      \"actor_candidate\": \"" << JsonEscape(command.actor_candidate) << L"\",\n";
-        out << L"      \"actor_whitelisted\": " << JsonBool(command.actor_whitelisted) << L",\n";
-        out << L"      \"accepted\": " << JsonBool(command.accepted) << L",\n";
-        out << L"      \"action\": \"" << JsonEscape(command.action) << L"\",\n";
-        out << L"      \"reason\": \"" << JsonEscape(command.reason) << L"\"\n";
-        out << L"    }" << (i + 1 < commands.size() ? L"," : L"") << L"\n";
+        WriteCommandJsonObject(out, commands[i], i + 1 < commands.size());
     }
 
     out << L"  ]\n";
@@ -438,7 +531,7 @@ void LogNewCommands(const std::vector<CommandResult>& commands) {
             continue;
         }
         AppendLogLine(L"Command " + command.command_id + L" verb=" + command.verb + L" accepted=" +
-                      BoolText(command.accepted) + L" reason=" + command.reason);
+                      BoolText(command.accepted) + L" action=" + command.action + L" reason=" + command.reason);
     }
 }
 
@@ -449,15 +542,18 @@ void PollingWorker() {
     const auto modulePath = GetModulePath(g_module);
     const auto processPath = GetProcessPath();
 
-    AppendLogLine(std::wstring(kPluginName) + L" polling/id/whitelist proof started.");
+    AppendLogLine(std::wstring(kPluginName) + L" archive/bridge-stub proof started.");
     AppendLogLine(L"Version: " + std::wstring(kPluginVersion));
     AppendLogLine(L"Plugin path: " + modulePath.wstring());
     AppendLogLine(L"Host process: " + processPath.wstring());
     AppendLogLine(L"Command file: " + GetCommandPath().wstring());
+    AppendLogLine(L"Archive file: " + GetArchivePath().wstring());
+    AppendLogLine(L"Trainer bridge stub file: " + GetTrainerBridgePath().wstring());
     AppendLogLine(L"Poll interval ms: " + std::to_wstring(kPollIntervalMs));
     AppendLogLine(L"Hooks installed: false");
     AppendLogLine(L"Memory patches applied: false");
     AppendLogLine(L"Game files modified: false");
+    AppendLogLine(L"Trainer calls enabled: false");
     AppendLogLine(L"Actor spawning enabled: false");
 
     while (!g_shutdown.load()) {
@@ -468,6 +564,8 @@ void PollingWorker() {
         const auto commands = ReadCommands(state, commandFileFound, commandLimitReached);
 
         WriteStatusJson(state, modulePath, processPath, commandFileFound, commandLimitReached, commands);
+        WriteTrainerBridgeStubJson(state, commands);
+        AppendCommandArchive(state, commands);
         LogNewCommands(commands);
 
         const DWORD sliceMs = 250;
