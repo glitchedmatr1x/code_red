@@ -1,0 +1,54 @@
+# CodeRED actor enum map
+# Edit this file instead of recompiling the ASI.
+# Format: label,actor_enum,category,source,aliases,notes
+# actor_enum accepts decimal or hex, e.g. amb_prostitute,12345 or player_marston,0x00003039
+# Blank actor_enum means unresolved/research-only. Press F5 in-game after edits.
+label,actor_enum,category,source,aliases,notes
+amb_cowboy,,ambient,roster,,fragment/model label; needs actor enum
+amb_fh_farmer06,,ambient,roster,,fragment/model label; needs actor enum
+amb_mexican,,ambient,roster,,fragment/model label; needs actor enum
+amb_miner,,ambient,roster,,fragment/model label; needs actor enum
+amb_prostitute,,ambient,roster,,fragment/model label; needs actor enum
+amb_rancher,,ambient,roster,,fragment/model label; needs actor enum
+amb_townsman,,ambient,roster,,fragment/model label; needs actor enum
+amb_townswoman,,ambient,roster,,fragment/model label; needs actor enum
+amb_worker,,ambient,roster,,fragment/model label; needs actor enum
+AE_Caucasian_Army_Easy01,,army,research,,fill actual eActorEnum integer
+AE_Caucasian_Army_Easy02,,army,research,,fill actual eActorEnum integer
+AE_Caucasian_Army_Easy03,,army,research,,fill actual eActorEnum integer
+AE_Caucasian_Army_Hard01,,army,research,,fill actual eActorEnum integer
+AE_Caucasian_Army_Hard02,,army,research,,fill actual eActorEnum integer
+AE_Caucasian_Army_Hard03,,army,research,,fill actual eActorEnum integer
+AE_Caucasian_Army_Medium01,,army,research,,fill actual eActorEnum integer
+AE_Caucasian_Army_Medium02,,army,research,,fill actual eActorEnum integer
+AE_Caucasian_Army_Medium03,,army,research,,fill actual eActorEnum integer
+AE_Mexican_Army_Easy01,,army,research,,fill actual eActorEnum integer
+AE_Mexican_Army_Easy02,,army,research,,fill actual eActorEnum integer
+AE_Mexican_Army_Easy03,,army,research,,fill actual eActorEnum integer
+AE_Mexican_Army_Hard01,,army,research,,fill actual eActorEnum integer
+AE_Mexican_Army_Hard02,,army,research,,fill actual eActorEnum integer
+AE_Mexican_Army_Hard03,,army,research,,fill actual eActorEnum integer
+AE_Mexican_Army_Medium01,,army,research,,fill actual eActorEnum integer
+AE_Mexican_Army_Medium02,,army,research,,fill actual eActorEnum integer
+AE_Mexican_Army_Medium03,,army,research,,fill actual eActorEnum integer
+com_companion,,companion,roster,companion,fragment/model label; needs actor enum
+crm_bandit,,gang,roster,bandit,fragment/model label; needs actor enum
+crm_outlaw,,gang,roster,outlaw,fragment/model label; needs actor enum
+gent_default,,generic_ped,roster,,fragment/model label; needs actor enum
+gent_rancher,,generic_ped,roster,,fragment/model label; needs actor enum
+gent_worker,,generic_ped,roster,,fragment/model label; needs actor enum
+gped_bandito,,generic_ped,roster,,fragment/model label; needs actor enum
+gped_default,,generic_ped,roster,,fragment/model label; needs actor enum
+gped_lawman,,generic_ped,roster,,fragment/model label; needs actor enum
+law_deputy,,law,roster,deputy,fragment/model label; needs actor enum
+law_sheriff,,law,roster,sheriff,fragment/model label; needs actor enum
+anc_oldman,,named,roster,oldman,fragment/model label; needs actor enum
+misc_bountyhunter,,named,roster,bountyhunter,fragment/model label; needs actor enum
+misc_rancher,,named,roster,,fragment/model label; needs actor enum
+player_bandito,,player_like,roster,,fragment/model label; needs actor enum
+player_bill,,player_like,roster,bill|bill_williamson,fragment/model label; needs actor enum
+player_dutch,,player_like,roster,dutch,fragment/model label; needs actor enum
+player_javier,,player_like,roster,javier,fragment/model label; needs actor enum
+player_lawman,,player_like,roster,,fragment/model label; needs actor enum
+player_marston,,player_like,roster,john_marston|marston,fragment/model label; needs actor enum
+zombie_default,,zombie,roster,zombie,fragment/model label; needs actor enum

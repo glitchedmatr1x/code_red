@@ -6,20 +6,27 @@
 // of linking against a ScriptHookRDR import .lib. That keeps the first-pass build
 // simple: cl.exe can produce a .asi DLL using only Windows SDK + the repo source.
 //
-// This pass draws an overlay, loads an editable NPC roster, and writes action-plan JSON.
-// It does not spawn actors or call risky native behavior functions yet.
+// This pass draws an overlay, loads an editable NPC roster, writes action-plan JSON,
+// and can spawn/follow/dismiss actors through ScriptHookRDR native exports.
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 #include <algorithm>
+#include <cerrno>
+#include <cctype>
+#include <climits>
+#include <cmath>
 #include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <type_traits>
+#include <unordered_map>
 #include <vector>
 
 namespace codered {
@@ -32,10 +39,28 @@ using KeyboardHandlerUnregisterFn = void(*)(KeyboardHandler);
 using ScriptWaitFn = void(*)(DWORD);
 using DrawRectFn = void(*)(float, float, float, float, int, int, int, int, float);
 using DrawTextFn = void(*)(float, float, const char*, int, int, int, int, int, float, int);
+using NativeInitFn = void(*)(unsigned long long);
+using NativePush64Fn = void(*)(unsigned long long);
+using NativeCallFn = unsigned long long*(*)();
 
 // ScriptHookRDR font/justification ids from sdk/inc/enums.h.
 constexpr int FONT_REDEMPTION = 2;
 constexpr int JUSTIFY_LEFT = 0;
+constexpr float PI = 3.14159265358979323846f;
+
+using Actor = int;
+using Layout = int;
+
+struct Vector2 {
+    float x;
+    float y;
+};
+
+struct Vector3 {
+    float x;
+    float y;
+    float z;
+};
 
 static HMODULE g_scriptHook = nullptr;
 static ScriptRegisterFn g_scriptRegister = nullptr;
@@ -45,21 +70,36 @@ static KeyboardHandlerUnregisterFn g_keyboardHandlerUnregister = nullptr;
 static ScriptWaitFn g_scriptWait = nullptr;
 static DrawRectFn g_drawRect = nullptr;
 static DrawTextFn g_drawText = nullptr;
+static NativeInitFn g_nativeInit = nullptr;
+static NativePush64Fn g_nativePush64 = nullptr;
+static NativeCallFn g_nativeCall = nullptr;
 static HMODULE g_module = nullptr;
 static volatile LONG g_stopRequested = 0;
 static volatile LONG g_registered = 0;
+static volatile LONG g_nativeReady = 0;
 
 static bool g_menuOpen = false;
 static int g_menuIndex = 0;
 static int g_npcIndex = 0;
 static bool g_dirtyRoster = true;
+static bool g_dirtyActorMap = true;
+static bool g_configLoaded = false;
 static DWORD g_lastKeyMs = 0;
+static Layout g_layout = 0;
+static int g_spawnCounter = 0;
+static bool g_actorEnumCacheValid = false;
+static std::string g_actorEnumCacheRaw;
+static int g_actorEnumCacheValue = 0;
 
 static std::string g_rosterPath = "data/codered/npc_roster.txt";
+static std::string g_actorEnumMapPath = "data/codered/actor_enum_map.csv";
 static std::string g_actionPlanPath = "scratch/codered_ai_action_plan.json";
 static std::string g_status = "CodeRED AI Menu ready";
 
 static std::vector<std::string> g_roster;
+static std::unordered_map<std::string, int> g_actorEnumMap;
+static size_t g_actorEnumRowsLoaded = 0;
+static std::vector<Actor> g_spawnedActors;
 static std::vector<std::string> g_actions = {
     "spawn_selected_npc_request",
     "follow_player_request",
@@ -175,6 +215,55 @@ static bool resolveScriptHook(bool logMissingExports) {
            g_scriptWait && g_drawRect && g_drawText;
 }
 
+template <typename T>
+static void nativePush(T value) {
+    static_assert(sizeof(T) <= sizeof(unsigned long long),
+                  "native argument must fit in 64 bits");
+    unsigned long long value64 = 0;
+    std::memcpy(&value64, &value, sizeof(T));
+    g_nativePush64(value64);
+}
+
+template <typename R, typename... Args>
+static R nativeInvoke(unsigned long long hash, Args... args) {
+    g_nativeInit(hash);
+    (nativePush(args), ...);
+    unsigned long long* result = g_nativeCall();
+    if constexpr (std::is_same_v<R, void>) {
+        (void)result;
+        return;
+    } else {
+        return *reinterpret_cast<R*>(result);
+    }
+}
+
+static bool nativeReady() {
+    return InterlockedCompareExchange(&g_nativeReady, 0, 0) != 0 &&
+           g_nativeInit && g_nativePush64 && g_nativeCall;
+}
+
+static bool resolveNativeBridge(bool logMissingExports) {
+    if (!g_scriptHook) return false;
+
+    FARPROC nativeInitProc = resolveExport("nativeInit", "?nativeInit@@YAX_K@Z");
+    FARPROC nativePush64Proc = resolveExport("nativePush64", "?nativePush64@@YAX_K@Z");
+    FARPROC nativeCallProc = resolveExport("nativeCall", "?nativeCall@@YAPEA_KXZ");
+
+    if (logMissingExports) {
+        logMissingExport("nativeInit", nativeInitProc);
+        logMissingExport("nativePush64", nativePush64Proc);
+        logMissingExport("nativeCall", nativeCallProc);
+    }
+
+    g_nativeInit = reinterpret_cast<NativeInitFn>(nativeInitProc);
+    g_nativePush64 = reinterpret_cast<NativePush64Fn>(nativePush64Proc);
+    g_nativeCall = reinterpret_cast<NativeCallFn>(nativeCallProc);
+
+    const bool ready = g_nativeInit && g_nativePush64 && g_nativeCall;
+    InterlockedExchange(&g_nativeReady, ready ? 1 : 0);
+    return ready;
+}
+
 static void waitFrame(DWORD ms) {
     if (g_scriptWait) {
         g_scriptWait(ms);
@@ -198,6 +287,100 @@ static std::string trim(const std::string& value) {
     return value.substr(first, last - first + 1);
 }
 
+static std::string lowerCopy(const std::string& value) {
+    std::string out = value;
+    std::transform(out.begin(), out.end(), out.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    return out;
+}
+
+static std::string stripInlineComment(const std::string& value) {
+    bool inQuotes = false;
+    for (size_t i = 0; i < value.size(); ++i) {
+        const char c = value[i];
+        if (c == '"') {
+            inQuotes = !inQuotes;
+            continue;
+        }
+        if (!inQuotes && (c == '#' || c == ';')) {
+            return value.substr(0, i);
+        }
+    }
+    return value;
+}
+
+static std::vector<std::string> splitCsvLine(const std::string& line) {
+    std::vector<std::string> fields;
+    std::string current;
+    bool inQuotes = false;
+
+    for (size_t i = 0; i < line.size(); ++i) {
+        const char c = line[i];
+        if (c == '"') {
+            if (inQuotes && i + 1 < line.size() && line[i + 1] == '"') {
+                current.push_back('"');
+                ++i;
+            } else {
+                inQuotes = !inQuotes;
+            }
+            continue;
+        }
+        if (!inQuotes && c == ',') {
+            fields.push_back(trim(current));
+            current.clear();
+            continue;
+        }
+        current.push_back(c);
+    }
+
+    fields.push_back(trim(current));
+    return fields;
+}
+
+static std::vector<std::string> splitAliases(const std::string& text) {
+    std::vector<std::string> aliases;
+    std::string current;
+    for (char c : text) {
+        if (c == '|' || c == ';') {
+            std::string clean = trim(current);
+            if (!clean.empty()) aliases.push_back(clean);
+            current.clear();
+        } else {
+            current.push_back(c);
+        }
+    }
+    std::string clean = trim(current);
+    if (!clean.empty()) aliases.push_back(clean);
+    return aliases;
+}
+
+static bool parseActorEnumToken(const std::string& raw, int& outValue) {
+    std::string text = trim(raw);
+    if (text.empty() || text == "?" || text == "null" || text == "NULL" ||
+        text == "todo" || text == "TODO") {
+        return false;
+    }
+
+    int base = 10;
+    if (text.size() > 2 && text[0] == '0' &&
+        (text[1] == 'x' || text[1] == 'X')) {
+        base = 16;
+    }
+
+    errno = 0;
+    char* end = nullptr;
+    long long value = std::strtoll(text.c_str(), &end, base);
+    if (errno != 0 || end == text.c_str() || !trim(end).empty()) {
+        return false;
+    }
+    if (value <= 0 || value > INT_MAX) {
+        return false;
+    }
+
+    outValue = static_cast<int>(value);
+    return true;
+}
+
 static std::string jsonEscape(const std::string& value) {
     std::ostringstream out;
     for (char c : value) {
@@ -211,6 +394,151 @@ static std::string jsonEscape(const std::string& value) {
         }
     }
     return out.str();
+}
+
+static std::string enumHex(int actorEnum) {
+    char buffer[32] = {};
+    snprintf(buffer, sizeof(buffer), "0x%08X",
+             static_cast<unsigned int>(actorEnum));
+    return std::string(buffer);
+}
+
+static std::string displayRosterName(const std::string& raw) {
+    std::string text = trim(stripInlineComment(raw));
+    size_t best = std::string::npos;
+    for (char marker : {'|', '=', ','}) {
+        size_t pos = text.find(marker);
+        if (pos != std::string::npos &&
+            (best == std::string::npos || pos < best)) {
+            best = pos;
+        }
+    }
+    if (best != std::string::npos) {
+        text = text.substr(0, best);
+    }
+    return trim(text);
+}
+
+static bool resolveInlineActorEnum(const std::string& raw, int& actorEnum) {
+    std::string text = trim(stripInlineComment(raw));
+    for (char marker : {'|', '=', ','}) {
+        size_t pos = text.find(marker);
+        if (pos != std::string::npos) {
+            std::string rhs = trim(text.substr(pos + 1));
+            if (parseActorEnumToken(rhs, actorEnum)) return true;
+        }
+    }
+    return parseActorEnumToken(text, actorEnum);
+}
+
+static void loadConfig() {
+    if (g_configLoaded) return;
+    g_configLoaded = true;
+
+    std::ifstream file("CodeRED_AI_Menu.ini");
+    if (!file) return;
+
+    std::string section;
+    std::string line;
+    while (std::getline(file, line)) {
+        std::string clean = trim(stripInlineComment(line));
+        if (clean.empty()) continue;
+        if (clean.front() == '[' && clean.back() == ']') {
+            section = lowerCopy(trim(clean.substr(1, clean.size() - 2)));
+            continue;
+        }
+        if (section != "paths") continue;
+
+        size_t eq = clean.find('=');
+        if (eq == std::string::npos) continue;
+        std::string key = lowerCopy(trim(clean.substr(0, eq)));
+        std::string value = trim(clean.substr(eq + 1));
+        if (value.empty()) continue;
+
+        if (key == "roster") {
+            g_rosterPath = value;
+        } else if (key == "actor_enum_map" || key == "actor_map" ||
+                   key == "enum_map") {
+            g_actorEnumMapPath = value;
+        } else if (key == "action_plan") {
+            g_actionPlanPath = value;
+        }
+    }
+
+    writeLog("Config loaded: roster=%s actor_enum_map=%s action_plan=%s",
+             g_rosterPath.c_str(), g_actorEnumMapPath.c_str(),
+             g_actionPlanPath.c_str());
+}
+
+static void loadActorEnumMap() {
+    loadConfig();
+    g_actorEnumMap.clear();
+    g_actorEnumRowsLoaded = 0;
+    g_actorEnumCacheValid = false;
+
+    std::ifstream file(g_actorEnumMapPath.c_str());
+    if (!file) {
+        g_dirtyActorMap = false;
+        writeLog("Actor enum map not found: %s", g_actorEnumMapPath.c_str());
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::string clean = trim(stripInlineComment(line));
+        if (clean.empty()) continue;
+
+        const size_t inlineEq = clean.find('=');
+        const size_t inlinePipe = clean.find('|');
+        if (inlineEq != std::string::npos || inlinePipe != std::string::npos) {
+            size_t pos = inlineEq;
+            if (inlinePipe != std::string::npos &&
+                (pos == std::string::npos || inlinePipe < pos)) {
+                pos = inlinePipe;
+            }
+            std::string label = trim(clean.substr(0, pos));
+            std::string enumText = trim(clean.substr(pos + 1));
+            int enumValue = 0;
+            if (!label.empty() && parseActorEnumToken(enumText, enumValue)) {
+                g_actorEnumMap[lowerCopy(label)] = enumValue;
+                ++g_actorEnumRowsLoaded;
+            }
+            continue;
+        }
+
+        std::vector<std::string> fields = splitCsvLine(clean);
+        if (fields.empty()) continue;
+        if (fields.size() >= 2) {
+            const std::string key0 = lowerCopy(fields[0]);
+            const std::string key1 = lowerCopy(fields[1]);
+            if ((key0 == "label" || key0 == "name" || key0 == "actor") &&
+                (key1 == "actor_enum" || key1 == "enum" ||
+                 key1 == "value" || key1 == "actorenum")) {
+                continue;
+            }
+        }
+
+        std::string label = trim(fields[0]);
+        std::string enumText = fields.size() >= 2 ? fields[1] : "";
+        int enumValue = 0;
+        if (label.empty() || !parseActorEnumToken(enumText, enumValue)) {
+            continue;
+        }
+
+        g_actorEnumMap[lowerCopy(label)] = enumValue;
+        ++g_actorEnumRowsLoaded;
+
+        if (fields.size() >= 5) {
+            for (const std::string& alias : splitAliases(fields[4])) {
+                g_actorEnumMap[lowerCopy(alias)] = enumValue;
+            }
+        }
+    }
+
+    g_dirtyActorMap = false;
+    writeLog("Actor enum map loaded: rows=%zu aliases=%zu path=%s",
+             g_actorEnumRowsLoaded, g_actorEnumMap.size(),
+             g_actorEnumMapPath.c_str());
 }
 
 static void ensureDefaultRoster() {
@@ -232,33 +560,326 @@ static void ensureDefaultRoster() {
 }
 
 static void loadRoster() {
+    loadConfig();
+    if (g_dirtyActorMap) loadActorEnumMap();
+
     g_roster.clear();
     std::ifstream file(g_rosterPath.c_str());
     std::string line;
     while (std::getline(file, line)) {
-        std::string clean = trim(line);
+        std::string clean = trim(stripInlineComment(line));
         if (clean.empty()) continue;
-        if (clean[0] == '#') continue;
+        std::string label = displayRosterName(clean);
+        if (label.empty()) continue;
         g_roster.push_back(clean);
     }
     ensureDefaultRoster();
     if (g_npcIndex < 0) g_npcIndex = 0;
     if (g_npcIndex >= static_cast<int>(g_roster.size())) g_npcIndex = 0;
-    g_status = "Roster loaded: " + std::to_string(g_roster.size()) + " NPC models";
+    g_status = "Roster loaded: " + std::to_string(g_roster.size()) +
+               " | enum rows: " + std::to_string(g_actorEnumRowsLoaded);
     g_dirtyRoster = false;
+    writeLog("Roster loaded: count=%zu path=%s", g_roster.size(),
+             g_rosterPath.c_str());
 }
 
-static std::string selectedNpc() {
+static std::string selectedNpcRaw() {
     ensureDefaultRoster();
     if (g_npcIndex < 0) g_npcIndex = 0;
     if (g_npcIndex >= static_cast<int>(g_roster.size())) g_npcIndex = 0;
     return g_roster[g_npcIndex];
 }
 
+static std::string selectedNpc() {
+    return displayRosterName(selectedNpcRaw());
+}
+
 static std::string selectedAction() {
     if (g_menuIndex < 0) g_menuIndex = 0;
     if (g_menuIndex >= static_cast<int>(g_actions.size())) g_menuIndex = 0;
     return g_actions[g_menuIndex];
+}
+
+static void writeActionPlan();
+
+static std::string displayAction(const std::string& action) {
+    std::string text = action;
+    const std::string suffix = "_request";
+    if (text.size() > suffix.size() &&
+        text.compare(text.size() - suffix.size(), suffix.size(), suffix) == 0) {
+        text.erase(text.size() - suffix.size());
+    }
+    std::replace(text.begin(), text.end(), '_', ' ');
+    return text;
+}
+
+static bool parseInteger(const std::string& text, int* value) {
+    if (!value) return false;
+    char* end = nullptr;
+    long parsed = std::strtol(text.c_str(), &end, 0);
+    if (end == text.c_str() || *end != '\0') return false;
+    *value = static_cast<int>(parsed);
+    return true;
+}
+
+static int actorEnumFromRosterLine(const std::string& line) {
+    if (!nativeReady()) return 0;
+
+    std::vector<std::string> candidates;
+    candidates.push_back(displayRosterName(line));
+    candidates.push_back(trim(stripInlineComment(line)));
+
+    size_t delimiter = line.find('|');
+    if (delimiter == std::string::npos) delimiter = line.find(',');
+    if (delimiter == std::string::npos) delimiter = line.find('=');
+    if (delimiter != std::string::npos) {
+        candidates.push_back(trim(line.substr(0, delimiter)));
+        candidates.push_back(trim(line.substr(delimiter + 1)));
+    }
+
+    for (const std::string& candidate : candidates) {
+        if (candidate.empty()) continue;
+
+        int numeric = 0;
+        if (parseInteger(candidate, &numeric) && numeric > 0) {
+            return numeric;
+        }
+
+        int actorEnum = nativeInvoke<int>(0xC739D1D2, candidate.c_str());
+        if (actorEnum > 0) {
+            return actorEnum;
+        }
+    }
+
+    return 0;
+}
+
+static int selectedActorEnum() {
+    if (g_dirtyActorMap) loadActorEnumMap();
+
+    const std::string raw = selectedNpcRaw();
+    if (g_actorEnumCacheValid && raw == g_actorEnumCacheRaw) {
+        return g_actorEnumCacheValue;
+    }
+
+    int actorEnum = 0;
+    if (resolveInlineActorEnum(raw, actorEnum)) {
+        g_actorEnumCacheRaw = raw;
+        g_actorEnumCacheValue = actorEnum;
+        g_actorEnumCacheValid = true;
+        return g_actorEnumCacheValue;
+    }
+
+    auto found = g_actorEnumMap.find(lowerCopy(selectedNpc()));
+    if (found != g_actorEnumMap.end()) {
+        g_actorEnumCacheRaw = raw;
+        g_actorEnumCacheValue = found->second;
+        g_actorEnumCacheValid = true;
+        return g_actorEnumCacheValue;
+    }
+
+    // Preserve the current native bridge behavior for direct actor enum strings.
+    g_actorEnumCacheRaw = raw;
+    g_actorEnumCacheValue = actorEnumFromRosterLine(raw);
+    g_actorEnumCacheValid = true;
+    return g_actorEnumCacheValue;
+}
+
+static Layout ensureLayout() {
+    if (!nativeReady()) return 0;
+    if (g_layout > 0) return g_layout;
+
+    g_layout = nativeInvoke<Layout>(0x5699DE7E, "CodeRED_AI_Menu_Layout");
+    if (g_layout <= 0) {
+        g_layout = nativeInvoke<Layout>(0x6CA53214, "CodeRED_AI_Menu_Layout");
+    }
+    return g_layout;
+}
+
+static void pruneSpawnedActors() {
+    if (!nativeReady()) return;
+    std::vector<Actor> alive;
+    for (Actor actor : g_spawnedActors) {
+        if (actor > 0 && nativeInvoke<BOOL>(0xBA6C3E92, actor)) {
+            alive.push_back(actor);
+        }
+    }
+    g_spawnedActors.swap(alive);
+}
+
+static Actor playerActor() {
+    if (!nativeReady()) return 0;
+    Actor player = nativeInvoke<Actor>(0xE8CFDD53, 0);
+    if (player <= 0 || !nativeInvoke<BOOL>(0xBA6C3E92, player)) {
+        return 0;
+    }
+    return player;
+}
+
+static bool spawnSelectedNpc() {
+    if (!nativeReady()) {
+        g_status = "Native bridge unavailable";
+        writeLog("Spawn failed: native bridge unavailable");
+        return false;
+    }
+
+    const std::string npc = selectedNpc();
+    const int actorEnum = selectedActorEnum();
+    if (actorEnum <= 0) {
+        g_status = "No actor enum for: " + npc;
+        writeLog("Spawn failed: selected label did not resolve to an actor enum: %s",
+                 npc.c_str());
+        return false;
+    }
+
+    Actor player = playerActor();
+    if (player <= 0) {
+        g_status = "Player actor not ready";
+        writeLog("Spawn failed: player actor was not valid");
+        return false;
+    }
+
+    Layout layout = ensureLayout();
+    if (layout <= 0) {
+        g_status = "Could not create layout";
+        writeLog("Spawn failed: CodeRED layout could not be found or created");
+        return false;
+    }
+
+    Vector3 playerPos = {};
+    nativeInvoke<void>(0x99BD9D6F, player, &playerPos);
+    float heading = nativeInvoke<float>(0x42DE39F0, player);
+    const float radians = heading * (PI / 180.0f);
+    Vector2 spawnXY = {
+        playerPos.x + std::sin(radians) * 2.0f,
+        playerPos.y + std::cos(radians) * 2.0f
+    };
+    Vector2 orientXY = {0.0f, 1.0f};
+
+    std::ostringstream instanceName;
+    instanceName << "codered_ai_guest_" << ++g_spawnCounter;
+
+    Actor spawned = nativeInvoke<Actor>(0x8D67F397, layout,
+                                        instanceName.str().c_str(),
+                                        actorEnum, spawnXY, playerPos.z,
+                                        orientXY, heading);
+    if (spawned <= 0 || !nativeInvoke<BOOL>(0xBA6C3E92, spawned)) {
+        g_status = "Spawn native returned invalid actor";
+        writeLog("Spawn failed: CREATE_ACTOR_IN_LAYOUT returned actor=%d enum=%d model=%s",
+                 spawned, actorEnum, npc.c_str());
+        return false;
+    }
+
+    g_spawnedActors.push_back(spawned);
+    nativeInvoke<void>(0xECE8520B, spawned, heading, TRUE);
+    nativeInvoke<void>(0x4C94EB9E, spawned, TRUE);
+    nativeInvoke<void>(0x12F0911A, spawned, player);
+
+    g_status = "Spawned actor " + std::to_string(spawned) + " enum " +
+               std::to_string(actorEnum);
+    writeLog("Spawn succeeded: actor=%d enum=%d model=%s", spawned, actorEnum,
+             npc.c_str());
+    return true;
+}
+
+static void commandSpawnedActors(const std::string& action) {
+    if (!nativeReady()) {
+        g_status = "Native bridge unavailable";
+        writeLog("Action failed: native bridge unavailable action=%s",
+                 action.c_str());
+        return;
+    }
+
+    pruneSpawnedActors();
+    if (g_spawnedActors.empty()) {
+        g_status = "No CodeRED spawned actors";
+        writeLog("Action skipped: no spawned actors action=%s", action.c_str());
+        return;
+    }
+
+    Actor player = playerActor();
+    if (player <= 0) {
+        g_status = "Player actor not ready";
+        writeLog("Action failed: player actor invalid action=%s", action.c_str());
+        return;
+    }
+
+    if (action == "follow_player_request" ||
+        action == "defend_player_request") {
+        for (Actor actor : g_spawnedActors) {
+            nativeInvoke<void>(0x4C94EB9E, actor, TRUE);
+            nativeInvoke<void>(0x12F0911A, actor, player);
+        }
+        g_status = "Follow/defend sent to " +
+                   std::to_string(g_spawnedActors.size()) + " actor(s)";
+        writeLog("Follow/defend task sent to %zu actor(s)",
+                 g_spawnedActors.size());
+        return;
+    }
+
+    if (action == "guard_position_request") {
+        for (Actor actor : g_spawnedActors) {
+            nativeInvoke<void>(0x16876A25, actor);
+            nativeInvoke<void>(0x6F80965D, actor, -1.0f, 0, 0);
+        }
+        g_status = "Stand guard sent to " +
+                   std::to_string(g_spawnedActors.size()) + " actor(s)";
+        writeLog("Stand guard task sent to %zu actor(s)",
+                 g_spawnedActors.size());
+        return;
+    }
+
+    if (action == "regroup_near_player_request") {
+        for (Actor actor : g_spawnedActors) {
+            nativeInvoke<void>(0x3EB7590C, actor, player, 2.0f, 4.0f);
+        }
+        g_status = "Regroup sent to " +
+                   std::to_string(g_spawnedActors.size()) + " actor(s)";
+        writeLog("Regroup task sent to %zu actor(s)", g_spawnedActors.size());
+        return;
+    }
+
+    if (action == "dismiss_ai_guest_request") {
+        for (Actor actor : g_spawnedActors) {
+            nativeInvoke<void>(0x8BD21869, actor);
+        }
+        const size_t count = g_spawnedActors.size();
+        g_spawnedActors.clear();
+        g_status = "Dismissed " + std::to_string(count) + " actor(s)";
+        writeLog("Dismissed %zu spawned actor(s)", count);
+        return;
+    }
+
+    if (action == "attack_nearest_hostile_request") {
+        g_status = "Attack target scan not implemented yet";
+        writeLog("Action not implemented yet: %s", action.c_str());
+        return;
+    }
+}
+
+static void executeSelectedAction() {
+    const std::string action = selectedAction();
+    writeActionPlan();
+
+    if (!resolveNativeBridge(false)) {
+        g_status = "Queued JSON; native bridge unavailable";
+        writeLog("Native bridge unavailable while executing action=%s",
+                 action.c_str());
+        return;
+    }
+
+    if (action == "spawn_selected_npc_request") {
+        spawnSelectedNpc();
+    } else if (action == "status_request") {
+        pruneSpawnedActors();
+        const int actorEnum = selectedActorEnum();
+        g_status = "Native OK | enum " + std::to_string(actorEnum) +
+                   " | spawned " + std::to_string(g_spawnedActors.size());
+        writeLog("Status: native=ready selected=%s enum=%d spawned=%zu",
+                 selectedNpc().c_str(), actorEnum, g_spawnedActors.size());
+    } else {
+        commandSpawnedActors(action);
+    }
 }
 
 static void writeActionPlan() {
@@ -271,15 +892,37 @@ static void writeActionPlan() {
     }
 
     std::time_t now = std::time(nullptr);
+    const int actorEnum = selectedActorEnum();
+    const bool actorEnumResolved = actorEnum > 0;
+
     file << "{\n";
     file << "  \"source\": \"CodeRED_AI_Menu\",\n";
     file << "  \"action\": \"" << jsonEscape(selectedAction()) << "\",\n";
     file << "  \"model\": \"" << jsonEscape(selectedNpc()) << "\",\n";
+    file << "  \"actor_enum_resolved\": " << (actorEnumResolved ? "true" : "false") << ",\n";
+    if (actorEnumResolved) {
+        file << "  \"actor_enum\": " << actorEnum << ",\n";
+        file << "  \"actor_enum_hex\": \"" << enumHex(actorEnum) << "\",\n";
+    } else {
+        file << "  \"actor_enum\": null,\n";
+        file << "  \"actor_enum_hex\": null,\n";
+    }
     file << "  \"status\": \"queued\",\n";
     file << "  \"timestamp\": " << static_cast<long long>(now) << "\n";
     file << "}\n";
 
-    g_status = "Queued: " + selectedAction() + " / " + selectedNpc();
+    const std::string action = selectedAction();
+    const std::string npc = selectedNpc();
+    if (actorEnumResolved) {
+        g_status = "Queued: " + action + " / " + npc + " enum " +
+                   std::to_string(actorEnum);
+        writeLog("Action plan written: action=%s model=%s enum=%d",
+                 action.c_str(), npc.c_str(), actorEnum);
+    } else {
+        g_status = "Queued unresolved: add enum for " + npc;
+        writeLog("Action plan written unresolved: action=%s model=%s",
+                 action.c_str(), npc.c_str());
+    }
 }
 
 static bool throttleKey() {
@@ -289,13 +932,25 @@ static bool throttleKey() {
     return false;
 }
 
-static void onKey(DWORD key, WORD, BYTE, BOOL isDown, BOOL, BOOL, BOOL) {
-    if (!isDown) return;
+static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
+                  BOOL isWithAlt, BOOL wasDownBefore, BOOL isUpNow) {
+    (void)repeats;
+    (void)scanCode;
+    (void)isExtended;
+    (void)isWithAlt;
+
+    if (isUpNow) return;
+    if (wasDownBefore && key != VK_RETURN) return;
 
     if (key == VK_F8 || key == VK_INSERT) {
         if (throttleKey()) return;
         g_menuOpen = !g_menuOpen;
-        if (g_menuOpen) g_dirtyRoster = true;
+        if (g_menuOpen) {
+            g_dirtyRoster = true;
+            g_dirtyActorMap = true;
+        }
+        writeLog("Menu toggled: open=%s key=0x%08lX",
+                 g_menuOpen ? "true" : "false", key);
         return;
     }
 
@@ -334,48 +989,59 @@ static void onKey(DWORD key, WORD, BYTE, BOOL isDown, BOOL, BOOL, BOOL) {
     }
 
     if (key == VK_RETURN) {
-        writeActionPlan();
+        executeSelectedAction();
         return;
     }
 
     if (key == VK_F5) {
         g_dirtyRoster = true;
+        g_dirtyActorMap = true;
+        g_status = "Reload requested";
+        writeLog("Manual reload requested");
         return;
     }
 }
 
-static void drawLine(float x, float y, const std::string& text, int r = 235, int g = 235, int b = 235, float size = 0.35f) {
+static void drawLine(float x, float y, const std::string& text, int r = 235, int g = 235, int b = 235, float size = 0.018f) {
     drawTextSafe(x, y, text.c_str(), r, g, b, 255, FONT_REDEMPTION, size, JUSTIFY_LEFT);
 }
 
 static void drawMenu() {
     if (!g_menuOpen) {
-        drawTextSafe(0.015f, 0.955f, "CodeRED AI Bridge: F8", 210, 60, 60, 180, FONT_REDEMPTION, 0.26f, JUSTIFY_LEFT);
+        drawTextSafe(0.015f, 0.955f, "CodeRED AI Bridge: F8", 210, 60, 60, 180, FONT_REDEMPTION, 0.016f, JUSTIFY_LEFT);
         return;
     }
 
-    if (g_dirtyRoster) loadRoster();
+    if (g_dirtyRoster || g_dirtyActorMap) loadRoster();
 
-    drawRectSafe(0.25f, 0.40f, 0.46f, 0.60f, 8, 8, 8, 205, 0.01f);
-    drawRectSafe(0.25f, 0.105f, 0.46f, 0.055f, 95, 0, 0, 220, 0.01f);
+    const int actorEnum = selectedActorEnum();
 
-    drawLine(0.035f, 0.078f, "CodeRED AI Menu", 255, 70, 70, 0.42f);
-    drawLine(0.035f, 0.135f, "NPC: " + selectedNpc(), 255, 230, 190, 0.32f);
-    drawLine(0.035f, 0.170f, "LEFT/RIGHT switch NPC  |  F5 reload roster", 190, 190, 190, 0.25f);
+    drawRectSafe(0.235f, 0.335f, 0.43f, 0.48f, 8, 8, 8, 205, 0.01f);
+    drawRectSafe(0.235f, 0.108f, 0.43f, 0.05f, 95, 0, 0, 220, 0.01f);
 
-    float y = 0.225f;
+    drawLine(0.035f, 0.083f, "CodeRED AI Menu", 255, 70, 70, 0.026f);
+    drawLine(0.035f, 0.135f, "NPC: " + selectedNpc(), 255, 230, 190, 0.018f);
+    drawLine(0.035f, 0.162f, "LEFT/RIGHT NPC | UP/DOWN action | F5 reload files", 190, 190, 190, 0.014f);
+    if (actorEnum > 0) {
+        drawLine(0.035f, 0.184f, "ENUM: " + std::to_string(actorEnum) +
+                 " / " + enumHex(actorEnum), 160, 255, 160, 0.014f);
+    } else {
+        drawLine(0.035f, 0.184f, "ENUM: unresolved in actor_enum_map.csv", 255, 170, 90, 0.014f);
+    }
+
+    float y = 0.220f;
     for (int i = 0; i < static_cast<int>(g_actions.size()); ++i) {
         const bool selected = (i == g_menuIndex);
         std::string prefix = selected ? "> " : "  ";
         int r = selected ? 255 : 220;
         int g = selected ? 80 : 220;
         int b = selected ? 80 : 220;
-        drawLine(0.055f, y, prefix + g_actions[i], r, g, b, 0.30f);
-        y += 0.038f;
+        drawLine(0.055f, y, prefix + displayAction(g_actions[i]), r, g, b, 0.016f);
+        y += 0.030f;
     }
 
-    drawLine(0.035f, 0.565f, "ENTER queue action  |  BACK/ESC close", 190, 190, 190, 0.25f);
-    drawLine(0.035f, 0.602f, g_status, 255, 210, 120, 0.25f);
+    drawLine(0.035f, 0.485f, "ENTER run/write plan | BACK/ESC close", 190, 190, 190, 0.014f);
+    drawLine(0.035f, 0.515f, g_status, 255, 210, 120, 0.014f);
 }
 
 static void mainLoop() {
@@ -388,6 +1054,7 @@ static void mainLoop() {
 static DWORD WINAPI registrationThread(LPVOID param) {
     HMODULE module = reinterpret_cast<HMODULE>(param);
     writeLog("Registration worker started");
+    loadConfig();
 
     const ULONGLONG deadline = GetTickCount64() + 30000;
     bool loggedDllMissing = false;
@@ -413,6 +1080,11 @@ static DWORD WINAPI registrationThread(LPVOID param) {
         }
 
         if (resolved) {
+            if (resolveNativeBridge(true)) {
+                writeLog("Native bridge ready");
+            } else {
+                writeLog("Native bridge unavailable; menu will still write action plans");
+            }
             g_scriptRegister(module, codered::mainLoop);
             g_keyboardHandlerRegister(codered::onKey);
             InterlockedExchange(&g_registered, 1);
