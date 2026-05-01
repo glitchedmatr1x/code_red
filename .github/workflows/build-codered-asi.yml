@@ -47,19 +47,24 @@ jobs:
           $out = "build/codered-asi/dist/RELEASE/CodeREDCompanion_ASI_manifest.txt"
           @(
             "CodeREDCompanion ASI build manifest",
-            "Version: 0.1.0-loader-proof",
+            "Version: 0.2.0-command-status-proof",
             "Artifact: CodeREDCompanion.asi",
             "Platform: Windows x64",
+            "Command file: data/codered/companion_commands.txt",
+            "Status file: CodeRED_ASI_Logs/companion_status.json",
+            "Safe commands: PING, STATUS, VERSION, HELP",
+            "Future actor commands: recognized but blocked",
             "Hooks installed: false",
             "Memory patches applied: false",
             "Game files modified: false",
+            "Actor spawning enabled: false",
             "Build source: asi/CodeREDCompanion"
           ) | Set-Content -Path $out -Encoding UTF8
 
       - name: Upload ASI artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CodeREDCompanion-ASI-loader-proof
+          name: CodeREDCompanion-ASI-command-status-proof
           path: |
             build/codered-asi/dist/RELEASE/CodeREDCompanion.asi
             build/codered-asi/dist/RELEASE/CodeREDCompanion_ASI_manifest.txt
