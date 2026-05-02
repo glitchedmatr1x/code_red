@@ -1,0 +1,11 @@
+{
+  "version": "1.1.0-ini-enum-source-pass",
+  "generated_utc": "2026-05-02T06:47:34Z",
+  "enum_map": "data\\codered\\actor_enum_map.csv",
+  "roster": "data\\codered\\npc_roster.txt",
+  "total_roster_entries": 0,
+  "resolved_entries": 0,
+  "unresolved_entries": 0,
+  "sanity_errors": [],
+  "entries": []
+}
