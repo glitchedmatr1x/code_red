@@ -1,0 +1,30 @@
+{
+  "version": "1.0.1-vs-command-quote-fix",
+  "project_root": "D:\\Games\\Red Dead Redemption\\Code_RED",
+  "game_root": "D:\\Games\\Red Dead Redemption\\RDR-SteamGG.NET",
+  "vs": {
+    "cl": null,
+    "link": null,
+    "vswhere": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
+    "install": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community",
+    "devcmd": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat",
+    "vcvars64": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat",
+    "notes": [
+      "Visual Studio C++ toolset found: C:\\Program Files\\Microsoft Visual Studio\\2022\\Community"
+    ]
+  },
+  "project_exists": true,
+  "game_exists": true,
+  "rdr_exe": true,
+  "scripthook": true,
+  "asi_loader": true,
+  "source_exists": true,
+  "ini_exists": true,
+  "data_exists": true,
+  "built_asi_exists": true,
+  "built_asi_valid": true,
+  "can_build": true,
+  "can_install": true,
+  "errors": [],
+  "warnings": []
+}
