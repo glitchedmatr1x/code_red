@@ -2,7 +2,7 @@
 """Code RED actor enum no-recompile tool.
 
 Keeps the ScriptHookRDR AI Menu data-driven:
-- rebuild data/codered/actor_enum_map.csv from a local Enums.h file
+- rebuild data/codered/actor_enum_map.csv from local C++ enum or INI-style enum data
 - seed a minimal verified map from Code RED research notes
 - validate npc_roster.txt before spawn testing
 - export a spawn-safe roster containing only resolved entries
@@ -23,17 +23,19 @@ from datetime import datetime
 from pathlib import Path
 from typing import Iterable
 
-VERSION = "1.0.0-no-recompile-actor-data-pass"
+VERSION = "1.1.0-ini-enum-source-pass"
 DEFAULT_MAP = Path("data/codered/actor_enum_map.csv")
 DEFAULT_ROSTER = Path("data/codered/npc_roster.txt")
 DEFAULT_SAFE_ROSTER = Path("data/codered/npc_roster_safe_verified.txt")
 DEFAULT_REPORT = Path("logs/CodeRED_Actor_Enum_Validation_Report.json")
 
 HEADER = ["label", "actor_enum", "category", "source", "aliases", "notes"]
-ENUM_START_RE = re.compile(r"^\s*enum\s+e_ActorModel\b")
-ENTRY_RE = re.compile(r"^\s*(ACTOR_[A-Za-z0-9_]+)\s*(?:=\s*(-?\d+|0x[0-9A-Fa-f]+))?\s*,?")
+ENUM_START_RE = re.compile(r"^\s*enum\s+e_ActorModel\b", re.IGNORECASE)
+CPP_ENTRY_RE = re.compile(r"^\s*(ACTOR_[A-Za-z0-9_]+)\s*(?:=\s*(-?\d+|0x[0-9A-Fa-f]+))?\s*,?")
+INI_ENTRY_RE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9_]+)\s*=\s*(-?\d+|0x[0-9A-Fa-f]+)\s*$")
+SECTION_RE = re.compile(r"^\s*\[[^\]]+\]\s*$")
 
-# Research seeds are intentionally small. Enums.h should be used for the full map.
+# Research seeds are intentionally small. Use the local enum source for the full map.
 KNOWN_EXPECTED: dict[str, int] = {
     "ACTOR_CAUCASIAN_ARMY_Easy01": 369,
     "AE_CAUCASIAN_ARMY_EASY01": 369,
@@ -52,110 +54,19 @@ KNOWN_EXPECTED: dict[str, int] = {
 }
 
 SEED_ROWS: list[dict[str, str]] = [
-    {
-        "label": "ACTOR_CAUCASIAN_ARMY_Easy01",
-        "actor_enum": "369",
-        "category": "army",
-        "source": "CodeRED research sanity seed",
-        "aliases": "AE_CAUCASIAN_ARMY_EASY01|AE_Caucasian_Army_Easy01|CAUCASIAN_ARMY_EASY01",
-        "notes": "known crash-fix seed; rebuild from Enums.h for full map",
-    },
-    {
-        "label": "AE_CAUCASIAN_ARMY_EASY01",
-        "actor_enum": "369",
-        "category": "army",
-        "source": "CodeRED research sanity seed",
-        "aliases": "ACTOR_CAUCASIAN_ARMY_Easy01|AE_Caucasian_Army_Easy01",
-        "notes": "alias for Caucasian Army Easy01",
-    },
-    {
-        "label": "ACTOR_RIDEABLE_ANIMAL_Horse01",
-        "actor_enum": "976",
-        "category": "rideable",
-        "source": "CodeRED research sanity seed",
-        "aliases": "HORSE01|RIDEABLE_ANIMAL_HORSE01",
-        "notes": "safe first rideable test candidate",
-    },
-    {
-        "label": "ACTOR_RIDEABLE_ANIMAL_MEX_Mule01",
-        "actor_enum": "1000",
-        "category": "rideable",
-        "source": "CodeRED research sanity seed",
-        "aliases": "MEX_Mule01|MULE01|RIDEABLE_ANIMAL_MEX_MULE01",
-        "notes": "safe first mule test candidate",
-    },
-    {
-        "label": "ACTOR_RIDEABLE_ANIMAL_Buffalo",
-        "actor_enum": "1004",
-        "category": "rideable",
-        "source": "CodeRED research sanity seed",
-        "aliases": "BUFFALO|RIDEABLE_ANIMAL_BUFFALO",
-        "notes": "rideable/control research candidate",
-    },
-    {
-        "label": "ACTOR_VEHICLE_Stagecoach",
-        "actor_enum": "1177",
-        "category": "vehicle",
-        "source": "CodeRED research sanity seed",
-        "aliases": "VEHICLE_STAGECOACH|STAGECOACH",
-        "notes": "vehicle/control research candidate",
-    },
-    {
-        "label": "ACTOR_VEHICLE_Cart01",
-        "actor_enum": "1183",
-        "category": "vehicle",
-        "source": "CodeRED research sanity seed",
-        "aliases": "VEHICLE_CART01|CART01",
-        "notes": "vehicle/control research candidate",
-    },
-    {
-        "label": "ACTOR_VEHICLE_Canoe01",
-        "actor_enum": "1189",
-        "category": "vehicle",
-        "source": "CodeRED research sanity seed",
-        "aliases": "VEHICLE_CANOE01|CANOE01",
-        "notes": "vehicle/control research candidate",
-    },
-    {
-        "label": "ACTOR_VEHICLE_Raft01",
-        "actor_enum": "1192",
-        "category": "vehicle",
-        "source": "CodeRED research sanity seed",
-        "aliases": "VEHICLE_RAFT01|RAFT01",
-        "notes": "vehicle/control research candidate",
-    },
-    {
-        "label": "ACTOR_VEHICLE_Truck01",
-        "actor_enum": "1193",
-        "category": "vehicle",
-        "source": "CodeRED research sanity seed",
-        "aliases": "VEHICLE_TRUCK01|TRUCK01",
-        "notes": "important car/truck test candidate",
-    },
-    {
-        "label": "ACTOR_VEHICLE_Car01",
-        "actor_enum": "1194",
-        "category": "vehicle",
-        "source": "CodeRED research sanity seed",
-        "aliases": "VEHICLE_CAR01|CAR01",
-        "notes": "important car/truck test candidate",
-    },
-    {
-        "label": "ACTOR_VEHICLE_Wagon02",
-        "actor_enum": "1199",
-        "category": "vehicle",
-        "source": "CodeRED research sanity seed",
-        "aliases": "VEHICLE_WAGON02|WAGON02",
-        "notes": "vehicle/control research candidate",
-    },
-    {
-        "label": "ACTOR_VEHICLE_Coach01",
-        "actor_enum": "1202",
-        "category": "vehicle",
-        "source": "CodeRED research sanity seed",
-        "aliases": "VEHICLE_COACH01|COACH01",
-        "notes": "vehicle/control research candidate",
-    },
+    {"label": "ACTOR_CAUCASIAN_ARMY_Easy01", "actor_enum": "369", "category": "army", "source": "CodeRED research sanity seed", "aliases": "AE_CAUCASIAN_ARMY_EASY01|AE_Caucasian_Army_Easy01|CAUCASIAN_ARMY_EASY01", "notes": "known crash-fix seed; rebuild from enum source for full map"},
+    {"label": "AE_CAUCASIAN_ARMY_EASY01", "actor_enum": "369", "category": "army", "source": "CodeRED research sanity seed", "aliases": "ACTOR_CAUCASIAN_ARMY_Easy01|AE_Caucasian_Army_Easy01", "notes": "alias for Caucasian Army Easy01"},
+    {"label": "ACTOR_RIDEABLE_ANIMAL_Horse01", "actor_enum": "976", "category": "rideable", "source": "CodeRED research sanity seed", "aliases": "HORSE01|RIDEABLE_ANIMAL_HORSE01", "notes": "safe first rideable test candidate"},
+    {"label": "ACTOR_RIDEABLE_ANIMAL_MEX_Mule01", "actor_enum": "1000", "category": "rideable", "source": "CodeRED research sanity seed", "aliases": "MEX_Mule01|MULE01|RIDEABLE_ANIMAL_MEX_MULE01", "notes": "safe first mule test candidate"},
+    {"label": "ACTOR_RIDEABLE_ANIMAL_Buffalo", "actor_enum": "1004", "category": "rideable", "source": "CodeRED research sanity seed", "aliases": "BUFFALO|RIDEABLE_ANIMAL_BUFFALO", "notes": "rideable/control research candidate"},
+    {"label": "ACTOR_VEHICLE_Stagecoach", "actor_enum": "1177", "category": "vehicle", "source": "CodeRED research sanity seed", "aliases": "VEHICLE_STAGECOACH|STAGECOACH", "notes": "vehicle/control research candidate"},
+    {"label": "ACTOR_VEHICLE_Cart01", "actor_enum": "1183", "category": "vehicle", "source": "CodeRED research sanity seed", "aliases": "VEHICLE_CART01|CART01", "notes": "vehicle/control research candidate"},
+    {"label": "ACTOR_VEHICLE_Canoe01", "actor_enum": "1189", "category": "vehicle", "source": "CodeRED research sanity seed", "aliases": "VEHICLE_CANOE01|CANOE01", "notes": "vehicle/control research candidate"},
+    {"label": "ACTOR_VEHICLE_Raft01", "actor_enum": "1192", "category": "vehicle", "source": "CodeRED research sanity seed", "aliases": "VEHICLE_RAFT01|RAFT01", "notes": "vehicle/control research candidate"},
+    {"label": "ACTOR_VEHICLE_Truck01", "actor_enum": "1193", "category": "vehicle", "source": "CodeRED research sanity seed", "aliases": "VEHICLE_TRUCK01|TRUCK01", "notes": "important car/truck test candidate"},
+    {"label": "ACTOR_VEHICLE_Car01", "actor_enum": "1194", "category": "vehicle", "source": "CodeRED research sanity seed", "aliases": "VEHICLE_CAR01|CAR01", "notes": "important car/truck test candidate"},
+    {"label": "ACTOR_VEHICLE_Wagon02", "actor_enum": "1199", "category": "vehicle", "source": "CodeRED research sanity seed", "aliases": "VEHICLE_WAGON02|WAGON02", "notes": "vehicle/control research candidate"},
+    {"label": "ACTOR_VEHICLE_Coach01", "actor_enum": "1202", "category": "vehicle", "source": "CodeRED research sanity seed", "aliases": "VEHICLE_COACH01|COACH01", "notes": "vehicle/control research candidate"},
 ]
 
 SAFE_ROSTER_SEED = [
@@ -205,9 +116,29 @@ def utc_now() -> str:
 
 def parse_int(text: str) -> int:
     raw = text.strip()
-    if raw.lower().startswith("0x"):
-        return int(raw, 16)
-    return int(raw)
+    return int(raw, 16) if raw.lower().startswith("0x") else int(raw)
+
+
+def strip_comment(raw: str) -> str:
+    in_quotes = False
+    out: list[str] = []
+    for ch in raw:
+        if ch == '"':
+            in_quotes = not in_quotes
+        if not in_quotes and ch in "#;":
+            break
+        out.append(ch)
+    return "".join(out).strip()
+
+
+def normalize_actor_label(label: str) -> str:
+    clean = label.strip()
+    if not clean:
+        return ""
+    if clean.lower().startswith("actor_"):
+        tail = clean[6:]
+        return "ACTOR_" + tail
+    return clean
 
 
 def category_for(canonical: str) -> str:
@@ -218,10 +149,14 @@ def category_for(canonical: str) -> str:
         return "rideable"
     if "ARMY" in name:
         return "army"
-    if "LAW" in name or "SHERIFF" in name or "DEPUTY" in name:
+    if "GANG" in name or "CRIMINAL" in name or "OUTLAW" in name:
+        return "gang"
+    if "LAW" in name or "SHERIFF" in name or "MARSHAL" in name or "DEPUTY" in name or "POLICE" in name:
         return "law"
     if "ZOMBIE" in name or "UN_" in name:
         return "zombie"
+    if "COMPANION" in name:
+        return "companion"
     if "PLAYER" in name:
         return "player_like"
     return "actor"
@@ -235,11 +170,12 @@ def aliases_for(canonical: str) -> list[str]:
         if value and value not in aliases:
             aliases.append(value)
 
-    add(canonical)
-    add(canonical.upper())
-    add(canonical.lower())
-    if canonical.startswith("ACTOR_"):
-        short = canonical[len("ACTOR_"):]
+    normalized = normalize_actor_label(canonical)
+    add(normalized)
+    add(normalized.upper())
+    add(normalized.lower())
+    if normalized.upper().startswith("ACTOR_"):
+        short = normalized[6:]
         add(short)
         add(short.upper())
         add(short.lower())
@@ -249,16 +185,89 @@ def aliases_for(canonical: str) -> list[str]:
     return aliases
 
 
-def strip_comment(raw: str) -> str:
-    in_quotes = False
-    out = []
-    for ch in raw:
-        if ch == '"':
-            in_quotes = not in_quotes
-        if not in_quotes and ch in "#;":
+def rows_from_entries(entries: Iterable[tuple[str, int]], source: str) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for raw_label, value in entries:
+        canonical = normalize_actor_label(raw_label)
+        if not canonical:
+            continue
+        all_aliases = aliases_for(canonical)
+        for label in all_aliases:
+            key = label.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            rows.append({
+                "label": label,
+                "actor_enum": str(value),
+                "category": category_for(canonical),
+                "source": source,
+                "aliases": "|".join(a for a in all_aliases if a != label),
+                "notes": f"canonical={canonical}; hex=0x{value:08X}",
+            })
+    return rows
+
+
+def parse_cpp_enum_lines(lines: Iterable[str]) -> list[tuple[str, int]]:
+    entries: list[tuple[str, int]] = []
+    inside = False
+    current_value: int | None = None
+    for raw in lines:
+        clean = strip_comment(raw)
+        if not inside:
+            if ENUM_START_RE.search(clean):
+                inside = True
+            continue
+        if clean.startswith("};"):
             break
-        out.append(ch)
-    return "".join(out).strip()
+        match = CPP_ENTRY_RE.match(clean)
+        if not match:
+            continue
+        canonical, explicit = match.groups()
+        if explicit is not None:
+            current_value = parse_int(explicit)
+        else:
+            current_value = 0 if current_value is None else current_value + 1
+        entries.append((canonical, current_value))
+    return entries
+
+
+def parse_ini_enum_lines(lines: Iterable[str]) -> list[tuple[str, int]]:
+    entries: list[tuple[str, int]] = []
+    active_enum_section = False
+    saw_section = False
+    for raw in lines:
+        clean = strip_comment(raw)
+        if not clean:
+            continue
+        if SECTION_RE.match(clean):
+            saw_section = True
+            active_enum_section = clean.strip().lower() == "[enum]"
+            continue
+        if saw_section and not active_enum_section:
+            continue
+        match = INI_ENTRY_RE.match(clean)
+        if not match:
+            continue
+        label, value = match.groups()
+        if not label.lower().startswith("actor_"):
+            continue
+        entries.append((label, parse_int(value)))
+    return entries
+
+
+def parse_enum_source(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        raise FileNotFoundError(f"Enum source not found: {path}")
+    lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    cpp_entries = parse_cpp_enum_lines(lines)
+    if cpp_entries:
+        return rows_from_entries(cpp_entries, "C++ enum:e_ActorModel")
+    ini_entries = parse_ini_enum_lines(lines)
+    if ini_entries:
+        return rows_from_entries(ini_entries, "INI-style [Enum] actor list")
+    raise ValueError(f"No actor enum rows parsed from: {path}")
 
 
 def display_label(raw: str) -> str:
@@ -282,51 +291,6 @@ def parse_inline_enum(raw: str) -> int | None:
         return parse_int(text)
     except ValueError:
         return None
-
-
-def parse_enums_h(path: Path) -> list[dict[str, str]]:
-    if not path.exists():
-        raise FileNotFoundError(f"Enums.h not found: {path}")
-    rows: list[dict[str, str]] = []
-    inside = False
-    current_value: int | None = None
-    seen: set[str] = set()
-
-    for raw in path.read_text(encoding="utf-8", errors="ignore").splitlines():
-        clean = raw.split("//", 1)[0].strip()
-        if not inside:
-            if ENUM_START_RE.search(clean):
-                inside = True
-            continue
-        if clean.startswith("};"):
-            break
-        match = ENTRY_RE.match(clean)
-        if not match:
-            continue
-        canonical, explicit = match.groups()
-        if explicit is not None:
-            current_value = parse_int(explicit)
-        else:
-            current_value = 0 if current_value is None else current_value + 1
-
-        all_aliases = aliases_for(canonical)
-        for label in all_aliases:
-            key = label.lower()
-            if key in seen:
-                continue
-            seen.add(key)
-            rows.append({
-                "label": label,
-                "actor_enum": str(current_value),
-                "category": category_for(canonical),
-                "source": "Enums.h:e_ActorModel",
-                "aliases": "|".join(a for a in all_aliases if a != label),
-                "notes": f"canonical={canonical}; hex=0x{current_value:08X}",
-            })
-
-    if not rows:
-        raise ValueError(f"No e_ActorModel rows parsed from: {path}")
-    return rows
 
 
 def write_map(path: Path, rows: Iterable[dict[str, str]], replace: bool) -> Path:
@@ -413,19 +377,8 @@ def validate_roster(enum_map: Path, roster: Path) -> ValidationReport:
             entries.append(RosterEntry(raw, label, True, value, f"0x{value:08X}", row.get("source") or "actor_enum_map.csv"))
         else:
             entries.append(RosterEntry(raw, label, False, warning="unresolved_actor_enum"))
-
     resolved = sum(1 for item in entries if item.resolved)
-    return ValidationReport(
-        version=VERSION,
-        generated_utc=utc_now(),
-        enum_map=str(enum_map),
-        roster=str(roster),
-        total_roster_entries=len(entries),
-        resolved_entries=resolved,
-        unresolved_entries=len(entries) - resolved,
-        sanity_errors=validate_sanity(lookup),
-        entries=entries,
-    )
+    return ValidationReport(VERSION, utc_now(), str(enum_map), str(roster), len(entries), resolved, len(entries) - resolved, validate_sanity(lookup), entries)
 
 
 def write_report(report: ValidationReport, path: Path) -> Path:
@@ -439,12 +392,7 @@ def write_safe_roster(report: ValidationReport, path: Path, replace: bool) -> Pa
     if path.exists() and not replace:
         backup = path.with_suffix(path.suffix + f".bak_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}")
         shutil.copy2(path, backup)
-    lines = [
-        "# CodeRED spawn-safe verified roster",
-        "# Generated by tools/codered_actor_enum_tool.py",
-        "# Only resolved entries are included.",
-        "",
-    ]
+    lines = ["# CodeRED spawn-safe verified roster", "# Generated by tools/codered_actor_enum_tool.py", "# Only resolved entries are included.", ""]
     for entry in report.entries:
         if entry.resolved and entry.actor_enum is not None:
             lines.append(f"{entry.label}|{entry.actor_enum}  # {entry.actor_enum_hex} from {entry.source}")
@@ -459,10 +407,9 @@ def write_seed_roster(path: Path, replace: bool) -> Path:
         shutil.copy2(path, backup)
     path.write_text(
         "# CodeRED NPC roster seed\n"
-        "# Safe verified no-recompile seed. Add more entries after regenerating actor_enum_map.csv from Enums.h.\n"
+        "# Safe verified no-recompile seed. Add more entries after regenerating actor_enum_map.csv from enum source.\n"
         "# Format supports label, label|number, label=number, or CSV-style actor map lookup.\n\n"
-        + "\n".join(SAFE_ROSTER_SEED)
-        + "\n",
+        + "\n".join(SAFE_ROSTER_SEED) + "\n",
         encoding="utf-8",
     )
     return path
@@ -475,18 +422,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--report", type=Path, default=DEFAULT_REPORT)
     p.add_argument("--replace", action="store_true", help="Replace target files without making .bak timestamp backups.")
     sub = p.add_subparsers(dest="cmd")
-
     seed = sub.add_parser("seed", help="Write a small verified seed actor_enum_map.csv.")
     seed.add_argument("--safe-roster", action="store_true", help="Also replace/write a safe seed npc_roster.txt.")
-
-    rebuild = sub.add_parser("rebuild", help="Rebuild actor_enum_map.csv from a local Enums.h.")
-    rebuild.add_argument("--enums-h", type=Path, required=True, help="Path to Enums.h containing enum e_ActorModel.")
-
+    rebuild = sub.add_parser("rebuild", help="Rebuild actor_enum_map.csv from a local enum source.")
+    rebuild.add_argument("--enums-h", type=Path, help="Path to C++ Enums.h or INI-style [Enum] file.")
+    rebuild.add_argument("--source", type=Path, help="Alias for --enums-h; accepts C++ enum or INI-style [Enum] file.")
     sub.add_parser("validate", help="Validate npc_roster.txt against actor_enum_map.csv and write JSON report.")
-
     safe = sub.add_parser("safe-roster", help="Write npc_roster_safe_verified.txt from resolved roster entries.")
     safe.add_argument("--output", type=Path, default=DEFAULT_SAFE_ROSTER)
-
     sub.add_parser("summary", help="Print a compact validation summary.")
     return p
 
@@ -494,7 +437,6 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = build_parser().parse_args()
     cmd = args.cmd or "summary"
-
     if cmd == "seed":
         write_map(args.enum_map, SEED_ROWS, replace=args.replace)
         if args.safe_roster:
@@ -506,13 +448,16 @@ def main() -> int:
             print(f"Seeded roster:   {args.roster}")
         print(f"Report:          {args.report}")
         return 0
-
     if cmd == "rebuild":
-        rows = parse_enums_h(args.enums_h)
+        source = args.source or args.enums_h
+        if not source:
+            raise SystemExit("rebuild requires --enums-h or --source")
+        rows = parse_enum_source(source)
         write_map(args.enum_map, rows, replace=args.replace)
         report = validate_roster(args.enum_map, args.roster)
         write_report(report, args.report)
         print(f"Parsed rows:     {len(rows)}")
+        print(f"Enum source:     {source}")
         print(f"Enum map:        {args.enum_map}")
         print(f"Report:          {args.report}")
         if report.sanity_errors:
@@ -521,7 +466,6 @@ def main() -> int:
                 print(" - " + item)
             return 2
         return 0
-
     if cmd in {"validate", "summary", "safe-roster"}:
         report = validate_roster(args.enum_map, args.roster)
         write_report(report, args.report)
@@ -538,7 +482,6 @@ def main() -> int:
                 print(" - " + item)
             return 2
         return 0 if report.unresolved_entries == 0 else 1
-
     raise SystemExit("Unknown command")
 
 
