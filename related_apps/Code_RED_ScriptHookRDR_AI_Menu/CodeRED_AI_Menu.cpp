@@ -42,11 +42,19 @@ using DrawTextFn = void(*)(float, float, const char*, int, int, int, int, int, f
 using NativeInitFn = void(*)(unsigned long long);
 using NativePush64Fn = void(*)(unsigned long long);
 using NativeCallFn = unsigned long long*(*)();
+using WorldGetAllActorsFn = int(*)(int*, int);
 
 // ScriptHookRDR font/justification ids from sdk/inc/enums.h.
 constexpr int FONT_REDEMPTION = 2;
 constexpr int JUSTIFY_LEFT = 0;
 constexpr float PI = 3.14159265358979323846f;
+constexpr int FACTION_PLAYER = 2;
+constexpr int FACTION_US_LAW = 8;
+constexpr int FACTION_MEXICAN_BANDITO = 12;
+constexpr int FACTION_GENERIC_CRIMINAL = 13;
+constexpr int FACTION_CATTLE_RUSTLER = 14;
+constexpr int FACTION_INDIAN_RAIDER = 15;
+constexpr int FACTION_MEXICAN_SOLDIER = 16;
 
 using Actor = int;
 using Layout = int;
@@ -73,6 +81,7 @@ static DrawTextFn g_drawText = nullptr;
 static NativeInitFn g_nativeInit = nullptr;
 static NativePush64Fn g_nativePush64 = nullptr;
 static NativeCallFn g_nativeCall = nullptr;
+static WorldGetAllActorsFn g_worldGetAllActors = nullptr;
 static HMODULE g_module = nullptr;
 static volatile LONG g_stopRequested = 0;
 static volatile LONG g_registered = 0;
@@ -83,6 +92,7 @@ static int g_menuIndex = 0;
 static int g_npcIndex = 0;
 static bool g_dirtyRoster = true;
 static bool g_dirtyActorMap = true;
+static bool g_dirtyActions = true;
 static bool g_configLoaded = false;
 static DWORD g_lastKeyMs = 0;
 static Layout g_layout = 0;
@@ -90,14 +100,19 @@ static int g_spawnCounter = 0;
 static bool g_actorEnumCacheValid = false;
 static std::string g_actorEnumCacheRaw;
 static int g_actorEnumCacheValue = 0;
+static bool g_savedPlayerFaction = false;
+static int g_originalPlayerFaction = FACTION_PLAYER;
+static int g_playerSideFaction = FACTION_PLAYER;
 
 static std::string g_rosterPath = "data/codered/npc_roster.txt";
 static std::string g_actorEnumMapPath = "data/codered/actor_enum_map.csv";
+static std::string g_actionsPath = "data/codered/ai_behavior_actions.csv";
 static std::string g_actionPlanPath = "scratch/codered_ai_action_plan.json";
 static std::string g_status = "CodeRED AI Menu ready";
 
 static std::vector<std::string> g_roster;
 static std::unordered_map<std::string, int> g_actorEnumMap;
+static std::unordered_map<std::string, std::string> g_actionLabels;
 static size_t g_actorEnumRowsLoaded = 0;
 static std::vector<Actor> g_spawnedActors;
 static std::vector<std::string> g_actions = {
@@ -106,7 +121,13 @@ static std::vector<std::string> g_actions = {
     "guard_position_request",
     "defend_player_request",
     "attack_nearest_hostile_request",
+    "idle_spawned_request",
+    "wander_spawned_request",
     "regroup_near_player_request",
+    "make_spawned_lawmen_request",
+    "side_lawman_immunity_request",
+    "side_gang_immunity_request",
+    "restore_player_faction_request",
     "dismiss_ai_guest_request",
     "status_request"
 };
@@ -191,6 +212,8 @@ static bool resolveScriptHook(bool logMissingExports) {
     FARPROC drawRectProc = resolveExport("drawRect", "?drawRect@@YAXMMMMHHHHM@Z");
     FARPROC drawTextProc =
         resolveExport("drawText", "?drawText@@YAXMMPEBDHHHHHMH@Z");
+    FARPROC worldGetAllActorsProc =
+        resolveExport("worldGetAllActors", "?worldGetAllActors@@YAHPEAHH@Z");
 
     if (logMissingExports) {
         logMissingExport("scriptRegister", scriptRegisterProc);
@@ -209,6 +232,7 @@ static bool resolveScriptHook(bool logMissingExports) {
     g_scriptWait = reinterpret_cast<ScriptWaitFn>(scriptWaitProc);
     g_drawRect = reinterpret_cast<DrawRectFn>(drawRectProc);
     g_drawText = reinterpret_cast<DrawTextFn>(drawTextProc);
+    g_worldGetAllActors = reinterpret_cast<WorldGetAllActorsFn>(worldGetAllActorsProc);
 
     return g_scriptRegister && g_scriptUnregister &&
            g_keyboardHandlerRegister && g_keyboardHandlerUnregister &&
@@ -460,14 +484,17 @@ static void loadConfig() {
         } else if (key == "actor_enum_map" || key == "actor_map" ||
                    key == "enum_map") {
             g_actorEnumMapPath = value;
+        } else if (key == "behavior_actions" || key == "actions" ||
+                   key == "action_menu") {
+            g_actionsPath = value;
         } else if (key == "action_plan") {
             g_actionPlanPath = value;
         }
     }
 
-    writeLog("Config loaded: roster=%s actor_enum_map=%s action_plan=%s",
+    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s",
              g_rosterPath.c_str(), g_actorEnumMapPath.c_str(),
-             g_actionPlanPath.c_str());
+             g_actionsPath.c_str(), g_actionPlanPath.c_str());
 }
 
 static void loadActorEnumMap() {
@@ -541,6 +568,78 @@ static void loadActorEnumMap() {
              g_actorEnumMapPath.c_str());
 }
 
+static void ensureDefaultActions() {
+    if (!g_actions.empty()) return;
+    g_actions = {
+        "spawn_selected_npc_request",
+        "follow_player_request",
+        "guard_position_request",
+        "defend_player_request",
+        "attack_nearest_hostile_request",
+        "idle_spawned_request",
+        "wander_spawned_request",
+        "regroup_near_player_request",
+        "make_spawned_lawmen_request",
+        "side_lawman_immunity_request",
+        "side_gang_immunity_request",
+        "restore_player_faction_request",
+        "dismiss_ai_guest_request",
+        "status_request"
+    };
+}
+
+static bool csvEnabledValue(const std::string& value) {
+    std::string clean = lowerCopy(trim(value));
+    return clean.empty() || clean == "1" || clean == "true" || clean == "yes" ||
+           clean == "on" || clean == "enabled";
+}
+
+static void loadActions() {
+    loadConfig();
+    std::vector<std::string> loaded;
+    std::unordered_map<std::string, std::string> labels;
+
+    std::ifstream file(g_actionsPath.c_str());
+    if (!file) {
+        g_dirtyActions = false;
+        ensureDefaultActions();
+        writeLog("Behavior action menu not found: %s", g_actionsPath.c_str());
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::string clean = trim(stripInlineComment(line));
+        if (clean.empty()) continue;
+        std::vector<std::string> fields = splitCsvLine(clean);
+        if (fields.empty()) continue;
+
+        std::string action = trim(fields[0]);
+        if (action.empty()) continue;
+        if (lowerCopy(action) == "action" || lowerCopy(action) == "id") continue;
+
+        std::string enabled = fields.size() >= 4 ? fields[3] : "";
+        if (!csvEnabledValue(enabled)) continue;
+
+        loaded.push_back(action);
+        if (fields.size() >= 2 && !trim(fields[1]).empty()) {
+            labels[action] = trim(fields[1]);
+        }
+    }
+
+    if (!loaded.empty()) {
+        g_actions.swap(loaded);
+        g_actionLabels.swap(labels);
+    } else {
+        ensureDefaultActions();
+    }
+    if (g_menuIndex < 0) g_menuIndex = 0;
+    if (g_menuIndex >= static_cast<int>(g_actions.size())) g_menuIndex = 0;
+    g_dirtyActions = false;
+    writeLog("Behavior action menu loaded: count=%zu path=%s",
+             g_actions.size(), g_actionsPath.c_str());
+}
+
 static void ensureDefaultRoster() {
     if (!g_roster.empty()) return;
     g_roster = {
@@ -595,6 +694,7 @@ static std::string selectedNpc() {
 }
 
 static std::string selectedAction() {
+    ensureDefaultActions();
     if (g_menuIndex < 0) g_menuIndex = 0;
     if (g_menuIndex >= static_cast<int>(g_actions.size())) g_menuIndex = 0;
     return g_actions[g_menuIndex];
@@ -603,6 +703,11 @@ static std::string selectedAction() {
 static void writeActionPlan();
 
 static std::string displayAction(const std::string& action) {
+    auto found = g_actionLabels.find(action);
+    if (found != g_actionLabels.end() && !found->second.empty()) {
+        return found->second;
+    }
+
     std::string text = action;
     const std::string suffix = "_request";
     if (text.size() > suffix.size() &&
@@ -716,6 +821,147 @@ static Actor playerActor() {
     return player;
 }
 
+static bool isCodeRedSpawnedActor(Actor actor) {
+    for (Actor spawned : g_spawnedActors) {
+        if (spawned == actor) return true;
+    }
+    return false;
+}
+
+static float distanceSquared(const Vector3& a, const Vector3& b) {
+    const float dx = a.x - b.x;
+    const float dy = a.y - b.y;
+    const float dz = a.z - b.z;
+    return dx * dx + dy * dy + dz * dz;
+}
+
+static bool actorPosition(Actor actor, Vector3* out) {
+    if (!out || actor <= 0 || !nativeReady()) return false;
+    if (!nativeInvoke<BOOL>(0xBA6C3E92, actor)) return false;
+    *out = {};
+    nativeInvoke<void>(0x99BD9D6F, actor, out);
+    return true;
+}
+
+static void saveOriginalPlayerFaction(Actor player) {
+    if (g_savedPlayerFaction || player <= 0 || !nativeReady()) return;
+    g_originalPlayerFaction = nativeInvoke<int>(0x52E2A611, player);
+    if (g_originalPlayerFaction <= 0) {
+        g_originalPlayerFaction = FACTION_PLAYER;
+    }
+    g_savedPlayerFaction = true;
+    writeLog("Saved original player faction: %d", g_originalPlayerFaction);
+}
+
+static void setPlayerFactionSide(int faction, const char* label) {
+    Actor player = playerActor();
+    if (player <= 0) {
+        g_status = "Player actor not ready";
+        writeLog("Faction side failed: player actor invalid label=%s", label);
+        return;
+    }
+    saveOriginalPlayerFaction(player);
+    nativeInvoke<void>(0xCC63951A, player, faction);
+    g_playerSideFaction = faction;
+    g_status = std::string("Player side: ") + label + " faction " +
+               std::to_string(faction);
+    writeLog("Player faction set: label=%s faction=%d", label, faction);
+}
+
+static void restorePlayerFaction() {
+    Actor player = playerActor();
+    if (player <= 0) {
+        g_status = "Player actor not ready";
+        return;
+    }
+    const int restoreFaction = g_savedPlayerFaction ? g_originalPlayerFaction : FACTION_PLAYER;
+    nativeInvoke<void>(0xCC63951A, player, restoreFaction);
+    g_playerSideFaction = restoreFaction;
+    g_status = "Player faction restored: " + std::to_string(restoreFaction);
+    writeLog("Player faction restored: faction=%d", restoreFaction);
+}
+
+static void configureSpawnedAsLawmen(bool followPlayer) {
+    Actor player = playerActor();
+    pruneSpawnedActors();
+    if (g_spawnedActors.empty()) {
+        g_status = "No spawned actors to set as lawmen";
+        writeLog("Lawman configure skipped: no spawned actors");
+        return;
+    }
+
+    for (Actor actor : g_spawnedActors) {
+        nativeInvoke<void>(0xCC63951A, actor, FACTION_US_LAW);
+        nativeInvoke<void>(0x4C94EB9E, actor, TRUE);
+        if (followPlayer && player > 0) {
+            nativeInvoke<void>(0x12F0911A, actor, player);
+        }
+    }
+    g_status = "Spawned actors set to US law";
+    writeLog("Configured %zu spawned actor(s) as US law", g_spawnedActors.size());
+}
+
+static Actor nearestHostileToPlayer(float maxDistance) {
+    if (!nativeReady() || !g_worldGetAllActors) return 0;
+    Actor player = playerActor();
+    if (player <= 0) return 0;
+
+    Vector3 playerPos = {};
+    if (!actorPosition(player, &playerPos)) return 0;
+
+    constexpr int MAX_ACTORS = 512;
+    int actors[MAX_ACTORS] = {};
+    const int count = g_worldGetAllActors(actors, MAX_ACTORS);
+    const float maxDistanceSq = maxDistance * maxDistance;
+    float bestDistanceSq = maxDistanceSq;
+    Actor best = 0;
+
+    for (int i = 0; i < count && i < MAX_ACTORS; ++i) {
+        Actor candidate = actors[i];
+        if (candidate <= 0 || candidate == player) continue;
+        if (isCodeRedSpawnedActor(candidate)) continue;
+        if (!nativeInvoke<BOOL>(0xBA6C3E92, candidate)) continue;
+
+        const int hostileA = nativeInvoke<int>(0x9AB964F4, candidate, player);
+        const int hostileB = nativeInvoke<int>(0x9AB964F4, player, candidate);
+        if (!hostileA && !hostileB) continue;
+
+        Vector3 pos = {};
+        if (!actorPosition(candidate, &pos)) continue;
+        const float distSq = distanceSquared(playerPos, pos);
+        if (distSq < bestDistanceSq) {
+            bestDistanceSq = distSq;
+            best = candidate;
+        }
+    }
+
+    return best;
+}
+
+static void attackNearestHostileWithSpawned() {
+    pruneSpawnedActors();
+    if (g_spawnedActors.empty()) {
+        g_status = "No spawned actors";
+        writeLog("Attack hostile skipped: no spawned actors");
+        return;
+    }
+
+    Actor target = nearestHostileToPlayer(90.0f);
+    if (target <= 0) {
+        g_status = "No nearby hostile found";
+        writeLog("Attack hostile skipped: no target");
+        return;
+    }
+
+    for (Actor actor : g_spawnedActors) {
+        nativeInvoke<void>(0x16876A25, actor);
+        nativeInvoke<void>(0x1AE4B75B, actor, target);
+    }
+    g_status = "Attack target sent: " + std::to_string(target);
+    writeLog("Attack hostile sent: target=%d actors=%zu", target,
+             g_spawnedActors.size());
+}
+
 static bool spawnSelectedNpc() {
     if (!nativeReady()) {
         g_status = "Native bridge unavailable";
@@ -817,7 +1063,8 @@ static void commandSpawnedActors(const std::string& action) {
         return;
     }
 
-    if (action == "guard_position_request") {
+    if (action == "guard_position_request" ||
+        action == "idle_spawned_request") {
         for (Actor actor : g_spawnedActors) {
             nativeInvoke<void>(0x16876A25, actor);
             nativeInvoke<void>(0x6F80965D, actor, -1.0f, 0, 0);
@@ -826,6 +1073,17 @@ static void commandSpawnedActors(const std::string& action) {
                    std::to_string(g_spawnedActors.size()) + " actor(s)";
         writeLog("Stand guard task sent to %zu actor(s)",
                  g_spawnedActors.size());
+        return;
+    }
+
+    if (action == "wander_spawned_request") {
+        for (Actor actor : g_spawnedActors) {
+            nativeInvoke<void>(0x16876A25, actor);
+            nativeInvoke<void>(0x17BCA08E, actor, 0);
+        }
+        g_status = "Wander sent to " +
+                   std::to_string(g_spawnedActors.size()) + " actor(s)";
+        writeLog("Wander task sent to %zu actor(s)", g_spawnedActors.size());
         return;
     }
 
@@ -850,11 +1108,18 @@ static void commandSpawnedActors(const std::string& action) {
         return;
     }
 
-    if (action == "attack_nearest_hostile_request") {
-        g_status = "Attack target scan not implemented yet";
-        writeLog("Action not implemented yet: %s", action.c_str());
+    if (action == "make_spawned_lawmen_request") {
+        configureSpawnedAsLawmen(true);
         return;
     }
+
+    if (action == "attack_nearest_hostile_request") {
+        attackNearestHostileWithSpawned();
+        return;
+    }
+
+    g_status = "Unsupported action: " + displayAction(action);
+    writeLog("Unsupported behavior action: %s", action.c_str());
 }
 
 static void executeSelectedAction() {
@@ -870,13 +1135,21 @@ static void executeSelectedAction() {
 
     if (action == "spawn_selected_npc_request") {
         spawnSelectedNpc();
+    } else if (action == "side_lawman_immunity_request") {
+        setPlayerFactionSide(FACTION_US_LAW, "US lawman");
+    } else if (action == "side_gang_immunity_request") {
+        setPlayerFactionSide(FACTION_GENERIC_CRIMINAL, "generic criminal/gang");
+    } else if (action == "restore_player_faction_request") {
+        restorePlayerFaction();
     } else if (action == "status_request") {
         pruneSpawnedActors();
         const int actorEnum = selectedActorEnum();
         g_status = "Native OK | enum " + std::to_string(actorEnum) +
                    " | spawned " + std::to_string(g_spawnedActors.size());
-        writeLog("Status: native=ready selected=%s enum=%d spawned=%zu",
-                 selectedNpc().c_str(), actorEnum, g_spawnedActors.size());
+        writeLog("Status: native=ready selected=%s enum=%d spawned=%zu worldGetAllActors=%s playerSideFaction=%d",
+                 selectedNpc().c_str(), actorEnum, g_spawnedActors.size(),
+                 g_worldGetAllActors ? "ready" : "missing",
+                 g_playerSideFaction);
     } else {
         commandSpawnedActors(action);
     }
@@ -907,6 +1180,8 @@ static void writeActionPlan() {
         file << "  \"actor_enum\": null,\n";
         file << "  \"actor_enum_hex\": null,\n";
     }
+    file << "  \"spawned_actor_count\": " << g_spawnedActors.size() << ",\n";
+    file << "  \"player_side_faction\": " << g_playerSideFaction << ",\n";
     file << "  \"status\": \"queued\",\n";
     file << "  \"timestamp\": " << static_cast<long long>(now) << "\n";
     file << "}\n";
@@ -948,6 +1223,7 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
         if (g_menuOpen) {
             g_dirtyRoster = true;
             g_dirtyActorMap = true;
+            g_dirtyActions = true;
         }
         writeLog("Menu toggled: open=%s key=0x%08lX",
                  g_menuOpen ? "true" : "false", key);
@@ -996,6 +1272,7 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
     if (key == VK_F5) {
         g_dirtyRoster = true;
         g_dirtyActorMap = true;
+        g_dirtyActions = true;
         g_status = "Reload requested";
         writeLog("Manual reload requested");
         return;
@@ -1023,6 +1300,7 @@ static void drawMenu() {
     if (!g_menuOpen) return;
     if (g_dirtyRoster) loadRoster();
     if (g_dirtyActorMap) loadActorEnumMap();
+    if (g_dirtyActions) loadActions();
 
     const int totalActions = static_cast<int>(g_actions.size());
     const int totalRoster = static_cast<int>(g_roster.size());

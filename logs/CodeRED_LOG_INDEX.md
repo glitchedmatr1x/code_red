@@ -12,6 +12,7 @@ Generated/organized: 2026-04-29
 | Car/truck live RPF inventory | `car_truck_inventory/car_truck_inventory.md` | Live RPF hash matches plus extracted reference comparisons. |
 | Extracted root research | `extracted_root_research/extracted_root_research.md` | Full extracted-root scan summary. |
 | Gringo vehicle research | `CodeRED_Gringo_Vehicle_Research_Pass_2026-04-29.md` | Existing gringo/WGD vehicle spawn research pass. |
+| AI menu behavior/factions | `CodeRED_AI_Menu_Behavior_Faction_Pass_2026-05-02.md` | Editable action CSV, actor enum resolver, native spawn/behavior/faction commands. |
 
 ## Recommended Read Order
 
@@ -41,6 +42,7 @@ Generated/organized: 2026-04-29
 | `car_truck_inventory/live_rpf_entries.csv` | Flat live RPF entries for car/truck tune, model, nav, camera, and scripts. |
 | `car_truck_inventory/reference_entries.csv` | Extracted/reference car/truck file matches. |
 | `extracted_root_research/vehicle_spawning_findings.csv` | Extracted-root vehicle spawning/template/traffic/nav/model matches. |
+| `CodeRED_AI_Menu_Behavior_Faction_Pass_2026-05-02.md` | Current ScriptHookRDR AI menu pass for NPC spawn, behavior commands, lawman/gang faction side testing. |
 
 ## Cutscenes And Cameras
 
