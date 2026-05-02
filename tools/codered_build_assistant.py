@@ -18,7 +18,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Callable
 
-VERSION = "1.0.0-build-assistant-pass1"
+VERSION = "1.0.1-vs-command-quote-fix"
 AI_DIR = Path("related_apps/Code_RED_ScriptHookRDR_AI_Menu")
 AI_CPP = AI_DIR / "CodeRED_AI_Menu.cpp"
 AI_INI = AI_DIR / "CodeRED_AI_Menu.ini"
@@ -30,6 +30,7 @@ AI_LIB = AI_BUILD / "CodeRED_AI_Menu.lib"
 DATA_CODERED = Path("data/codered")
 LOG_PATH = Path("logs/CodeRED_Build_Assistant_last.log")
 REPORT_PATH = Path("logs/CodeRED_Build_Assistant_last_report.json")
+BUILD_BAT = AI_BUILD / "_codered_build_ai_menu.bat"
 
 
 def repo_root() -> Path:
@@ -37,7 +38,13 @@ def repo_root() -> Path:
 
 
 def q(value: Path | str) -> str:
-    return '"' + str(value).replace('"', '\\"') + '"'
+    """Quote a Windows command/batch argument without backslash escaping.
+
+    cmd.exe and .bat files expect plain double quotes around paths with spaces.
+    Backslash-escaped quotes produce literal \" characters and break paths such
+    as C:\\Program Files\\Microsoft Visual Studio\\...
+    """
+    return '"' + str(value).replace('"', '""') + '"'
 
 
 def stamp() -> str:
@@ -223,6 +230,32 @@ def summarize(report: ScanReport) -> str:
     return "\n".join(lines)
 
 
+def write_build_batch(project: Path, vs: VSInfo, cl_command: str) -> Path:
+    batch = project / BUILD_BAT
+    batch.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "@echo off",
+        "setlocal",
+        "echo CodeRED Build Assistant native build script",
+    ]
+    if vs.cl:
+        lines.append("echo cl.exe already available in PATH")
+    elif vs.devcmd:
+        lines.append(f"call {q(vs.devcmd)} -arch=x64 -host_arch=x64")
+        lines.append("if errorlevel 1 exit /b %ERRORLEVEL%")
+    elif vs.vcvars64:
+        lines.append(f"call {q(vs.vcvars64)}")
+        lines.append("if errorlevel 1 exit /b %ERRORLEVEL%")
+    else:
+        raise RuntimeError("No usable Visual Studio command environment was found.")
+    lines.extend([
+        cl_command,
+        "exit /b %ERRORLEVEL%",
+    ])
+    batch.write_text("\r\n".join(lines) + "\r\n", encoding="utf-8")
+    return batch
+
+
 def build(project: Path, log: Log) -> Path:
     project = project.resolve()
     report = scan(project)
@@ -236,23 +269,16 @@ def build(project: Path, log: Log) -> Path:
     outdir.mkdir(parents=True, exist_ok=True)
     src, out = project / AI_CPP, project / AI_ASI
     obj, pdb, lib = project / AI_OBJ, project / AI_PDB, project / AI_LIB
-    cl = (
+    cl_command = (
         f"cl /std:c++17 /EHsc /LD /nologo {q(src)} /Fo{q(obj)} /Fd{q(pdb)} /Fe{q(out)} "
         f"/link /OUT:{q(out)} /IMPLIB:{q(lib)}"
     )
-    vs = report.vs
-    if vs.cl:
-        cmd = cl
-    elif vs.devcmd:
-        cmd = f"call {q(vs.devcmd)} -arch=x64 -host_arch=x64 >nul && {cl}"
-    elif vs.vcvars64:
-        cmd = f"call {q(vs.vcvars64)} >nul && {cl}"
-    else:
-        raise RuntimeError("No usable Visual Studio command environment was found.")
+    batch = write_build_batch(project, report.vs, cl_command)
     log.section("Building CodeRED_AI_Menu.asi")
     log.write(f"Source: {src}")
     log.write(f"Output: {out}")
-    proc = subprocess.run(["cmd.exe", "/d", "/s", "/c", cmd], cwd=str(project), text=True,
+    log.write(f"Build script: {batch}")
+    proc = subprocess.run(["cmd.exe", "/d", "/c", str(batch)], cwd=str(project), text=True,
                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     if proc.stdout:
         log.write(proc.stdout.rstrip())
