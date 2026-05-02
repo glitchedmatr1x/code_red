@@ -1,21 +1,31 @@
 #!/usr/bin/env python3
 """Patch CodeRED_AI_Menu.cpp with a compact scrolling panel renderer.
 
-This is intentionally surgical. It only replaces `static void drawMenu()` when that
-function is present and brace-balanced. If the source layout has changed, it refuses
-rather than guessing.
+Conservative behavior:
+- replaces a brace-balanced `static void drawMenu()` when no compact pass exists
+- replaces the older compact pass when present
+- refuses when the expected source shape cannot be found
+
+This version avoids std::min/std::max because Windows headers may define min/max
+macros, producing C++ errors such as "illegal token on right side of '::'".
 """
 from __future__ import annotations
 
 import argparse
 import shutil
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 DEFAULT_SOURCE = Path("related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp")
-MARKER = "// CodeRED compact scrolling menu layout pass"
+OLD_MARKER = "// CodeRED compact scrolling menu layout pass"
+NEW_MARKER = "// CodeRED compact scrolling menu layout pass v2 no-std-minmax"
 
-NEW_DRAW_MENU = r'''static int listStartFor(int selected, int total, int visible) {
+NEW_BLOCK = r'''static int crMinInt(int a, int b) { return a < b ? a : b; }
+static int crMaxInt(int a, int b) { return a > b ? a : b; }
+static float crMinFloat(float a, float b) { return a < b ? a : b; }
+static float crMaxFloat(float a, float b) { return a > b ? a : b; }
+
+static int listStartFor(int selected, int total, int visible) {
     if (total <= visible || visible <= 0) return 0;
     int start = selected - visible / 2;
     if (start < 0) start = 0;
@@ -30,15 +40,15 @@ static void drawMenu() {
 
     const int totalActions = static_cast<int>(g_actions.size());
     const int totalRoster = static_cast<int>(g_roster.size());
-    const int visibleActions = std::min(std::max(totalActions, 1), 7);
-    const int visibleRoster = std::min(std::max(totalRoster, 1), 9);
-    const int visibleRows = std::max(visibleActions, visibleRoster);
+    const int visibleActions = crMinInt(crMaxInt(totalActions, 1), 7);
+    const int visibleRoster = crMinInt(crMaxInt(totalRoster, 1), 9);
+    const int visibleRows = crMaxInt(visibleActions, visibleRoster);
 
     const float rowH = 0.026f;
     const float headerH = 0.120f;
     const float footerH = 0.070f;
     const float panelW = 0.520f;
-    const float panelH = std::min(0.780f, std::max(0.320f, headerH + footerH + rowH * static_cast<float>(visibleRows + 2)));
+    const float panelH = crMinFloat(0.780f, crMaxFloat(0.320f, headerH + footerH + rowH * static_cast<float>(visibleRows + 2)));
     const float x = 0.500f;
     const float y = 0.500f;
     const float left = x - panelW * 0.5f;
@@ -87,11 +97,13 @@ static void drawMenu() {
     }
 
     if (totalActions > visibleActions) {
-        std::string hint = "actions " + std::to_string(actionStart + 1) + "-" + std::to_string(std::min(actionStart + visibleActions, totalActions)) + " / " + std::to_string(totalActions);
+        const int actionEnd = crMinInt(actionStart + visibleActions, totalActions);
+        std::string hint = "actions " + std::to_string(actionStart + 1) + "-" + std::to_string(actionEnd) + " / " + std::to_string(totalActions);
         drawTextSafe(actionX + 0.005f, top + panelH - 0.050f, hint.c_str(), 190, 190, 190, 230, FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
     }
     if (totalRoster > visibleRoster) {
-        std::string hint = "roster " + std::to_string(rosterStart + 1) + "-" + std::to_string(std::min(rosterStart + visibleRoster, totalRoster)) + " / " + std::to_string(totalRoster);
+        const int rosterEnd = crMinInt(rosterStart + visibleRoster, totalRoster);
+        std::string hint = "roster " + std::to_string(rosterStart + 1) + "-" + std::to_string(rosterEnd) + " / " + std::to_string(totalRoster);
         drawTextSafe(rosterX + 0.005f, top + panelH - 0.050f, hint.c_str(), 190, 190, 190, 230, FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
     }
 
@@ -101,8 +113,12 @@ static void drawMenu() {
         drawTextSafe(left + 0.020f, top + panelH - 0.005f, g_status.c_str(), 255, 140, 140, 235, FONT_REDEMPTION, 0.014f, JUSTIFY_LEFT);
     }
 }
-// CodeRED compact scrolling menu layout pass
+// CodeRED compact scrolling menu layout pass v2 no-std-minmax
 '''
+
+
+def utc_stamp() -> str:
+    return datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
 
 
 def find_function_span(text: str, signature: str) -> tuple[int, int] | None:
@@ -124,22 +140,43 @@ def find_function_span(text: str, signature: str) -> tuple[int, int] | None:
     return None
 
 
+def find_existing_compact_span(text: str) -> tuple[int, int] | None:
+    marker_pos = text.find(OLD_MARKER)
+    if marker_pos < 0:
+        marker_pos = text.find(NEW_MARKER)
+    if marker_pos < 0:
+        return None
+    start = text.rfind("static int crMinInt", 0, marker_pos)
+    if start < 0:
+        start = text.rfind("static int listStartFor", 0, marker_pos)
+    if start < 0:
+        return None
+    marker = NEW_MARKER if text.find(NEW_MARKER, marker_pos, marker_pos + len(NEW_MARKER)) >= 0 else OLD_MARKER
+    return start, marker_pos + len(marker)
+
+
 def patch_source(path: Path, replace: bool) -> bool:
     text = path.read_text(encoding="utf-8", errors="ignore")
-    if MARKER in text:
-        print("Compact scrolling layout is already present.")
+    if NEW_MARKER in text and "std::min" not in text and "std::max" not in text:
+        print("Compact scrolling layout v2 is already present.")
         return False
-    span = find_function_span(text, "static void drawMenu()")
-    if not span:
-        raise RuntimeError("Could not find brace-balanced `static void drawMenu()` in source. Refusing to guess.")
-    start, end = span
-    patched = text[:start] + NEW_DRAW_MENU + text[end:]
+
+    span = find_existing_compact_span(text)
+    if span:
+        start, end = span
+    else:
+        span = find_function_span(text, "static void drawMenu()")
+        if not span:
+            raise RuntimeError("Could not find compact layout block or brace-balanced `static void drawMenu()`. Refusing to guess.")
+        start, end = span
+
+    patched = text[:start] + NEW_BLOCK + text[end:]
     if not replace:
-        backup = path.with_suffix(path.suffix + ".bak_layout_" + datetime.utcnow().strftime("%Y%m%d_%H%M%S"))
+        backup = path.with_suffix(path.suffix + ".bak_layout_" + utc_stamp())
         shutil.copy2(path, backup)
         print(f"Backup: {backup}")
     path.write_text(patched, encoding="utf-8", newline="")
-    print(f"Patched compact scrolling layout: {path}")
+    print(f"Patched compact scrolling layout v2: {path}")
     return True
 
 
