@@ -104,19 +104,47 @@ These are useful for a performance mod, but they should not be blindly maxed. If
 5. Render/streaming support so camps, props, events, and actors do not vanish too aggressively.
 6. Better support for road trouble, law response, gang pressure, and camp/refgroup persistence.
 
+## Faction identity requirement
+
+Density by itself is not enough. The next living-world pass must avoid filling the world with repeated lookalike NPCs. The goal is grouped, recognizable factions:
+
+- gangs should spawn in their own faction groups
+- rival gangs should fight each other
+- gangs should also be hostile to the player when appropriate
+- lawmen should recognize gangs as the priority threat
+- lawmen should fight gangs instead of automatically blaming the player when the player shoots gang members
+- player-friendly law behavior must be protected so helping lawmen against gangs does not instantly turn into unfair wanted/player targeting
+
+This makes the `Max Render and Spawns` layer a support layer, not the full solution. It can keep more actors alive and visible, but faction-war quality depends on correct group templates, relationship data, event membership, and law target rules.
+
+## Faction-war research targets
+
+Track these file types and data areas before increasing density too far:
+
+- gang/faction relationship tables
+- law response and wanted/crime target scoring
+- actor templates for each gang and law group
+- ambient event allow-sets for road, trail, town, and wilderness areas
+- population refs that currently reuse generic NPCs too often
+- refgroups/camps that can host faction-specific groups
+- target tuning files that may control hostile scoring and player blame
+
 ## Recommended layer order
 
 1. Baseline: validated Pass 15 / Pass 15.30 faction-war lineage.
 2. Add conservative allocation headroom from `componentallocations.xml`.
 3. Add conservative ambient manager range/actor cap changes.
 4. Add region population density changes in `level.pop`.
-5. Add render/streaming changes separately.
-6. Add event/refgroup/camp pressure only after the support layer is stable.
+5. Add faction identity and rival/law targeting corrections.
+6. Add render/streaming changes separately.
+7. Add event/refgroup/camp pressure only after the support and faction-identity layers are stable.
 
 ## Do not do yet
 
 - Do not max every value at once.
 - Do not combine render distance increases and spawn pressure increases in one blind pass.
+- Do not increase generic NPC respawns without faction variety.
+- Do not make lawmen treat the player as the main threat when the player is shooting hostile gangs.
 - Do not edit source archives directly.
 - Do not use live plugin spawning as the first test.
 
@@ -125,3 +153,7 @@ These are useful for a performance mod, but they should not be blindly maxed. If
 Code RED Living World Pass 16A - Tune Support Layer
 
 Goal: build a small copied-archive patch that only adds spawn/render support, then test whether faction-war Pass 15 keeps its preserved features while gaining more visible world activity.
+
+Follow-up: Code RED Living World Pass 16B - Faction Identity and Law Targeting
+
+Goal: convert repeated generic respawns into recognizable gang/law groups, make rivals fight each other, and protect player-friendly law behavior when the player attacks hostile gangs.
