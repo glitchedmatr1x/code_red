@@ -23,7 +23,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Iterable
 
-VERSION = "1.1.0-ini-enum-source-pass"
+VERSION = "1.1.1-flexible-replace-flag-pass"
 DEFAULT_MAP = Path("data/codered/actor_enum_map.csv")
 DEFAULT_ROSTER = Path("data/codered/npc_roster.txt")
 DEFAULT_SAFE_ROSTER = Path("data/codered/npc_roster_safe_verified.txt")
@@ -415,32 +415,53 @@ def write_seed_roster(path: Path, replace: bool) -> Path:
     return path
 
 
+def wants_replace(args: argparse.Namespace) -> bool:
+    return bool(getattr(args, "replace", False) or getattr(args, "sub_replace", False))
+
+
+def add_sub_replace(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--replace", dest="sub_replace", action="store_true", default=False,
+                        help="Replace target files without making .bak timestamp backups. Can be used before or after the subcommand.")
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Generate/validate Code RED actor enum data without recompiling the ASI.")
     p.add_argument("--enum-map", type=Path, default=DEFAULT_MAP)
     p.add_argument("--roster", type=Path, default=DEFAULT_ROSTER)
     p.add_argument("--report", type=Path, default=DEFAULT_REPORT)
-    p.add_argument("--replace", action="store_true", help="Replace target files without making .bak timestamp backups.")
+    p.add_argument("--replace", action="store_true", help="Replace target files without making .bak timestamp backups. Can be used before or after the subcommand.")
     sub = p.add_subparsers(dest="cmd")
+
     seed = sub.add_parser("seed", help="Write a small verified seed actor_enum_map.csv.")
     seed.add_argument("--safe-roster", action="store_true", help="Also replace/write a safe seed npc_roster.txt.")
+    add_sub_replace(seed)
+
     rebuild = sub.add_parser("rebuild", help="Rebuild actor_enum_map.csv from a local enum source.")
     rebuild.add_argument("--enums-h", type=Path, help="Path to C++ Enums.h or INI-style [Enum] file.")
     rebuild.add_argument("--source", type=Path, help="Alias for --enums-h; accepts C++ enum or INI-style [Enum] file.")
-    sub.add_parser("validate", help="Validate npc_roster.txt against actor_enum_map.csv and write JSON report.")
+    add_sub_replace(rebuild)
+
+    validate = sub.add_parser("validate", help="Validate npc_roster.txt against actor_enum_map.csv and write JSON report.")
+    add_sub_replace(validate)
+
     safe = sub.add_parser("safe-roster", help="Write npc_roster_safe_verified.txt from resolved roster entries.")
     safe.add_argument("--output", type=Path, default=DEFAULT_SAFE_ROSTER)
-    sub.add_parser("summary", help="Print a compact validation summary.")
+    add_sub_replace(safe)
+
+    summary = sub.add_parser("summary", help="Print a compact validation summary.")
+    add_sub_replace(summary)
     return p
 
 
 def main() -> int:
     args = build_parser().parse_args()
     cmd = args.cmd or "summary"
+    replace = wants_replace(args)
+
     if cmd == "seed":
-        write_map(args.enum_map, SEED_ROWS, replace=args.replace)
+        write_map(args.enum_map, SEED_ROWS, replace=replace)
         if args.safe_roster:
-            write_seed_roster(args.roster, replace=args.replace)
+            write_seed_roster(args.roster, replace=replace)
         report = validate_roster(args.enum_map, args.roster)
         write_report(report, args.report)
         print(f"Seeded enum map: {args.enum_map}")
@@ -448,12 +469,13 @@ def main() -> int:
             print(f"Seeded roster:   {args.roster}")
         print(f"Report:          {args.report}")
         return 0
+
     if cmd == "rebuild":
         source = args.source or args.enums_h
         if not source:
             raise SystemExit("rebuild requires --enums-h or --source")
         rows = parse_enum_source(source)
-        write_map(args.enum_map, rows, replace=args.replace)
+        write_map(args.enum_map, rows, replace=replace)
         report = validate_roster(args.enum_map, args.roster)
         write_report(report, args.report)
         print(f"Parsed rows:     {len(rows)}")
@@ -466,11 +488,12 @@ def main() -> int:
                 print(" - " + item)
             return 2
         return 0
+
     if cmd in {"validate", "summary", "safe-roster"}:
         report = validate_roster(args.enum_map, args.roster)
         write_report(report, args.report)
         if cmd == "safe-roster":
-            out = write_safe_roster(report, args.output, replace=args.replace)
+            out = write_safe_roster(report, args.output, replace=replace)
             print(f"Safe roster:     {out}")
         print(f"Roster entries:  {report.total_roster_entries}")
         print(f"Resolved:        {report.resolved_entries}")
@@ -482,6 +505,7 @@ def main() -> int:
                 print(" - " + item)
             return 2
         return 0 if report.unresolved_entries == 0 else 1
+
     raise SystemExit("Unknown command")
 
 
