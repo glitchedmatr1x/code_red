@@ -99,6 +99,20 @@ Recommended use in Pass 16:
 5. Do not invent prop clusters first; use these existing battle sets because navres already knows them.
 6. Pair each region battle set with matching faction/law population/event logic after content-side faction templates are identified.
 
+## Daily recurring wilderness event requirement
+
+The living-world goal is not only to place more static props. Wilderness activity should feel like recurring world systems:
+
+- use existing battle-set/refgroup assets as reusable event sites
+- create regional event slots that can return every in-game day
+- stagger event hours by region so the world is less predictable
+- rotate factions per region instead of spawning the same lookalike NPCs
+- allow sites to clear, cool down, and return later rather than becoming one-time-only clutter
+- preserve safe camp/refgroup persistence while still letting action/event pressure refresh
+- pair daily recurrence with law response and regional faction identity once the content-side faction templates are mapped
+
+Pass 16 should treat `battleSet` assets as daily/recurring staging anchors for wilderness pressure. The first implementation can be conservative: prove one or two recurring regions before scaling to all regions.
+
 ## Highest-value regions for next tests
 
 - `cho_*`: Cholla Springs/outlaw roadside pressure.
