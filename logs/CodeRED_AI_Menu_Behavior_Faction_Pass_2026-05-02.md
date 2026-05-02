@@ -31,6 +31,13 @@ implementation.
 - Added optional `worldGetAllActors` export lookup for hostile scans.
 - Added nearest-hostile attack dispatch using `AI_IS_HOSTILE_OR_ENEMY` and
   `TASK_KILL_CHAR` for CodeRED-spawned actors only.
+- Fixed the actor enum CSV reader. The generated map uses `|` inside the
+  aliases column, so the ASI now parses comma CSV rows before checking inline
+  `label|enum` syntax.
+- Added generated roster packs under `data/codered/rosters`.
+- Pointed the runtime INI at
+  `data/codered/rosters/npc_roster_law_gang_companion.txt`.
+- Added `SHIFT+LEFT/RIGHT` x10 roster navigation plus Home/End roster jumps.
 
 ## Faction Notes
 
@@ -51,6 +58,11 @@ faction when available, otherwise the player faction.
   - resolved: 13
   - unresolved: 0
   - sanity errors: 0
+- `python tools\codered_actor_enum_tool.py --roster data\codered\rosters\npc_roster_law_gang_companion.txt --report logs\CodeRED_Actor_Enum_Validation_Report_law_gang_companion.json validate --replace`
+  - roster entries: 413
+  - resolved: 413
+  - unresolved: 0
+  - sanity errors: 0
 - `related_apps\Code_RED_ScriptHookRDR_AI_Menu\build_bridge.bat`
   completed from a Visual Studio 2022 x64 developer environment.
 
@@ -63,6 +75,7 @@ Copied to `D:\Games\Red Dead Redemption\RDR-SteamGG.NET`:
 - `data\codered\npc_roster.txt`
 - `data\codered\actor_enum_map.csv`
 - `data\codered\ai_behavior_actions.csv`
+- `data\codered\rosters\*`
 
 ## Test Notes
 

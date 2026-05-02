@@ -20,7 +20,7 @@ if errorlevel 1 (
   exit /b 1
 )
 
-cl /std:c++17 /EHsc /LD /nologo "%SRC%" /Fo"%OBJ%" /Fd"%PDB%" /Fe"%OUT%" /link /OUT:"%OUT%" /IMPLIB:"%IMPLIB%"
+cl /std:c++17 /EHsc /LD /nologo "%SRC%" /Fo"%OBJ%" /Fd"%PDB%" /Fe"%OUT%" /link /OUT:"%OUT%" /IMPLIB:"%IMPLIB%" user32.lib
 if errorlevel 1 (
   echo [ERROR] Build failed.
   exit /b 1

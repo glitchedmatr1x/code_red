@@ -1,0 +1,3729 @@
+{
+  "version": "1.4.0-roster-pack-pass",
+  "generated_utc": "2026-05-02T09:50:59Z",
+  "enum_map": "data\\codered\\actor_enum_map.csv",
+  "roster": "data\\codered\\rosters\\npc_roster_law_gang_companion.txt",
+  "total_roster_entries": 413,
+  "resolved_entries": 413,
+  "unresolved_entries": 0,
+  "sanity_errors": [],
+  "entries": [
+    {
+      "line": "ACTOR_player_jack|1  # player_like 0x00000001",
+      "label": "ACTOR_player_jack",
+      "resolved": true,
+      "actor_enum": 1,
+      "actor_enum_hex": "0x00000001",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_player_cs|2  # player_like 0x00000002",
+      "label": "ACTOR_player_cs",
+      "resolved": true,
+      "actor_enum": 2,
+      "actor_enum_hex": "0x00000002",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_male_police01|184  # law 0x000000B8",
+      "label": "ACTOR_caucasian_male_police01",
+      "resolved": true,
+      "actor_enum": 184,
+      "actor_enum_hex": "0x000000B8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_male_police02|185  # law 0x000000B9",
+      "label": "ACTOR_caucasian_male_police02",
+      "resolved": true,
+      "actor_enum": 185,
+      "actor_enum_hex": "0x000000B9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_male_police03|186  # law 0x000000BA",
+      "label": "ACTOR_caucasian_male_police03",
+      "resolved": true,
+      "actor_enum": 186,
+      "actor_enum_hex": "0x000000BA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_male_police04|187  # law 0x000000BB",
+      "label": "ACTOR_caucasian_male_police04",
+      "resolved": true,
+      "actor_enum": 187,
+      "actor_enum_hex": "0x000000BB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_male_police05|188  # law 0x000000BC",
+      "label": "ACTOR_caucasian_male_police05",
+      "resolved": true,
+      "actor_enum": 188,
+      "actor_enum_hex": "0x000000BC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_easy01|369  # army 0x00000171",
+      "label": "ACTOR_caucasian_army_easy01",
+      "resolved": true,
+      "actor_enum": 369,
+      "actor_enum_hex": "0x00000171",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_easy02|370  # army 0x00000172",
+      "label": "ACTOR_caucasian_army_easy02",
+      "resolved": true,
+      "actor_enum": 370,
+      "actor_enum_hex": "0x00000172",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_easy03|371  # army 0x00000173",
+      "label": "ACTOR_caucasian_army_easy03",
+      "resolved": true,
+      "actor_enum": 371,
+      "actor_enum_hex": "0x00000173",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_medium01|372  # army 0x00000174",
+      "label": "ACTOR_caucasian_army_medium01",
+      "resolved": true,
+      "actor_enum": 372,
+      "actor_enum_hex": "0x00000174",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_medium02|373  # army 0x00000175",
+      "label": "ACTOR_caucasian_army_medium02",
+      "resolved": true,
+      "actor_enum": 373,
+      "actor_enum_hex": "0x00000175",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_medium03|374  # army 0x00000176",
+      "label": "ACTOR_caucasian_army_medium03",
+      "resolved": true,
+      "actor_enum": 374,
+      "actor_enum_hex": "0x00000176",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_hard01|375  # army 0x00000177",
+      "label": "ACTOR_caucasian_army_hard01",
+      "resolved": true,
+      "actor_enum": 375,
+      "actor_enum_hex": "0x00000177",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_hard02|376  # army 0x00000178",
+      "label": "ACTOR_caucasian_army_hard02",
+      "resolved": true,
+      "actor_enum": 376,
+      "actor_enum_hex": "0x00000178",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_hard02_burnt|377  # army 0x00000179",
+      "label": "ACTOR_caucasian_army_hard02_burnt",
+      "resolved": true,
+      "actor_enum": 377,
+      "actor_enum_hex": "0x00000179",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_hard03|378  # army 0x0000017A",
+      "label": "ACTOR_caucasian_army_hard03",
+      "resolved": true,
+      "actor_enum": 378,
+      "actor_enum_hex": "0x0000017A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy01|379  # army 0x0000017B",
+      "label": "ACTOR_mexican_army_easy01",
+      "resolved": true,
+      "actor_enum": 379,
+      "actor_enum_hex": "0x0000017B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy02|380  # army 0x0000017C",
+      "label": "ACTOR_mexican_army_easy02",
+      "resolved": true,
+      "actor_enum": 380,
+      "actor_enum_hex": "0x0000017C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy03|381  # army 0x0000017D",
+      "label": "ACTOR_mexican_army_easy03",
+      "resolved": true,
+      "actor_enum": 381,
+      "actor_enum_hex": "0x0000017D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy04|382  # army 0x0000017E",
+      "label": "ACTOR_mexican_army_easy04",
+      "resolved": true,
+      "actor_enum": 382,
+      "actor_enum_hex": "0x0000017E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy05|383  # army 0x0000017F",
+      "label": "ACTOR_mexican_army_easy05",
+      "resolved": true,
+      "actor_enum": 383,
+      "actor_enum_hex": "0x0000017F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy06|384  # army 0x00000180",
+      "label": "ACTOR_mexican_army_easy06",
+      "resolved": true,
+      "actor_enum": 384,
+      "actor_enum_hex": "0x00000180",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy07|385  # army 0x00000181",
+      "label": "ACTOR_mexican_army_easy07",
+      "resolved": true,
+      "actor_enum": 385,
+      "actor_enum_hex": "0x00000181",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy08|386  # army 0x00000182",
+      "label": "ACTOR_mexican_army_easy08",
+      "resolved": true,
+      "actor_enum": 386,
+      "actor_enum_hex": "0x00000182",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy09|387  # army 0x00000183",
+      "label": "ACTOR_mexican_army_easy09",
+      "resolved": true,
+      "actor_enum": 387,
+      "actor_enum_hex": "0x00000183",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy10|388  # army 0x00000184",
+      "label": "ACTOR_mexican_army_easy10",
+      "resolved": true,
+      "actor_enum": 388,
+      "actor_enum_hex": "0x00000184",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy11|389  # army 0x00000185",
+      "label": "ACTOR_mexican_army_easy11",
+      "resolved": true,
+      "actor_enum": 389,
+      "actor_enum_hex": "0x00000185",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy12|390  # army 0x00000186",
+      "label": "ACTOR_mexican_army_easy12",
+      "resolved": true,
+      "actor_enum": 390,
+      "actor_enum_hex": "0x00000186",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_medium01|391  # army 0x00000187",
+      "label": "ACTOR_mexican_army_medium01",
+      "resolved": true,
+      "actor_enum": 391,
+      "actor_enum_hex": "0x00000187",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_medium02|392  # army 0x00000188",
+      "label": "ACTOR_mexican_army_medium02",
+      "resolved": true,
+      "actor_enum": 392,
+      "actor_enum_hex": "0x00000188",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_medium03|393  # army 0x00000189",
+      "label": "ACTOR_mexican_army_medium03",
+      "resolved": true,
+      "actor_enum": 393,
+      "actor_enum_hex": "0x00000189",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_hard01|394  # army 0x0000018A",
+      "label": "ACTOR_mexican_army_hard01",
+      "resolved": true,
+      "actor_enum": 394,
+      "actor_enum_hex": "0x0000018A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_hard02|395  # army 0x0000018B",
+      "label": "ACTOR_mexican_army_hard02",
+      "resolved": true,
+      "actor_enum": 395,
+      "actor_enum_hex": "0x0000018B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_hard03|396  # army 0x0000018C",
+      "label": "ACTOR_mexican_army_hard03",
+      "resolved": true,
+      "actor_enum": 396,
+      "actor_enum_hex": "0x0000018C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_genericcriminal_easy01|397  # gang 0x0000018D",
+      "label": "ACTOR_caucasian_genericcriminal_easy01",
+      "resolved": true,
+      "actor_enum": 397,
+      "actor_enum_hex": "0x0000018D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_genericcriminal_easy02|398  # gang 0x0000018E",
+      "label": "ACTOR_caucasian_genericcriminal_easy02",
+      "resolved": true,
+      "actor_enum": 398,
+      "actor_enum_hex": "0x0000018E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_genericcriminal_easy03|399  # gang 0x0000018F",
+      "label": "ACTOR_caucasian_genericcriminal_easy03",
+      "resolved": true,
+      "actor_enum": 399,
+      "actor_enum_hex": "0x0000018F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_genericcriminal_medium01|400  # gang 0x00000190",
+      "label": "ACTOR_caucasian_genericcriminal_medium01",
+      "resolved": true,
+      "actor_enum": 400,
+      "actor_enum_hex": "0x00000190",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_genericcriminal_medium02|401  # gang 0x00000191",
+      "label": "ACTOR_caucasian_genericcriminal_medium02",
+      "resolved": true,
+      "actor_enum": 401,
+      "actor_enum_hex": "0x00000191",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_genericcriminal_medium03|402  # gang 0x00000192",
+      "label": "ACTOR_caucasian_genericcriminal_medium03",
+      "resolved": true,
+      "actor_enum": 402,
+      "actor_enum_hex": "0x00000192",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_genericcriminal_hard01|403  # gang 0x00000193",
+      "label": "ACTOR_caucasian_genericcriminal_hard01",
+      "resolved": true,
+      "actor_enum": 403,
+      "actor_enum_hex": "0x00000193",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_genericcriminal_hard02|404  # gang 0x00000194",
+      "label": "ACTOR_caucasian_genericcriminal_hard02",
+      "resolved": true,
+      "actor_enum": 404,
+      "actor_enum_hex": "0x00000194",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_genericcriminal_hard03|405  # gang 0x00000195",
+      "label": "ACTOR_caucasian_genericcriminal_hard03",
+      "resolved": true,
+      "actor_enum": 405,
+      "actor_enum_hex": "0x00000195",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_easy01|406  # gang 0x00000196",
+      "label": "ACTOR_mexican_genericcriminal_easy01",
+      "resolved": true,
+      "actor_enum": 406,
+      "actor_enum_hex": "0x00000196",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_easy02|407  # gang 0x00000197",
+      "label": "ACTOR_mexican_genericcriminal_easy02",
+      "resolved": true,
+      "actor_enum": 407,
+      "actor_enum_hex": "0x00000197",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_easy03|408  # gang 0x00000198",
+      "label": "ACTOR_mexican_genericcriminal_easy03",
+      "resolved": true,
+      "actor_enum": 408,
+      "actor_enum_hex": "0x00000198",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_medium01|409  # gang 0x00000199",
+      "label": "ACTOR_mexican_genericcriminal_medium01",
+      "resolved": true,
+      "actor_enum": 409,
+      "actor_enum_hex": "0x00000199",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_medium02|410  # gang 0x0000019A",
+      "label": "ACTOR_mexican_genericcriminal_medium02",
+      "resolved": true,
+      "actor_enum": 410,
+      "actor_enum_hex": "0x0000019A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_medium03|411  # gang 0x0000019B",
+      "label": "ACTOR_mexican_genericcriminal_medium03",
+      "resolved": true,
+      "actor_enum": 411,
+      "actor_enum_hex": "0x0000019B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_hard01|412  # gang 0x0000019C",
+      "label": "ACTOR_mexican_genericcriminal_hard01",
+      "resolved": true,
+      "actor_enum": 412,
+      "actor_enum_hex": "0x0000019C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_hard02|413  # gang 0x0000019D",
+      "label": "ACTOR_mexican_genericcriminal_hard02",
+      "resolved": true,
+      "actor_enum": 413,
+      "actor_enum_hex": "0x0000019D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_hard03|414  # gang 0x0000019E",
+      "label": "ACTOR_mexican_genericcriminal_hard03",
+      "resolved": true,
+      "actor_enum": 414,
+      "actor_enum_hex": "0x0000019E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_black_genericcriminal_easy01|415  # gang 0x0000019F",
+      "label": "ACTOR_black_genericcriminal_easy01",
+      "resolved": true,
+      "actor_enum": 415,
+      "actor_enum_hex": "0x0000019F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_black_genericcriminal_easy02|416  # gang 0x000001A0",
+      "label": "ACTOR_black_genericcriminal_easy02",
+      "resolved": true,
+      "actor_enum": 416,
+      "actor_enum_hex": "0x000001A0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_black_genericcriminal_easy03|417  # gang 0x000001A1",
+      "label": "ACTOR_black_genericcriminal_easy03",
+      "resolved": true,
+      "actor_enum": 417,
+      "actor_enum_hex": "0x000001A1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_black_genericcriminal_medium01|418  # gang 0x000001A2",
+      "label": "ACTOR_black_genericcriminal_medium01",
+      "resolved": true,
+      "actor_enum": 418,
+      "actor_enum_hex": "0x000001A2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_black_genericcriminal_medium02|419  # gang 0x000001A3",
+      "label": "ACTOR_black_genericcriminal_medium02",
+      "resolved": true,
+      "actor_enum": 419,
+      "actor_enum_hex": "0x000001A3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_black_genericcriminal_medium03|420  # gang 0x000001A4",
+      "label": "ACTOR_black_genericcriminal_medium03",
+      "resolved": true,
+      "actor_enum": 420,
+      "actor_enum_hex": "0x000001A4",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_black_genericcriminal_hard01|421  # gang 0x000001A5",
+      "label": "ACTOR_black_genericcriminal_hard01",
+      "resolved": true,
+      "actor_enum": 421,
+      "actor_enum_hex": "0x000001A5",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_black_genericcriminal_hard02|422  # gang 0x000001A6",
+      "label": "ACTOR_black_genericcriminal_hard02",
+      "resolved": true,
+      "actor_enum": 422,
+      "actor_enum_hex": "0x000001A6",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_black_genericcriminal_hard03|423  # gang 0x000001A7",
+      "label": "ACTOR_black_genericcriminal_hard03",
+      "resolved": true,
+      "actor_enum": 423,
+      "actor_enum_hex": "0x000001A7",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy01|424  # law 0x000001A8",
+      "label": "ACTOR_law_caucasian_townposse_easy01",
+      "resolved": true,
+      "actor_enum": 424,
+      "actor_enum_hex": "0x000001A8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy02|425  # law 0x000001A9",
+      "label": "ACTOR_law_caucasian_townposse_easy02",
+      "resolved": true,
+      "actor_enum": 425,
+      "actor_enum_hex": "0x000001A9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy03|426  # law 0x000001AA",
+      "label": "ACTOR_law_caucasian_townposse_easy03",
+      "resolved": true,
+      "actor_enum": 426,
+      "actor_enum_hex": "0x000001AA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy04|427  # law 0x000001AB",
+      "label": "ACTOR_law_caucasian_townposse_easy04",
+      "resolved": true,
+      "actor_enum": 427,
+      "actor_enum_hex": "0x000001AB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy05|428  # law 0x000001AC",
+      "label": "ACTOR_law_caucasian_townposse_easy05",
+      "resolved": true,
+      "actor_enum": 428,
+      "actor_enum_hex": "0x000001AC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy06|429  # law 0x000001AD",
+      "label": "ACTOR_law_caucasian_townposse_easy06",
+      "resolved": true,
+      "actor_enum": 429,
+      "actor_enum_hex": "0x000001AD",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy07|430  # law 0x000001AE",
+      "label": "ACTOR_law_caucasian_townposse_easy07",
+      "resolved": true,
+      "actor_enum": 430,
+      "actor_enum_hex": "0x000001AE",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy08|431  # law 0x000001AF",
+      "label": "ACTOR_law_caucasian_townposse_easy08",
+      "resolved": true,
+      "actor_enum": 431,
+      "actor_enum_hex": "0x000001AF",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy09|432  # law 0x000001B0",
+      "label": "ACTOR_law_caucasian_townposse_easy09",
+      "resolved": true,
+      "actor_enum": 432,
+      "actor_enum_hex": "0x000001B0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy10|433  # law 0x000001B1",
+      "label": "ACTOR_law_caucasian_townposse_easy10",
+      "resolved": true,
+      "actor_enum": 433,
+      "actor_enum_hex": "0x000001B1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy11|434  # law 0x000001B2",
+      "label": "ACTOR_law_caucasian_townposse_easy11",
+      "resolved": true,
+      "actor_enum": 434,
+      "actor_enum_hex": "0x000001B2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_townposse_easy12|435  # law 0x000001B3",
+      "label": "ACTOR_law_caucasian_townposse_easy12",
+      "resolved": true,
+      "actor_enum": 435,
+      "actor_enum_hex": "0x000001B3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium01|436  # law 0x000001B4",
+      "label": "ACTOR_law_caucasian_sheriff_medium01",
+      "resolved": true,
+      "actor_enum": 436,
+      "actor_enum_hex": "0x000001B4",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium02|437  # law 0x000001B5",
+      "label": "ACTOR_law_caucasian_sheriff_medium02",
+      "resolved": true,
+      "actor_enum": 437,
+      "actor_enum_hex": "0x000001B5",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium03|438  # law 0x000001B6",
+      "label": "ACTOR_law_caucasian_sheriff_medium03",
+      "resolved": true,
+      "actor_enum": 438,
+      "actor_enum_hex": "0x000001B6",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium03_tux|439  # law 0x000001B7",
+      "label": "ACTOR_law_caucasian_sheriff_medium03_tux",
+      "resolved": true,
+      "actor_enum": 439,
+      "actor_enum_hex": "0x000001B7",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium04|440  # law 0x000001B8",
+      "label": "ACTOR_law_caucasian_sheriff_medium04",
+      "resolved": true,
+      "actor_enum": 440,
+      "actor_enum_hex": "0x000001B8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium05|441  # law 0x000001B9",
+      "label": "ACTOR_law_caucasian_sheriff_medium05",
+      "resolved": true,
+      "actor_enum": 441,
+      "actor_enum_hex": "0x000001B9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium06|442  # law 0x000001BA",
+      "label": "ACTOR_law_caucasian_sheriff_medium06",
+      "resolved": true,
+      "actor_enum": 442,
+      "actor_enum_hex": "0x000001BA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium07|443  # law 0x000001BB",
+      "label": "ACTOR_law_caucasian_sheriff_medium07",
+      "resolved": true,
+      "actor_enum": 443,
+      "actor_enum_hex": "0x000001BB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium08|444  # law 0x000001BC",
+      "label": "ACTOR_law_caucasian_sheriff_medium08",
+      "resolved": true,
+      "actor_enum": 444,
+      "actor_enum_hex": "0x000001BC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium09|445  # law 0x000001BD",
+      "label": "ACTOR_law_caucasian_sheriff_medium09",
+      "resolved": true,
+      "actor_enum": 445,
+      "actor_enum_hex": "0x000001BD",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium10|446  # law 0x000001BE",
+      "label": "ACTOR_law_caucasian_sheriff_medium10",
+      "resolved": true,
+      "actor_enum": 446,
+      "actor_enum_hex": "0x000001BE",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium11|447  # law 0x000001BF",
+      "label": "ACTOR_law_caucasian_sheriff_medium11",
+      "resolved": true,
+      "actor_enum": 447,
+      "actor_enum_hex": "0x000001BF",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_sheriff_medium12|448  # law 0x000001C0",
+      "label": "ACTOR_law_caucasian_sheriff_medium12",
+      "resolved": true,
+      "actor_enum": 448,
+      "actor_enum_hex": "0x000001C0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_usmarshal_hard01|449  # law 0x000001C1",
+      "label": "ACTOR_law_caucasian_usmarshal_hard01",
+      "resolved": true,
+      "actor_enum": 449,
+      "actor_enum_hex": "0x000001C1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_usmarshal_hard02|450  # law 0x000001C2",
+      "label": "ACTOR_law_caucasian_usmarshal_hard02",
+      "resolved": true,
+      "actor_enum": 450,
+      "actor_enum_hex": "0x000001C2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_usmarshal_hard03|451  # law 0x000001C3",
+      "label": "ACTOR_law_caucasian_usmarshal_hard03",
+      "resolved": true,
+      "actor_enum": 451,
+      "actor_enum_hex": "0x000001C3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_usmarshal_hard04|452  # law 0x000001C4",
+      "label": "ACTOR_law_caucasian_usmarshal_hard04",
+      "resolved": true,
+      "actor_enum": 452,
+      "actor_enum_hex": "0x000001C4",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_usmarshal_hard05|453  # law 0x000001C5",
+      "label": "ACTOR_law_caucasian_usmarshal_hard05",
+      "resolved": true,
+      "actor_enum": 453,
+      "actor_enum_hex": "0x000001C5",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_usmarshal_hard06|454  # law 0x000001C6",
+      "label": "ACTOR_law_caucasian_usmarshal_hard06",
+      "resolved": true,
+      "actor_enum": 454,
+      "actor_enum_hex": "0x000001C6",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_puebloposse_easy01|455  # law 0x000001C7",
+      "label": "ACTOR_law_mexican_puebloposse_easy01",
+      "resolved": true,
+      "actor_enum": 455,
+      "actor_enum_hex": "0x000001C7",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_puebloposse_easy02|456  # law 0x000001C8",
+      "label": "ACTOR_law_mexican_puebloposse_easy02",
+      "resolved": true,
+      "actor_enum": 456,
+      "actor_enum_hex": "0x000001C8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_puebloposse_easy03|457  # law 0x000001C9",
+      "label": "ACTOR_law_mexican_puebloposse_easy03",
+      "resolved": true,
+      "actor_enum": 457,
+      "actor_enum_hex": "0x000001C9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_puebloposse_easy04|458  # law 0x000001CA",
+      "label": "ACTOR_law_mexican_puebloposse_easy04",
+      "resolved": true,
+      "actor_enum": 458,
+      "actor_enum_hex": "0x000001CA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_puebloposse_easy05|459  # law 0x000001CB",
+      "label": "ACTOR_law_mexican_puebloposse_easy05",
+      "resolved": true,
+      "actor_enum": 459,
+      "actor_enum_hex": "0x000001CB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_puebloposse_easy06|460  # law 0x000001CC",
+      "label": "ACTOR_law_mexican_puebloposse_easy06",
+      "resolved": true,
+      "actor_enum": 460,
+      "actor_enum_hex": "0x000001CC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_corruptofficial_medium01|461  # law 0x000001CD",
+      "label": "ACTOR_law_mexican_corruptofficial_medium01",
+      "resolved": true,
+      "actor_enum": 461,
+      "actor_enum_hex": "0x000001CD",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_corruptofficial_medium02|462  # law 0x000001CE",
+      "label": "ACTOR_law_mexican_corruptofficial_medium02",
+      "resolved": true,
+      "actor_enum": 462,
+      "actor_enum_hex": "0x000001CE",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_corruptofficial_medium03|463  # law 0x000001CF",
+      "label": "ACTOR_law_mexican_corruptofficial_medium03",
+      "resolved": true,
+      "actor_enum": 463,
+      "actor_enum_hex": "0x000001CF",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_corruptofficial_medium04|464  # law 0x000001D0",
+      "label": "ACTOR_law_mexican_corruptofficial_medium04",
+      "resolved": true,
+      "actor_enum": 464,
+      "actor_enum_hex": "0x000001D0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_corruptofficial_medium05|465  # law 0x000001D1",
+      "label": "ACTOR_law_mexican_corruptofficial_medium05",
+      "resolved": true,
+      "actor_enum": 465,
+      "actor_enum_hex": "0x000001D1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_mexican_corruptofficial_medium06|466  # law 0x000001D2",
+      "label": "ACTOR_law_mexican_corruptofficial_medium06",
+      "resolved": true,
+      "actor_enum": 466,
+      "actor_enum_hex": "0x000001D2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_easy01|467  # gang 0x000001D3",
+      "label": "ACTOR_gang_indianraider_easy01",
+      "resolved": true,
+      "actor_enum": 467,
+      "actor_enum_hex": "0x000001D3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_easy02|468  # gang 0x000001D4",
+      "label": "ACTOR_gang_indianraider_easy02",
+      "resolved": true,
+      "actor_enum": 468,
+      "actor_enum_hex": "0x000001D4",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_easy03|469  # gang 0x000001D5",
+      "label": "ACTOR_gang_indianraider_easy03",
+      "resolved": true,
+      "actor_enum": 469,
+      "actor_enum_hex": "0x000001D5",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_medium01|470  # gang 0x000001D6",
+      "label": "ACTOR_gang_indianraider_medium01",
+      "resolved": true,
+      "actor_enum": 470,
+      "actor_enum_hex": "0x000001D6",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_medium02|471  # gang 0x000001D7",
+      "label": "ACTOR_gang_indianraider_medium02",
+      "resolved": true,
+      "actor_enum": 471,
+      "actor_enum_hex": "0x000001D7",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_medium03|472  # gang 0x000001D8",
+      "label": "ACTOR_gang_indianraider_medium03",
+      "resolved": true,
+      "actor_enum": 472,
+      "actor_enum_hex": "0x000001D8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_medium04|473  # gang 0x000001D9",
+      "label": "ACTOR_gang_indianraider_medium04",
+      "resolved": true,
+      "actor_enum": 473,
+      "actor_enum_hex": "0x000001D9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_hard01|474  # gang 0x000001DA",
+      "label": "ACTOR_gang_indianraider_hard01",
+      "resolved": true,
+      "actor_enum": 474,
+      "actor_enum_hex": "0x000001DA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_hard02|475  # gang 0x000001DB",
+      "label": "ACTOR_gang_indianraider_hard02",
+      "resolved": true,
+      "actor_enum": 475,
+      "actor_enum_hex": "0x000001DB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_hard03|476  # gang 0x000001DC",
+      "label": "ACTOR_gang_indianraider_hard03",
+      "resolved": true,
+      "actor_enum": 476,
+      "actor_enum_hex": "0x000001DC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_cattlerustler_easy01|477  # gang 0x000001DD",
+      "label": "ACTOR_gang_cattlerustler_easy01",
+      "resolved": true,
+      "actor_enum": 477,
+      "actor_enum_hex": "0x000001DD",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_cattlerustler_easy02|478  # gang 0x000001DE",
+      "label": "ACTOR_gang_cattlerustler_easy02",
+      "resolved": true,
+      "actor_enum": 478,
+      "actor_enum_hex": "0x000001DE",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_cattlerustler_easy03|479  # gang 0x000001DF",
+      "label": "ACTOR_gang_cattlerustler_easy03",
+      "resolved": true,
+      "actor_enum": 479,
+      "actor_enum_hex": "0x000001DF",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_cattlerustler_medium01|480  # gang 0x000001E0",
+      "label": "ACTOR_gang_cattlerustler_medium01",
+      "resolved": true,
+      "actor_enum": 480,
+      "actor_enum_hex": "0x000001E0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_cattlerustler_medium02|481  # gang 0x000001E1",
+      "label": "ACTOR_gang_cattlerustler_medium02",
+      "resolved": true,
+      "actor_enum": 481,
+      "actor_enum_hex": "0x000001E1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_cattlerustler_medium03|482  # gang 0x000001E2",
+      "label": "ACTOR_gang_cattlerustler_medium03",
+      "resolved": true,
+      "actor_enum": 482,
+      "actor_enum_hex": "0x000001E2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_cattlerustler_hard01|483  # gang 0x000001E3",
+      "label": "ACTOR_gang_cattlerustler_hard01",
+      "resolved": true,
+      "actor_enum": 483,
+      "actor_enum_hex": "0x000001E3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_cattlerustler_hard02|484  # gang 0x000001E4",
+      "label": "ACTOR_gang_cattlerustler_hard02",
+      "resolved": true,
+      "actor_enum": 484,
+      "actor_enum_hex": "0x000001E4",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_cattlerustler_hard03|485  # gang 0x000001E5",
+      "label": "ACTOR_gang_cattlerustler_hard03",
+      "resolved": true,
+      "actor_enum": 485,
+      "actor_enum_hex": "0x000001E5",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_easy01|486  # gang 0x000001E6",
+      "label": "ACTOR_gang_drunkndirty_easy01",
+      "resolved": true,
+      "actor_enum": 486,
+      "actor_enum_hex": "0x000001E6",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_easy02|487  # gang 0x000001E7",
+      "label": "ACTOR_gang_drunkndirty_easy02",
+      "resolved": true,
+      "actor_enum": 487,
+      "actor_enum_hex": "0x000001E7",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_easy03|488  # gang 0x000001E8",
+      "label": "ACTOR_gang_drunkndirty_easy03",
+      "resolved": true,
+      "actor_enum": 488,
+      "actor_enum_hex": "0x000001E8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_medium01|489  # gang 0x000001E9",
+      "label": "ACTOR_gang_drunkndirty_medium01",
+      "resolved": true,
+      "actor_enum": 489,
+      "actor_enum_hex": "0x000001E9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_medium02|490  # gang 0x000001EA",
+      "label": "ACTOR_gang_drunkndirty_medium02",
+      "resolved": true,
+      "actor_enum": 490,
+      "actor_enum_hex": "0x000001EA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_medium03|491  # gang 0x000001EB",
+      "label": "ACTOR_gang_drunkndirty_medium03",
+      "resolved": true,
+      "actor_enum": 491,
+      "actor_enum_hex": "0x000001EB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_hard01|492  # gang 0x000001EC",
+      "label": "ACTOR_gang_drunkndirty_hard01",
+      "resolved": true,
+      "actor_enum": 492,
+      "actor_enum_hex": "0x000001EC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_hard02|493  # gang 0x000001ED",
+      "label": "ACTOR_gang_drunkndirty_hard02",
+      "resolved": true,
+      "actor_enum": 493,
+      "actor_enum_hex": "0x000001ED",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_hard03|494  # gang 0x000001EE",
+      "label": "ACTOR_gang_drunkndirty_hard03",
+      "resolved": true,
+      "actor_enum": 494,
+      "actor_enum_hex": "0x000001EE",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_drunkndirty_hard03_w|495  # gang 0x000001EF",
+      "label": "ACTOR_gang_drunkndirty_hard03_w",
+      "resolved": true,
+      "actor_enum": 495,
+      "actor_enum_hex": "0x000001EF",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_easy01|496  # gang 0x000001F0",
+      "label": "ACTOR_gang_bandito_easy01",
+      "resolved": true,
+      "actor_enum": 496,
+      "actor_enum_hex": "0x000001F0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_easy02|497  # gang 0x000001F1",
+      "label": "ACTOR_gang_bandito_easy02",
+      "resolved": true,
+      "actor_enum": 497,
+      "actor_enum_hex": "0x000001F1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_easy03|498  # gang 0x000001F2",
+      "label": "ACTOR_gang_bandito_easy03",
+      "resolved": true,
+      "actor_enum": 498,
+      "actor_enum_hex": "0x000001F2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_medium01|499  # gang 0x000001F3",
+      "label": "ACTOR_gang_bandito_medium01",
+      "resolved": true,
+      "actor_enum": 499,
+      "actor_enum_hex": "0x000001F3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_medium02|500  # gang 0x000001F4",
+      "label": "ACTOR_gang_bandito_medium02",
+      "resolved": true,
+      "actor_enum": 500,
+      "actor_enum_hex": "0x000001F4",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_medium03|501  # gang 0x000001F5",
+      "label": "ACTOR_gang_bandito_medium03",
+      "resolved": true,
+      "actor_enum": 501,
+      "actor_enum_hex": "0x000001F5",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_hard01|502  # gang 0x000001F6",
+      "label": "ACTOR_gang_bandito_hard01",
+      "resolved": true,
+      "actor_enum": 502,
+      "actor_enum_hex": "0x000001F6",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_hard02|503  # gang 0x000001F7",
+      "label": "ACTOR_gang_bandito_hard02",
+      "resolved": true,
+      "actor_enum": 503,
+      "actor_enum_hex": "0x000001F7",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_hard03|504  # gang 0x000001F8",
+      "label": "ACTOR_gang_bandito_hard03",
+      "resolved": true,
+      "actor_enum": 504,
+      "actor_enum_hex": "0x000001F8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_easy01|505  # gang 0x000001F9",
+      "label": "ACTOR_gang_crazyminer_easy01",
+      "resolved": true,
+      "actor_enum": 505,
+      "actor_enum_hex": "0x000001F9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_easy02|506  # gang 0x000001FA",
+      "label": "ACTOR_gang_crazyminer_easy02",
+      "resolved": true,
+      "actor_enum": 506,
+      "actor_enum_hex": "0x000001FA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_easy03|507  # gang 0x000001FB",
+      "label": "ACTOR_gang_crazyminer_easy03",
+      "resolved": true,
+      "actor_enum": 507,
+      "actor_enum_hex": "0x000001FB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_medium01|508  # gang 0x000001FC",
+      "label": "ACTOR_gang_crazyminer_medium01",
+      "resolved": true,
+      "actor_enum": 508,
+      "actor_enum_hex": "0x000001FC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_medium02|509  # gang 0x000001FD",
+      "label": "ACTOR_gang_crazyminer_medium02",
+      "resolved": true,
+      "actor_enum": 509,
+      "actor_enum_hex": "0x000001FD",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_medium03|510  # gang 0x000001FE",
+      "label": "ACTOR_gang_crazyminer_medium03",
+      "resolved": true,
+      "actor_enum": 510,
+      "actor_enum_hex": "0x000001FE",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_medium04|511  # gang 0x000001FF",
+      "label": "ACTOR_gang_crazyminer_medium04",
+      "resolved": true,
+      "actor_enum": 511,
+      "actor_enum_hex": "0x000001FF",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_medium05|512  # gang 0x00000200",
+      "label": "ACTOR_gang_crazyminer_medium05",
+      "resolved": true,
+      "actor_enum": 512,
+      "actor_enum_hex": "0x00000200",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_hard01|513  # gang 0x00000201",
+      "label": "ACTOR_gang_crazyminer_hard01",
+      "resolved": true,
+      "actor_enum": 513,
+      "actor_enum_hex": "0x00000201",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_hard02|514  # gang 0x00000202",
+      "label": "ACTOR_gang_crazyminer_hard02",
+      "resolved": true,
+      "actor_enum": 514,
+      "actor_enum_hex": "0x00000202",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_crazyminer_hard03|515  # gang 0x00000203",
+      "label": "ACTOR_gang_crazyminer_hard03",
+      "resolved": true,
+      "actor_enum": 515,
+      "actor_enum_hex": "0x00000203",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_easy01|516  # gang 0x00000204",
+      "label": "ACTOR_gang_mexicanrebel_easy01",
+      "resolved": true,
+      "actor_enum": 516,
+      "actor_enum_hex": "0x00000204",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_easy02|517  # gang 0x00000205",
+      "label": "ACTOR_gang_mexicanrebel_easy02",
+      "resolved": true,
+      "actor_enum": 517,
+      "actor_enum_hex": "0x00000205",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_easy03|518  # gang 0x00000206",
+      "label": "ACTOR_gang_mexicanrebel_easy03",
+      "resolved": true,
+      "actor_enum": 518,
+      "actor_enum_hex": "0x00000206",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_easy04|519  # gang 0x00000207",
+      "label": "ACTOR_gang_mexicanrebel_easy04",
+      "resolved": true,
+      "actor_enum": 519,
+      "actor_enum_hex": "0x00000207",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_easy05|520  # gang 0x00000208",
+      "label": "ACTOR_gang_mexicanrebel_easy05",
+      "resolved": true,
+      "actor_enum": 520,
+      "actor_enum_hex": "0x00000208",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium01|521  # gang 0x00000209",
+      "label": "ACTOR_gang_mexicanrebel_medium01",
+      "resolved": true,
+      "actor_enum": 521,
+      "actor_enum_hex": "0x00000209",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium02|522  # gang 0x0000020A",
+      "label": "ACTOR_gang_mexicanrebel_medium02",
+      "resolved": true,
+      "actor_enum": 522,
+      "actor_enum_hex": "0x0000020A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium03|523  # gang 0x0000020B",
+      "label": "ACTOR_gang_mexicanrebel_medium03",
+      "resolved": true,
+      "actor_enum": 523,
+      "actor_enum_hex": "0x0000020B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium04|524  # gang 0x0000020C",
+      "label": "ACTOR_gang_mexicanrebel_medium04",
+      "resolved": true,
+      "actor_enum": 524,
+      "actor_enum_hex": "0x0000020C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium05|525  # gang 0x0000020D",
+      "label": "ACTOR_gang_mexicanrebel_medium05",
+      "resolved": true,
+      "actor_enum": 525,
+      "actor_enum_hex": "0x0000020D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium06|526  # gang 0x0000020E",
+      "label": "ACTOR_gang_mexicanrebel_medium06",
+      "resolved": true,
+      "actor_enum": 526,
+      "actor_enum_hex": "0x0000020E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium07|527  # gang 0x0000020F",
+      "label": "ACTOR_gang_mexicanrebel_medium07",
+      "resolved": true,
+      "actor_enum": 527,
+      "actor_enum_hex": "0x0000020F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium08|528  # gang 0x00000210",
+      "label": "ACTOR_gang_mexicanrebel_medium08",
+      "resolved": true,
+      "actor_enum": 528,
+      "actor_enum_hex": "0x00000210",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_hard01|529  # gang 0x00000211",
+      "label": "ACTOR_gang_mexicanrebel_hard01",
+      "resolved": true,
+      "actor_enum": 529,
+      "actor_enum_hex": "0x00000211",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_hard02|530  # gang 0x00000212",
+      "label": "ACTOR_gang_mexicanrebel_hard02",
+      "resolved": true,
+      "actor_enum": 530,
+      "actor_enum_hex": "0x00000212",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_hard03|531  # gang 0x00000213",
+      "label": "ACTOR_gang_mexicanrebel_hard03",
+      "resolved": true,
+      "actor_enum": 531,
+      "actor_enum_hex": "0x00000213",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_hard04|532  # gang 0x00000214",
+      "label": "ACTOR_gang_mexicanrebel_hard04",
+      "resolved": true,
+      "actor_enum": 532,
+      "actor_enum_hex": "0x00000214",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_easy01|533  # gang 0x00000215",
+      "label": "ACTOR_gang_luisa_easy01",
+      "resolved": true,
+      "actor_enum": 533,
+      "actor_enum_hex": "0x00000215",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_easy02|534  # gang 0x00000216",
+      "label": "ACTOR_gang_luisa_easy02",
+      "resolved": true,
+      "actor_enum": 534,
+      "actor_enum_hex": "0x00000216",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_easy03|535  # gang 0x00000217",
+      "label": "ACTOR_gang_luisa_easy03",
+      "resolved": true,
+      "actor_enum": 535,
+      "actor_enum_hex": "0x00000217",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_medium01|536  # gang 0x00000218",
+      "label": "ACTOR_gang_luisa_medium01",
+      "resolved": true,
+      "actor_enum": 536,
+      "actor_enum_hex": "0x00000218",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_medium02|537  # gang 0x00000219",
+      "label": "ACTOR_gang_luisa_medium02",
+      "resolved": true,
+      "actor_enum": 537,
+      "actor_enum_hex": "0x00000219",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_medium03|538  # gang 0x0000021A",
+      "label": "ACTOR_gang_luisa_medium03",
+      "resolved": true,
+      "actor_enum": 538,
+      "actor_enum_hex": "0x0000021A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_hard01|539  # gang 0x0000021B",
+      "label": "ACTOR_gang_luisa_hard01",
+      "resolved": true,
+      "actor_enum": 539,
+      "actor_enum_hex": "0x0000021B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_hard02|540  # gang 0x0000021C",
+      "label": "ACTOR_gang_luisa_hard02",
+      "resolved": true,
+      "actor_enum": 540,
+      "actor_enum_hex": "0x0000021C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_graverobber|545  # companion 0x00000221",
+      "label": "ACTOR_companion_graverobber",
+      "resolved": true,
+      "actor_enum": 545,
+      "actor_enum_hex": "0x00000221",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_snakeoilmerchant|546  # companion 0x00000222",
+      "label": "ACTOR_companion_snakeoilmerchant",
+      "resolved": true,
+      "actor_enum": 546,
+      "actor_enum_hex": "0x00000222",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_marshal|547  # law 0x00000223",
+      "label": "ACTOR_companion_marshal",
+      "resolved": true,
+      "actor_enum": 547,
+      "actor_enum_hex": "0x00000223",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_outlaw|548  # gang 0x00000224",
+      "label": "ACTOR_companion_outlaw",
+      "resolved": true,
+      "actor_enum": 548,
+      "actor_enum_hex": "0x00000224",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_outlaw_wet|549  # gang 0x00000225",
+      "label": "ACTOR_companion_outlaw_wet",
+      "resolved": true,
+      "actor_enum": 549,
+      "actor_enum_hex": "0x00000225",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_foreman|550  # companion 0x00000226",
+      "label": "ACTOR_companion_foreman",
+      "resolved": true,
+      "actor_enum": 550,
+      "actor_enum_hex": "0x00000226",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_daughter|551  # companion 0x00000227",
+      "label": "ACTOR_companion_daughter",
+      "resolved": true,
+      "actor_enum": 551,
+      "actor_enum_hex": "0x00000227",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_daughter02|552  # companion 0x00000228",
+      "label": "ACTOR_companion_daughter02",
+      "resolved": true,
+      "actor_enum": 552,
+      "actor_enum_hex": "0x00000228",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_rebel|553  # companion 0x00000229",
+      "label": "ACTOR_companion_rebel",
+      "resolved": true,
+      "actor_enum": 553,
+      "actor_enum_hex": "0x00000229",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_rebel_wounded|554  # companion 0x0000022A",
+      "label": "ACTOR_companion_rebel_wounded",
+      "resolved": true,
+      "actor_enum": 554,
+      "actor_enum_hex": "0x0000022A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_mexicangirl|555  # companion 0x0000022B",
+      "label": "ACTOR_companion_mexicangirl",
+      "resolved": true,
+      "actor_enum": 555,
+      "actor_enum_hex": "0x0000022B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_mexicanhenchman|556  # companion 0x0000022C",
+      "label": "ACTOR_companion_mexicanhenchman",
+      "resolved": true,
+      "actor_enum": 556,
+      "actor_enum_hex": "0x0000022C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_mexicanhenchman_beaten|557  # companion 0x0000022D",
+      "label": "ACTOR_companion_mexicanhenchman_beaten",
+      "resolved": true,
+      "actor_enum": 557,
+      "actor_enum_hex": "0x0000022D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_famousgunslinger|558  # companion 0x0000022E",
+      "label": "ACTOR_companion_famousgunslinger",
+      "resolved": true,
+      "actor_enum": 558,
+      "actor_enum_hex": "0x0000022E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_fbi|559  # companion 0x0000022F",
+      "label": "ACTOR_companion_fbi",
+      "resolved": true,
+      "actor_enum": 559,
+      "actor_enum_hex": "0x0000022F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_fbi_burnt|560  # companion 0x00000230",
+      "label": "ACTOR_companion_fbi_burnt",
+      "resolved": true,
+      "actor_enum": 560,
+      "actor_enum_hex": "0x00000230",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_anthropologist|561  # companion 0x00000231",
+      "label": "ACTOR_companion_anthropologist",
+      "resolved": true,
+      "actor_enum": 561,
+      "actor_enum_hex": "0x00000231",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_nativefriend|562  # companion 0x00000232",
+      "label": "ACTOR_companion_nativefriend",
+      "resolved": true,
+      "actor_enum": 562,
+      "actor_enum_hex": "0x00000232",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_nativefriend_02|563  # companion 0x00000233",
+      "label": "ACTOR_companion_nativefriend_02",
+      "resolved": true,
+      "actor_enum": 563,
+      "actor_enum_hex": "0x00000233",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_graverobber_cs|564  # companion 0x00000234",
+      "label": "ACTOR_companion_graverobber_cs",
+      "resolved": true,
+      "actor_enum": 564,
+      "actor_enum_hex": "0x00000234",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_snakeoilmerchant_cs|565  # companion 0x00000235",
+      "label": "ACTOR_companion_snakeoilmerchant_cs",
+      "resolved": true,
+      "actor_enum": 565,
+      "actor_enum_hex": "0x00000235",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_marshal_cs|566  # law 0x00000236",
+      "label": "ACTOR_companion_marshal_cs",
+      "resolved": true,
+      "actor_enum": 566,
+      "actor_enum_hex": "0x00000236",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_outlaw_cs|567  # gang 0x00000237",
+      "label": "ACTOR_companion_outlaw_cs",
+      "resolved": true,
+      "actor_enum": 567,
+      "actor_enum_hex": "0x00000237",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_outlaw_wet_cs|568  # gang 0x00000238",
+      "label": "ACTOR_companion_outlaw_wet_cs",
+      "resolved": true,
+      "actor_enum": 568,
+      "actor_enum_hex": "0x00000238",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_foreman_cs|569  # companion 0x00000239",
+      "label": "ACTOR_companion_foreman_cs",
+      "resolved": true,
+      "actor_enum": 569,
+      "actor_enum_hex": "0x00000239",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_daughter_cs|570  # companion 0x0000023A",
+      "label": "ACTOR_companion_daughter_cs",
+      "resolved": true,
+      "actor_enum": 570,
+      "actor_enum_hex": "0x0000023A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_rebel_cs|571  # companion 0x0000023B",
+      "label": "ACTOR_companion_rebel_cs",
+      "resolved": true,
+      "actor_enum": 571,
+      "actor_enum_hex": "0x0000023B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_rebel_wounded_cs|572  # companion 0x0000023C",
+      "label": "ACTOR_companion_rebel_wounded_cs",
+      "resolved": true,
+      "actor_enum": 572,
+      "actor_enum_hex": "0x0000023C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_mexicangirl_cs|573  # companion 0x0000023D",
+      "label": "ACTOR_companion_mexicangirl_cs",
+      "resolved": true,
+      "actor_enum": 573,
+      "actor_enum_hex": "0x0000023D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_mexicanhenchman_cs|574  # companion 0x0000023E",
+      "label": "ACTOR_companion_mexicanhenchman_cs",
+      "resolved": true,
+      "actor_enum": 574,
+      "actor_enum_hex": "0x0000023E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_famousgunslinger_cs|575  # companion 0x0000023F",
+      "label": "ACTOR_companion_famousgunslinger_cs",
+      "resolved": true,
+      "actor_enum": 575,
+      "actor_enum_hex": "0x0000023F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_fbi_cs|576  # companion 0x00000240",
+      "label": "ACTOR_companion_fbi_cs",
+      "resolved": true,
+      "actor_enum": 576,
+      "actor_enum_hex": "0x00000240",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_fbi_burnt_cs|577  # companion 0x00000241",
+      "label": "ACTOR_companion_fbi_burnt_cs",
+      "resolved": true,
+      "actor_enum": 577,
+      "actor_enum_hex": "0x00000241",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_anthropologist_cs|578  # companion 0x00000242",
+      "label": "ACTOR_companion_anthropologist_cs",
+      "resolved": true,
+      "actor_enum": 578,
+      "actor_enum_hex": "0x00000242",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_companion_nativefriend_cs|579  # companion 0x00000243",
+      "label": "ACTOR_companion_nativefriend_cs",
+      "resolved": true,
+      "actor_enum": 579,
+      "actor_enum_hex": "0x00000243",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_deputy_marshal01|588  # law 0x0000024C",
+      "label": "ACTOR_misc_deputy_marshal01",
+      "resolved": true,
+      "actor_enum": 588,
+      "actor_enum_hex": "0x0000024C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_deputy_marshal01_cs|589  # law 0x0000024D",
+      "label": "ACTOR_misc_deputy_marshal01_cs",
+      "resolved": true,
+      "actor_enum": 589,
+      "actor_enum_hex": "0x0000024D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_deputy_marshal02|590  # law 0x0000024E",
+      "label": "ACTOR_misc_deputy_marshal02",
+      "resolved": true,
+      "actor_enum": 590,
+      "actor_enum_hex": "0x0000024E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_deputy_marshal02_cs|591  # law 0x0000024F",
+      "label": "ACTOR_misc_deputy_marshal02_cs",
+      "resolved": true,
+      "actor_enum": 591,
+      "actor_enum_hex": "0x0000024F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_deputy_marshal03|592  # law 0x00000250",
+      "label": "ACTOR_misc_deputy_marshal03",
+      "resolved": true,
+      "actor_enum": 592,
+      "actor_enum_hex": "0x00000250",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_deputy_marshal03_cs|593  # law 0x00000251",
+      "label": "ACTOR_misc_deputy_marshal03_cs",
+      "resolved": true,
+      "actor_enum": 593,
+      "actor_enum_hex": "0x00000251",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_outlaw_01|659  # gang 0x00000293",
+      "label": "ACTOR_misc_outlaw_01",
+      "resolved": true,
+      "actor_enum": 659,
+      "actor_enum_hex": "0x00000293",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_mexarmycpt|660  # army 0x00000294",
+      "label": "ACTOR_misc_mexarmycpt",
+      "resolved": true,
+      "actor_enum": 660,
+      "actor_enum_hex": "0x00000294",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_mexarmycpt_cs|661  # army 0x00000295",
+      "label": "ACTOR_misc_mexarmycpt_cs",
+      "resolved": true,
+      "actor_enum": 661,
+      "actor_enum_hex": "0x00000295",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_mullergang01|664  # gang 0x00000298",
+      "label": "ACTOR_misc_mullergang01",
+      "resolved": true,
+      "actor_enum": 664,
+      "actor_enum_hex": "0x00000298",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_mullergang01_cs|665  # gang 0x00000299",
+      "label": "ACTOR_misc_mullergang01_cs",
+      "resolved": true,
+      "actor_enum": 665,
+      "actor_enum_hex": "0x00000299",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_billsgang01|668  # gang 0x0000029C",
+      "label": "ACTOR_misc_billsgang01",
+      "resolved": true,
+      "actor_enum": 668,
+      "actor_enum_hex": "0x0000029C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_billsgang01_cs|669  # gang 0x0000029D",
+      "label": "ACTOR_misc_billsgang01_cs",
+      "resolved": true,
+      "actor_enum": 669,
+      "actor_enum_hex": "0x0000029D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_billsgang02|670  # gang 0x0000029E",
+      "label": "ACTOR_misc_billsgang02",
+      "resolved": true,
+      "actor_enum": 670,
+      "actor_enum_hex": "0x0000029E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_billsgang02_cs|671  # gang 0x0000029F",
+      "label": "ACTOR_misc_billsgang02_cs",
+      "resolved": true,
+      "actor_enum": 671,
+      "actor_enum_hex": "0x0000029F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_billsgang03|672  # gang 0x000002A0",
+      "label": "ACTOR_misc_billsgang03",
+      "resolved": true,
+      "actor_enum": 672,
+      "actor_enum_hex": "0x000002A0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_billsgang04|673  # gang 0x000002A1",
+      "label": "ACTOR_misc_billsgang04",
+      "resolved": true,
+      "actor_enum": 673,
+      "actor_enum_hex": "0x000002A1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_billsgang04_cs|674  # gang 0x000002A2",
+      "label": "ACTOR_misc_billsgang04_cs",
+      "resolved": true,
+      "actor_enum": 674,
+      "actor_enum_hex": "0x000002A2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_billsgang05|675  # gang 0x000002A3",
+      "label": "ACTOR_misc_billsgang05",
+      "resolved": true,
+      "actor_enum": 675,
+      "actor_enum_hex": "0x000002A3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_police01|779  # law 0x0000030B",
+      "label": "ACTOR_misc_police01",
+      "resolved": true,
+      "actor_enum": 779,
+      "actor_enum_hex": "0x0000030B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_misc_police01_cs|780  # law 0x0000030C",
+      "label": "ACTOR_misc_police01_cs",
+      "resolved": true,
+      "actor_enum": 780,
+      "actor_enum_hex": "0x0000030C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_hard02_cs|796  # army 0x0000031C",
+      "label": "ACTOR_caucasian_army_hard02_cs",
+      "resolved": true,
+      "actor_enum": 796,
+      "actor_enum_hex": "0x0000031C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_caucasian_army_hard02_burnt_cs|797  # army 0x0000031D",
+      "label": "ACTOR_caucasian_army_hard02_burnt_cs",
+      "resolved": true,
+      "actor_enum": 797,
+      "actor_enum_hex": "0x0000031D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy01_cs|798  # army 0x0000031E",
+      "label": "ACTOR_mexican_army_easy01_cs",
+      "resolved": true,
+      "actor_enum": 798,
+      "actor_enum_hex": "0x0000031E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy02_cs|799  # army 0x0000031F",
+      "label": "ACTOR_mexican_army_easy02_cs",
+      "resolved": true,
+      "actor_enum": 799,
+      "actor_enum_hex": "0x0000031F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy03_cs|800  # army 0x00000320",
+      "label": "ACTOR_mexican_army_easy03_cs",
+      "resolved": true,
+      "actor_enum": 800,
+      "actor_enum_hex": "0x00000320",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy04_cs|801  # army 0x00000321",
+      "label": "ACTOR_mexican_army_easy04_cs",
+      "resolved": true,
+      "actor_enum": 801,
+      "actor_enum_hex": "0x00000321",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy05_cs|802  # army 0x00000322",
+      "label": "ACTOR_mexican_army_easy05_cs",
+      "resolved": true,
+      "actor_enum": 802,
+      "actor_enum_hex": "0x00000322",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy06_cs|803  # army 0x00000323",
+      "label": "ACTOR_mexican_army_easy06_cs",
+      "resolved": true,
+      "actor_enum": 803,
+      "actor_enum_hex": "0x00000323",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy07_cs|804  # army 0x00000324",
+      "label": "ACTOR_mexican_army_easy07_cs",
+      "resolved": true,
+      "actor_enum": 804,
+      "actor_enum_hex": "0x00000324",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy08_cs|805  # army 0x00000325",
+      "label": "ACTOR_mexican_army_easy08_cs",
+      "resolved": true,
+      "actor_enum": 805,
+      "actor_enum_hex": "0x00000325",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy09_cs|806  # army 0x00000326",
+      "label": "ACTOR_mexican_army_easy09_cs",
+      "resolved": true,
+      "actor_enum": 806,
+      "actor_enum_hex": "0x00000326",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy10_cs|807  # army 0x00000327",
+      "label": "ACTOR_mexican_army_easy10_cs",
+      "resolved": true,
+      "actor_enum": 807,
+      "actor_enum_hex": "0x00000327",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_easy11_cs|808  # army 0x00000328",
+      "label": "ACTOR_mexican_army_easy11_cs",
+      "resolved": true,
+      "actor_enum": 808,
+      "actor_enum_hex": "0x00000328",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_medium01_cs|809  # army 0x00000329",
+      "label": "ACTOR_mexican_army_medium01_cs",
+      "resolved": true,
+      "actor_enum": 809,
+      "actor_enum_hex": "0x00000329",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_medium02_cs|810  # army 0x0000032A",
+      "label": "ACTOR_mexican_army_medium02_cs",
+      "resolved": true,
+      "actor_enum": 810,
+      "actor_enum_hex": "0x0000032A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_medium03_cs|811  # army 0x0000032B",
+      "label": "ACTOR_mexican_army_medium03_cs",
+      "resolved": true,
+      "actor_enum": 811,
+      "actor_enum_hex": "0x0000032B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_hard01_cs|812  # army 0x0000032C",
+      "label": "ACTOR_mexican_army_hard01_cs",
+      "resolved": true,
+      "actor_enum": 812,
+      "actor_enum_hex": "0x0000032C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_army_hard03_cs|813  # army 0x0000032D",
+      "label": "ACTOR_mexican_army_hard03_cs",
+      "resolved": true,
+      "actor_enum": 813,
+      "actor_enum_hex": "0x0000032D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_easy01_cs|814  # gang 0x0000032E",
+      "label": "ACTOR_mexican_genericcriminal_easy01_cs",
+      "resolved": true,
+      "actor_enum": 814,
+      "actor_enum_hex": "0x0000032E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_easy03_cs|815  # gang 0x0000032F",
+      "label": "ACTOR_mexican_genericcriminal_easy03_cs",
+      "resolved": true,
+      "actor_enum": 815,
+      "actor_enum_hex": "0x0000032F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_medium01_cs|816  # gang 0x00000330",
+      "label": "ACTOR_mexican_genericcriminal_medium01_cs",
+      "resolved": true,
+      "actor_enum": 816,
+      "actor_enum_hex": "0x00000330",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_medium02_cs|817  # gang 0x00000331",
+      "label": "ACTOR_mexican_genericcriminal_medium02_cs",
+      "resolved": true,
+      "actor_enum": 817,
+      "actor_enum_hex": "0x00000331",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mexican_genericcriminal_hard01_cs|818  # gang 0x00000332",
+      "label": "ACTOR_mexican_genericcriminal_hard01_cs",
+      "resolved": true,
+      "actor_enum": 818,
+      "actor_enum_hex": "0x00000332",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_law_caucasian_usmarshal_hard06_cs|819  # law 0x00000333",
+      "label": "ACTOR_law_caucasian_usmarshal_hard06_cs",
+      "resolved": true,
+      "actor_enum": 819,
+      "actor_enum_hex": "0x00000333",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_hard02_cs|820  # gang 0x00000334",
+      "label": "ACTOR_gang_indianraider_hard02_cs",
+      "resolved": true,
+      "actor_enum": 820,
+      "actor_enum_hex": "0x00000334",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_indianraider_hard03_cs|821  # gang 0x00000335",
+      "label": "ACTOR_gang_indianraider_hard03_cs",
+      "resolved": true,
+      "actor_enum": 821,
+      "actor_enum_hex": "0x00000335",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_bandito_easy02_cs|822  # gang 0x00000336",
+      "label": "ACTOR_gang_bandito_easy02_cs",
+      "resolved": true,
+      "actor_enum": 822,
+      "actor_enum_hex": "0x00000336",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_easy02_cs|823  # gang 0x00000337",
+      "label": "ACTOR_gang_mexicanrebel_easy02_cs",
+      "resolved": true,
+      "actor_enum": 823,
+      "actor_enum_hex": "0x00000337",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_easy03_cs|824  # gang 0x00000338",
+      "label": "ACTOR_gang_mexicanrebel_easy03_cs",
+      "resolved": true,
+      "actor_enum": 824,
+      "actor_enum_hex": "0x00000338",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium01_cs|825  # gang 0x00000339",
+      "label": "ACTOR_gang_mexicanrebel_medium01_cs",
+      "resolved": true,
+      "actor_enum": 825,
+      "actor_enum_hex": "0x00000339",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium02_cs|826  # gang 0x0000033A",
+      "label": "ACTOR_gang_mexicanrebel_medium02_cs",
+      "resolved": true,
+      "actor_enum": 826,
+      "actor_enum_hex": "0x0000033A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_medium03_cs|827  # gang 0x0000033B",
+      "label": "ACTOR_gang_mexicanrebel_medium03_cs",
+      "resolved": true,
+      "actor_enum": 827,
+      "actor_enum_hex": "0x0000033B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_hard01_cs|828  # gang 0x0000033C",
+      "label": "ACTOR_gang_mexicanrebel_hard01_cs",
+      "resolved": true,
+      "actor_enum": 828,
+      "actor_enum_hex": "0x0000033C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_mexicanrebel_hard03_cs|829  # gang 0x0000033D",
+      "label": "ACTOR_gang_mexicanrebel_hard03_cs",
+      "resolved": true,
+      "actor_enum": 829,
+      "actor_enum_hex": "0x0000033D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_easy01_cs|830  # gang 0x0000033E",
+      "label": "ACTOR_gang_luisa_easy01_cs",
+      "resolved": true,
+      "actor_enum": 830,
+      "actor_enum_hex": "0x0000033E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_easy02_cs|831  # gang 0x0000033F",
+      "label": "ACTOR_gang_luisa_easy02_cs",
+      "resolved": true,
+      "actor_enum": 831,
+      "actor_enum_hex": "0x0000033F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_easy03_cs|832  # gang 0x00000340",
+      "label": "ACTOR_gang_luisa_easy03_cs",
+      "resolved": true,
+      "actor_enum": 832,
+      "actor_enum_hex": "0x00000340",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_medium02_cs|833  # gang 0x00000341",
+      "label": "ACTOR_gang_luisa_medium02_cs",
+      "resolved": true,
+      "actor_enum": 833,
+      "actor_enum_hex": "0x00000341",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_gang_luisa_medium03_cs|834  # gang 0x00000342",
+      "label": "ACTOR_gang_luisa_medium03_cs",
+      "resolved": true,
+      "actor_enum": 834,
+      "actor_enum_hex": "0x00000342",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer01|837  # player_like 0x00000345",
+      "label": "ACTOR_mpplayer01",
+      "resolved": true,
+      "actor_enum": 837,
+      "actor_enum_hex": "0x00000345",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer02|838  # player_like 0x00000346",
+      "label": "ACTOR_mpplayer02",
+      "resolved": true,
+      "actor_enum": 838,
+      "actor_enum_hex": "0x00000346",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer03|839  # player_like 0x00000347",
+      "label": "ACTOR_mpplayer03",
+      "resolved": true,
+      "actor_enum": 839,
+      "actor_enum_hex": "0x00000347",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer04|840  # player_like 0x00000348",
+      "label": "ACTOR_mpplayer04",
+      "resolved": true,
+      "actor_enum": 840,
+      "actor_enum_hex": "0x00000348",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer05|841  # player_like 0x00000349",
+      "label": "ACTOR_mpplayer05",
+      "resolved": true,
+      "actor_enum": 841,
+      "actor_enum_hex": "0x00000349",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer06|842  # player_like 0x0000034A",
+      "label": "ACTOR_mpplayer06",
+      "resolved": true,
+      "actor_enum": 842,
+      "actor_enum_hex": "0x0000034A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer07|843  # player_like 0x0000034B",
+      "label": "ACTOR_mpplayer07",
+      "resolved": true,
+      "actor_enum": 843,
+      "actor_enum_hex": "0x0000034B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer08|844  # player_like 0x0000034C",
+      "label": "ACTOR_mpplayer08",
+      "resolved": true,
+      "actor_enum": 844,
+      "actor_enum_hex": "0x0000034C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer15|845  # player_like 0x0000034D",
+      "label": "ACTOR_mpplayer15",
+      "resolved": true,
+      "actor_enum": 845,
+      "actor_enum_hex": "0x0000034D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer16|846  # player_like 0x0000034E",
+      "label": "ACTOR_mpplayer16",
+      "resolved": true,
+      "actor_enum": 846,
+      "actor_enum_hex": "0x0000034E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer09|847  # player_like 0x0000034F",
+      "label": "ACTOR_mpplayer09",
+      "resolved": true,
+      "actor_enum": 847,
+      "actor_enum_hex": "0x0000034F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer13|848  # player_like 0x00000350",
+      "label": "ACTOR_mpplayer13",
+      "resolved": true,
+      "actor_enum": 848,
+      "actor_enum_hex": "0x00000350",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer11|849  # player_like 0x00000351",
+      "label": "ACTOR_mpplayer11",
+      "resolved": true,
+      "actor_enum": 849,
+      "actor_enum_hex": "0x00000351",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer12|850  # player_like 0x00000352",
+      "label": "ACTOR_mpplayer12",
+      "resolved": true,
+      "actor_enum": 850,
+      "actor_enum_hex": "0x00000352",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer10|851  # player_like 0x00000353",
+      "label": "ACTOR_mpplayer10",
+      "resolved": true,
+      "actor_enum": 851,
+      "actor_enum_hex": "0x00000353",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer14|852  # player_like 0x00000354",
+      "label": "ACTOR_mpplayer14",
+      "resolved": true,
+      "actor_enum": 852,
+      "actor_enum_hex": "0x00000354",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer19|853  # player_like 0x00000355",
+      "label": "ACTOR_mpplayer19",
+      "resolved": true,
+      "actor_enum": 853,
+      "actor_enum_hex": "0x00000355",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer23|854  # player_like 0x00000356",
+      "label": "ACTOR_mpplayer23",
+      "resolved": true,
+      "actor_enum": 854,
+      "actor_enum_hex": "0x00000356",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer20|855  # player_like 0x00000357",
+      "label": "ACTOR_mpplayer20",
+      "resolved": true,
+      "actor_enum": 855,
+      "actor_enum_hex": "0x00000357",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer21|856  # player_like 0x00000358",
+      "label": "ACTOR_mpplayer21",
+      "resolved": true,
+      "actor_enum": 856,
+      "actor_enum_hex": "0x00000358",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer18|857  # player_like 0x00000359",
+      "label": "ACTOR_mpplayer18",
+      "resolved": true,
+      "actor_enum": 857,
+      "actor_enum_hex": "0x00000359",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer22|858  # player_like 0x0000035A",
+      "label": "ACTOR_mpplayer22",
+      "resolved": true,
+      "actor_enum": 858,
+      "actor_enum_hex": "0x0000035A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer17|859  # player_like 0x0000035B",
+      "label": "ACTOR_mpplayer17",
+      "resolved": true,
+      "actor_enum": 859,
+      "actor_enum_hex": "0x0000035B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer24|860  # player_like 0x0000035C",
+      "label": "ACTOR_mpplayer24",
+      "resolved": true,
+      "actor_enum": 860,
+      "actor_enum_hex": "0x0000035C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer25|861  # player_like 0x0000035D",
+      "label": "ACTOR_mpplayer25",
+      "resolved": true,
+      "actor_enum": 861,
+      "actor_enum_hex": "0x0000035D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer27|862  # player_like 0x0000035E",
+      "label": "ACTOR_mpplayer27",
+      "resolved": true,
+      "actor_enum": 862,
+      "actor_enum_hex": "0x0000035E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer30|863  # player_like 0x0000035F",
+      "label": "ACTOR_mpplayer30",
+      "resolved": true,
+      "actor_enum": 863,
+      "actor_enum_hex": "0x0000035F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer26|864  # player_like 0x00000360",
+      "label": "ACTOR_mpplayer26",
+      "resolved": true,
+      "actor_enum": 864,
+      "actor_enum_hex": "0x00000360",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer31|865  # player_like 0x00000361",
+      "label": "ACTOR_mpplayer31",
+      "resolved": true,
+      "actor_enum": 865,
+      "actor_enum_hex": "0x00000361",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer32|866  # player_like 0x00000362",
+      "label": "ACTOR_mpplayer32",
+      "resolved": true,
+      "actor_enum": 866,
+      "actor_enum_hex": "0x00000362",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer29|867  # player_like 0x00000363",
+      "label": "ACTOR_mpplayer29",
+      "resolved": true,
+      "actor_enum": 867,
+      "actor_enum_hex": "0x00000363",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer28|868  # player_like 0x00000364",
+      "label": "ACTOR_mpplayer28",
+      "resolved": true,
+      "actor_enum": 868,
+      "actor_enum_hex": "0x00000364",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer40|869  # player_like 0x00000365",
+      "label": "ACTOR_mpplayer40",
+      "resolved": true,
+      "actor_enum": 869,
+      "actor_enum_hex": "0x00000365",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer39|870  # player_like 0x00000366",
+      "label": "ACTOR_mpplayer39",
+      "resolved": true,
+      "actor_enum": 870,
+      "actor_enum_hex": "0x00000366",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer33|871  # player_like 0x00000367",
+      "label": "ACTOR_mpplayer33",
+      "resolved": true,
+      "actor_enum": 871,
+      "actor_enum_hex": "0x00000367",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer35|872  # player_like 0x00000368",
+      "label": "ACTOR_mpplayer35",
+      "resolved": true,
+      "actor_enum": 872,
+      "actor_enum_hex": "0x00000368",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer36|873  # player_like 0x00000369",
+      "label": "ACTOR_mpplayer36",
+      "resolved": true,
+      "actor_enum": 873,
+      "actor_enum_hex": "0x00000369",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer37|874  # player_like 0x0000036A",
+      "label": "ACTOR_mpplayer37",
+      "resolved": true,
+      "actor_enum": 874,
+      "actor_enum_hex": "0x0000036A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer38|875  # player_like 0x0000036B",
+      "label": "ACTOR_mpplayer38",
+      "resolved": true,
+      "actor_enum": 875,
+      "actor_enum_hex": "0x0000036B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer34|876  # player_like 0x0000036C",
+      "label": "ACTOR_mpplayer34",
+      "resolved": true,
+      "actor_enum": 876,
+      "actor_enum_hex": "0x0000036C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer44|877  # player_like 0x0000036D",
+      "label": "ACTOR_mpplayer44",
+      "resolved": true,
+      "actor_enum": 877,
+      "actor_enum_hex": "0x0000036D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer43|878  # player_like 0x0000036E",
+      "label": "ACTOR_mpplayer43",
+      "resolved": true,
+      "actor_enum": 878,
+      "actor_enum_hex": "0x0000036E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer45|879  # player_like 0x0000036F",
+      "label": "ACTOR_mpplayer45",
+      "resolved": true,
+      "actor_enum": 879,
+      "actor_enum_hex": "0x0000036F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer48|880  # player_like 0x00000370",
+      "label": "ACTOR_mpplayer48",
+      "resolved": true,
+      "actor_enum": 880,
+      "actor_enum_hex": "0x00000370",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer41|881  # player_like 0x00000371",
+      "label": "ACTOR_mpplayer41",
+      "resolved": true,
+      "actor_enum": 881,
+      "actor_enum_hex": "0x00000371",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer42|882  # player_like 0x00000372",
+      "label": "ACTOR_mpplayer42",
+      "resolved": true,
+      "actor_enum": 882,
+      "actor_enum_hex": "0x00000372",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer46|883  # player_like 0x00000373",
+      "label": "ACTOR_mpplayer46",
+      "resolved": true,
+      "actor_enum": 883,
+      "actor_enum_hex": "0x00000373",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer47|884  # player_like 0x00000374",
+      "label": "ACTOR_mpplayer47",
+      "resolved": true,
+      "actor_enum": 884,
+      "actor_enum_hex": "0x00000374",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer49|885  # player_like 0x00000375",
+      "label": "ACTOR_mpplayer49",
+      "resolved": true,
+      "actor_enum": 885,
+      "actor_enum_hex": "0x00000375",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer50|886  # player_like 0x00000376",
+      "label": "ACTOR_mpplayer50",
+      "resolved": true,
+      "actor_enum": 886,
+      "actor_enum_hex": "0x00000376",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer55|887  # player_like 0x00000377",
+      "label": "ACTOR_mpplayer55",
+      "resolved": true,
+      "actor_enum": 887,
+      "actor_enum_hex": "0x00000377",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer56|888  # player_like 0x00000378",
+      "label": "ACTOR_mpplayer56",
+      "resolved": true,
+      "actor_enum": 888,
+      "actor_enum_hex": "0x00000378",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer51|889  # player_like 0x00000379",
+      "label": "ACTOR_mpplayer51",
+      "resolved": true,
+      "actor_enum": 889,
+      "actor_enum_hex": "0x00000379",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer52|890  # player_like 0x0000037A",
+      "label": "ACTOR_mpplayer52",
+      "resolved": true,
+      "actor_enum": 890,
+      "actor_enum_hex": "0x0000037A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer54|891  # player_like 0x0000037B",
+      "label": "ACTOR_mpplayer54",
+      "resolved": true,
+      "actor_enum": 891,
+      "actor_enum_hex": "0x0000037B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer53|892  # player_like 0x0000037C",
+      "label": "ACTOR_mpplayer53",
+      "resolved": true,
+      "actor_enum": 892,
+      "actor_enum_hex": "0x0000037C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer57|893  # player_like 0x0000037D",
+      "label": "ACTOR_mpplayer57",
+      "resolved": true,
+      "actor_enum": 893,
+      "actor_enum_hex": "0x0000037D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer58|894  # player_like 0x0000037E",
+      "label": "ACTOR_mpplayer58",
+      "resolved": true,
+      "actor_enum": 894,
+      "actor_enum_hex": "0x0000037E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer59|895  # player_like 0x0000037F",
+      "label": "ACTOR_mpplayer59",
+      "resolved": true,
+      "actor_enum": 895,
+      "actor_enum_hex": "0x0000037F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer62|896  # player_like 0x00000380",
+      "label": "ACTOR_mpplayer62",
+      "resolved": true,
+      "actor_enum": 896,
+      "actor_enum_hex": "0x00000380",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer64|897  # player_like 0x00000381",
+      "label": "ACTOR_mpplayer64",
+      "resolved": true,
+      "actor_enum": 897,
+      "actor_enum_hex": "0x00000381",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer61|898  # player_like 0x00000382",
+      "label": "ACTOR_mpplayer61",
+      "resolved": true,
+      "actor_enum": 898,
+      "actor_enum_hex": "0x00000382",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer63|899  # player_like 0x00000383",
+      "label": "ACTOR_mpplayer63",
+      "resolved": true,
+      "actor_enum": 899,
+      "actor_enum_hex": "0x00000383",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer60|900  # player_like 0x00000384",
+      "label": "ACTOR_mpplayer60",
+      "resolved": true,
+      "actor_enum": 900,
+      "actor_enum_hex": "0x00000384",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer66|901  # player_like 0x00000385",
+      "label": "ACTOR_mpplayer66",
+      "resolved": true,
+      "actor_enum": 901,
+      "actor_enum_hex": "0x00000385",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer67|902  # player_like 0x00000386",
+      "label": "ACTOR_mpplayer67",
+      "resolved": true,
+      "actor_enum": 902,
+      "actor_enum_hex": "0x00000386",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer65|903  # player_like 0x00000387",
+      "label": "ACTOR_mpplayer65",
+      "resolved": true,
+      "actor_enum": 903,
+      "actor_enum_hex": "0x00000387",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer71|904  # player_like 0x00000388",
+      "label": "ACTOR_mpplayer71",
+      "resolved": true,
+      "actor_enum": 904,
+      "actor_enum_hex": "0x00000388",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer72|905  # player_like 0x00000389",
+      "label": "ACTOR_mpplayer72",
+      "resolved": true,
+      "actor_enum": 905,
+      "actor_enum_hex": "0x00000389",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer68|906  # player_like 0x0000038A",
+      "label": "ACTOR_mpplayer68",
+      "resolved": true,
+      "actor_enum": 906,
+      "actor_enum_hex": "0x0000038A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer70|907  # player_like 0x0000038B",
+      "label": "ACTOR_mpplayer70",
+      "resolved": true,
+      "actor_enum": 907,
+      "actor_enum_hex": "0x0000038B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer69|908  # player_like 0x0000038C",
+      "label": "ACTOR_mpplayer69",
+      "resolved": true,
+      "actor_enum": 908,
+      "actor_enum_hex": "0x0000038C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer79|909  # player_like 0x0000038D",
+      "label": "ACTOR_mpplayer79",
+      "resolved": true,
+      "actor_enum": 909,
+      "actor_enum_hex": "0x0000038D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer81|910  # player_like 0x0000038E",
+      "label": "ACTOR_mpplayer81",
+      "resolved": true,
+      "actor_enum": 910,
+      "actor_enum_hex": "0x0000038E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer80|911  # player_like 0x0000038F",
+      "label": "ACTOR_mpplayer80",
+      "resolved": true,
+      "actor_enum": 911,
+      "actor_enum_hex": "0x0000038F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer74|912  # player_like 0x00000390",
+      "label": "ACTOR_mpplayer74",
+      "resolved": true,
+      "actor_enum": 912,
+      "actor_enum_hex": "0x00000390",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer77|913  # player_like 0x00000391",
+      "label": "ACTOR_mpplayer77",
+      "resolved": true,
+      "actor_enum": 913,
+      "actor_enum_hex": "0x00000391",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer76|914  # player_like 0x00000392",
+      "label": "ACTOR_mpplayer76",
+      "resolved": true,
+      "actor_enum": 914,
+      "actor_enum_hex": "0x00000392",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer73|915  # player_like 0x00000393",
+      "label": "ACTOR_mpplayer73",
+      "resolved": true,
+      "actor_enum": 915,
+      "actor_enum_hex": "0x00000393",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer75|916  # player_like 0x00000394",
+      "label": "ACTOR_mpplayer75",
+      "resolved": true,
+      "actor_enum": 916,
+      "actor_enum_hex": "0x00000394",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer93|917  # player_like 0x00000395",
+      "label": "ACTOR_mpplayer93",
+      "resolved": true,
+      "actor_enum": 917,
+      "actor_enum_hex": "0x00000395",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer92|918  # player_like 0x00000396",
+      "label": "ACTOR_mpplayer92",
+      "resolved": true,
+      "actor_enum": 918,
+      "actor_enum_hex": "0x00000396",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer103|919  # player_like 0x00000397",
+      "label": "ACTOR_mpplayer103",
+      "resolved": true,
+      "actor_enum": 919,
+      "actor_enum_hex": "0x00000397",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer95|920  # player_like 0x00000398",
+      "label": "ACTOR_mpplayer95",
+      "resolved": true,
+      "actor_enum": 920,
+      "actor_enum_hex": "0x00000398",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer104|921  # player_like 0x00000399",
+      "label": "ACTOR_mpplayer104",
+      "resolved": true,
+      "actor_enum": 921,
+      "actor_enum_hex": "0x00000399",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer82|922  # player_like 0x0000039A",
+      "label": "ACTOR_mpplayer82",
+      "resolved": true,
+      "actor_enum": 922,
+      "actor_enum_hex": "0x0000039A",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer83|923  # player_like 0x0000039B",
+      "label": "ACTOR_mpplayer83",
+      "resolved": true,
+      "actor_enum": 923,
+      "actor_enum_hex": "0x0000039B",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer91|924  # player_like 0x0000039C",
+      "label": "ACTOR_mpplayer91",
+      "resolved": true,
+      "actor_enum": 924,
+      "actor_enum_hex": "0x0000039C",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer97|925  # player_like 0x0000039D",
+      "label": "ACTOR_mpplayer97",
+      "resolved": true,
+      "actor_enum": 925,
+      "actor_enum_hex": "0x0000039D",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer99|926  # player_like 0x0000039E",
+      "label": "ACTOR_mpplayer99",
+      "resolved": true,
+      "actor_enum": 926,
+      "actor_enum_hex": "0x0000039E",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer90|927  # player_like 0x0000039F",
+      "label": "ACTOR_mpplayer90",
+      "resolved": true,
+      "actor_enum": 927,
+      "actor_enum_hex": "0x0000039F",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer86|928  # player_like 0x000003A0",
+      "label": "ACTOR_mpplayer86",
+      "resolved": true,
+      "actor_enum": 928,
+      "actor_enum_hex": "0x000003A0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer87|929  # player_like 0x000003A1",
+      "label": "ACTOR_mpplayer87",
+      "resolved": true,
+      "actor_enum": 929,
+      "actor_enum_hex": "0x000003A1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer88|930  # player_like 0x000003A2",
+      "label": "ACTOR_mpplayer88",
+      "resolved": true,
+      "actor_enum": 930,
+      "actor_enum_hex": "0x000003A2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer89|931  # player_like 0x000003A3",
+      "label": "ACTOR_mpplayer89",
+      "resolved": true,
+      "actor_enum": 931,
+      "actor_enum_hex": "0x000003A3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer105|932  # player_like 0x000003A4",
+      "label": "ACTOR_mpplayer105",
+      "resolved": true,
+      "actor_enum": 932,
+      "actor_enum_hex": "0x000003A4",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer98|933  # player_like 0x000003A5",
+      "label": "ACTOR_mpplayer98",
+      "resolved": true,
+      "actor_enum": 933,
+      "actor_enum_hex": "0x000003A5",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer106|934  # player_like 0x000003A6",
+      "label": "ACTOR_mpplayer106",
+      "resolved": true,
+      "actor_enum": 934,
+      "actor_enum_hex": "0x000003A6",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer107|935  # player_like 0x000003A7",
+      "label": "ACTOR_mpplayer107",
+      "resolved": true,
+      "actor_enum": 935,
+      "actor_enum_hex": "0x000003A7",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer100|936  # player_like 0x000003A8",
+      "label": "ACTOR_mpplayer100",
+      "resolved": true,
+      "actor_enum": 936,
+      "actor_enum_hex": "0x000003A8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer102|937  # player_like 0x000003A9",
+      "label": "ACTOR_mpplayer102",
+      "resolved": true,
+      "actor_enum": 937,
+      "actor_enum_hex": "0x000003A9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer101|938  # player_like 0x000003AA",
+      "label": "ACTOR_mpplayer101",
+      "resolved": true,
+      "actor_enum": 938,
+      "actor_enum_hex": "0x000003AA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer96|939  # player_like 0x000003AB",
+      "label": "ACTOR_mpplayer96",
+      "resolved": true,
+      "actor_enum": 939,
+      "actor_enum_hex": "0x000003AB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer78|940  # player_like 0x000003AC",
+      "label": "ACTOR_mpplayer78",
+      "resolved": true,
+      "actor_enum": 940,
+      "actor_enum_hex": "0x000003AC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc01|941  # player_like 0x000003AD",
+      "label": "ACTOR_mpplayer_dlc01",
+      "resolved": true,
+      "actor_enum": 941,
+      "actor_enum_hex": "0x000003AD",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc02|942  # player_like 0x000003AE",
+      "label": "ACTOR_mpplayer_dlc02",
+      "resolved": true,
+      "actor_enum": 942,
+      "actor_enum_hex": "0x000003AE",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc03|943  # player_like 0x000003AF",
+      "label": "ACTOR_mpplayer_dlc03",
+      "resolved": true,
+      "actor_enum": 943,
+      "actor_enum_hex": "0x000003AF",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc04|944  # player_like 0x000003B0",
+      "label": "ACTOR_mpplayer_dlc04",
+      "resolved": true,
+      "actor_enum": 944,
+      "actor_enum_hex": "0x000003B0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc05|945  # player_like 0x000003B1",
+      "label": "ACTOR_mpplayer_dlc05",
+      "resolved": true,
+      "actor_enum": 945,
+      "actor_enum_hex": "0x000003B1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc06|946  # player_like 0x000003B2",
+      "label": "ACTOR_mpplayer_dlc06",
+      "resolved": true,
+      "actor_enum": 946,
+      "actor_enum_hex": "0x000003B2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc07|947  # player_like 0x000003B3",
+      "label": "ACTOR_mpplayer_dlc07",
+      "resolved": true,
+      "actor_enum": 947,
+      "actor_enum_hex": "0x000003B3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc08|948  # player_like 0x000003B4",
+      "label": "ACTOR_mpplayer_dlc08",
+      "resolved": true,
+      "actor_enum": 948,
+      "actor_enum_hex": "0x000003B4",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc09|949  # player_like 0x000003B5",
+      "label": "ACTOR_mpplayer_dlc09",
+      "resolved": true,
+      "actor_enum": 949,
+      "actor_enum_hex": "0x000003B5",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc11|950  # player_like 0x000003B6",
+      "label": "ACTOR_mpplayer_dlc11",
+      "resolved": true,
+      "actor_enum": 950,
+      "actor_enum_hex": "0x000003B6",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc12|951  # player_like 0x000003B7",
+      "label": "ACTOR_mpplayer_dlc12",
+      "resolved": true,
+      "actor_enum": 951,
+      "actor_enum_hex": "0x000003B7",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc13|952  # player_like 0x000003B8",
+      "label": "ACTOR_mpplayer_dlc13",
+      "resolved": true,
+      "actor_enum": 952,
+      "actor_enum_hex": "0x000003B8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc14|953  # player_like 0x000003B9",
+      "label": "ACTOR_mpplayer_dlc14",
+      "resolved": true,
+      "actor_enum": 953,
+      "actor_enum_hex": "0x000003B9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc15|954  # player_like 0x000003BA",
+      "label": "ACTOR_mpplayer_dlc15",
+      "resolved": true,
+      "actor_enum": 954,
+      "actor_enum_hex": "0x000003BA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc16|955  # player_like 0x000003BB",
+      "label": "ACTOR_mpplayer_dlc16",
+      "resolved": true,
+      "actor_enum": 955,
+      "actor_enum_hex": "0x000003BB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc17|956  # player_like 0x000003BC",
+      "label": "ACTOR_mpplayer_dlc17",
+      "resolved": true,
+      "actor_enum": 956,
+      "actor_enum_hex": "0x000003BC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc18|957  # player_like 0x000003BD",
+      "label": "ACTOR_mpplayer_dlc18",
+      "resolved": true,
+      "actor_enum": 957,
+      "actor_enum_hex": "0x000003BD",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc19|958  # player_like 0x000003BE",
+      "label": "ACTOR_mpplayer_dlc19",
+      "resolved": true,
+      "actor_enum": 958,
+      "actor_enum_hex": "0x000003BE",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc20|959  # player_like 0x000003BF",
+      "label": "ACTOR_mpplayer_dlc20",
+      "resolved": true,
+      "actor_enum": 959,
+      "actor_enum_hex": "0x000003BF",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc21|960  # player_like 0x000003C0",
+      "label": "ACTOR_mpplayer_dlc21",
+      "resolved": true,
+      "actor_enum": 960,
+      "actor_enum_hex": "0x000003C0",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc22|961  # player_like 0x000003C1",
+      "label": "ACTOR_mpplayer_dlc22",
+      "resolved": true,
+      "actor_enum": 961,
+      "actor_enum_hex": "0x000003C1",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc23|962  # player_like 0x000003C2",
+      "label": "ACTOR_mpplayer_dlc23",
+      "resolved": true,
+      "actor_enum": 962,
+      "actor_enum_hex": "0x000003C2",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc24|963  # player_like 0x000003C3",
+      "label": "ACTOR_mpplayer_dlc24",
+      "resolved": true,
+      "actor_enum": 963,
+      "actor_enum_hex": "0x000003C3",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc25|964  # player_like 0x000003C4",
+      "label": "ACTOR_mpplayer_dlc25",
+      "resolved": true,
+      "actor_enum": 964,
+      "actor_enum_hex": "0x000003C4",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc26|965  # player_like 0x000003C5",
+      "label": "ACTOR_mpplayer_dlc26",
+      "resolved": true,
+      "actor_enum": 965,
+      "actor_enum_hex": "0x000003C5",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc27|966  # player_like 0x000003C6",
+      "label": "ACTOR_mpplayer_dlc27",
+      "resolved": true,
+      "actor_enum": 966,
+      "actor_enum_hex": "0x000003C6",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc28|967  # player_like 0x000003C7",
+      "label": "ACTOR_mpplayer_dlc28",
+      "resolved": true,
+      "actor_enum": 967,
+      "actor_enum_hex": "0x000003C7",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc29|968  # player_like 0x000003C8",
+      "label": "ACTOR_mpplayer_dlc29",
+      "resolved": true,
+      "actor_enum": 968,
+      "actor_enum_hex": "0x000003C8",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc30|969  # player_like 0x000003C9",
+      "label": "ACTOR_mpplayer_dlc30",
+      "resolved": true,
+      "actor_enum": 969,
+      "actor_enum_hex": "0x000003C9",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc31|970  # player_like 0x000003CA",
+      "label": "ACTOR_mpplayer_dlc31",
+      "resolved": true,
+      "actor_enum": 970,
+      "actor_enum_hex": "0x000003CA",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayer_dlc32|971  # player_like 0x000003CB",
+      "label": "ACTOR_mpplayer_dlc32",
+      "resolved": true,
+      "actor_enum": 971,
+      "actor_enum_hex": "0x000003CB",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayercoop01|972  # player_like 0x000003CC",
+      "label": "ACTOR_mpplayercoop01",
+      "resolved": true,
+      "actor_enum": 972,
+      "actor_enum_hex": "0x000003CC",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayercoop02|973  # player_like 0x000003CD",
+      "label": "ACTOR_mpplayercoop02",
+      "resolved": true,
+      "actor_enum": 973,
+      "actor_enum_hex": "0x000003CD",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayercoop03|974  # player_like 0x000003CE",
+      "label": "ACTOR_mpplayercoop03",
+      "resolved": true,
+      "actor_enum": 974,
+      "actor_enum_hex": "0x000003CE",
+      "source": "inline roster value",
+      "warning": null
+    },
+    {
+      "line": "ACTOR_mpplayercoop04|975  # player_like 0x000003CF",
+      "label": "ACTOR_mpplayercoop04",
+      "resolved": true,
+      "actor_enum": 975,
+      "actor_enum_hex": "0x000003CF",
+      "source": "inline roster value",
+      "warning": null
+    }
+  ]
+}

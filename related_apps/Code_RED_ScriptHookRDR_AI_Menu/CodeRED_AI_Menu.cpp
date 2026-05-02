@@ -515,6 +515,38 @@ static void loadActorEnumMap() {
         std::string clean = trim(stripInlineComment(line));
         if (clean.empty()) continue;
 
+        const size_t firstComma = clean.find(',');
+        if (firstComma != std::string::npos) {
+            std::vector<std::string> fields = splitCsvLine(clean);
+            if (fields.empty()) continue;
+            if (fields.size() >= 2) {
+                const std::string key0 = lowerCopy(fields[0]);
+                const std::string key1 = lowerCopy(fields[1]);
+                if ((key0 == "label" || key0 == "name" || key0 == "actor") &&
+                    (key1 == "actor_enum" || key1 == "enum" ||
+                     key1 == "value" || key1 == "actorenum")) {
+                    continue;
+                }
+            }
+
+            std::string label = trim(fields[0]);
+            std::string enumText = fields.size() >= 2 ? fields[1] : "";
+            int enumValue = 0;
+            if (label.empty() || !parseActorEnumToken(enumText, enumValue)) {
+                continue;
+            }
+
+            g_actorEnumMap[lowerCopy(label)] = enumValue;
+            ++g_actorEnumRowsLoaded;
+
+            if (fields.size() >= 5) {
+                for (const std::string& alias : splitAliases(fields[4])) {
+                    g_actorEnumMap[lowerCopy(alias)] = enumValue;
+                }
+            }
+            continue;
+        }
+
         const size_t inlineEq = clean.find('=');
         const size_t inlinePipe = clean.find('|');
         if (inlineEq != std::string::npos || inlinePipe != std::string::npos) {
@@ -531,34 +563,6 @@ static void loadActorEnumMap() {
                 ++g_actorEnumRowsLoaded;
             }
             continue;
-        }
-
-        std::vector<std::string> fields = splitCsvLine(clean);
-        if (fields.empty()) continue;
-        if (fields.size() >= 2) {
-            const std::string key0 = lowerCopy(fields[0]);
-            const std::string key1 = lowerCopy(fields[1]);
-            if ((key0 == "label" || key0 == "name" || key0 == "actor") &&
-                (key1 == "actor_enum" || key1 == "enum" ||
-                 key1 == "value" || key1 == "actorenum")) {
-                continue;
-            }
-        }
-
-        std::string label = trim(fields[0]);
-        std::string enumText = fields.size() >= 2 ? fields[1] : "";
-        int enumValue = 0;
-        if (label.empty() || !parseActorEnumToken(enumText, enumValue)) {
-            continue;
-        }
-
-        g_actorEnumMap[lowerCopy(label)] = enumValue;
-        ++g_actorEnumRowsLoaded;
-
-        if (fields.size() >= 5) {
-            for (const std::string& alias : splitAliases(fields[4])) {
-                g_actorEnumMap[lowerCopy(alias)] = enumValue;
-            }
         }
     }
 
@@ -1252,15 +1256,28 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
 
     if (key == VK_LEFT) {
         ensureDefaultRoster();
-        g_npcIndex--;
+        const bool fast = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+        g_npcIndex -= fast ? 10 : 1;
         if (g_npcIndex < 0) g_npcIndex = static_cast<int>(g_roster.size()) - 1;
         return;
     }
 
     if (key == VK_RIGHT) {
         ensureDefaultRoster();
-        g_npcIndex++;
+        const bool fast = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+        g_npcIndex += fast ? 10 : 1;
         if (g_npcIndex >= static_cast<int>(g_roster.size())) g_npcIndex = 0;
+        return;
+    }
+
+    if (key == VK_HOME) {
+        g_npcIndex = 0;
+        return;
+    }
+
+    if (key == VK_END) {
+        ensureDefaultRoster();
+        g_npcIndex = static_cast<int>(g_roster.size()) - 1;
         return;
     }
 
@@ -1371,7 +1388,7 @@ static void drawMenu() {
         drawTextSafe(rosterX + 0.005f, top + panelH - 0.050f, hint.c_str(), 190, 190, 190, 230, FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
     }
 
-    std::string footer = "F8/INSERT close | UP/DOWN action | LEFT/RIGHT roster | ENTER run | BACK/ESC close";
+    std::string footer = "F8 close | UP/DOWN action | LEFT/RIGHT roster | SHIFT+LEFT/RIGHT x10 | ENTER run";
     drawTextSafe(left + 0.020f, top + panelH - 0.026f, footer.c_str(), 235, 235, 235, 235, FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
     if (!g_status.empty()) {
         drawTextSafe(left + 0.020f, top + panelH - 0.005f, g_status.c_str(), 255, 140, 140, 235, FONT_REDEMPTION, 0.014f, JUSTIFY_LEFT);
