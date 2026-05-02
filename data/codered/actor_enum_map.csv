@@ -1,54 +1,17 @@
 # CodeRED actor enum map
-# Edit this file instead of recompiling the ASI.
-# Format: label,actor_enum,category,source,aliases,notes
-# actor_enum accepts decimal or hex, e.g. amb_prostitute,12345 or player_marston,0x00003039
-# Blank actor_enum means unresolved/research-only. Press F5 in-game after edits.
+# Generated/managed by tools/codered_actor_enum_tool.py
+# Edit this CSV instead of recompiling the ASI.
 label,actor_enum,category,source,aliases,notes
-amb_cowboy,,ambient,roster,,fragment/model label; needs actor enum
-amb_fh_farmer06,,ambient,roster,,fragment/model label; needs actor enum
-amb_mexican,,ambient,roster,,fragment/model label; needs actor enum
-amb_miner,,ambient,roster,,fragment/model label; needs actor enum
-amb_prostitute,,ambient,roster,,fragment/model label; needs actor enum
-amb_rancher,,ambient,roster,,fragment/model label; needs actor enum
-amb_townsman,,ambient,roster,,fragment/model label; needs actor enum
-amb_townswoman,,ambient,roster,,fragment/model label; needs actor enum
-amb_worker,,ambient,roster,,fragment/model label; needs actor enum
-AE_Caucasian_Army_Easy01,,army,research,,fill actual eActorEnum integer
-AE_Caucasian_Army_Easy02,,army,research,,fill actual eActorEnum integer
-AE_Caucasian_Army_Easy03,,army,research,,fill actual eActorEnum integer
-AE_Caucasian_Army_Hard01,,army,research,,fill actual eActorEnum integer
-AE_Caucasian_Army_Hard02,,army,research,,fill actual eActorEnum integer
-AE_Caucasian_Army_Hard03,,army,research,,fill actual eActorEnum integer
-AE_Caucasian_Army_Medium01,,army,research,,fill actual eActorEnum integer
-AE_Caucasian_Army_Medium02,,army,research,,fill actual eActorEnum integer
-AE_Caucasian_Army_Medium03,,army,research,,fill actual eActorEnum integer
-AE_Mexican_Army_Easy01,,army,research,,fill actual eActorEnum integer
-AE_Mexican_Army_Easy02,,army,research,,fill actual eActorEnum integer
-AE_Mexican_Army_Easy03,,army,research,,fill actual eActorEnum integer
-AE_Mexican_Army_Hard01,,army,research,,fill actual eActorEnum integer
-AE_Mexican_Army_Hard02,,army,research,,fill actual eActorEnum integer
-AE_Mexican_Army_Hard03,,army,research,,fill actual eActorEnum integer
-AE_Mexican_Army_Medium01,,army,research,,fill actual eActorEnum integer
-AE_Mexican_Army_Medium02,,army,research,,fill actual eActorEnum integer
-AE_Mexican_Army_Medium03,,army,research,,fill actual eActorEnum integer
-com_companion,,companion,roster,companion,fragment/model label; needs actor enum
-crm_bandit,,gang,roster,bandit,fragment/model label; needs actor enum
-crm_outlaw,,gang,roster,outlaw,fragment/model label; needs actor enum
-gent_default,,generic_ped,roster,,fragment/model label; needs actor enum
-gent_rancher,,generic_ped,roster,,fragment/model label; needs actor enum
-gent_worker,,generic_ped,roster,,fragment/model label; needs actor enum
-gped_bandito,,generic_ped,roster,,fragment/model label; needs actor enum
-gped_default,,generic_ped,roster,,fragment/model label; needs actor enum
-gped_lawman,,generic_ped,roster,,fragment/model label; needs actor enum
-law_deputy,,law,roster,deputy,fragment/model label; needs actor enum
-law_sheriff,,law,roster,sheriff,fragment/model label; needs actor enum
-anc_oldman,,named,roster,oldman,fragment/model label; needs actor enum
-misc_bountyhunter,,named,roster,bountyhunter,fragment/model label; needs actor enum
-misc_rancher,,named,roster,,fragment/model label; needs actor enum
-player_bandito,,player_like,roster,,fragment/model label; needs actor enum
-player_bill,,player_like,roster,bill|bill_williamson,fragment/model label; needs actor enum
-player_dutch,,player_like,roster,dutch,fragment/model label; needs actor enum
-player_javier,,player_like,roster,javier,fragment/model label; needs actor enum
-player_lawman,,player_like,roster,,fragment/model label; needs actor enum
-player_marston,,player_like,roster,john_marston|marston,fragment/model label; needs actor enum
-zombie_default,,zombie,roster,zombie,fragment/model label; needs actor enum
+ACTOR_CAUCASIAN_ARMY_Easy01,369,army,CodeRED research sanity seed,AE_CAUCASIAN_ARMY_EASY01|AE_Caucasian_Army_Easy01|CAUCASIAN_ARMY_EASY01,known crash-fix seed; rebuild from Enums.h for full map
+AE_CAUCASIAN_ARMY_EASY01,369,army,CodeRED research sanity seed,ACTOR_CAUCASIAN_ARMY_Easy01|AE_Caucasian_Army_Easy01,alias for Caucasian Army Easy01
+ACTOR_RIDEABLE_ANIMAL_Horse01,976,rideable,CodeRED research sanity seed,HORSE01|RIDEABLE_ANIMAL_HORSE01,safe first rideable test candidate
+ACTOR_RIDEABLE_ANIMAL_MEX_Mule01,1000,rideable,CodeRED research sanity seed,MEX_Mule01|MULE01|RIDEABLE_ANIMAL_MEX_MULE01,safe first mule test candidate
+ACTOR_RIDEABLE_ANIMAL_Buffalo,1004,rideable,CodeRED research sanity seed,BUFFALO|RIDEABLE_ANIMAL_BUFFALO,rideable/control research candidate
+ACTOR_VEHICLE_Stagecoach,1177,vehicle,CodeRED research sanity seed,VEHICLE_STAGECOACH|STAGECOACH,vehicle/control research candidate
+ACTOR_VEHICLE_Cart01,1183,vehicle,CodeRED research sanity seed,VEHICLE_CART01|CART01,vehicle/control research candidate
+ACTOR_VEHICLE_Canoe01,1189,vehicle,CodeRED research sanity seed,VEHICLE_CANOE01|CANOE01,vehicle/control research candidate
+ACTOR_VEHICLE_Raft01,1192,vehicle,CodeRED research sanity seed,VEHICLE_RAFT01|RAFT01,vehicle/control research candidate
+ACTOR_VEHICLE_Truck01,1193,vehicle,CodeRED research sanity seed,VEHICLE_TRUCK01|TRUCK01,important car/truck test candidate
+ACTOR_VEHICLE_Car01,1194,vehicle,CodeRED research sanity seed,VEHICLE_CAR01|CAR01,important car/truck test candidate
+ACTOR_VEHICLE_Wagon02,1199,vehicle,CodeRED research sanity seed,VEHICLE_WAGON02|WAGON02,vehicle/control research candidate
+ACTOR_VEHICLE_Coach01,1202,vehicle,CodeRED research sanity seed,VEHICLE_COACH01|COACH01,vehicle/control research candidate
