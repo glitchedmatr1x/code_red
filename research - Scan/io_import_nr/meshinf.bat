@@ -1,4 +1,0 @@
-cd /D "C:\Python38"
-python "C:\Projects\ninjaripper2\importers\io_import_nr\meshinfo.py"
-cmd
-

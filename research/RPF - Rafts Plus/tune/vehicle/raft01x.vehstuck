@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<vehStuckTune>
+	<TurnAmount value="0.000000"/>
+	<RotAmount value="0.000000"/>
+	<TransAmount value="0.300000"/>
+	<TimeThresh value="0.300000"/>
+	<PosThresh value="0.500000"/>
+	<MoveThresh value="0.000000"/>
+</vehStuckTune>

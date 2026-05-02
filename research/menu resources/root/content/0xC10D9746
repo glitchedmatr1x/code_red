@@ -1,0 +1,122 @@
+
+<Records>
+  <Record>
+    <recordid value="28"/>
+    <rs_CcCurrentTotal value="0x0"/>
+    <rs_CcIsVisible value="true"/>
+    <rs_CcTargetTotal value="0x0"/>
+    <rs_ChallengeId content="ascii">sc_challenge_aa_00</rs_ChallengeId>
+    <rs_ChallengeType content="ascii">GoalAttack</rs_ChallengeType>
+    <rs_Comment value="GAC0 Fort Mercer"/>
+    <rs_ContentId value="0"/>
+    <rs_IsActive value="true"/>
+    <rs_LbIdMonthly value="49"/>
+    <rs_LbIdOverall value="48"/>
+    <rs_LbIdWeekly value="50"/>
+    <rs_ScriptParams content="ascii">0xa7d2d8af:nAAID,0:nObjGoal1,10:nObjGoal2,4:</rs_ScriptParams>
+    <rs_SocialClubOnly value="true"/>
+    <rs_UnlockId value="-1"/>
+  </Record>
+  <Record>
+    <recordid value="29"/>
+    <rs_CcCurrentTotal value="0x0"/>
+    <rs_CcIsVisible value="true"/>
+    <rs_CcTargetTotal value="0x0"/>
+    <rs_ChallengeId content="ascii">sc_challenge_aa_02</rs_ChallengeId>
+    <rs_ChallengeType content="ascii">GoalAttack</rs_ChallengeType>
+    <rs_Comment value="GAC2 Gaptooth"/>
+    <rs_ContentId value="0"/>
+    <rs_IsActive value="true"/>
+    <rs_LbIdMonthly value="55"/>
+    <rs_LbIdOverall value="54"/>
+    <rs_LbIdWeekly value="56"/>
+    <rs_ScriptParams content="ascii">0xa7d2d8af:nAAID,2:nObjGoal1,200:nObjGoal2,2:nObjGoal3,5:</rs_ScriptParams>
+    <rs_SocialClubOnly value="true"/>
+    <rs_UnlockId value="-1"/>
+  </Record>
+  <Record>
+    <recordid value="30"/>
+    <rs_CcCurrentTotal value="0x0"/>
+    <rs_CcIsVisible value="true"/>
+    <rs_CcTargetTotal value="0x0"/>
+    <rs_ChallengeId content="ascii">sc_challenge_aa_04</rs_ChallengeId>
+    <rs_ChallengeType content="ascii">GoalAttack</rs_ChallengeType>
+    <rs_Comment value="GAC4 Nosalida"/>
+    <rs_ContentId value="0"/>
+    <rs_IsActive value="true"/>
+    <rs_LbIdMonthly value="61"/>
+    <rs_LbIdOverall value="60"/>
+    <rs_LbIdWeekly value="62"/>
+    <rs_ScriptParams content="ascii">0xa7d2d8af:nAAID,4:nObjGoal2,3:nObjGoal3,2:</rs_ScriptParams>
+    <rs_SocialClubOnly value="true"/>
+    <rs_UnlockId value="-1"/>
+  </Record>
+  <Record>
+    <recordid value="31"/>
+    <rs_CcCurrentTotal value="0x0"/>
+    <rs_CcIsVisible value="true"/>
+    <rs_CcTargetTotal value="0x0"/>
+    <rs_ChallengeId content="ascii">sc_challenge_aa_03</rs_ChallengeId>
+    <rs_ChallengeType content="ascii">GoalAttack</rs_ChallengeType>
+    <rs_Comment value="GAC3 Pikes Basin"/>
+    <rs_ContentId value="0"/>
+    <rs_IsActive value="true"/>
+    <rs_LbIdMonthly value="58"/>
+    <rs_LbIdOverall value="57"/>
+    <rs_LbIdWeekly value="59"/>
+    <rs_ScriptParams content="ascii">0xa7d2d8af:nAAID,3:nObjGoal1,3:nObjGoal2,125:</rs_ScriptParams>
+    <rs_SocialClubOnly value="true"/>
+    <rs_UnlockId value="-1"/>
+  </Record>
+  <Record>
+    <recordid value="33"/>
+    <rs_CcCurrentTotal value="0x0"/>
+    <rs_CcIsVisible value="true"/>
+    <rs_CcTargetTotal value="0x0"/>
+    <rs_ChallengeId content="ascii">sc_challenge_aa_06</rs_ChallengeId>
+    <rs_ChallengeType content="ascii">GoalAttack</rs_ChallengeType>
+    <rs_Comment value="GAC6 Tesoro Azul"/>
+    <rs_ContentId value="0"/>
+    <rs_IsActive value="true"/>
+    <rs_LbIdMonthly value="67"/>
+    <rs_LbIdOverall value="66"/>
+    <rs_LbIdWeekly value="68"/>
+    <rs_ScriptParams content="ascii">0xa7d2d8af:nAAID,6:nObjGoal2,2:nObjGoal3,3:</rs_ScriptParams>
+    <rs_SocialClubOnly value="true"/>
+    <rs_UnlockId value="-1"/>
+  </Record>
+  <Record>
+    <recordid value="34"/>
+    <rs_CcCurrentTotal value="0x0"/>
+    <rs_CcIsVisible value="true"/>
+    <rs_CcTargetTotal value="0x0"/>
+    <rs_ChallengeId content="ascii">sc_challenge_aa_07</rs_ChallengeId>
+    <rs_ChallengeType content="ascii">GoalAttack</rs_ChallengeType>
+    <rs_Comment value="GAC7 Tumwater"/>
+    <rs_ContentId value="0"/>
+    <rs_IsActive value="true"/>
+    <rs_LbIdMonthly value="70"/>
+    <rs_LbIdOverall value="69"/>
+    <rs_LbIdWeekly value="71"/>
+    <rs_ScriptParams content="ascii">0xa7d2d8af:nAAID,7:nObjGoal1,5:nObjGoal2,3:nObjGoal3,2:</rs_ScriptParams>
+    <rs_SocialClubOnly value="true"/>
+    <rs_UnlockId value="-1"/>
+  </Record>
+  <Record>
+    <recordid value="35"/>
+    <rs_CcCurrentTotal value="0x0"/>
+    <rs_CcIsVisible value="true"/>
+    <rs_CcTargetTotal value="0x0"/>
+    <rs_ChallengeId content="ascii">sc_challenge_aa_01</rs_ChallengeId>
+    <rs_ChallengeType content="ascii">GoalAttack</rs_ChallengeType>
+    <rs_Comment value="GAC1 Twin Rocks"/>
+    <rs_ContentId value="0"/>
+    <rs_IsActive value="true"/>
+    <rs_LbIdMonthly value="52"/>
+    <rs_LbIdOverall value="51"/>
+    <rs_LbIdWeekly value="53"/>
+    <rs_ScriptParams content="ascii">0xa7d2d8af:nAAID,1:nObjGoal1,3:nObjGoal2,3:</rs_ScriptParams>
+		<rs_SocialClubOnly value="true"/>
+		<rs_UnlockId value="-1"/>
+	</Record>
+</Records>

@@ -1,0 +1,25 @@
+# CodeRED WFT/WEDT Attachment Scan Report
+
+Read-only pass for extracting model-resource and attachment-adjacent data.
+
+## Counts
+
+- `model_resources`: `148`
+- `candidate_transforms`: `934`
+- `fragment_bundles`: `42`
+- `smic_attachment_rows`: `891`
+- `weapon_rows`: `7`
+- `errors`: `0`
+- `extensions`: `{'.wedt': 35, '.wfd': 72, '.wft': 41}`
+- `resource_types`: `{'11': 35, '1': 72, '138': 41}`
+
+## Important read
+
+- `.wfd`, `.wft`, and `.wedt` resources are now separately inventoried.
+- `smictofragmap*.txt` is treated as the first actor/fragments attachment map.
+- `base_dualpistol.weap` is compared against pistol and long-gun bases.
+- `candidate_transforms.csv` is heuristic only; use it for offset discovery, not patching.
+
+## Next runtime target
+
+Add a ScriptHook menu lab that attaches a left-hand pistol prop using `SpatialAttach`/native attach behavior, then uses a simulated left-fire raycast while the right-hand weapon stays native.

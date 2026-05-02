@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<vehInputTune>
+	<SSSValue value="20.400000"/>
+	<SSSThreshold value="20.000000"/>
+	<AutoReverseSpeed value="20.250000"/>
+</vehInputTune>

@@ -1,0 +1,159 @@
+{
+  "name": "Code RED Pass 16 Living World Working Mod",
+  "version": "16.0-working-package",
+  "generated_utc": "2026-05-02T11:39:01Z",
+  "inputs": {
+    "content": "/mnt/data/content.rpf",
+    "tune": "/mnt/data/tune_d11generic.rpf"
+  },
+  "outputs": {
+    "content": "/mnt/data/CodeRED_Pass16_LivingWorld_Working_Build/DROP_IN_CodeRED_Pass16_LivingWorld_Working_Mod/content.rpf",
+    "tune": "/mnt/data/CodeRED_Pass16_LivingWorld_Working_Build/DROP_IN_CodeRED_Pass16_LivingWorld_Working_Mod/tune_d11generic.rpf"
+  },
+  "patches": [
+    {
+      "path": "root/content/ambient/placementglobals.xml",
+      "original_payload_size": 7356,
+      "new_payload_size": 8876,
+      "original_slot_size": 929,
+      "new_slot_size": 1047,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 139872,
+      "new_offset": 21923760,
+      "sha1": "492a86dda3659bff0555d68c64751675456abc17",
+      "status": "patched"
+    },
+    {
+      "path": "root/tune/settings/ambientmgrtuning.xml",
+      "original_payload_size": 848,
+      "new_payload_size": 940,
+      "original_slot_size": 369,
+      "new_slot_size": 426,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 17742960,
+      "new_offset": 19247616,
+      "sha1": "c921691a2f2cfc9bc1f9d47458fa43181e2e48a5",
+      "status": "patched"
+    },
+    {
+      "path": "root/tune/settings/componentallocations.xml",
+      "original_payload_size": 3958,
+      "new_payload_size": 4076,
+      "original_slot_size": 406,
+      "new_slot_size": 478,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 17744640,
+      "new_offset": 19248048,
+      "sha1": "02b612809ae487877827b296384266fbfea1626d",
+      "status": "patched"
+    },
+    {
+      "path": "root/tune/level/territory/level.pop",
+      "original_payload_size": 11180,
+      "new_payload_size": 11461,
+      "original_slot_size": 1346,
+      "new_slot_size": 1411,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 17368664,
+      "new_offset": 19248528,
+      "sha1": "275062e487658f65ca38693a111996cd7f1365a5",
+      "status": "patched"
+    },
+    {
+      "path": "root/tune/settings/lasso.tune",
+      "original_payload_size": 2128,
+      "new_payload_size": 2129,
+      "original_slot_size": 389,
+      "new_slot_size": 390,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 17747144,
+      "new_offset": 19249944,
+      "sha1": "3387a2af858c7bb991cdb546af19f9255ddaad91",
+      "status": "patched"
+    },
+    {
+      "path": "root/tune/settings/weapons/base_lasso.weap",
+      "original_payload_size": 4004,
+      "new_payload_size": 4004,
+      "original_slot_size": 1035,
+      "new_slot_size": 1044,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 17778144,
+      "new_offset": 19250336,
+      "sha1": "ddf90a9f07fc9224b150d702eb9576b6c20178ad",
+      "status": "patched"
+    },
+    {
+      "path": "root/tune/asd/sheriff.xml",
+      "original_payload_size": 12366,
+      "new_payload_size": 12450,
+      "original_slot_size": 2427,
+      "new_slot_size": 2519,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 16156040,
+      "new_offset": 19251384,
+      "sha1": "307c78ea45921a13ed71c41b1330ecce599edb3e",
+      "status": "patched"
+    },
+    {
+      "path": "root/tune/asd/npc.xml",
+      "original_payload_size": 12369,
+      "new_payload_size": 12449,
+      "original_slot_size": 2390,
+      "new_slot_size": 2469,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 16131808,
+      "new_offset": 19253904,
+      "sha1": "dd480d42206a804fe6a13860e3a8b2973bd198d5",
+      "status": "patched"
+    },
+    {
+      "path": "root/tune/template/template_base_domesticated_dog.xml",
+      "original_payload_size": 5750,
+      "new_payload_size": 5833,
+      "original_slot_size": 1263,
+      "new_slot_size": 1325,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 19052712,
+      "new_offset": 19256376,
+      "sha1": "316aea883d6f444b788178c4957a7187fd50714b",
+      "status": "patched"
+    },
+    {
+      "path": "root/tune/template/template_base_human.xml",
+      "original_payload_size": 3304,
+      "new_payload_size": 3387,
+      "original_slot_size": 982,
+      "new_slot_size": 1034,
+      "relocated": true,
+      "codec": "zstd-18",
+      "old_offset": 19055944,
+      "new_offset": 19257704,
+      "sha1": "98322ca7d162f6122eaeae96926c635e777a39f8",
+      "status": "patched"
+    }
+  ],
+  "validation": {
+    "content_rpf_reopens": true,
+    "tune_rpf_reopens": true,
+    "placement_xml_parses": true,
+    "placement_marker_present": true,
+    "recurring_anchor_set_present": true,
+    "pathfinding_deny_loosened": true,
+    "ambient_actor_cap_130": true,
+    "ambient_visible_range_75": true,
+    "level_pop_brace_balance": 0,
+    "wilderness_faction_mix_present": true,
+    "lasso_rope_len_16": true,
+    "all_required_checks_pass": true
+  }
+}

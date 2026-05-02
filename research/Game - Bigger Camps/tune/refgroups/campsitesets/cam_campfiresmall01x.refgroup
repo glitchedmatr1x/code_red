@@ -1,0 +1,139 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bedRollOpen01x.mb
+transform 4.03141487 1.082330446 0 0 90 r
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_fire01x.mb
+transform 0 0 0 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_flag04x.mb
+transform 0 0 5 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_firesignal01x.mb
+transform 0 0 5 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string flat
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpsePile01x.mb
+transform -10.817843768 0 10.462415489 0 23.27590657 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpsePile01x.mb
+transform 10.817843768 0 -10.462415489 0 -23.27590657 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 0 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 .6 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 1.2 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 1.8 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 3 0 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_cochinaygates_cs02x.mb
+transform -2.5 0 -2.1 0 -90 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_cochinaygates_cs02x.mb
+transform -7.4 0 -2.0 0 -90 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 0 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 .6 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 1.2 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 1.8 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 3 -4.2 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -0 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -0.6 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -1.2 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -1.8 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -2.4 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -3 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -3.6 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -4.2 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform -7 2.4 -4.8 90 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_gatlingMaxim02x.mb
+transform -9 0 -2 0 90 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 0 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 .6 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 1.2 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 1.8 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 3 0 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_cochinaygates_cs02x.mb
+transform 11 0 -2.0 0 90 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_cochinaygates_cs02x.mb
+transform 6.4 0 -2.0 0 90 0 
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 0 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 .6 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 1.2 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 1.8 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -4.2 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 3 -4.2 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -0 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -0.6 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -1.2 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -1.8 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -2.4 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -3 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -3.6 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -4.2 90 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_log03x.mb
+transform 7 2.4 -4.8 90 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_gatlingMaxim02x.mb
+transform 12 0 -1.7 0 -90 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+

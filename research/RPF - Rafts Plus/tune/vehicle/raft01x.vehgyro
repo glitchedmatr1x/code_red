@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<vehGyroTune>
+	<Turn value="0.000000"/>
+	<Wheelie value="0.000000"/>
+	<Drift value="0.000000"/>
+	<Spin value="0.000000"/>
+	<RevSpin value="0.000000"/>
+	<Yaw value="10.000000"/>
+	<Pitch value="10.000000"/>
+	<Roll value="0.000000"/>
+	<Lean value="0.000000"/>
+	<LeanAngle value="0.000000"/>
+	<LeanApproachTime value="10.000000"/>
+</vehGyroTune>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<BoatTune>
+	<LeftOffset x="0.000000" y="0.000000" z="0.000000"/>
+	<RightOffset x="0.000000" y="0.000000" z="0.000000"/>
+	<LeftAngularOffset value="0.000000"/>
+	<RightAngularOffset value="0.000000"/>
+	<BrakeScale value="5000.000000"/>
+	<PaddleScale value="5000.000000"/>
+	<AxialForceScale value="5000.000000"/>
+	<LateralForceScale value="0.000000"/>
+	<TorqueScale value="0.000000"/>
+	<AxialTorqueScale value="0.000000"/>
+	<LateralTorqueScale value="0.000000"/>
+</BoatTune>
