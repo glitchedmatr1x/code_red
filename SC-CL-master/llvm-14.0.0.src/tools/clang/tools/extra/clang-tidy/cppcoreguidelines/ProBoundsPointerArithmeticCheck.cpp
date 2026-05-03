@@ -1,8 +1,9 @@
 //===--- ProBoundsPointerArithmeticCheck.cpp - clang-tidy------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -20,22 +21,19 @@ void ProBoundsPointerArithmeticCheck::registerMatchers(MatchFinder *Finder) {
   if (!getLangOpts().CPlusPlus)
     return;
 
-  const auto AllPointerTypes =
-      anyOf(hasType(pointerType()),
-            hasType(autoType(
-                hasDeducedType(hasUnqualifiedDesugaredType(pointerType())))),
-            hasType(decltypeType(hasUnderlyingType(pointerType()))));
-
   // Flag all operators +, -, +=, -=, ++, -- that result in a pointer
   Finder->addMatcher(
       binaryOperator(
-          hasAnyOperatorName("+", "-", "+=", "-="), AllPointerTypes,
+          anyOf(hasOperatorName("+"), hasOperatorName("-"),
+                hasOperatorName("+="), hasOperatorName("-=")),
+          hasType(pointerType()),
           unless(hasLHS(ignoringImpCasts(declRefExpr(to(isImplicit()))))))
           .bind("expr"),
       this);
 
   Finder->addMatcher(
-      unaryOperator(hasAnyOperatorName("++", "--"), hasType(pointerType()))
+      unaryOperator(anyOf(hasOperatorName("++"), hasOperatorName("--")),
+                    hasType(pointerType()))
           .bind("expr"),
       this);
 
@@ -43,7 +41,7 @@ void ProBoundsPointerArithmeticCheck::registerMatchers(MatchFinder *Finder) {
   Finder->addMatcher(
       arraySubscriptExpr(
           hasBase(ignoringImpCasts(
-              anyOf(AllPointerTypes,
+              anyOf(hasType(pointerType()),
                     hasType(decayedType(hasDecayedType(pointerType())))))))
           .bind("expr"),
       this);

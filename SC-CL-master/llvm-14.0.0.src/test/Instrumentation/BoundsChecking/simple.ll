@@ -1,3 +1,4 @@
+; RUN: opt < %s -bounds-checking -S | FileCheck %s
 ; RUN: opt < %s -passes=bounds-checking -S | FileCheck %s
 target datalayout = "e-p:64:64:64-p1:16:16:16-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v64:64:64-v128:128:128-a0:0:64-s0:64:64-f80:128:128-n8:16:32:64-S128"
 
@@ -42,16 +43,6 @@ define void @f3(i64 %x) nounwind {
 ; CHECK-NEXT: or i1
 ; CHECK: trap
   store i32 3, i32* %idx, align 4
-  ret void
-}
-
-; CHECK: @store_volatile
-define void @store_volatile(i64 %x) nounwind {
-  %1 = tail call i8* @calloc(i64 4, i64 %x)
-  %2 = bitcast i8* %1 to i32*
-  %idx = getelementptr inbounds i32, i32* %2, i64 8
-; CHECK-NOT: trap
-  store volatile i32 3, i32* %idx, align 4
   ret void
 }
 
@@ -132,7 +123,7 @@ define void @f10(i64 %x, i64 %y) nounwind {
 }
 
 ; CHECK: @f11
-define void @f11(i128* byval(i128) %x) nounwind {
+define void @f11(i128* byval %x) nounwind {
   %1 = bitcast i128* %x to i8*
   %2 = getelementptr inbounds i8, i8* %1, i64 16
 ; CHECK: br label
@@ -141,7 +132,7 @@ define void @f11(i128* byval(i128) %x) nounwind {
 }
 
 ; CHECK: @f11_as1
-define void @f11_as1(i128 addrspace(1)* byval(i128) %x) nounwind {
+define void @f11_as1(i128 addrspace(1)* byval %x) nounwind {
   %1 = bitcast i128 addrspace(1)* %x to i8 addrspace(1)*
   %2 = getelementptr inbounds i8, i8 addrspace(1)* %1, i16 16
 ; CHECK: br label
@@ -153,20 +144,9 @@ define void @f11_as1(i128 addrspace(1)* byval(i128) %x) nounwind {
 define i64 @f12(i64 %x, i64 %y) nounwind {
   %1 = tail call i8* @calloc(i64 1, i64 %x)
 ; CHECK: mul i64 %y, 8
-; CHECK: trap
   %2 = bitcast i8* %1 to i64*
   %3 = getelementptr inbounds i64, i64* %2, i64 %y
   %4 = load i64, i64* %3, align 8
-  ret i64 %4
-}
-
-; CHECK: @load_volatile
-define i64 @load_volatile(i64 %x, i64 %y) nounwind {
-  %1 = tail call i8* @calloc(i64 1, i64 %x)
-; CHECK-NOT: trap
-  %2 = bitcast i8* %1 to i64*
-  %3 = getelementptr inbounds i64, i64* %2, i64 %y
-  %4 = load volatile i64, i64* %3, align 8
   ret i64 %4
 }
 

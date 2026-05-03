@@ -1,3 +1,4 @@
+; RUN: opt -S -add-discriminators < %s | FileCheck %s
 ; RUN: opt -S -passes=add-discriminators < %s | FileCheck %s
 
 declare void @llvm.dbg.declare(metadata, metadata, metadata)

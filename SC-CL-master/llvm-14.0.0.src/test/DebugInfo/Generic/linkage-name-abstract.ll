@@ -1,10 +1,11 @@
-; RUN: %llc_dwarf -O0 -filetype=obj -dwarf-linkage-names=Abstract < %s | llvm-dwarfdump -debug-info - > %t
+; RUN: %llc_dwarf -O0 -filetype=obj -dwarf-linkage-names=Abstract < %s | llvm-dwarfdump -v -debug-info - > %t
 ; RUN: FileCheck %s -check-prefix=ONENAME < %t
 ; RUN: FileCheck %s -check-prefix=REF < %t 
 ; Verify tuning for SCE gets us Abstract only.
-; RUN: %llc_dwarf -O0 -filetype=obj -debugger-tune=sce < %s | llvm-dwarfdump -debug-info - > %t
+; RUN: %llc_dwarf -O0 -filetype=obj -debugger-tune=sce < %s | llvm-dwarfdump -v -debug-info - > %t
 ; RUN: FileCheck %s -check-prefix=ONENAME < %t
 ; RUN: FileCheck %s -check-prefix=REF < %t 
+; REQUIRES: object-emission
 
 ; Verify that the only linkage-name present is the abstract origin of the
 ; inlined subprogram.
@@ -31,9 +32,9 @@
 ; Show that the only linkage names are for the inlined functions,
 ; because those are the ones with an abstract origin.
 ; ONENAME-NOT: {{DW_AT(_MIPS)?_linkage_name}}
-; ONENAME:     {{DW_AT(_MIPS)?_linkage_name}} ("_Z2f2v")
+; ONENAME:     {{DW_AT(_MIPS)?_linkage_name}} {{.*}} "_Z2f2v"
 ; ONENAME-NOT: {{DW_AT(_MIPS)?_linkage_name}}
-; ONENAME:     {{DW_AT(_MIPS)?_linkage_name}} ("_ZN2F42f5Ev")
+; ONENAME:     {{DW_AT(_MIPS)?_linkage_name}} {{.*}} "_ZN2F42f5Ev"
 ; ONENAME-NOT: {{DW_AT(_MIPS)?_linkage_name}}
 
 ; For f2() we see the definition pointing to an abstract origin DIE,
@@ -42,30 +43,30 @@
 ; The order of these DIEs is not important of course, just the links.
 ; REF:      DW_TAG_subprogram
 ; REF-NOT:  {{DW_TAG|NULL}}
-; REF:      DW_AT_abstract_origin ([[F2:0x.*]] "_Z2f2v")
+; REF:      DW_AT_abstract_origin {{.*}} {[[F2:0x.*]]} "_Z2f2v"
 ; REF:      [[F2]]: DW_TAG_subprogram
-; REF-NEXT: linkage_name ("_Z2f2v")
+; REF-NEXT: linkage_name {{.*}} "_Z2f2v"
 ; REF:      DW_TAG_inlined_subroutine
 ; REF-NOT:  {{DW_TAG|NULL}}
-; REF:      DW_AT_abstract_origin ([[F2]]
+; REF:      DW_AT_abstract_origin {{.*}} {[[F2]]}
 
 ; For F4::f5(), first we see the in-class declaration,
 ; then the definition, abstract origin, and the inlined_subroutine.
 ; REF:      DW_TAG_structure_type
-; REF-NEXT: DW_AT_name ("F4")
+; REF-NEXT: DW_AT_name {{.*}} "F4"
 ; REF-NOT:  {{DW_TAG|NULL}}
 ; REF:      [[F5_DECL:0x.*]]: DW_TAG_subprogram
-; REF-NEXT: DW_AT_name ("f5")
+; REF-NEXT: DW_AT_name {{.*}} "f5"
 ; REF:      DW_TAG_subprogram
 ; REF-NOT:  {{DW_TAG|NULL}}
-; REF:      DW_AT_abstract_origin ([[F5_ABS:0x.*]] "_ZN2F42f5Ev")
+; REF:      DW_AT_abstract_origin {{.*}} {[[F5_ABS:0x.*]]} "_ZN2F42f5Ev"
 ; REF:      [[F5_ABS]]: DW_TAG_subprogram
 ; REF-NOT:  {{DW_TAG|NULL}}
-; REF:      linkage_name ("_ZN2F42f5Ev")
-; REF-NEXT: DW_AT_specification ([[F5_DECL]]
+; REF:      linkage_name {{.*}} "_ZN2F42f5Ev"
+; REF-NEXT: DW_AT_specification {{.*}} {[[F5_DECL]]}
 ; REF:      DW_TAG_inlined_subroutine
 ; REF-NOT:  {{DW_TAG|NULL}}
-; REF:      DW_AT_abstract_origin ([[F5_ABS]]
+; REF:      DW_AT_abstract_origin {{.*}} {[[F5_ABS]]}
 
 
 ; Function Attrs: alwaysinline uwtable
@@ -110,22 +111,22 @@ attributes #0 = { alwaysinline }
 !3 = !{i32 2, !"Dwarf Version", i32 4}
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{!"clang version 4.0.0 (trunk 288231)"}
-!6 = distinct !DISubprogram(name: "f2", linkageName: "_Z2f2v", scope: !1, file: !1, line: 2, type: !7, isLocal: false, isDefinition: true, scopeLine: 2, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
+!6 = distinct !DISubprogram(name: "f2", linkageName: "_Z2f2v", scope: !1, file: !1, line: 2, type: !7, isLocal: false, isDefinition: true, scopeLine: 2, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
 !7 = !DISubroutineType(types: !8)
 !8 = !{null}
 !9 = !DILocation(line: 3, column: 3, scope: !6)
 !10 = !DILocation(line: 4, column: 1, scope: !6)
-!11 = distinct !DISubprogram(name: "f3", linkageName: "_Z2f3v", scope: !1, file: !1, line: 5, type: !7, isLocal: false, isDefinition: true, scopeLine: 5, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
+!11 = distinct !DISubprogram(name: "f3", linkageName: "_Z2f3v", scope: !1, file: !1, line: 5, type: !7, isLocal: false, isDefinition: true, scopeLine: 5, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
 !12 = !DILocation(line: 3, column: 3, scope: !6, inlinedAt: !13)
 !13 = distinct !DILocation(line: 6, column: 3, scope: !11)
 !14 = !DILocation(line: 7, column: 1, scope: !11)
-!15 = distinct !DISubprogram(name: "f5", linkageName: "_ZN2F42f5Ev", scope: !16, file: !1, line: 12, type: !7, isLocal: false, isDefinition: true, scopeLine: 12, flags: DIFlagPrototyped, isOptimized: false, unit: !0, declaration: !18, retainedNodes: !2)
+!15 = distinct !DISubprogram(name: "f5", linkageName: "_ZN2F42f5Ev", scope: !16, file: !1, line: 12, type: !7, isLocal: false, isDefinition: true, scopeLine: 12, flags: DIFlagPrototyped, isOptimized: false, unit: !0, declaration: !18, variables: !2)
 !16 = distinct !DICompositeType(tag: DW_TAG_structure_type, name: "F4", file: !1, line: 9, size: 8, elements: !17, identifier: "_ZTS2F4")
 !17 = !{!18}
 !18 = !DISubprogram(name: "f5", linkageName: "_ZN2F42f5Ev", scope: !16, file: !1, line: 10, type: !7, isLocal: false, isDefinition: false, scopeLine: 10, flags: DIFlagPrototyped, isOptimized: false)
 !19 = !DILocation(line: 13, column: 3, scope: !15)
 !20 = !DILocation(line: 14, column: 1, scope: !15)
-!21 = distinct !DISubprogram(name: "f6", linkageName: "_Z2f6v", scope: !1, file: !1, line: 15, type: !7, isLocal: false, isDefinition: true, scopeLine: 15, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
+!21 = distinct !DISubprogram(name: "f6", linkageName: "_Z2f6v", scope: !1, file: !1, line: 15, type: !7, isLocal: false, isDefinition: true, scopeLine: 15, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
 !22 = !DILocation(line: 13, column: 3, scope: !15, inlinedAt: !23)
 !23 = distinct !DILocation(line: 16, column: 3, scope: !21)
 !24 = !DILocation(line: 17, column: 1, scope: !21)

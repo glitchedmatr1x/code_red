@@ -1,8 +1,9 @@
 //===--- LimitedRandomnessCheck.cpp - clang-tidy---------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -24,12 +25,12 @@ void LimitedRandomnessCheck::registerMatchers(MatchFinder *Finder) {
 }
 
 void LimitedRandomnessCheck::check(const MatchFinder::MatchResult &Result) {
-  std::string Msg;
+  std::string msg = "";
   if (getLangOpts().CPlusPlus)
-    Msg = "; use C++11 random library instead";
+    msg = "; use C++11 random library instead";
 
   const auto *MatchedDecl = Result.Nodes.getNodeAs<CallExpr>("randomGenerator");
-  diag(MatchedDecl->getBeginLoc(), "rand() has limited randomness" + Msg);
+  diag(MatchedDecl->getLocStart(), "rand() has limited randomness" + msg);
 }
 
 } // namespace cert

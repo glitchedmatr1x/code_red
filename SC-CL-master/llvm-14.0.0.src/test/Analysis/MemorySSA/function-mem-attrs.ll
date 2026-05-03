@@ -1,3 +1,4 @@
+; RUN: opt -basicaa -print-memoryssa -verify-memoryssa -analyze < %s 2>&1 | FileCheck %s
 ; RUN: opt -aa-pipeline=basic-aa -passes='print<memoryssa>,verify<memoryssa>' -disable-output < %s 2>&1 | FileCheck %s
 ;
 ; Test that various function attributes give us sane results.
@@ -26,7 +27,7 @@ define void @readonlyAttr() {
 ; Assume that #N is readonly
   call void @noattrsFunction() readonly
 
-  ; Verify that noattrsFunction is otherwise a MemoryDef
+  ; Sanity check that noattrsFunction is otherwise a MemoryDef
 ; CHECK: 3 = MemoryDef(2)
 ; CHECK-NEXT: call void @noattrsFunction()
   call void @noattrsFunction()

@@ -1,8 +1,9 @@
 //===- Disassembler.h - Text File Disassembler ----------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -22,17 +23,18 @@ class MemoryBuffer;
 class Target;
 class raw_ostream;
 class SourceMgr;
-class MCContext;
 class MCSubtargetInfo;
 class MCStreamer;
-class MCTargetOptions;
 
 class Disassembler {
 public:
-  static int disassemble(const Target &T, const std::string &Triple,
-                         MCSubtargetInfo &STI, MCStreamer &Streamer,
-                         MemoryBuffer &Buffer, SourceMgr &SM, MCContext &Ctx,
-                         raw_ostream &Out, const MCTargetOptions &MCOptions);
+  static int disassemble(const Target &T,
+                         const std::string &Triple,
+                         MCSubtargetInfo &STI,
+                         MCStreamer &Streamer,
+                         MemoryBuffer &Buffer,
+                         SourceMgr &SM,
+                         raw_ostream &Out);
 };
 
 } // namespace llvm

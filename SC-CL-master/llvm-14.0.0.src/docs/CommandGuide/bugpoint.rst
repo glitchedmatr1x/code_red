@@ -1,8 +1,6 @@
 bugpoint - automatic test case reduction tool
 =============================================
 
-.. program:: bugpoint
-
 SYNOPSIS
 --------
 
@@ -109,6 +107,7 @@ OPTIONS
  line options to enable various optimizations.  To see the new complete list of
  optimizations, use the **-help** and **--load** options together; for example:
 
+
  .. code-block:: bash
 
       bugpoint --load myNewPass.so -help
@@ -194,4 +193,4 @@ if an error occurs, it will exit with a non-zero value.
 SEE ALSO
 --------
 
-:manpage:`opt(1)`
+opt|opt

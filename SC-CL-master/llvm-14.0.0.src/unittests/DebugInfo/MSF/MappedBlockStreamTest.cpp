@@ -1,8 +1,9 @@
 //===- llvm/unittest/DebugInfo/MSF/MappedBlockStreamTest.cpp --------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -36,7 +37,7 @@ public:
 
   endianness getEndian() const override { return little; }
 
-  Error readBytes(uint64_t Offset, uint64_t Size,
+  Error readBytes(uint32_t Offset, uint32_t Size,
                   ArrayRef<uint8_t> &Buffer) override {
     if (auto EC = checkOffsetForRead(Offset, Size))
       return EC;
@@ -44,7 +45,7 @@ public:
     return Error::success();
   }
 
-  Error readLongestContiguousChunk(uint64_t Offset,
+  Error readLongestContiguousChunk(uint32_t Offset,
                                    ArrayRef<uint8_t> &Buffer) override {
     if (auto EC = checkOffsetForRead(Offset, 1))
       return EC;
@@ -52,9 +53,9 @@ public:
     return Error::success();
   }
 
-  uint64_t getLength() override { return Data.size(); }
+  uint32_t getLength() override { return Data.size(); }
 
-  Error writeBytes(uint64_t Offset, ArrayRef<uint8_t> SrcData) override {
+  Error writeBytes(uint32_t Offset, ArrayRef<uint8_t> SrcData) override {
     if (auto EC = checkOffsetForWrite(Offset, SrcData.size()))
       return EC;
     ::memcpy(&Data[Offset], SrcData.data(), SrcData.size());

@@ -372,51 +372,43 @@ namespace SCCL
 					const clang::ArrayType *arr = NULL;
 					if ((arr = var->getType()->getAsArrayTypeUnsafe()) && arr->getArrayElementTypeNoTypeQual()->getAsCXXRecordDecl())
 					{
-						//Throw("Unsupported decl of " + string(var->getDeclKindName()), TheRewriter, var->getBeginLoc());
+						Throw("Unsupported decl of " + string(var->getDeclKindName()), TheRewriter, var->getLocStart());
 					}
 					else if (var->getType()->getAsCXXRecordDecl())
 					{
-						//Throw("Unsupported decl of " + string(var->getDeclKindName()), TheRewriter, var->getBeginLoc());
+						Throw("Unsupported decl of " + string(var->getDeclKindName()), TheRewriter, var->getLocStart());
 					}
 
 					const Expr *initializer = var->getAnyInitializer();
 					if (initializer)
 					{
-						if (isa<CXXConstructExpr>(initializer)) {
-							#if 0
-							if (isa<ConstantArrayType>(var->getType())) {
-								const ConstantArrayType *arr = cast<ConstantArrayType>(var->getType());
-								static int vTableInitInc = 0;
-						
-								//out << "Push 0" << endl;
-                                AddInstruction(PushInt, 0);
-                                AddInstruction(Label, "vTableConditional_" + to_string(vTableInitInc));
-								//out << ":vTableConditional_" << vTableInitInc << endl;
-								//for(int i=0; i<arr->getSize().getSExtValue(); i++) {
-                                AddInstruction(Dup);
-								//out << "dup //index" << endl;
-                                AddInstruction(PushInt, arr->getSize().getZExtValue());
-                        
-								//out << "Push " << arr->getSize().getZExtValue() << endl;
-								out << "JumpGE @vTableEnd_" << vTableInitInc << endl;
-						
-								out << "dup #index" << endl;
-						    	out << pFrame(curIndex) << " //" << var->getNameAsString() << endl;
-								out << "ArrayGetP " << getSizeFromBytes(getSizeOfCXXDecl(arr->getArrayElementTypeNoTypeQual()->getAsCXXRecordDecl(), true, true)) << "//index Array" << endl;
-								parseExpression(initializer, true, false, true, var);
-								out << "Add1 1" << endl;
-								out << "Jump @vTableConditional_" << vTableInitInc << endl;
-								out << ":vTableEnd_" << vTableInitInc << endl << endl;
-								vTableInitInc++;
-					       		return true;
-							}
-							#endif
-							//out << pFrame(curIndex) << " //" << var->getNameAsString() << endl;
-                            AddInstruction(GetFrameP, curIndex);
-
-							parseExpression(initializer, true, false, true, var);
-							return true;
-						}
+						//if (isa<CXXConstructExpr>(initializer)) {
+						//	if (isa<ConstantArrayType>(var->getType())) {
+						//		const ConstantArrayType *arr = cast<ConstantArrayType>(var->getType());
+						//		static int vTableInitInc = 0;
+						//
+						//		out << "Push 0" << endl;
+						//		out << ":vTableConditional_" << vTableInitInc << endl;
+						//		//for(int i=0; i<arr->getSize().getSExtValue(); i++) {
+						//		out << "dup //index" << endl;
+						//		out << "Push " << arr->getSize().getZExtValue() << endl;
+						//		out << "JumpGE @vTableEnd_" << vTableInitInc << endl;
+						//
+						//		out << "dup #index" << endl;
+						//		out << pFrame(curIndex) << " //" << var->getNameAsString() << endl;
+						//		out << "ArrayGetP " << getSizeFromBytes(getSizeOfCXXDecl(arr->getArrayElementTypeNoTypeQual()->getAsCXXRecordDecl(), true, true)) << "//index Array" << endl;
+						//		parseExpression(initializer, true, false, true, var);
+						//		out << "Add1 1" << endl;
+						//		out << "Jump @vTableConditional_" << vTableInitInc << endl;
+						//		out << ":vTableEnd_" << vTableInitInc << endl << endl;
+						//		//}
+						//		vTableInitInc++;
+						//		return true;
+						//	}
+						//	out << pFrame(curIndex) << " //" << var->getNameAsString() << endl;
+						//	parseExpression(initializer, true, false, true, var);
+						//	return true;
+						//}
 
 						parseExpression(initializer, false, true);
 
@@ -544,10 +536,10 @@ namespace SCCL
 				Throw("No intrinsic function found named " + funcName, TheRewriter, callee->getLocation());
 			if (argCount == 1 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType())
 			{
-                Expr::EvalResult apCount;
+				APSInt apCount;
 				if (argArray[0]->EvaluateAsInt(apCount, context))
 				{
-					(scriptData.getCurrentFunction()->*func)(apCount.Val.getInt().getSExtValue());
+					(scriptData.getCurrentFunction()->*func)(apCount.getSExtValue());
 					ret = true;
 					return;
 				} EvalFailed
@@ -559,10 +551,10 @@ namespace SCCL
 				Throw("No intrinsic function found named " + funcName, TheRewriter, callee->getLocation());
 			if (argCount == 1 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType())
 			{
-                Expr::EvalResult apCount;
+				APSInt apCount;
 				if (argArray[0]->EvaluateAsInt(apCount, context))
 				{
-					(scriptData.getCurrentFunction()->*func)(apCount.Val.getInt().getSExtValue());
+					(scriptData.getCurrentFunction()->*func)(apCount.getSExtValue());
 					ret = true;
 					return;
 				} EvalFailed
@@ -618,10 +610,10 @@ namespace SCCL
 				Throw("No intrinsic function found named " + funcName, TheRewriter, callee->getLocation());
 			if (argCount == 1 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType())
 			{
-                Expr::EvalResult apCount;
+				APSInt apCount;
 				if (argArray[0]->EvaluateAsInt(apCount, context))
 				{
-					(scriptData.getCurrentFunction()->*func)(apCount.Val.getInt().getSExtValue());
+					(scriptData.getCurrentFunction()->*func)(apCount.getSExtValue());
 					ret = true;
 					return;
 				} EvalFailed
@@ -675,9 +667,9 @@ namespace SCCL
 				ChkHashCol("memcpy");
 				if (argCount == 3 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isPointerType() && argArray[1]->getType()->isPointerType() && argArray[2]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult apCount;
+					llvm::APSInt apCount;
 					int iCount;
-					if (argArray[2]->EvaluateAsInt(apCount, context) && (iCount = apCount.Val.getInt().getSExtValue(), iCount > 0) && iCount % stackWidth == 0)
+					if (argArray[2]->EvaluateAsInt(apCount, context) && (iCount = apCount.getSExtValue(), iCount > 0) && iCount % stackWidth == 0)
 					{
 						int itemCount = iCount / stackWidth;
 						if (itemCount == 1)
@@ -794,17 +786,17 @@ namespace SCCL
 					static uint32_t loopLblCount = -1;
 					loopLblCount++;
 
-					Expr::EvalResult sResult, vResult;
-					if (argArray[2]->EvaluateAsInt(sResult, context) && sResult.Val.getInt().getSExtValue() % scriptData.getBuildPlatformSize() == 0 && argArray[1]->EvaluateAsInt(vResult, context))
+					llvm::APSInt sResult, vResult;
+					if (argArray[2]->EvaluateAsInt(sResult, context) && sResult.getSExtValue() % scriptData.getBuildPlatformSize() == 0 && argArray[1]->EvaluateAsInt(vResult, context))
 					{
 
-						if (sResult.Val.getInt().getSExtValue() <= 0)
+						if (sResult.getSExtValue() <= 0)
 							Throw("memset size must greater then 0", TheRewriter, callee->getSourceRange());
-						if ((uint32_t)vResult.Val.getInt().getExtValue() > 255)
+						if ((uint32_t)vResult.getExtValue() > 255)
 							Throw("memset value must be a byte", TheRewriter, callee->getSourceRange());
-						int value = vResult.Val.getInt().getSExtValue() & 0xFF;
+						int value = vResult.getSExtValue() & 0xFF;
 						value = value << 24 | value << 16 | value << 8 | value;
-						int itemCount = sResult.Val.getInt().getSExtValue() / scriptData.getBuildPlatformSize();
+						int itemCount = sResult.getSExtValue() / scriptData.getBuildPlatformSize();
 						if (itemCount < 50)
 						{
 							if (value == 0)
@@ -838,7 +830,7 @@ namespace SCCL
 
 							AddInstruction(Label, "__memset-loop-" + to_string(loopLblCount));
 							AddInstruction(GetFrame, incIndex);
-							AddInstruction(PushInt, sResult.Val.getInt().getExtValue());
+							AddInstruction(PushInt, sResult.getExtValue());
 							AddInstruction(JumpGE, "__memset-loopend-" + to_string(loopLblCount));
 
 							if (value == 0)
@@ -930,10 +922,10 @@ namespace SCCL
 					parseExpression(argArray[1], false, true);
 					parseExpression(argArray[0], false, true);
 
-					Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[2]->EvaluateAsInt(result, context))
 					{
-						int64_t iValue = result.Val.getInt().isSigned() ? result.Val.getInt().getSExtValue() : result.Val.getInt().getExtValue();
+						int64_t iValue = result.isSigned() ? result.getSExtValue() : result.getExtValue();
 
 						if (iValue > 0 && iValue < 256)
 						{
@@ -987,10 +979,10 @@ namespace SCCL
 					}
 					parseExpression(argArray[0], false, true);
 
-					Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[2]->EvaluateAsInt(result, context))
 					{
-						int64_t iValue = result.Val.getInt().isSigned() ? result.Val.getInt().getSExtValue() : result.Val.getInt().getExtValue();
+						int64_t iValue = result.isSigned() ? result.getSExtValue() : result.getExtValue();
 						if (iValue > 0 && iValue < 256)
 						{
 							AddInstruction(StrAdd, iValue);
@@ -1043,10 +1035,10 @@ namespace SCCL
 					}
 					parseExpression(argArray[0], false, true);
 
-					Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[2]->EvaluateAsInt(result, context))
 					{
-						int64_t iValue = result.Val.getInt().isSigned() ? result.Val.getInt().getSExtValue() : result.Val.getInt().getExtValue();
+						int64_t iValue = result.isSigned() ? result.getSExtValue() : result.getExtValue();
 						if (iValue > 0 && iValue < 256)
 						{
 							AddInstruction(StrAddI, iValue);
@@ -1099,10 +1091,10 @@ namespace SCCL
 					}
 					parseExpression(argArray[0], false, true);
 
-					Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[2]->EvaluateAsInt(result, context))
 					{
-						int64_t iValue = result.Val.getInt().isSigned() ? result.Val.getInt().getSExtValue() : result.Val.getInt().getExtValue();
+						int64_t iValue = result.isSigned() ? result.getSExtValue() : result.getExtValue();
 						if (iValue > 0 && iValue < 256)
 						{
 							AddInstruction(ItoS, iValue);
@@ -1476,10 +1468,10 @@ namespace SCCL
 				ChkHashCol("bit_test");
 				if (argCount == 2 && callee->getReturnType()->isBooleanType() && argArray[0]->getType()->isIntegerType() && argArray[1]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[1]->EvaluateAsInt(result, context))
 					{
-						auto iResult = result.Val.getInt().getSExtValue();
+						auto iResult = result.getSExtValue();
 						if (iResult < 32 && iResult >= 0)
 						{
 							parseExpression(argArray[0], false, true);
@@ -1496,10 +1488,10 @@ namespace SCCL
 				ChkHashCol("bit_set");
 				if (argCount == 2 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isPointerType() && argArray[0]->getType()->getPointeeType()->isIntegerType() && argArray[1]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[1]->EvaluateAsInt(result, context))
 					{
-						auto iResult = result.Val.getInt().getSExtValue();
+						auto iResult = result.getSExtValue();
 						if (iResult < 32 && iResult >= 0)
 						{
 							parseExpression(argArray[0], false, true);
@@ -1516,10 +1508,10 @@ namespace SCCL
 				ChkHashCol("bit_reset");
 				if (argCount == 2 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isPointerType() && argArray[0]->getType()->getPointeeType()->isIntegerType() && argArray[1]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[1]->EvaluateAsInt(result, context))
 					{
-						auto iResult = result.Val.getInt().getSExtValue();
+						auto iResult = result.getSExtValue();
 						if (iResult < 32 && iResult >= 0)
 						{
 							parseExpression(argArray[0], false, true);
@@ -1536,10 +1528,10 @@ namespace SCCL
 				ChkHashCol("bit_flip");
 				if (argCount == 2 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isPointerType() && argArray[0]->getType()->getPointeeType()->isIntegerType() && argArray[1]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[1]->EvaluateAsInt(result, context))
 					{
-						auto iResult = result.Val.getInt().getSExtValue();
+						auto iResult = result.getSExtValue();
 						if (iResult < 32 && iResult >= 0)
 						{
 							parseExpression(argArray[0], false, true);
@@ -1800,11 +1792,11 @@ namespace SCCL
 				ChkHashCol("setStaticAtIndex");
 				if (argCount == 2 && callee->getReturnType()->isVoidType() && getSizeFromBytes(getSizeOfType(argArray[1]->getType().getTypePtr())) == 1)
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[0]->EvaluateAsInt(result, context))
 					{
 						parseExpression(argArray[1], false, true);
-						AddInstruction(SetStaticRaw, result.Val.getInt().getSExtValue());
+						AddInstruction(SetStaticRaw, result.getSExtValue());
 						return true;
 					} EvalFailed
 				} BadIntrin
@@ -1814,10 +1806,10 @@ namespace SCCL
 				ChkHashCol("getStaticAtIndex");
 				if (argCount == 1 && getSizeFromBytes(getSizeOfType(callee->getReturnType().getTypePtr())) == 1)
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[0]->EvaluateAsInt(result, context))
 					{
-						AddInstruction(GetStaticRaw, result.Val.getInt().getSExtValue());
+						AddInstruction(GetStaticRaw, result.getSExtValue());
 						return true;
 					} EvalFailed
 				} BadIntrin
@@ -1827,10 +1819,10 @@ namespace SCCL
 				ChkHashCol("getStaticPtrAtIndex");
 				if (argCount == 1 && getSizeFromBytes(getSizeOfType(callee->getReturnType().getTypePtr())) == 1)
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[0]->EvaluateAsInt(result, context))
 					{
-						AddInstruction(GetStaticPRaw, result.Val.getInt().getSExtValue());
+						AddInstruction(GetStaticPRaw, result.getSExtValue());
 						return true;
 					} EvalFailed
 				} BadIntrin
@@ -1840,11 +1832,11 @@ namespace SCCL
 				ChkHashCol("setGlobalAtIndex");
 				if (argCount == 2 && callee->getReturnType()->isVoidType() && getSizeFromBytes(getSizeOfType(argArray[1]->getType().getTypePtr())) == 1)
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[0]->EvaluateAsInt(result, context))
 					{
 						parseExpression(argArray[1], false, true);
-						AddInstruction(SetGlobal, result.Val.getInt().getSExtValue());
+						AddInstruction(SetGlobal, result.getSExtValue());
 						return true;
 					} EvalFailed
 				} BadIntrin
@@ -1854,10 +1846,10 @@ namespace SCCL
 				ChkHashCol("getGlobalAtIndex");
 				if (argCount == 1 && getSizeFromBytes(getSizeOfType(callee->getReturnType().getTypePtr())) == 1)
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[0]->EvaluateAsInt(result, context))
 					{
-						AddInstruction(GetGlobal, result.Val.getInt().getSExtValue());
+						AddInstruction(GetGlobal, result.getSExtValue());
 						return true;
 					} EvalFailed
 				} BadIntrin
@@ -1867,10 +1859,10 @@ namespace SCCL
 				ChkHashCol("getGlobalPtrAtIndex");
 				if (argCount == 1 && getSizeFromBytes(getSizeOfType(callee->getReturnType().getTypePtr())) == 1)
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[0]->EvaluateAsInt(result, context))
 					{
-						AddInstruction(GetGlobalP, result.Val.getInt().getSExtValue());
+						AddInstruction(GetGlobalP, result.getSExtValue());
 						return true;
 					} EvalFailed
 				} BadIntrin
@@ -1880,17 +1872,17 @@ namespace SCCL
 				ChkHashCol("getPtrFromArrayIndex");
 				if (argCount == 3 && callee->getReturnType()->isPointerType() && argArray[0]->getType()->isPointerType() && argArray[1]->getType()->isIntegerType() && argArray[2]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult itemSize;
+					llvm::APSInt itemSize;
 					if (argArray[2]->EvaluateAsInt(itemSize, context))
 					{
-						if (itemSize.Val.getInt().getSExtValue() < 1 || itemSize.Val.getInt().getSExtValue() > 0xFFFF)
-							Throw("getPtrFromArrayIndex item size expected a value between 1 and 65535, got'" + to_string(itemSize.Val.getInt().getSExtValue()) + "'", TheRewriter, argArray[2]->getSourceRange());
+						if (itemSize.getSExtValue() < 1 || itemSize.getSExtValue() > 0xFFFF)
+							Throw("getPtrFromArrayIndex item size expected a value between 1 and 65535, got'" + to_string(itemSize.getSExtValue()) + "'", TheRewriter, argArray[2]->getSourceRange());
 
-						Expr::EvalResult index;
-						if (Option_OptimizationLevel > OptimisationLevel::OL_Trivial && argArray[1]->EvaluateAsInt(index, context) && ((itemSize.Val.getInt().getSExtValue() * index.Val.getInt().getSExtValue()) < 0xFFFF))
+						llvm::APSInt index;
+						if (Option_OptimizationLevel > OptimisationLevel::OL_Trivial && argArray[1]->EvaluateAsInt(index, context) && ((itemSize.getSExtValue() * index.getSExtValue()) < 0xFFFF))
 						{
 							parseExpression(argArray[0], false, true);
-							AddInstruction(GetImmP, 1 + itemSize.Val.getInt().getSExtValue() * index.Val.getInt().getSExtValue());
+							AddInstruction(GetImmP, 1 + itemSize.getSExtValue() * index.getSExtValue());
 							return true;
 						}
 						else
@@ -1901,10 +1893,10 @@ namespace SCCL
 							const int BT = scriptData.getBuildType();
 							if (BT == BT_GTAIV || BT == BT_GTAIV_TLAD || BT == BT_GTAIV_TBOGT)
 							{
-								AddInstruction(PushInt, (int32_t)itemSize.Val.getInt().getSExtValue());
+								AddInstruction(PushInt, (int32_t)itemSize.getSExtValue());
 							}
 							parseExpression(argArray[0], false, true);//pointer
-							AddInstruction(GetArrayP, itemSize.Val.getInt().getSExtValue());
+							AddInstruction(GetArrayP, itemSize.getSExtValue());
 							return true;
 						}
 					} EvalFailed
@@ -1915,11 +1907,11 @@ namespace SCCL
 				ChkHashCol("getPtrImmIndex");
 				if (argCount == 2 && callee->getReturnType()->isPointerType() && argArray[0]->getType()->isPointerType() && argArray[1]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult index;
-					if (argArray[1]->EvaluateAsInt(index, context) && index.Val.getInt().getSExtValue() >= 0 && index.Val.getInt().getSExtValue() <= 0xFFFF)
+					APSInt index;
+					if (argArray[1]->EvaluateAsInt(index, context) && index.getSExtValue() >= 0 && index.getSExtValue() <= 0xFFFF)
 					{
 						parseExpression(argArray[0], false, true);
-						AddInstructionComment(GetImmP, "imm_" + to_string(index.Val.getInt().getSExtValue()), index.Val.getInt().getSExtValue());
+						AddInstructionComment(GetImmP, "imm_" + to_string(index.getSExtValue()), index.getSExtValue());
 						return true;
 					}
 					else
@@ -1939,12 +1931,12 @@ namespace SCCL
 				//	out << call->getExprLoc().
 				if (argCount == 1 && callee->getReturnType()->isVoidType())
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[0]->getType()->isIntegerType())
 					{
 						if (argArray[0]->EvaluateAsInt(result, context))
 						{
-							int intValue = result.Val.getInt().getSExtValue();
+							int intValue = result.getSExtValue();
 							if (intValue <= 0)
 							{
 								Throw("Expected positive integer constant for pop amount argument in popMult, got " + to_string(intValue), TheRewriter, argArray[0]->getSourceRange());
@@ -2028,10 +2020,10 @@ namespace SCCL
 
 				if (argCount == 1 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[0]->EvaluateAsInt(result, context))
 					{
-						int64_t value = result.Val.getInt().getSExtValue();
+						int64_t value = result.getSExtValue();
 						if (value >= 2)
 						{
 							LocalVariables.addLevel();
@@ -2069,7 +2061,7 @@ namespace SCCL
 
 				if (argCount == 1 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult result;
+					llvm::APSInt result;
 					if (argArray[0]->EvaluateAsInt(result, context))
 					{
 						const Expr* expr = argArray[0]->IgnoreParens()->IgnoreCasts();
@@ -2077,7 +2069,7 @@ namespace SCCL
 						{
 							Warn("Exchange called with a sizeof operation, did you mean to use stacksizeof", TheRewriter, argArray[0]->getSourceRange());
 						}
-						int64_t value = result.Val.getInt().getSExtValue();
+						int64_t value = result.getSExtValue();
 						if (value > 0)
 						{
 							LocalVariables.addLevel();
@@ -2163,10 +2155,10 @@ namespace SCCL
 				ChkHashCol("__nop");
 				if (argCount == 1 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult result;
-					if (argArray[0]->EvaluateAsInt(result, context) && result.Val.getInt().getSExtValue() > 0 && result.Val.getInt().getSExtValue() <= 4096)
+					APSInt result;
+					if (argArray[0]->EvaluateAsInt(result, context) && result.getSExtValue() > 0 && result.getSExtValue() <= 4096)
 					{
-						AddInstruction(Nop, result.Val.getInt().getSExtValue());
+						AddInstruction(Nop, result.getSExtValue());
 						return true;
 					}
 					else
@@ -2214,13 +2206,13 @@ namespace SCCL
 				ChkHashCol("__push2");
 				if (argCount == 2 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType() && argArray[1]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult apCount;
+					APSInt apCount;
 					if (argArray[0]->EvaluateAsInt(apCount, context))
 					{
-						AddInstruction(PushInt, apCount.Val.getInt().getSExtValue());
+						AddInstruction(PushInt, apCount.getSExtValue());
 						if (argArray[1]->EvaluateAsInt(apCount, context))
 						{
-							AddInstruction(PushInt, apCount.Val.getInt().getSExtValue());
+							AddInstruction(PushInt, apCount.getSExtValue());
 							return true;
 						} EvalFailed
 					} EvalFailed
@@ -2231,16 +2223,16 @@ namespace SCCL
 				ChkHashCol("__push3");
 				if (argCount == 3 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType() && argArray[1]->getType()->isIntegerType() && argArray[2]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult apCount;
+					APSInt apCount;
 					if (argArray[0]->EvaluateAsInt(apCount, context))
 					{
-						AddInstruction(PushInt, apCount.Val.getInt().getSExtValue());
+						AddInstruction(PushInt, apCount.getSExtValue());
 						if (argArray[1]->EvaluateAsInt(apCount, context))
 						{
-							AddInstruction(PushInt, apCount.Val.getInt().getSExtValue());
+							AddInstruction(PushInt, apCount.getSExtValue());
 							if (argArray[2]->EvaluateAsInt(apCount, context))
 							{
-								AddInstruction(PushInt, apCount.Val.getInt().getSExtValue());
+								AddInstruction(PushInt, apCount.getSExtValue());
 								return true;
 							} EvalFailed
 						} EvalFailed
@@ -2268,14 +2260,14 @@ namespace SCCL
 				ChkHashCol("__callNative");
 				if (argCount == 3 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType() && argArray[1]->getType()->isIntegerType() && argArray[2]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult apCount, apCount1, apCount2;
+					APSInt apCount, apCount1, apCount2;
 					if (argArray[0]->EvaluateAsInt(apCount, context))
 					{
 						if (argArray[1]->EvaluateAsInt(apCount1, context))
 						{
 							if (argArray[2]->EvaluateAsInt(apCount2, context))
 							{
-								AddInstruction(Native, apCount.Val.getInt().getSExtValue() & 0xFFFFFFFF, apCount1.Val.getInt().getSExtValue(), apCount2.Val.getInt().getSExtValue());
+								AddInstruction(Native, apCount.getSExtValue() & 0xFFFFFFFF, apCount1.getSExtValue(), apCount2.getSExtValue());
 								return true;
 							} EvalFailed
 						} EvalFailed
@@ -2287,8 +2279,7 @@ namespace SCCL
 				ChkHashCol("__callNativePc");
 				if (argCount == 4 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType() && argArray[1]->getType()->isIntegerType() && argArray[2]->getType()->isIntegerType() && argArray[3]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult apCount, apCount1, apCount2,
-                                      apCount3;
+					APSInt apCount, apCount1, apCount2, apCount3;
 					if (argArray[0]->EvaluateAsInt(apCount, context))
 					{
 						if (argArray[1]->EvaluateAsInt(apCount1, context))
@@ -2297,7 +2288,7 @@ namespace SCCL
 							{
 								if (argArray[3]->EvaluateAsInt(apCount2, context))
 								{
-									AddInstruction(Native, (apCount.Val.getInt().getSExtValue() << 32) | apCount1.Val.getInt().getSExtValue(), apCount2.Val.getInt().getSExtValue(), apCount3.Val.getInt().getSExtValue());
+									AddInstruction(Native, (apCount.getSExtValue() << 32) | apCount1.getSExtValue(), apCount2.getSExtValue(), apCount3.getSExtValue());
 									return true;
 								} EvalFailed
 							} EvalFailed
@@ -2310,12 +2301,12 @@ namespace SCCL
 				ChkHashCol("__return");
 				if (argCount == 2 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isIntegerType() && argArray[1]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult apCount, apCount1;
-					if (argArray[0]->EvaluateAsInt(apCount, context) && apCount.Val.getInt().getSExtValue() <= 255)
+					APSInt apCount, apCount1;
+					if (argArray[0]->EvaluateAsInt(apCount, context) && apCount.getSExtValue() <= 255)
 					{
-						if (argArray[1]->EvaluateAsInt(apCount1, context) && apCount.Val.getInt().getSExtValue() <= 255)
+						if (argArray[1]->EvaluateAsInt(apCount1, context) && apCount.getSExtValue() <= 255)
 						{
-							AddInstruction(Return, apCount.Val.getInt().getSExtValue(), apCount1.Val.getInt().getSExtValue());
+							AddInstruction(Return, apCount.getSExtValue(), apCount1.getSExtValue());
 							return true;
 						} EvalFailed
 					} EvalFailed
@@ -2356,7 +2347,7 @@ namespace SCCL
 				{
 					if (argCount >= 2 && argCount % 2 == 0)
 					{
-                        Expr::EvalResult apCount;
+						APSInt apCount;
 						string str;
 						bool isSwitchOver255 = argCount >= 255 * 2;
 						int SwitchCount = 1, tempSwitchIndex = 0;
@@ -2385,7 +2376,7 @@ namespace SCCL
 							{
 								if (EvaluateAsString(argArray[i + 1], str))
 								{
-									scriptData.getCurrentFunction()->addSwitchCase(apCount.Val.getInt().getSExtValue(), str + scriptData.getInlineJumpLabelAppend());
+									scriptData.getCurrentFunction()->addSwitchCase(apCount.getSExtValue(), str + scriptData.getInlineJumpLabelAppend());
 
 								} EvalFailedStr
 							} EvalFailed
@@ -2449,8 +2440,8 @@ namespace SCCL
 
 				if (argCount == 2 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isPointerType() && argArray[1]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult result;
-					if (argArray[1]->EvaluateAsInt(result, context) && result.Val.getInt() == 1)
+					llvm::APSInt result;
+					if (argArray[1]->EvaluateAsInt(result, context) && result == 1)
 					{
 						parseExpression(argArray[0], false, true);
 						AddInstruction(PGet);
@@ -2474,8 +2465,8 @@ namespace SCCL
 
 				if (argCount == 2 && callee->getReturnType()->isVoidType() && argArray[0]->getType()->isPointerType() && argArray[1]->getType()->isIntegerType())
 				{
-                    Expr::EvalResult result;
-					if (argArray[1]->EvaluateAsInt(result, context) && result.Val.getInt() == 1)
+					llvm::APSInt result;
+					if (argArray[1]->EvaluateAsInt(result, context) && result == 1)
 					{
 						parseExpression(argArray[0], false, true);
 						AddInstruction(PSet);
@@ -2975,7 +2966,7 @@ namespace SCCL
 				if (ret->getRetValue())
 				{
 					QualType type = ret->getRetValue()->getType();
-					size = context.getTypeInfoDataSizeInChars(type).Width.getQuantity();
+					size = context.getTypeInfoDataSizeInChars(type).first.getQuantity();
 				}
 
 				int32_t paramSize = 0;
@@ -3010,7 +3001,7 @@ namespace SCCL
 		{
 			Throw("Default case should be handled");
 			/*DefaultStmt *caseD = cast<DefaultStmt>(s);
-			AddInstruction(Label, to_string(caseD->getBeginLoc().getRawEncoding()) + scriptData.getInlineJumpLabelAppend());
+			AddInstruction(Label, to_string(caseD->getLocStart().getRawEncoding()) + scriptData.getInlineJumpLabelAppend());
 			LocalVariables.addLevel();
 
 			if (caseD->getSubStmt())
@@ -3021,7 +3012,7 @@ namespace SCCL
 		{
 			Throw("Case Statement should be handled");
 			/*CaseStmt *caseS = cast<CaseStmt>(s);
-			AddInstruction(Label, to_string(caseS->getBeginLoc().getRawEncoding()) + scriptData.getInlineJumpLabelAppend());
+			AddInstruction(Label, to_string(caseS->getLocStart().getRawEncoding()) + scriptData.getInlineJumpLabelAppend());
 
 			LocalVariables.addLevel();
 			if (caseS->getRHS())
@@ -3056,13 +3047,13 @@ namespace SCCL
 				{
 					CaseStmt *caseS = cast<CaseStmt>(sCase);
 
-					Expr::EvalResult result;
+					llvm::APSInt result;
 					if (caseS->getLHS()->EvaluateAsInt(result, context))
 					{
 						int val;
 						if (!CheckExprForSizeOf(caseS->getLHS()->IgnoreParens(), &val))
 						{
-							val = result.Val.getInt().getSExtValue();
+							val = result.getSExtValue();
 						}
 						if (caseS->getRHS())
 						{
@@ -3071,11 +3062,11 @@ namespace SCCL
 								int valR;
 								if (!CheckExprForSizeOf(caseS->getLHS()->IgnoreParens(), &valR))
 								{
-									valR = result.Val.getInt().getSExtValue();
+									valR = result.getSExtValue();
 								}
 								if (val > valR)
 								{
-									Throw("GNU switch range min value is greater than max value", TheRewriter, SourceRange(caseS->getLHS()->getBeginLoc(), caseS->getRHS()->getEndLoc()));
+									Throw("GNU switch range min value is greater than max value", TheRewriter, SourceRange(caseS->getLHS()->getLocStart(), caseS->getRHS()->getLocEnd()));
 								}
 								for (int i = val; i <= valR; i++)
 								{
@@ -3230,7 +3221,7 @@ namespace SCCL
 			AddInstruction(GoToStack);
 		}
 		else
-			Throw("Undefined statement \"" + string(s->getStmtClassName()) + "\"", TheRewriter, s->getBeginLoc());
+			Throw("Undefined statement \"" + string(s->getStmtClassName()) + "\"", TheRewriter, s->getLocStart());
 
 		return true;
 	}
@@ -3368,9 +3359,7 @@ namespace SCCL
 			if (isa<MemberExpr>(callee))
 			{
 				//const MemberExpr *expr = cast<const MemberExpr>(call->getCallee());
-                parseExpression(call->getCallee(), false, true);
-                AddInstruction(PCall);
-				//Throw("Unhandled Call Member Expression", TheRewriter, e->getSourceRange());
+				Throw("Unhandled Call Member Expression", TheRewriter, e->getSourceRange());
 			}
 			else if (isa<CastExpr>(callee))
 			{
@@ -3511,7 +3500,7 @@ namespace SCCL
 										if (isRet || isExpr || inlineSpec) //inline it
 										{
 											inlined = true;
-											if (!scriptData.addFunctionInline(name, to_string(e->getEndLoc().getRawEncoding())))
+											if (!scriptData.addFunctionInline(name, to_string(e->getLocEnd().getRawEncoding())))
 											{
 												TEST(false, "Could not inline function", TheRewriter, e->getSourceRange());
 											}
@@ -3574,7 +3563,6 @@ namespace SCCL
 
 				}
 
-
 				if (call->getType()->isVoidType() == false)
 				{
 					if (!isLtoRValue)
@@ -3594,7 +3582,6 @@ namespace SCCL
 			return 1;
 
 		}
-
 		else if (isa<CastExpr>(e))
 		{
 			const CastExpr *icast = cast<const CastExpr>(e);
@@ -4942,10 +4929,10 @@ namespace SCCL
 					AddInstruction(Dup);
 					AddInstruction(PGet);
 				}
-                Expr::EvalResult intRes;
+				llvm::APSInt intRes;
 				if (bOp->getRHS()->EvaluateAsInt(intRes, context))
 				{
-					int64_t val = intRes.Val.getInt().getSExtValue();
+					int64_t val = intRes.getSExtValue();
 					if (isa<clang::PointerType>(bOp->getLHS()->getType()))
 					{
 						const clang::Type* pTypePtr = bOp->getType().getTypePtr()->getPointeeType().getTypePtr();
@@ -5353,7 +5340,7 @@ namespace SCCL
 							int i;
 							for (i = 0; i < initCount; i += 4)
 							{
-                                Expr::EvalResult res;
+								llvm::APSInt res;
 								int evaluated[4];
 								const Expr* inits[4];
 								bool allconst = true;
@@ -5365,7 +5352,7 @@ namespace SCCL
 										inits[j] = I->getInit(i + j);
 										if ((succ[j] = inits[j]->EvaluateAsInt(res, context)))
 										{
-											evaluated[j] = res.Val.getInt().getSExtValue() & 0xFF;
+											evaluated[j] = res.getSExtValue() & 0xFF;
 										}
 										else
 										{
@@ -5434,7 +5421,7 @@ namespace SCCL
 							int i;
 							for (i = 0; i < initCount; i += 2)
 							{
-                                Expr::EvalResult res;
+								llvm::APSInt res;
 								int evaluated[2];
 								const Expr* inits[2];
 								bool allconst = true;
@@ -5446,7 +5433,7 @@ namespace SCCL
 										inits[j] = I->getInit(i + j);
 										if ((succ[j] = inits[j]->EvaluateAsInt(res, context)))
 										{
-											evaluated[j] = res.Val.getInt().getSExtValue() & 0xFFFF;
+											evaluated[j] = res.getSExtValue() & 0xFFFF;
 										}
 										else
 										{
@@ -5698,14 +5685,14 @@ namespace SCCL
 							}
 							break;
 						}
-						Throw("Jenkins Method called with unsupported arg type, please use a StringLiteral argument", TheRewriter, arg->getBeginLoc());
+						Throw("Jenkins Method called with unsupported arg type, please use a StringLiteral argument", TheRewriter, arg->getLocStart());
 						break;
 					}
 				}
-				Throw("Jenkins Method called without any argument, please use a StringLiteral argument", TheRewriter, ueTrait->getBeginLoc());
+				Throw("Jenkins Method called without any argument, please use a StringLiteral argument", TheRewriter, ueTrait->getLocStart());
 				break;
 				default:
-					Throw("Unsupported UnaryExprOrTypeTrait Type:" + to_string(ueTrait->getKind()), TheRewriter, ueTrait->getBeginLoc());
+					Throw("Unsupported UnaryExprOrTypeTrait Type:" + to_string(ueTrait->getKind()), TheRewriter, ueTrait->getLocStart());
 					break;
 			}
 		}
@@ -5808,7 +5795,7 @@ namespace SCCL
 		const Expr *base = arr->getBase();
 		const Expr *index = arr->getIdx();
 
-		Expr::EvalResult evalIndex;
+		llvm::APSInt evalIndex;
 		bool isCst = index->EvaluateAsInt(evalIndex, context);
 
 		const DeclRefExpr *declRef = getDeclRefExpr(base);
@@ -5837,7 +5824,7 @@ namespace SCCL
 
 				if (isCst)
 				{
-					int iRes = evalIndex.Val.getInt().getSExtValue();
+					int iRes = evalIndex.getSExtValue();
 					if (iRes != 0)
 					{
 						AddInstruction(AddImm, iRes);
@@ -5863,7 +5850,7 @@ namespace SCCL
 				parseExpression(base, base->getType().getTypePtr()->isArrayType(), true);
 				if (isCst)
 				{
-					int iRes = evalIndex.Val.getInt().getSExtValue();
+					int iRes = evalIndex.getSExtValue();
 					if (iRes != 0)
 					{
 						AddInstruction(AddImm, iRes * 2);
@@ -5897,7 +5884,7 @@ namespace SCCL
 		{
 			if (isCst)
 			{
-				int iRes = evalIndex.Val.getInt().getSExtValue();
+				int iRes = evalIndex.getSExtValue();
 				if (iRes != 0)
 				{
 					int size = getSizeOfType(type);
@@ -5964,7 +5951,7 @@ namespace SCCL
 				size = getSizeFromBytes(size) * stackWidth;
 			if (isCst)
 			{
-				int iRes = evalIndex.Val.getInt().getSExtValue();
+				int iRes = evalIndex.getSExtValue();
 				if (iRes != 0)
 				{
 					if (size % scriptData.getStackWidth() == 0)
@@ -6007,7 +5994,7 @@ namespace SCCL
 		{
 			if (isCst)
 			{
-				int iRes = evalIndex.Val.getInt().getSExtValue();
+				int iRes = evalIndex.getSExtValue();
 				if (iRes != 0)
 				{
 					int size = getSizeOfType(type);
@@ -6132,11 +6119,11 @@ namespace SCCL
 				AddInstruction(Return);
 			}
 
-			//Throw(f->getNameAsString() + ": not all control paths return a value", TheRewriter, f->getEndLoc());
+			//Throw(f->getNameAsString() + ": not all control paths return a value", TheRewriter, f->getLocEnd());
 			//uint32_t FunctionStackCount = LocalVariables.maxIndex - (isa<CXXMethodDecl>(f) ? 1 : 0) - paramSize;
 
 			if (LocalVariables.getMaxIndex() > 65536)
-				Throw("Function \"" + f->getNameAsString() + "\" has a stack size of " + to_string(LocalVariables.getMaxIndex()) + " when the max is 65536", TheRewriter, f->getBeginLoc());
+				Throw("Function \"" + f->getNameAsString() + "\" has a stack size of " + to_string(LocalVariables.getMaxIndex()) + " when the max is 65536", TheRewriter, f->getLocStart());
 			else
 			{
 				func->setStackSize(LocalVariables.getMaxIndex());

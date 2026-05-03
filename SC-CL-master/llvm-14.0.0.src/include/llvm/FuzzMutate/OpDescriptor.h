@@ -1,8 +1,9 @@
 //===-- OpDescriptor.h ------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -19,7 +20,6 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/DerivedTypes.h"
-#include "llvm/IR/Instructions.h"
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Value.h"
 #include <functional>
@@ -128,7 +128,7 @@ static inline SourcePred anyFloatType() {
 
 static inline SourcePred anyPtrType() {
   auto Pred = [](ArrayRef<Value *>, const Value *V) {
-    return V->getType()->isPointerTy() && !V->isSwiftError();
+    return V->getType()->isPointerTy();
   };
   auto Make = [](ArrayRef<Value *>, ArrayRef<Type *> Ts) {
     std::vector<Constant *> Result;
@@ -142,11 +142,8 @@ static inline SourcePred anyPtrType() {
 
 static inline SourcePred sizedPtrType() {
   auto Pred = [](ArrayRef<Value *>, const Value *V) {
-    if (V->isSwiftError())
-      return false;
-
     if (const auto *PtrT = dyn_cast<PointerType>(V->getType()))
-      return PtrT->getPointerElementType()->isSized();
+      return PtrT->getElementType()->isSized();
     return false;
   };
   auto Make = [](ArrayRef<Value *>, ArrayRef<Type *> Ts) {

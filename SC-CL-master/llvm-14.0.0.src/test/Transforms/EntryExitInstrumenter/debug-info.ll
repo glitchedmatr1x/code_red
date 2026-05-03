@@ -1,4 +1,4 @@
-; RUN: opt -passes="function(ee-instrument),cgscc(inline),function(ee-instrument<post-inline>)" -S < %s | FileCheck %s
+; RUN: opt -passes="function(ee-instrument),cgscc(inline),function(post-inline-ee-instrument)" -S < %s | FileCheck %s
 
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -35,7 +35,7 @@ attributes #0 = { "instrument-function-entry"="__cyg_profile_func_enter" "instru
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{i32 1, !"wchar_size", i32 4}
 !6 = !{!"clang version 6.0.0 (trunk 319007) (llvm/trunk 319050)"}
-!7 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 2, type: !8, isLocal: false, isDefinition: true, scopeLine: 2, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
+!7 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 2, type: !8, isLocal: false, isDefinition: true, scopeLine: 2, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
 !8 = !DISubroutineType(types: !9)
 !9 = !{!10, !10}
 !10 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)

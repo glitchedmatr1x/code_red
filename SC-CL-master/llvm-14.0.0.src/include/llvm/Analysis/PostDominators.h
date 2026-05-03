@@ -1,8 +1,9 @@
 //=- llvm/Analysis/PostDominators.h - Post Dominator Calculation --*- C++ -*-=//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -25,25 +26,15 @@ class raw_ostream;
 
 /// PostDominatorTree Class - Concrete subclass of DominatorTree that is used to
 /// compute the post-dominator tree.
-class PostDominatorTree : public PostDomTreeBase<BasicBlock> {
-public:
+struct PostDominatorTree : public PostDomTreeBase<BasicBlock> {
   using Base = PostDomTreeBase<BasicBlock>;
 
-  PostDominatorTree() = default;
-  explicit PostDominatorTree(Function &F) { recalculate(F); }
   /// Handle invalidation explicitly.
   bool invalidate(Function &F, const PreservedAnalyses &PA,
                   FunctionAnalysisManager::Invalidator &);
-
-  // Ensure base-class overloads are visible.
-  using Base::dominates;
-
-  /// Return true if \p I1 dominates \p I2. This checks if \p I2 comes before
-  /// \p I1 if they belongs to the same basic block.
-  bool dominates(const Instruction *I1, const Instruction *I2) const;
 };
 
-/// Analysis pass which computes a \c PostDominatorTree.
+/// \brief Analysis pass which computes a \c PostDominatorTree.
 class PostDominatorTreeAnalysis
     : public AnalysisInfoMixin<PostDominatorTreeAnalysis> {
   friend AnalysisInfoMixin<PostDominatorTreeAnalysis>;
@@ -51,15 +42,15 @@ class PostDominatorTreeAnalysis
   static AnalysisKey Key;
 
 public:
-  /// Provide the result type for this analysis pass.
+  /// \brief Provide the result type for this analysis pass.
   using Result = PostDominatorTree;
 
-  /// Run the analysis pass over a function and produce a post dominator
+  /// \brief Run the analysis pass over a function and produce a post dominator
   ///        tree.
   PostDominatorTree run(Function &F, FunctionAnalysisManager &);
 };
 
-/// Printer pass for the \c PostDominatorTree.
+/// \brief Printer pass for the \c PostDominatorTree.
 class PostDominatorTreePrinterPass
     : public PassInfoMixin<PostDominatorTreePrinterPass> {
   raw_ostream &OS;
@@ -75,20 +66,22 @@ struct PostDominatorTreeWrapperPass : public FunctionPass {
 
   PostDominatorTree DT;
 
-  PostDominatorTreeWrapperPass();
+  PostDominatorTreeWrapperPass() : FunctionPass(ID) {
+    initializePostDominatorTreeWrapperPassPass(*PassRegistry::getPassRegistry());
+  }
 
   PostDominatorTree &getPostDomTree() { return DT; }
   const PostDominatorTree &getPostDomTree() const { return DT; }
 
   bool runOnFunction(Function &F) override;
 
-  void verifyAnalysis() const override;
-
   void getAnalysisUsage(AnalysisUsage &AU) const override {
     AU.setPreservesAll();
   }
 
-  void releaseMemory() override { DT.reset(); }
+  void releaseMemory() override {
+    DT.releaseMemory();
+  }
 
   void print(raw_ostream &OS, const Module*) const override;
 };

@@ -1,8 +1,9 @@
 //===- UnresolvedSet.h - Unresolved sets of declarations --------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -17,7 +18,6 @@
 #include "clang/AST/DeclAccessPair.h"
 #include "clang/Basic/LLVM.h"
 #include "clang/Basic/Specifiers.h"
-#include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/iterator.h"
 #include <cstddef>
@@ -57,7 +57,7 @@ public:
   NamedDecl *operator->() const { return **this; }
 };
 
-/// A set of unresolved declarations.
+/// \brief A set of unresolved declarations.
 class UnresolvedSetImpl {
   using DeclsTy = SmallVectorImpl<DeclAccessPair>;
 
@@ -85,8 +85,6 @@ public:
 
   const_iterator begin() const { return const_iterator(decls().begin()); }
   const_iterator end() const { return const_iterator(decls().end()); }
-
-  ArrayRef<DeclAccessPair> pairs() const { return decls(); }
 
   void addDecl(NamedDecl *D) {
     addDecl(D, AS_none);
@@ -121,14 +119,12 @@ public:
   void setAccess(iterator I, AccessSpecifier AS) { I.I->setAccess(AS); }
 
   void clear() { decls().clear(); }
-  void truncate(unsigned N) { decls().truncate(N); }
+  void set_size(unsigned N) { decls().set_size(N); }
 
   bool empty() const { return decls().empty(); }
   unsigned size() const { return decls().size(); }
 
   void append(iterator I, iterator E) { decls().append(I.I, E.I); }
-
-  template<typename Iter> void assign(Iter I, Iter E) { decls().assign(I, E); }
 
   DeclAccessPair &operator[](unsigned I) { return decls()[I]; }
   const DeclAccessPair &operator[](unsigned I) const { return decls()[I]; }
@@ -144,13 +140,13 @@ private:
   }
 };
 
-/// A set of unresolved declarations.
+/// \brief A set of unresolved declarations.
 template <unsigned InlineCapacity> class UnresolvedSet :
     public UnresolvedSetImpl {
   SmallVector<DeclAccessPair, InlineCapacity> Decls;
 };
 
-
+ 
 } // namespace clang
 
 #endif // LLVM_CLANG_AST_UNRESOLVEDSET_H

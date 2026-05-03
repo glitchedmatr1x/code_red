@@ -1,8 +1,9 @@
 //===- RangeAdapterTest.cpp - Unit tests for range adapters  --------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -129,7 +130,7 @@ template <typename T> class RangeAdapterLValueTest : public ::testing::Test {};
 
 typedef ::testing::Types<std::vector<int>, std::list<int>, int[4]>
     RangeAdapterLValueTestTypes;
-TYPED_TEST_SUITE(RangeAdapterLValueTest, RangeAdapterLValueTestTypes, );
+TYPED_TEST_CASE(RangeAdapterLValueTest, RangeAdapterLValueTestTypes);
 
 TYPED_TEST(RangeAdapterLValueTest, TrivialOperation) {
   TypeParam v = {0, 1, 2, 3};
@@ -145,7 +146,7 @@ typedef ::testing::Types<std::vector<int>, std::list<int>, CustomIteratorVector,
                          ReverseOnlyVector, BidirectionalVector,
                          BidirectionalVectorConsts>
     RangeAdapterRValueTestTypes;
-TYPED_TEST_SUITE(RangeAdapterRValueTest, RangeAdapterRValueTestTypes, );
+TYPED_TEST_CASE(RangeAdapterRValueTest, RangeAdapterRValueTestTypes);
 
 TYPED_TEST(RangeAdapterRValueTest, TrivialOperation) {
   TestRev(reverse(TypeParam({0, 1, 2, 3})));

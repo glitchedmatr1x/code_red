@@ -1,13 +1,14 @@
 //===--- Diagnostics.h - Helper class for error diagnostics -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Diagnostics class to manage error messages.
+/// \brief Diagnostics class to manage error messages.
 ///
 //===----------------------------------------------------------------------===//
 
@@ -38,24 +39,24 @@ struct SourceRange {
   SourceLocation End;
 };
 
-/// A VariantValue instance annotated with its parser context.
+/// \brief A VariantValue instance annotated with its parser context.
 struct ParserValue {
-  ParserValue() {}
+  ParserValue() : Text(), Range(), Value() {}
   StringRef Text;
   SourceRange Range;
   VariantValue Value;
 };
 
-/// Helper class to manage error messages.
+/// \brief Helper class to manage error messages.
 class Diagnostics {
 public:
-  /// Parser context types.
+  /// \brief Parser context types.
   enum ContextType {
     CT_MatcherArg = 0,
     CT_MatcherConstruct = 1
   };
 
-  /// All errors from the system.
+  /// \brief All errors from the system.
   enum ErrorType {
     ET_None = 0,
 
@@ -65,9 +66,6 @@ public:
     ET_RegistryNotBindable = 4,
     ET_RegistryAmbiguousOverload = 5,
     ET_RegistryValueNotFound = 6,
-    ET_RegistryUnknownEnumWithReplace = 7,
-    ET_RegistryNonNodeMatcher = 8,
-    ET_RegistryMatcherNoWithSupport = 9,
 
     ET_ParserStringError = 100,
     ET_ParserNoOpenParen = 101,
@@ -79,12 +77,10 @@ public:
     ET_ParserMalformedBindExpr = 107,
     ET_ParserTrailingCode = 108,
     ET_ParserNumberError = 109,
-    ET_ParserOverloadedType = 110,
-    ET_ParserMalformedChainedExpr = 111,
-    ET_ParserFailedToBuildMatcher = 112
+    ET_ParserOverloadedType = 110
   };
 
-  /// Helper stream class.
+  /// \brief Helper stream class.
   class ArgStream {
   public:
     ArgStream(std::vector<std::string> *Out) : Out(Out) {}
@@ -97,7 +93,7 @@ public:
     std::vector<std::string> *Out;
   };
 
-  /// Class defining a parser context.
+  /// \brief Class defining a parser context.
   ///
   /// Used by the parser to specify (possibly recursive) contexts where the
   /// parsing/construction can fail. Any error triggered within a context will
@@ -105,11 +101,11 @@ public:
   /// This class should be used as a RAII instance in the stack.
   struct Context {
   public:
-    /// About to call the constructor for a matcher.
+    /// \brief About to call the constructor for a matcher.
     enum ConstructMatcherEnum { ConstructMatcher };
     Context(ConstructMatcherEnum, Diagnostics *Error, StringRef MatcherName,
             SourceRange MatcherRange);
-    /// About to recurse into parsing one argument for a matcher.
+    /// \brief About to recurse into parsing one argument for a matcher.
     enum MatcherArgEnum { MatcherArg };
     Context(MatcherArgEnum, Diagnostics *Error, StringRef MatcherName,
             SourceRange MatcherRange, unsigned ArgNumber);
@@ -119,7 +115,7 @@ public:
     Diagnostics *const Error;
   };
 
-  /// Context for overloaded matcher construction.
+  /// \brief Context for overloaded matcher construction.
   ///
   /// This context will take care of merging all errors that happen within it
   /// as "candidate" overloads for the same matcher.
@@ -128,7 +124,7 @@ public:
    OverloadContext(Diagnostics* Error);
    ~OverloadContext();
 
-   /// Revert all errors that happened within this context.
+   /// \brief Revert all errors that happened within this context.
    void revertErrors();
 
   private:
@@ -136,21 +132,21 @@ public:
     unsigned BeginIndex;
   };
 
-  /// Add an error to the diagnostics.
+  /// \brief Add an error to the diagnostics.
   ///
   /// All the context information will be kept on the error message.
   /// \return a helper class to allow the caller to pass the arguments for the
   /// error message, using the << operator.
   ArgStream addError(SourceRange Range, ErrorType Error);
 
-  /// Information stored for one frame of the context.
+  /// \brief Information stored for one frame of the context.
   struct ContextFrame {
     ContextType Type;
     SourceRange Range;
     std::vector<std::string> Args;
   };
 
-  /// Information stored for each error found.
+  /// \brief Information stored for each error found.
   struct ErrorContent {
     std::vector<ContextFrame> ContextStack;
     struct Message {
@@ -162,20 +158,20 @@ public:
   };
   ArrayRef<ErrorContent> errors() const { return Errors; }
 
-  /// Returns a simple string representation of each error.
+  /// \brief Returns a simple string representation of each error.
   ///
   /// Each error only shows the error message without any context.
   void printToStream(llvm::raw_ostream &OS) const;
   std::string toString() const;
 
-  /// Returns the full string representation of each error.
+  /// \brief Returns the full string representation of each error.
   ///
   /// Each error message contains the full context.
   void printToStreamFull(llvm::raw_ostream &OS) const;
   std::string toStringFull() const;
 
 private:
-  /// Helper function used by the constructors of ContextFrame.
+  /// \brief Helper function used by the constructors of ContextFrame.
   ArgStream pushContextFrame(ContextType Type, SourceRange Range);
 
   std::vector<ContextFrame> ContextStack;
@@ -186,4 +182,4 @@ private:
 }  // namespace ast_matchers
 }  // namespace clang
 
-#endif // LLVM_CLANG_ASTMATCHERS_DYNAMIC_DIAGNOSTICS_H
+#endif  // LLVM_CLANG_AST_MATCHERS_DYNAMIC_DIAGNOSTICS_H

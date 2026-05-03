@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 #
-#===- run-clang-tidy.py - Parallel clang-tidy runner --------*- python -*--===#
+#===- run-clang-tidy.py - Parallel clang-tidy runner ---------*- python -*--===#
 #
-# Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-# See https://llvm.org/LICENSE.txt for license information.
-# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+#                     The LLVM Compiler Infrastructure
 #
-#===-----------------------------------------------------------------------===#
+# This file is distributed under the University of Illinois Open Source
+# License. See LICENSE.TXT for details.
+#
+#===------------------------------------------------------------------------===#
 # FIXME: Integrate with clang-tidy-diff.py
-
 
 """
 Parallel clang-tidy runner
@@ -48,11 +48,7 @@ import sys
 import tempfile
 import threading
 import traceback
-
-try:
-  import yaml
-except ImportError:
-  yaml = None
+import yaml
 
 is_py2 = sys.version[0] == '2'
 
@@ -60,7 +56,6 @@ if is_py2:
     import Queue as queue
 else:
     import queue as queue
-
 
 def find_compilation_database(path):
   """Adjusts the directory until a compilation database is found."""
@@ -80,17 +75,14 @@ def make_absolute(f, directory):
 
 
 def get_tidy_invocation(f, clang_tidy_binary, checks, tmpdir, build_path,
-                        header_filter, allow_enabling_alpha_checkers,
-                        extra_arg, extra_arg_before, quiet, config,
-                        line_filter):
+                        header_filter, extra_arg, extra_arg_before, quiet):
   """Gets a command line for clang-tidy."""
-  start = [clang_tidy_binary, '--use-color']
-  if allow_enabling_alpha_checkers:
-    start.append('-allow-enabling-analyzer-alpha-checkers')
+  start = [clang_tidy_binary]
   if header_filter is not None:
     start.append('-header-filter=' + header_filter)
-  if line_filter is not None:
-    start.append('-line-filter=' + line_filter)
+  else:
+    # Show warnings in all in-project headers by default.
+    start.append('-header-filter=^' + build_path + '/.*')
   if checks:
     start.append('-checks=' + checks)
   if tmpdir is not None:
@@ -107,8 +99,6 @@ def get_tidy_invocation(f, clang_tidy_binary, checks, tmpdir, build_path,
   start.append('-p=' + build_path)
   if quiet:
       start.append('-quiet')
-  if config:
-      start.append('-config=' + config)
   start.append(f)
   return start
 
@@ -117,7 +107,7 @@ def merge_replacement_files(tmpdir, mergefile):
   """Merge all replacement files in a directory into a single file"""
   # The fixes suggested by clang-tidy >= 4.0.0 are given under
   # the top level key 'Diagnostics' in the output yaml files
-  mergekey = "Diagnostics"
+  mergekey="Diagnostics"
   merged=[]
   for replacefile in glob.iglob(os.path.join(tmpdir, '*.yaml')):
     content = yaml.safe_load(open(replacefile, 'r'))
@@ -130,7 +120,7 @@ def merge_replacement_files(tmpdir, mergefile):
     # include/clang/Tooling/ReplacementsYaml.h, but the value
     # is actually never used inside clang-apply-replacements,
     # so we set it to '' here.
-    output = {'MainSourceFile': '', mergekey: merged}
+    output = { 'MainSourceFile': '', mergekey: merged }
     with open(mergefile, 'w') as out:
       yaml.safe_dump(output, out)
   else:
@@ -160,28 +150,16 @@ def apply_fixes(args, tmpdir):
   subprocess.call(invocation)
 
 
-def run_tidy(args, tmpdir, build_path, queue, lock, failed_files):
+def run_tidy(args, tmpdir, build_path, queue):
   """Takes filenames out of queue and runs clang-tidy on them."""
   while True:
     name = queue.get()
     invocation = get_tidy_invocation(name, args.clang_tidy_binary, args.checks,
                                      tmpdir, build_path, args.header_filter,
-                                     args.allow_enabling_alpha_checkers,
                                      args.extra_arg, args.extra_arg_before,
-                                     args.quiet, args.config, args.line_filter)
-
-    proc = subprocess.Popen(invocation, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, err = proc.communicate()
-    if proc.returncode != 0:
-      if proc.returncode < 0:
-        msg = "%s: terminated by signal %d\n" % (name, -proc.returncode)
-        err += msg.encode('utf-8')
-      failed_files.append(name)
-    with lock:
-      sys.stdout.write(' '.join(invocation) + '\n' + output.decode('utf-8'))
-      if len(err) > 0:
-        sys.stdout.flush()
-        sys.stderr.write(err.decode('utf-8'))
+                                     args.quiet)
+    sys.stdout.write(' '.join(invocation) + '\n')
+    subprocess.call(invocation)
     queue.task_done()
 
 
@@ -190,9 +168,6 @@ def main():
                                    'in a compilation database. Requires '
                                    'clang-tidy and clang-apply-replacements in '
                                    '$PATH.')
-  parser.add_argument('-allow-enabling-alpha-checkers',
-                      action='store_true', help='allow alpha checkers from '
-                                                'clang-analyzer.')
   parser.add_argument('-clang-tidy-binary', metavar='PATH',
                       default='clang-tidy',
                       help='path to clang-tidy binary')
@@ -202,26 +177,14 @@ def main():
   parser.add_argument('-checks', default=None,
                       help='checks filter, when not specified, use clang-tidy '
                       'default')
-  parser.add_argument('-config', default=None,
-                      help='Specifies a configuration in YAML/JSON format: '
-                      '  -config="{Checks: \'*\', '
-                      '                       CheckOptions: [{key: x, '
-                      '                                       value: y}]}" '
-                      'When the value is empty, clang-tidy will '
-                      'attempt to find a file named .clang-tidy for '
-                      'each source file in its parent directories.')
   parser.add_argument('-header-filter', default=None,
                       help='regular expression matching the names of the '
                       'headers to output diagnostics from. Diagnostics from '
                       'the main file of each translation unit are always '
                       'displayed.')
-  parser.add_argument('-line-filter', default=None,
-                      help='List of files with line ranges to filter the'
-                      'warnings.')
-  if yaml:
-    parser.add_argument('-export-fixes', metavar='filename', dest='export_fixes',
-                        help='Create a yaml file to store suggested fixes in, '
-                        'which can be applied with clang-apply-replacements.')
+  parser.add_argument('-export-fixes', metavar='filename', dest='export_fixes',
+                      help='Create a yaml file to store suggested fixes in, '
+                      'which can be applied with clang-apply-replacements.')
   parser.add_argument('-j', type=int, default=0,
                       help='number of tidy instances to be run in parallel.')
   parser.add_argument('files', nargs='*', default=['.*'],
@@ -255,49 +218,38 @@ def main():
 
   try:
     invocation = [args.clang_tidy_binary, '-list-checks']
-    if args.allow_enabling_alpha_checkers:
-      invocation.append('-allow-enabling-analyzer-alpha-checkers')
     invocation.append('-p=' + build_path)
     if args.checks:
       invocation.append('-checks=' + args.checks)
     invocation.append('-')
-    if args.quiet:
-      # Even with -quiet we still want to check if we can call clang-tidy.
-      with open(os.devnull, 'w') as dev_null:
-        subprocess.check_call(invocation, stdout=dev_null)
-    else:
-      subprocess.check_call(invocation)
+    subprocess.check_call(invocation)
   except:
     print("Unable to run clang-tidy.", file=sys.stderr)
     sys.exit(1)
 
   # Load the database and extract all files.
   database = json.load(open(os.path.join(build_path, db_path)))
-  files = set([make_absolute(entry['file'], entry['directory'])
-           for entry in database])
+  files = [make_absolute(entry['file'], entry['directory'])
+           for entry in database]
 
   max_task = args.j
   if max_task == 0:
     max_task = multiprocessing.cpu_count()
 
   tmpdir = None
-  if args.fix or (yaml and args.export_fixes):
+  if args.fix or args.export_fixes:
     check_clang_apply_replacements_binary(args)
     tmpdir = tempfile.mkdtemp()
 
   # Build up a big regexy filter from all command line arguments.
   file_name_re = re.compile('|'.join(args.files))
 
-  return_code = 0
   try:
     # Spin up a bunch of tidy-launching threads.
     task_queue = queue.Queue(max_task)
-    # List of files with a non-zero return code.
-    failed_files = []
-    lock = threading.Lock()
     for _ in range(max_task):
       t = threading.Thread(target=run_tidy,
-                           args=(args, tmpdir, build_path, task_queue, lock, failed_files))
+                           args=(args, tmpdir, build_path, task_queue))
       t.daemon = True
       t.start()
 
@@ -308,8 +260,6 @@ def main():
 
     # Wait for all threads to be done.
     task_queue.join()
-    if len(failed_files):
-      return_code = 1
 
   except KeyboardInterrupt:
     # This is a sad hack. Unfortunately subprocess goes
@@ -319,7 +269,8 @@ def main():
       shutil.rmtree(tmpdir)
     os.kill(0, 9)
 
-  if yaml and args.export_fixes:
+  return_code = 0
+  if args.export_fixes:
     print('Writing fixes to ' + args.export_fixes + ' ...')
     try:
       merge_replacement_files(tmpdir, args.export_fixes)
@@ -335,12 +286,11 @@ def main():
     except:
       print('Error applying fixes.\n', file=sys.stderr)
       traceback.print_exc()
-      return_code = 1
+      return_code=1
 
   if tmpdir:
     shutil.rmtree(tmpdir)
   sys.exit(return_code)
-
 
 if __name__ == '__main__':
   main()

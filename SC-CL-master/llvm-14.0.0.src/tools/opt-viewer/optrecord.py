@@ -1,8 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 from __future__ import print_function
 
-import io
 import yaml
 # Try to use the C parser.
 try:
@@ -11,7 +10,7 @@ except ImportError:
     print("For faster parsing, you may want to install libYAML for PyYAML")
     from yaml import Loader
 
-import html
+import cgi
 from collections import defaultdict
 import fnmatch
 import functools
@@ -24,8 +23,6 @@ try:
     from sys import intern
 except:
     pass
-
-import re
 
 import optpmap
 
@@ -159,7 +156,7 @@ class Remark(yaml.YAMLObject):
         (key, value) = list(mapping.items())[0]
 
         if key == 'Caller' or key == 'Callee' or key == 'DirectCallee':
-            value = html.escape(self.demangle(value))
+            value = cgi.escape(self.demangle(value))
 
         if dl and key != 'Caller':
             dl_dict = dict(list(dl))
@@ -265,29 +262,19 @@ class Missed(Remark):
     def color(self):
         return "red"
 
-class Failure(Missed):
-    yaml_tag = '!Failure'
 
-def get_remarks(input_file, filter_=None):
+def get_remarks(input_file):
     max_hotness = 0
     all_remarks = dict()
     file_remarks = defaultdict(functools.partial(defaultdict, list))
 
-    with io.open(input_file, encoding = 'utf-8') as f:
+    with open(input_file) as f:
         docs = yaml.load_all(f, Loader=Loader)
-
-        filter_e = None
-        if filter_:
-            filter_e = re.compile(filter_)
         for remark in docs:
             remark.canonicalize()
             # Avoid remarks withoug debug location or if they are duplicated
             if not hasattr(remark, 'DebugLoc') or remark.key in all_remarks:
                 continue
-
-            if filter_e and not filter_e.search(remark.Pass):
-                continue
-
             all_remarks[remark.key] = remark
 
             file_remarks[remark.File][remark.Line].append(remark)
@@ -302,13 +289,13 @@ def get_remarks(input_file, filter_=None):
     return max_hotness, all_remarks, file_remarks
 
 
-def gather_results(filenames, num_jobs, should_print_progress, filter_=None):
+def gather_results(filenames, num_jobs, should_print_progress):
     if should_print_progress:
         print('Reading YAML files...')
     if not Remark.demangler_proc:
         Remark.set_demangler(Remark.default_demangler)
     remarks = optpmap.pmap(
-        get_remarks, filenames, num_jobs, should_print_progress, filter_)
+        get_remarks, filenames, num_jobs, should_print_progress)
     max_hotness = max(entry[0] for entry in remarks)
 
     def merge_file_remarks(file_remarks_job, all_remarks, merged):
@@ -341,6 +328,6 @@ def find_opt_files(*dirs_or_files):
                 subdirs[:] = [d for d in subdirs
                               if not os.path.ismount(os.path.join(dir, d))]
                 for file in files:
-                    if fnmatch.fnmatch(file, "*.opt.yaml*"):
+                    if fnmatch.fnmatch(file, "*.opt.yaml"):
                         all.append(os.path.join(dir, file))
     return all

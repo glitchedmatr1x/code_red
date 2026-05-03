@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-# Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-# See https://llvm.org/LICENSE.txt for license information.
-# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+#                     The LLVM Compiler Infrastructure
+#
+# This file is distributed under the University of Illinois Open Source
+# License. See LICENSE.TXT for details.
 
 import libear
 import unittest
@@ -43,7 +44,7 @@ class ExecAnatomyTest(unittest.TestCase):
 
     def test_all_exec_calls(self):
         this_dir, _ = os.path.split(__file__)
-        source_dir = os.path.abspath(os.path.join(this_dir, '..', 'exec'))
+        source_dir = os.path.normpath(os.path.join(this_dir, '..', 'exec'))
         with libear.TemporaryDirectory() as tmp_dir:
             expected, result = run(source_dir, tmp_dir)
             self.assertEqualJson(expected, result)

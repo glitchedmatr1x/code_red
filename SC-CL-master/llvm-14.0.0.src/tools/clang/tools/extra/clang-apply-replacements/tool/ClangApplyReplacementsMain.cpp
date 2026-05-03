@@ -1,13 +1,14 @@
 //===-- ClangApplyReplacementsMain.cpp - Main file for the tool -----------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file provides the main function for the
+/// \brief This file provides the main function for the
 /// clang-apply-replacements tool.
 ///
 //===----------------------------------------------------------------------===//
@@ -85,6 +86,116 @@ static void printVersion(raw_ostream &OS) {
   OS << "clang-apply-replacements version " CLANG_VERSION_STRING << "\n";
 }
 
+/// \brief Convenience function to get rewritten content for \c Filename from
+/// \c Rewrites.
+///
+/// \pre Replacements[i].getFilePath() == Replacements[i+1].getFilePath().
+/// \post Replacements.empty() -> Result.empty()
+///
+/// \param[in] Replacements Replacements to apply
+/// \param[in] Rewrites Rewriter to use to apply replacements.
+/// \param[out] Result Contents of the file after applying replacements if
+/// replacements were provided.
+///
+/// \returns \parblock
+///          \li true if all replacements were applied successfully.
+///          \li false if at least one replacement failed to apply.
+static bool
+getRewrittenData(const std::vector<tooling::Replacement> &Replacements,
+                 Rewriter &Rewrites, std::string &Result) {
+  if (Replacements.empty())
+    return true;
+
+  if (!applyAllReplacements(Replacements, Rewrites))
+    return false;
+
+  SourceManager &SM = Rewrites.getSourceMgr();
+  FileManager &Files = SM.getFileManager();
+
+  StringRef FileName = Replacements.begin()->getFilePath();
+  const clang::FileEntry *Entry = Files.getFile(FileName);
+  assert(Entry && "Expected an existing file");
+  FileID ID = SM.translateFile(Entry);
+  assert(ID.isValid() && "Expected a valid FileID");
+  const RewriteBuffer *Buffer = Rewrites.getRewriteBufferFor(ID);
+  Result = std::string(Buffer->begin(), Buffer->end());
+
+  return true;
+}
+
+/// \brief Apply \c Replacements and return the new file contents.
+///
+/// \pre Replacements[i].getFilePath() == Replacements[i+1].getFilePath().
+/// \post Replacements.empty() -> Result.empty()
+///
+/// \param[in] Replacements Replacements to apply.
+/// \param[out] Result Contents of the file after applying replacements if
+/// replacements were provided.
+/// \param[in] Diagnostics For diagnostic output.
+///
+/// \returns \parblock
+///          \li true if all replacements applied successfully.
+///          \li false if at least one replacement failed to apply.
+static bool
+applyReplacements(const std::vector<tooling::Replacement> &Replacements,
+                  std::string &Result, DiagnosticsEngine &Diagnostics) {
+  FileManager Files((FileSystemOptions()));
+  SourceManager SM(Diagnostics, Files);
+  Rewriter Rewrites(SM, LangOptions());
+
+  return getRewrittenData(Replacements, Rewrites, Result);
+}
+
+/// \brief Apply code formatting to all places where replacements were made.
+///
+/// \pre !Replacements.empty().
+/// \pre Replacements[i].getFilePath() == Replacements[i+1].getFilePath().
+/// \pre Replacements[i].getOffset() <= Replacements[i+1].getOffset().
+///
+/// \param[in] Replacements Replacements that were made to the file. Provided
+/// to indicate where changes were made.
+/// \param[in] FileData The contents of the file \b after \c Replacements have
+/// been applied.
+/// \param[out] FormattedFileData The contents of the file after reformatting.
+/// \param[in] FormatStyle Style to apply.
+/// \param[in] Diagnostics For diagnostic output.
+///
+/// \returns \parblock
+///          \li true if reformatting replacements were all successfully
+///          applied.
+///          \li false if at least one reformatting replacement failed to apply.
+static bool
+applyFormatting(const std::vector<tooling::Replacement> &Replacements,
+                const StringRef FileData, std::string &FormattedFileData,
+                const format::FormatStyle &FormatStyle,
+                DiagnosticsEngine &Diagnostics) {
+  assert(!Replacements.empty() && "Need at least one replacement");
+
+  RangeVector Ranges = calculateChangedRanges(Replacements);
+
+  StringRef FileName = Replacements.begin()->getFilePath();
+  tooling::Replacements R =
+      format::reformat(FormatStyle, FileData, Ranges, FileName);
+
+  // FIXME: Remove this copy when tooling::Replacements is implemented as a
+  // vector instead of a set.
+  std::vector<tooling::Replacement> FormattingReplacements;
+  std::copy(R.begin(), R.end(), back_inserter(FormattingReplacements));
+
+  if (FormattingReplacements.empty()) {
+    FormattedFileData = FileData;
+    return true;
+  }
+
+  FileManager Files((FileSystemOptions()));
+  SourceManager SM(Diagnostics, Files);
+  SM.overrideFileContents(Files.getFile(FileName),
+                          llvm::MemoryBuffer::getMemBufferCopy(FileData));
+  Rewriter Rewrites(SM, LangOptions());
+
+  return getRewrittenData(FormattingReplacements, Rewrites, FormattedFileData);
+}
+
 int main(int argc, char **argv) {
   cl::HideUnrelatedOptions(makeArrayRef(VisibleCategories));
 
@@ -96,13 +207,16 @@ int main(int argc, char **argv) {
       IntrusiveRefCntPtr<DiagnosticIDs>(new DiagnosticIDs()), DiagOpts.get());
 
   // Determine a formatting style from options.
-  auto FormatStyleOrError = format::getStyle(FormatStyleOpt, FormatStyleConfig,
-                                             format::DefaultFallbackStyle);
-  if (!FormatStyleOrError) {
-    llvm::errs() << llvm::toString(FormatStyleOrError.takeError()) << "\n";
-    return 1;
+  format::FormatStyle FormatStyle;
+  if (DoFormat) {
+    auto FormatStyleOrError =
+        format::getStyle(FormatStyleOpt, FormatStyleConfig, "LLVM");
+    if (!FormatStyleOrError) {
+      llvm::errs() << llvm::toString(FormatStyleOrError.takeError()) << "\n";
+      return 1;
+    }
+    FormatStyle = *FormatStyleOrError;
   }
-  format::FormatStyle FormatStyle = std::move(*FormatStyleOrError);
 
   TUReplacements TURs;
   TUReplacementFiles TUFiles;
@@ -130,34 +244,46 @@ int main(int argc, char **argv) {
   FileManager Files((FileSystemOptions()));
   SourceManager SM(Diagnostics, Files);
 
-  FileToChangesMap Changes;
-  if (!mergeAndDeduplicate(TURs, TUDs, Changes, SM))
+  FileToReplacementsMap GroupedReplacements;
+  if (!mergeAndDeduplicate(TURs, GroupedReplacements, SM))
+    return 1;
+  if (!mergeAndDeduplicate(TUDs, GroupedReplacements, SM))
     return 1;
 
-  tooling::ApplyChangesSpec Spec;
-  Spec.Cleanup = true;
-  Spec.Style = FormatStyle;
-  Spec.Format = DoFormat ? tooling::ApplyChangesSpec::kAll
-                         : tooling::ApplyChangesSpec::kNone;
+  Rewriter ReplacementsRewriter(SM, LangOptions());
 
-  for (const auto &FileChange : Changes) {
-    const FileEntry *Entry = FileChange.first;
-    StringRef FileName = Entry->getName();
-    llvm::Expected<std::string> NewFileData =
-        applyChanges(FileName, FileChange.second, Spec, Diagnostics);
-    if (!NewFileData) {
-      errs() << llvm::toString(NewFileData.takeError()) << "\n";
+  for (const auto &FileAndReplacements : GroupedReplacements) {
+    // This shouldn't happen but if a file somehow has no replacements skip to
+    // next file.
+    if (FileAndReplacements.second.empty())
+      continue;
+
+    std::string NewFileData;
+    StringRef FileName = FileAndReplacements.first->getName();
+    if (!applyReplacements(FileAndReplacements.second, NewFileData,
+                           Diagnostics)) {
+      errs() << "Failed to apply replacements to " << FileName << "\n";
+      continue;
+    }
+
+    // Apply formatting if requested.
+    if (DoFormat &&
+        !applyFormatting(FileAndReplacements.second, NewFileData, NewFileData,
+                         FormatStyle, Diagnostics)) {
+      errs() << "Failed to apply reformatting replacements for " << FileName
+             << "\n";
       continue;
     }
 
     // Write new file to disk
     std::error_code EC;
-    llvm::raw_fd_ostream FileStream(FileName, EC, llvm::sys::fs::OF_None);
+    llvm::raw_fd_ostream FileStream(FileName, EC, llvm::sys::fs::F_None);
     if (EC) {
       llvm::errs() << "Could not open " << FileName << " for writing\n";
       continue;
     }
-    FileStream << *NewFileData;
+
+    FileStream << NewFileData;
   }
 
   return 0;

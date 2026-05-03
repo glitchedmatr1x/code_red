@@ -1,8 +1,9 @@
 //===- FormatUtil.h ------------------------------------------- *- C++ --*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -42,7 +43,8 @@ std::string truncateQuotedNameBack(StringRef Label, StringRef Name,
     return Ret;
 
 template <typename T> std::string formatUnknownEnum(T Value) {
-  return formatv("unknown ({0})", static_cast<std::underlying_type_t<T>>(Value))
+  return formatv("unknown ({0})",
+                 static_cast<typename std::underlying_type<T>::type>(Value))
       .str();
 }
 
@@ -66,7 +68,7 @@ std::string typesetStringList(uint32_t IndentLevel,
 std::string formatChunkKind(codeview::DebugSubsectionKind Kind,
                             bool Friendly = true);
 std::string formatSymbolKind(codeview::SymbolKind K);
-std::string formatTypeLeafKind(codeview::TypeLeafKind K);
+StringRef formatTypeLeafKind(codeview::TypeLeafKind K);
 
 /// Returns the number of digits in the given integer.
 inline int NumDigits(uint64_t N) {
@@ -123,7 +125,7 @@ struct EndianAdapter final
   explicit EndianAdapter(EndianType &&Item)
       : FormatAdapter<EndianType>(std::move(Item)) {}
 
-  void format(llvm::raw_ostream &Stream, StringRef Style) override {
+  void format(llvm::raw_ostream &Stream, StringRef Style) {
     format_provider<T>::format(static_cast<T>(this->Item), Stream, Style);
   }
 };

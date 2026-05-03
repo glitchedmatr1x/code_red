@@ -66,23 +66,20 @@ example:
 
 In general, the following conversion types are checked:
 
-- integer expression/literal to boolean (conversion from a single bit bitfield
-  to boolean is explicitly allowed, since there's no ambiguity / information
-  loss in this case),
+- integer expression/literal to boolean,
 
 - floating expression/literal to boolean,
 
 - pointer/pointer to member/``nullptr``/``NULL`` to boolean,
 
-- boolean expression/literal to integer (conversion from boolean to a single
-  bit bitfield is explicitly allowed),
+- boolean expression/literal to integer,
 
 - boolean expression/literal to floating.
 
 The rules for generating fix-it hints are:
 
 - in case of conversions from other built-in type to bool, an explicit
-  comparison is proposed to make it clear what exactly is being compared:
+  comparison is proposed to make it clear what exaclty is being compared:
 
   - ``bool boolean = floating;`` is changed to
     ``bool boolean = floating == 0.0f;``,
@@ -126,10 +123,10 @@ Options
 
 .. option::  AllowIntegerConditions
 
-   When `true`, the check will allow conditional integer conversions. Default
-   is `false`.
+   When non-zero, the check will allow conditional integer conversions. Default
+   is `0`.
 
 .. option::  AllowPointerConditions
 
-   When `true`, the check will allow conditional pointer conversions. Default
-   is `false`.
+   When non-zero, the check will allow conditional pointer conversions. Default
+   is `0`.

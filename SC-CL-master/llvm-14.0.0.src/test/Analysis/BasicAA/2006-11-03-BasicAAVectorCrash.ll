@@ -1,6 +1,6 @@
-; RUN: opt < %s -basic-aa -licm -disable-output
+; RUN: opt < %s -basicaa -licm -disable-output
 target datalayout = "E-p:32:32"
-target triple = "powerpc-unknown-linux-gnu"
+target triple = "powerpc-apple-darwin8.7.0"
 
 define void @glgRunProcessor() {
 entry:

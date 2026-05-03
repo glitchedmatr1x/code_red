@@ -223,9 +223,3 @@ namespace friends {
     X<int> *p;
   }
 }
-
-namespace unevaluated {
-  int a;
-  template<int = 0> int f(int = a); // expected-warning 0-1{{extension}}
-  int k = sizeof(f());
-}

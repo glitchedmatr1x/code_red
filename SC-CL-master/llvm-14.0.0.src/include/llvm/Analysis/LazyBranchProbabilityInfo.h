@@ -1,8 +1,9 @@
 //===- LazyBranchProbabilityInfo.h - Lazy Branch Probability ----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -25,7 +26,7 @@ class Function;
 class LoopInfo;
 class TargetLibraryInfo;
 
-/// This is an alternative analysis pass to
+/// \brief This is an alternative analysis pass to
 /// BranchProbabilityInfoWrapperPass.  The difference is that with this pass the
 /// branch probabilities are not computed when the analysis pass is executed but
 /// rather when the BPI results is explicitly requested by the analysis client.
@@ -57,13 +58,13 @@ class LazyBranchProbabilityInfoPass : public FunctionPass {
   public:
     LazyBranchProbabilityInfo(const Function *F, const LoopInfo *LI,
                               const TargetLibraryInfo *TLI)
-        : F(F), LI(LI), TLI(TLI) {}
+        : Calculated(false), F(F), LI(LI), TLI(TLI) {}
 
     /// Retrieve the BPI with the branch probabilities computed.
     BranchProbabilityInfo &getCalculated() {
       if (!Calculated) {
         assert(F && LI && "call setAnalysis");
-        BPI.calculate(*F, *LI, TLI, nullptr, nullptr);
+        BPI.calculate(*F, *LI, TLI);
         Calculated = true;
       }
       return BPI;
@@ -75,7 +76,7 @@ class LazyBranchProbabilityInfoPass : public FunctionPass {
 
   private:
     BranchProbabilityInfo BPI;
-    bool Calculated = false;
+    bool Calculated;
     const Function *F;
     const LoopInfo *LI;
     const TargetLibraryInfo *TLI;
@@ -88,10 +89,10 @@ public:
 
   LazyBranchProbabilityInfoPass();
 
-  /// Compute and return the branch probabilities.
+  /// \brief Compute and return the branch probabilities.
   BranchProbabilityInfo &getBPI() { return LBPI->getCalculated(); }
 
-  /// Compute and return the branch probabilities.
+  /// \brief Compute and return the branch probabilities.
   const BranchProbabilityInfo &getBPI() const { return LBPI->getCalculated(); }
 
   void getAnalysisUsage(AnalysisUsage &AU) const override;
@@ -105,10 +106,10 @@ public:
   void print(raw_ostream &OS, const Module *M) const override;
 };
 
-/// Helper for client passes to initialize dependent passes for LBPI.
+/// \brief Helper for client passes to initialize dependent passes for LBPI.
 void initializeLazyBPIPassPass(PassRegistry &Registry);
 
-/// Simple trait class that provides a mapping between BPI passes and the
+/// \brief Simple trait class that provides a mapping between BPI passes and the
 /// corresponding BPInfo.
 template <typename PassT> struct BPIPassTrait {
   static PassT &getBPI(PassT *P) { return *P; }

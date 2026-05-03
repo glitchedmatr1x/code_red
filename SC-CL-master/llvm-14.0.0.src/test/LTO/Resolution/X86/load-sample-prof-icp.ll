@@ -3,21 +3,21 @@
 ;
 ; RUN: opt -module-summary < %s -o %t.bc
 ; RUN: llvm-lto2 run -o %t.out %t.bc -save-temps \
-; RUN:   -r %t.bc,test,px -r %t.bc,bar,px -r %t.bc,externfunc,x \
+; RUN:   -r %t.bc,test,px -r %t.bc,bar,x \
 ; RUN:   -lto-sample-profile-file=%S/Inputs/load-sample-prof-icp.prof
 ; RUN: llvm-dis %t.out.1.4.opt.bc -o - | FileCheck %s
 ; RUN: llvm-lto2 run -o %t.out %t.bc -save-temps \
-; RUN:   -r %t.bc,test,px -r %t.bc,bar,px -r %t.bc,externfunc,x -use-new-pm \
+; RUN:   -r %t.bc,test,px -r %t.bc,bar,x -use-new-pm \
 ; RUN:   -lto-sample-profile-file=%S/Inputs/load-sample-prof-icp.prof
 ; RUN: llvm-dis %t.out.1.4.opt.bc -o - | FileCheck %s
 
-target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
 ; CHECK-LABEL: @test
 ; Checks that the call instruction is promoted to direct call and has
 ; profile count annotated on the direct call.
-define void @test(void ()*) #0 !dbg !7 {
+define void @test(void ()*) !dbg !7 {
   %2 = alloca void ()*
   store void ()* %0, void ()** %2
   %3 = load void ()*, void ()** %2
@@ -26,14 +26,7 @@ define void @test(void ()*) #0 !dbg !7 {
   ret void
 }
 
-declare void @externfunc()
-
-define void @bar() #0 {
-  call void @externfunc()
-  ret void
-}
-
-attributes #0 = {"use-sample-profile" noinline}
+declare void @bar() local_unnamed_addr
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!3, !4, !5}
@@ -46,7 +39,7 @@ attributes #0 = {"use-sample-profile" noinline}
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{i32 1, !"wchar_size", i32 4}
 !6 = !{!"clang version 6.0.0 "}
-!7 = distinct !DISubprogram(name: "test", scope: !1, file: !1, line: 3, type: !8, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: true, unit: !0, retainedNodes: !2)
+!7 = distinct !DISubprogram(name: "test", scope: !1, file: !1, line: 3, type: !8, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: true, unit: !0, variables: !2)
 !8 = !DISubroutineType(types: !9)
 !9 = !{null}
 !10 = !DILocation(line: 4, column: 5, scope: !7)

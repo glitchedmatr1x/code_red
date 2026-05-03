@@ -1,8 +1,9 @@
 //===- llvm/CodeGen/MachineModuleInfoImpls.h --------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -15,7 +16,6 @@
 #define LLVM_CODEGEN_MACHINEMODULEINFOIMPLS_H
 
 #include "llvm/ADT/DenseMap.h"
-#include "llvm/ADT/StringSet.h"
 #include "llvm/CodeGen/MachineModuleInfo.h"
 #include <cassert>
 
@@ -78,39 +78,6 @@ public:
   /// Accessor methods to return the set of stubs in sorted order.
 
   SymbolListTy GetGVStubList() { return getSortedStubs(GVStubs); }
-};
-
-/// MachineModuleInfoCOFF - This is a MachineModuleInfoImpl implementation
-/// for COFF targets.
-class MachineModuleInfoCOFF : public MachineModuleInfoImpl {
-  /// GVStubs - These stubs are used to materialize global addresses in PIC
-  /// mode.
-  DenseMap<MCSymbol *, StubValueTy> GVStubs;
-
-  virtual void anchor(); // Out of line virtual method.
-
-public:
-  MachineModuleInfoCOFF(const MachineModuleInfo &) {}
-
-  StubValueTy &getGVStubEntry(MCSymbol *Sym) {
-    assert(Sym && "Key cannot be null");
-    return GVStubs[Sym];
-  }
-
-  /// Accessor methods to return the set of stubs in sorted order.
-
-  SymbolListTy GetGVStubList() { return getSortedStubs(GVStubs); }
-};
-
-/// MachineModuleInfoWasm - This is a MachineModuleInfoImpl implementation
-/// for Wasm targets.
-class MachineModuleInfoWasm : public MachineModuleInfoImpl {
-  virtual void anchor(); // Out of line virtual method.
-
-public:
-  MachineModuleInfoWasm(const MachineModuleInfo &) {}
-
-  StringSet<> MachineSymbolsUsed;
 };
 
 } // end namespace llvm

@@ -1,4 +1,4 @@
-; RUN: opt < %s -passes='print<delinearization>' -disable-output
+; RUN: opt < %s -analyze -delinearize
 ; REQUIRES: asserts
 
 ; Test that SCEV divide code doesn't crash when attempting to create a SCEV

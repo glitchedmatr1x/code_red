@@ -1,4 +1,5 @@
-# RUN: dsymutil -f -oso-prepend-path=%p/../Inputs -y %s -o - | llvm-dwarfdump -debug-info - | FileCheck %s
+# REQUIRES: object-emission
+# RUN: llvm-dsymutil -f -oso-prepend-path=%p/../Inputs -y %s -o - | llvm-dwarfdump -debug-info - | FileCheck %s
 
 ---
 triple:          'x86_64-apple-darwin'

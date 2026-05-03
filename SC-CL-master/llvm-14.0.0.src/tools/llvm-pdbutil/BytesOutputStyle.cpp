@@ -1,8 +1,9 @@
 //===- BytesOutputStyle.cpp ----------------------------------- *- C++ --*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -340,7 +341,9 @@ static void iterateOneModule(PDBFile &File, LinePrinter &P,
   if (ModiStream == kInvalidStreamIndex)
     return;
 
-  auto ModStreamData = File.createIndexedStream(ModiStream);
+  auto ModStreamData = MappedBlockStream::createIndexedStream(
+      File.getMsfLayout(), File.getMsfBuffer(), ModiStream,
+      File.getAllocator());
   ModuleDebugStreamRef ModStream(Modi, std::move(ModStreamData));
   if (auto EC = ModStream.reload()) {
     P.formatLine("Could not parse debug information.");
@@ -457,7 +460,7 @@ BytesOutputStyle::initializeTypes(uint32_t StreamIdx) {
   uint32_t Count = Tpi->getNumTypeRecords();
   auto Offsets = Tpi->getTypeIndexOffsets();
   TypeCollection =
-      std::make_unique<LazyRandomTypeCollection>(Types, Count, Offsets);
+      llvm::make_unique<LazyRandomTypeCollection>(Types, Count, Offsets);
 
   return *TypeCollection;
 }

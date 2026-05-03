@@ -1,8 +1,9 @@
 ///===- MachineOptimizationRemarkEmitter.h - Opt Diagnostics -*- C++ -*----===//
 ///
-/// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-/// See https://llvm.org/LICENSE.txt for license information.
-/// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+///                     The LLVM Compiler Infrastructure
+///
+/// This file is distributed under the University of Illinois Open Source
+/// License. See LICENSE.TXT for details.
 ///
 ///===---------------------------------------------------------------------===//
 /// \file
@@ -23,7 +24,7 @@ class MachineBasicBlock;
 class MachineBlockFrequencyInfo;
 class MachineInstr;
 
-/// Common features for diagnostics dealing with optimization remarks
+/// \brief Common features for diagnostics dealing with optimization remarks
 /// that are used by machine passes.
 class DiagnosticInfoMIROptimization : public DiagnosticInfoOptimizationBase {
 public:
@@ -118,12 +119,6 @@ public:
       : DiagnosticInfoMIROptimization(DK_MachineOptimizationRemarkAnalysis,
                                       PassName, RemarkName, Loc, MBB) {}
 
-  MachineOptimizationRemarkAnalysis(const char *PassName, StringRef RemarkName,
-                                    const MachineInstr *MI)
-      : DiagnosticInfoMIROptimization(DK_MachineOptimizationRemarkAnalysis,
-                                      PassName, RemarkName, MI->getDebugLoc(),
-                                      MI->getParent()) {}
-
   static bool classof(const DiagnosticInfo *DI) {
     return DI->getKind() == DK_MachineOptimizationRemarkAnalysis;
   }
@@ -156,7 +151,7 @@ public:
   /// Emit an optimization remark.
   void emit(DiagnosticInfoOptimizationBase &OptDiag);
 
-  /// Whether we allow for extra compile-time budget to perform more
+  /// \brief Whether we allow for extra compile-time budget to perform more
   /// analysis to be more informative.
   ///
   /// This is useful to enable additional missed optimizations to be reported
@@ -164,13 +159,12 @@ public:
   /// (1) to filter trivial false positives or (2) to provide more context so
   /// that non-trivial false positives can be quickly detected by the user.
   bool allowExtraAnalysis(StringRef PassName) const {
-    return (
-        MF.getFunction().getContext().getLLVMRemarkStreamer() ||
-        MF.getFunction().getContext().getDiagHandlerPtr()->isAnyRemarkEnabled(
-            PassName));
+    return (MF.getFunction().getContext().getDiagnosticsOutputFile() ||
+            MF.getFunction().getContext()
+            .getDiagHandlerPtr()->isAnyRemarkEnabled(PassName));
   }
 
-  /// Take a lambda that returns a remark which will be emitted.  Second
+  /// \brief Take a lambda that returns a remark which will be emitted.  Second
   /// argument is only used to restrict this to functions.
   template <typename T>
   void emit(T RemarkBuilder, decltype(RemarkBuilder()) * = nullptr) {
@@ -178,18 +172,11 @@ public:
     // remarks enabled. We can't currently check whether remarks are requested
     // for the calling pass since that requires actually building the remark.
 
-    if (MF.getFunction().getContext().getLLVMRemarkStreamer() ||
-        MF.getFunction()
-            .getContext()
-            .getDiagHandlerPtr()
-            ->isAnyRemarkEnabled()) {
+    if (MF.getFunction().getContext().getDiagnosticsOutputFile() ||
+        MF.getFunction().getContext().getDiagHandlerPtr()->isAnyRemarkEnabled()) {
       auto R = RemarkBuilder();
       emit((DiagnosticInfoOptimizationBase &)R);
     }
-  }
-
-  MachineBlockFrequencyInfo *getBFI() {
-    return MBFI;
   }
 
 private:
@@ -205,7 +192,7 @@ private:
   /// Similar but use value from \p OptDiag and update hotness there.
   void computeHotness(DiagnosticInfoMIROptimization &Remark);
 
-  /// Only allow verbose messages if we know we're filtering by hotness
+  /// \brief Only allow verbose messages if we know we're filtering by hotness
   /// (BFI is only set in this case).
   bool shouldEmitVerbose() { return MBFI != nullptr; }
 };

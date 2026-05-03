@@ -1,8 +1,9 @@
 //===--- ReplaceAutoPtrCheck.cpp - clang-tidy------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -20,11 +21,10 @@ namespace clang {
 namespace tidy {
 namespace modernize {
 
-namespace {
 static const char AutoPtrTokenId[] = "AutoPrTokenId";
 static const char AutoPtrOwnershipTransferId[] = "AutoPtrOwnershipTransferId";
 
-/// Matches expressions that are lvalues.
+/// \brief Matches expressions that are lvalues.
 ///
 /// In the following example, a[0] matches expr(isLValue()):
 /// \code
@@ -35,20 +35,58 @@ static const char AutoPtrOwnershipTransferId[] = "AutoPtrOwnershipTransferId";
 /// \endcode
 AST_MATCHER(Expr, isLValue) { return Node.getValueKind() == VK_LValue; }
 
-} // namespace
+/// Matches declarations whose declaration context is the C++ standard library
+/// namespace std.
+///
+/// Note that inline namespaces are silently ignored during the lookup since
+/// both libstdc++ and libc++ are known to use them for versioning purposes.
+///
+/// Given:
+/// \code
+///   namespace ns {
+///     struct my_type {};
+///     using namespace std;
+///   }
+///
+///   using std::vector;
+///   using ns:my_type;
+///   using ns::list;
+/// \code
+///
+/// usingDecl(hasAnyUsingShadowDecl(hasTargetDecl(isFromStdNamespace())))
+/// matches "using std::vector" and "using ns::list".
+AST_MATCHER(Decl, isFromStdNamespace) {
+  const DeclContext *D = Node.getDeclContext();
+
+  while (D->isInlineNamespace())
+    D = D->getParent();
+
+  if (!D->isNamespace() || !D->getParent()->isTranslationUnit())
+    return false;
+
+  const IdentifierInfo *Info = cast<NamespaceDecl>(D)->getIdentifier();
+
+  return (Info && Info->isStr("std"));
+}
 
 ReplaceAutoPtrCheck::ReplaceAutoPtrCheck(StringRef Name,
                                          ClangTidyContext *Context)
     : ClangTidyCheck(Name, Context),
-      Inserter(Options.getLocalOrGlobal("IncludeStyle",
-                                        utils::IncludeSorter::IS_LLVM)) {}
+      IncludeStyle(utils::IncludeSorter::parseIncludeStyle(
+          Options.getLocalOrGlobal("IncludeStyle", "llvm"))) {}
 
 void ReplaceAutoPtrCheck::storeOptions(ClangTidyOptions::OptionMap &Opts) {
-  Options.store(Opts, "IncludeStyle", Inserter.getStyle());
+  Options.store(Opts, "IncludeStyle",
+                utils::IncludeSorter::toString(IncludeStyle));
 }
 
 void ReplaceAutoPtrCheck::registerMatchers(MatchFinder *Finder) {
-  auto AutoPtrDecl = recordDecl(hasName("auto_ptr"), isInStdNamespace());
+  // Only register the matchers for C++; the functionality currently does not
+  // provide any benefit to other languages, despite being benign.
+  if (!getLangOpts().CPlusPlus)
+    return;
+
+  auto AutoPtrDecl = recordDecl(hasName("auto_ptr"), isFromStdNamespace());
   auto AutoPtrType = qualType(hasDeclaration(AutoPtrDecl));
 
   //   std::auto_ptr<int> a;
@@ -68,13 +106,13 @@ void ReplaceAutoPtrCheck::registerMatchers(MatchFinder *Finder) {
 
   //   using std::auto_ptr;
   //   ^~~~~~~~~~~~~~~~~~~
-  Finder->addMatcher(usingDecl(hasAnyUsingShadowDecl(hasTargetDecl(namedDecl(
-                                   hasName("auto_ptr"), isInStdNamespace()))))
+  Finder->addMatcher(usingDecl(hasAnyUsingShadowDecl(hasTargetDecl(allOf(
+                                   hasName("auto_ptr"), isFromStdNamespace()))))
                          .bind(AutoPtrTokenId),
                      this);
 
   // Find ownership transfers via copy construction and assignment.
-  // AutoPtrOwnershipTransferId is bound to the part that has to be wrapped
+  // AutoPtrOwnershipTransferId is bound to the the part that has to be wrapped
   // into std::move().
   //   std::auto_ptr<int> i, j;
   //   i = j;
@@ -87,17 +125,20 @@ void ReplaceAutoPtrCheck::registerMatchers(MatchFinder *Finder) {
                           callee(cxxMethodDecl(ofClass(AutoPtrDecl))),
                           hasArgument(1, MovableArgumentMatcher)),
       this);
-  Finder->addMatcher(
-      traverse(TK_AsIs,
-               cxxConstructExpr(hasType(AutoPtrType), argumentCountIs(1),
-                                hasArgument(0, MovableArgumentMatcher))),
-      this);
+  Finder->addMatcher(cxxConstructExpr(hasType(AutoPtrType), argumentCountIs(1),
+                                      hasArgument(0, MovableArgumentMatcher)),
+                     this);
 }
 
-void ReplaceAutoPtrCheck::registerPPCallbacks(const SourceManager &SM,
-                                              Preprocessor *PP,
-                                              Preprocessor *ModuleExpanderPP) {
-  Inserter.registerPreprocessor(PP);
+void ReplaceAutoPtrCheck::registerPPCallbacks(CompilerInstance &Compiler) {
+  // Only register the preprocessor callbacks for C++; the functionality
+  // currently does not provide any benefit to other languages, despite being
+  // benign.
+  if (!getLangOpts().CPlusPlus)
+    return;
+  Inserter.reset(new utils::IncludeInserter(
+      Compiler.getSourceManager(), Compiler.getLangOpts(), IncludeStyle));
+  Compiler.getPreprocessor().addPPCallbacks(Inserter->CreatePPCallbacks());
 }
 
 void ReplaceAutoPtrCheck::check(const MatchFinder::MatchResult &Result) {
@@ -112,8 +153,12 @@ void ReplaceAutoPtrCheck::check(const MatchFinder::MatchResult &Result) {
 
     auto Diag = diag(Range.getBegin(), "use std::move to transfer ownership")
                 << FixItHint::CreateInsertion(Range.getBegin(), "std::move(")
-                << FixItHint::CreateInsertion(Range.getEnd(), ")")
-                << Inserter.createMainFileIncludeInsertion("<utility>");
+                << FixItHint::CreateInsertion(Range.getEnd(), ")");
+
+    if (auto Fix =
+            Inserter->CreateIncludeInsertion(SM.getMainFileID(), "utility",
+                                             /*IsAngled=*/true))
+      Diag << *Fix;
 
     return;
   }

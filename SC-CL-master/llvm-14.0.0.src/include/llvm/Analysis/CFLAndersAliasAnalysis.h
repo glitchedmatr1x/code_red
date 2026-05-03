@@ -1,8 +1,9 @@
 //==- CFLAndersAliasAnalysis.h - Unification-based Alias Analysis -*- C++-*-==//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 /// \file
@@ -41,8 +42,7 @@ class CFLAndersAAResult : public AAResultBase<CFLAndersAAResult> {
   class FunctionInfo;
 
 public:
-  explicit CFLAndersAAResult(
-      std::function<const TargetLibraryInfo &(Function &F)> GetTLI);
+  explicit CFLAndersAAResult(const TargetLibraryInfo &TLI);
   CFLAndersAAResult(CFLAndersAAResult &&RHS);
   ~CFLAndersAAResult();
 
@@ -56,28 +56,27 @@ public:
   /// Evict the given function from cache
   void evict(const Function *Fn);
 
-  /// Get the alias summary for the given function
+  /// \brief Get the alias summary for the given function
   /// Return nullptr if the summary is not found or not available
   const cflaa::AliasSummary *getAliasSummary(const Function &);
 
   AliasResult query(const MemoryLocation &, const MemoryLocation &);
-  AliasResult alias(const MemoryLocation &, const MemoryLocation &,
-                    AAQueryInfo &);
+  AliasResult alias(const MemoryLocation &, const MemoryLocation &);
 
 private:
-  /// Ensures that the given function is available in the cache.
+  /// \brief Ensures that the given function is available in the cache.
   /// Returns the appropriate entry from the cache.
   const Optional<FunctionInfo> &ensureCached(const Function &);
 
-  /// Inserts the given Function into the cache.
+  /// \brief Inserts the given Function into the cache.
   void scan(const Function &);
 
-  /// Build summary for a given function
+  /// \brief Build summary for a given function
   FunctionInfo buildInfoFrom(const Function &);
 
-  std::function<const TargetLibraryInfo &(Function &F)> GetTLI;
+  const TargetLibraryInfo &TLI;
 
-  /// Cached mapping of Functions to their StratifiedSets.
+  /// \brief Cached mapping of Functions to their StratifiedSets.
   /// If a function's sets are currently being built, it is marked
   /// in the cache as an Optional without a value. This way, if we
   /// have any kind of recursion, it is discernable from a function

@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\x64\MinSizeRel\ZERO_CHECK</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\MinSizeRel\bin\clang-tblgen.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMCdeBuiltinAliases</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMCdeBuiltinCG</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMCdeBuiltinSema</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMCdeBuiltinsDef</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMFP16</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMMveBuiltinAliases</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMMveBuiltinCG</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMMveBuiltinSema</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMMveBuiltinsDef</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMNeon</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMSveBuiltinCG</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMSveBuiltins</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMSveSemaRangeChecks</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangARMSveTypeFlags</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangAbstractBasicReader</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangAbstractBasicWriter</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangAbstractTypeReader</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangAbstractTypeWriter</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangAttrClasses</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangAttrHasAttributeImpl</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangAttrImpl</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangAttrList</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Serialization\x64\MinSizeRel\ClangAttrPCHRead</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Serialization\x64\MinSizeRel\ClangAttrPCHWrite</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Sema\x64\MinSizeRel\ClangAttrParsedAttrImpl</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Sema\x64\MinSizeRel\ClangAttrParsedAttrKinds</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Sema\x64\MinSizeRel\ClangAttrParsedAttrList</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Parse\x64\MinSizeRel\ClangAttrParserStringSwitches</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Sema\x64\MinSizeRel\ClangAttrSpellingListIndex</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Parse\x64\MinSizeRel\ClangAttrSubMatchRulesParserStringSwitches</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangAttrSubjectMatchRuleList</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Sema\x64\MinSizeRel\ClangAttrTemplateInstantiate</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangAttrTextDump</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangAttrTraverse</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangAttrVisitor</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangCommentCommandInfo</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangCommentCommandList</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangCommentHTMLNamedCharacterReferences</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangCommentHTMLTags</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangCommentHTMLTagsProperties</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangCommentNodes</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangDeclNodes</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticAST</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticAnalysis</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticComment</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticCommon</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticCrossTU</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticDriver</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticFrontend</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticGroups</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticIndexName</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticLex</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticParse</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticRefactoring</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticSema</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangDiagnosticSerialization</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangRISCVVectorBuiltinCG</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Basic\x64\MinSizeRel\ClangRISCVVectorBuiltins</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\StaticAnalyzer\Checkers\x64\MinSizeRel\ClangSACheckers</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangStmtNodes</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Tooling\Syntax\x64\MinSizeRel\ClangSyntaxNodeClasses</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\Tooling\Syntax\x64\MinSizeRel\ClangSyntaxNodeList</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\ClangTypeNodes</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\include\clang\AST\x64\MinSizeRel\StmtDataCollectors</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\MinSizeRel\bin\llvm-tblgen.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\include\llvm\Frontend\OpenMP\x64\MinSizeRel\omp_gen</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\x64\MinSizeRel\clang-tablegen-targets</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles />
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

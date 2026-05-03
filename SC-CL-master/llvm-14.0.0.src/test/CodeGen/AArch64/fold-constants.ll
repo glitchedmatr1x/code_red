@@ -2,7 +2,8 @@
 
 define i64 @dotests_616() {
 ; CHECK-LABEL: dotests_616
-; CHECK:       mov x0, xzr
+; CHECK:       movi d0, #0000000000000000
+; CHECK-NEXT:  fmov x0, d0
 ; CHECK-NEXT:  ret
 entry:
   %0 = bitcast <2 x i64> zeroinitializer to <8 x i16>

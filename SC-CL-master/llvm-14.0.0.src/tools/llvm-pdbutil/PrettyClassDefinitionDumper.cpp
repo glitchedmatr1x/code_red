@@ -1,8 +1,9 @@
 //===- PrettyClassDefinitionDumper.cpp --------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -49,13 +50,6 @@ void ClassDefinitionDumper::prettyPrintClassIntro(const ClassLayout &Layout) {
 
   uint32_t Size = Layout.getSize();
   const PDBSymbolTypeUDT &Class = Layout.getClass();
-
-  if (Layout.getClass().isConstType())
-    WithColor(Printer, PDB_ColorItem::Keyword).get() << "const ";
-  if (Layout.getClass().isVolatileType())
-    WithColor(Printer, PDB_ColorItem::Keyword).get() << "volatile ";
-  if (Layout.getClass().isUnalignedType())
-    WithColor(Printer, PDB_ColorItem::Keyword).get() << "unaligned ";
 
   WithColor(Printer, PDB_ColorItem::Keyword).get() << Class.getUdtKind() << " ";
   WithColor(Printer, PDB_ColorItem::Type).get() << Class.getName();

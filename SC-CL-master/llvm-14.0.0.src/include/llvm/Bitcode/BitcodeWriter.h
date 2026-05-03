@@ -1,8 +1,9 @@
 //===- llvm/Bitcode/BitcodeWriter.h - Bitcode writers -----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -17,7 +18,6 @@
 #include "llvm/IR/ModuleSummaryIndex.h"
 #include "llvm/MC/StringTableBuilder.h"
 #include "llvm/Support/Allocator.h"
-#include "llvm/Support/MemoryBuffer.h"
 #include <map>
 #include <memory>
 #include <string>
@@ -47,7 +47,7 @@ class raw_ostream;
 
   public:
     /// Create a BitcodeWriter that writes to Buffer.
-    BitcodeWriter(SmallVectorImpl<char> &Buffer, raw_fd_stream *FS = nullptr);
+    BitcodeWriter(SmallVectorImpl<char> &Buffer);
 
     ~BitcodeWriter();
 
@@ -86,7 +86,7 @@ class raw_ostream;
     /// Can be used to produce the same module hash for a minimized bitcode
     /// used just for the thin link as in the regular full bitcode that will
     /// be used in the backend.
-    void writeModule(const Module &M, bool ShouldPreserveUseListOrder = false,
+    void writeModule(const Module *M, bool ShouldPreserveUseListOrder = false,
                      const ModuleSummaryIndex *Index = nullptr,
                      bool GenerateHash = false, ModuleHash *ModHash = nullptr);
 
@@ -97,7 +97,7 @@ class raw_ostream;
     ///
     /// ModHash is for use in ThinLTO incremental build, generated while the
     /// IR bitcode file writing.
-    void writeThinLinkBitcode(const Module &M, const ModuleSummaryIndex &Index,
+    void writeThinLinkBitcode(const Module *M, const ModuleSummaryIndex &Index,
                               const ModuleHash &ModHash);
 
     void writeIndex(
@@ -105,7 +105,7 @@ class raw_ostream;
         const std::map<std::string, GVSummaryMapTy> *ModuleToSummariesForIndex);
   };
 
-  /// Write the specified module to the specified raw output stream.
+  /// \brief Write the specified module to the specified raw output stream.
   ///
   /// For streams where it matters, the given stream should be in "binary"
   /// mode.
@@ -126,7 +126,7 @@ class raw_ostream;
   /// Can be used to produce the same module hash for a minimized bitcode
   /// used just for the thin link as in the regular full bitcode that will
   /// be used in the backend.
-  void WriteBitcodeToFile(const Module &M, raw_ostream &Out,
+  void WriteBitcodeToFile(const Module *M, raw_ostream &Out,
                           bool ShouldPreserveUseListOrder = false,
                           const ModuleSummaryIndex *Index = nullptr,
                           bool GenerateHash = false,
@@ -139,7 +139,7 @@ class raw_ostream;
   ///
   /// ModHash is for use in ThinLTO incremental build, generated while the IR
   /// bitcode file writing.
-  void writeThinLinkBitcodeToFile(const Module &M, raw_ostream &Out,
+  void WriteThinLinkBitcodeToFile(const Module *M, raw_ostream &Out,
                                   const ModuleSummaryIndex &Index,
                                   const ModuleHash &ModHash);
 
@@ -148,22 +148,9 @@ class raw_ostream;
   /// writing the combined index file for ThinLTO. When writing a subset of the
   /// index for a distributed backend, provide the \p ModuleToSummariesForIndex
   /// map.
-  void writeIndexToFile(const ModuleSummaryIndex &Index, raw_ostream &Out,
+  void WriteIndexToFile(const ModuleSummaryIndex &Index, raw_ostream &Out,
                         const std::map<std::string, GVSummaryMapTy>
                             *ModuleToSummariesForIndex = nullptr);
-
-  /// If EmbedBitcode is set, save a copy of the llvm IR as data in the
-  ///  __LLVM,__bitcode section (.llvmbc on non-MacOS).
-  /// If available, pass the serialized module via the Buf parameter. If not,
-  /// pass an empty (default-initialized) MemoryBufferRef, and the serialization
-  /// will be handled by this API. The same behavior happens if the provided Buf
-  /// is not bitcode (i.e. if it's invalid data or even textual LLVM assembly).
-  /// If EmbedCmdline is set, the command line is also exported in
-  /// the corresponding section (__LLVM,_cmdline / .llvmcmd) - even if CmdArgs
-  /// were empty.
-  void embedBitcodeInModule(Module &M, MemoryBufferRef Buf, bool EmbedBitcode,
-                            bool EmbedCmdline,
-                            const std::vector<uint8_t> &CmdArgs);
 
 } // end namespace llvm
 

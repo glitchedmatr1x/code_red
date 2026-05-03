@@ -1,94 +1,84 @@
 //===--- Index.cpp -----------------------------------------------*- C++-*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #include "Index.h"
-#include "support/Logger.h"
 #include "llvm/ADT/StringExtras.h"
-#include "llvm/ADT/StringRef.h"
-#include "llvm/Support/Error.h"
-#include "llvm/Support/raw_ostream.h"
-#include <limits>
+#include "llvm/Support/SHA1.h"
 
 namespace clang {
 namespace clangd {
+using namespace llvm;
 
-void SwapIndex::reset(std::unique_ptr<SymbolIndex> Index) {
-  // Keep the old index alive, so we don't destroy it under lock (may be slow).
-  std::shared_ptr<SymbolIndex> Pin;
-  {
-    std::lock_guard<std::mutex> Lock(Mutex);
-    Pin = std::move(this->Index);
-    this->Index = std::move(Index);
+SymbolID::SymbolID(StringRef USR)
+    : HashValue(SHA1::hash(arrayRefFromStringRef(USR))) {}
+
+raw_ostream &operator<<(raw_ostream &OS, const SymbolID &ID) {
+  OS << toHex(toStringRef(ID.HashValue));
+  return OS;
+}
+
+void operator>>(StringRef Str, SymbolID &ID) {
+  std::string HexString = fromHex(Str);
+  assert(HexString.size() == ID.HashValue.size());
+  std::copy(HexString.begin(), HexString.end(), ID.HashValue.begin());
+}
+
+SymbolSlab::const_iterator SymbolSlab::find(const SymbolID &ID) const {
+  auto It = std::lower_bound(Symbols.begin(), Symbols.end(), ID,
+                             [](const Symbol &S, const SymbolID &I) {
+                               return S.ID < I;
+                             });
+  if (It != Symbols.end() && It->ID == ID)
+    return It;
+  return Symbols.end();
+}
+
+// Copy the underlying data of the symbol into the owned arena.
+static void own(Symbol &S, DenseSet<StringRef> &Strings,
+                BumpPtrAllocator &Arena) {
+  // Intern replaces V with a reference to the same string owned by the arena.
+  auto Intern = [&](StringRef &V) {
+    auto R = Strings.insert(V);
+    if (R.second) { // New entry added to the table, copy the string.
+      *R.first = V.copy(Arena);
+    }
+    V = *R.first;
+  };
+
+  // We need to copy every StringRef field onto the arena.
+  Intern(S.Name);
+  Intern(S.Scope);
+  Intern(S.CanonicalDeclaration.FilePath);
+}
+
+void SymbolSlab::Builder::insert(const Symbol &S) {
+  auto R = SymbolIndex.try_emplace(S.ID, Symbols.size());
+  if (R.second) {
+    Symbols.push_back(S);
+    own(Symbols.back(), Strings, Arena);
+  } else {
+    auto &Copy = Symbols[R.first->second] = S;
+    own(Copy, Strings, Arena);
   }
 }
-std::shared_ptr<SymbolIndex> SwapIndex::snapshot() const {
-  std::lock_guard<std::mutex> Lock(Mutex);
-  return Index;
-}
 
-bool fromJSON(const llvm::json::Value &Parameters, FuzzyFindRequest &Request,
-              llvm::json::Path P) {
-  llvm::json::ObjectMapper O(Parameters, P);
-  int64_t Limit;
-  bool OK =
-      O && O.map("Query", Request.Query) && O.map("Scopes", Request.Scopes) &&
-      O.map("AnyScope", Request.AnyScope) && O.map("Limit", Limit) &&
-      O.map("RestrictForCodeCompletion", Request.RestrictForCodeCompletion) &&
-      O.map("ProximityPaths", Request.ProximityPaths) &&
-      O.map("PreferredTypes", Request.PreferredTypes);
-  if (OK && Limit <= std::numeric_limits<uint32_t>::max())
-    Request.Limit = Limit;
-  return OK;
-}
-
-llvm::json::Value toJSON(const FuzzyFindRequest &Request) {
-  return llvm::json::Object{
-      {"Query", Request.Query},
-      {"Scopes", Request.Scopes},
-      {"AnyScope", Request.AnyScope},
-      {"Limit", Request.Limit},
-      {"RestrictForCodeCompletion", Request.RestrictForCodeCompletion},
-      {"ProximityPaths", Request.ProximityPaths},
-      {"PreferredTypes", Request.PreferredTypes},
-  };
-}
-
-bool SwapIndex::fuzzyFind(const FuzzyFindRequest &R,
-                          llvm::function_ref<void(const Symbol &)> CB) const {
-  return snapshot()->fuzzyFind(R, CB);
-}
-void SwapIndex::lookup(const LookupRequest &R,
-                       llvm::function_ref<void(const Symbol &)> CB) const {
-  return snapshot()->lookup(R, CB);
-}
-bool SwapIndex::refs(const RefsRequest &R,
-                     llvm::function_ref<void(const Ref &)> CB) const {
-  return snapshot()->refs(R, CB);
-}
-void SwapIndex::relations(
-    const RelationsRequest &R,
-    llvm::function_ref<void(const SymbolID &, const Symbol &)> CB) const {
-  return snapshot()->relations(R, CB);
-}
-
-llvm::unique_function<IndexContents(llvm::StringRef) const>
-SwapIndex::indexedFiles() const {
-  // The index snapshot should outlive this method return value.
-  auto SnapShot = snapshot();
-  auto IndexedFiles = SnapShot->indexedFiles();
-  return [KeepAlive{std::move(SnapShot)},
-          IndexContainsFile{std::move(IndexedFiles)}](llvm::StringRef File) {
-    return IndexContainsFile(File);
-  };
-}
-
-size_t SwapIndex::estimateMemoryUsage() const {
-  return snapshot()->estimateMemoryUsage();
+SymbolSlab SymbolSlab::Builder::build() && {
+  Symbols = {Symbols.begin(), Symbols.end()}; // Force shrink-to-fit.
+  // Sort symbols so the slab can binary search over them.
+  std::sort(Symbols.begin(), Symbols.end(),
+            [](const Symbol &L, const Symbol &R) { return L.ID < R.ID; });
+  // We may have unused strings from overwritten symbols. Build a new arena.
+  BumpPtrAllocator NewArena;
+  DenseSet<StringRef> Strings;
+  for (auto &S : Symbols)
+    own(S, Strings, NewArena);
+  return SymbolSlab(std::move(NewArena), std::move(Symbols));
 }
 
 } // namespace clangd

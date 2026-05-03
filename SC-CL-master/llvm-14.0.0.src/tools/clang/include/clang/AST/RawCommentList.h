@@ -1,8 +1,9 @@
 //===--- RawCommentList.h - Classes for processing raw comments -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -10,20 +11,15 @@
 #define LLVM_CLANG_AST_RAWCOMMENTLIST_H
 
 #include "clang/Basic/CommentOptions.h"
-#include "clang/Basic/SourceLocation.h"
+#include "clang/Basic/SourceManager.h"
 #include "llvm/ADT/ArrayRef.h"
-#include "llvm/ADT/DenseMap.h"
-#include "llvm/Support/Allocator.h"
-#include <map>
 
 namespace clang {
 
 class ASTContext;
 class ASTReader;
 class Decl;
-class DiagnosticsEngine;
 class Preprocessor;
-class SourceManager;
 
 namespace comments {
   class FullComment;
@@ -45,7 +41,7 @@ public:
   RawComment() : Kind(RCK_Invalid), IsAlmostTrailingComment(false) { }
 
   RawComment(const SourceManager &SourceMgr, SourceRange SR,
-             const CommentOptions &CommentOpts, bool Merged);
+             bool Merged, bool ParseAllComments);
 
   CommentKind getKind() const LLVM_READONLY {
     return (CommentKind) Kind;
@@ -74,6 +70,7 @@ public:
   /// \code /**< stuff */ \endcode
   /// \code /*!< stuff */ \endcode
   bool isTrailingComment() const LLVM_READONLY {
+    assert(isDocumentation());
     return IsTrailingComment;
   }
 
@@ -86,12 +83,18 @@ public:
 
   /// Returns true if this comment is not a documentation comment.
   bool isOrdinary() const LLVM_READONLY {
-    return ((Kind == RCK_OrdinaryBCPL) || (Kind == RCK_OrdinaryC));
+    return ((Kind == RCK_OrdinaryBCPL) || (Kind == RCK_OrdinaryC)) &&
+        !ParseAllComments;
   }
 
   /// Returns true if this comment any kind of a documentation comment.
   bool isDocumentation() const LLVM_READONLY {
     return !isInvalid() && !isOrdinary();
+  }
+
+  /// Returns whether we are parsing all comments.
+  bool isParseAllComments() const LLVM_READONLY {
+    return ParseAllComments;
   }
 
   /// Returns raw comment text with comment markers.
@@ -105,8 +108,8 @@ public:
   }
 
   SourceRange getSourceRange() const LLVM_READONLY { return Range; }
-  SourceLocation getBeginLoc() const LLVM_READONLY { return Range.getBegin(); }
-  SourceLocation getEndLoc() const LLVM_READONLY { return Range.getEnd(); }
+  SourceLocation getLocStart() const LLVM_READONLY { return Range.getBegin(); }
+  SourceLocation getLocEnd() const LLVM_READONLY { return Range.getEnd(); }
 
   const char *getBriefText(const ASTContext &Context) const {
     if (BriefTextValid)
@@ -114,30 +117,6 @@ public:
 
     return extractBriefText(Context);
   }
-
-  /// Returns sanitized comment text, suitable for presentation in editor UIs.
-  /// E.g. will transform:
-  ///     // This is a long multiline comment.
-  ///     //   Parts of it  might be indented.
-  ///     /* The comments styles might be mixed. */
-  ///  into
-  ///     "This is a long multiline comment.\n"
-  ///     "  Parts of it  might be indented.\n"
-  ///     "The comments styles might be mixed."
-  /// Also removes leading indentation and sanitizes some common cases:
-  ///     /* This is a first line.
-  ///      *   This is a second line. It is indented.
-  ///      * This is a third line. */
-  /// and
-  ///     /* This is a first line.
-  ///          This is a second line. It is indented.
-  ///     This is a third line. */
-  /// will both turn into:
-  ///     "This is a first line.\n"
-  ///     "  This is a second line. It is indented.\n"
-  ///     "This is a third line."
-  std::string getFormattedText(const SourceManager &SourceMgr,
-                               DiagnosticsEngine &Diags) const;
 
   /// Parse the comment, assuming it is attached to decl \c D.
   comments::FullComment *parse(const ASTContext &Context,
@@ -160,12 +139,18 @@ private:
   bool IsTrailingComment : 1;
   bool IsAlmostTrailingComment : 1;
 
-  /// Constructor for AST deserialization.
+  /// When true, ordinary comments starting with "//" and "/*" will be
+  /// considered as documentation comments.
+  bool ParseAllComments : 1;
+
+  /// \brief Constructor for AST deserialization.
   RawComment(SourceRange SR, CommentKind K, bool IsTrailingComment,
-             bool IsAlmostTrailingComment) :
+             bool IsAlmostTrailingComment,
+             bool ParseAllComments) :
     Range(SR), RawTextValid(false), BriefTextValid(false), Kind(K),
     IsAttached(false), IsTrailingComment(IsTrailingComment),
-    IsAlmostTrailingComment(IsAlmostTrailingComment)
+    IsAlmostTrailingComment(IsAlmostTrailingComment),
+    ParseAllComments(ParseAllComments)
   { }
 
   StringRef getRawTextSlow(const SourceManager &SourceMgr) const;
@@ -175,34 +160,42 @@ private:
   friend class ASTReader;
 };
 
-/// This class represents all comments included in the translation unit,
+/// \brief Compare comments' source locations.
+template<>
+class BeforeThanCompare<RawComment> {
+  const SourceManager &SM;
+
+public:
+  explicit BeforeThanCompare(const SourceManager &SM) : SM(SM) { }
+
+  bool operator()(const RawComment &LHS, const RawComment &RHS) {
+    return SM.isBeforeInTranslationUnit(LHS.getLocStart(), RHS.getLocStart());
+  }
+
+  bool operator()(const RawComment *LHS, const RawComment *RHS) {
+    return operator()(*LHS, *RHS);
+  }
+};
+
+/// \brief This class represents all comments included in the translation unit,
 /// sorted in order of appearance in the translation unit.
 class RawCommentList {
 public:
   RawCommentList(SourceManager &SourceMgr) : SourceMgr(SourceMgr) {}
 
-  void addComment(const RawComment &RC, const CommentOptions &CommentOpts,
-                  llvm::BumpPtrAllocator &Allocator);
+  void addComment(const RawComment &RC, llvm::BumpPtrAllocator &Allocator);
 
-  /// \returns A mapping from an offset of the start of the comment to the
-  /// comment itself, or nullptr in case there are no comments in \p File.
-  const std::map<unsigned, RawComment *> *getCommentsInFile(FileID File) const;
-
-  bool empty() const;
-
-  unsigned getCommentBeginLine(RawComment *C, FileID File,
-                               unsigned Offset) const;
-  unsigned getCommentEndOffset(RawComment *C) const;
+  ArrayRef<RawComment *> getComments() const {
+    return Comments;
+  }
 
 private:
   SourceManager &SourceMgr;
-  // mapping: FileId -> comment begin offset -> comment
-  llvm::DenseMap<FileID, std::map<unsigned, RawComment *>> OrderedComments;
-  mutable llvm::DenseMap<RawComment *, unsigned> CommentBeginLine;
-  mutable llvm::DenseMap<RawComment *, unsigned> CommentEndOffset;
+  std::vector<RawComment *> Comments;
+
+  void addDeserializedComments(ArrayRef<RawComment *> DeserializedComments);
 
   friend class ASTReader;
-  friend class ASTWriter;
 };
 
 } // end namespace clang

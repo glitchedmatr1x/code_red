@@ -1,8 +1,9 @@
 //===- MCCodeView.h - Machine Code CodeView support -------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -26,10 +27,9 @@ class MCObjectStreamer;
 class MCStreamer;
 class CodeViewContext;
 
-/// Instances of this class represent the information from a
+/// \brief Instances of this class represent the information from a
 /// .cv_loc directive.
 class MCCVLoc {
-  const MCSymbol *Label = nullptr;
   uint32_t FunctionId;
   uint32_t FileNum;
   uint32_t Line;
@@ -39,42 +39,38 @@ class MCCVLoc {
 
 private: // CodeViewContext manages these
   friend class CodeViewContext;
-  MCCVLoc(const MCSymbol *Label, unsigned functionid, unsigned fileNum,
-          unsigned line, unsigned column, bool prologueend, bool isstmt)
-      : Label(Label), FunctionId(functionid), FileNum(fileNum), Line(line),
-        Column(column), PrologueEnd(prologueend), IsStmt(isstmt) {}
+  MCCVLoc(unsigned functionid, unsigned fileNum, unsigned line, unsigned column,
+          bool prologueend, bool isstmt)
+      : FunctionId(functionid), FileNum(fileNum), Line(line), Column(column),
+        PrologueEnd(prologueend), IsStmt(isstmt) {}
 
   // Allow the default copy constructor and assignment operator to be used
   // for an MCCVLoc object.
 
 public:
-  const MCSymbol *getLabel() const { return Label; }
-
   unsigned getFunctionId() const { return FunctionId; }
 
-  /// Get the FileNum of this MCCVLoc.
+  /// \brief Get the FileNum of this MCCVLoc.
   unsigned getFileNum() const { return FileNum; }
 
-  /// Get the Line of this MCCVLoc.
+  /// \brief Get the Line of this MCCVLoc.
   unsigned getLine() const { return Line; }
 
-  /// Get the Column of this MCCVLoc.
+  /// \brief Get the Column of this MCCVLoc.
   unsigned getColumn() const { return Column; }
 
   bool isPrologueEnd() const { return PrologueEnd; }
   bool isStmt() const { return IsStmt; }
 
-  void setLabel(const MCSymbol *L) { Label = L; }
-
   void setFunctionId(unsigned FID) { FunctionId = FID; }
 
-  /// Set the FileNum of this MCCVLoc.
+  /// \brief Set the FileNum of this MCCVLoc.
   void setFileNum(unsigned fileNum) { FileNum = fileNum; }
 
-  /// Set the Line of this MCCVLoc.
+  /// \brief Set the Line of this MCCVLoc.
   void setLine(unsigned line) { Line = line; }
 
-  /// Set the Column of this MCCVLoc.
+  /// \brief Set the Column of this MCCVLoc.
   void setColumn(unsigned column) {
     assert(column <= UINT16_MAX);
     Column = column;
@@ -82,6 +78,31 @@ public:
 
   void setPrologueEnd(bool PE) { PrologueEnd = PE; }
   void setIsStmt(bool IS) { IsStmt = IS; }
+};
+
+/// \brief Instances of this class represent the line information for
+/// the CodeView line table entries.  Which is created after a machine
+/// instruction is assembled and uses an address from a temporary label
+/// created at the current address in the current section and the info from
+/// the last .cv_loc directive seen as stored in the context.
+class MCCVLineEntry : public MCCVLoc {
+  const MCSymbol *Label;
+
+private:
+  // Allow the default copy constructor and assignment operator to be used
+  // for an MCCVLineEntry object.
+
+public:
+  // Constructor to create an MCCVLineEntry given a symbol and the dwarf loc.
+  MCCVLineEntry(const MCSymbol *Label, const MCCVLoc loc)
+      : MCCVLoc(loc), Label(Label) {}
+
+  const MCSymbol *getLabel() const { return Label; }
+
+  // This is called when an instruction is assembled into the specified
+  // section and if there is information from the last .cv_loc directive that
+  // has yet to have a line entry made for it is made.
+  static void Make(MCObjectStreamer *MCOS);
 };
 
 /// Information describing a function or inlined call site introduced by
@@ -162,18 +183,32 @@ public:
   /// and sets CVLocSeen.  When the next instruction is assembled an entry
   /// in the line number table with this information and the address of the
   /// instruction will be created.
-  void recordCVLoc(MCContext &Ctx, const MCSymbol *Label, unsigned FunctionId,
-                   unsigned FileNo, unsigned Line, unsigned Column,
-                   bool PrologueEnd, bool IsStmt);
+  void setCurrentCVLoc(unsigned FunctionId, unsigned FileNo, unsigned Line,
+                       unsigned Column, bool PrologueEnd, bool IsStmt) {
+    CurrentCVLoc.setFunctionId(FunctionId);
+    CurrentCVLoc.setFileNum(FileNo);
+    CurrentCVLoc.setLine(Line);
+    CurrentCVLoc.setColumn(Column);
+    CurrentCVLoc.setPrologueEnd(PrologueEnd);
+    CurrentCVLoc.setIsStmt(IsStmt);
+    CVLocSeen = true;
+  }
 
-  /// Add a line entry.
-  void addLineEntry(const MCCVLoc &LineEntry);
+  bool getCVLocSeen() { return CVLocSeen; }
+  void clearCVLocSeen() { CVLocSeen = false; }
 
-  std::vector<MCCVLoc> getFunctionLineEntries(unsigned FuncId);
+  const MCCVLoc &getCurrentCVLoc() { return CurrentCVLoc; }
+
+  bool isValidCVFileNumber(unsigned FileNumber);
+
+  /// \brief Add a line entry.
+  void addLineEntry(const MCCVLineEntry &LineEntry);
+
+  std::vector<MCCVLineEntry> getFunctionLineEntries(unsigned FuncId);
 
   std::pair<size_t, size_t> getLineExtent(unsigned FuncId);
 
-  ArrayRef<MCCVLoc> getLinesForExtent(size_t L, size_t R);
+  ArrayRef<MCCVLineEntry> getLinesForExtent(size_t L, size_t R);
 
   /// Emits a line table substream.
   void emitLineTableForFunction(MCObjectStreamer &OS, unsigned FuncId,
@@ -191,7 +226,7 @@ public:
   void encodeInlineLineTable(MCAsmLayout &Layout,
                              MCCVInlineLineTableFragment &F);
 
-  MCFragment *
+  void
   emitDefRange(MCObjectStreamer &OS,
                ArrayRef<std::pair<const MCSymbol *, const MCSymbol *>> Ranges,
                StringRef FixedSizePortion);
@@ -212,6 +247,10 @@ public:
   std::pair<StringRef, unsigned> addToStringTable(StringRef S);
 
 private:
+  /// The current CodeView line information from the last .cv_loc directive.
+  MCCVLoc CurrentCVLoc = MCCVLoc(0, 0, 0, 0, false, true);
+  bool CVLocSeen = false;
+
   /// Map from string to string table offset.
   StringMap<unsigned> StringTable;
 
@@ -247,8 +286,8 @@ private:
   /// id.
   std::map<unsigned, std::pair<size_t, size_t>> MCCVLineStartStop;
 
-  /// A collection of MCCVLoc for each section.
-  std::vector<MCCVLoc> MCCVLines;
+  /// A collection of MCCVLineEntry for each section.
+  std::vector<MCCVLineEntry> MCCVLines;
 
   /// All known functions and inlined call sites, indexed by function id.
   std::vector<MCCVFunctionInfo> Functions;

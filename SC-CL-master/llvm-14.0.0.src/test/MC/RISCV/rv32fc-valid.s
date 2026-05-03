@@ -1,43 +1,19 @@
 # RUN: llvm-mc %s -triple=riscv32 -mattr=+c,+f -riscv-no-aliases -show-encoding \
-# RUN:     | FileCheck -check-prefixes=CHECK-ASM,CHECK-ASM-AND-OBJ %s
+# RUN:     | FileCheck -check-prefixes=CHECK,CHECK-INST %s
 # RUN: llvm-mc -filetype=obj -triple=riscv32 -mattr=+c,+f < %s \
-# RUN:     | llvm-objdump --mattr=+c,+f -M no-aliases -d -r - \
-# RUN:     | FileCheck --check-prefix=CHECK-ASM-AND-OBJ %s
-#
-# RUN: not llvm-mc -triple riscv32 -mattr=+c \
-# RUN:     -riscv-no-aliases -show-encoding < %s 2>&1 \
-# RUN:     | FileCheck -check-prefixes=CHECK-NO-EXT-F %s
-# RUN: not llvm-mc -triple riscv32 \
-# RUN:     -riscv-no-aliases -show-encoding < %s 2>&1 \
-# RUN:     | FileCheck -check-prefixes=CHECK-NO-EXT-FC %s
-# RUN: not llvm-mc -triple riscv64 -mattr=+c,+f \
-# RUN:     -riscv-no-aliases -show-encoding < %s 2>&1 \
-# RUN:     | FileCheck -check-prefixes=CHECK-NO-RV32 %s
+# RUN:     | llvm-objdump -mattr=+c,+f -riscv-no-aliases -d - \
+# RUN:     | FileCheck -check-prefix=CHECK-INST %s
 
-# FIXME: error messages for rv64fc are misleading
-
-# CHECK-ASM-AND-OBJ: c.flwsp  fs0, 252(sp)
-# CHECK-ASM: encoding: [0x7e,0x74]
-# CHECK-NO-EXT-F:  error: instruction requires the following: 'F' (Single-Precision Floating-Point)
-# CHECK-NO-EXT-FC:  error: instruction requires the following: 'C' (Compressed Instructions), 'F' (Single-Precision Floating-Point)
-# CHECK-NO-RV32:  error: instruction requires the following: RV32I Base Instruction Set
+# CHECK-INST: c.flwsp  fs0, 252(sp)
+# CHECK: encoding: [0x7e,0x74]
 c.flwsp  fs0, 252(sp)
-# CHECK-ASM-AND-OBJ: c.fswsp  fa7, 252(sp)
-# CHECK-ASM: encoding: [0xc6,0xff]
-# CHECK-NO-EXT-F:  error: instruction requires the following: 'F' (Single-Precision Floating-Point)
-# CHECK-NO-EXT-FC:  error: instruction requires the following: 'C' (Compressed Instructions), 'F' (Single-Precision Floating-Point)
-# CHECK-NO-RV32:  error: instruction requires the following: RV32I Base Instruction Set
+# CHECK-INST: c.fswsp  fa7, 252(sp)
+# CHECK: encoding: [0xc6,0xff]
 c.fswsp  fa7, 252(sp)
 
-# CHECK-ASM-AND-OBJ: c.flw  fa3, 124(a5)
-# CHECK-ASM: encoding: [0xf4,0x7f]
-# CHECK-NO-EXT-F:  error: instruction requires the following: 'F' (Single-Precision Floating-Point)
-# CHECK-NO-EXT-FC:  error: instruction requires the following: 'C' (Compressed Instructions), 'F' (Single-Precision Floating-Point)
-# CHECK-NO-RV32:  error: instruction requires the following: RV32I Base Instruction Set
+# CHECK-INST: c.flw  fa3, 124(a5)
+# CHECK: encoding: [0xf4,0x7f]
 c.flw  fa3, 124(a5)
-# CHECK-ASM-AND-OBJ: c.fsw  fa2, 124(a1)
-# CHECK-ASM: encoding: [0xf0,0xfd]
-# CHECK-NO-EXT-F:  error: instruction requires the following: 'F' (Single-Precision Floating-Point)
-# CHECK-NO-EXT-FC:  error: instruction requires the following: 'C' (Compressed Instructions), 'F' (Single-Precision Floating-Point)
-# CHECK-NO-RV32:  error: instruction requires the following: RV32I Base Instruction Set
+# CHECK-INST: c.fsw  fa2, 124(a1)
+# CHECK: encoding: [0xf0,0xfd]
 c.fsw  fa2, 124(a1)

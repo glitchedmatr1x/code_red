@@ -1,8 +1,9 @@
 //===- CodeGenInstruction.h - Instruction Class Wrapper ---------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -13,11 +14,9 @@
 #ifndef LLVM_UTILS_TABLEGEN_CODEGENINSTRUCTION_H
 #define LLVM_UTILS_TABLEGEN_CODEGENINSTRUCTION_H
 
-#include "llvm/ADT/BitVector.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/Support/MachineValueType.h"
+#include "llvm/CodeGen/MachineValueType.h"
 #include "llvm/Support/SMLoc.h"
-#include <cassert>
 #include <string>
 #include <utility>
 #include <vector>
@@ -31,11 +30,10 @@ template <typename T> class ArrayRef;
   class CGIOperandList {
   public:
     class ConstraintInfo {
-      enum { None, EarlyClobber, Tied } Kind = None;
-      unsigned OtherTiedOperand = 0;
-
+      enum { None, EarlyClobber, Tied } Kind;
+      unsigned OtherTiedOperand;
     public:
-      ConstraintInfo() = default;
+      ConstraintInfo() : Kind(None) {}
 
       static ConstraintInfo getEarlyClobber() {
         ConstraintInfo I;
@@ -58,17 +56,6 @@ template <typename T> class ArrayRef;
       unsigned getTiedOperand() const {
         assert(isTied());
         return OtherTiedOperand;
-      }
-
-      bool operator==(const ConstraintInfo &RHS) const {
-        if (Kind != RHS.Kind)
-          return false;
-        if (Kind == Tied && OtherTiedOperand != RHS.OtherTiedOperand)
-          return false;
-        return true;
-      }
-      bool operator!=(const ConstraintInfo &RHS) const {
-        return !(*this == RHS);
       }
     };
 
@@ -107,7 +94,7 @@ template <typename T> class ArrayRef;
       /// DoNotEncode - Bools are set to true in this vector for each operand in
       /// the DisableEncoding list.  These should not be emitted by the code
       /// emitter.
-      BitVector DoNotEncode;
+      std::vector<bool> DoNotEncode;
 
       /// MIOperandInfo - Default MI operand type. Note an operand may be made
       /// up of multiple MI operands.
@@ -183,7 +170,7 @@ template <typename T> class ArrayRef;
     /// where $foo is a whole operand and $foo.bar refers to a suboperand.
     /// This aborts if the name is invalid.  If AllowWholeOp is true, references
     /// to operands with suboperands are allowed, otherwise not.
-    std::pair<unsigned,unsigned> ParseOperandName(StringRef Op,
+    std::pair<unsigned,unsigned> ParseOperandName(const std::string &Op,
                                                   bool AllowWholeOp = true);
 
     /// getFlattenedOperandNumber - Flatten a operand/suboperand pair into a
@@ -212,7 +199,7 @@ template <typename T> class ArrayRef;
       return false;
     }
 
-    void ProcessDisableEncoding(StringRef Value);
+    void ProcessDisableEncoding(std::string Value);
   };
 
 
@@ -234,26 +221,21 @@ template <typename T> class ArrayRef;
     std::vector<Record*> ImplicitDefs, ImplicitUses;
 
     // Various boolean values we track for the instruction.
-    bool isPreISelOpcode : 1;
     bool isReturn : 1;
-    bool isEHScopeReturn : 1;
     bool isBranch : 1;
     bool isIndirectBranch : 1;
     bool isCompare : 1;
     bool isMoveImm : 1;
-    bool isMoveReg : 1;
     bool isBitcast : 1;
     bool isSelect : 1;
     bool isBarrier : 1;
     bool isCall : 1;
     bool isAdd : 1;
-    bool isTrap : 1;
     bool canFoldAsLoad : 1;
     bool mayLoad : 1;
     bool mayLoad_Unset : 1;
     bool mayStore : 1;
     bool mayStore_Unset : 1;
-    bool mayRaiseFPException : 1;
     bool isPredicable : 1;
     bool isConvertibleToThreeAddress : 1;
     bool isCommutable : 1;
@@ -276,11 +258,6 @@ template <typename T> class ArrayRef;
     bool isInsertSubreg : 1;
     bool isConvergent : 1;
     bool hasNoSchedulingInfo : 1;
-    bool FastISelShouldIgnore : 1;
-    bool hasChain : 1;
-    bool hasChain_Inferred : 1;
-    bool variadicOpsAreDefs : 1;
-    bool isAuthenticated : 1;
 
     std::string DeprecatedReason;
     bool HasComplexDeprecationPredicate;
@@ -312,17 +289,7 @@ template <typename T> class ArrayRef;
     // This can be used on intructions that use typeN or ptypeN to identify
     // operands that should be considered as pointers even though SelectionDAG
     // didn't make a distinction between integer and pointers.
-    bool isOperandAPointer(unsigned i) const {
-      return isOperandImpl(i, "IsPointer");
-    }
-
-    /// Check if the operand is required to be an immediate.
-    bool isOperandImmArg(unsigned i) const {
-      return isOperandImpl(i, "IsImmediate");
-    }
-
-  private:
-    bool isOperandImpl(unsigned i, StringRef PropertyName) const;
+    bool isOperandAPointer(unsigned i) const;
   };
 
 
@@ -346,9 +313,9 @@ template <typename T> class ArrayRef;
     struct ResultOperand {
     private:
       std::string Name;
-      Record *R = nullptr;
-      int64_t Imm = 0;
+      Record *R;
 
+      int64_t Imm;
     public:
       enum {
         K_Record,
@@ -383,7 +350,7 @@ template <typename T> class ArrayRef;
     /// of them are matched by the operand, the second value should be -1.
     std::vector<std::pair<unsigned, int> > ResultInstOperandIndex;
 
-    CodeGenInstAlias(Record *R, CodeGenTarget &T);
+    CodeGenInstAlias(Record *R, unsigned Variant, CodeGenTarget &T);
 
     bool tryAliasOpMatch(DagInit *Result, unsigned AliasOpNo,
                          Record *InstOpRec, bool hasSubOps, ArrayRef<SMLoc> Loc,

@@ -1,19 +1,20 @@
 //===--- USRFinder.h - Clang refactoring library --------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Methods for determining the USR of a symbol at a location in source
+/// \brief Methods for determining the USR of a symbol at a location in source
 /// code.
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_TOOLING_REFACTORING_RENAME_USRFINDER_H
-#define LLVM_CLANG_TOOLING_REFACTORING_RENAME_USRFINDER_H
+#ifndef LLVM_CLANG_TOOLING_REFACTOR_RENAME_USR_FINDER_H
+#define LLVM_CLANG_TOOLING_REFACTOR_RENAME_USR_FINDER_H
 
 #include "clang/AST/AST.h"
 #include "clang/AST/ASTContext.h"
@@ -46,4 +47,4 @@ std::string getUSRForDecl(const Decl *Decl);
 } // end namespace tooling
 } // end namespace clang
 
-#endif // LLVM_CLANG_TOOLING_REFACTORING_RENAME_USRFINDER_H
+#endif // LLVM_CLANG_TOOLING_REFACTOR_RENAME_USR_FINDER_H

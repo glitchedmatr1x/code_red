@@ -16,7 +16,7 @@ class ReportFailure(Exception):
 
 # Collect information about a bug.
 
-class BugReport(object):
+class BugReport:
     def __init__(self, title, description, files):
         self.title = title
         self.description = description
@@ -37,7 +37,7 @@ from email.mime.text import MIMEText
 # ReporterParameter
 #===------------------------------------------------------------------------===#
 
-class ReporterParameter(object):
+class ReporterParameter:
   def __init__(self, n):
     self.name = n
   def getName(self):
@@ -75,12 +75,12 @@ class SelectionParameter (ReporterParameter):
 # Reporters
 #===------------------------------------------------------------------------===#
 
-class EmailReporter(object):
+class EmailReporter:
     def getName(self):
         return 'Email'
 
     def getParameters(self):
-        return [TextParameter(x) for x in ['To', 'From', 'SMTP Server', 'SMTP Port']]
+        return map(lambda x:TextParameter(x),['To', 'From', 'SMTP Server', 'SMTP Port'])
 
     # Lifted from python email module examples.
     def attachFile(self, outer, path):
@@ -143,12 +143,12 @@ Description: %s
 
         return "Message sent!"
 
-class BugzillaReporter(object):
+class BugzillaReporter:
     def getName(self):
         return 'Bugzilla'
     
     def getParameters(self):
-        return [TextParameter(x) for x in ['URL','Product']]
+        return map(lambda x:TextParameter(x),['URL','Product'])
 
     def fileReport(self, report, parameters):
         raise NotImplementedError
@@ -174,10 +174,78 @@ class RadarClassificationParameter(SelectionParameter):
     else:
       return '7'
 
+class RadarReporter:
+    @staticmethod
+    def isAvailable():
+        # FIXME: Find this .scpt better
+        path = os.path.join(os.path.dirname(__file__),'../share/scan-view/GetRadarVersion.scpt')
+        try:
+          p = subprocess.Popen(['osascript',path], 
+          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except:
+            return False
+        data,err = p.communicate()
+        res = p.wait()
+        # FIXME: Check version? Check for no errors?
+        return res == 0
+
+    def getName(self):
+        return 'Radar'
+
+    def getParameters(self):
+        return [ TextParameter('Component'), TextParameter('Component Version'),
+                 RadarClassificationParameter() ]
+
+    def fileReport(self, report, parameters):
+        component = parameters.get('Component', '')
+        componentVersion = parameters.get('Component Version', '')
+        classification = parameters.get('Classification', '')
+        personID = ""
+        diagnosis = ""
+        config = ""
+
+        if not component.strip():
+            component = 'Bugs found by clang Analyzer'
+        if not componentVersion.strip():
+            componentVersion = 'X'
+
+        script = os.path.join(os.path.dirname(__file__),'../share/scan-view/FileRadar.scpt')
+        args = ['osascript', script, component, componentVersion, classification, personID, report.title,
+                report.description, diagnosis, config] + map(os.path.abspath, report.files)
+#        print >>sys.stderr, args
+        try:
+          p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except:
+            raise ReportFailure("Unable to file radar (AppleScript failure).")
+        data, err = p.communicate()
+        res = p.wait()
+
+        if res:
+            raise ReportFailure("Unable to file radar (AppleScript failure).")
+
+        try:
+            values = eval(data)
+        except:
+            raise ReportFailure("Unable to process radar results.")
+
+        # We expect (int: bugID, str: message)
+        if len(values) != 2 or not isinstance(values[0], int):
+            raise ReportFailure("Unable to process radar results.")
+
+        bugID,message = values
+        bugID = int(bugID)
+        
+        if not bugID:
+            raise ReportFailure(message)
+        
+        return "Filed: <a href=\"rdar://%d/\">%d</a>"%(bugID,bugID)
+
 ###
 
 def getReporters():
     reporters = []
+    if RadarReporter.isAvailable():
+        reporters.append(RadarReporter())
     reporters.append(EmailReporter())
     return reporters
 

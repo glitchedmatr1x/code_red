@@ -12,7 +12,7 @@ source_filename = "fp128-g.c"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64--linux-android"
 
-@ld_ptr = common dso_local local_unnamed_addr global fp128* null, align 8, !dbg !0
+@ld_ptr = common local_unnamed_addr global fp128* null, align 8, !dbg !0
 
 ; Function Attrs: nounwind readonly uwtable
 define fp128 @test_return1(fp128* nocapture readonly %ptr) local_unnamed_addr #0 !dbg !12 {
@@ -54,7 +54,9 @@ entry:
 ; X64:       movaps     (%rdi), %xmm0
 ; X64:       .loc
 ; X64:       movaps	%xmm0, %xmm1
-; X64:       jmp	__addtf3
+; X64:       callq	__addtf3
+; X64:       .loc
+; X64:       retq
 }
 
 ; Function Attrs: norecurse nounwind readonly uwtable
@@ -100,14 +102,16 @@ entry:
 ; X64:       movaps	(%rax), %xmm0
 ; X64:       .loc
 ; X64:       movaps	%xmm0, %xmm1
-; X64:       jmp	__addtf3
+; X64:       callq	__addtf3
+; X64:       .loc
+; X64:       retq
 }
 
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, i64, metadata, metadata) #2
 
-attributes #0 = { nounwind readonly uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+popcnt,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { norecurse nounwind readonly uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+popcnt,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind readonly uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+popcnt,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { norecurse nounwind readonly uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+popcnt,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!2}
@@ -126,7 +130,7 @@ attributes #2 = { nounwind readnone }
 !9 = !{i32 2, !"Debug Info Version", i32 3}
 !10 = !{i32 1, !"PIC Level", i32 2}
 !11 = !{!"clang version 4.0.0 (trunk 281495)"}
-!12 = distinct !DISubprogram(name: "test_return1", scope: !3, file: !3, line: 3, type: !13, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: true, unit: !2, retainedNodes: !15)
+!12 = distinct !DISubprogram(name: "test_return1", scope: !3, file: !3, line: 3, type: !13, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: true, unit: !2, variables: !15)
 !13 = !DISubroutineType(types: !14)
 !14 = !{!7, !6}
 !15 = !{!16}
@@ -139,7 +143,7 @@ attributes #2 = { nounwind readnone }
 !22 = !{!"omnipotent char", !23, i64 0}
 !23 = !{!"Simple C/C++ TBAA"}
 !24 = !DILocation(line: 4, column: 5, scope: !12)
-!25 = distinct !DISubprogram(name: "test_return2", scope: !3, file: !3, line: 7, type: !13, isLocal: false, isDefinition: true, scopeLine: 7, flags: DIFlagPrototyped, isOptimized: true, unit: !2, retainedNodes: !26)
+!25 = distinct !DISubprogram(name: "test_return2", scope: !3, file: !3, line: 7, type: !13, isLocal: false, isDefinition: true, scopeLine: 7, flags: DIFlagPrototyped, isOptimized: true, unit: !2, variables: !26)
 !26 = !{!27, !28}
 !27 = !DILocalVariable(name: "ptr", arg: 1, scope: !25, file: !3, line: 7, type: !6)
 !28 = !DILocalVariable(name: "value", scope: !25, file: !3, line: 8, type: !7)
@@ -147,14 +151,14 @@ attributes #2 = { nounwind readnone }
 !30 = !DILocation(line: 9, column: 14, scope: !25)
 !31 = !DILocation(line: 8, column: 17, scope: !25)
 !32 = !DILocation(line: 10, column: 5, scope: !25)
-!33 = distinct !DISubprogram(name: "test_return3", scope: !3, file: !3, line: 13, type: !13, isLocal: false, isDefinition: true, scopeLine: 13, flags: DIFlagPrototyped, isOptimized: true, unit: !2, retainedNodes: !34)
+!33 = distinct !DISubprogram(name: "test_return3", scope: !3, file: !3, line: 13, type: !13, isLocal: false, isDefinition: true, scopeLine: 13, flags: DIFlagPrototyped, isOptimized: true, unit: !2, variables: !34)
 !34 = !{!35}
 !35 = !DILocalVariable(name: "ptr", arg: 1, scope: !33, file: !3, line: 13, type: !6)
 !36 = !DILocation(line: 13, column: 39, scope: !33)
 !37 = !DILocation(line: 14, column: 12, scope: !33)
 !38 = !DILocation(line: 14, column: 17, scope: !33)
 !39 = !DILocation(line: 14, column: 5, scope: !33)
-!40 = distinct !DISubprogram(name: "test_return4", scope: !3, file: !3, line: 18, type: !41, isLocal: false, isDefinition: true, scopeLine: 18, isOptimized: true, unit: !2, retainedNodes: !4)
+!40 = distinct !DISubprogram(name: "test_return4", scope: !3, file: !3, line: 18, type: !41, isLocal: false, isDefinition: true, scopeLine: 18, isOptimized: true, unit: !2, variables: !4)
 !41 = !DISubroutineType(types: !42)
 !42 = !{!7}
 !43 = !DILocation(line: 19, column: 13, scope: !40)
@@ -162,14 +166,14 @@ attributes #2 = { nounwind readnone }
 !45 = !{!"any pointer", !22, i64 0}
 !46 = !DILocation(line: 19, column: 12, scope: !40)
 !47 = !DILocation(line: 19, column: 5, scope: !40)
-!48 = distinct !DISubprogram(name: "test_return5", scope: !3, file: !3, line: 22, type: !41, isLocal: false, isDefinition: true, scopeLine: 22, isOptimized: true, unit: !2, retainedNodes: !49)
+!48 = distinct !DISubprogram(name: "test_return5", scope: !3, file: !3, line: 22, type: !41, isLocal: false, isDefinition: true, scopeLine: 22, isOptimized: true, unit: !2, variables: !49)
 !49 = !{!50}
 !50 = !DILocalVariable(name: "value", scope: !48, file: !3, line: 23, type: !7)
 !51 = !DILocation(line: 23, column: 26, scope: !48)
 !52 = !DILocation(line: 23, column: 25, scope: !48)
 !53 = !DILocation(line: 23, column: 17, scope: !48)
 !54 = !DILocation(line: 24, column: 5, scope: !48)
-!55 = distinct !DISubprogram(name: "test_return6", scope: !3, file: !3, line: 27, type: !41, isLocal: false, isDefinition: true, scopeLine: 27, isOptimized: true, unit: !2, retainedNodes: !4)
+!55 = distinct !DISubprogram(name: "test_return6", scope: !3, file: !3, line: 27, type: !41, isLocal: false, isDefinition: true, scopeLine: 27, isOptimized: true, unit: !2, variables: !4)
 !56 = !DILocation(line: 28, column: 13, scope: !55)
 !57 = !DILocation(line: 28, column: 12, scope: !55)
 !58 = !DILocation(line: 28, column: 20, scope: !55)

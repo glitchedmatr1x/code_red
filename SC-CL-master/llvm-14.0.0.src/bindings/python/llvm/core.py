@@ -1,11 +1,11 @@
 #===- core.py - Python LLVM Bindings -------------------------*- python -*--===#
 #
-# Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-# See https://llvm.org/LICENSE.txt for license information.
-# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+#                     The LLVM Compiler Infrastructure
+#
+# This file is distributed under the University of Illinois Open Source
+# License. See LICENSE.TXT for details.
 #
 #===------------------------------------------------------------------------===#
-from __future__ import print_function
 
 from .common import LLVMObject
 from .common import c_object_p
@@ -17,8 +17,6 @@ from ctypes import POINTER
 from ctypes import byref
 from ctypes import c_char_p
 from ctypes import c_uint
-
-import sys
 
 __all__ = [
     "lib",
@@ -237,7 +235,7 @@ class Module(LLVMObject):
         def __iter__(self):
             return self
         
-        def __next__(self):
+        def next(self):
             if not isinstance(self.function, Function):
                 raise StopIteration("")
             result = self.function
@@ -246,10 +244,7 @@ class Module(LLVMObject):
             else:
                 self.function = self.function.next
             return result
-
-        if sys.version_info.major == 2:
-            next = __next__
-
+    
     def __iter__(self):
         return Module.__function_iterator(self)
 
@@ -308,7 +303,7 @@ class Function(Value):
         def __iter__(self):
             return self
         
-        def __next__(self):
+        def next(self):
             if not isinstance(self.bb, BasicBlock):
                 raise StopIteration("")
             result = self.bb
@@ -317,9 +312,6 @@ class Function(Value):
             else:
                 self.bb = self.bb.next
             return result
-
-        if sys.version_info.major == 2:
-            next = __next__
     
     def __iter__(self):
         return Function.__bb_iterator(self)
@@ -388,7 +380,7 @@ class BasicBlock(LLVMObject):
         def __iter__(self):
             return self
         
-        def __next__(self):
+        def next(self):
             if not isinstance(self.inst, Instruction):
                 raise StopIteration("")
             result = self.inst
@@ -397,10 +389,7 @@ class BasicBlock(LLVMObject):
             else:
                 self.inst = self.inst.next
             return result
-
-        if sys.version_info.major == 2:
-            next = __next__
-
+    
     def __iter__(self):
         return BasicBlock.__inst_iterator(self)
 
@@ -466,9 +455,6 @@ def register_library(library):
 
     library.LLVMInitializeInstCombine.argtypes = [PassRegistry]
     library.LLVMInitializeInstCombine.restype = None
-
-    library.LLVMInitializeAggressiveInstCombiner.argtypes = [PassRegistry]
-    library.LLVMInitializeAggressiveInstCombiner.restype = None
 
     library.LLVMInitializeIPO.argtypes = [PassRegistry]
     library.LLVMInitializeIPO.restype = None
@@ -616,7 +602,7 @@ def register_enumerations():
     ]
     for enum_class, enum_spec in enums:
         for name, value in enum_spec:
-            print(name, value)
+            print name, value
             enum_class.register(name, value)
     return enums
 

@@ -1,4 +1,4 @@
-// RUN: %clang_analyze_cc1 -analyzer-checker=core,unix.Malloc,debug.ExprInspection -analyzer-config ipa=inlining -analyzer-config c++-allocator-inlining=true -verify -analyzer-config eagerly-assume=false %s
+// RUN: %clang_analyze_cc1 -analyzer-checker=core,unix.Malloc,debug.ExprInspection -analyzer-config ipa=inlining -analyzer-config c++-allocator-inlining=true -verify %s
 
 void clang_analyzer_eval(bool);
 void clang_analyzer_checkInlined(bool);
@@ -315,13 +315,17 @@ namespace OperatorNew {
     int value;
 
     IntWrapper(int input) : value(input) {
-      clang_analyzer_checkInlined(true); // expected-warning{{TRUE}}
+      // We don't want this constructor to be inlined unless we can actually
+      // use the proper region for operator new.
+      // See PR12014 and <rdar://problem/12180598>.
+      clang_analyzer_checkInlined(false); // no-warning
     }
   };
 
   void test() {
     IntWrapper *obj = new IntWrapper(42);
-    clang_analyzer_eval(obj->value == 42); // expected-warning{{TRUE}}
+    // should be TRUE
+    clang_analyzer_eval(obj->value == 42); // expected-warning{{UNKNOWN}}
     delete obj;
   }
 
@@ -331,9 +335,8 @@ namespace OperatorNew {
 
     clang_analyzer_eval(alias == obj); // expected-warning{{TRUE}}
 
-    clang_analyzer_eval(obj->value == 42); // expected-warning{{TRUE}}
-    // Because malloc() was never free()d:
-    // expected-warning@-2{{Potential leak of memory pointed to by 'alias'}}
+    // should be TRUE
+    clang_analyzer_eval(obj->value == 42); // expected-warning{{UNKNOWN}}
   }
 }
 

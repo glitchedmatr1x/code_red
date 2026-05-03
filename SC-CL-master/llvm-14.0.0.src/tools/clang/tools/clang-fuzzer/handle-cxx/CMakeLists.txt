@@ -8,6 +8,5 @@ add_clang_library(clangHandleCXX
   clangCodeGen
   clangFrontend
   clangLex
-  clangSerialization
   clangTooling
   )

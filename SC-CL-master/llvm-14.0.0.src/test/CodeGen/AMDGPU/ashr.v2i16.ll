@@ -1,48 +1,45 @@
-; RUN: llc -march=amdgcn -mcpu=gfx900 -mattr=-flat-for-global -verify-machineinstrs < %s | FileCheck -allow-deprecated-dag-overlap -check-prefix=GCN -check-prefix=GFX9 %s
-; RUN: llc -march=amdgcn -mcpu=tonga -mattr=-flat-for-global -verify-machineinstrs < %s | FileCheck -allow-deprecated-dag-overlap -check-prefix=GCN -check-prefix=VI -check-prefix=CIVI %s
-; RUN: llc -march=amdgcn -mcpu=bonaire -verify-machineinstrs < %s | FileCheck -allow-deprecated-dag-overlap -check-prefix=GCN -check-prefix=CI -check-prefix=CIVI %s
+; RUN: llc -march=amdgcn -mcpu=gfx900 -mattr=-flat-for-global -verify-machineinstrs -enable-packed-inlinable-literals < %s | FileCheck -check-prefix=GCN -check-prefix=GFX9 %s
+; RUN: llc -march=amdgcn -mcpu=tonga -mattr=-flat-for-global -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=VI -check-prefix=CIVI %s
+; RUN: llc -march=amdgcn -mcpu=bonaire -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=CI -check-prefix=CIVI %s
 
-; FIXME: Should be same on CI/VI
 ; GCN-LABEL: {{^}}s_ashr_v2i16:
 ; GFX9: s_load_dword [[LHS:s[0-9]+]]
 ; GFX9: s_load_dword [[RHS:s[0-9]+]]
 ; GFX9: v_mov_b32_e32 [[VLHS:v[0-9]+]], [[LHS]]
 ; GFX9: v_pk_ashrrev_i16 [[RESULT:v[0-9]+]], [[RHS]], [[VLHS]]
 
-; CIVI: s_load_dword [[LHS:s[0-9]+]]
-; CIVI: s_load_dword [[RHS:s[0-9]+]]
+; VI: v_ashrrev_i32_sdwa v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}} dst_sel:WORD_1 dst_unused:UNUSED_PAD src0_sel:DWORD src1_sel:DWORD
+; VI: v_or_b32_sdwa v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}} dst_sel:DWORD dst_unused:UNUSED_PAD src0_sel:WORD_0 src1_sel:DWORD
 
-; CIVI-DAG: s_ashr_i32
-; CIVI-DAG: s_ashr_i32
-; CIVI-DAG: s_sext_i32_i16
-; CIVI-DAG: s_sext_i32_i16
-; CIVI-DAG: s_ashr_i32
-; CIVI-DAG: s_ashr_i32
-; CIVI-DAG: s_lshl_b32
-; CIVI: s_and_b32
-; CIVI: s_or_b32
-
-define amdgpu_kernel void @s_ashr_v2i16(<2 x i16> addrspace(1)* %out, i32, <2 x i16> %lhs, i32, <2 x i16> %rhs) #0 {
+; CI-DAG: v_ashrrev_i32_e32
+; CI-DAG: v_and_b32_e32 v{{[0-9]+}}, 0xffff, v{{[0-9]+}}
+; CI-DAG: v_ashrrev_i32_e32 v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}}
+; CI-DAG: v_lshlrev_b32_e32 v{{[0-9]+}}, 16, v{{[0-9]+}}
+; CI: v_or_b32_e32
+define amdgpu_kernel void @s_ashr_v2i16(<2 x i16> addrspace(1)* %out, <2 x i16> %lhs, <2 x i16> %rhs) #0 {
   %result = ashr <2 x i16> %lhs, %rhs
   store <2 x i16> %result, <2 x i16> addrspace(1)* %out
   ret void
 }
 
 ; GCN-LABEL: {{^}}v_ashr_v2i16:
-; GCN: {{buffer|flat|global}}_load_dwordx2 v[[[LHS:[0-9]+]]:[[RHS:[0-9]+]]]
-; GFX9: v_pk_ashrrev_i16 [[RESULT:v[0-9]+]], v[[RHS]], v[[LHS]]
+; GCN: {{buffer|flat|global}}_load_dword [[LHS:v[0-9]+]]
+; GCN: {{buffer|flat|global}}_load_dword [[RHS:v[0-9]+]]
+; GFX9: v_pk_ashrrev_i16 [[RESULT:v[0-9]+]], [[RHS]], [[LHS]]
 
 ; VI: v_ashrrev_i16_e32 v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}}
 ; VI: v_ashrrev_i16_sdwa v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}} dst_sel:WORD_1 dst_unused:UNUSED_PAD src0_sel:WORD_1 src1_sel:WORD_1
 ; VI: v_or_b32_e32 v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}}
 
+; CI: s_mov_b32 [[MASK:s[0-9]+]], 0xffff{{$}}
+; CI-DAG: v_and_b32_e32 v{{[0-9]+}}, [[MASK]], [[RHS]]
 ; CI-DAG: v_bfe_i32 v{{[0-9]+}}, v{{[0-9]+}}, 0, 16
-; CI: v_ashrrev_i32_e32 v{{[0-9]+}}, 16, v[[LHS]]
+; CI: v_ashrrev_i32_e32 v{{[0-9]+}}, 16, [[LHS]]
 ; CI: v_lshrrev_b32_e32 v{{[0-9]+}}, 16, v{{[0-9]+}}
 ; CI: v_ashrrev_i32_e32 v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}}
 ; CI: v_ashrrev_i32_e32 v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}}
 ; CI: v_lshlrev_b32_e32 v{{[0-9]+}}, 16, v{{[0-9]+}}
-; CI: v_and_b32_e32 v{{[0-9]+}}, 0xffff, v{{[0-9]+}}
+; CI: v_and_b32_e32 v{{[0-9]+}}, [[MASK]], v{{[0-9]+}}
 ; CI: v_or_b32_e32 v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}}
 define amdgpu_kernel void @v_ashr_v2i16(<2 x i16> addrspace(1)* %out, <2 x i16> addrspace(1)* %in) #0 {
   %tid = call i32 @llvm.amdgcn.workitem.id.x()
@@ -116,7 +113,8 @@ define amdgpu_kernel void @ashr_v_imm_v2i16(<2 x i16> addrspace(1)* %out, <2 x i
 }
 
 ; GCN-LABEL: {{^}}v_ashr_v4i16:
-; GCN: {{buffer|flat|global}}_load_dwordx4
+; GCN: {{buffer|flat|global}}_load_dwordx2
+; GCN: {{buffer|flat|global}}_load_dwordx2
 ; GFX9: v_pk_ashrrev_i16 v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}}
 ; GFX9: v_pk_ashrrev_i16 v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}}
 

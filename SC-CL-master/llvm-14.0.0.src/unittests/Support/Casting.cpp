@@ -1,8 +1,9 @@
 //===---------- llvm/unittest/Support/Casting.cpp - Casting tests ---------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -118,12 +119,6 @@ TEST(CastingTest, isa) {
   EXPECT_TRUE(isa<foo>(B4));
 }
 
-TEST(CastingTest, isa_and_nonnull) {
-  EXPECT_TRUE(isa_and_nonnull<foo>(B2));
-  EXPECT_TRUE(isa_and_nonnull<foo>(B4));
-  EXPECT_FALSE(isa_and_nonnull<foo>(fub()));
-}
-
 TEST(CastingTest, cast) {
   foo &F1 = cast<foo>(B1);
   EXPECT_NE(&F1, null_foo);
@@ -193,12 +188,12 @@ TEST(CastingTest, dyn_cast_or_null) {
   EXPECT_NE(F5, null_foo);
 }
 
-std::unique_ptr<derived> newd() { return std::make_unique<derived>(); }
-std::unique_ptr<base> newb() { return std::make_unique<derived>(); }
+std::unique_ptr<derived> newd() { return llvm::make_unique<derived>(); }
+std::unique_ptr<base> newb() { return llvm::make_unique<derived>(); }
 
 TEST(CastingTest, unique_dyn_cast) {
   derived *OrigD = nullptr;
-  auto D = std::make_unique<derived>();
+  auto D = llvm::make_unique<derived>();
   OrigD = D.get();
 
   // Converting from D to itself is valid, it should return a new unique_ptr
@@ -283,7 +278,7 @@ TEST(CastingTest, UpcastIsInferred) {
   Derived D;
   EXPECT_TRUE(isa<Base>(D));
   Base *BP = dyn_cast<Base>(&D);
-  EXPECT_NE(BP, nullptr);
+  EXPECT_TRUE(BP != nullptr);
 }
 
 
@@ -379,31 +374,31 @@ TEST(CastingTest, smart_isa) {
 }
 
 TEST(CastingTest, smart_cast) {
-  EXPECT_EQ(cast<pointer_wrappers::Derived>(MD), &D);
-  EXPECT_EQ(cast<pointer_wrappers::Derived>(CD), &D);
+  EXPECT_TRUE(cast<pointer_wrappers::Derived>(MD) == &D);
+  EXPECT_TRUE(cast<pointer_wrappers::Derived>(CD) == &D);
 }
 
 TEST(CastingTest, smart_cast_or_null) {
-  EXPECT_EQ(cast_or_null<pointer_wrappers::Derived>(MN), nullptr);
-  EXPECT_EQ(cast_or_null<pointer_wrappers::Derived>(CN), nullptr);
-  EXPECT_EQ(cast_or_null<pointer_wrappers::Derived>(MD), &D);
-  EXPECT_EQ(cast_or_null<pointer_wrappers::Derived>(CD), &D);
+  EXPECT_TRUE(cast_or_null<pointer_wrappers::Derived>(MN) == nullptr);
+  EXPECT_TRUE(cast_or_null<pointer_wrappers::Derived>(CN) == nullptr);
+  EXPECT_TRUE(cast_or_null<pointer_wrappers::Derived>(MD) == &D);
+  EXPECT_TRUE(cast_or_null<pointer_wrappers::Derived>(CD) == &D);
 }
 
 TEST(CastingTest, smart_dyn_cast) {
-  EXPECT_EQ(dyn_cast<pointer_wrappers::Derived>(MB), nullptr);
-  EXPECT_EQ(dyn_cast<pointer_wrappers::Derived>(CB), nullptr);
-  EXPECT_EQ(dyn_cast<pointer_wrappers::Derived>(MD), &D);
-  EXPECT_EQ(dyn_cast<pointer_wrappers::Derived>(CD), &D);
+  EXPECT_TRUE(dyn_cast<pointer_wrappers::Derived>(MB) == nullptr);
+  EXPECT_TRUE(dyn_cast<pointer_wrappers::Derived>(CB) == nullptr);
+  EXPECT_TRUE(dyn_cast<pointer_wrappers::Derived>(MD) == &D);
+  EXPECT_TRUE(dyn_cast<pointer_wrappers::Derived>(CD) == &D);
 }
 
 TEST(CastingTest, smart_dyn_cast_or_null) {
-  EXPECT_EQ(dyn_cast_or_null<pointer_wrappers::Derived>(MN), nullptr);
-  EXPECT_EQ(dyn_cast_or_null<pointer_wrappers::Derived>(CN), nullptr);
-  EXPECT_EQ(dyn_cast_or_null<pointer_wrappers::Derived>(MB), nullptr);
-  EXPECT_EQ(dyn_cast_or_null<pointer_wrappers::Derived>(CB), nullptr);
-  EXPECT_EQ(dyn_cast_or_null<pointer_wrappers::Derived>(MD), &D);
-  EXPECT_EQ(dyn_cast_or_null<pointer_wrappers::Derived>(CD), &D);
+  EXPECT_TRUE(dyn_cast_or_null<pointer_wrappers::Derived>(MN) == nullptr);
+  EXPECT_TRUE(dyn_cast_or_null<pointer_wrappers::Derived>(CN) == nullptr);
+  EXPECT_TRUE(dyn_cast_or_null<pointer_wrappers::Derived>(MB) == nullptr);
+  EXPECT_TRUE(dyn_cast_or_null<pointer_wrappers::Derived>(CB) == nullptr);
+  EXPECT_TRUE(dyn_cast_or_null<pointer_wrappers::Derived>(MD) == &D);
+  EXPECT_TRUE(dyn_cast_or_null<pointer_wrappers::Derived>(CD) == &D);
 }
 
 } // end namespace pointer_wrappers

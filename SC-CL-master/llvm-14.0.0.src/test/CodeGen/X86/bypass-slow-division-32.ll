@@ -17,6 +17,7 @@ define i32 @Test_get_quotient(i32 %a, i32 %b) nounwind {
 ; CHECK-NEXT:    retl
 ; CHECK-NEXT:  .LBB0_1:
 ; CHECK-NEXT:    movzbl %al, %eax
+; CHECK-NEXT:    # kill: def %eax killed %eax def %ax
 ; CHECK-NEXT:    divb %cl
 ; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retl
@@ -40,8 +41,9 @@ define i32 @Test_get_remainder(i32 %a, i32 %b) nounwind {
 ; CHECK-NEXT:    retl
 ; CHECK-NEXT:  .LBB1_1:
 ; CHECK-NEXT:    movzbl %al, %eax
+; CHECK-NEXT:    # kill: def %eax killed %eax def %ax
 ; CHECK-NEXT:    divb %cl
-; CHECK-NEXT:    movzbl %ah, %eax
+; CHECK-NEXT:    movzbl %ah, %eax # NOREX
 ; CHECK-NEXT:    retl
   %result = srem i32 %a, %b
   ret i32 %result
@@ -63,8 +65,9 @@ define i32 @Test_get_quotient_and_remainder(i32 %a, i32 %b) nounwind {
 ; CHECK-NEXT:    retl
 ; CHECK-NEXT:  .LBB2_1:
 ; CHECK-NEXT:    movzbl %al, %eax
+; CHECK-NEXT:    # kill: def %eax killed %eax def %ax
 ; CHECK-NEXT:    divb %cl
-; CHECK-NEXT:    movzbl %ah, %edx
+; CHECK-NEXT:    movzbl %ah, %edx # NOREX
 ; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    addl %edx, %eax
 ; CHECK-NEXT:    retl
@@ -94,18 +97,20 @@ define i32 @Test_use_div_and_idiv(i32 %a, i32 %b) nounwind {
 ; CHECK-NEXT:    testl $-256, %edi
 ; CHECK-NEXT:    je .LBB3_4
 ; CHECK-NEXT:  .LBB3_5:
-; CHECK-NEXT:    movl %ecx, %eax
 ; CHECK-NEXT:    xorl %edx, %edx
+; CHECK-NEXT:    movl %ecx, %eax
 ; CHECK-NEXT:    divl %ebx
 ; CHECK-NEXT:    jmp .LBB3_6
 ; CHECK-NEXT:  .LBB3_1:
 ; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    # kill: def %eax killed %eax def %ax
 ; CHECK-NEXT:    divb %bl
 ; CHECK-NEXT:    movzbl %al, %esi
 ; CHECK-NEXT:    testl $-256, %edi
 ; CHECK-NEXT:    jne .LBB3_5
 ; CHECK-NEXT:  .LBB3_4:
 ; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    # kill: def %eax killed %eax def %ax
 ; CHECK-NEXT:    divb %bl
 ; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:  .LBB3_6:
@@ -138,7 +143,7 @@ define i32 @Test_use_div_reg_imm(i32 %a) nounwind {
 ; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    shrl $31, %eax
 ; CHECK-NEXT:    sarl $3, %edx
-; CHECK-NEXT:    addl %edx, %eax
+; CHECK-NEXT:    leal (%edx,%eax), %eax
 ; CHECK-NEXT:    retl
   %resultdiv = sdiv i32 %a, 33
   ret i32 %resultdiv
@@ -175,12 +180,12 @@ define i32 @Test_use_divrem_reg_imm(i32 %a) nounwind {
 ; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    shrl $31, %eax
 ; CHECK-NEXT:    sarl $3, %edx
-; CHECK-NEXT:    addl %edx, %eax
-; CHECK-NEXT:    movl %eax, %edx
-; CHECK-NEXT:    shll $5, %edx
 ; CHECK-NEXT:    addl %eax, %edx
-; CHECK-NEXT:    subl %edx, %ecx
-; CHECK-NEXT:    addl %eax, %ecx
+; CHECK-NEXT:    movl %edx, %eax
+; CHECK-NEXT:    shll $5, %eax
+; CHECK-NEXT:    addl %edx, %eax
+; CHECK-NEXT:    subl %eax, %ecx
+; CHECK-NEXT:    addl %edx, %ecx
 ; CHECK-NEXT:    movl %ecx, %eax
 ; CHECK-NEXT:    retl
   %resultdiv = sdiv i32 %a, 33
@@ -203,6 +208,7 @@ define i32 @Test_use_div_imm_reg(i32 %a) nounwind {
 ; CHECK-NEXT:  .LBB8_1:
 ; CHECK-NEXT:    movb $4, %al
 ; CHECK-NEXT:    movzbl %al, %eax
+; CHECK-NEXT:    # kill: def %eax killed %eax def %ax
 ; CHECK-NEXT:    divb %cl
 ; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retl
@@ -224,6 +230,7 @@ define i32 @Test_use_rem_imm_reg(i32 %a) nounwind {
 ; CHECK-NEXT:  .LBB9_1:
 ; CHECK-NEXT:    movb $4, %al
 ; CHECK-NEXT:    movzbl %al, %eax
+; CHECK-NEXT:    # kill: def %eax killed %eax def %ax
 ; CHECK-NEXT:    divb %cl
 ; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retl

@@ -1,13 +1,11 @@
 // RUN: %clang_cc1 -fsyntax-only -verify -std=c++11 %s
-// RUN: %clang_cc1 -fsyntax-only -verify -std=c++2a %s
-
 namespace Constructor {
 struct A {
   A(int);
 };
 
 struct B { // expected-note+ {{candidate}}
-  explicit B(int); // expected-note {{not a candidate}}
+  explicit B(int);
 };
 
 B::B(int) { } // expected-note+ {{here}}
@@ -36,21 +34,6 @@ B &&b3(0); // expected-error {{could not bind}}
 B b4{0};
 B &&b5 = {0}; // expected-error {{chosen constructor is explicit}}
 B &&b6{0};
-
-struct S {
-  template <bool b = true>
-  explicit S();
-};
-
-struct T : S {
-  //  T();
-};
-
-struct U : T {
-  U();
-};
-U::U() {}
-
 }
 
 namespace Conversion {
@@ -78,8 +61,8 @@ namespace Conversion {
 
     struct Z {
       explicit operator X() const;
-      explicit operator Y() const; // expected-note 2{{not a candidate}}
-      explicit operator int() const; // expected-note {{not a candidate}}
+      explicit operator Y() const;
+      explicit operator int() const;
     };
     
     Z z;
@@ -118,7 +101,7 @@ namespace Conversion {
     };
 
     struct NotBool {
-      explicit operator bool(); // expected-note {{conversion to integral type 'bool'}} expected-note 4{{explicit conversion function is not a candidate}}
+      explicit operator bool(); // expected-note {{conversion to integral type 'bool'}}
     };
     Bool    b;
     NotBool n;
@@ -200,8 +183,7 @@ namespace Conversion {
     const int &copyList7 = {b};
     const int &copyList8 = {n}; // expected-error {{no viable conversion}}
   }
-
-#if __cplusplus < 201707L
+  
   void testNew()
   {
     // 5.3.4p6:
@@ -218,8 +200,7 @@ namespace Conversion {
     new int[i];
     new int[ni]; // expected-error {{array size expression of type 'NotInt' requires explicit conversion to type 'int'}}
   }
-#endif
-
+  
   void testDelete()
   {
     // 5.3.5pp2:

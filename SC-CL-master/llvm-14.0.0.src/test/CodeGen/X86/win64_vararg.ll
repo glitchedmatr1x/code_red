@@ -6,9 +6,9 @@
 define void @average_va(i32 %count, ...) nounwind {
 entry:
 ; CHECK: pushq
-; CHECK-DAG: movq   %r9, 40(%rsp)
-; CHECK-DAG: movq   %r8, 32(%rsp)
-; CHECK-DAG: movq   %rdx, 24(%rsp)
+; CHECK: movq   %r9, 40(%rsp)
+; CHECK: movq   %r8, 32(%rsp)
+; CHECK: movq   %rdx, 24(%rsp)
 ; CHECK: leaq   24(%rsp), %rax
 
   %ap = alloca i8*, align 8                       ; <i8**> [#uses=1]
@@ -110,7 +110,7 @@ entry:
   ret i32 %tmp
 }
 
-define void @sret_arg(i32* sret(i32) %agg.result, i8* nocapture readnone %format, ...) {
+define void @sret_arg(i32* sret %agg.result, i8* nocapture readnone %format, ...) {
 entry:
   %ap = alloca i8*
   %ap_i8 = bitcast i8** %ap to i8*
@@ -121,11 +121,10 @@ entry:
 }
 ; CHECK-LABEL: sret_arg:
 ; CHECK: pushq
-; CHECK: movq %rcx, %rax
 ; CHECK-DAG: movq %r9, 40(%rsp)
 ; CHECK-DAG: movq %r8, 32(%rsp)
-; CHECK-DAG: leaq 36(%rsp), %[[sret:[^ ]*]]
-; CHECK-DAG: movl %r8d, (%rax)
-; CHECK-DAG: movq %[[sret]], (%rsp)
+; CHECK: movl 32(%rsp), %[[tmp:[^ ]*]]
+; CHECK: movl %[[tmp]], (%[[sret:[^ ]*]])
+; CHECK: movq %[[sret]], %rax
 ; CHECK: popq
 ; CHECK: retq

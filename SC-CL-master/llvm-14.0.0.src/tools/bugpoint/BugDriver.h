@@ -1,8 +1,9 @@
 //===- BugDriver.h - Top-Level BugPoint class -------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -25,6 +26,7 @@
 
 namespace llvm {
 
+class Value;
 class PassInfo;
 class Module;
 class GlobalVariable;
@@ -33,6 +35,8 @@ class BasicBlock;
 class AbstractInterpreter;
 class Instruction;
 class LLVMContext;
+
+class DebugCrashes;
 
 class CC;
 
@@ -46,7 +50,7 @@ class BugDriver {
   LLVMContext &Context;
   const char *ToolName;            // argv[0] of bugpoint
   std::string ReferenceOutputFile; // Name of `good' output file
-  std::unique_ptr<Module> Program; // The raw program, linked together
+  Module *Program;                 // The raw program, linked together
   std::vector<std::string> PassesToRun;
   AbstractInterpreter *Interpreter;     // How to run the program
   AbstractInterpreter *SafeInterpreter; // To generate reference output, etc.
@@ -124,10 +128,15 @@ public:
   ///
   bool isExecutingJIT();
 
-  Module &getProgram() const { return *Program; }
+  Module *getProgram() const { return Program; }
 
-  /// Set the current module to the specified module, returning the old one.
-  std::unique_ptr<Module> swapProgramIn(std::unique_ptr<Module> M);
+  /// swapProgramIn - Set the current module to the specified module, returning
+  /// the old one.
+  Module *swapProgramIn(Module *M) {
+    Module *OldProgram = Program;
+    Program = M;
+    return OldProgram;
+  }
 
   AbstractInterpreter *switchToSafeInterpreter() {
     AbstractInterpreter *Old = Interpreter;
@@ -137,47 +146,55 @@ public:
 
   void switchToInterpreter(AbstractInterpreter *AI) { Interpreter = AI; }
 
-  /// If we reduce or update the program somehow, call this method to update
-  /// bugdriver with it.  This deletes the old module and sets the specified one
-  /// as the current program.
-  void setNewProgram(std::unique_ptr<Module> M);
+  /// setNewProgram - If we reduce or update the program somehow, call this
+  /// method to update bugdriver with it.  This deletes the old module and sets
+  /// the specified one as the current program.
+  void setNewProgram(Module *M);
 
   /// Try to compile the specified module. This is used for code generation
   /// crash testing.
-  Error compileProgram(Module &M) const;
+  Error compileProgram(Module *M) const;
 
-  /// This method runs "Program", capturing the output of the program to a file.
-  /// A recommended filename may be optionally specified.
-  Expected<std::string> executeProgram(const Module &Program,
+  /// executeProgram - This method runs "Program", capturing the output of the
+  /// program to a file.  A recommended filename may be optionally specified.
+  ///
+  Expected<std::string> executeProgram(const Module *Program,
                                        std::string OutputFilename,
                                        std::string Bitcode,
                                        const std::string &SharedObjects,
                                        AbstractInterpreter *AI) const;
 
-  /// Used to create reference output with the "safe" backend, if reference
-  /// output is not provided.  If there is a problem with the code generator
-  /// (e.g., llc crashes), this will return false and set Error.
+  /// executeProgramSafely - Used to create reference output with the "safe"
+  /// backend, if reference output is not provided.  If there is a problem with
+  /// the code generator (e.g., llc crashes), this will return false and set
+  /// Error.
+  ///
   Expected<std::string>
-  executeProgramSafely(const Module &Program,
+  executeProgramSafely(const Module *Program,
                        const std::string &OutputFile) const;
 
-  /// Calls compileProgram and then records the output into ReferenceOutputFile.
-  /// Returns true if reference file created, false otherwise. Note:
-  /// initializeExecutionEnvironment should be called BEFORE this function.
-  Error createReferenceFile(Module &M, const std::string &Filename =
+  /// createReferenceFile - calls compileProgram and then records the output
+  /// into ReferenceOutputFile. Returns true if reference file created, false
+  /// otherwise. Note: initializeExecutionEnvironment should be called BEFORE
+  /// this function.
+  ///
+  Error createReferenceFile(Module *M, const std::string &Filename =
                                            "bugpoint.reference.out-%%%%%%%");
 
-  /// This method executes the specified module and diffs the output against the
-  /// file specified by ReferenceOutputFile.  If the output is different, 1 is
-  /// returned.  If there is a problem with the code generator (e.g., llc
-  /// crashes), this will return -1 and set Error.
-  Expected<bool> diffProgram(const Module &Program,
+  /// diffProgram - This method executes the specified module and diffs the
+  /// output against the file specified by ReferenceOutputFile.  If the output
+  /// is different, 1 is returned.  If there is a problem with the code
+  /// generator (e.g., llc crashes), this will return -1 and set Error.
+  ///
+  Expected<bool> diffProgram(const Module *Program,
                              const std::string &BitcodeFile = "",
                              const std::string &SharedObj = "",
                              bool RemoveBitcode = false) const;
 
-  /// This function is used to output M to a file named "bugpoint-ID.bc".
-  void EmitProgressBitcode(const Module &M, const std::string &ID,
+  /// EmitProgressBitcode - This function is used to output M to a file named
+  /// "bugpoint-ID.bc".
+  ///
+  void EmitProgressBitcode(const Module *M, const std::string &ID,
                            bool NoFlyer = false) const;
 
   /// This method clones the current Program and deletes the specified
@@ -193,7 +210,7 @@ public:
   /// MayModifySemantics argument is true, then the cleanups is allowed to
   /// modify how the code behaves.
   ///
-  std::unique_ptr<Module> performFinalCleanups(std::unique_ptr<Module> M,
+  std::unique_ptr<Module> performFinalCleanups(Module *M,
                                                bool MayModifySemantics = false);
 
   /// Given a module, extract up to one loop from it into a new function. This
@@ -214,7 +231,8 @@ public:
   /// returning the transformed module on success, or a null pointer on failure.
   std::unique_ptr<Module> runPassesOn(Module *M,
                                       const std::vector<std::string> &Passes,
-                                      ArrayRef<std::string> ExtraArgs = {});
+                                      unsigned NumExtraArgs = 0,
+                                      const char *const *ExtraArgs = nullptr);
 
   /// runPasses - Run the specified passes on Program, outputting a bitcode
   /// file and writting the filename into OutputFile if successful.  If the
@@ -225,16 +243,16 @@ public:
   /// or failed, unless Quiet is set.  ExtraArgs specifies additional arguments
   /// to pass to the child bugpoint instance.
   ///
-  bool runPasses(Module &Program, const std::vector<std::string> &PassesToRun,
+  bool runPasses(Module *Program, const std::vector<std::string> &PassesToRun,
                  std::string &OutputFilename, bool DeleteOutput = false,
-                 bool Quiet = false,
-                 ArrayRef<std::string> ExtraArgs = {}) const;
+                 bool Quiet = false, unsigned NumExtraArgs = 0,
+                 const char *const *ExtraArgs = nullptr) const;
 
   /// runPasses - Just like the method above, but this just returns true or
   /// false indicating whether or not the optimizer crashed on the specified
   /// input (true = crashed).  Does not produce any output.
   ///
-  bool runPasses(Module &M, const std::vector<std::string> &PassesToRun) const {
+  bool runPasses(Module *M, const std::vector<std::string> &PassesToRun) const {
     std::string Filename;
     return runPasses(M, PassesToRun, Filename, true);
   }
@@ -247,12 +265,13 @@ public:
   /// failure.
   Error runManyPasses(const std::vector<std::string> &AllPasses);
 
-  /// This writes the current "Program" to the named bitcode file.  If an error
-  /// occurs, true is returned.
-  bool writeProgramToFile(const std::string &Filename, const Module &M) const;
+  /// writeProgramToFile - This writes the current "Program" to the named
+  /// bitcode file.  If an error occurs, true is returned.
+  ///
+  bool writeProgramToFile(const std::string &Filename, const Module *M) const;
   bool writeProgramToFile(const std::string &Filename, int FD,
-                          const Module &M) const;
-  bool writeProgramToFile(int FD, const Module &M) const;
+                          const Module *M) const;
+  bool writeProgramToFile(int FD, const Module *M) const;
 
 private:
   /// initializeExecutionEnvironment - This method is used to set up the

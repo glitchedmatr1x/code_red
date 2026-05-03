@@ -1,4 +1,5 @@
-; UNSUPPORTED: -aix
+; REQUIRES: object-emission
+
 ; RUN: %llc_dwarf < %s -filetype=obj | llvm-dwarfdump -v - | FileCheck %s
 ; RUN: %llc_dwarf -split-dwarf-file=foo.dwo < %s -filetype=obj | llvm-dwarfdump -v - | FileCheck --check-prefix=FISSION %s
 
@@ -15,9 +16,7 @@
 ; CHECK: contents:
 
 ; Don't emit DW_AT_addr_base when there are no addresses.
-; Also don't emit a split line table when there are no type units.
 ; FISSION-NOT: DW_AT_GNU_addr_base [DW_FORM_sec_offset]
-; FISSION-NOT: .debug_line.dwo contents:
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!5}

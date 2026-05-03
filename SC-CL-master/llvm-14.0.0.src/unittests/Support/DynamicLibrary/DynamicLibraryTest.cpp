@@ -1,8 +1,9 @@
 //===- llvm/unittest/Support/DynamicLibrary/DynamicLibraryTest.cpp --------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -19,14 +20,13 @@ using namespace llvm;
 using namespace llvm::sys;
 
 std::string LibPath(const std::string Name = "PipSqueak") {
-  const auto &Argvs = testing::internal::GetArgvs();
-  const char *Argv0 =
-      Argvs.size() > 0 ? Argvs[0].c_str() : "DynamicLibraryTests";
+  const std::vector<testing::internal::string>& Argvs = testing::internal::GetArgvs();
+  const char *Argv0 = Argvs.size() > 0 ? Argvs[0].c_str() : "DynamicLibraryTests";
   void *Ptr = (void*)(intptr_t)TestA;
   std::string Path = fs::getMainExecutable(Argv0, Ptr);
   llvm::SmallString<256> Buf(path::parent_path(Path));
-  path::append(Buf, (Name + LLVM_PLUGIN_EXT).c_str());
-  return std::string(Buf.str());
+  path::append(Buf, (Name+".so").c_str());
+  return Buf.str();
 }
 
 #if defined(_WIN32) || (defined(HAVE_DLFCN_H) && defined(HAVE_DLOPEN))
@@ -66,13 +66,11 @@ TEST(DynamicLibrary, Overload) {
     EXPECT_TRUE(Err.empty());
 
     GetString GS = FuncPtr<GetString>(DL.getAddressOfSymbol("TestA"));
-    EXPECT_NE(GS, nullptr);
-    EXPECT_NE(GS, &TestA);
+    EXPECT_TRUE(GS != nullptr && GS != &TestA);
     EXPECT_EQ(StdString(GS()), "LibCall");
 
     GS = FuncPtr<GetString>(DynamicLibrary::SearchForAddressOfSymbol("TestA"));
-    EXPECT_NE(GS, nullptr);
-    EXPECT_NE(GS, &TestA);
+    EXPECT_TRUE(GS != nullptr && GS != &TestA);
     EXPECT_EQ(StdString(GS()), "LibCall");
 
     DL = DynamicLibrary::getPermanentLibrary(nullptr, &Err);
@@ -81,37 +79,32 @@ TEST(DynamicLibrary, Overload) {
 
     // Test overloading local symbols does not occur by default
     GS = FuncPtr<GetString>(DynamicLibrary::SearchForAddressOfSymbol("TestA"));
-    EXPECT_NE(GS, nullptr);
-    EXPECT_EQ(GS, &TestA);
+    EXPECT_TRUE(GS != nullptr && GS == &TestA);
     EXPECT_EQ(StdString(GS()), "ProcessCall");
 
     GS = FuncPtr<GetString>(DL.getAddressOfSymbol("TestA"));
-    EXPECT_NE(GS, nullptr);
-    EXPECT_EQ(GS, &TestA);
+    EXPECT_TRUE(GS != nullptr && GS == &TestA);
     EXPECT_EQ(StdString(GS()), "ProcessCall");
 
     // Test overloading by forcing library priority when searching for a symbol
     DynamicLibrary::SearchOrder = DynamicLibrary::SO_LoadedFirst;
     GS = FuncPtr<GetString>(DynamicLibrary::SearchForAddressOfSymbol("TestA"));
-    EXPECT_NE(GS, nullptr);
-    EXPECT_NE(GS, &TestA);
+    EXPECT_TRUE(GS != nullptr && GS != &TestA);
     EXPECT_EQ(StdString(GS()), "LibCall");
 
     DynamicLibrary::AddSymbol("TestA", PtrFunc(&OverloadTestA));
     GS = FuncPtr<GetString>(DL.getAddressOfSymbol("TestA"));
-    EXPECT_NE(GS, nullptr);
-    EXPECT_NE(GS, &OverloadTestA);
+    EXPECT_TRUE(GS != nullptr && GS != &OverloadTestA);
 
     GS = FuncPtr<GetString>(DynamicLibrary::SearchForAddressOfSymbol("TestA"));
-    EXPECT_NE(GS, nullptr);
-    EXPECT_EQ(GS, &OverloadTestA);
+    EXPECT_TRUE(GS != nullptr && GS == &OverloadTestA);
     EXPECT_EQ(StdString(GS()), "OverloadCall");
   }
   EXPECT_TRUE(FuncPtr<GetString>(DynamicLibrary::SearchForAddressOfSymbol(
                   "TestA")) == nullptr);
 
   // Check serach ordering is reset to default after call to llvm_shutdown
-  EXPECT_EQ(DynamicLibrary::SearchOrder, DynamicLibrary::SO_Linker);
+  EXPECT_TRUE(DynamicLibrary::SearchOrder == DynamicLibrary::SO_Linker);
 }
 
 TEST(DynamicLibrary, Shutdown) {
@@ -127,15 +120,15 @@ TEST(DynamicLibrary, Shutdown) {
 
     SetStrings SS_0 = FuncPtr<SetStrings>(
         DynamicLibrary::SearchForAddressOfSymbol("SetStrings"));
-    EXPECT_NE(SS_0, nullptr);
+    EXPECT_TRUE(SS_0 != nullptr);
 
     SS_0(A, B);
     EXPECT_EQ(B, "Local::Local(PipSqueak)");
 
     TestOrder TO_0 = FuncPtr<TestOrder>(
         DynamicLibrary::SearchForAddressOfSymbol("TestOrder"));
-    EXPECT_NE(TO_0, nullptr);
-
+    EXPECT_TRUE(TO_0 != nullptr);
+    
     DynamicLibrary DL2 =
         DynamicLibrary::getPermanentLibrary(LibPath(C).c_str(), &Err);
     EXPECT_TRUE(DL2.isValid());
@@ -144,13 +137,13 @@ TEST(DynamicLibrary, Shutdown) {
     // Should find latest version of symbols in SecondLib
     SetStrings SS_1 = FuncPtr<SetStrings>(
         DynamicLibrary::SearchForAddressOfSymbol("SetStrings"));
-    EXPECT_NE(SS_1, nullptr);
-    EXPECT_NE(SS_0, SS_1);
+    EXPECT_TRUE(SS_1 != nullptr);
+    EXPECT_TRUE(SS_0 != SS_1);
 
     TestOrder TO_1 = FuncPtr<TestOrder>(
         DynamicLibrary::SearchForAddressOfSymbol("TestOrder"));
-    EXPECT_NE(TO_1, nullptr);
-    EXPECT_NE(TO_0, TO_1);
+    EXPECT_TRUE(TO_1 != nullptr);
+    EXPECT_TRUE(TO_0 != TO_1);
 
     B.clear();
     SS_1(C, B);
@@ -161,9 +154,8 @@ TEST(DynamicLibrary, Shutdown) {
   }
   EXPECT_EQ(A, "Global::~Global");
   EXPECT_EQ(B, "Local::~Local");
-  EXPECT_EQ(FuncPtr<SetStrings>(
-                DynamicLibrary::SearchForAddressOfSymbol("SetStrings")),
-            nullptr);
+  EXPECT_TRUE(FuncPtr<SetStrings>(DynamicLibrary::SearchForAddressOfSymbol(
+                  "SetStrings")) == nullptr);
 
   // Test unload/destruction ordering
   EXPECT_EQ(Order.size(), 2UL);

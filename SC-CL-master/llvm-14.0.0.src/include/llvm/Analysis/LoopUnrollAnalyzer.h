@@ -1,8 +1,9 @@
 //===- llvm/Analysis/LoopUnrollAnalyzer.h - Loop Unroll Analyzer-*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -46,7 +47,7 @@ class UnrolledInstAnalyzer : private InstVisitor<UnrolledInstAnalyzer, bool> {
 
 public:
   UnrolledInstAnalyzer(unsigned Iteration,
-                       DenseMap<Value *, Value *> &SimplifiedValues,
+                       DenseMap<Value *, Constant *> &SimplifiedValues,
                        ScalarEvolution &SE, const Loop *L)
       : SimplifiedValues(SimplifiedValues), SE(SE), L(L) {
       IterationNumber = SE.getConstant(APInt(64, Iteration));
@@ -56,7 +57,7 @@ public:
   using Base::visit;
 
 private:
-  /// A cache of pointer bases and constant-folded offsets corresponding
+  /// \brief A cache of pointer bases and constant-folded offsets corresponding
   /// to GEP (or derived from GEP) instructions.
   ///
   /// In order to find the base pointer one needs to perform non-trivial
@@ -64,23 +65,26 @@ private:
   /// results saved.
   DenseMap<Value *, SimplifiedAddress> SimplifiedAddresses;
 
-  /// SCEV expression corresponding to number of currently simulated
+  /// \brief SCEV expression corresponding to number of currently simulated
   /// iteration.
   const SCEV *IterationNumber;
 
+  /// \brief A Value->Constant map for keeping values that we managed to
+  /// constant-fold on the given iteration.
+  ///
   /// While we walk the loop instructions, we build up and maintain a mapping
   /// of simplified values specific to this iteration.  The idea is to propagate
   /// any special information we have about loads that can be replaced with
   /// constants after complete unrolling, and account for likely simplifications
   /// post-unrolling.
-  DenseMap<Value *, Value *> &SimplifiedValues;
+  DenseMap<Value *, Constant *> &SimplifiedValues;
 
   ScalarEvolution &SE;
   const Loop *L;
 
   bool simplifyInstWithSCEV(Instruction *I);
 
-  bool visitInstruction(Instruction &I);
+  bool visitInstruction(Instruction &I) { return simplifyInstWithSCEV(&I); }
   bool visitBinaryOperator(BinaryOperator &I);
   bool visitLoad(LoadInst &I);
   bool visitCastInst(CastInst &I);

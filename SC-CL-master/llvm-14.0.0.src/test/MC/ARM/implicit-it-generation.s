@@ -73,14 +73,12 @@
   addeq r0, #1
 label:
   addeq r0, #1
-five:
+5:
   addeq r0, #1
 @ CHECK: it eq
 @ CHECK: addeq
-@ CHECK: label
 @ CHECK: it eq
 @ CHECK: addeq
-@ CHECK: five
 @ CHECK: it eq
 @ CHECK: addeq
 

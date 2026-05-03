@@ -1,9 +1,79 @@
+*
+!.gitignore
+!Clang Changes Documentation.txt
+!BuildTarget.h
+!CMakeLists.txt
+!Include/
+!Compiler/
+!Crypto/
+!Compression/
+!ASM Compiler/
+!Utils/
+!ClangParsing/
+!Helpers/
+!Version/
+!Version.h
+!zconf.h
+!zlib.h
+!zlib.lib
+!aes256.h
+!aes256.c
+!ConsoleColor.h
+!contributors.txt
+!ASTConsumer.cpp
+!ASTConsumer.h
+!ASTFrontendAction.cpp
+!ASTFrontendAction.h
+!ASTVisitorGlobal.cpp
+!ASTVisitorGlobal.h
+!ASTVisitorLocal.cpp
+!ASTVisitorLocal.h
+!CommandLineOptions.cpp
+!CommandLineOptions.h
+!GlobalDecls.cpp
+!GlobalDecls.h
+!FunctionData.cpp
+!FunctionData.h
+!Opcode.h
+!Opcode.cpp
+!SC-CL.cpp
+!rapidxml/
+!rapidxml.hpp
+!rapidxml_iterators.hpp
+!rapidxml_print.hpp
+!rapidxml_utils.hpp
+!license.txt
+!Utils.cpp
+!Utils.h
+!ClangUtils.cpp
+!ClangUtils.h
+!Compiler.cpp
+!Compiler.h
+!ConstExpr.h
+!OpcodeConsts.h
+!Script.h
+!Script.cpp
+!StaticData.h
+!StaticData.cpp
+!bin/
+!Debug/
+!include/
+!Release/
+!projects/
+!testing/
+!MenuBase/
+!Menu Internals/
+!Utilities/
+!RDR/
+!GTAV/
+!GTAIV/
+!*.c
+!*.h
 ASM Compiler/XscCompilerRaw (RDR)/obj/
 ASM Compiler/XscCompilerRaw (RDR)/bin/
 ASM Compiler/XscCompilerRaw/bin/
 ASM Compiler/XscCompilerRaw/obj/New Text Document.txt
 bin/Debug/*.exe
-bin/Release/*.exe
 bin/Debug/*.ilk
 bin/projects/*/*.xsc
 bin/projects/*/*.sco
@@ -22,4 +92,5 @@ bin/projects/MenuBase/*.db
 bin/projects/MenuBase/*.opendb
 bin/projects/MenuBase/*.TMP
 *.exe
+!SC-CL_Version_Selector.exe
 /bin/projects/Network Protection

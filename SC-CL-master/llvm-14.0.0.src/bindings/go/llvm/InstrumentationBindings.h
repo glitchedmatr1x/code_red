@@ -1,8 +1,9 @@
 //===- InstrumentationBindings.h - instrumentation bindings -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -26,7 +27,7 @@ extern "C" {
 void LLVMAddAddressSanitizerFunctionPass(LLVMPassManagerRef PM);
 void LLVMAddAddressSanitizerModulePass(LLVMPassManagerRef PM);
 void LLVMAddThreadSanitizerPass(LLVMPassManagerRef PM);
-void LLVMAddMemorySanitizerLegacyPassPass(LLVMPassManagerRef PM);
+void LLVMAddMemorySanitizerPass(LLVMPassManagerRef PM);
 void LLVMAddDataFlowSanitizerPass(LLVMPassManagerRef PM, int ABIListFilesNum,
                                   const char **ABIListFiles);
 

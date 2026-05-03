@@ -1,8 +1,9 @@
 //===- lib/CodeGen/MachineTraceMetrics.h - Super-scalar metrics -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -140,13 +141,13 @@ public:
   /// successors.
   struct LiveInReg {
     /// The virtual register required, or a register unit.
-    Register Reg;
+    unsigned Reg;
 
     /// For virtual registers: Minimum height of the defining instruction.
     /// For regunits: Height of the highest user in the trace.
     unsigned Height;
 
-    LiveInReg(Register Reg, unsigned Height = 0) : Reg(Reg), Height(Height) {}
+    LiveInReg(unsigned Reg, unsigned Height = 0) : Reg(Reg), Height(Height) {}
   };
 
   /// Per-basic block information that relates to a specific trace through the

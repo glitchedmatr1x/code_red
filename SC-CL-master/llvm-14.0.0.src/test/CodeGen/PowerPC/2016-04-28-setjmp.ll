@@ -1,4 +1,4 @@
-; RUN: llc -filetype=obj <%s | llvm-objdump -d - | FileCheck %s
+; RUN: llc -filetype=obj <%s | llvm-objdump --disassemble - | FileCheck %s
 target datalayout = "e-m:e-i64:64-n32:64"
 target triple = "powerpc64le-unknown-linux-gnu"
 
@@ -8,7 +8,7 @@ target triple = "powerpc64le-unknown-linux-gnu"
 ; EH_SjLj_Setup.
 
 ; CHECK: li 3, 1
-; CHECK: cmplwi	 3, 0
+; CHECK-NEXT: cmplwi	 3, 0
 
 define void @h() nounwind {
   %1 = load i8**, i8*** bitcast (i8** @ptr to i8***), align 8

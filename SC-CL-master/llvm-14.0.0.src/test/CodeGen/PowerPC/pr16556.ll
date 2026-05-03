@@ -1,4 +1,4 @@
-; RUN: llc -verify-machineinstrs < %s
+; RUN: llc < %s
 
 ; This test formerly failed due to no handling for a ppc_fp128 undef.
 

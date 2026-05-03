@@ -1,4 +1,4 @@
-; RUN: opt < %s -passes='require<callgraph>'
+; RUN: opt < %s -basiccg
 ; PR13903
 
 define void @main() personality i8 0 {

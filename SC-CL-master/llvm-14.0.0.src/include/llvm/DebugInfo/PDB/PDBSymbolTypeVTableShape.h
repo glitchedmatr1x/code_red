@@ -1,8 +1,9 @@
 //===- PDBSymbolTypeVTableShape.h - VTable shape info -----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,8 +19,12 @@ class raw_ostream;
 namespace pdb {
 
 class PDBSymbolTypeVTableShape : public PDBSymbol {
-  DECLARE_PDB_SYMBOL_CONCRETE_TYPE(PDB_SymType::VTableShape)
 public:
+  PDBSymbolTypeVTableShape(const IPDBSession &PDBSession,
+                           std::unique_ptr<IPDBRawSymbol> VtblShapeSymbol);
+
+  DECLARE_PDB_SYMBOL_CONCRETE_TYPE(PDB_SymType::VTableShape)
+
   void dump(PDBSymDumper &Dumper) const override;
 
   FORWARD_SYMBOL_METHOD(isConstType)
@@ -29,7 +34,7 @@ public:
   FORWARD_SYMBOL_METHOD(isVolatileType)
 };
 
-} // namespace pdb
 } // namespace llvm
+}
 
 #endif // LLVM_DEBUGINFO_PDB_PDBSYMBOLTYPEVTABLESHAPE_H

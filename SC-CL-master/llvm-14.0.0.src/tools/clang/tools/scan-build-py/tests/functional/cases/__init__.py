@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-# Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-# See https://llvm.org/LICENSE.txt for license information.
-# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+#                     The LLVM Compiler Infrastructure
+#
+# This file is distributed under the University of Illinois Open Source
+# License. See LICENSE.TXT for details.
 
 import re
 import os.path
@@ -22,7 +23,7 @@ def load_tests(loader, suite, pattern):
 
 def make_args(target):
     this_dir, _ = os.path.split(__file__)
-    path = os.path.abspath(os.path.join(this_dir, '..', 'src'))
+    path = os.path.normpath(os.path.join(this_dir, '..', 'src'))
     return ['make', 'SRCDIR={}'.format(path), 'OBJDIR={}'.format(target), '-f',
             os.path.join(path, 'build', 'Makefile')]
 

@@ -3,29 +3,17 @@
 // rdar://8843524
 
 struct A {
-  id x[4];
-  id y;
+    id x; // expected-error {{ARC forbids Objective-C objects in struct}}
 };
 
 union u {
-  id u;
-};
-
-// Volatile fields are fine.
-struct C {
-  volatile int x[4];
-  volatile int y;
-};
-
-union u_trivial_c {
-  volatile int b;
-  struct C c;
+    id u; // expected-error {{ARC forbids Objective-C objects in union}}
 };
 
 @interface I {
    struct A a; 
    struct B {
-    id y[10][20];
+    id y[10][20]; // expected-error {{ARC forbids Objective-C objects in struct}}
     id z;
    } b;
 
@@ -35,7 +23,7 @@ union u_trivial_c {
 
 // rdar://10260525
 struct r10260525 {
-  id (^block) ();
+  id (^block) (); // expected-error {{ARC forbids blocks in struct}}
 };
 
 struct S { 
@@ -165,26 +153,4 @@ struct __attribute__((objc_ownership(none))) S2 {}; // expected-error {{'objc_ow
 @property (readwrite, weak) ControllerClass *controller; // expected-warning {{primary property declaration is implicitly strong while redeclaration in class extension is weak}}
 
 @property (readwrite, weak) ControllerClass *weak_controller;
-@end
-
-@interface I3
-@end
-
-@interface D3 : I3
-@end
-
-@interface D3 (Cat1)
-- (id)method;
-@end
-
-@interface I3 (Cat2)
-// FIXME: clang should diagnose mismatch between methods in D3(Cat1) and
-//        I3(Cat2).
-- (id)method __attribute__((ns_returns_retained));
-@end
-
-@implementation D3
-- (id)method {
-  return (id)0;
-}
 @end

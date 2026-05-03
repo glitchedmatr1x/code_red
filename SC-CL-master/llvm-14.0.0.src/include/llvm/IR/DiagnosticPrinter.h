@@ -1,8 +1,9 @@
-//===- llvm/IR/DiagnosticPrinter.h - Diagnostic Printer ---------*- C++ -*-===//
+//===- llvm/Support/DiagnosticPrinter.h - Diagnostic Printer ----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -27,7 +28,7 @@ class StringRef;
 class Twine;
 class Value;
 
-/// Interface for custom diagnostic printing.
+/// \brief Interface for custom diagnostic printing.
 class DiagnosticPrinter {
 public:
   virtual ~DiagnosticPrinter() = default;
@@ -57,7 +58,7 @@ public:
   virtual DiagnosticPrinter &operator<<(const SMDiagnostic &Diag) = 0;
 };
 
-/// Basic diagnostic printer that uses an underlying raw_ostream.
+/// \brief Basic diagnostic printer that uses an underlying raw_ostream.
 class DiagnosticPrinterRawOStream : public DiagnosticPrinter {
 protected:
   raw_ostream &Stream;

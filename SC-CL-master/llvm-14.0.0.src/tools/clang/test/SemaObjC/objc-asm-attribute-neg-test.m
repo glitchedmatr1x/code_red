@@ -19,7 +19,7 @@ __attribute__((objc_runtime_name("MySecretNamespace.Message"))) // expected-erro
   id MyIVAR;
 }
 __attribute__((objc_runtime_name("MySecretNamespace.Message")))
-@property int MyProperty; // expected-error {{prefix attribute must be followed by an interface, protocol, or implementation}}}}
+@property int MyProperty; // expected-error {{prefix attribute must be followed by an interface or protocol}}}}
 
 - (int) getMyProperty __attribute__((objc_runtime_name("MySecretNamespace.Message"))); // expected-error {{'objc_runtime_name' attribute only applies to}}
 
@@ -28,23 +28,15 @@ __attribute__((objc_runtime_name("MySecretNamespace.Message")))
 @end
 
 __attribute__((objc_runtime_name("MySecretNamespace.ForwardClass")))
-@class ForwardClass; // expected-error {{prefix attribute must be followed by an interface, protocol, or implementation}}
+@class ForwardClass; // expected-error {{prefix attribute must be followed by an interface or protocol}}
 
 __attribute__((objc_runtime_name("MySecretNamespace.ForwardProtocol")))
 @protocol ForwardProtocol;
 
-@implementation Message
-// expected-error@+1 {{'objc_runtime_name' attribute only applies to Objective-C interfaces and Objective-C protocols}}
-- (id) MyMethod __attribute__((objc_runtime_name("MySecretNamespace.Message"))) {
+__attribute__((objc_runtime_name("MySecretNamespace.Message")))
+@implementation Message // expected-error {{prefix attribute must be followed by an interface or protocol}}
+__attribute__((objc_runtime_name("MySecretNamespace.Message")))
+- (id) MyMethod {
   return MyIVAR;
 }
-
--(int)getMyProperty { return 0; }
--(void)setMyProperty:(int)arg {}
 @end
-
-@interface NoImpl @end
-
-// expected-error@+1 {{'objc_runtime_name' attribute only applies to Objective-C interfaces and Objective-C protocols}}
-__attribute__((objc_runtime_name("MySecretNamespace.Message")))
-@implementation NoImpl @end

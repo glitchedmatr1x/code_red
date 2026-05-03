@@ -695,6 +695,9 @@ it ge
 strexge r0, r0, [pc]
 @ CHECK: [[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
+strdge r0, r0, [r0], #-0
+@ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
+it ge
 strdge r0, r0, [r1], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
@@ -738,6 +741,9 @@ strdge r0, r0, [lr], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
 strdge r0, r0, [pc], #-0
+@ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
+it ge
+strdge r0, r0, [r0], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
 strdge r0, r0, [r1], #0
@@ -833,6 +839,9 @@ it ge
 strdge r0, r0, [pc, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
+strdge r0, r0, [r0, #-0]!
+@ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
+it ge
 strdge r0, r0, [r1, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
@@ -878,6 +887,9 @@ it ge
 strdge r0, r0, [pc, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
+strdge r0, r0, [r0]
+@ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
+it ge
 strdge r0, r0, [r1]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
@@ -921,6 +933,9 @@ strdge r0, r0, [lr]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
 strdge r0, r0, [pc]
+@ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
+it ge
+strdge r0, r0, [r0, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
 strdge r0, r0, [r1, #0]!
@@ -1832,148 +1847,148 @@ it ge
 rsbge r0, lr, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r0], #-0
+stcge p0, c0, [r0], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r1], #-0
+stcge p0, c0, [r1], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r2], #-0
+stcge p0, c0, [r2], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r3], #-0
+stcge p0, c0, [r3], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r4], #-0
+stcge p0, c0, [r4], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r5], #-0
+stcge p0, c0, [r5], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r6], #-0
+stcge p0, c0, [r6], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r7], #-0
+stcge p0, c0, [r7], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r8], #-0
+stcge p0, c0, [r8], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r9], #-0
+stcge p0, c0, [r9], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r10], #-0
+stcge p0, c0, [r10], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r11], #-0
+stcge p0, c0, [r11], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r12], #-0
+stcge p0, c0, [r12], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [sp], #-0
+stcge p0, c0, [sp], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [lr], #-0
+stcge p0, c0, [lr], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [pc], #-0
+stcge p0, c0, [pc], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r0], #-0
+ldcge p0, c0, [r0], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r1], #-0
+ldcge p0, c0, [r1], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r2], #-0
+ldcge p0, c0, [r2], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r3], #-0
+ldcge p0, c0, [r3], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r4], #-0
+ldcge p0, c0, [r4], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r5], #-0
+ldcge p0, c0, [r5], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r6], #-0
+ldcge p0, c0, [r6], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r7], #-0
+ldcge p0, c0, [r7], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r8], #-0
+ldcge p0, c0, [r8], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r9], #-0
+ldcge p0, c0, [r9], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r10], #-0
+ldcge p0, c0, [r10], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r11], #-0
+ldcge p0, c0, [r11], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r12], #-0
+ldcge p0, c0, [r12], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [sp], #-0
+ldcge p0, c0, [sp], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [lr], #-0
+ldcge p0, c0, [lr], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [pc], #-0
+ldcge p0, c0, [pc], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r0, c0
+mcrrge p0, #0, r0, r0, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r1, c0
+mcrrge p0, #0, r0, r1, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r2, c0
+mcrrge p0, #0, r0, r2, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r3, c0
+mcrrge p0, #0, r0, r3, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r4, c0
+mcrrge p0, #0, r0, r4, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r5, c0
+mcrrge p0, #0, r0, r5, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r6, c0
+mcrrge p0, #0, r0, r6, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r7, c0
+mcrrge p0, #0, r0, r7, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r8, c0
+mcrrge p0, #0, r0, r8, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r9, c0
+mcrrge p0, #0, r0, r9, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r10, c0
+mcrrge p0, #0, r0, r10, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r11, c0
+mcrrge p0, #0, r0, r11, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, r12, c0
+mcrrge p0, #0, r0, r12, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, sp, c0
+mcrrge p0, #0, r0, sp, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, lr, c0
+mcrrge p0, #0, r0, lr, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-mcrrge p14, #0, r0, pc, c0
+mcrrge p0, #0, r0, pc, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
 mrrcge p14, #0, r0, r0, c0
@@ -2024,1252 +2039,1252 @@ it ge
 mrrcge p14, #0, r0, pc, c0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r0], #-0
+stclge p0, c0, [r0], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r1], #-0
+stclge p0, c0, [r1], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r2], #-0
+stclge p0, c0, [r2], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r3], #-0
+stclge p0, c0, [r3], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r4], #-0
+stclge p0, c0, [r4], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r5], #-0
+stclge p0, c0, [r5], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r6], #-0
+stclge p0, c0, [r6], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r7], #-0
+stclge p0, c0, [r7], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r8], #-0
+stclge p0, c0, [r8], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r9], #-0
+stclge p0, c0, [r9], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r10], #-0
+stclge p0, c0, [r10], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r11], #-0
+stclge p0, c0, [r11], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r12], #-0
+stclge p0, c0, [r12], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [sp], #-0
+stclge p0, c0, [sp], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [lr], #-0
+stclge p0, c0, [lr], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [pc], #-0
+stclge p0, c0, [pc], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r0], #-0
+ldclge p0, c0, [r0], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r1], #-0
+ldclge p0, c0, [r1], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r2], #-0
+ldclge p0, c0, [r2], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r3], #-0
+ldclge p0, c0, [r3], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r4], #-0
+ldclge p0, c0, [r4], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r5], #-0
+ldclge p0, c0, [r5], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r6], #-0
+ldclge p0, c0, [r6], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r7], #-0
+ldclge p0, c0, [r7], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r8], #-0
+ldclge p0, c0, [r8], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r9], #-0
+ldclge p0, c0, [r9], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r10], #-0
+ldclge p0, c0, [r10], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r11], #-0
+ldclge p0, c0, [r11], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r12], #-0
+ldclge p0, c0, [r12], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [sp], #-0
+ldclge p0, c0, [sp], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [lr], #-0
+ldclge p0, c0, [lr], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [pc], #-0
+ldclge p0, c0, [pc], #-0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r0], {0}
+stcge p0, c0, [r0], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r1], {0}
+stcge p0, c0, [r1], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r2], {0}
+stcge p0, c0, [r2], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r3], {0}
+stcge p0, c0, [r3], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r4], {0}
+stcge p0, c0, [r4], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r5], {0}
+stcge p0, c0, [r5], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r6], {0}
+stcge p0, c0, [r6], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r7], {0}
+stcge p0, c0, [r7], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r8], {0}
+stcge p0, c0, [r8], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r9], {0}
+stcge p0, c0, [r9], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r10], {0}
+stcge p0, c0, [r10], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r11], {0}
+stcge p0, c0, [r11], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r12], {0}
+stcge p0, c0, [r12], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [sp], {0}
+stcge p0, c0, [sp], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [lr], {0}
+stcge p0, c0, [lr], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [pc], {0}
+stcge p0, c0, [pc], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r0], {0}
+ldcge p0, c0, [r0], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r1], {0}
+ldcge p0, c0, [r1], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r2], {0}
+ldcge p0, c0, [r2], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r3], {0}
+ldcge p0, c0, [r3], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r4], {0}
+ldcge p0, c0, [r4], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r5], {0}
+ldcge p0, c0, [r5], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r6], {0}
+ldcge p0, c0, [r6], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r7], {0}
+ldcge p0, c0, [r7], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r8], {0}
+ldcge p0, c0, [r8], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r9], {0}
+ldcge p0, c0, [r9], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r10], {0}
+ldcge p0, c0, [r10], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r11], {0}
+ldcge p0, c0, [r11], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r12], {0}
+ldcge p0, c0, [r12], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [sp], {0}
+ldcge p0, c0, [sp], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [lr], {0}
+ldcge p0, c0, [lr], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [pc], {0}
+ldcge p0, c0, [pc], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r0], #0
+stcge p0, c0, [r0], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r1], #0
+stcge p0, c0, [r1], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r2], #0
+stcge p0, c0, [r2], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r3], #0
+stcge p0, c0, [r3], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r4], #0
+stcge p0, c0, [r4], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r5], #0
+stcge p0, c0, [r5], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r6], #0
+stcge p0, c0, [r6], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r7], #0
+stcge p0, c0, [r7], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r8], #0
+stcge p0, c0, [r8], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r9], #0
+stcge p0, c0, [r9], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r10], #0
+stcge p0, c0, [r10], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r11], #0
+stcge p0, c0, [r11], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r12], #0
+stcge p0, c0, [r12], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [sp], #0
+stcge p0, c0, [sp], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [lr], #0
+stcge p0, c0, [lr], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [pc], #0
+stcge p0, c0, [pc], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r0], #0
+ldcge p0, c0, [r0], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r1], #0
+ldcge p0, c0, [r1], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r2], #0
+ldcge p0, c0, [r2], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r3], #0
+ldcge p0, c0, [r3], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r4], #0
+ldcge p0, c0, [r4], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r5], #0
+ldcge p0, c0, [r5], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r6], #0
+ldcge p0, c0, [r6], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r7], #0
+ldcge p0, c0, [r7], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r8], #0
+ldcge p0, c0, [r8], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r9], #0
+ldcge p0, c0, [r9], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r10], #0
+ldcge p0, c0, [r10], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r11], #0
+ldcge p0, c0, [r11], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r12], #0
+ldcge p0, c0, [r12], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [sp], #0
+ldcge p0, c0, [sp], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [lr], #0
+ldcge p0, c0, [lr], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [pc], #0
+ldcge p0, c0, [pc], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r0], {0}
+stclge p0, c0, [r0], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r1], {0}
+stclge p0, c0, [r1], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r2], {0}
+stclge p0, c0, [r2], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r3], {0}
+stclge p0, c0, [r3], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r4], {0}
+stclge p0, c0, [r4], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r5], {0}
+stclge p0, c0, [r5], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r6], {0}
+stclge p0, c0, [r6], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r7], {0}
+stclge p0, c0, [r7], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r8], {0}
+stclge p0, c0, [r8], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r9], {0}
+stclge p0, c0, [r9], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r10], {0}
+stclge p0, c0, [r10], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r11], {0}
+stclge p0, c0, [r11], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r12], {0}
+stclge p0, c0, [r12], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [sp], {0}
+stclge p0, c0, [sp], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [lr], {0}
+stclge p0, c0, [lr], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [pc], {0}
+stclge p0, c0, [pc], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r0], {0}
+ldclge p0, c0, [r0], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r1], {0}
+ldclge p0, c0, [r1], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r2], {0}
+ldclge p0, c0, [r2], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r3], {0}
+ldclge p0, c0, [r3], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r4], {0}
+ldclge p0, c0, [r4], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r5], {0}
+ldclge p0, c0, [r5], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r6], {0}
+ldclge p0, c0, [r6], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r7], {0}
+ldclge p0, c0, [r7], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r8], {0}
+ldclge p0, c0, [r8], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r9], {0}
+ldclge p0, c0, [r9], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r10], {0}
+ldclge p0, c0, [r10], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r11], {0}
+ldclge p0, c0, [r11], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r12], {0}
+ldclge p0, c0, [r12], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [sp], {0}
+ldclge p0, c0, [sp], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [lr], {0}
+ldclge p0, c0, [lr], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [pc], {0}
+ldclge p0, c0, [pc], {0}
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r0], #0
+stclge p0, c0, [r0], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r1], #0
+stclge p0, c0, [r1], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r2], #0
+stclge p0, c0, [r2], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r3], #0
+stclge p0, c0, [r3], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r4], #0
+stclge p0, c0, [r4], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r5], #0
+stclge p0, c0, [r5], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r6], #0
+stclge p0, c0, [r6], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r7], #0
+stclge p0, c0, [r7], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r8], #0
+stclge p0, c0, [r8], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r9], #0
+stclge p0, c0, [r9], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r10], #0
+stclge p0, c0, [r10], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r11], #0
+stclge p0, c0, [r11], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r12], #0
+stclge p0, c0, [r12], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [sp], #0
+stclge p0, c0, [sp], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [lr], #0
+stclge p0, c0, [lr], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [pc], #0
+stclge p0, c0, [pc], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r0], #0
+ldclge p0, c0, [r0], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r1], #0
+ldclge p0, c0, [r1], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r2], #0
+ldclge p0, c0, [r2], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r3], #0
+ldclge p0, c0, [r3], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r4], #0
+ldclge p0, c0, [r4], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r5], #0
+ldclge p0, c0, [r5], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r6], #0
+ldclge p0, c0, [r6], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r7], #0
+ldclge p0, c0, [r7], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r8], #0
+ldclge p0, c0, [r8], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r9], #0
+ldclge p0, c0, [r9], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r10], #0
+ldclge p0, c0, [r10], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r11], #0
+ldclge p0, c0, [r11], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r12], #0
+ldclge p0, c0, [r12], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [sp], #0
+ldclge p0, c0, [sp], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [lr], #0
+ldclge p0, c0, [lr], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [pc], #0
+ldclge p0, c0, [pc], #0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r0, #-0]
+stcge p0, c0, [r0, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r1, #-0]
+stcge p0, c0, [r1, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r2, #-0]
+stcge p0, c0, [r2, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r3, #-0]
+stcge p0, c0, [r3, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r4, #-0]
+stcge p0, c0, [r4, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r5, #-0]
+stcge p0, c0, [r5, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r6, #-0]
+stcge p0, c0, [r6, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r7, #-0]
+stcge p0, c0, [r7, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r8, #-0]
+stcge p0, c0, [r8, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r9, #-0]
+stcge p0, c0, [r9, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r10, #-0]
+stcge p0, c0, [r10, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r11, #-0]
+stcge p0, c0, [r11, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r12, #-0]
+stcge p0, c0, [r12, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [sp, #-0]
+stcge p0, c0, [sp, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [lr, #-0]
+stcge p0, c0, [lr, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [pc, #-0]
+stcge p0, c0, [pc, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r0, #-0]
+ldcge p0, c0, [r0, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r1, #-0]
+ldcge p0, c0, [r1, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r2, #-0]
+ldcge p0, c0, [r2, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r3, #-0]
+ldcge p0, c0, [r3, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r4, #-0]
+ldcge p0, c0, [r4, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r5, #-0]
+ldcge p0, c0, [r5, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r6, #-0]
+ldcge p0, c0, [r6, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r7, #-0]
+ldcge p0, c0, [r7, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r8, #-0]
+ldcge p0, c0, [r8, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r9, #-0]
+ldcge p0, c0, [r9, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r10, #-0]
+ldcge p0, c0, [r10, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r11, #-0]
+ldcge p0, c0, [r11, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r12, #-0]
+ldcge p0, c0, [r12, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [sp, #-0]
+ldcge p0, c0, [sp, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [lr, #-0]
+ldcge p0, c0, [lr, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [pc, #-0]
+ldcge p0, c0, [pc, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r0, #-0]!
+stcge p0, c0, [r0, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r1, #-0]!
+stcge p0, c0, [r1, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r2, #-0]!
+stcge p0, c0, [r2, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r3, #-0]!
+stcge p0, c0, [r3, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r4, #-0]!
+stcge p0, c0, [r4, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r5, #-0]!
+stcge p0, c0, [r5, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r6, #-0]!
+stcge p0, c0, [r6, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r7, #-0]!
+stcge p0, c0, [r7, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r8, #-0]!
+stcge p0, c0, [r8, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r9, #-0]!
+stcge p0, c0, [r9, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r10, #-0]!
+stcge p0, c0, [r10, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r11, #-0]!
+stcge p0, c0, [r11, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r12, #-0]!
+stcge p0, c0, [r12, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [sp, #-0]!
+stcge p0, c0, [sp, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [lr, #-0]!
+stcge p0, c0, [lr, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [pc, #-0]!
+stcge p0, c0, [pc, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r0, #-0]!
+ldcge p0, c0, [r0, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r1, #-0]!
+ldcge p0, c0, [r1, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r2, #-0]!
+ldcge p0, c0, [r2, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r3, #-0]!
+ldcge p0, c0, [r3, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r4, #-0]!
+ldcge p0, c0, [r4, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r5, #-0]!
+ldcge p0, c0, [r5, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r6, #-0]!
+ldcge p0, c0, [r6, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r7, #-0]!
+ldcge p0, c0, [r7, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r8, #-0]!
+ldcge p0, c0, [r8, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r9, #-0]!
+ldcge p0, c0, [r9, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r10, #-0]!
+ldcge p0, c0, [r10, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r11, #-0]!
+ldcge p0, c0, [r11, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r12, #-0]!
+ldcge p0, c0, [r12, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [sp, #-0]!
+ldcge p0, c0, [sp, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [lr, #-0]!
+ldcge p0, c0, [lr, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [pc, #-0]!
+ldcge p0, c0, [pc, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r0, #-0]
+stclge p0, c0, [r0, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r1, #-0]
+stclge p0, c0, [r1, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r2, #-0]
+stclge p0, c0, [r2, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r3, #-0]
+stclge p0, c0, [r3, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r4, #-0]
+stclge p0, c0, [r4, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r5, #-0]
+stclge p0, c0, [r5, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r6, #-0]
+stclge p0, c0, [r6, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r7, #-0]
+stclge p0, c0, [r7, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r8, #-0]
+stclge p0, c0, [r8, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r9, #-0]
+stclge p0, c0, [r9, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r10, #-0]
+stclge p0, c0, [r10, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r11, #-0]
+stclge p0, c0, [r11, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r12, #-0]
+stclge p0, c0, [r12, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [sp, #-0]
+stclge p0, c0, [sp, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [lr, #-0]
+stclge p0, c0, [lr, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [pc, #-0]
+stclge p0, c0, [pc, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r0, #-0]
+ldclge p0, c0, [r0, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r1, #-0]
+ldclge p0, c0, [r1, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r2, #-0]
+ldclge p0, c0, [r2, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r3, #-0]
+ldclge p0, c0, [r3, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r4, #-0]
+ldclge p0, c0, [r4, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r5, #-0]
+ldclge p0, c0, [r5, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r6, #-0]
+ldclge p0, c0, [r6, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r7, #-0]
+ldclge p0, c0, [r7, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r8, #-0]
+ldclge p0, c0, [r8, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r9, #-0]
+ldclge p0, c0, [r9, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r10, #-0]
+ldclge p0, c0, [r10, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r11, #-0]
+ldclge p0, c0, [r11, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r12, #-0]
+ldclge p0, c0, [r12, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [sp, #-0]
+ldclge p0, c0, [sp, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [lr, #-0]
+ldclge p0, c0, [lr, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [pc, #-0]
+ldclge p0, c0, [pc, #-0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r0, #-0]!
+stclge p0, c0, [r0, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r1, #-0]!
+stclge p0, c0, [r1, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r2, #-0]!
+stclge p0, c0, [r2, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r3, #-0]!
+stclge p0, c0, [r3, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r4, #-0]!
+stclge p0, c0, [r4, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r5, #-0]!
+stclge p0, c0, [r5, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r6, #-0]!
+stclge p0, c0, [r6, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r7, #-0]!
+stclge p0, c0, [r7, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r8, #-0]!
+stclge p0, c0, [r8, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r9, #-0]!
+stclge p0, c0, [r9, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r10, #-0]!
+stclge p0, c0, [r10, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r11, #-0]!
+stclge p0, c0, [r11, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r12, #-0]!
+stclge p0, c0, [r12, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [sp, #-0]!
+stclge p0, c0, [sp, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [lr, #-0]!
+stclge p0, c0, [lr, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [pc, #-0]!
+stclge p0, c0, [pc, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r0, #-0]!
+ldclge p0, c0, [r0, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r1, #-0]!
+ldclge p0, c0, [r1, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r2, #-0]!
+ldclge p0, c0, [r2, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r3, #-0]!
+ldclge p0, c0, [r3, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r4, #-0]!
+ldclge p0, c0, [r4, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r5, #-0]!
+ldclge p0, c0, [r5, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r6, #-0]!
+ldclge p0, c0, [r6, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r7, #-0]!
+ldclge p0, c0, [r7, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r8, #-0]!
+ldclge p0, c0, [r8, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r9, #-0]!
+ldclge p0, c0, [r9, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r10, #-0]!
+ldclge p0, c0, [r10, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r11, #-0]!
+ldclge p0, c0, [r11, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r12, #-0]!
+ldclge p0, c0, [r12, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [sp, #-0]!
+ldclge p0, c0, [sp, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [lr, #-0]!
+ldclge p0, c0, [lr, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [pc, #-0]!
+ldclge p0, c0, [pc, #-0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r0]
+stcge p0, c0, [r0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r1]
+stcge p0, c0, [r1]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r2]
+stcge p0, c0, [r2]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r3]
+stcge p0, c0, [r3]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r4]
+stcge p0, c0, [r4]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r5]
+stcge p0, c0, [r5]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r6]
+stcge p0, c0, [r6]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r7]
+stcge p0, c0, [r7]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r8]
+stcge p0, c0, [r8]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r9]
+stcge p0, c0, [r9]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r10]
+stcge p0, c0, [r10]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r11]
+stcge p0, c0, [r11]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r12]
+stcge p0, c0, [r12]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [sp]
+stcge p0, c0, [sp]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [lr]
+stcge p0, c0, [lr]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [pc]
+stcge p0, c0, [pc]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r0]
+ldcge p0, c0, [r0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r1]
+ldcge p0, c0, [r1]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r2]
+ldcge p0, c0, [r2]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r3]
+ldcge p0, c0, [r3]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r4]
+ldcge p0, c0, [r4]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r5]
+ldcge p0, c0, [r5]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r6]
+ldcge p0, c0, [r6]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r7]
+ldcge p0, c0, [r7]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r8]
+ldcge p0, c0, [r8]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r9]
+ldcge p0, c0, [r9]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r10]
+ldcge p0, c0, [r10]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r11]
+ldcge p0, c0, [r11]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r12]
+ldcge p0, c0, [r12]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [sp]
+ldcge p0, c0, [sp]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [lr]
+ldcge p0, c0, [lr]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [pc]
+ldcge p0, c0, [pc]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r0, #0]!
+stcge p0, c0, [r0, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r1, #0]!
+stcge p0, c0, [r1, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r2, #0]!
+stcge p0, c0, [r2, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r3, #0]!
+stcge p0, c0, [r3, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r4, #0]!
+stcge p0, c0, [r4, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r5, #0]!
+stcge p0, c0, [r5, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r6, #0]!
+stcge p0, c0, [r6, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r7, #0]!
+stcge p0, c0, [r7, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r8, #0]!
+stcge p0, c0, [r8, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r9, #0]!
+stcge p0, c0, [r9, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r10, #0]!
+stcge p0, c0, [r10, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r11, #0]!
+stcge p0, c0, [r11, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [r12, #0]!
+stcge p0, c0, [r12, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [sp, #0]!
+stcge p0, c0, [sp, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [lr, #0]!
+stcge p0, c0, [lr, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stcge p14, c0, [pc, #0]!
+stcge p0, c0, [pc, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r0, #0]!
+ldcge p0, c0, [r0, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r1, #0]!
+ldcge p0, c0, [r1, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r2, #0]!
+ldcge p0, c0, [r2, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r3, #0]!
+ldcge p0, c0, [r3, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r4, #0]!
+ldcge p0, c0, [r4, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r5, #0]!
+ldcge p0, c0, [r5, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r6, #0]!
+ldcge p0, c0, [r6, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r7, #0]!
+ldcge p0, c0, [r7, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r8, #0]!
+ldcge p0, c0, [r8, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r9, #0]!
+ldcge p0, c0, [r9, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r10, #0]!
+ldcge p0, c0, [r10, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r11, #0]!
+ldcge p0, c0, [r11, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [r12, #0]!
+ldcge p0, c0, [r12, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [sp, #0]!
+ldcge p0, c0, [sp, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [lr, #0]!
+ldcge p0, c0, [lr, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldcge p14, c0, [pc, #0]!
+ldcge p0, c0, [pc, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r0]
+stclge p0, c0, [r0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r1]
+stclge p0, c0, [r1]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r2]
+stclge p0, c0, [r2]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r3]
+stclge p0, c0, [r3]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r4]
+stclge p0, c0, [r4]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r5]
+stclge p0, c0, [r5]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r6]
+stclge p0, c0, [r6]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r7]
+stclge p0, c0, [r7]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r8]
+stclge p0, c0, [r8]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r9]
+stclge p0, c0, [r9]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r10]
+stclge p0, c0, [r10]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r11]
+stclge p0, c0, [r11]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r12]
+stclge p0, c0, [r12]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [sp]
+stclge p0, c0, [sp]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [lr]
+stclge p0, c0, [lr]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [pc]
+stclge p0, c0, [pc]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r0]
+ldclge p0, c0, [r0]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r1]
+ldclge p0, c0, [r1]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r2]
+ldclge p0, c0, [r2]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r3]
+ldclge p0, c0, [r3]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r4]
+ldclge p0, c0, [r4]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r5]
+ldclge p0, c0, [r5]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r6]
+ldclge p0, c0, [r6]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r7]
+ldclge p0, c0, [r7]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r8]
+ldclge p0, c0, [r8]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r9]
+ldclge p0, c0, [r9]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r10]
+ldclge p0, c0, [r10]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r11]
+ldclge p0, c0, [r11]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r12]
+ldclge p0, c0, [r12]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [sp]
+ldclge p0, c0, [sp]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [lr]
+ldclge p0, c0, [lr]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [pc]
+ldclge p0, c0, [pc]
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r0, #0]!
+stclge p0, c0, [r0, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r1, #0]!
+stclge p0, c0, [r1, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r2, #0]!
+stclge p0, c0, [r2, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r3, #0]!
+stclge p0, c0, [r3, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r4, #0]!
+stclge p0, c0, [r4, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r5, #0]!
+stclge p0, c0, [r5, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r6, #0]!
+stclge p0, c0, [r6, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r7, #0]!
+stclge p0, c0, [r7, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r8, #0]!
+stclge p0, c0, [r8, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r9, #0]!
+stclge p0, c0, [r9, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r10, #0]!
+stclge p0, c0, [r10, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r11, #0]!
+stclge p0, c0, [r11, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [r12, #0]!
+stclge p0, c0, [r12, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [sp, #0]!
+stclge p0, c0, [sp, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [lr, #0]!
+stclge p0, c0, [lr, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-stclge p14, c0, [pc, #0]!
+stclge p0, c0, [pc, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r0, #0]!
+ldclge p0, c0, [r0, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r1, #0]!
+ldclge p0, c0, [r1, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r2, #0]!
+ldclge p0, c0, [r2, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r3, #0]!
+ldclge p0, c0, [r3, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r4, #0]!
+ldclge p0, c0, [r4, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r5, #0]!
+ldclge p0, c0, [r5, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r6, #0]!
+ldclge p0, c0, [r6, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r7, #0]!
+ldclge p0, c0, [r7, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r8, #0]!
+ldclge p0, c0, [r8, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r9, #0]!
+ldclge p0, c0, [r9, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r10, #0]!
+ldclge p0, c0, [r10, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r11, #0]!
+ldclge p0, c0, [r11, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [r12, #0]!
+ldclge p0, c0, [r12, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [sp, #0]!
+ldclge p0, c0, [sp, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [lr, #0]!
+ldclge p0, c0, [lr, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-ldclge p14, c0, [pc, #0]!
+ldclge p0, c0, [pc, #0]!
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
 andge r0, r0, #0
@@ -6557,169 +6572,169 @@ it ge
 mlage r0, lr, r0, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r0, r0
+smullge r0, r0, r0, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r1, r0
+smullge r0, r0, r1, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r2, r0
+smullge r0, r0, r2, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r3, r0
+smullge r0, r0, r3, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r4, r0
+smullge r0, r0, r4, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r5, r0
+smullge r0, r0, r5, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r6, r0
+smullge r0, r0, r6, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r7, r0
+smullge r0, r0, r7, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r8, r0
+smullge r0, r0, r8, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r9, r0
+smullge r0, r0, r9, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r10, r0
+smullge r0, r0, r10, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r11, r0
+smullge r0, r0, r11, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, r12, r0
+smullge r0, r0, r12, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smullge r0, r1, lr, r0
+smullge r0, r0, lr, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r0, r0
+umullge r0, r0, r0, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r1, r0
+umullge r0, r0, r1, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r2, r0
+umullge r0, r0, r2, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r3, r0
+umullge r0, r0, r3, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r4, r0
+umullge r0, r0, r4, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r5, r0
+umullge r0, r0, r5, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r6, r0
+umullge r0, r0, r6, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r7, r0
+umullge r0, r0, r7, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r8, r0
+umullge r0, r0, r8, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r9, r0
+umullge r0, r0, r9, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r10, r0
+umullge r0, r0, r10, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r11, r0
+umullge r0, r0, r11, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, r12, r0
+umullge r0, r0, r12, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umullge r0, r1, lr, r0
+umullge r0, r0, lr, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r0, r0
+smlalge r0, r0, r0, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r1, r0
+smlalge r0, r0, r1, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r2, r0
+smlalge r0, r0, r2, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r3, r0
+smlalge r0, r0, r3, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r4, r0
+smlalge r0, r0, r4, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r5, r0
+smlalge r0, r0, r5, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r6, r0
+smlalge r0, r0, r6, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r7, r0
+smlalge r0, r0, r7, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r8, r0
+smlalge r0, r0, r8, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r9, r0
+smlalge r0, r0, r9, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r10, r0
+smlalge r0, r0, r10, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r11, r0
+smlalge r0, r0, r11, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, r12, r0
+smlalge r0, r0, r12, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-smlalge r0, r1, lr, r0
+smlalge r0, r0, lr, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r0, r0
+umlalge r0, r0, r0, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r1, r0
+umlalge r0, r0, r1, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r2, r0
+umlalge r0, r0, r2, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r3, r0
+umlalge r0, r0, r3, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r4, r0
+umlalge r0, r0, r4, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r5, r0
+umlalge r0, r0, r5, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r6, r0
+umlalge r0, r0, r6, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r7, r0
+umlalge r0, r0, r7, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r8, r0
+umlalge r0, r0, r8, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r9, r0
+umlalge r0, r0, r9, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r10, r0
+umlalge r0, r0, r10, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r11, r0
+umlalge r0, r0, r11, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, r12, r0
+umlalge r0, r0, r12, r0
 @ CHECK: :[[@LINE+2]]:1: warning: deprecated instruction in IT block
 it ge
-umlalge r0, r1, lr, r0
+umlalge r0, r0, lr, r0

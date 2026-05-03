@@ -1,4 +1,4 @@
-# RUN: not --crash llc -mtriple=i686-- -run-pass liveintervals -o - %s 2>&1 | FileCheck %s
+# RUN: not llc -mtriple=i686-- -run-pass liveintervals -o - %s 2>&1 | FileCheck %s
 # REQUIRES: asserts
 
 --- |
@@ -16,7 +16,7 @@ registers:
   - { id: 0, class: gr32 }
 body: |
   bb.0:
-    JCC_1 %bb.2, 15, implicit $eflags
+    JG_1 %bb.2, implicit %eflags
     JMP_1 %bb.3
 
   bb.2:
@@ -24,6 +24,6 @@ body: |
     JMP_1 %bb.3
 
   bb.3:
-    $eax = COPY %0
-    RET64 $eax
+    %eax = COPY %0
+    RETQ %eax
 ...

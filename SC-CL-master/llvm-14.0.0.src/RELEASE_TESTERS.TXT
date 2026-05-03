@@ -13,8 +13,8 @@ O: Ubuntu
 
 N: Sylvestre Ledru
 E: sylvestre@debian.org
-T: All supported archs Debian/Ubuntu
-O: Debian/Ubuntu packages
+T: x86
+O: Debian
 
 N: Nikola Smiljanic
 E: popizdeh@gmail.com
@@ -41,7 +41,12 @@ E: hans@chromium.org
 T: x86
 O: Windows
 
-N: Diana Picus, Yvan Roux
-E: diana.picus@linaro.org, yvan.roux@linaro.org
+N: Diana Picus
+E: diana.picus@linaro.org
 T: ARM, AArch64
+O: Linux
+
+N: Simon Dardis
+E: simon.dardis@mips.com
+T: MIPS
 O: Linux

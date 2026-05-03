@@ -1,16 +1,7 @@
-; Basic correctness test to check that instruction operands are encoded with
+; Basic sanity test to check that instruction operands are encoded with
 ; relative IDs.
 ; RUN: llvm-as < %s | llvm-bcanalyzer -dump | FileCheck %s
 ; RUN: verify-uselistorder < %s
-
-; CHECK: FUNCTION_BLOCK
-; CHECK: INST_UNOP {{.*}}op0=1
-; CHECK: INST_RET {{.*}}op0=1
-define double @test_float_unops(double %a) nounwind {
-  %1 = fneg double %a
-  ret double %1
-}
-
 
 ; CHECK: FUNCTION_BLOCK
 ; CHECK: INST_BINOP {{.*}}op0=1 op1=1

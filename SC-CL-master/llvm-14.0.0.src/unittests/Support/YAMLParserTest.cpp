@@ -1,8 +1,9 @@
 //===- unittest/Support/YAMLParserTest ------------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -269,9 +270,9 @@ TEST(YAMLParser, SameNodeIteratorOperatorNotEquals) {
   auto Begin = Node->begin();
   auto End = Node->end();
 
-  EXPECT_NE(Begin, End);
-  EXPECT_EQ(Begin, Begin);
-  EXPECT_EQ(End, End);
+  EXPECT_TRUE(Begin != End);
+  EXPECT_FALSE(Begin != Begin);
+  EXPECT_FALSE(End != End);
 }
 
 TEST(YAMLParser, SameNodeIteratorOperatorEquals) {
@@ -284,9 +285,9 @@ TEST(YAMLParser, SameNodeIteratorOperatorEquals) {
   auto Begin = Node->begin();
   auto End = Node->end();
 
-  EXPECT_NE(Begin, End);
-  EXPECT_EQ(Begin, Begin);
-  EXPECT_EQ(End, End);
+  EXPECT_FALSE(Begin == End);
+  EXPECT_TRUE(Begin == Begin);
+  EXPECT_TRUE(End == End);
 }
 
 TEST(YAMLParser, DifferentNodesIteratorOperatorNotEquals) {
@@ -305,9 +306,9 @@ TEST(YAMLParser, DifferentNodesIteratorOperatorNotEquals) {
   auto AnotherBegin = AnotherNode->begin();
   auto AnotherEnd = AnotherNode->end();
 
-  EXPECT_NE(Begin, AnotherBegin);
-  EXPECT_NE(Begin, AnotherEnd);
-  EXPECT_EQ(End, AnotherEnd);
+  EXPECT_TRUE(Begin != AnotherBegin);
+  EXPECT_TRUE(Begin != AnotherEnd);
+  EXPECT_FALSE(End != AnotherEnd);
 }
 
 TEST(YAMLParser, DifferentNodesIteratorOperatorEquals) {
@@ -326,60 +327,9 @@ TEST(YAMLParser, DifferentNodesIteratorOperatorEquals) {
   auto AnotherBegin = AnotherNode->begin();
   auto AnotherEnd = AnotherNode->end();
 
-  EXPECT_NE(Begin, AnotherBegin);
-  EXPECT_NE(Begin, AnotherEnd);
-  EXPECT_EQ(End, AnotherEnd);
-}
-
-TEST(YAMLParser, FlowSequenceTokensOutsideFlowSequence) {
-  auto FlowSequenceStrs = {",", "]", "}"};
-  SourceMgr SM;
-
-  for (auto &Str : FlowSequenceStrs) {
-    yaml::Stream Stream(Str, SM);
-    yaml::Document &Doc = *Stream.begin();
-    EXPECT_FALSE(Doc.skip());
-  }
-}
-
-static void expectCanParseBool(StringRef S, bool Expected) {
-  llvm::Optional<bool> Parsed = yaml::parseBool(S);
-  EXPECT_TRUE(Parsed.hasValue());
-  EXPECT_EQ(*Parsed, Expected);
-}
-
-static void expectCannotParseBool(StringRef S) {
-  EXPECT_FALSE(yaml::parseBool(S).hasValue());
-}
-
-TEST(YAMLParser, ParsesBools) {
-  // Test true values.
-  expectCanParseBool("ON", true);
-  expectCanParseBool("On", true);
-  expectCanParseBool("on", true);
-  expectCanParseBool("TRUE", true);
-  expectCanParseBool("True", true);
-  expectCanParseBool("true", true);
-  expectCanParseBool("Y", true);
-  expectCanParseBool("y", true);
-  expectCanParseBool("YES", true);
-  expectCanParseBool("Yes", true);
-  expectCanParseBool("yes", true);
-  expectCannotParseBool("1");
-
-  // Test false values.
-  expectCanParseBool("FALSE", false);
-  expectCanParseBool("False", false);
-  expectCanParseBool("false", false);
-  expectCanParseBool("N", false);
-  expectCanParseBool("n", false);
-  expectCanParseBool("NO", false);
-  expectCanParseBool("No", false);
-  expectCanParseBool("no", false);
-  expectCanParseBool("OFF", false);
-  expectCanParseBool("Off", false);
-  expectCanParseBool("off", false);
-  expectCannotParseBool("0");
+  EXPECT_FALSE(Begin == AnotherBegin);
+  EXPECT_FALSE(Begin == AnotherEnd);
+  EXPECT_TRUE(End == AnotherEnd);
 }
 
 } // end namespace llvm

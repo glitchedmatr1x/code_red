@@ -1,8 +1,9 @@
 //===- unittests/Basic/DiagnosticTest.cpp -- Diagnostic engine tests ------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -46,13 +47,13 @@ TEST(DiagnosticTest, suppressAndTrap) {
   EXPECT_FALSE(Diags.hasUnrecoverableErrorOccurred());
 }
 
-// Check that FatalsAsError works as intended
-TEST(DiagnosticTest, fatalsAsError) {
-  for (unsigned FatalsAsError = 0; FatalsAsError != 2; ++FatalsAsError) {
+// Check that SuppressAfterFatalError works as intended
+TEST(DiagnosticTest, suppressAfterFatalError) {
+  for (unsigned Suppress = 0; Suppress != 2; ++Suppress) {
     DiagnosticsEngine Diags(new DiagnosticIDs(),
                             new DiagnosticOptions,
                             new IgnoringDiagConsumer());
-    Diags.setFatalsAsError(FatalsAsError);
+    Diags.setSuppressAfterFatalError(Suppress);
 
     // Diag that would set UnrecoverableErrorOccurred and ErrorOccurred.
     Diags.Report(diag::err_cannot_open_file) << "file" << "error";
@@ -62,19 +63,20 @@ TEST(DiagnosticTest, fatalsAsError) {
     Diags.Report(diag::warn_mt_message) << "warning";
 
     EXPECT_TRUE(Diags.hasErrorOccurred());
-    EXPECT_EQ(Diags.hasFatalErrorOccurred(), FatalsAsError ? 0u : 1u);
+    EXPECT_TRUE(Diags.hasFatalErrorOccurred());
     EXPECT_TRUE(Diags.hasUncompilableErrorOccurred());
     EXPECT_TRUE(Diags.hasUnrecoverableErrorOccurred());
 
     // The warning should be emitted and counted only if we're not suppressing
     // after fatal errors.
-    EXPECT_EQ(Diags.getNumWarnings(), FatalsAsError);
+    EXPECT_EQ(Diags.getNumWarnings(), Suppress ? 0u : 1u);
   }
 }
+
 TEST(DiagnosticTest, diagnosticError) {
   DiagnosticsEngine Diags(new DiagnosticIDs(), new DiagnosticOptions,
                           new IgnoringDiagConsumer());
-  PartialDiagnostic::DiagStorageAllocator Alloc;
+  PartialDiagnostic::StorageAllocator Alloc;
   llvm::Expected<std::pair<int, int>> Value = DiagnosticError::create(
       SourceLocation(), PartialDiagnostic(diag::err_cannot_open_file, Alloc)
                             << "file"

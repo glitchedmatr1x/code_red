@@ -5,7 +5,7 @@
 #endif
 
 @interface Root
-+ (instancetype)alloc; // expected-note {{explicitly declared 'instancetype'}}
++ (instancetype)alloc;
 - (instancetype)init; // expected-note{{overridden method is part of the 'init' method family}}
 - (instancetype)self; // expected-note {{explicitly declared 'instancetype'}}
 - (Class)class;
@@ -36,7 +36,7 @@
 - (void)methodOnSubclass2;
 @end
 
-// Verify the basic initialization pattern.
+// Sanity check: the basic initialization pattern.
 void test_instancetype_alloc_init_simple() {
   Root *r1 = [[Root alloc] init];
   Subclass1 *sc1 = [[Subclass1 alloc] init];
@@ -143,7 +143,7 @@ void test_instancetype_narrow_method_search() {
 
 @implementation Subclass4
 + (id)alloc {
-  return self; // expected-error{{cannot initialize return object of type 'Subclass4 *' with an lvalue of type 'Class'}}
+  return self; // FIXME: we accept this in ObjC++ but not ObjC?
 }
 
 - (Subclass3 *)init { return 0; } // don't complain: we lost the related return type

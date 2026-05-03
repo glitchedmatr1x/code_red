@@ -1,8 +1,9 @@
 //===-- Scalar.h - Scalar Transformations -----------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,15 +15,26 @@
 #ifndef LLVM_TRANSFORMS_SCALAR_H
 #define LLVM_TRANSFORMS_SCALAR_H
 
-#include "llvm/Transforms/Utils/SimplifyCFGOptions.h"
 #include <functional>
 
 namespace llvm {
 
+class BasicBlockPass;
 class Function;
 class FunctionPass;
 class ModulePass;
 class Pass;
+class GetElementPtrInst;
+class PassInfo;
+class TerminatorInst;
+class TargetLowering;
+class TargetMachine;
+
+//===----------------------------------------------------------------------===//
+//
+// ConstantPropagation - A worklist driven constant propagation pass
+//
+FunctionPass *createConstantPropagationPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -33,22 +45,17 @@ FunctionPass *createAlignmentFromAssumptionsPass();
 
 //===----------------------------------------------------------------------===//
 //
-// AnnotationRemarks - Emit remarks for !annotation metadata.
-//
-FunctionPass *createAnnotationRemarksLegacyPass();
-
-//===----------------------------------------------------------------------===//
-//
 // SCCP - Sparse conditional constant propagation.
 //
 FunctionPass *createSCCPPass();
 
 //===----------------------------------------------------------------------===//
 //
-// RedundantDbgInstElimination - This pass removes redundant dbg intrinsics
-// without modifying the CFG of the function.  It is a FunctionPass.
+// DeadInstElimination - This pass quickly removes trivially dead instructions
+// without modifying the CFG of the function.  It is a BasicBlockPass, so it
+// runs efficiently when queued next to other BasicBlockPass's.
 //
-Pass *createRedundantDbgInstEliminationPass();
+Pass *createDeadInstEliminationPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -73,6 +80,7 @@ FunctionPass *createDeadStoreEliminationPass();
 // values.
 FunctionPass *createCallSiteSplittingPass();
 
+
 //===----------------------------------------------------------------------===//
 //
 // AggressiveDCE - This pass uses the SSA based Aggressive DCE algorithm.  This
@@ -81,6 +89,7 @@ FunctionPass *createCallSiteSplittingPass();
 //
 FunctionPass *createAggressiveDCEPass();
 
+
 //===----------------------------------------------------------------------===//
 //
 // GuardWidening - An optimization over the @llvm.experimental.guard intrinsic
@@ -88,16 +97,6 @@ FunctionPass *createAggressiveDCEPass();
 // at runtime.
 //
 FunctionPass *createGuardWideningPass();
-
-
-//===----------------------------------------------------------------------===//
-//
-// LoopGuardWidening - Analogous to the GuardWidening pass, but restricted to a
-// single loop at a time for use within a LoopPassManager.  Desired effect is
-// to widen guards into preheader or a single guard within loop if that's not
-// possible.
-//
-Pass *createLoopGuardWideningPass();
 
 
 //===----------------------------------------------------------------------===//
@@ -129,12 +128,23 @@ Pass *createIndVarSimplifyPass();
 
 //===----------------------------------------------------------------------===//
 //
+// InstructionCombining - Combine instructions to form fewer, simple
+// instructions. This pass does not modify the CFG, and has a tendency to make
+// instructions dead, so a subsequent DCE pass is useful.
+//
+// This pass combines things like:
+//    %Y = add int 1, %X
+//    %Z = add int 1, %Y
+// into:
+//    %Z = add int 2, %X
+//
+FunctionPass *createInstructionCombiningPass(bool ExpensiveCombines = true);
+
+//===----------------------------------------------------------------------===//
+//
 // LICM - This pass is a loop invariant code motion and memory promotion pass.
 //
 Pass *createLICMPass();
-Pass *createLICMPass(unsigned LicmMssaOptCap,
-                     unsigned LicmMssaNoAccForPromotionCap,
-                     bool AllowSpeculation);
 
 //===----------------------------------------------------------------------===//
 //
@@ -155,12 +165,6 @@ Pass *createLoopPredicationPass();
 // cache-friendly memory access patterns.
 //
 Pass *createLoopInterchangePass();
-
-//===----------------------------------------------------------------------===//
-//
-// LoopFlatten - This pass flattens nested loops into a single loop.
-//
-FunctionPass *createLoopFlattenPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -186,21 +190,11 @@ Pass *createLoopInstSimplifyPass();
 //
 // LoopUnroll - This pass is a simple loop unrolling pass.
 //
-Pass *createLoopUnrollPass(int OptLevel = 2, bool OnlyWhenForced = false,
-                           bool ForgetAllSCEV = false, int Threshold = -1,
-                           int Count = -1, int AllowPartial = -1,
-                           int Runtime = -1, int UpperBound = -1,
-                           int AllowPeeling = -1);
-// Create an unrolling pass for full unrolling that uses exact trip count only
-// and also does peeling.
-Pass *createSimpleLoopUnrollPass(int OptLevel = 2, bool OnlyWhenForced = false,
-                                 bool ForgetAllSCEV = false);
-
-//===----------------------------------------------------------------------===//
-//
-// LoopUnrollAndJam - This pass is a simple loop unroll and jam pass.
-//
-Pass *createLoopUnrollAndJamPass(int OptLevel = 2);
+Pass *createLoopUnrollPass(int OptLevel = 2, int Threshold = -1, int Count = -1,
+                           int AllowPartial = -1, int Runtime = -1,
+                           int UpperBound = -1, int AllowPeeling = -1);
+// Create an unrolling pass for full unrolling that uses exact trip count only.
+Pass *createSimpleLoopUnrollPass(int OptLevel = 2);
 
 //===----------------------------------------------------------------------===//
 //
@@ -212,7 +206,7 @@ Pass *createLoopRerollPass();
 //
 // LoopRotate - This pass is a simple loop rotating pass.
 //
-Pass *createLoopRotatePass(int MaxHeaderSize = -1, bool PrepareForLTO = false);
+Pass *createLoopRotatePass(int MaxHeaderSize = -1);
 
 //===----------------------------------------------------------------------===//
 //
@@ -225,6 +219,20 @@ Pass *createLoopIdiomPass();
 // LoopVersioningLICM - This pass is a loop versioning pass for LICM.
 //
 Pass *createLoopVersioningLICMPass();
+
+//===----------------------------------------------------------------------===//
+//
+// PromoteMemoryToRegister - This pass is used to promote memory references to
+// be register references. A simple example of the transformation performed by
+// this pass is:
+//
+//        FROM CODE                           TO CODE
+//   %X = alloca i32, i32 1                 ret i32 42
+//   store i32 42, i32 *%X
+//   %Y = load i32* %X
+//   ret i32 %Y
+//
+FunctionPass *createPromoteMemoryToRegisterPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -247,20 +255,10 @@ FunctionPass *createReassociatePass();
 //===----------------------------------------------------------------------===//
 //
 // JumpThreading - Thread control through mult-pred/multi-succ blocks where some
-// preds always go to some succ. If FreezeSelectCond is true, unfold the
-// condition of a select that unfolds to branch. Thresholds other than minus one
-// override the internal BB duplication default threshold.
+// preds always go to some succ. Thresholds other than minus one override the
+// internal BB duplication default threshold.
 //
-FunctionPass *createJumpThreadingPass(bool FreezeSelectCond = false,
-                                      int Threshold = -1);
-
-//===----------------------------------------------------------------------===//
-//
-// DFAJumpThreading - When a switch statement inside a loop is used to
-// implement a deterministic finite automata we can jump thread the switch
-// statement reducing number of conditional jumps.
-//
-FunctionPass *createDFAJumpThreadingPass();
+FunctionPass *createJumpThreadingPass(int Threshold = -1);
 
 //===----------------------------------------------------------------------===//
 //
@@ -268,7 +266,8 @@ FunctionPass *createDFAJumpThreadingPass();
 // simplify terminator instructions, convert switches to lookup tables, etc.
 //
 FunctionPass *createCFGSimplificationPass(
-    SimplifyCFGOptions Options = SimplifyCFGOptions(),
+    unsigned Threshold = 1, bool ForwardSwitchCond = false,
+    bool ConvertSwitch = false, bool KeepLoops = true, bool SinkCommon = false,
     std::function<bool(const Function &)> Ftor = nullptr);
 
 //===----------------------------------------------------------------------===//
@@ -289,10 +288,59 @@ Pass *createStructurizeCFGPass(bool SkipUniformRegions = false);
 
 //===----------------------------------------------------------------------===//
 //
+// BreakCriticalEdges - Break all of the critical edges in the CFG by inserting
+// a dummy basic block. This pass may be "required" by passes that cannot deal
+// with critical edges. For this usage, a pass must call:
+//
+//   AU.addRequiredID(BreakCriticalEdgesID);
+//
+// This pass obviously invalidates the CFG, but can update forward dominator
+// (set, immediate dominators, tree, and frontier) information.
+//
+FunctionPass *createBreakCriticalEdgesPass();
+extern char &BreakCriticalEdgesID;
+
+//===----------------------------------------------------------------------===//
+//
+// LoopSimplify - Insert Pre-header blocks into the CFG for every function in
+// the module.  This pass updates dominator information, loop information, and
+// does not add critical edges to the CFG.
+//
+//   AU.addRequiredID(LoopSimplifyID);
+//
+Pass *createLoopSimplifyPass();
+extern char &LoopSimplifyID;
+
+//===----------------------------------------------------------------------===//
+//
 // TailCallElimination - This pass eliminates call instructions to the current
 // function which occur immediately before return instructions.
 //
 FunctionPass *createTailCallEliminationPass();
+
+//===----------------------------------------------------------------------===//
+//
+// LowerSwitch - This pass converts SwitchInst instructions into a sequence of
+// chained binary branch instructions.
+//
+FunctionPass *createLowerSwitchPass();
+extern char &LowerSwitchID;
+
+//===----------------------------------------------------------------------===//
+//
+// LowerInvoke - This pass removes invoke instructions, converting them to call
+// instructions.
+//
+FunctionPass *createLowerInvokePass();
+extern char &LowerInvokePassID;
+
+//===----------------------------------------------------------------------===//
+//
+// LCSSA - This pass inserts phi nodes at loop boundaries to simplify other loop
+// optimizations.
+//
+Pass *createLCSSAPass();
+extern char &LCSSAID;
 
 //===----------------------------------------------------------------------===//
 //
@@ -320,7 +368,7 @@ FunctionPass *createGVNSinkPass();
 // MergedLoadStoreMotion - This pass merges loads and stores in diamonds. Loads
 // are hoisted into the header, while stores sink into the footer.
 //
-FunctionPass *createMergedLoadStoreMotionPass(bool SplitFooterBB = false);
+FunctionPass *createMergedLoadStoreMotionPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -357,10 +405,10 @@ FunctionPass *createConstantHoistingPass();
 
 //===----------------------------------------------------------------------===//
 //
-// ConstraintElimination - This pass eliminates conditions based on found
-//                         constraints.
+// InstructionNamer - Give any unnamed non-void instructions "tmp" names.
 //
-FunctionPass *createConstraintEliminationPass();
+FunctionPass *createInstructionNamerPass();
+extern char &InstructionNamerID;
 
 //===----------------------------------------------------------------------===//
 //
@@ -382,28 +430,9 @@ Pass *createLowerGuardIntrinsicPass();
 
 //===----------------------------------------------------------------------===//
 //
-// LowerMatrixIntrinsics - Lower matrix intrinsics to vector operations.
-//
-Pass *createLowerMatrixIntrinsicsPass();
-
-//===----------------------------------------------------------------------===//
-//
-// LowerMatrixIntrinsicsMinimal - Lower matrix intrinsics to vector operations
-//                               (lightweight, does not require extra analysis)
-//
-Pass *createLowerMatrixIntrinsicsMinimalPass();
-
-//===----------------------------------------------------------------------===//
-//
-// LowerWidenableCondition - Lower widenable condition to i1 true.
-//
-Pass *createLowerWidenableConditionPass();
-
-//===----------------------------------------------------------------------===//
-//
 // MergeICmps - Merge integer comparison chains into a memcmp
 //
-Pass *createMergeICmpsLegacyPass();
+Pass *createMergeICmpsPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -415,24 +444,23 @@ Pass *createCorrelatedValuePropagationPass();
 //
 // InferAddressSpaces - Modify users of addrspacecast instructions with values
 // in the source address space if using the destination address space is slower
-// on the target. If AddressSpace is left to its default value, it will be
-// obtained from the TargetTransformInfo.
+// on the target.
 //
-FunctionPass *createInferAddressSpacesPass(unsigned AddressSpace = ~0u);
+FunctionPass *createInferAddressSpacesPass();
 extern char &InferAddressSpacesID;
+
+//===----------------------------------------------------------------------===//
+//
+// InstructionSimplifier - Remove redundant instructions.
+//
+FunctionPass *createInstructionSimplifierPass();
+extern char &InstructionSimplifierID;
 
 //===----------------------------------------------------------------------===//
 //
 // LowerExpectIntrinsics - Removes llvm.expect intrinsics and creates
 // "block_weights" metadata.
 FunctionPass *createLowerExpectIntrinsicPass();
-
-//===----------------------------------------------------------------------===//
-//
-// LowerConstantIntrinsicss - Expand any remaining llvm.objectsize and
-// llvm.is.constant intrinsic calls, even for the unknown cases.
-//
-FunctionPass *createLowerConstantIntrinsicsPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -443,9 +471,22 @@ FunctionPass *createPartiallyInlineLibCallsPass();
 
 //===----------------------------------------------------------------------===//
 //
+// ScalarizerPass - Converts vector operations into scalar operations
+//
+FunctionPass *createScalarizerPass();
+
+//===----------------------------------------------------------------------===//
+//
+// AddDiscriminators - Add DWARF path discriminators to the IR.
+FunctionPass *createAddDiscriminatorsPass();
+
+//===----------------------------------------------------------------------===//
+//
 // SeparateConstOffsetFromGEP - Split GEPs for better CSE
 //
-FunctionPass *createSeparateConstOffsetFromGEPPass(bool LowerGEP = false);
+FunctionPass *
+createSeparateConstOffsetFromGEPPass(const TargetMachine *TM = nullptr,
+                                     bool LowerGEP = false);
 
 //===----------------------------------------------------------------------===//
 //
@@ -484,6 +525,13 @@ ModulePass *createRewriteStatepointsForGCLegacyPass();
 
 //===----------------------------------------------------------------------===//
 //
+// StripGCRelocates - Remove GC relocates that have been inserted by
+// RewriteStatepointsForGC. The resulting IR is incorrect, but this is useful
+// for manual inspection.
+FunctionPass *createStripGCRelocatesPass();
+
+//===----------------------------------------------------------------------===//
+//
 // Float2Int - Demote floats to ints where possible.
 //
 FunctionPass *createFloat2IntPass();
@@ -502,15 +550,16 @@ FunctionPass *createLoopDistributePass();
 
 //===----------------------------------------------------------------------===//
 //
-// LoopFuse - Fuse loops.
-//
-FunctionPass *createLoopFusePass();
-
-//===----------------------------------------------------------------------===//
-//
 // LoopLoadElimination - Perform loop-aware load elimination.
 //
 FunctionPass *createLoopLoadEliminationPass();
+
+//===----------------------------------------------------------------------===//
+//
+// LoopSimplifyCFG - This pass performs basic CFG simplification on loops,
+// primarily to help other loop passes.
+//
+Pass *createLoopSimplifyCFGPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -526,7 +575,6 @@ FunctionPass *createLoopDataPrefetchPass();
 
 ///===---------------------------------------------------------------------===//
 ModulePass *createNameAnonGlobalPass();
-ModulePass *createCanonicalizeAliasesPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -537,32 +585,13 @@ FunctionPass *createLibCallsShrinkWrapPass();
 
 //===----------------------------------------------------------------------===//
 //
-// LoopSimplifyCFG - This pass performs basic CFG simplification on loops,
-// primarily to help other loop passes.
+// EntryExitInstrumenter pass - Instrument function entry/exit with calls to
+// mcount(), @__cyg_profile_func_{enter,exit} and the like. There are two
+// variants, intended to run pre- and post-inlining, respectively.
 //
-Pass *createLoopSimplifyCFGPass();
+FunctionPass *createEntryExitInstrumenterPass();
+FunctionPass *createPostInlineEntryExitInstrumenterPass();
 
-//===----------------------------------------------------------------------===//
-//
-// WarnMissedTransformations - This pass emits warnings for leftover forced
-// transformations.
-//
-Pass *createWarnMissedTransformationsPass();
-
-//===----------------------------------------------------------------------===//
-//
-// This pass does instruction simplification on each
-// instruction in a function.
-//
-FunctionPass *createInstSimplifyLegacyPass();
-
-
-//===----------------------------------------------------------------------===//
-//
-// createScalarizeMaskedMemIntrinPass - Replace masked load, store, gather
-// and scatter intrinsics with scalar code when target doesn't support them.
-//
-FunctionPass *createScalarizeMaskedMemIntrinLegacyPass();
 } // End llvm namespace
 
 #endif

@@ -1,8 +1,6 @@
 llvm-as - LLVM assembler
 ========================
 
-.. program:: llvm-as
-
 SYNOPSIS
 --------
 
@@ -55,4 +53,4 @@ will exit with a non-zero value.
 SEE ALSO
 --------
 
-:manpage:`llvm-dis(1)`, as(1)
+llvm-dis|llvm-dis, gccas|gccas

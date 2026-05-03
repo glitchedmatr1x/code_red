@@ -1,8 +1,9 @@
 //===- MCSymbolMachO.h -  ---------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 #ifndef LLVM_MC_MCSYMBOLMACHO_H
@@ -13,7 +14,7 @@
 
 namespace llvm {
 class MCSymbolMachO : public MCSymbol {
-  /// We store the value for the 'desc' symbol field in the
+  /// \brief We store the value for the 'desc' symbol field in the
   /// lowest 16 bits of the implementation defined flags.
   enum MachOSymbolFlags : uint16_t { // See <mach-o/nlist.h>.
     SF_DescFlagsMask                        = 0xFFFF,
@@ -34,7 +35,6 @@ class MCSymbolMachO : public MCSymbol {
     SF_WeakDefinition                       = 0x0080,
     SF_SymbolResolver                       = 0x0100,
     SF_AltEntry                             = 0x0200,
-    SF_Cold                                 = 0x0400,
 
     // Common alignment
     SF_CommonAlignmentMask                  = 0xF0FF,
@@ -98,17 +98,13 @@ public:
     return getFlags() & SF_AltEntry;
   }
 
-  void setCold() const { modifyFlags(SF_Cold, SF_Cold); }
-
-  bool isCold() const { return getFlags() & SF_Cold; }
-
   void setDesc(unsigned Value) const {
     assert(Value == (Value & SF_DescFlagsMask) &&
            "Invalid .desc value!");
     setFlags(Value & SF_DescFlagsMask);
   }
 
-  /// Get the encoded value of the flags as they will be emitted in to
+  /// \brief Get the encoded value of the flags as they will be emitted in to
   /// the MachO binary
   uint16_t getEncodedFlags(bool EncodeAsAltEntry) const {
     uint16_t Flags = getFlags();

@@ -1,8 +1,9 @@
 //===--- MoveForwardingReferenceCheck.cpp - clang-tidy --------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -28,12 +29,12 @@ static void replaceMoveWithForward(const UnresolvedLookupExpr *Callee,
 
   CharSourceRange CallRange =
       Lexer::makeFileCharRange(CharSourceRange::getTokenRange(
-                                   Callee->getBeginLoc(), Callee->getEndLoc()),
+                                   Callee->getLocStart(), Callee->getLocEnd()),
                                SM, LangOpts);
 
   if (CallRange.isValid()) {
     const std::string TypeName =
-        (TypeParmDecl->getIdentifier() && !TypeParmDecl->isImplicit())
+        TypeParmDecl->getIdentifier()
             ? TypeParmDecl->getName().str()
             : (llvm::Twine("decltype(") + ParmVar->getName() + ")").str();
 
@@ -67,6 +68,9 @@ static void replaceMoveWithForward(const UnresolvedLookupExpr *Callee,
 }
 
 void MoveForwardingReferenceCheck::registerMatchers(MatchFinder *Finder) {
+  if (!getLangOpts().CPlusPlus11)
+    return;
+
   // Matches a ParmVarDecl for a forwarding reference, i.e. a non-const rvalue
   // reference of a function template parameter type.
   auto ForwardingReferenceParmMatcher =

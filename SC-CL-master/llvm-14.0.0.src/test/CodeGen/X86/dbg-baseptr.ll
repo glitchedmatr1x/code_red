@@ -14,7 +14,7 @@ target triple = "x86_64--"
 ; CHECK-NOT: pushq
 ; CHECK: movl $42, %eax
 ; CHECK: retq
-define i32 @f0(%struct.s* byval(%struct.s) align 8 %input) !dbg !8 {
+define i32 @f0(%struct.s* byval align 8 %input) !dbg !8 {
   call void @llvm.dbg.declare(metadata %struct.s* %input, metadata !4, metadata !17), !dbg !18
   ret i32 42, !dbg !18
 }
@@ -36,7 +36,7 @@ define i32 @f0(%struct.s* byval(%struct.s) align 8 %input) !dbg !8 {
 ; CHECK: movl $42, %eax
 ; CHECK: popq %rbp
 ; CHECK: retq
-define i32 @f1(%struct.s* byval(%struct.s) align 8 %input) !dbg !19 {
+define i32 @f1(%struct.s* byval align 8 %input) !dbg !19 {
   %val = load i64, i64* @glob
   ; this alloca should force FP usage.
   %stackspace = alloca i32, i64 %val, align 1
@@ -61,7 +61,7 @@ define i32 @f1(%struct.s* byval(%struct.s) align 8 %input) !dbg !19 {
 ; CHECK: andq $-64, %rsp
 ; CHECK: subq $64, %rsp
 ; CHECK: movq %rsp, %rbx
-define i32 @f2(%struct.s* byval(%struct.s) align 8 %input) !dbg !22 {
+define i32 @f2(%struct.s* byval align 8 %input) !dbg !22 {
   %val = load i64, i64* @glob
   %stackspace = alloca i32, i64 %val, align 64
   store i32* %stackspace, i32** @ptr
@@ -92,7 +92,7 @@ declare void @llvm.dbg.declare(metadata, metadata, metadata)
 !6 = !DISubroutineType(types: !7)
 !7 = !{!10, !9}
 
-!8 = distinct !DISubprogram(name: "f0", file: !3, line: 5, type: !6, isLocal: false, isDefinition: true, unit: !2, retainedNodes: !5)
+!8 = distinct !DISubprogram(name: "f0", file: !3, line: 5, type: !6, isLocal: false, isDefinition: true, unit: !2, variables: !5)
 
 !9 = distinct !DICompositeType(tag: DW_TAG_structure_type, name: "s", elements: !11)
 !10 = !DIBasicType(name: "unsigned int", size: 32, encoding: DW_ATE_unsigned)
@@ -106,9 +106,9 @@ declare void @llvm.dbg.declare(metadata, metadata, metadata)
 !17 = !DIExpression()
 !18 = !DILocation(line: 5, scope: !8)
 
-!19 = distinct !DISubprogram(name: "f1", file: !3, line: 5, type: !6, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, unit: !2, retainedNodes: !5)
+!19 = distinct !DISubprogram(name: "f1", file: !3, line: 5, type: !6, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, unit: !2, variables: !5)
 !20 = !DILocalVariable(name: "input", arg: 1, scope: !19, file: !3, line: 5, type: !9)
 !21 = !DILocation(line: 5, scope: !19)
-!22 = distinct !DISubprogram(name: "f2", file: !3, line: 5, type: !6, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, unit: !2, retainedNodes: !5)
+!22 = distinct !DISubprogram(name: "f2", file: !3, line: 5, type: !6, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, unit: !2, variables: !5)
 !23 = !DILocalVariable(name: "input", arg: 1, scope: !22, file: !3, line: 5, type: !9)
 !24 = !DILocation(line: 5, scope: !22)

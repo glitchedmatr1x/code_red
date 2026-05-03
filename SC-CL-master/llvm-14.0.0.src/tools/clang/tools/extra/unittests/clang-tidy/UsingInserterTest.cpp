@@ -1,8 +1,9 @@
 //===---- UsingInserterTest.cpp - clang-tidy ----------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -38,9 +39,9 @@ public:
         Inserter->createUsingDeclaration(*Result.Context, *Call, "::foo::func");
 
     if (Hint.hasValue())
-      diag(Call->getBeginLoc(), "Fix for testing") << Hint.getValue();
+      diag(Call->getLocStart(), "Fix for testing") << Hint.getValue();
 
-    diag(Call->getBeginLoc(), "insert call")
+    diag(Call->getLocStart(), "insert call")
         << clang::FixItHint::CreateReplacement(
                Call->getCallee()->getSourceRange(),
                Inserter->getShortName(*Result.Context, *Call, "::foo::func"));

@@ -1,8 +1,9 @@
 //===- llvm/Support/ScaledNumber.h - Support for scaled numbers -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -32,16 +33,16 @@
 namespace llvm {
 namespace ScaledNumbers {
 
-/// Maximum scale; same as APFloat for easy debug printing.
+/// \brief Maximum scale; same as APFloat for easy debug printing.
 const int32_t MaxScale = 16383;
 
-/// Maximum scale; same as APFloat for easy debug printing.
+/// \brief Maximum scale; same as APFloat for easy debug printing.
 const int32_t MinScale = -16382;
 
-/// Get the width of a number.
+/// \brief Get the width of a number.
 template <class DigitsT> inline int getWidth() { return sizeof(DigitsT) * 8; }
 
-/// Conditionally round up a scaled number.
+/// \brief Conditionally round up a scaled number.
 ///
 /// Given \c Digits and \c Scale, round up iff \c ShouldRound is \c true.
 /// Always returns \c Scale unless there's an overflow, in which case it
@@ -60,19 +61,19 @@ inline std::pair<DigitsT, int16_t> getRounded(DigitsT Digits, int16_t Scale,
   return std::make_pair(Digits, Scale);
 }
 
-/// Convenience helper for 32-bit rounding.
+/// \brief Convenience helper for 32-bit rounding.
 inline std::pair<uint32_t, int16_t> getRounded32(uint32_t Digits, int16_t Scale,
                                                  bool ShouldRound) {
   return getRounded(Digits, Scale, ShouldRound);
 }
 
-/// Convenience helper for 64-bit rounding.
+/// \brief Convenience helper for 64-bit rounding.
 inline std::pair<uint64_t, int16_t> getRounded64(uint64_t Digits, int16_t Scale,
                                                  bool ShouldRound) {
   return getRounded(Digits, Scale, ShouldRound);
 }
 
-/// Adjust a 64-bit scaled number down to the appropriate width.
+/// \brief Adjust a 64-bit scaled number down to the appropriate width.
 ///
 /// \pre Adding 64 to \c Scale will not overflow INT16_MAX.
 template <class DigitsT>
@@ -90,24 +91,24 @@ inline std::pair<DigitsT, int16_t> getAdjusted(uint64_t Digits,
                              Digits & (UINT64_C(1) << (Shift - 1)));
 }
 
-/// Convenience helper for adjusting to 32 bits.
+/// \brief Convenience helper for adjusting to 32 bits.
 inline std::pair<uint32_t, int16_t> getAdjusted32(uint64_t Digits,
                                                   int16_t Scale = 0) {
   return getAdjusted<uint32_t>(Digits, Scale);
 }
 
-/// Convenience helper for adjusting to 64 bits.
+/// \brief Convenience helper for adjusting to 64 bits.
 inline std::pair<uint64_t, int16_t> getAdjusted64(uint64_t Digits,
                                                   int16_t Scale = 0) {
   return getAdjusted<uint64_t>(Digits, Scale);
 }
 
-/// Multiply two 64-bit integers to create a 64-bit scaled number.
+/// \brief Multiply two 64-bit integers to create a 64-bit scaled number.
 ///
 /// Implemented with four 64-bit integer multiplies.
 std::pair<uint64_t, int16_t> multiply64(uint64_t LHS, uint64_t RHS);
 
-/// Multiply two 32-bit integers to create a 32-bit scaled number.
+/// \brief Multiply two 32-bit integers to create a 32-bit scaled number.
 ///
 /// Implemented with one 64-bit integer multiply.
 template <class DigitsT>
@@ -120,31 +121,31 @@ inline std::pair<DigitsT, int16_t> getProduct(DigitsT LHS, DigitsT RHS) {
   return multiply64(LHS, RHS);
 }
 
-/// Convenience helper for 32-bit product.
+/// \brief Convenience helper for 32-bit product.
 inline std::pair<uint32_t, int16_t> getProduct32(uint32_t LHS, uint32_t RHS) {
   return getProduct(LHS, RHS);
 }
 
-/// Convenience helper for 64-bit product.
+/// \brief Convenience helper for 64-bit product.
 inline std::pair<uint64_t, int16_t> getProduct64(uint64_t LHS, uint64_t RHS) {
   return getProduct(LHS, RHS);
 }
 
-/// Divide two 64-bit integers to create a 64-bit scaled number.
+/// \brief Divide two 64-bit integers to create a 64-bit scaled number.
 ///
 /// Implemented with long division.
 ///
 /// \pre \c Dividend and \c Divisor are non-zero.
 std::pair<uint64_t, int16_t> divide64(uint64_t Dividend, uint64_t Divisor);
 
-/// Divide two 32-bit integers to create a 32-bit scaled number.
+/// \brief Divide two 32-bit integers to create a 32-bit scaled number.
 ///
 /// Implemented with one 64-bit integer divide/remainder pair.
 ///
 /// \pre \c Dividend and \c Divisor are non-zero.
 std::pair<uint32_t, int16_t> divide32(uint32_t Dividend, uint32_t Divisor);
 
-/// Divide two 32-bit numbers to create a 32-bit scaled number.
+/// \brief Divide two 32-bit numbers to create a 32-bit scaled number.
 ///
 /// Implemented with one 64-bit integer divide/remainder pair.
 ///
@@ -166,19 +167,19 @@ std::pair<DigitsT, int16_t> getQuotient(DigitsT Dividend, DigitsT Divisor) {
   return divide32(Dividend, Divisor);
 }
 
-/// Convenience helper for 32-bit quotient.
+/// \brief Convenience helper for 32-bit quotient.
 inline std::pair<uint32_t, int16_t> getQuotient32(uint32_t Dividend,
                                                   uint32_t Divisor) {
   return getQuotient(Dividend, Divisor);
 }
 
-/// Convenience helper for 64-bit quotient.
+/// \brief Convenience helper for 64-bit quotient.
 inline std::pair<uint64_t, int16_t> getQuotient64(uint64_t Dividend,
                                                   uint64_t Divisor) {
   return getQuotient(Dividend, Divisor);
 }
 
-/// Implementation of getLg() and friends.
+/// \brief Implementation of getLg() and friends.
 ///
 /// Returns the rounded lg of \c Digits*2^Scale and an int specifying whether
 /// this was rounded up (1), down (-1), or exact (0).
@@ -205,7 +206,7 @@ inline std::pair<int32_t, int> getLgImpl(DigitsT Digits, int16_t Scale) {
   return std::make_pair(Floor + Round, Round ? 1 : -1);
 }
 
-/// Get the lg (rounded) of a scaled number.
+/// \brief Get the lg (rounded) of a scaled number.
 ///
 /// Get the lg of \c Digits*2^Scale.
 ///
@@ -214,7 +215,7 @@ template <class DigitsT> int32_t getLg(DigitsT Digits, int16_t Scale) {
   return getLgImpl(Digits, Scale).first;
 }
 
-/// Get the lg floor of a scaled number.
+/// \brief Get the lg floor of a scaled number.
 ///
 /// Get the floor of the lg of \c Digits*2^Scale.
 ///
@@ -224,7 +225,7 @@ template <class DigitsT> int32_t getLgFloor(DigitsT Digits, int16_t Scale) {
   return Lg.first - (Lg.second > 0);
 }
 
-/// Get the lg ceiling of a scaled number.
+/// \brief Get the lg ceiling of a scaled number.
 ///
 /// Get the ceiling of the lg of \c Digits*2^Scale.
 ///
@@ -234,7 +235,7 @@ template <class DigitsT> int32_t getLgCeiling(DigitsT Digits, int16_t Scale) {
   return Lg.first + (Lg.second < 0);
 }
 
-/// Implementation for comparing scaled numbers.
+/// \brief Implementation for comparing scaled numbers.
 ///
 /// Compare two 64-bit numbers with different scales.  Given that the scale of
 /// \c L is higher than that of \c R by \c ScaleDiff, compare them.  Return -1,
@@ -243,7 +244,7 @@ template <class DigitsT> int32_t getLgCeiling(DigitsT Digits, int16_t Scale) {
 /// \pre 0 <= ScaleDiff < 64.
 int compareImpl(uint64_t L, uint64_t R, int ScaleDiff);
 
-/// Compare two scaled numbers.
+/// \brief Compare two scaled numbers.
 ///
 /// Compare two scaled numbers.  Returns 0 for equal, -1 for less than, and 1
 /// for greater than.
@@ -270,7 +271,7 @@ int compare(DigitsT LDigits, int16_t LScale, DigitsT RDigits, int16_t RScale) {
   return -compareImpl(RDigits, LDigits, LScale - RScale);
 }
 
-/// Match scales of two numbers.
+/// \brief Match scales of two numbers.
 ///
 /// Given two scaled numbers, match up their scales.  Change the digits and
 /// scales in place.  Shift the digits as necessary to form equivalent numbers,
@@ -323,7 +324,7 @@ int16_t matchScales(DigitsT &LDigits, int16_t &LScale, DigitsT &RDigits,
   return LScale;
 }
 
-/// Get the sum of two scaled numbers.
+/// \brief Get the sum of two scaled numbers.
 ///
 /// Get the sum of two scaled numbers with as much precision as possible.
 ///
@@ -351,19 +352,19 @@ std::pair<DigitsT, int16_t> getSum(DigitsT LDigits, int16_t LScale,
   return std::make_pair(HighBit | Sum >> 1, Scale + 1);
 }
 
-/// Convenience helper for 32-bit sum.
+/// \brief Convenience helper for 32-bit sum.
 inline std::pair<uint32_t, int16_t> getSum32(uint32_t LDigits, int16_t LScale,
                                              uint32_t RDigits, int16_t RScale) {
   return getSum(LDigits, LScale, RDigits, RScale);
 }
 
-/// Convenience helper for 64-bit sum.
+/// \brief Convenience helper for 64-bit sum.
 inline std::pair<uint64_t, int16_t> getSum64(uint64_t LDigits, int16_t LScale,
                                              uint64_t RDigits, int16_t RScale) {
   return getSum(LDigits, LScale, RDigits, RScale);
 }
 
-/// Get the difference of two scaled numbers.
+/// \brief Get the difference of two scaled numbers.
 ///
 /// Get LHS minus RHS with as much precision as possible.
 ///
@@ -394,7 +395,7 @@ std::pair<DigitsT, int16_t> getDifference(DigitsT LDigits, int16_t LScale,
   return std::make_pair(LDigits, LScale);
 }
 
-/// Convenience helper for 32-bit difference.
+/// \brief Convenience helper for 32-bit difference.
 inline std::pair<uint32_t, int16_t> getDifference32(uint32_t LDigits,
                                                     int16_t LScale,
                                                     uint32_t RDigits,
@@ -402,7 +403,7 @@ inline std::pair<uint32_t, int16_t> getDifference32(uint32_t LDigits,
   return getDifference(LDigits, LScale, RDigits, RScale);
 }
 
-/// Convenience helper for 64-bit difference.
+/// \brief Convenience helper for 64-bit difference.
 inline std::pair<uint64_t, int16_t> getDifference64(uint64_t LDigits,
                                                     int16_t LScale,
                                                     uint64_t RDigits,
@@ -418,7 +419,7 @@ namespace llvm {
 class raw_ostream;
 class ScaledNumberBase {
 public:
-  static constexpr int DefaultPrecision = 10;
+  static const int DefaultPrecision = 10;
 
   static void dump(uint64_t D, int16_t E, int Width);
   static raw_ostream &print(raw_ostream &OS, uint64_t D, int16_t E, int Width,
@@ -442,7 +443,7 @@ public:
   }
 };
 
-/// Simple representation of a scaled number.
+/// \brief Simple representation of a scaled number.
 ///
 /// ScaledNumber is a number represented by digits and a scale.  It uses simple
 /// saturation arithmetic and every operation is well-defined for every value.
@@ -499,7 +500,7 @@ public:
 private:
   typedef std::numeric_limits<DigitsType> DigitsLimits;
 
-  static constexpr int Width = sizeof(DigitsType) * 8;
+  static const int Width = sizeof(DigitsType) * 8;
   static_assert(Width <= 64, "invalid integer width for digits");
 
 private:
@@ -533,7 +534,7 @@ public:
   int16_t getScale() const { return Scale; }
   DigitsType getDigits() const { return Digits; }
 
-  /// Convert to the given integer type.
+  /// \brief Convert to the given integer type.
   ///
   /// Convert to \c IntT using simple saturating arithmetic, truncating if
   /// necessary.
@@ -547,17 +548,17 @@ public:
     return Digits == DigitsType(1) << -Scale;
   }
 
-  /// The log base 2, rounded.
+  /// \brief The log base 2, rounded.
   ///
   /// Get the lg of the scalar.  lg 0 is defined to be INT32_MIN.
   int32_t lg() const { return ScaledNumbers::getLg(Digits, Scale); }
 
-  /// The log base 2, rounded towards INT32_MIN.
+  /// \brief The log base 2, rounded towards INT32_MIN.
   ///
   /// Get the lg floor.  lg 0 is defined to be INT32_MIN.
   int32_t lgFloor() const { return ScaledNumbers::getLgFloor(Digits, Scale); }
 
-  /// The log base 2, rounded towards INT32_MAX.
+  /// \brief The log base 2, rounded towards INT32_MAX.
   ///
   /// Get the lg ceiling.  lg 0 is defined to be INT32_MIN.
   int32_t lgCeiling() const {
@@ -573,7 +574,7 @@ public:
 
   bool operator!() const { return isZero(); }
 
-  /// Convert to a decimal representation in a string.
+  /// \brief Convert to a decimal representation in a string.
   ///
   /// Convert to a string.  Uses scientific notation for very large/small
   /// numbers.  Scientific notation is used roughly for numbers outside of the
@@ -596,7 +597,7 @@ public:
     return ScaledNumberBase::toString(Digits, Scale, Width, Precision);
   }
 
-  /// Print a decimal representation.
+  /// \brief Print a decimal representation.
   ///
   /// Print a string.  See toString for documentation.
   raw_ostream &print(raw_ostream &OS,
@@ -633,7 +634,7 @@ private:
   void shiftLeft(int32_t Shift);
   void shiftRight(int32_t Shift);
 
-  /// Adjust two floats to have matching exponents.
+  /// \brief Adjust two floats to have matching exponents.
   ///
   /// Adjust \c this and \c X to have matching exponents.  Returns the new \c X
   /// by value.  Does nothing if \a isZero() for either.
@@ -646,7 +647,7 @@ private:
   }
 
 public:
-  /// Scale a large number accurately.
+  /// \brief Scale a large number accurately.
   ///
   /// Scale N (multiply it by this).  Uses full precision multiplication, even
   /// if Width is smaller than 64, so information is not lost.
@@ -692,7 +693,7 @@ private:
     return countLeadingZeros32(Digits) + Width - 32;
   }
 
-  /// Adjust a number to width, rounding up if necessary.
+  /// \brief Adjust a number to width, rounding up if necessary.
   ///
   /// Should only be called for \c Shift close to zero.
   ///
@@ -886,6 +887,10 @@ template <class DigitsT> void ScaledNumber<DigitsT>::shiftRight(int32_t Shift) {
   Digits >>= Shift;
 }
 
+template <typename T> struct isPodLike;
+template <typename T> struct isPodLike<ScaledNumber<T>> {
+  static const bool value = true;
+};
 
 } // end namespace llvm
 

@@ -1,17 +1,19 @@
 //===--- RefactoringActionRule.h - Clang refactoring library -------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_TOOLING_REFACTORING_REFACTORINGACTIONRULE_H
-#define LLVM_CLANG_TOOLING_REFACTORING_REFACTORINGACTIONRULE_H
+#ifndef LLVM_CLANG_TOOLING_REFACTOR_REFACTORING_ACTION_RULE_H
+#define LLVM_CLANG_TOOLING_REFACTOR_REFACTORING_ACTION_RULE_H
 
 #include "clang/Basic/LLVM.h"
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/StringRef.h"
+#include <vector>
 
 namespace clang {
 namespace tooling {
@@ -54,7 +56,7 @@ public:
 class RefactoringActionRule : public RefactoringActionRuleBase {
 public:
   /// Returns true when the rule has a source selection requirement that has
-  /// to be fulfilled before refactoring can be performed.
+  /// to be fullfilled before refactoring can be performed.
   virtual bool hasSelectionRequirement() = 0;
 
   /// Traverses each refactoring option used by the rule and invokes the
@@ -69,4 +71,4 @@ public:
 } // end namespace tooling
 } // end namespace clang
 
-#endif // LLVM_CLANG_TOOLING_REFACTORING_REFACTORINGACTIONRULE_H
+#endif // LLVM_CLANG_TOOLING_REFACTOR_REFACTORING_ACTION_RULE_H

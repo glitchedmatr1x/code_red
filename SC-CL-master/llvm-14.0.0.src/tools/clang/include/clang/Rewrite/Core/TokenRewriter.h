@@ -1,8 +1,9 @@
-//===- TokenRewriter.h - Token-based Rewriter -------------------*- C++ -*-===//
+//===--- TokenRewriter.h - Token-based Rewriter -----------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -16,16 +17,13 @@
 
 #include "clang/Basic/SourceLocation.h"
 #include "clang/Lex/Token.h"
-#include <cassert>
 #include <list>
 #include <map>
 #include <memory>
 
 namespace clang {
-
-class LangOptions;
-class ScratchBuffer;
-class SourceManager;
+  class LangOptions;
+  class ScratchBuffer;
 
   class TokenRewriter {
     /// TokenList - This is the list of raw tokens that make up this file.  Each
@@ -33,7 +31,7 @@ class SourceManager;
     std::list<Token> TokenList;
 
     /// TokenRefTy - This is the type used to refer to a token in the TokenList.
-    using TokenRefTy = std::list<Token>::iterator;
+    typedef std::list<Token>::iterator TokenRefTy;
 
     /// TokenAtLoc - This map indicates which token exists at a specific
     /// SourceLocation.  Since each token has a unique SourceLocation, this is a
@@ -42,24 +40,23 @@ class SourceManager;
     std::map<SourceLocation, TokenRefTy> TokenAtLoc;
 
     /// ScratchBuf - This is the buffer that we create scratch tokens from.
+    ///
     std::unique_ptr<ScratchBuffer> ScratchBuf;
 
+    TokenRewriter(const TokenRewriter &) = delete;
+    void operator=(const TokenRewriter &) = delete;
   public:
     /// TokenRewriter - This creates a TokenRewriter for the file with the
     /// specified FileID.
     TokenRewriter(FileID FID, SourceManager &SM, const LangOptions &LO);
-
-    TokenRewriter(const TokenRewriter &) = delete;
-    TokenRewriter &operator=(const TokenRewriter &) = delete;
     ~TokenRewriter();
 
-    using token_iterator = std::list<Token>::const_iterator;
-
+    typedef std::list<Token>::const_iterator token_iterator;
     token_iterator token_begin() const { return TokenList.begin(); }
     token_iterator token_end() const { return TokenList.end(); }
 
-    token_iterator AddTokenBefore(token_iterator I, const char *Val);
 
+    token_iterator AddTokenBefore(token_iterator I, const char *Val);
     token_iterator AddTokenAfter(token_iterator I, const char *Val) {
       assert(I != token_end() && "Cannot insert after token_end()!");
       return AddTokenBefore(++I, Val);
@@ -75,6 +72,8 @@ class SourceManager;
     TokenRefTy AddToken(const Token &T, TokenRefTy Where);
   };
 
-} // namespace clang
 
-#endif // LLVM_CLANG_REWRITE_CORE_TOKENREWRITER_H
+
+} // end namespace clang
+
+#endif

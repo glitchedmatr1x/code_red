@@ -20,6 +20,7 @@ Sections:
     AddressAlign:    0x0000000000000001
     Content:         ''
 Symbols:
-  - Name:            '-'
-    Type:            STT_FILE
+  Local:
+    - Name:            '-'
+      Type:            STT_FILE
 ...

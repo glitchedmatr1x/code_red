@@ -1,8 +1,9 @@
 //===--- TestVisitor.h ------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
@@ -43,8 +44,6 @@ public:
     Lang_CXX98,
     Lang_CXX11,
     Lang_CXX14,
-    Lang_CXX17,
-    Lang_CXX2a,
     Lang_OBJC,
     Lang_OBJCXX11,
     Lang_CXX = Lang_CXX98
@@ -61,8 +60,6 @@ public:
       case Lang_CXX98: Args.push_back("-std=c++98"); break;
       case Lang_CXX11: Args.push_back("-std=c++11"); break;
       case Lang_CXX14: Args.push_back("-std=c++14"); break;
-      case Lang_CXX17: Args.push_back("-std=c++17"); break;
-      case Lang_CXX2a: Args.push_back("-std=c++2a"); break;
       case Lang_OBJC:
         Args.push_back("-ObjC");
         Args.push_back("-fobjc-runtime=macosx-10.12.0");
@@ -85,8 +82,8 @@ public:
   }
 
 protected:
-  virtual std::unique_ptr<ASTFrontendAction> CreateTestAction() {
-    return std::make_unique<TestAction>(this);
+  virtual ASTFrontendAction* CreateTestAction() {
+    return new TestAction(this);
   }
 
   class FindConsumer : public ASTConsumer {
@@ -109,7 +106,7 @@ protected:
     std::unique_ptr<clang::ASTConsumer>
     CreateASTConsumer(CompilerInstance &, llvm::StringRef dummy) override {
       /// TestConsumer will be deleted by the framework calling us.
-      return std::make_unique<FindConsumer>(Visitor);
+      return llvm::make_unique<FindConsumer>(Visitor);
     }
 
   protected:

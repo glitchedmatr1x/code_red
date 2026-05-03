@@ -1,8 +1,9 @@
 //===-- llvm-readobj.h ----------------------------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -21,26 +22,50 @@ namespace llvm {
   }
 
   // Various helper functions.
-  [[noreturn]] void reportError(Error Err, StringRef Input);
-  void reportWarning(Error Err, StringRef Input);
+  LLVM_ATTRIBUTE_NORETURN void reportError(Twine Msg);
+  void error(std::error_code EC);
+  void error(llvm::Error EC);
+  template <typename T> T error(llvm::Expected<T> &&E) {
+    error(E.takeError());
+    return std::move(*E);
+  }
 
-  template <class T> T unwrapOrError(StringRef Input, Expected<T> EO) {
+  template <class T> T unwrapOrError(ErrorOr<T> EO) {
     if (EO)
       return *EO;
-    reportError(EO.takeError(), Input);
+    reportError(EO.getError().message());
   }
+  template <class T> T unwrapOrError(Expected<T> EO) {
+    if (EO)
+      return *EO;
+    std::string Buf;
+    raw_string_ostream OS(Buf);
+    logAllUnhandledErrors(EO.takeError(), OS, "");
+    OS.flush();
+    reportError(Buf);
+  }
+  bool relocAddressLess(object::RelocationRef A,
+                        object::RelocationRef B);
 } // namespace llvm
 
 namespace opts {
-extern bool SectionRelocations;
-extern bool SectionSymbols;
-extern bool SectionData;
-extern bool ExpandRelocs;
-extern bool RawRelr;
-extern bool CodeViewSubsectionBytes;
-extern bool Demangle;
-enum OutputStyleTy { LLVM, GNU, JSON, UNKNOWN };
-extern OutputStyleTy Output;
+  extern llvm::cl::list<std::string> InputFilenames;
+  extern llvm::cl::opt<bool> FileHeaders;
+  extern llvm::cl::opt<bool> Sections;
+  extern llvm::cl::opt<bool> SectionRelocations;
+  extern llvm::cl::opt<bool> SectionSymbols;
+  extern llvm::cl::opt<bool> SectionData;
+  extern llvm::cl::opt<bool> Relocations;
+  extern llvm::cl::opt<bool> Symbols;
+  extern llvm::cl::opt<bool> DynamicSymbols;
+  extern llvm::cl::opt<bool> UnwindInfo;
+  extern llvm::cl::opt<bool> ExpandRelocs;
+  extern llvm::cl::opt<bool> CodeView;
+  extern llvm::cl::opt<bool> CodeViewSubsectionBytes;
+  extern llvm::cl::opt<bool> ARMAttributes;
+  extern llvm::cl::opt<bool> MipsPLTGOT;
+  enum OutputStyleTy { LLVM, GNU };
+  extern llvm::cl::opt<OutputStyleTy> Output;
 } // namespace opts
 
 #define LLVM_READOBJ_ENUM_ENT(ns, enum) \

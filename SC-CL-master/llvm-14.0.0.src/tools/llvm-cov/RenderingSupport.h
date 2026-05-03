@@ -1,8 +1,9 @@
 //===- RenderingSupport.h - output stream rendering support functions  ----===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -14,7 +15,7 @@
 
 namespace llvm {
 
-/// A helper class that resets the output stream's color if needed
+/// \brief A helper class that resets the output stream's color if needed
 /// when destroyed.
 class ColoredRawOstream {
   ColoredRawOstream(const ColoredRawOstream &OS) = delete;
@@ -44,7 +45,7 @@ inline raw_ostream &operator<<(const ColoredRawOstream &OS, T &&Value) {
   return OS.OS << std::forward<T>(Value);
 }
 
-/// Change the color of the output stream if the `IsColorUsed` flag
+/// \brief Change the color of the output stream if the `IsColorUsed` flag
 /// is true. Returns an object that resets the color when destroyed.
 inline ColoredRawOstream colored_ostream(raw_ostream &OS,
                                          raw_ostream::Colors Color,

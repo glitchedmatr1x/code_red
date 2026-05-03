@@ -1,9 +1,9 @@
 /*===-- analysis_ocaml.c - LLVM OCaml Glue ----------------------*- C++ -*-===*\
 |*                                                                            *|
-|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
-|* Exceptions.                                                                *|
-|* See https://llvm.org/LICENSE.txt for license information.                  *|
-|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
+|*                     The LLVM Compiler Infrastructure                       *|
+|*                                                                            *|
+|* This file is distributed under the University of Illinois Open Source      *|
+|* License. See LICENSE.TXT for details.                                      *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -20,10 +20,9 @@
 #include "caml/alloc.h"
 #include "caml/mlvalues.h"
 #include "caml/memory.h"
-#include "llvm_ocaml.h"
 
 /* Llvm.llmodule -> string option */
-value llvm_verify_module(LLVMModuleRef M) {
+CAMLprim value llvm_verify_module(LLVMModuleRef M) {
   CAMLparam0();
   CAMLlocal2(String, Option);
 
@@ -31,10 +30,11 @@ value llvm_verify_module(LLVMModuleRef M) {
   int Result = LLVMVerifyModule(M, LLVMReturnStatusAction, &Message);
 
   if (0 == Result) {
-    Option = Val_none;
+    Option = Val_int(0);
   } else {
+    Option = alloc(1, 0);
     String = copy_string(Message);
-    Option = caml_alloc_some(String);
+    Store_field(Option, 0, String);
   }
 
   LLVMDisposeMessage(Message);
@@ -43,30 +43,30 @@ value llvm_verify_module(LLVMModuleRef M) {
 }
 
 /* Llvm.llvalue -> bool */
-value llvm_verify_function(LLVMValueRef Fn) {
+CAMLprim value llvm_verify_function(LLVMValueRef Fn) {
   return Val_bool(LLVMVerifyFunction(Fn, LLVMReturnStatusAction) == 0);
 }
 
 /* Llvm.llmodule -> unit */
-value llvm_assert_valid_module(LLVMModuleRef M) {
+CAMLprim value llvm_assert_valid_module(LLVMModuleRef M) {
   LLVMVerifyModule(M, LLVMAbortProcessAction, 0);
   return Val_unit;
 }
 
 /* Llvm.llvalue -> unit */
-value llvm_assert_valid_function(LLVMValueRef Fn) {
+CAMLprim value llvm_assert_valid_function(LLVMValueRef Fn) {
   LLVMVerifyFunction(Fn, LLVMAbortProcessAction);
   return Val_unit;
 }
 
 /* Llvm.llvalue -> unit */
-value llvm_view_function_cfg(LLVMValueRef Fn) {
+CAMLprim value llvm_view_function_cfg(LLVMValueRef Fn) {
   LLVMViewFunctionCFG(Fn);
   return Val_unit;
 }
 
 /* Llvm.llvalue -> unit */
-value llvm_view_function_cfg_only(LLVMValueRef Fn) {
+CAMLprim value llvm_view_function_cfg_only(LLVMValueRef Fn) {
   LLVMViewFunctionCFGOnly(Fn);
   return Val_unit;
 }

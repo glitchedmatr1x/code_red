@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl -w
 #
 # Program:  GenLibDeps.pl
 #
@@ -96,8 +96,6 @@ if ($PEROBJ) {
     $libpath =~ s/^AsmPrinter/CodeGen\/AsmPrinter/;
     $libpath =~ s/^BitReader/Bitcode\/Reader/;
     $libpath =~ s/^BitWriter/Bitcode\/Writer/;
-    $libpath =~ s/^BitstreamReader/Bitstream\/Reader/;
-    $libpath =~ s/^BitstreamWriter/Bitstream\/Writer/;
     $libpath =~ s/^MSIL/Target\/MSIL/;
     $libpath =~ s/^Core/IR/;
     $libpath =~ s/^Instrumentation/Transforms\/Instrumentation/;
@@ -138,8 +136,6 @@ if ($PEROBJ) {
     $libpath =~ s/^AsmPrinter/CodeGen\/AsmPrinter/;
     $libpath =~ s/^BitReader/Bitcode\/Reader/;
     $libpath =~ s/^BitWriter/Bitcode\/Writer/;
-    $libpath =~ s/^BitstreamReader/Bitstream\/Reader/;
-    $libpath =~ s/^BitstreamWriter/Bitstream\/Writer/;
     $libpath =~ s/^MSIL/Target\/MSIL/;
     $libpath =~ s/^Core/VMCore/;
     $libpath =~ s/^Instrumentation/Transforms\/Instrumentation/;

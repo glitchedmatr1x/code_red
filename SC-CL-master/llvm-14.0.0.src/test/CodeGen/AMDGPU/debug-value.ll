@@ -1,4 +1,4 @@
-; RUN: llc -mtriple=amdgcn-amd-amdhsa -verify-machineinstrs < %s | FileCheck %s
+; RUN: llc -mtriple=amdgcn-amd-amdhsa-amdgizcl -verify-machineinstrs < %s | FileCheck %s
 
 %struct.wombat = type { [4 x i32], [4 x i32], [4 x i32] }
 
@@ -22,16 +22,15 @@ bb:
   %tmp15 = bitcast i8 addrspace(1)* %tmp14 to <4 x float> addrspace(1)*
   %tmp16 = getelementptr inbounds <4 x float>, <4 x float> addrspace(1)* %tmp15, i64 undef
   %tmp17 = load <4 x float>, <4 x float> addrspace(1)* %tmp16, align 16
-  %tmp18 = fsub <4 x float> %tmp17, %tmp17
-  %ext = extractelement <4 x float> %tmp18, i32 1
-  %tmp19 = fadd float %ext, 0.000000e+00
+  %tmp18 = fsub <4 x float> undef, %tmp17
+  %tmp19 = fadd float undef, 0.000000e+00
   %tmp20 = fcmp oeq float %tmp19, 0.000000e+00
   br i1 %tmp20, label %bb21, label %bb25
 
 bb21:                                             ; preds = %bb
-  %tmp22 = fmul <4 x float> %tmp18, %tmp18
-  %tmp23 = fadd <4 x float> %tmp22, %tmp22
-  %tmp24 = fmul <4 x float> %tmp23, %tmp23
+  %tmp22 = fmul <4 x float> %tmp18, undef
+  %tmp23 = fadd <4 x float> undef, %tmp22
+  %tmp24 = fmul <4 x float> undef, undef
   br label %bb28
 
 bb25:                                             ; preds = %bb
@@ -71,10 +70,7 @@ bb28:                                             ; preds = %bb25, %bb21
   %tmp56 = fmul float %tmp55, %tmp50
   %tmp57 = fmul float %tmp54, %tmp56
   %tmp58 = fdiv float %tmp57, 0.000000e+00
-  ; Make sure this isn't double emitted
-  ; CHECK-NOT: ;DEBUG_VALUE:
   ; CHECK: ;DEBUG_VALUE: foo:var <- [DW_OP_constu 1, DW_OP_swap, DW_OP_xderef]
-  ; CHECK-NOT: ;DEBUG_VALUE:
   call void @llvm.dbg.value(metadata <4 x float> %tmp29, metadata !3, metadata !DIExpression(DW_OP_constu, 1, DW_OP_swap, DW_OP_xderef)) #2, !dbg !5
   %tmp59 = bitcast i64 %tmp35 to <2 x float>
   %tmp60 = insertelement <2 x float> undef, float %tmp58, i32 0
@@ -92,7 +88,7 @@ declare float @barney() #2
 declare void @eggs(float) #2
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-attributes #0 = { convergent nounwind "target-cpu"="gfx900" }
+attributes #0 = { convergent nounwind "target-cpu"="gfx900" "target-features"="+fp32-denormals" }
 attributes #1 = { nounwind readnone speculatable }
 attributes #2 = { nounwind }
 

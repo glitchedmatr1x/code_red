@@ -1,8 +1,9 @@
 //===- InputFile.h -------------------------------------------- *- C++ --*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -26,6 +27,7 @@ class LazyRandomTypeCollection;
 }
 namespace object {
 class COFFObjectFile;
+class SectionRef;
 } // namespace object
 
 namespace pdb {
@@ -41,8 +43,7 @@ class InputFile {
 
   std::unique_ptr<NativeSession> PdbSession;
   object::OwningBinary<object::Binary> CoffObject;
-  std::unique_ptr<MemoryBuffer> UnknownFile;
-  PointerUnion<PDBFile *, object::COFFObjectFile *, MemoryBuffer *> PdbOrObj;
+  PointerUnion<PDBFile *, object::COFFObjectFile *> PdbOrObj;
 
   using TypeCollectionPtr = std::unique_ptr<codeview::LazyRandomTypeCollection>;
 
@@ -57,17 +58,12 @@ public:
   ~InputFile();
   InputFile(InputFile &&Other) = default;
 
-  static Expected<InputFile> open(StringRef Path,
-                                  bool AllowUnknownFile = false);
+  static Expected<InputFile> open(StringRef Path);
 
   PDBFile &pdb();
   const PDBFile &pdb() const;
   object::COFFObjectFile &obj();
   const object::COFFObjectFile &obj() const;
-  MemoryBuffer &unknown();
-  const MemoryBuffer &unknown() const;
-
-  StringRef getFilePath() const;
 
   bool hasTypes() const;
   bool hasIds() const;
@@ -81,7 +77,6 @@ public:
 
   bool isPdb() const;
   bool isObj() const;
-  bool isUnknown() const;
 };
 
 class SymbolGroup {
@@ -107,8 +102,6 @@ public:
 
   const InputFile &getFile() const { return *File; }
   InputFile &getFile() { return *File; }
-
-  bool hasDebugStream() const { return DebugStream != nullptr; }
 
 private:
   void initializeForPdb(uint32_t Modi);

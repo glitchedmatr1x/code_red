@@ -3,10 +3,7 @@
 ; RUN: llvm-link %S/Inputs/subprogram-linkonce-weak.ll %s -S -o %t2
 ; RUN: FileCheck %s -check-prefix=WL -check-prefix=CHECK <%t2
 ; REQUIRES: default_triple
-;
-; Bug 47131
-; XFAIL: sparc
-;
+
 ; This testcase tests the following flow:
 ;  - File A defines a linkonce version of @foo which has inlined into @bar.
 ;  - File B defines a weak version of @foo (different definition).
@@ -150,18 +147,14 @@ entry:
 ; DW-LABEL:   .debug_line contents:
 ; Check that we have the right things in the line table as well.
 
-; DWLW-LABEL: file_names[ 1]:
-; DWLW-NEXT: name: "bar.c"
+; DWLW-LABEL: file_names[{{ *}}1]{{.*}} bar.c
 ; DWLW:        2 0 1 0 0 is_stmt prologue_end
-; DWLW-LABEL: file_names[ 1]:
-; DWLW-NEXT: name: "foo.c"
+; DWLW-LABEL: file_names[{{ *}}1]{{.*}} foo.c
 ; DWLW:       52 0 1 0 0 is_stmt prologue_end
 ; DWLW-NOT:                      prologue_end
 
-; DWWL-LABEL: file_names[ 1]:
-; DWWL-NEXT: name: "foo.c"
+; DWWL-LABEL: file_names[{{ *}}1]{{.*}} foo.c
 ; DWWL:       52 0 1 0 0 is_stmt prologue_end
-; DWWL-LABEL: file_names[ 1]:
-; DWWL-NEXT: name: "bar.c"
+; DWWL-LABEL: file_names[{{ *}}1]{{.*}} bar.c
 ; DWWL:        2 0 1 0 0 is_stmt prologue_end
 ; DWWL-NOT:                      prologue_end

@@ -1,16 +1,15 @@
 //===--- NoexceptMoveConstructorCheck.cpp - clang-tidy---------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #include "NoexceptMoveConstructorCheck.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
-#include "clang/Lex/Lexer.h"
-#include "clang/Tooling/FixIt.h"
 
 using namespace clang::ast_matchers;
 
@@ -19,6 +18,11 @@ namespace tidy {
 namespace performance {
 
 void NoexceptMoveConstructorCheck::registerMatchers(MatchFinder *Finder) {
+  // Only register the matchers for C++11; the functionality currently does not
+  // provide any benefit to other languages, despite being benign.
+  if (!getLangOpts().CPlusPlus11)
+    return;
+
   Finder->addMatcher(
       cxxMethodDecl(anyOf(cxxConstructorDecl(), hasOverloadedOperatorName("=")),
                     unless(isImplicit()), unless(isDeleted()))
@@ -29,11 +33,11 @@ void NoexceptMoveConstructorCheck::registerMatchers(MatchFinder *Finder) {
 void NoexceptMoveConstructorCheck::check(
     const MatchFinder::MatchResult &Result) {
   if (const auto *Decl = Result.Nodes.getNodeAs<CXXMethodDecl>("decl")) {
-    bool IsConstructor = false;
+    StringRef MethodType = "assignment operator";
     if (const auto *Ctor = dyn_cast<CXXConstructorDecl>(Decl)) {
       if (!Ctor->isMoveConstructor())
         return;
-      IsConstructor = true;
+      MethodType = "constructor";
     } else if (!Decl->isMoveAssignmentOperator()) {
       return;
     }
@@ -43,36 +47,27 @@ void NoexceptMoveConstructorCheck::check(
     if (isUnresolvedExceptionSpec(ProtoType->getExceptionSpecType()))
       return;
 
-    if (!isNoexceptExceptionSpec(ProtoType->getExceptionSpecType())) {
-      auto Diag = diag(Decl->getLocation(),
-                       "move %select{assignment operator|constructor}0s should "
-                       "be marked noexcept")
-                  << IsConstructor;
-      // Add FixIt hints.
-      SourceManager &SM = *Result.SourceManager;
-      assert(Decl->getNumParams() > 0);
-      SourceLocation NoexceptLoc = Decl->getParamDecl(Decl->getNumParams() - 1)
-                                       ->getSourceRange()
-                                       .getEnd();
-      if (NoexceptLoc.isValid())
-        NoexceptLoc = Lexer::findLocationAfterToken(
-            NoexceptLoc, tok::r_paren, SM, Result.Context->getLangOpts(), true);
-      if (NoexceptLoc.isValid())
-        Diag << FixItHint::CreateInsertion(NoexceptLoc, " noexcept ");
-      return;
-    }
-
-    // Don't complain about nothrow(false), but complain on nothrow(expr)
-    // where expr evaluates to false.
-    if (ProtoType->canThrow() == CT_Can) {
-      Expr *E = ProtoType->getNoexceptExpr();
-      E = E->IgnoreImplicit();
-      if (!isa<CXXBoolLiteralExpr>(E)) {
+    switch (ProtoType->getNoexceptSpec(*Result.Context)) {
+    case FunctionProtoType::NR_NoNoexcept:
+      diag(Decl->getLocation(), "move %0s should be marked noexcept")
+          << MethodType;
+      // FIXME: Add a fixit.
+      break;
+    case FunctionProtoType::NR_Throw:
+      // Don't complain about nothrow(false), but complain on nothrow(expr)
+      // where expr evaluates to false.
+      if (const Expr *E = ProtoType->getNoexceptExpr()) {
+        if (isa<CXXBoolLiteralExpr>(E))
+          break;
         diag(E->getExprLoc(),
-             "noexcept specifier on the move %select{assignment "
-             "operator|constructor}0 evaluates to 'false'")
-            << IsConstructor;
+             "noexcept specifier on the move %0 evaluates to 'false'")
+            << MethodType;
       }
+      break;
+    case FunctionProtoType::NR_Nothrow:
+    case FunctionProtoType::NR_Dependent:
+    case FunctionProtoType::NR_BadNoexcept:
+      break;
     }
   }
 }

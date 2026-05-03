@@ -1,8 +1,9 @@
 //===--- Availability.h - Classes for availability --------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,12 +15,12 @@
 #define LLVM_CLANG_AST_AVAILABILITY_H
 
 #include "clang/Basic/SourceLocation.h"
+#include "clang/Basic/VersionTuple.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/Support/VersionTuple.h"
 
 namespace clang {
 
-/// One specifier in an @available expression.
+/// \brief One specifier in an @available expression.
 ///
 /// \code
 ///   @available(macos 10.10, *)

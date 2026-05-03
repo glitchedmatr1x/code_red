@@ -1,20 +1,16 @@
 //===-- MachOUtils.h - Mach-o specific helpers for dsymutil  --------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 #ifndef LLVM_TOOLS_DSYMUTIL_MACHOUTILS_H
 #define LLVM_TOOLS_DSYMUTIL_MACHOUTILS_H
 
-#include "SymbolMap.h"
-
-#include "llvm/ADT/StringRef.h"
-#include "llvm/Support/FileSystem.h"
-#include "llvm/Support/VirtualFileSystem.h"
-
 #include <string>
+#include "llvm/ADT/StringRef.h"
 
 namespace llvm {
 class MCStreamer;
@@ -24,29 +20,20 @@ class DebugMap;
 struct LinkOptions;
 namespace MachOUtils {
 
-struct ArchAndFile {
-  std::string Arch;
-  std::unique_ptr<llvm::sys::fs::TempFile> File;
-
-  llvm::Error createTempFile();
-  llvm::StringRef path() const;
-
-  ArchAndFile(StringRef Arch) : Arch(std::string(Arch)) {}
-  ArchAndFile(ArchAndFile &&A) = default;
-  ArchAndFile &operator=(ArchAndFile &&A) = default;
-  ~ArchAndFile();
+struct ArchAndFilename {
+  std::string Arch, Path;
+  ArchAndFilename(StringRef Arch, StringRef Path) : Arch(Arch), Path(Path) {}
 };
 
-bool generateUniversalBinary(SmallVectorImpl<ArchAndFile> &ArchFiles,
+bool generateUniversalBinary(SmallVectorImpl<ArchAndFilename> &ArchFiles,
                              StringRef OutputFileName, const LinkOptions &,
                              StringRef SDKPath);
 
-bool generateDsymCompanion(llvm::IntrusiveRefCntPtr<llvm::vfs::FileSystem> VFS,
-                           const DebugMap &DM, SymbolMapTranslator &Translator,
-                           MCStreamer &MS, raw_fd_ostream &OutFile);
+bool generateDsymCompanion(const DebugMap &DM, MCStreamer &MS,
+                           raw_fd_ostream &OutFile);
 
 std::string getArchName(StringRef Arch);
-} // namespace MachOUtils
-} // namespace dsymutil
-} // namespace llvm
+}
+}
+}
 #endif // LLVM_TOOLS_DSYMUTIL_MACHOUTILS_H

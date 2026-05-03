@@ -1,8 +1,9 @@
 //===- llvm/Transforms/Utils/BypassSlowDivision.h ---------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -19,7 +20,6 @@
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/DenseMapInfo.h"
-#include "llvm/IR/ValueHandle.h"
 #include <cstdint>
 
 namespace llvm {
@@ -29,10 +29,8 @@ class Value;
 
 struct DivRemMapKey {
   bool SignedOp;
-  AssertingVH<Value> Dividend;
-  AssertingVH<Value> Divisor;
-
-  DivRemMapKey() = default;
+  Value *Dividend;
+  Value *Divisor;
 
   DivRemMapKey(bool InSignedOp, Value *InDividend, Value *InDivisor)
       : SignedOp(InSignedOp), Dividend(InDividend), Divisor(InDivisor) {}
@@ -53,10 +51,8 @@ template <> struct DenseMapInfo<DivRemMapKey> {
   }
 
   static unsigned getHashValue(const DivRemMapKey &Val) {
-    return (unsigned)(reinterpret_cast<uintptr_t>(
-                          static_cast<Value *>(Val.Dividend)) ^
-                      reinterpret_cast<uintptr_t>(
-                          static_cast<Value *>(Val.Divisor))) ^
+    return (unsigned)(reinterpret_cast<uintptr_t>(Val.Dividend) ^
+                      reinterpret_cast<uintptr_t>(Val.Divisor)) ^
            (unsigned)Val.SignedOp;
   }
 };

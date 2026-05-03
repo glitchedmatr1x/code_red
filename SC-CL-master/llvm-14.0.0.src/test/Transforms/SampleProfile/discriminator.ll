@@ -1,4 +1,5 @@
-; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/discriminator.prof | opt -passes='print<branch-prob>' -disable-output 2>&1 | FileCheck %s
+; RUN: opt < %s -sample-profile -sample-profile-file=%S/Inputs/discriminator.prof | opt -analyze -branch-prob | FileCheck %s
+; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/discriminator.prof | opt -analyze -branch-prob | FileCheck %s
 
 ; Original code
 ;
@@ -22,7 +23,7 @@
 ; but the then branch (line 3.1) is only executed 5 times.
 
 define i32 @foo(i32 %i) #0 !dbg !4 {
-; CHECK: Printing analysis {{.*}} for function 'foo':
+; CHECK: Printing analysis 'Branch Probability Analysis' for function 'foo':
 entry:
   %i.addr = alloca i32, align 4
   %x = alloca i32, align 4
@@ -61,7 +62,6 @@ while.end:                                        ; preds = %while.cond
   ret i32 %4, !dbg !21
 }
 
-attributes #0 = {"use-sample-profile"}
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!7, !8}
@@ -70,7 +70,7 @@ attributes #0 = {"use-sample-profile"}
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, producer: "clang version 3.5 ", isOptimized: false, emissionKind: NoDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "discriminator.c", directory: ".")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", line: 1, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 1, file: !1, scope: !5, type: !6, retainedNodes: !2)
+!4 = distinct !DISubprogram(name: "foo", line: 1, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 1, file: !1, scope: !5, type: !6, variables: !2)
 !5 = !DIFile(filename: "discriminator.c", directory: ".")
 !6 = !DISubroutineType(types: !2)
 !7 = !{i32 2, !"Dwarf Version", i32 4}

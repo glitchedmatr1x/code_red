@@ -7,10 +7,9 @@
 define i8 @test1(i8 %a, i8 %b) nounwind {
 ; CHECK-LABEL: test1:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    cmpb %sil, %dil
+; CHECK-NEXT:    adcb $0, %sil
 ; CHECK-NEXT:    movl %esi, %eax
-; CHECK-NEXT:    cmpb %al, %dil
-; CHECK-NEXT:    adcb $0, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
   %cmp = icmp ult i8 %a, %b
   %cond = zext i1 %cmp to i8
@@ -21,9 +20,9 @@ define i8 @test1(i8 %a, i8 %b) nounwind {
 define i32 @test2(i32 %a, i32 %b) nounwind {
 ; CHECK-LABEL: test2:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    cmpl %esi, %edi
-; CHECK-NEXT:    adcl $0, %eax
+; CHECK-NEXT:    adcl $0, %esi
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    retq
   %cmp = icmp ult i32 %a, %b
   %cond = zext i1 %cmp to i32
@@ -34,9 +33,9 @@ define i32 @test2(i32 %a, i32 %b) nounwind {
 define i64 @test3(i64 %a, i64 %b) nounwind {
 ; CHECK-LABEL: test3:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    cmpq %rsi, %rdi
-; CHECK-NEXT:    adcq $0, %rax
+; CHECK-NEXT:    adcq $0, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %cmp = icmp ult i64 %a, %b
   %conv = zext i1 %cmp to i64
@@ -47,10 +46,9 @@ define i64 @test3(i64 %a, i64 %b) nounwind {
 define i8 @test4(i8 %a, i8 %b) nounwind {
 ; CHECK-LABEL: test4:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    cmpb %sil, %dil
+; CHECK-NEXT:    sbbb $0, %sil
 ; CHECK-NEXT:    movl %esi, %eax
-; CHECK-NEXT:    cmpb %al, %dil
-; CHECK-NEXT:    sbbb $0, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
   %cmp = icmp ult i8 %a, %b
   %cond = zext i1 %cmp to i8
@@ -61,9 +59,9 @@ define i8 @test4(i8 %a, i8 %b) nounwind {
 define i32 @test5(i32 %a, i32 %b) nounwind {
 ; CHECK-LABEL: test5:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    cmpl %esi, %edi
-; CHECK-NEXT:    sbbl $0, %eax
+; CHECK-NEXT:    sbbl $0, %esi
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    retq
   %cmp = icmp ult i32 %a, %b
   %cond = zext i1 %cmp to i32
@@ -74,9 +72,9 @@ define i32 @test5(i32 %a, i32 %b) nounwind {
 define i64 @test6(i64 %a, i64 %b) nounwind {
 ; CHECK-LABEL: test6:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    cmpq %rsi, %rdi
-; CHECK-NEXT:    sbbq $0, %rax
+; CHECK-NEXT:    sbbq $0, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %cmp = icmp ult i64 %a, %b
   %conv = zext i1 %cmp to i64
@@ -87,10 +85,9 @@ define i64 @test6(i64 %a, i64 %b) nounwind {
 define i8 @test7(i8 %a, i8 %b) nounwind {
 ; CHECK-LABEL: test7:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    cmpb %sil, %dil
+; CHECK-NEXT:    adcb $0, %sil
 ; CHECK-NEXT:    movl %esi, %eax
-; CHECK-NEXT:    cmpb %al, %dil
-; CHECK-NEXT:    adcb $0, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
   %cmp = icmp ult i8 %a, %b
   %cond = sext i1 %cmp to i8
@@ -101,9 +98,9 @@ define i8 @test7(i8 %a, i8 %b) nounwind {
 define i32 @test8(i32 %a, i32 %b) nounwind {
 ; CHECK-LABEL: test8:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    cmpl %esi, %edi
-; CHECK-NEXT:    adcl $0, %eax
+; CHECK-NEXT:    adcl $0, %esi
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    retq
   %cmp = icmp ult i32 %a, %b
   %cond = sext i1 %cmp to i32
@@ -114,9 +111,9 @@ define i32 @test8(i32 %a, i32 %b) nounwind {
 define i64 @test9(i64 %a, i64 %b) nounwind {
 ; CHECK-LABEL: test9:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    cmpq %rsi, %rdi
-; CHECK-NEXT:    adcq $0, %rax
+; CHECK-NEXT:    adcq $0, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %cmp = icmp ult i64 %a, %b
   %conv = sext i1 %cmp to i64

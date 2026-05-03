@@ -213,9 +213,7 @@ void CompileBase::AddLabel(const string& label)
 	auto it = LabelLocations.find(label);
 	if (it == LabelLocations.end())
 	{
-		LabelLocations.insert({label,
-								 {(uint32_t)CodePageData->getTotalSize(), true,
-								  std::vector<uint32_t>()}});
+		LabelLocations.insert({ label,{ CodePageData->getTotalSize(), true, std::vector<uint32_t>() } });
 	}
 	else if (!it->second.isSet)
 	{
@@ -326,9 +324,7 @@ CompileBase::JumpLabelData CompileBase::AddSwitchJump(const JumpInstructionType 
 		AddInt16(0);
 
 		//have to add a jump forward to jump backward
-		return {{(uint32_t)CodePageData->getTotalSize() - 2, type,
-				label, false},
-				it->second};
+		return{ { CodePageData->getTotalSize() - 2, type, label, false}, it->second };
 	}
 
 }
@@ -630,8 +626,7 @@ void CompileBase::AddFuncLoc(const FunctionData* function)
 {
 	DoesOpcodeHaveRoom(4);
 	AddOpcode(PushI24);
-	CallLocations.push_back({(uint32_t)CodePageData->getTotalSize(),
-								 CallInstructionType::FuncLoc, function});
+	CallLocations.push_back({ CodePageData->getTotalSize(), CallInstructionType::FuncLoc, function });
 	AddInt24(0);
 }
 void CompileBase::Switch(){
@@ -954,9 +949,7 @@ void CompileGTAIV::AddLabel(const string& label)
 	auto it = LabelLocations.find(label);
 	if (it == LabelLocations.end())
 	{
-		  LabelLocations.insert({label,
-								 {(uint32_t)CodePageData->getTotalSize(), true,
-								  std::vector<uint32_t>()}});
+		LabelLocations.insert({ label,{ CodePageData->getTotalSize(), true, std::vector<uint32_t>() } });
 	}
 	else if (!it->second.isSet)
 	{
@@ -1043,9 +1036,7 @@ CompileBase::JumpLabelData CompileGTAIV::AddSwitchJump(const JumpInstructionType
 		AddInt32(0);
 
 		//have to add a jump forward to jump backward
-				return {{(uint32_t)CodePageData->getTotalSize() - 4, type,
-						 label, false},
-						it->second};
+		return{ { CodePageData->getTotalSize() - 4, type, label, false }, it->second };
 	}
 
 }
@@ -1204,8 +1195,7 @@ void CompileGTAIV::AddFuncLoc(const FunctionData* function)
 {
 	DoesOpcodeHaveRoom(5);
 	AddOpcode(Push);
-		CallLocations.push_back({(uint32_t)CodePageData->getTotalSize(),
-								 CallInstructionType::FuncLoc, function});
+	CallLocations.push_back({ CodePageData->getTotalSize(), CallInstructionType::FuncLoc, function });
 	AddInt32(0);
 }
 
@@ -1273,9 +1263,7 @@ void CompileGTAIV::Call()
 	// gta4: 4 byte loc
 	DoesOpcodeHaveRoom(5);
 	AddOpcode(Call);
-	CallLocations.push_back({(uint32_t)CodePageData->getTotalSize(),
-								 CallInstructionType::Call,
-								 DATA->getFunctionData()});
+	CallLocations.push_back({ CodePageData->getTotalSize(), CallInstructionType::Call, DATA->getFunctionData() });
 	AddInt32(0);
 }
 void CompileGTAIV::GetImmPStack()
@@ -1321,10 +1309,7 @@ void CompileGTAIV::AddJumpTable()
 		AddInt8(len);
 		for (unsigned i = 0; i < jumpTable->getItemCount(); i++)
 		{
-				  jumpTableLocs.push_back(
-					  {(uint32_t)CodePageData->getTotalSize(),
-					   jumpTable->getJumpLocAsString(i),
-					   jumpTable->getXORValue()});
+			jumpTableLocs.push_back({ CodePageData->getTotalSize(), jumpTable->getJumpLocAsString(i), jumpTable->getXORValue() });
 			AddInt32(0);//place holder
 		}
 	}
@@ -1340,10 +1325,7 @@ void CompileGTAIV::AddJumpTable()
 		AddInt32(len);
 		for (unsigned i = 0; i < jumpTable->getItemCount(); i++)
 		{
-				  jumpTableLocs.push_back(
-					  {(uint32_t)CodePageData->getTotalSize(),
-					   jumpTable->getJumpLocAsString(i),
-					   jumpTable->getXORValue()});
+			jumpTableLocs.push_back({ CodePageData->getTotalSize(), jumpTable->getJumpLocAsString(i), jumpTable->getXORValue() });
 			AddInt32(0);//place holder
 		}
 
@@ -1457,8 +1439,8 @@ void CompileGTAIV::SCOWrite(const char* path, CompileGTAIV::SCRFlags EncryptionC
 	const uint32_t HeaderSize = 24;
 	const vector<uint32_t> SCR_Header = {
 		Utils::Bitwise::SwapEndian((uint32_t)EncryptionCompressionLevel)//SCR.
-		, (uint32_t)BuildBuffer.size()//code size
-		, (uint32_t)HLData->getStaticCount()//statics count
+		, BuildBuffer.size()//code size
+		, HLData->getStaticCount()//statics count
 		, 0u//Globals Alloc Count
 		, Utils::Bitwise::SwapEndian(0u)//Script Flags
 		, Utils::Bitwise::SwapEndian((uint32_t)GetSignature())//Signature
@@ -1470,14 +1452,12 @@ void CompileGTAIV::SCOWrite(const char* path, CompileGTAIV::SCRFlags EncryptionC
 
 	#pragma region Write_File
 
-	// TODO: The PC scripts uses NG encryption, code to encrypt can be found in CodeWalker
 	switch (EncryptionCompressionLevel)
 	{
-		#if 0
 		case SCRFlags::CompressedEncrypted:{
 			vector<uint8_t> CompressedData;
 			Utils::Compression::ZLIB_Compress(BuildBuffer, CompressedData);
-			size_t CompressedSize = CompressedData.size();
+            size_t CompressedSize = CompressedData.size();
 
 			if (CompressedSize <= 0)
 				Utils::System::Throw("SCO Compressed Size Invalid");
@@ -1495,7 +1475,6 @@ void CompileGTAIV::SCOWrite(const char* path, CompileGTAIV::SCRFlags EncryptionC
 			}
 		}
 		break;
-		#endif
 		case SCRFlags::Encrypted:{
 			if (SCR_Header[CodeSize] > 0)
 			{
@@ -1679,8 +1658,7 @@ void CompileRDR::Call()
 	if (it == FuncLocations.end())
 	{
 		DoesOpcodeHaveRoom(4);//4 because pcall can be separate
-		  CallLocations.push_back({(uint32_t)CodePageData->getTotalSize(),
-								   CallInstructionType::Call, func});
+		CallLocations.push_back({ CodePageData->getTotalSize(), CallInstructionType::Call, func });
 		AddInt24(0);//call, int16 loc / pushi24, int16 loc part
 		AddInt16(0);//int16 loc part 2, pcall
 	}
@@ -1774,10 +1752,7 @@ void CompileRDR::AddJumpTable()
 		AddInt8(len);
 		for (unsigned i = 0; i < jumpTable->getItemCount();i++)
 		{
-				  jumpTableLocs.push_back(
-					  {(uint32_t)CodePageData->getTotalSize(),
-					   jumpTable->getJumpLocAsString(i),
-					   jumpTable->getXORValue()});
+			jumpTableLocs.push_back({ CodePageData->getTotalSize(), jumpTable->getJumpLocAsString(i), jumpTable->getXORValue() });
 			AddInt32(0);//place holder
 		}
 	}
@@ -1788,10 +1763,7 @@ void CompileRDR::AddJumpTable()
 		AddInt32(len);
 		for (unsigned i = 0; i < jumpTable->getItemCount(); i++)
 		{
-				  jumpTableLocs.push_back(
-					  {(uint32_t)CodePageData->getTotalSize(),
-					   jumpTable->getJumpLocAsString(i),
-					   jumpTable->getXORValue()});
+			jumpTableLocs.push_back({ CodePageData->getTotalSize(), jumpTable->getJumpLocAsString(i), jumpTable->getXORValue() });
 			AddInt32(0);//place holder
 		}
 		AddImm(4);//Skip past the size of the array
@@ -1871,7 +1843,7 @@ void CompileRDR::XSCWrite(const char* path, bool CompressAndEncrypt)
 	CheckPad4096(NativesSize);
 	CheckPad4096(StaticsSize);
 
-	size_t TotalData =
+	uint32_t TotalData =
 		NativesSize +
 		StaticsSize +
 		PageMapPtrsSize +
@@ -2049,7 +2021,6 @@ void CompileRDR::XSCWrite(const char* path, bool CompressAndEncrypt)
 
 		switch (HLData->getBuildPlatform())
 		{
-			#if 0
 			case Platform::P_X360:
 			{
 				Utils::Compression::xCompress Compression;
@@ -2079,7 +2050,6 @@ void CompileRDR::XSCWrite(const char* path, bool CompressAndEncrypt)
 					Throw("CSC Compressed Size Invalid");
 			}
 			break;
-			#endif
 			case Platform::P_PC:
 			default:
 			Throw("Invalid Build Platform for compression");
@@ -2146,8 +2116,7 @@ void CompileRDR::SCOWrite(const char* path, bool CompressAndEncrypt)
 	#pragma region Write_File
 	if (CompressAndEncrypt)
 	{
-		#if 0
-		vector<uint8_t> CompressedData;
+        vector<uint8_t> CompressedData;
 		Utils::Compression::ZLIB_Compress(BuildBuffer, CompressedData);
 		//fix length of compressed data
 
@@ -2162,13 +2131,13 @@ void CompileRDR::SCOWrite(const char* path, bool CompressAndEncrypt)
 		{ 
 		  Utils::Bitwise::SwapEndian(0x53435202u)//SCR.
 		, Utils::Bitwise::SwapEndian(0x349D018Au)//GlobalsSignature
-		, (uint32_t)Utils::Bitwise::SwapEndian(CompressedData.size())
+		, Utils::Bitwise::SwapEndian(CompressedData.size())
 		, Utils::Bitwise::SwapEndian(-3u)//-3 is_crypt?
-		, (uint32_t)Utils::Bitwise::SwapEndian(BuildBuffer.size())
-		, (uint32_t)Utils::Bitwise::SwapEndian(HLData->getStaticCount())
+		, Utils::Bitwise::SwapEndian(BuildBuffer.size())
+		, Utils::Bitwise::SwapEndian(HLData->getStaticCount())
 		, Utils::Bitwise::SwapEndian(0u)//GlobalsCount
 		, Utils::Bitwise::SwapEndian(0u)//ParameterCount
-		, (uint32_t)Utils::Bitwise::SwapEndian(NativeHashMap.size())
+		, Utils::Bitwise::SwapEndian(NativeHashMap.size())
 		, Utils::Bitwise::SwapEndian(0u)//unk36
 		, Utils::Bitwise::SwapEndian(0u)//unk40
 		, Utils::Bitwise::SwapEndian(0u)//unk44
@@ -2181,7 +2150,6 @@ void CompileRDR::SCOWrite(const char* path, bool CompressAndEncrypt)
 			fwrite(CompressedData.data(), 1, CompressedData.size(), file);//encrypted data
 			fclose(file);
 		}
-		#endif
 	}
 	else
 	{
@@ -2308,7 +2276,7 @@ void CompileGTAV::Call()
 	// gta5: 3 byte loc
 	DoesOpcodeHaveRoom(4);
 	AddOpcode(Call);
-	CallLocations.push_back({ (uint32_t)CodePageData->getTotalSize(), CallInstructionType::Call, DATA->getFunctionData() });
+	CallLocations.push_back({ CodePageData->getTotalSize(), CallInstructionType::Call, DATA->getFunctionData() });
 	AddInt24(0);
 }
 void CompileGTAV::PushString()
@@ -2384,7 +2352,7 @@ void CompileGTAV::GoToStack()
 void CompileGTAV::AddJumpTable()
 {
 	auto jumpTable = DATA->getJumpTable();
-	uint32_t pos = StringPageData->AddJumpTable(jumpTable->getItemCount());
+	auto pos = StringPageData->AddJumpTable(jumpTable->getItemCount());
 	PushInt(pos);
 	DoesOpcodeHaveRoom(1);
 	AddOpcode(PushString);
@@ -3214,7 +3182,6 @@ void CompileGTAVPC::YSCWrite(const char* path, bool AddRsc7Header)
 	#pragma endregion
 
 }
-
 #pragma endregion
 
 #pragma endregion

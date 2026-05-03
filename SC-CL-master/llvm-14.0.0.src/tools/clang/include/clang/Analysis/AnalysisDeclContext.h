@@ -1,57 +1,51 @@
-//===- AnalysisDeclContext.h - Context for path sensitivity -----*- C++ -*-===//
+//=== AnalysisDeclContext.h - Analysis context for Path Sens analysis --*- C++ -*-//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
-/// \file
-/// This file defines AnalysisDeclContext, a class that manages the analysis
-/// context data for context sensitive and path sensitive analysis.
-/// It also defines the helper classes to model entering, leaving or inlining
-/// function calls.
+// This file defines AnalysisDeclContext, a class that manages the analysis
+// context data for path sensitive analysis.
 //
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_CLANG_ANALYSIS_ANALYSISDECLCONTEXT_H
 #define LLVM_CLANG_ANALYSIS_ANALYSISDECLCONTEXT_H
 
-#include "clang/AST/DeclBase.h"
+#include "clang/AST/Decl.h"
 #include "clang/Analysis/BodyFarm.h"
 #include "clang/Analysis/CFG.h"
 #include "clang/Analysis/CodeInjector.h"
-#include "clang/Basic/LLVM.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/FoldingSet.h"
-#include "llvm/ADT/StringRef.h"
-#include "llvm/ADT/iterator_range.h"
 #include "llvm/Support/Allocator.h"
-#include <functional>
 #include <memory>
 
 namespace clang {
 
-class AnalysisDeclContextManager;
-class ASTContext;
-class BlockDecl;
-class BlockInvocationContext;
+class Stmt;
 class CFGReverseBlockReachabilityAnalysis;
 class CFGStmtMap;
-class ImplicitParamDecl;
-class LocationContext;
-class LocationContextManager;
+class LiveVariables;
+class ManagedAnalysis;
 class ParentMap;
+class PseudoConstantAnalysis;
+class LocationContextManager;
 class StackFrameContext;
-class Stmt;
-class VarDecl;
+class BlockInvocationContext;
+class AnalysisDeclContextManager;
+class LocationContext;
+
+namespace idx { class TranslationUnit; }
 
 /// The base class of a hierarchy of objects representing analyses tied
 /// to AnalysisDeclContext.
 class ManagedAnalysis {
 protected:
-  ManagedAnalysis() = default;
-
+  ManagedAnalysis() {}
 public:
   virtual ~ManagedAnalysis();
 
@@ -67,58 +61,68 @@ public:
   // which creates the analysis object given an AnalysisDeclContext.
 };
 
-/// AnalysisDeclContext contains the context data for the function, method
-/// or block under analysis.
-class AnalysisDeclContext {
-  // Backpoint to the AnalysisManager object that created this
-  // AnalysisDeclContext. This may be null.
-  AnalysisDeclContextManager *ADCMgr;
 
-  const Decl *const D;
+/// AnalysisDeclContext contains the context data for the function or method
+/// under analysis.
+class AnalysisDeclContext {
+  /// Backpoint to the AnalysisManager object that created this
+  /// AnalysisDeclContext. This may be null.
+  AnalysisDeclContextManager *Manager;
+
+  const Decl * const D;
 
   std::unique_ptr<CFG> cfg, completeCFG;
   std::unique_ptr<CFGStmtMap> cfgStmtMap;
 
   CFG::BuildOptions cfgBuildOptions;
-  CFG::BuildOptions::ForcedBlkExprs *forcedBlkExprs = nullptr;
+  CFG::BuildOptions::ForcedBlkExprs *forcedBlkExprs;
 
-  bool builtCFG = false;
-  bool builtCompleteCFG = false;
+  bool builtCFG, builtCompleteCFG;
   std::unique_ptr<ParentMap> PM;
+  std::unique_ptr<PseudoConstantAnalysis> PCA;
   std::unique_ptr<CFGReverseBlockReachabilityAnalysis> CFA;
 
   llvm::BumpPtrAllocator A;
 
-  llvm::DenseMap<const BlockDecl *, void *> *ReferencedBlockVars = nullptr;
+  llvm::DenseMap<const BlockDecl*,void*> *ReferencedBlockVars;
 
-  void *ManagedAnalyses = nullptr;
+  void *ManagedAnalyses;
 
 public:
-  AnalysisDeclContext(AnalysisDeclContextManager *Mgr, const Decl *D);
+  AnalysisDeclContext(AnalysisDeclContextManager *Mgr,
+                  const Decl *D);
 
-  AnalysisDeclContext(AnalysisDeclContextManager *Mgr, const Decl *D,
-                      const CFG::BuildOptions &BuildOptions);
+  AnalysisDeclContext(AnalysisDeclContextManager *Mgr,
+                  const Decl *D,
+                  const CFG::BuildOptions &BuildOptions);
 
   ~AnalysisDeclContext();
 
   ASTContext &getASTContext() const { return D->getASTContext(); }
-
   const Decl *getDecl() const { return D; }
 
-  AnalysisDeclContextManager *getManager() const { return ADCMgr; }
-
-  CFG::BuildOptions &getCFGBuildOptions() { return cfgBuildOptions; }
+  /// Return the AnalysisDeclContextManager (if any) that created
+  /// this AnalysisDeclContext.
+  AnalysisDeclContextManager *getManager() const {
+    return Manager;
+  }
+  
+  /// Return the build options used to construct the CFG.
+  CFG::BuildOptions &getCFGBuildOptions() {
+    return cfgBuildOptions;
+  }
 
   const CFG::BuildOptions &getCFGBuildOptions() const {
     return cfgBuildOptions;
   }
 
-  /// \returns Whether we are adding exception handling edges from CallExprs.
-  /// If this is false, then try/catch statements and blocks reachable from them
-  /// can appear to be dead in the CFG, analysis passes must cope with that.
+  /// getAddEHEdges - Return true iff we are adding exceptional edges from
+  /// callExprs.  If this is false, then try/catch statements and blocks
+  /// reachable from them can appear to be dead in the CFG, analysis passes must
+  /// cope with that.
   bool getAddEHEdges() const { return cfgBuildOptions.AddEHEdges; }
   bool getUseUnoptimizedCFG() const {
-    return !cfgBuildOptions.PruneTriviallyFalseEdges;
+      return !cfgBuildOptions.PruneTriviallyFalseEdges;
   }
   bool getAddImplicitDtors() const { return cfgBuildOptions.AddImplicitDtors; }
   bool getAddInitializers() const { return cfgBuildOptions.AddInitializers; }
@@ -126,25 +130,25 @@ public:
   void registerForcedBlockExpression(const Stmt *stmt);
   const CFGBlock *getBlockForRegisteredExpression(const Stmt *stmt);
 
-  /// \returns The body of the stored Decl \c D.
+  /// \brief Get the body of the Declaration.
   Stmt *getBody() const;
 
-  /// \copydoc AnalysisDeclContext::getBody()
+  /// \brief Get the body of the Declaration.
   /// \param[out] IsAutosynthesized Specifies if the body is auto-generated
   ///             by the BodyFarm.
   Stmt *getBody(bool &IsAutosynthesized) const;
 
-  /// \returns Whether the body of the Decl \c D is generated by the BodyFarm.
+  /// \brief Checks if the body of the Decl is generated by the BodyFarm.
   ///
-  /// \note The lookup is not free. We are going to call getBody behind
+  /// Note, the lookup is not free. We are going to call getBody behind
   /// the scenes.
   /// \sa getBody
   bool isBodyAutosynthesized() const;
 
-  /// \returns Whether the body of the Decl \c D is generated by the BodyFarm
-  /// from a model file.
+  /// \brief Checks if the body of the Decl is generated by the BodyFarm from a
+  /// model file.
   ///
-  /// \note The lookup is not free. We are going to call getBody behind
+  /// Note, the lookup is not free. We are going to call getBody behind
   /// the scenes.
   /// \sa getBody
   bool isBodyAutosynthesizedFromModelFile() const;
@@ -155,66 +159,62 @@ public:
 
   CFGReverseBlockReachabilityAnalysis *getCFGReachablityAnalysis();
 
-  /// \returns A version of the CFG without any edges pruned.
+  /// Return a version of the CFG without any edges pruned.
   CFG *getUnoptimizedCFG();
 
   void dumpCFG(bool ShowColors);
 
-  /// \returns Whether we have built a CFG for this analysis context.
-  ///
-  /// \note This doesn't correspond to whether or not a valid CFG exists, it
+  /// \brief Returns true if we have built a CFG for this analysis context.
+  /// Note that this doesn't correspond to whether or not a valid CFG exists, it
   /// corresponds to whether we *attempted* to build one.
   bool isCFGBuilt() const { return builtCFG; }
 
   ParentMap &getParentMap();
+  PseudoConstantAnalysis *getPseudoConstantAnalysis();
 
-  using referenced_decls_iterator = const VarDecl *const *;
+  typedef const VarDecl * const * referenced_decls_iterator;
 
   llvm::iterator_range<referenced_decls_iterator>
   getReferencedBlockVars(const BlockDecl *BD);
 
-  /// \returns The ImplicitParamDecl associated with \c self if this
-  /// AnalysisDeclContext wraps an ObjCMethodDecl or nullptr otherwise.
+  /// Return the ImplicitParamDecl* associated with 'self' if this
+  /// AnalysisDeclContext wraps an ObjCMethodDecl.  Returns NULL otherwise.
   const ImplicitParamDecl *getSelfDecl() const;
 
-  /// \copydoc LocationContextManager::getStackFrame()
-  const StackFrameContext *getStackFrame(LocationContext const *ParentLC,
-                                         const Stmt *S, const CFGBlock *Blk,
-                                         unsigned BlockCount, unsigned Index);
-
-  /// \copydoc LocationContextManager::getBlockInvocationContext()
+  const StackFrameContext *getStackFrame(LocationContext const *Parent,
+                                         const Stmt *S,
+                                         const CFGBlock *Blk,
+                                         unsigned Idx);
+  
   const BlockInvocationContext *
-  getBlockInvocationContext(const LocationContext *ParentLC,
-                            const BlockDecl *BD, const void *Data);
+  getBlockInvocationContext(const LocationContext *parent,
+                            const BlockDecl *BD,
+                            const void *ContextData);
 
-  /// \returns The specified analysis object, lazily running the analysis if
-  /// necessary or nullptr if the analysis could not run.
-  template <typename T> T *getAnalysis() {
+  /// Return the specified analysis object, lazily running the analysis if
+  /// necessary.  Return NULL if the analysis could not run.
+  template <typename T>
+  T *getAnalysis() {
     const void *tag = T::getTag();
-    std::unique_ptr<ManagedAnalysis> &data = getAnalysisImpl(tag);
-    if (!data)
+    ManagedAnalysis *&data = getAnalysisImpl(tag);
+    if (!data) {
       data = T::create(*this);
-    return static_cast<T *>(data.get());
+    }
+    return static_cast<T*>(data);
   }
 
-  /// \returns Whether the root namespace of \p D is the \c std C++ namespace.
+  /// Returns true if the root namespace of the given declaration is the 'std'
+  /// C++ namespace.
   static bool isInStdNamespace(const Decl *D);
-
-  static std::string getFunctionName(const Decl *D);
-
 private:
-  std::unique_ptr<ManagedAnalysis> &getAnalysisImpl(const void *tag);
+  ManagedAnalysis *&getAnalysisImpl(const void* tag);
 
   LocationContextManager &getLocationContextManager();
 };
 
-/// It wraps the AnalysisDeclContext to represent both the call stack with
-/// the help of StackFrameContext and inside the function calls the
-/// BlockInvocationContext. It is needed for context sensitive analysis to
-/// model entering, leaving or inlining function calls.
 class LocationContext : public llvm::FoldingSetNode {
 public:
-  enum ContextKind { StackFrame, Block };
+  enum ContextKind { StackFrame, Scope, Block };
 
 private:
   ContextKind Kind;
@@ -224,19 +224,16 @@ private:
   AnalysisDeclContext *Ctx;
 
   const LocationContext *Parent;
-  int64_t ID;
 
 protected:
   LocationContext(ContextKind k, AnalysisDeclContext *ctx,
-                  const LocationContext *parent, int64_t ID)
-      : Kind(k), Ctx(ctx), Parent(parent), ID(ID) {}
+                  const LocationContext *parent)
+    : Kind(k), Ctx(ctx), Parent(parent) {}
 
 public:
   virtual ~LocationContext();
 
   ContextKind getKind() const { return Kind; }
-
-  int64_t getID() const { return ID; }
 
   AnalysisDeclContext *getAnalysisDeclContext() const { return Ctx; }
 
@@ -244,210 +241,201 @@ public:
 
   bool isParentOf(const LocationContext *LC) const;
 
-  const Decl *getDecl() const { return Ctx->getDecl(); }
+  const Decl *getDecl() const { return getAnalysisDeclContext()->getDecl(); }
 
-  CFG *getCFG() const { return Ctx->getCFG(); }
+  CFG *getCFG() const { return getAnalysisDeclContext()->getCFG(); }
 
-  template <typename T> T *getAnalysis() const { return Ctx->getAnalysis<T>(); }
+  template <typename T>
+  T *getAnalysis() const {
+    return getAnalysisDeclContext()->getAnalysis<T>();
+  }
 
-  const ParentMap &getParentMap() const { return Ctx->getParentMap(); }
+  ParentMap &getParentMap() const {
+    return getAnalysisDeclContext()->getParentMap();
+  }
 
-  /// \copydoc AnalysisDeclContext::getSelfDecl()
-  const ImplicitParamDecl *getSelfDecl() const { return Ctx->getSelfDecl(); }
+  const ImplicitParamDecl *getSelfDecl() const {
+    return Ctx->getSelfDecl();
+  }
 
-  const StackFrameContext *getStackFrame() const;
+  const StackFrameContext *getCurrentStackFrame() const;
 
-  /// \returns Whether the current LocationContext has no caller context.
+  /// Return true if the current LocationContext has no caller context.
   virtual bool inTopFrame() const;
 
   virtual void Profile(llvm::FoldingSetNodeID &ID) = 0;
 
-  /// Prints out the call stack.
-  ///
-  /// \param Out The out stream.
-  LLVM_DUMP_METHOD void dumpStack(raw_ostream &Out) const;
-
-  /// Prints out the call stack in \c json format.
-  ///
-  /// \param Out   The out stream.
-  /// \param NL    The newline.
-  /// \param Space The space count for indentation.
-  /// \param IsDot Whether the output format is \c dot.
-  /// \param printMoreInfoPerContext
-  /// A callback to print more information for each context, for example:
-  /// \code
-  ///   [&](const LocationContext *LC) { LC->dump(); }
-  /// \endcode
-  void printJson(
-      raw_ostream &Out, const char *NL = "\n", unsigned int Space = 0,
-      bool IsDot = false,
-      std::function<void(const LocationContext *)> printMoreInfoPerContext =
-          [](const LocationContext *) {}) const;
-
-  LLVM_DUMP_METHOD void dump() const;
-
-  static void ProfileCommon(llvm::FoldingSetNodeID &ID, ContextKind ck,
-                            AnalysisDeclContext *ctx,
-                            const LocationContext *parent, const void *data);
-};
-
-/// It represents a stack frame of the call stack (based on CallEvent).
-class StackFrameContext : public LocationContext {
-  friend class LocationContextManager;
-
-  // The call site where this stack frame is established.
-  const Stmt *CallSite;
-
-  // The parent block of the call site.
-  const CFGBlock *Block;
-
-  // The number of times the 'Block' has been visited.
-  // It allows discriminating between stack frames of the same call that is
-  // called multiple times in a loop.
-  const unsigned BlockCount;
-
-  // The index of the call site in the CFGBlock.
-  const unsigned Index;
-
-  StackFrameContext(AnalysisDeclContext *ADC, const LocationContext *ParentLC,
-                    const Stmt *S, const CFGBlock *Block, unsigned BlockCount,
-                    unsigned Index, int64_t ID)
-      : LocationContext(StackFrame, ADC, ParentLC, ID), CallSite(S),
-        Block(Block), BlockCount(BlockCount), Index(Index) {}
+  void dumpStack(raw_ostream &OS, StringRef Indent = "") const;
+  void dumpStack() const;
 
 public:
-  ~StackFrameContext() override = default;
+  static void ProfileCommon(llvm::FoldingSetNodeID &ID,
+                            ContextKind ck,
+                            AnalysisDeclContext *ctx,
+                            const LocationContext *parent,
+                            const void *data);
+};
+
+class StackFrameContext : public LocationContext {
+  // The callsite where this stack frame is established.
+  const Stmt *CallSite;
+
+  // The parent block of the callsite.
+  const CFGBlock *Block;
+
+  // The index of the callsite in the CFGBlock.
+  unsigned Index;
+
+  friend class LocationContextManager;
+  StackFrameContext(AnalysisDeclContext *ctx, const LocationContext *parent,
+                    const Stmt *s, const CFGBlock *blk,
+                    unsigned idx)
+    : LocationContext(StackFrame, ctx, parent), CallSite(s),
+      Block(blk), Index(idx) {}
+
+public:
+  ~StackFrameContext() override {}
 
   const Stmt *getCallSite() const { return CallSite; }
 
   const CFGBlock *getCallSiteBlock() const { return Block; }
 
-  bool inTopFrame() const override { return getParent() == nullptr; }
+  /// Return true if the current LocationContext has no caller context.
+  bool inTopFrame() const override { return getParent() == nullptr;  }
 
   unsigned getIndex() const { return Index; }
 
-  CFGElement getCallSiteCFGElement() const { return (*Block)[Index]; }
-  
   void Profile(llvm::FoldingSetNodeID &ID) override;
 
-  static void Profile(llvm::FoldingSetNodeID &ID, AnalysisDeclContext *ADC,
-                      const LocationContext *ParentLC, const Stmt *S,
-                      const CFGBlock *Block, unsigned BlockCount,
-                      unsigned Index) {
-    ProfileCommon(ID, StackFrame, ADC, ParentLC, S);
-    ID.AddPointer(Block);
-    ID.AddInteger(BlockCount);
-    ID.AddInteger(Index);
+  static void Profile(llvm::FoldingSetNodeID &ID, AnalysisDeclContext *ctx,
+                      const LocationContext *parent, const Stmt *s,
+                      const CFGBlock *blk, unsigned idx) {
+    ProfileCommon(ID, StackFrame, ctx, parent, s);
+    ID.AddPointer(blk);
+    ID.AddInteger(idx);
   }
 
-  static bool classof(const LocationContext *LC) {
-    return LC->getKind() == StackFrame;
+  static bool classof(const LocationContext *Ctx) {
+    return Ctx->getKind() == StackFrame;
   }
 };
 
-/// It represents a block invocation (based on BlockCall).
-class BlockInvocationContext : public LocationContext {
+class ScopeContext : public LocationContext {
+  const Stmt *Enter;
+
   friend class LocationContextManager;
-
-  const BlockDecl *BD;
-
-  // FIXME: Come up with a more type-safe way to model context-sensitivity.
-  const void *Data;
-
-  BlockInvocationContext(AnalysisDeclContext *ADC,
-                         const LocationContext *ParentLC, const BlockDecl *BD,
-                         const void *Data, int64_t ID)
-      : LocationContext(Block, ADC, ParentLC, ID), BD(BD), Data(Data) {}
+  ScopeContext(AnalysisDeclContext *ctx, const LocationContext *parent,
+               const Stmt *s)
+    : LocationContext(Scope, ctx, parent), Enter(s) {}
 
 public:
-  ~BlockInvocationContext() override = default;
-
-  const BlockDecl *getBlockDecl() const { return BD; }
-
-  const void *getData() const { return Data; }
+  ~ScopeContext() override {}
 
   void Profile(llvm::FoldingSetNodeID &ID) override;
 
-  static void Profile(llvm::FoldingSetNodeID &ID, AnalysisDeclContext *ADC,
-                      const LocationContext *ParentLC, const BlockDecl *BD,
-                      const void *Data) {
-    ProfileCommon(ID, Block, ADC, ParentLC, BD);
-    ID.AddPointer(Data);
+  static void Profile(llvm::FoldingSetNodeID &ID, AnalysisDeclContext *ctx,
+                      const LocationContext *parent, const Stmt *s) {
+    ProfileCommon(ID, Scope, ctx, parent, s);
   }
 
-  static bool classof(const LocationContext *LC) {
-    return LC->getKind() == Block;
+  static bool classof(const LocationContext *Ctx) {
+    return Ctx->getKind() == Scope;
+  }
+};
+
+class BlockInvocationContext : public LocationContext {
+  const BlockDecl *BD;
+  
+  // FIXME: Come up with a more type-safe way to model context-sensitivity.
+  const void *ContextData;
+
+  friend class LocationContextManager;
+
+  BlockInvocationContext(AnalysisDeclContext *ctx,
+                         const LocationContext *parent,
+                         const BlockDecl *bd, const void *contextData)
+    : LocationContext(Block, ctx, parent), BD(bd), ContextData(contextData) {}
+
+public:
+  ~BlockInvocationContext() override {}
+
+  const BlockDecl *getBlockDecl() const { return BD; }
+  
+  const void *getContextData() const { return ContextData; }
+
+  void Profile(llvm::FoldingSetNodeID &ID) override;
+
+  static void Profile(llvm::FoldingSetNodeID &ID, AnalysisDeclContext *ctx,
+                      const LocationContext *parent, const BlockDecl *bd,
+                      const void *contextData) {
+    ProfileCommon(ID, Block, ctx, parent, bd);
+    ID.AddPointer(contextData);
+  }
+
+  static bool classof(const LocationContext *Ctx) {
+    return Ctx->getKind() == Block;
   }
 };
 
 class LocationContextManager {
   llvm::FoldingSet<LocationContext> Contexts;
-
-  // ID used for generating a new location context.
-  int64_t NewID = 0;
-
 public:
   ~LocationContextManager();
 
-  /// Obtain a context of the call stack using its parent context.
-  ///
-  /// \param ADC        The AnalysisDeclContext.
-  /// \param ParentLC   The parent context of this newly created context.
-  /// \param S          The call.
-  /// \param Block      The basic block.
-  /// \param BlockCount The current count of entering into \p Blk.
-  /// \param Index      The index of \p Blk.
-  /// \returns The context for \p D with parent context \p ParentLC.
-  const StackFrameContext *getStackFrame(AnalysisDeclContext *ADC,
-                                         const LocationContext *ParentLC,
-                                         const Stmt *S, const CFGBlock *Block,
-                                         unsigned BlockCount, unsigned Index);
+  const StackFrameContext *getStackFrame(AnalysisDeclContext *ctx,
+                                         const LocationContext *parent,
+                                         const Stmt *s,
+                                         const CFGBlock *blk, unsigned idx);
 
-  /// Obtain a context of the block invocation using its parent context.
-  ///
-  /// \param ADC      The AnalysisDeclContext.
-  /// \param ParentLC The parent context of this newly created context.
-  /// \param BD       The BlockDecl.
-  /// \param Data     The raw data to store as part of the context.
+  const ScopeContext *getScope(AnalysisDeclContext *ctx,
+                               const LocationContext *parent,
+                               const Stmt *s);
+  
   const BlockInvocationContext *
-  getBlockInvocationContext(AnalysisDeclContext *ADC,
-                            const LocationContext *ParentLC,
-                            const BlockDecl *BD, const void *Data);
+  getBlockInvocationContext(AnalysisDeclContext *ctx,
+                            const LocationContext *parent,
+                            const BlockDecl *BD,
+                            const void *ContextData);
 
   /// Discard all previously created LocationContext objects.
   void clear();
+private:
+  template <typename LOC, typename DATA>
+  const LOC *getLocationContext(AnalysisDeclContext *ctx,
+                                const LocationContext *parent,
+                                const DATA *d);
 };
 
 class AnalysisDeclContextManager {
-  using ContextMap =
-      llvm::DenseMap<const Decl *, std::unique_ptr<AnalysisDeclContext>>;
+  typedef llvm::DenseMap<const Decl *, std::unique_ptr<AnalysisDeclContext>>
+      ContextMap;
 
   ContextMap Contexts;
-  LocationContextManager LocCtxMgr;
+  LocationContextManager LocContexts;
   CFG::BuildOptions cfgBuildOptions;
 
-  // Pointer to an interface that can provide function bodies for
-  // declarations from external source.
+  /// Pointer to an interface that can provide function bodies for
+  /// declarations from external source.
   std::unique_ptr<CodeInjector> Injector;
 
-  // A factory for creating and caching implementations for common
-  // methods during the analysis.
+  /// A factory for creating and caching implementations for common
+  /// methods during the analysis.
   BodyFarm FunctionBodyFarm;
 
-  // Flag to indicate whether or not bodies should be synthesized
-  // for well-known functions.
+  /// Flag to indicate whether or not bodies should be synthesized
+  /// for well-known functions.
   bool SynthesizeBodies;
 
 public:
-  AnalysisDeclContextManager(
-      ASTContext &ASTCtx, bool useUnoptimizedCFG = false,
-      bool addImplicitDtors = false, bool addInitializers = false,
-      bool addTemporaryDtors = false, bool addLifetime = false,
-      bool addLoopExit = false, bool addScopes = false,
-      bool synthesizeBodies = false, bool addStaticInitBranches = false,
-      bool addCXXNewAllocator = true, bool addRichCXXConstructors = true,
-      bool markElidedCXXConstructors = true, bool addVirtualBaseBranches = true,
-      CodeInjector *injector = nullptr);
+  AnalysisDeclContextManager(ASTContext &ASTCtx, bool useUnoptimizedCFG = false,
+                             bool addImplicitDtors = false,
+                             bool addInitializers = false,
+                             bool addTemporaryDtors = false,
+                             bool addLifetime = false, bool addLoopExit = false,
+                             bool synthesizeBodies = false,
+                             bool addStaticInitBranches = false,
+                             bool addCXXNewAllocator = true,
+                             CodeInjector *injector = nullptr);
 
   AnalysisDeclContext *getContext(const Decl *D);
 
@@ -455,27 +443,38 @@ public:
     return !cfgBuildOptions.PruneTriviallyFalseEdges;
   }
 
-  CFG::BuildOptions &getCFGBuildOptions() { return cfgBuildOptions; }
-
-  /// \returns Whether faux bodies should be synthesized for known functions.
+  CFG::BuildOptions &getCFGBuildOptions() {
+    return cfgBuildOptions;
+  }
+  
+  /// Return true if faux bodies should be synthesized for well-known
+  /// functions.
   bool synthesizeBodies() const { return SynthesizeBodies; }
 
-  /// Obtain the beginning context of the analysis.
-  ///
-  /// \returns The top level stack frame for \p D.
+  const StackFrameContext *getStackFrame(AnalysisDeclContext *Ctx,
+                                         LocationContext const *Parent,
+                                         const Stmt *S,
+                                         const CFGBlock *Blk,
+                                         unsigned Idx) {
+    return LocContexts.getStackFrame(Ctx, Parent, S, Blk, Idx);
+  }
+
+  // Get the top level stack frame.
   const StackFrameContext *getStackFrame(const Decl *D) {
-    return LocCtxMgr.getStackFrame(getContext(D), nullptr, nullptr, nullptr, 0,
-                                   0);
+    return LocContexts.getStackFrame(getContext(D), nullptr, nullptr, nullptr,
+                                     0);
   }
 
-  /// \copydoc LocationContextManager::getStackFrame()
-  const StackFrameContext *getStackFrame(AnalysisDeclContext *ADC,
-                                         const LocationContext *Parent,
-                                         const Stmt *S, const CFGBlock *Block,
-                                         unsigned BlockCount, unsigned Index) {
-    return LocCtxMgr.getStackFrame(ADC, Parent, S, Block, BlockCount, Index);
+  // Get a stack frame with parent.
+  StackFrameContext const *getStackFrame(const Decl *D,
+                                         LocationContext const *Parent,
+                                         const Stmt *S,
+                                         const CFGBlock *Blk,
+                                         unsigned Idx) {
+    return LocContexts.getStackFrame(getContext(D), Parent, S, Blk, Idx);
   }
 
+  /// Get a reference to {@code BodyFarm} instance.
   BodyFarm &getBodyFarm();
 
   /// Discard all previously created AnalysisDeclContexts.
@@ -484,9 +483,10 @@ public:
 private:
   friend class AnalysisDeclContext;
 
-  LocationContextManager &getLocationContextManager() { return LocCtxMgr; }
+  LocationContextManager &getLocationContextManager() {
+    return LocContexts;
+  }
 };
 
-} // namespace clang
-
-#endif // LLVM_CLANG_ANALYSIS_ANALYSISDECLCONTEXT_H
+} // end clang namespace
+#endif

@@ -1,8 +1,5 @@
 set(LLVM_LINK_COMPONENTS
-  AllTargetsAsmParsers
-  AllTargetsCodeGens
-  AllTargetsDescs
-  AllTargetsInfos
+  ${LLVM_TARGETS_TO_BUILD}
   Analysis
   BitReader
   BitWriter
@@ -11,7 +8,6 @@ set(LLVM_LINK_COMPONENTS
   Coroutines
   IPO
   IRReader
-  AggressiveInstCombine
   InstCombine
   Instrumentation
   FuzzMutate
@@ -25,7 +21,5 @@ set(LLVM_LINK_COMPONENTS
   Passes
 )
 
-add_llvm_fuzzer(llvm-opt-fuzzer
-  llvm-opt-fuzzer.cpp
-  DUMMY_MAIN DummyOptFuzzer.cpp
-  )
+add_llvm_fuzzer(llvm-opt-fuzzer llvm-opt-fuzzer.cpp
+  DUMMY_MAIN DummyOptFuzzer.cpp)

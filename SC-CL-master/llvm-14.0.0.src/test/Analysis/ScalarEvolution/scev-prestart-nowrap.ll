@@ -1,4 +1,4 @@
-; RUN: opt -disable-output "-passes=print<scalar-evolution>" < %s 2>&1 | FileCheck %s
+; RUN: opt -analyze -scalar-evolution < %s | FileCheck %s
 
 ; An example run where SCEV(%postinc)->getStart() may overflow:
 ;

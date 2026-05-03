@@ -1,4 +1,4 @@
-; RUN: opt -passes=metarenamer -S < %s | FileCheck %s
+; RUN: opt -metarenamer -S < %s | FileCheck %s
 
 ; CHECK: target triple {{.*}}
 ; CHECK-NOT: {{^x*}}xxx{{^x*}}
@@ -22,7 +22,7 @@ define i32 @func_3_xxx() nounwind uwtable ssp {
   ret i32 3
 }
 
-define void @func_4_xxx(%struct.foo_xxx* sret(%struct.foo_xxx) %agg.result) nounwind uwtable ssp {
+define void @func_4_xxx(%struct.foo_xxx* sret %agg.result) nounwind uwtable ssp {
   %1 = alloca %struct.foo_xxx, align 8
   %2 = getelementptr inbounds %struct.foo_xxx, %struct.foo_xxx* %1, i32 0, i32 0
   store i32 1, i32* %2, align 4
@@ -35,11 +35,11 @@ define void @func_4_xxx(%struct.foo_xxx* sret(%struct.foo_xxx) %agg.result) noun
   store double 4.000000e+00, double* %6, align 8
   %7 = bitcast %struct.foo_xxx* %agg.result to i8*
   %8 = bitcast %struct.foo_xxx* %1 to i8*
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %7, i8* align 8 %8, i64 24, i1 false)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %7, i8* %8, i64 24, i32 8, i1 false)
   ret void
 }
 
-declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture, i8* nocapture, i64, i1) nounwind
+declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture, i8* nocapture, i64, i32, i1) nounwind
 
 define i32 @func_5_xxx(i32 %arg_1_xxx, i32 %arg_2_xxx, i32 %arg_3_xxx, i32 %arg_4_xxx) nounwind uwtable ssp {
   %1 = alloca i32, align 4

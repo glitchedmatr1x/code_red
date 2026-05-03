@@ -1,5 +1,5 @@
 This file is a partial list of people who have contributed to the LLVM
-project. If you have contributed a patch or made some other contribution to
+project.  If you have contributed a patch or made some other contribution to
 LLVM, please submit a patch to this file to add yourself, and it will be
 done!
 
@@ -23,8 +23,7 @@ D: MingW Win32 API portability layer
 
 N: Aaron Ballman
 E: aaron@aaronballman.com
-D: Clang frontend, frontend attributes, Windows support, general bug fixing
-I: AaronBallman
+D: __declspec attributes, Windows support, general bug fixing
 
 N: Nate Begeman
 E: natebegeman@mac.com
@@ -35,13 +34,6 @@ N: Daniel Berlin
 E: dberlin@dberlin.org
 D: ET-Forest implementation.
 D: Sparse bitmap
-
-N: Geoff Berry
-E: gberry@codeaurora.org
-E: gcb@acm.org
-D: AArch64 backend improvements
-D: Added EarlyCSE MemorySSA support
-D: CodeGen improvements
 
 N: David Blaikie
 E: dblaikie@gmail.com
@@ -115,8 +107,8 @@ E: stefanus.du.toit@intel.com
 D: Bug fixes and minor improvements
 
 N: Rafael Avila de Espindola
-E: rafael@espindo.la
-D: MC and LLD work
+E: rafael.espindola@gmail.com
+D: The ARM backend
 
 N: Dave Estes
 E: cestes@codeaurora.org
@@ -132,7 +124,7 @@ D: Basic-block autovectorization, PowerPC backend improvements
 
 N: Eric Fiselier
 E: eric@efcs.ca
-D: LIT patches and documentation
+D: LIT patches and documentation.
 
 N: Ryan Flynn
 E: pizza@parseerror.com
@@ -163,20 +155,9 @@ E: foldr@codedgers.com
 D: Author of llvmc2
 
 N: Dan Gohman
-E: llvm@sunfishcode.online
+E: sunfish@mozilla.com
 D: Miscellaneous bug fixes
 D: WebAssembly Backend
-
-N: Renato Golin
-E: rengolin@systemcall.eu
-E: renato.golin@linaro.org
-E: rengolin@gmail.com
-D: ARM/AArch64 back-end improvements
-D: Loop Vectorizer improvements
-D: Regression and Test Suite improvements
-D: Linux compatibility (GNU, musl, etc)
-D: Initial Linux kernel / Android support effort
-I: rengolin
 
 N: David Goodwin
 E: david@goodwinz.net
@@ -222,11 +203,6 @@ N: Patrick Jenkins
 E: patjenk@wam.umd.edu
 D: Nightly Tester
 
-N: Tony(Yanjun) Jiang
-E: jtony@ca.ibm.com
-D: PowerPC Backend Developer
-D: Improvements to the PPC backend and miscellaneous bug fixes
-
 N: Dale Johannesen
 E: dalej@apple.com
 D: ARM constant islands improvements
@@ -242,11 +218,6 @@ D: Support for packed types
 N: Rod Kay
 E: rkay@auroraux.org
 D: Author of LLVM Ada bindings
-
-N: Erich Keane
-E: erich.keane@intel.com
-D: A variety of Clang contributions including function multiversioning, regcall/vectorcall.
-I: ErichKeane
 
 N: Eric Kidd
 W: http://randomhacks.net/
@@ -298,7 +269,7 @@ D: Release manager (1.7+)
 N: Sylvestre Ledru
 E: sylvestre@debian.org
 W: http://sylvestre.ledru.info/
-W: https://apt.llvm.org/
+W: http://apt.llvm.org/
 D: Debian and Ubuntu packaging
 D: Continuous integration with jenkins
 
@@ -336,10 +307,6 @@ D: Clang semantic analysis and IR generation
 N: Michael McCracken
 E: michael.mccracken@gmail.com
 D: Line number support for llvmgcc
-
-N: Fanbo Meng
-E: fanbo.meng@ibm.com
-D: z/OS support
 
 N: Vladimir Merzliakov
 E: wanderer@rsu.ru
@@ -416,10 +383,6 @@ W: http://vladimir_prus.blogspot.com
 E: ghost@cs.msu.su
 D: Made inst_iterator behave like a proper iterator, LowerConstantExprs pass
 
-N: QIU Chaofan
-E: qiucofan@cn.ibm.com
-D: PowerPC Backend Developer
-
 N: Kalle Raiskila
 E: kalle.rasikila@nokia.com
 D: Some bugfixes to CellSPU
@@ -482,10 +445,6 @@ E: rspencer@reidspencer.com
 W: http://reidspencer.com/
 D: Lots of stuff, see: http://wiki.llvm.org/index.php/User:Reid
 
-N: Abhina Sreeskantharajan
-E: Abhina.Sreeskantharajan@ibm.com
-D: z/OS support
-
 N: Alp Toker
 E: alp@nuanti.com
 W: http://atoker.com/
@@ -515,37 +474,9 @@ D: Thread Local Storage implementation
 N: Bill Wendling
 I: wendling
 E: isanbard@gmail.com
-D: Release manager, IR Linker, LTO.
-D: Bunches of stuff.
+D: Release manager, IR Linker, LTO
+D: Bunches of stuff
 
 N: Bob Wilson
 E: bob.wilson@acm.org
 D: Advanced SIMD (NEON) support in the ARM backend.
-
-N: QingShan Zhang
-N: steven.zhang
-E: zhangqingshan.zll@bytedance.com
-
-N: Li Jia He
-E: hljhehlj@cn.ibm.com
-D: PowerPC Backend Developer
-
-N: Zi Xuan Wu
-N: Zeson
-E: zixuan.wu@linux.alibaba.com
-
-N: Kang Zhang
-E: shkzhang@cn.ibm.com
-D: PowerPC Backend Developer
-
-N: Zheng Chen
-E: czhengsz@cn.ibm.com
-D: PowerPC Backend Developer
-
-N: Djordje Todorovic
-E: djordje.todorovic@rt-rk.com
-D: Debug Information
-
-N: Biplob Mishra
-E: biplmish@in.ibm.com
-D: PowerPC Analysis

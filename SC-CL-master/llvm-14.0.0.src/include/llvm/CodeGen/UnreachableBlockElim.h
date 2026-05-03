@@ -1,8 +1,9 @@
 //===-- UnreachableBlockElim.h - Remove unreachable blocks for codegen --===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -19,8 +20,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CODEGEN_UNREACHABLEBLOCKELIM_H
-#define LLVM_CODEGEN_UNREACHABLEBLOCKELIM_H
+#ifndef LLVM_LIB_CODEGEN_UNREACHABLEBLOCKELIM_H
+#define LLVM_LIB_CODEGEN_UNREACHABLEBLOCKELIM_H
 
 #include "llvm/IR/PassManager.h"
 
@@ -33,4 +34,4 @@ public:
 };
 } // end namespace llvm
 
-#endif // LLVM_CODEGEN_UNREACHABLEBLOCKELIM_H
+#endif // LLVM_LIB_CODEGEN_UNREACHABLEBLOCKELIM_H

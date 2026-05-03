@@ -1,8 +1,9 @@
 //===- BuildSystem.cpp - Utilities for use by build systems ---------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -12,13 +13,11 @@
 
 #include "clang-c/BuildSystem.h"
 #include "CXString.h"
+#include "clang/Basic/VirtualFileSystem.h"
 #include "llvm/ADT/SmallString.h"
 #include "llvm/Support/CBindingWrapping.h"
 #include "llvm/Support/Chrono.h"
-#include "llvm/Support/ErrorHandling.h"
-#include "llvm/Support/MemAlloc.h"
 #include "llvm/Support/Path.h"
-#include "llvm/Support/VirtualFileSystem.h"
 #include "llvm/Support/raw_ostream.h"
 
 using namespace clang;
@@ -28,11 +27,11 @@ unsigned long long clang_getBuildSessionTimestamp(void) {
   return llvm::sys::toTimeT(std::chrono::system_clock::now());
 }
 
-DEFINE_SIMPLE_CONVERSION_FUNCTIONS(llvm::vfs::YAMLVFSWriter,
+DEFINE_SIMPLE_CONVERSION_FUNCTIONS(clang::vfs::YAMLVFSWriter,
                                    CXVirtualFileOverlay)
 
 CXVirtualFileOverlay clang_VirtualFileOverlay_create(unsigned) {
-  return wrap(new llvm::vfs::YAMLVFSWriter());
+  return wrap(new clang::vfs::YAMLVFSWriter());
 }
 
 enum CXErrorCode
@@ -79,7 +78,7 @@ clang_VirtualFileOverlay_writeToBuffer(CXVirtualFileOverlay VFO, unsigned,
   unwrap(VFO)->write(OS);
 
   StringRef Data = OS.str();
-  *out_buffer_ptr = static_cast<char*>(llvm::safe_malloc(Data.size()));
+  *out_buffer_ptr = (char*)malloc(Data.size());
   *out_buffer_size = Data.size();
   memcpy(*out_buffer_ptr, Data.data(), Data.size());
   return CXError_Success;
@@ -141,7 +140,7 @@ clang_ModuleMapDescriptor_writeToBuffer(CXModuleMapDescriptor MMD, unsigned,
   OS << "}\n";
 
   StringRef Data = OS.str();
-  *out_buffer_ptr = static_cast<char*>(llvm::safe_malloc(Data.size()));
+  *out_buffer_ptr = (char*)malloc(Data.size());
   *out_buffer_size = Data.size();
   memcpy(*out_buffer_ptr, Data.data(), Data.size());
   return CXError_Success;

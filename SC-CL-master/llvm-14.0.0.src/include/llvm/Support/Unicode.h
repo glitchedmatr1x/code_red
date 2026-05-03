@@ -1,8 +1,9 @@
 //===- llvm/Support/Unicode.h - Unicode character properties  -*- C++ -*-=====//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -58,10 +59,6 @@ bool isPrintable(int UCS);
 ///   * 2 for each CJK character excluding halfwidth forms;
 ///   * 1 for each of the remaining characters.
 int columnWidthUTF8(StringRef Text);
-
-/// Fold input unicode character according the Simple unicode case folding
-/// rules.
-int foldCharSimple(int C);
 
 } // namespace unicode
 } // namespace sys

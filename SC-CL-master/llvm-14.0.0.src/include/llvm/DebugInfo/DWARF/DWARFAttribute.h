@@ -1,13 +1,14 @@
 //===- DWARFAttribute.h -----------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_DEBUGINFO_DWARF_DWARFATTRIBUTE_H
-#define LLVM_DEBUGINFO_DWARF_DWARFATTRIBUTE_H
+#ifndef LLVM_DEBUGINFO_DWARFATTRIBUTE_H
+#define LLVM_DEBUGINFO_DWARFATTRIBUTE_H
 
 #include "llvm/BinaryFormat/Dwarf.h"
 #include "llvm/DebugInfo/DWARF/DWARFFormValue.h"
@@ -23,13 +24,16 @@ namespace llvm {
 /// attributes in a DWARFDie.
 struct DWARFAttribute {
   /// The debug info/types offset for this attribute.
-  uint64_t Offset = 0;
+  uint32_t Offset = 0;
   /// The debug info/types section byte size of the data for this attribute.
   uint32_t ByteSize = 0;
   /// The attribute enumeration of this attribute.
-  dwarf::Attribute Attr = dwarf::Attribute(0);
+  dwarf::Attribute Attr;
   /// The form and value for this attribute.
   DWARFFormValue Value;
+
+  DWARFAttribute(uint32_t O, dwarf::Attribute A = dwarf::Attribute(0),
+                 dwarf::Form F = dwarf::Form(0)) : Attr(A), Value(F) {}
 
   bool isValid() const {
     return Offset != 0 && Attr != dwarf::Attribute(0);
@@ -39,14 +43,14 @@ struct DWARFAttribute {
     return isValid();
   }
 
-  /// Identify DWARF attributes that may contain a pointer to a location list.
-  static bool mayHaveLocationList(dwarf::Attribute Attr);
-
-  /// Identifies DWARF attributes that may contain a reference to a
-  /// DWARF expression.
-  static bool mayHaveLocationExpr(dwarf::Attribute Attr);
+  void clear() {
+    Offset = 0;
+    ByteSize = 0;
+    Attr = dwarf::Attribute(0);
+    Value = DWARFFormValue();
+  }
 };
 
 } // end namespace llvm
 
-#endif // LLVM_DEBUGINFO_DWARF_DWARFATTRIBUTE_H
+#endif // LLVM_DEBUGINFO_DWARFATTRIBUTE_H

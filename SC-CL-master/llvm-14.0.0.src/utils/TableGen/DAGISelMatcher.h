@@ -1,8 +1,9 @@
 //===- DAGISelMatcher.h - Representation of DAG pattern matcher -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -12,8 +13,8 @@
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/CodeGen/MachineValueType.h"
 #include "llvm/Support/Casting.h"
-#include "llvm/Support/MachineValueType.h"
 
 namespace llvm {
   struct CodeGenRegister;
@@ -31,7 +32,7 @@ Matcher *ConvertPatternToMatcher(const PatternToMatch &Pattern,unsigned Variant,
                                  const CodeGenDAGPatterns &CGP);
 void OptimizeMatcher(std::unique_ptr<Matcher> &Matcher,
                      const CodeGenDAGPatterns &CGP);
-void EmitMatcherTable(Matcher *Matcher, const CodeGenDAGPatterns &CGP,
+void EmitMatcherTable(const Matcher *Matcher, const CodeGenDAGPatterns &CGP,
                       raw_ostream &OS);
 
 
@@ -41,7 +42,6 @@ class Matcher {
   // The next matcher node that is executed after this one.  Null if this is the
   // last stage of a match.
   std::unique_ptr<Matcher> Next;
-  size_t Size; // Size in bytes of matcher and all its children (if any).
   virtual void anchor();
 public:
   enum KindTy {
@@ -67,13 +67,10 @@ public:
     CheckInteger,         // Fail if wrong val.
     CheckChildInteger,    // Fail if child is wrong val.
     CheckCondCode,        // Fail if not condcode.
-    CheckChild2CondCode,  // Fail if child is wrong condcode.
     CheckValueType,
     CheckComplexPat,
     CheckAndImm,
     CheckOrImm,
-    CheckImmAllOnesV,
-    CheckImmAllZerosV,
     CheckFoldableChainNode,
 
     // Node creation/emisssion.
@@ -86,10 +83,7 @@ public:
     EmitNode,             // Create a DAG node
     EmitNodeXForm,        // Run a SDNodeXForm
     CompleteMatch,        // Finish a match and update the results.
-    MorphNodeTo,          // Build a node, finish a match and update results.
-
-    // Highest enum value; watch out when adding more.
-    HighestKind = MorphNodeTo
+    MorphNodeTo           // Build a node, finish a match and update results.
   };
   const KindTy Kind;
 
@@ -98,8 +92,6 @@ protected:
 public:
   virtual ~Matcher() {}
 
-  unsigned getSize() const { return Size; }
-  void setSize(unsigned sz) { Size = sz; }
   KindTy getKind() const { return Kind; }
 
   Matcher *getNext() { return Next.get(); }
@@ -130,12 +122,9 @@ public:
     case CheckInteger:
     case CheckChildInteger:
     case CheckCondCode:
-    case CheckChild2CondCode:
     case CheckValueType:
     case CheckAndImm:
     case CheckOrImm:
-    case CheckImmAllOnesV:
-    case CheckImmAllZerosV:
     case CheckFoldableChainNode:
       return true;
     }
@@ -425,14 +414,10 @@ private:
 /// see if the node is acceptable.
 class CheckPredicateMatcher : public Matcher {
   TreePattern *Pred;
-  const SmallVector<unsigned, 4> Operands;
 public:
-  CheckPredicateMatcher(const TreePredicateFn &pred,
-                        const SmallVectorImpl<unsigned> &Operands);
+  CheckPredicateMatcher(const TreePredicateFn &pred);
 
   TreePredicateFn getPredicate() const;
-  unsigned getNumOperands() const;
-  unsigned getOperandNo(unsigned i) const;
 
   static bool classof(const Matcher *N) {
     return N->getKind() == CheckPredicate;
@@ -635,29 +620,6 @@ private:
   bool isEqualImpl(const Matcher *M) const override {
     return cast<CheckCondCodeMatcher>(M)->CondCodeName == CondCodeName;
   }
-  bool isContradictoryImpl(const Matcher *M) const override;
-};
-
-/// CheckChild2CondCodeMatcher - This checks to see if child 2 node is a
-/// CondCodeSDNode with the specified condition, if not it fails to match.
-class CheckChild2CondCodeMatcher : public Matcher {
-  StringRef CondCodeName;
-public:
-  CheckChild2CondCodeMatcher(StringRef condcodename)
-    : Matcher(CheckChild2CondCode), CondCodeName(condcodename) {}
-
-  StringRef getCondCodeName() const { return CondCodeName; }
-
-  static bool classof(const Matcher *N) {
-    return N->getKind() == CheckChild2CondCode;
-  }
-
-private:
-  void printImpl(raw_ostream &OS, unsigned indent) const override;
-  bool isEqualImpl(const Matcher *M) const override {
-    return cast<CheckChild2CondCodeMatcher>(M)->CondCodeName == CondCodeName;
-  }
-  bool isContradictoryImpl(const Matcher *M) const override;
 };
 
 /// CheckValueTypeMatcher - This checks to see if the current node is a
@@ -708,7 +670,7 @@ public:
   const ComplexPattern &getPattern() const { return Pattern; }
   unsigned getMatchNumber() const { return MatchNumber; }
 
-  std::string getName() const { return Name; }
+  const std::string getName() const { return Name; }
   unsigned getFirstResult() const { return FirstResult; }
 
   static bool classof(const Matcher *N) {
@@ -763,38 +725,6 @@ private:
   bool isEqualImpl(const Matcher *M) const override {
     return cast<CheckOrImmMatcher>(M)->Value == Value;
   }
-};
-
-/// CheckImmAllOnesVMatcher - This checks if the current node is a build_vector
-/// or splat_vector of all ones.
-class CheckImmAllOnesVMatcher : public Matcher {
-public:
-  CheckImmAllOnesVMatcher() : Matcher(CheckImmAllOnesV) {}
-
-  static bool classof(const Matcher *N) {
-    return N->getKind() == CheckImmAllOnesV;
-  }
-
-private:
-  void printImpl(raw_ostream &OS, unsigned indent) const override;
-  bool isEqualImpl(const Matcher *M) const override { return true; }
-  bool isContradictoryImpl(const Matcher *M) const override;
-};
-
-/// CheckImmAllZerosVMatcher - This checks if the current node is a
-/// build_vector or splat_vector of all zeros.
-class CheckImmAllZerosVMatcher : public Matcher {
-public:
-  CheckImmAllZerosVMatcher() : Matcher(CheckImmAllZerosV) {}
-
-  static bool classof(const Matcher *N) {
-    return N->getKind() == CheckImmAllZerosV;
-  }
-
-private:
-  void printImpl(raw_ostream &OS, unsigned indent) const override;
-  bool isEqualImpl(const Matcher *M) const override { return true; }
-  bool isContradictoryImpl(const Matcher *M) const override;
 };
 
 /// CheckFoldableChainNodeMatcher - This checks to see if the current node
@@ -940,15 +870,13 @@ private:
 ///
 class EmitCopyToRegMatcher : public Matcher {
   unsigned SrcSlot; // Value to copy into the physreg.
-  const CodeGenRegister *DestPhysReg;
-
+  Record *DestPhysReg;
 public:
-  EmitCopyToRegMatcher(unsigned srcSlot,
-                       const CodeGenRegister *destPhysReg)
+  EmitCopyToRegMatcher(unsigned srcSlot, Record *destPhysReg)
     : Matcher(EmitCopyToReg), SrcSlot(srcSlot), DestPhysReg(destPhysReg) {}
 
   unsigned getSrcSlot() const { return SrcSlot; }
-  const CodeGenRegister *getDestPhysReg() const { return DestPhysReg; }
+  Record *getDestPhysReg() const { return DestPhysReg; }
 
   static bool classof(const Matcher *N) {
     return N->getKind() == EmitCopyToReg;

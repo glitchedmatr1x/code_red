@@ -1,11 +1,5 @@
 # RUN: llc -mtriple=x86_64-unknown-unknown -run-pass=prologepilog -pass-remarks-output=%t -pass-remarks-analysis=prologepilog -o /dev/null %s 2>&1
 # RUN: cat %t | FileCheck %s
---- |
-
-  define void @fun0() noredzone { ret void }
-  define void @fun1() noredzone { ret void }
-  define void @fun2() noredzone { ret void }
-
 ...
 ---
 name:            fun0
@@ -23,7 +17,7 @@ stack:
 constants:
 body:             |
   bb.0:
-    RET64
+    RETQ
 
 ...
 ---
@@ -41,7 +35,7 @@ stack:
 constants:
 body:             |
   bb.0:
-    RET64
+    RETQ
 
 ...
 ---
@@ -59,6 +53,6 @@ stack:
 constants:
 body:             |
   bb.0:
-    RET64
+    RETQ
 
 ...

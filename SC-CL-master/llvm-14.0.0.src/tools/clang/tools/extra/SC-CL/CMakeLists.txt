@@ -67,6 +67,7 @@ target_link_libraries(SC-CL
 	PUBLIC clangTooling
 	PUBLIC clangBasic
 	PUBLIC clangASTMatchers
+	PUBLIC Compression/zlib
 )
 
 foreach(source IN LISTS source_list)

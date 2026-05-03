@@ -1,12 +1,6 @@
-// RUN: %clang_cc1 -fsyntax-only -fopenmp -verify %s -Wuninitialized
+// RUN: %clang_cc1 -fsyntax-only -fopenmp -verify %s
 
-// RUN: %clang_cc1 -fsyntax-only -fopenmp-simd -verify %s -Wuninitialized
-
-void xxx(int argc) {
-  int x; // expected-note {{initialize the variable 'x' to silence this warning}}
-#pragma omp single
-  argc = x; // expected-warning {{variable 'x' is uninitialized when used here}}
-}
+// RUN: %clang_cc1 -fsyntax-only -fopenmp-simd -verify %s
 
 void foo();
 

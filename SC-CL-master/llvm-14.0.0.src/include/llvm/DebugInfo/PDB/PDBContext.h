@@ -1,8 +1,9 @@
 //===-- PDBContext.h --------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===/
 
@@ -43,17 +44,14 @@ namespace pdb {
     void dump(raw_ostream &OS, DIDumpOptions DIDumpOpts) override;
 
     DILineInfo getLineInfoForAddress(
-        object::SectionedAddress Address,
+        uint64_t Address,
         DILineInfoSpecifier Specifier = DILineInfoSpecifier()) override;
     DILineInfoTable getLineInfoForAddressRange(
-        object::SectionedAddress Address, uint64_t Size,
+        uint64_t Address, uint64_t Size,
         DILineInfoSpecifier Specifier = DILineInfoSpecifier()) override;
     DIInliningInfo getInliningInfoForAddress(
-        object::SectionedAddress Address,
+        uint64_t Address,
         DILineInfoSpecifier Specifier = DILineInfoSpecifier()) override;
-
-    std::vector<DILocal>
-    getLocalsForAddress(object::SectionedAddress Address) override;
 
   private:
     std::string getFunctionName(uint64_t Address, DINameKind NameKind) const;

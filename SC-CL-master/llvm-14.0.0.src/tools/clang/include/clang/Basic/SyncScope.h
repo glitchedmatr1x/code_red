@@ -1,13 +1,14 @@
 //===--- SyncScope.h - Atomic synchronization scopes ------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Provides definitions for the atomic synchronization scopes.
+/// \brief Provides definitions for the atomic synchronization scopes.
 ///
 //===----------------------------------------------------------------------===//
 
@@ -21,7 +22,7 @@
 
 namespace clang {
 
-/// Defines synch scope values used internally by clang.
+/// \brief Defines synch scope values used internally by clang.
 ///
 /// The enum values start from 0 and are contiguous. They are mainly used for
 /// enumerating all supported synch scope values and mapping them to LLVM
@@ -40,11 +41,6 @@ namespace clang {
 ///   Update getAsString.
 ///
 enum class SyncScope {
-  HIPSingleThread,
-  HIPWavefront,
-  HIPWorkgroup,
-  HIPAgent,
-  HIPSystem,
   OpenCLWorkGroup,
   OpenCLDevice,
   OpenCLAllSVMDevices,
@@ -54,16 +50,6 @@ enum class SyncScope {
 
 inline llvm::StringRef getAsString(SyncScope S) {
   switch (S) {
-  case SyncScope::HIPSingleThread:
-    return "hip_singlethread";
-  case SyncScope::HIPWavefront:
-    return "hip_wavefront";
-  case SyncScope::HIPWorkgroup:
-    return "hip_workgroup";
-  case SyncScope::HIPAgent:
-    return "hip_agent";
-  case SyncScope::HIPSystem:
-    return "hip_system";
   case SyncScope::OpenCLWorkGroup:
     return "opencl_workgroup";
   case SyncScope::OpenCLDevice:
@@ -76,41 +62,41 @@ inline llvm::StringRef getAsString(SyncScope S) {
   llvm_unreachable("Invalid synch scope");
 }
 
-/// Defines the kind of atomic scope models.
-enum class AtomicScopeModelKind { None, OpenCL, HIP };
+/// \brief Defines the kind of atomic scope models.
+enum class AtomicScopeModelKind { None, OpenCL };
 
-/// Defines the interface for synch scope model.
+/// \brief Defines the interface for synch scope model.
 class AtomicScopeModel {
 public:
   virtual ~AtomicScopeModel() {}
-  /// Maps language specific synch scope values to internal
+  /// \brief Maps language specific synch scope values to internal
   /// SyncScope enum.
   virtual SyncScope map(unsigned S) const = 0;
 
-  /// Check if the compile-time constant synch scope value
+  /// \brief Check if the compile-time constant synch scope value
   /// is valid.
   virtual bool isValid(unsigned S) const = 0;
 
-  /// Get all possible synch scope values that might be
+  /// \brief Get all possible synch scope values that might be
   /// encountered at runtime for the current language.
   virtual ArrayRef<unsigned> getRuntimeValues() const = 0;
 
-  /// If atomic builtin function is called with invalid
+  /// \brief If atomic builtin function is called with invalid
   /// synch scope value at runtime, it will fall back to a valid
   /// synch scope value returned by this function.
   virtual unsigned getFallBackValue() const = 0;
 
-  /// Create an atomic scope model by AtomicScopeModelKind.
+  /// \brief Create an atomic scope model by AtomicScopeModelKind.
   /// \return an empty std::unique_ptr for AtomicScopeModelKind::None.
   static std::unique_ptr<AtomicScopeModel> create(AtomicScopeModelKind K);
 };
 
-/// Defines the synch scope model for OpenCL.
+/// \brief Defines the synch scope model for OpenCL.
 class AtomicScopeOpenCLModel : public AtomicScopeModel {
 public:
   /// The enum values match the pre-defined macros
   /// __OPENCL_MEMORY_SCOPE_*, which are used to define memory_scope_*
-  /// enums in opencl-c-base.h.
+  /// enums in opencl-c.h.
   enum ID {
     WorkGroup = 1,
     Device = 2,
@@ -153,70 +139,16 @@ public:
   }
 };
 
-/// Defines the synch scope model for HIP.
-class AtomicScopeHIPModel : public AtomicScopeModel {
-public:
-  /// The enum values match the pre-defined macros
-  /// __HIP_MEMORY_SCOPE_*, which are used to define memory_scope_*
-  /// enums in hip-c.h.
-  enum ID {
-    SingleThread = 1,
-    Wavefront = 2,
-    Workgroup = 3,
-    Agent = 4,
-    System = 5,
-    Last = System
-  };
-
-  AtomicScopeHIPModel() {}
-
-  SyncScope map(unsigned S) const override {
-    switch (static_cast<ID>(S)) {
-    case SingleThread:
-      return SyncScope::HIPSingleThread;
-    case Wavefront:
-      return SyncScope::HIPWavefront;
-    case Workgroup:
-      return SyncScope::HIPWorkgroup;
-    case Agent:
-      return SyncScope::HIPAgent;
-    case System:
-      return SyncScope::HIPSystem;
-    }
-    llvm_unreachable("Invalid language synch scope value");
-  }
-
-  bool isValid(unsigned S) const override {
-    return S >= static_cast<unsigned>(SingleThread) &&
-           S <= static_cast<unsigned>(Last);
-  }
-
-  ArrayRef<unsigned> getRuntimeValues() const override {
-    static_assert(Last == System, "Does not include all synch scopes");
-    static const unsigned Scopes[] = {
-        static_cast<unsigned>(SingleThread), static_cast<unsigned>(Wavefront),
-        static_cast<unsigned>(Workgroup), static_cast<unsigned>(Agent),
-        static_cast<unsigned>(System)};
-    return llvm::makeArrayRef(Scopes);
-  }
-
-  unsigned getFallBackValue() const override {
-    return static_cast<unsigned>(System);
-  }
-};
-
 inline std::unique_ptr<AtomicScopeModel>
 AtomicScopeModel::create(AtomicScopeModelKind K) {
   switch (K) {
   case AtomicScopeModelKind::None:
     return std::unique_ptr<AtomicScopeModel>{};
   case AtomicScopeModelKind::OpenCL:
-    return std::make_unique<AtomicScopeOpenCLModel>();
-  case AtomicScopeModelKind::HIP:
-    return std::make_unique<AtomicScopeHIPModel>();
+    return llvm::make_unique<AtomicScopeOpenCLModel>();
   }
   llvm_unreachable("Invalid atomic scope model kind");
 }
-} // namespace clang
+}
 
 #endif

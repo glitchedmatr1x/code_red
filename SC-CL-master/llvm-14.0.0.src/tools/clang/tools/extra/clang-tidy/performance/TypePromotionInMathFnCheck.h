@@ -1,15 +1,16 @@
 //===--- TypePromotionInMathFnCheck.h - clang-tidy---------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_CLANG_TOOLS_EXTRA_CLANG_TIDY_PERFORMANCE_TYPE_PROMOTION_IN_MATH_FN_H
 #define LLVM_CLANG_TOOLS_EXTRA_CLANG_TIDY_PERFORMANCE_TYPE_PROMOTION_IN_MATH_FN_H
 
-#include "../ClangTidyCheck.h"
+#include "../ClangTidy.h"
 #include "../utils/IncludeInserter.h"
 
 namespace clang {
@@ -29,14 +30,14 @@ class TypePromotionInMathFnCheck : public ClangTidyCheck {
 public:
   TypePromotionInMathFnCheck(StringRef Name, ClangTidyContext *Context);
 
-  void registerPPCallbacks(const SourceManager &SM, Preprocessor *PP,
-                           Preprocessor *ModuleExpanderPP) override;
+  void registerPPCallbacks(CompilerInstance &Compiler) override;
   void storeOptions(ClangTidyOptions::OptionMap &Opts) override;
   void registerMatchers(ast_matchers::MatchFinder *Finder) override;
   void check(const ast_matchers::MatchFinder::MatchResult &Result) override;
 
 private:
-  utils::IncludeInserter IncludeInserter;
+  std::unique_ptr<utils::IncludeInserter> IncludeInserter;
+  const utils::IncludeSorter::IncludeStyle IncludeStyle;
 };
 
 } // namespace performance

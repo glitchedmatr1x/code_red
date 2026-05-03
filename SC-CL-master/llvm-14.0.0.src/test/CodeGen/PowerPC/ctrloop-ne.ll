@@ -32,7 +32,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos2_ir_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos2_ir_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -61,7 +62,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos4_ir_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos4_ir_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -90,7 +92,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos8_ir_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos8_ir_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -119,7 +122,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos16_ir_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos16_ir_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -177,7 +181,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos2_ri_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos2_ri_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -206,7 +211,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos4_ri_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos4_ri_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -235,7 +241,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos8_ri_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos8_ri_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -264,7 +271,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos16_ri_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos16_ri_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -322,7 +330,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos2_rr_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos2_rr_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -351,7 +360,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos4_rr_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos4_rr_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -380,7 +390,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos8_rr_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos8_rr_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:
@@ -409,7 +420,8 @@ for.end:                                          ; preds = %for.body, %entry
 
 
 ; CHECK: test_pos16_rr_ne
-; CHECK: bdnz
+; FIXME: Support this loop!
+; CHECK-NOT: bdnz
 ; a < b
 define void @test_pos16_rr_ne(i8* nocapture %p, i32 %a, i32 %b) nounwind {
 entry:

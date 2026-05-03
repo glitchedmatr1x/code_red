@@ -1,8 +1,9 @@
 //===--- MisleadingIndentationCheck.cpp - clang-tidy-----------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,10 +19,10 @@ namespace readability {
 
 static const IfStmt *getPrecedingIf(const SourceManager &SM,
                                     ASTContext *Context, const IfStmt *If) {
-  auto Parents = Context->getParents(*If);
-  if (Parents.size() != 1)
+  auto parents = Context->getParents(*If);
+  if (parents.size() != 1)
     return nullptr;
-  if (const auto *PrecedingIf = Parents[0].get<IfStmt>()) {
+  if (const auto *PrecedingIf = parents[0].get<IfStmt>()) {
     SourceLocation PreviousElseLoc = PrecedingIf->getElseLoc();
     if (SM.getExpansionLineNumber(PreviousElseLoc) ==
         SM.getExpansionLineNumber(If->getIfLoc()))
@@ -39,12 +40,12 @@ void MisleadingIndentationCheck::danglingElseCheck(const SourceManager &SM,
   if (IfLoc.isMacroID() || ElseLoc.isMacroID())
     return;
 
-  if (SM.getExpansionLineNumber(If->getThen()->getEndLoc()) ==
+  if (SM.getExpansionLineNumber(If->getThen()->getLocEnd()) ==
       SM.getExpansionLineNumber(ElseLoc))
     return;
 
   // Find location of first 'if' in a 'if else if' chain.
-  for (const auto *PrecedingIf = getPrecedingIf(SM, Context, If); PrecedingIf;
+  for (auto PrecedingIf = getPrecedingIf(SM, Context, If); PrecedingIf;
        PrecedingIf = getPrecedingIf(SM, Context, PrecedingIf))
     IfLoc = PrecedingIf->getIfLoc();
 
@@ -56,8 +57,8 @@ void MisleadingIndentationCheck::danglingElseCheck(const SourceManager &SM,
 void MisleadingIndentationCheck::missingBracesCheck(const SourceManager &SM,
                                                     const CompoundStmt *CStmt) {
   const static StringRef StmtNames[] = {"if", "for", "while"};
-  for (unsigned int I = 0; I < CStmt->size() - 1; I++) {
-    const Stmt *CurrentStmt = CStmt->body_begin()[I];
+  for (unsigned int i = 0; i < CStmt->size() - 1; i++) {
+    const Stmt *CurrentStmt = CStmt->body_begin()[i];
     const Stmt *Inner = nullptr;
     int StmtKind = 0;
 
@@ -78,21 +79,17 @@ void MisleadingIndentationCheck::missingBracesCheck(const SourceManager &SM,
     if (isa<CompoundStmt>(Inner))
       continue;
 
-    SourceLocation InnerLoc = Inner->getBeginLoc();
-    SourceLocation OuterLoc = CurrentStmt->getBeginLoc();
-
-    if (InnerLoc.isInvalid() || InnerLoc.isMacroID() || OuterLoc.isInvalid() ||
-        OuterLoc.isMacroID())
-      continue;
+    SourceLocation InnerLoc = Inner->getLocStart();
+    SourceLocation OuterLoc = CurrentStmt->getLocStart();
 
     if (SM.getExpansionLineNumber(InnerLoc) ==
         SM.getExpansionLineNumber(OuterLoc))
       continue;
 
-    const Stmt *NextStmt = CStmt->body_begin()[I + 1];
-    SourceLocation NextLoc = NextStmt->getBeginLoc();
+    const Stmt *NextStmt = CStmt->body_begin()[i + 1];
+    SourceLocation NextLoc = NextStmt->getLocStart();
 
-    if (NextLoc.isInvalid() || NextLoc.isMacroID())
+    if (InnerLoc.isMacroID() || OuterLoc.isMacroID() || NextLoc.isMacroID())
       continue;
 
     if (SM.getExpansionColumnNumber(InnerLoc) ==

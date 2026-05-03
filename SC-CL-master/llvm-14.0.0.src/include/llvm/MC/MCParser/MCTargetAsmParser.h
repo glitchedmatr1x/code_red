@@ -1,8 +1,9 @@
 //===- llvm/MC/MCTargetAsmParser.h - Target Assembly Parser -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -13,10 +14,8 @@
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInstrInfo.h"
 #include "llvm/MC/MCParser/MCAsmLexer.h"
-#include "llvm/MC/MCParser/MCParsedAsmOperand.h"
 #include "llvm/MC/MCParser/MCAsmParserExtension.h"
 #include "llvm/MC/MCTargetOptions.h"
-#include "llvm/MC/SubtargetFeature.h"
 #include "llvm/Support/SMLoc.h"
 #include <cstdint>
 #include <memory>
@@ -24,6 +23,7 @@
 namespace llvm {
 
 class MCInst;
+class MCParsedAsmOperand;
 class MCStreamer;
 class MCSubtargetInfo;
 template <typename T> class SmallVectorImpl;
@@ -34,7 +34,6 @@ enum AsmRewriteKind {
   AOK_Align,          // Rewrite align as .align.
   AOK_EVEN,           // Rewrite even as .even.
   AOK_Emit,           // Rewrite _emit as .byte.
-  AOK_CallInput,      // Rewrite in terms of ${N:P}.
   AOK_Input,          // Rewrite in terms of $N.
   AOK_Output,         // Rewrite in terms of $N.
   AOK_SizeDirective,  // Add a sizing directive (e.g., dword ptr).
@@ -49,7 +48,6 @@ const char AsmRewritePrecedence [] = {
   2, // AOK_EVEN
   2, // AOK_Emit
   3, // AOK_Input
-  3, // AOK_CallInput
   3, // AOK_Output
   5, // AOK_SizeDirective
   1, // AOK_Label
@@ -65,27 +63,39 @@ struct IntelExpr {
   int64_t Imm;
   StringRef BaseReg;
   StringRef IndexReg;
-  StringRef OffsetName;
   unsigned Scale;
 
-  IntelExpr()
-      : NeedBracs(false), Imm(0), BaseReg(StringRef()), IndexReg(StringRef()),
-        OffsetName(StringRef()), Scale(1) {}
-  // [BaseReg + IndexReg * ScaleExpression + OFFSET name + ImmediateExpression]
-  IntelExpr(StringRef baseReg, StringRef indexReg, unsigned scale,
-            StringRef offsetName, int64_t imm, bool needBracs)
-      : NeedBracs(needBracs), Imm(imm), BaseReg(baseReg), IndexReg(indexReg),
-        OffsetName(offsetName), Scale(1) {
+  IntelExpr(bool needBracs = false) : NeedBracs(needBracs), Imm(0),
+    BaseReg(StringRef()), IndexReg(StringRef()),
+    Scale(1) {}
+  // Compund immediate expression
+  IntelExpr(int64_t imm, bool needBracs) : IntelExpr(needBracs) {
+    Imm = imm;
+  }
+  // [Reg + ImmediateExpression]
+  // We don't bother to emit an immediate expression evaluated to zero
+  IntelExpr(StringRef reg, int64_t imm = 0, unsigned scale = 0,
+    bool needBracs = true) :
+    IntelExpr(imm, needBracs) {
+    IndexReg = reg;
     if (scale)
       Scale = scale;
   }
-  bool hasBaseReg() const { return !BaseReg.empty(); }
-  bool hasIndexReg() const { return !IndexReg.empty(); }
-  bool hasRegs() const { return hasBaseReg() || hasIndexReg(); }
-  bool hasOffset() const { return !OffsetName.empty(); }
-  // Normally we won't emit immediates unconditionally,
-  // unless we've got no other components
-  bool emitImm() const { return !(hasRegs() || hasOffset()); }
+  // [BaseReg + IndexReg * ScaleExpression + ImmediateExpression]
+  IntelExpr(StringRef baseReg, StringRef indexReg, unsigned scale = 0,
+    int64_t imm = 0, bool needBracs = true) :
+    IntelExpr(indexReg, imm, scale, needBracs) {
+    BaseReg = baseReg;
+  }
+  bool hasBaseReg() const {
+    return BaseReg.size();
+  }
+  bool hasIndexReg() const {
+    return IndexReg.size();
+  }
+  bool hasRegs() const {
+    return hasBaseReg() || hasIndexReg();
+  }
   bool isValid() const {
     return (Scale == 1) ||
            (hasIndexReg() && (Scale == 2 || Scale == 4 || Scale == 8));
@@ -96,14 +106,13 @@ struct AsmRewrite {
   AsmRewriteKind Kind;
   SMLoc Loc;
   unsigned Len;
-  bool Done;
   int64_t Val;
   StringRef Label;
   IntelExpr IntelExp;
 
 public:
   AsmRewrite(AsmRewriteKind kind, SMLoc loc, unsigned len = 0, int64_t val = 0)
-    : Kind(kind), Loc(loc), Len(len), Done(false), Val(val) {}
+    : Kind(kind), Loc(loc), Len(len), Val(val) {}
   AsmRewrite(AsmRewriteKind kind, SMLoc loc, unsigned len, StringRef label)
     : AsmRewrite(kind, loc, len) { Label = label; }
   AsmRewrite(SMLoc loc, unsigned len, IntelExpr exp)
@@ -122,54 +131,6 @@ enum OperandMatchResultTy {
   MatchOperand_Success,  // operand matched successfully
   MatchOperand_NoMatch,  // operand did not match
   MatchOperand_ParseFail // operand matched but had errors
-};
-
-enum class DiagnosticPredicateTy {
-  Match,
-  NearMatch,
-  NoMatch,
-};
-
-// When an operand is parsed, the assembler will try to iterate through a set of
-// possible operand classes that the operand might match and call the
-// corresponding PredicateMethod to determine that.
-//
-// If there are two AsmOperands that would give a specific diagnostic if there
-// is no match, there is currently no mechanism to distinguish which operand is
-// a closer match. The DiagnosticPredicate distinguishes between 'completely
-// no match' and 'near match', so the assembler can decide whether to give a
-// specific diagnostic, or use 'InvalidOperand' and continue to find a
-// 'better matching' diagnostic.
-//
-// For example:
-//    opcode opnd0, onpd1, opnd2
-//
-// where:
-//    opnd2 could be an 'immediate of range [-8, 7]'
-//    opnd2 could be a  'register + shift/extend'.
-//
-// If opnd2 is a valid register, but with a wrong shift/extend suffix, it makes
-// little sense to give a diagnostic that the operand should be an immediate
-// in range [-8, 7].
-//
-// This is a light-weight alternative to the 'NearMissInfo' approach
-// below which collects *all* possible diagnostics. This alternative
-// is optional and fully backward compatible with existing
-// PredicateMethods that return a 'bool' (match or no match).
-struct DiagnosticPredicate {
-  DiagnosticPredicateTy Type;
-
-  explicit DiagnosticPredicate(bool Match)
-      : Type(Match ? DiagnosticPredicateTy::Match
-                   : DiagnosticPredicateTy::NearMatch) {}
-  DiagnosticPredicate(DiagnosticPredicateTy T) : Type(T) {}
-  DiagnosticPredicate(const DiagnosticPredicate &) = default;
-  DiagnosticPredicate& operator=(const DiagnosticPredicate &) = default;
-
-  operator bool() const { return Type == DiagnosticPredicateTy::Match; }
-  bool isMatch() const { return Type == DiagnosticPredicateTy::Match; }
-  bool isNearMatch() const { return Type == DiagnosticPredicateTy::NearMatch; }
-  bool isNoMatch() const { return Type == DiagnosticPredicateTy::NoMatch; }
 };
 
 // When matching of an assembly instruction fails, there may be multiple
@@ -194,7 +155,7 @@ public:
   // The instruction encoding is not valid because it requires some target
   // features that are not currently enabled. MissingFeatures has a bit set for
   // each feature that the encoding needs but which is not enabled.
-  static NearMissInfo getMissedFeature(const FeatureBitset &MissingFeatures) {
+  static NearMissInfo getMissedFeature(uint64_t MissingFeatures) {
     NearMissInfo Result;
     Result.Kind = NearMissFeature;
     Result.Features = MissingFeatures;
@@ -246,7 +207,7 @@ public:
 
   // Feature flags required by the instruction, that the current target does
   // not have.
-  const FeatureBitset& getFeatures() const {
+  uint64_t getFeatures() const {
     assert(Kind == NearMissFeature);
     return Features;
   }
@@ -296,7 +257,7 @@ private:
   };
 
   union {
-    FeatureBitset Features;
+    uint64_t Features;
     unsigned PredicateError;
     MissedOpInfo MissedOperand;
     TooFewOperandsInfo TooFewOperands;
@@ -310,7 +271,6 @@ class MCTargetAsmParser : public MCAsmParserExtension {
 public:
   enum MatchResultTy {
     Match_InvalidOperand,
-    Match_InvalidTiedOperand,
     Match_MissingFeature,
     Match_MnemonicFail,
     Match_Success,
@@ -326,14 +286,14 @@ protected: // Can only create subclasses.
   MCSubtargetInfo &copySTI();
 
   /// AvailableFeatures - The current set of available features.
-  FeatureBitset AvailableFeatures;
+  uint64_t AvailableFeatures = 0;
 
-  /// ParsingMSInlineAsm - Are we parsing ms-style inline assembly?
-  bool ParsingMSInlineAsm = false;
+  /// ParsingInlineAsm - Are we parsing ms-style inline assembly?
+  bool ParsingInlineAsm = false;
 
   /// SemaCallback - The Sema callback implementation.  Must be set when parsing
   /// ms-style inline assembly.
-  MCAsmParserSemaCallback *SemaCallback = nullptr;
+  MCAsmParserSemaCallback *SemaCallback;
 
   /// Set of options which affects instrumentation of inline assembly.
   MCTargetOptions MCOptions;
@@ -351,15 +311,11 @@ public:
 
   const MCSubtargetInfo &getSTI() const;
 
-  const FeatureBitset& getAvailableFeatures() const {
-    return AvailableFeatures;
-  }
-  void setAvailableFeatures(const FeatureBitset& Value) {
-    AvailableFeatures = Value;
-  }
+  uint64_t getAvailableFeatures() const { return AvailableFeatures; }
+  void setAvailableFeatures(uint64_t Value) { AvailableFeatures = Value; }
 
-  bool isParsingMSInlineAsm () { return ParsingMSInlineAsm; }
-  void setParsingMSInlineAsm (bool Value) { ParsingMSInlineAsm = Value; }
+  bool isParsingInlineAsm () { return ParsingInlineAsm; }
+  void setParsingInlineAsm (bool Value) { ParsingInlineAsm = Value; }
 
   MCTargetOptions getTargetOptions() const { return MCOptions; }
 
@@ -367,21 +323,11 @@ public:
     SemaCallback = Callback;
   }
 
-  // Target-specific parsing of expression.
-  virtual bool parsePrimaryExpr(const MCExpr *&Res, SMLoc &EndLoc) {
-    return getParser().parsePrimaryExpr(Res, EndLoc, nullptr);
-  }
-
   virtual bool ParseRegister(unsigned &RegNo, SMLoc &StartLoc,
                              SMLoc &EndLoc) = 0;
 
-  /// tryParseRegister - parse one register if possible
-  ///
-  /// Check whether a register specification can be parsed at the current
-  /// location, without failing the entire parse if it can't. Must not consume
-  /// tokens if the parse fails.
-  virtual OperandMatchResultTy
-  tryParseRegister(unsigned &RegNo, SMLoc &StartLoc, SMLoc &EndLoc) = 0;
+  /// Sets frame register corresponding to the current MachineFunction.
+  virtual void SetFrameRegister(unsigned RegNo) {}
 
   /// ParseInstruction - Parse one assembly instruction.
   ///
@@ -454,15 +400,6 @@ public:
   virtual void convertToMapAndConstraints(unsigned Kind,
                                           const OperandVector &Operands) = 0;
 
-  /// Returns whether two registers are equal and is used by the tied-operands
-  /// checks in the AsmMatcher. This method can be overridden allow e.g. a
-  /// sub- or super-register as the tied operand.
-  virtual bool regsEqual(const MCParsedAsmOperand &Op1,
-                         const MCParsedAsmOperand &Op2) const {
-    assert(Op1.isReg() && Op2.isReg() && "Operands not all regs");
-    return Op1.getReg() == Op2.getReg();
-  }
-
   // Return whether this parser uses assignment statements with equals tokens
   virtual bool equalIsAsmAssignment() { return true; };
   // Return whether this start of statement identifier is a label
@@ -476,9 +413,6 @@ public:
     return nullptr;
   }
 
-  // For actions that have to be performed before a label is emitted
-  virtual void doBeforeLabelEmit(MCSymbol *Symbol) {}
-  
   virtual void onLabelParsed(MCSymbol *Symbol) {}
 
   /// Ensure that all previously parsed instructions have been emitted to the
@@ -490,12 +424,6 @@ public:
                                               MCContext &Ctx) {
     return nullptr;
   }
-
-  // For any initialization at the beginning of parsing.
-  virtual void onBeginOfFile() {}
-
-  // For any checks or cleanups at the end of parsing.
-  virtual void onEndOfFile() {}
 };
 
 } // end namespace llvm

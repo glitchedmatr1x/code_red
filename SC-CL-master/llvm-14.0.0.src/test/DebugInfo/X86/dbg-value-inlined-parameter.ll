@@ -1,12 +1,11 @@
 ; RUN: llc -mtriple=x86_64-apple-darwin < %s -filetype=obj \
 ; RUN:     | llvm-dwarfdump -v -debug-info - | FileCheck --check-prefix=CHECK --check-prefix=DARWIN %s
 ; RUN: llc -mtriple=x86_64-linux-gnu < %s -filetype=obj \
-; RUN:     | llvm-dwarfdump -v -debug-info - | FileCheck %s
+; RUN:     | llvm-dwarfdump -v -debug-info - | FileCheck --check-prefix=CHECK --check-prefix=LINUX %s
 ; RUN: llc -mtriple=x86_64-apple-darwin < %s -filetype=obj -regalloc=basic \
 ; RUN:     | llvm-dwarfdump -v -debug-info - | FileCheck --check-prefix=CHECK --check-prefix=DARWIN %s
 
 ; CHECK: DW_TAG_subprogram
-; DARWIN:  DW_AT_APPLE_omit_frame_ptr [DW_FORM_flag_present] (true)
 ; CHECK:   DW_AT_abstract_origin {{.*}} "foo"
 ; CHECK:   DW_TAG_formal_parameter
 ; CHECK-NOT: DW_TAG
@@ -31,13 +30,12 @@
 ;CHECK-NEXT: DW_AT_high_pc [DW_FORM_data4]
 ;CHECK-NEXT: DW_AT_call_file
 ;CHECK-NEXT: DW_AT_call_line
-;CHECK-NEXT: DW_AT_call_column
 
 ;CHECK: DW_TAG_formal_parameter
+;FIXME: Linux shouldn't drop this parameter either...
 ;CHECK-NOT: DW_TAG
-;CHECK:   DW_AT_abstract_origin {{.*}} "sp"
-;CHECK: DW_TAG_formal_parameter
-;CHECK-NOT: DW_TAG
+;DARWIN:   DW_AT_abstract_origin {{.*}} "sp"
+;DARWIN: DW_TAG_formal_parameter
 ;CHECK: DW_AT_abstract_origin {{.*}} "nums"
 ;CHECK-NOT: DW_TAG_formal_parameter
 
@@ -104,7 +102,7 @@ attributes #4 = { nounwind }
 !12 = !DIDerivedType(tag: DW_TAG_member, name: "nums", scope: !3, file: !3, line: 3, baseType: !13, size: 32, align: 32, offset: 64)
 !13 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
 !14 = !{i32 1, !"Debug Info Version", i32 3}
-!15 = distinct !DISubprogram(name: "foo", scope: !3, file: !3, line: 8, type: !16, isLocal: false, isDefinition: true, scopeLine: 8, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !2, retainedNodes: !18)
+!15 = distinct !DISubprogram(name: "foo", scope: !3, file: !3, line: 8, type: !16, isLocal: false, isDefinition: true, scopeLine: 8, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !2, variables: !18)
 !16 = !DISubroutineType(types: !17)
 !17 = !{!13}
 !18 = !{!19, !21}

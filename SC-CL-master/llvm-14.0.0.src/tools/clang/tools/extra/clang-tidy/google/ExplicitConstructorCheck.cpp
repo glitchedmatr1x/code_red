@@ -1,8 +1,9 @@
 //===--- ExplicitConstructorCheck.cpp - clang-tidy ------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -19,6 +20,10 @@ namespace tidy {
 namespace google {
 
 void ExplicitConstructorCheck::registerMatchers(MatchFinder *Finder) {
+  // Only register the matchers for C++; the functionality currently does not
+  // provide any benefit to other languages, despite being benign.
+  if (!getLangOpts().CPlusPlus)
+    return;
   Finder->addMatcher(
       cxxConstructorDecl(unless(anyOf(isImplicit(), // Compiler-generated.
                                       isDeleted(), isInstantiated())))
@@ -35,7 +40,7 @@ void ExplicitConstructorCheck::registerMatchers(MatchFinder *Finder) {
 
 // Looks for the token matching the predicate and returns the range of the found
 // token including trailing whitespace.
-static SourceRange findToken(const SourceManager &Sources,
+static SourceRange FindToken(const SourceManager &Sources,
                              const LangOptions &LangOpts,
                              SourceLocation StartLoc, SourceLocation EndLoc,
                              bool (*Pred)(const Token &)) {
@@ -103,17 +108,17 @@ void ExplicitConstructorCheck::check(const MatchFinder::MatchResult &Result) {
       Ctor->getMinRequiredArguments() > 1)
     return;
 
-  bool TakesInitializerList = isStdInitializerList(
+  bool takesInitializerList = isStdInitializerList(
       Ctor->getParamDecl(0)->getType().getNonReferenceType());
   if (Ctor->isExplicit() &&
-      (Ctor->isCopyOrMoveConstructor() || TakesInitializerList)) {
-    auto IsKwExplicit = [](const Token &Tok) {
+      (Ctor->isCopyOrMoveConstructor() || takesInitializerList)) {
+    auto isKWExplicit = [](const Token &Tok) {
       return Tok.is(tok::raw_identifier) &&
              Tok.getRawIdentifier() == "explicit";
     };
     SourceRange ExplicitTokenRange =
-        findToken(*Result.SourceManager, getLangOpts(),
-                  Ctor->getOuterLocStart(), Ctor->getEndLoc(), IsKwExplicit);
+        FindToken(*Result.SourceManager, getLangOpts(),
+                  Ctor->getOuterLocStart(), Ctor->getLocEnd(), isKWExplicit);
     StringRef ConstructorDescription;
     if (Ctor->isMoveConstructor())
       ConstructorDescription = "move";
@@ -133,7 +138,7 @@ void ExplicitConstructorCheck::check(const MatchFinder::MatchResult &Result) {
   }
 
   if (Ctor->isExplicit() || Ctor->isCopyOrMoveConstructor() ||
-      TakesInitializerList)
+      takesInitializerList)
     return;
 
   bool SingleArgument =

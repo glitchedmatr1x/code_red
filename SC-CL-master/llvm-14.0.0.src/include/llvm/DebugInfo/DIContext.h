@@ -1,8 +1,9 @@
 //===- DIContext.h ----------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -16,7 +17,6 @@
 
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/Object/ObjectFile.h"
-#include "llvm/Support/WithColor.h"
 #include "llvm/Support/raw_ostream.h"
 #include <cassert>
 #include <cstdint>
@@ -29,54 +29,44 @@ namespace llvm {
 
 /// A format-neutral container for source line information.
 struct DILineInfo {
-  // DILineInfo contains "<invalid>" for function/filename it cannot fetch.
-  static constexpr const char *const BadString = "<invalid>";
-  // Use "??" instead of "<invalid>" to make our output closer to addr2line.
-  static constexpr const char *const Addr2LineBadString = "??";
   std::string FileName;
   std::string FunctionName;
-  std::string StartFileName;
-  Optional<StringRef> Source;
   uint32_t Line = 0;
   uint32_t Column = 0;
   uint32_t StartLine = 0;
-  Optional<uint64_t> StartAddress;
 
   // DWARF-specific.
   uint32_t Discriminator = 0;
 
-  DILineInfo()
-      : FileName(BadString), FunctionName(BadString), StartFileName(BadString) {
-  }
+  DILineInfo() : FileName("<invalid>"), FunctionName("<invalid>") {}
 
   bool operator==(const DILineInfo &RHS) const {
     return Line == RHS.Line && Column == RHS.Column &&
            FileName == RHS.FileName && FunctionName == RHS.FunctionName &&
-           StartFileName == RHS.StartFileName && StartLine == RHS.StartLine &&
-           Discriminator == RHS.Discriminator;
+           StartLine == RHS.StartLine && Discriminator == RHS.Discriminator;
   }
 
-  bool operator!=(const DILineInfo &RHS) const { return !(*this == RHS); }
+  bool operator!=(const DILineInfo &RHS) const {
+    return !(*this == RHS);
+  }
 
   bool operator<(const DILineInfo &RHS) const {
-    return std::tie(FileName, FunctionName, StartFileName, Line, Column,
-                    StartLine, Discriminator) <
-           std::tie(RHS.FileName, RHS.FunctionName, RHS.StartFileName, RHS.Line,
-                    RHS.Column, RHS.StartLine, RHS.Discriminator);
+    return std::tie(FileName, FunctionName, Line, Column, StartLine,
+                    Discriminator) <
+           std::tie(RHS.FileName, RHS.FunctionName, RHS.Line, RHS.Column,
+                    RHS.StartLine, RHS.Discriminator);
   }
 
   explicit operator bool() const { return *this != DILineInfo(); }
 
   void dump(raw_ostream &OS) {
     OS << "Line info: ";
-    if (FileName != BadString)
+    if (FileName != "<invalid>")
       OS << "file '" << FileName << "', ";
-    if (FunctionName != BadString)
+    if (FunctionName != "<invalid>")
       OS << "function '" << FunctionName << "', ";
     OS << "line " << Line << ", ";
     OS << "column " << Column << ", ";
-    if (StartFileName != BadString)
-      OS << "start file '" << StartFileName << "', ";
     OS << "start line " << StartLine << '\n';
   }
 };
@@ -90,7 +80,7 @@ class DIInliningInfo {
 public:
   DIInliningInfo() = default;
 
-  const DILineInfo &getFrame(unsigned Index) const {
+  DILineInfo getFrame(unsigned Index) const {
     assert(Index < Frames.size());
     return Frames[Index];
   }
@@ -100,11 +90,13 @@ public:
     return &Frames[Index];
   }
 
-  uint32_t getNumberOfFrames() const { return Frames.size(); }
+  uint32_t getNumberOfFrames() const {
+    return Frames.size();
+  }
 
-  void addFrame(const DILineInfo &Frame) { Frames.push_back(Frame); }
-
-  void resize(unsigned i) { Frames.resize(i); }
+  void addFrame(const DILineInfo &Frame) {
+    Frames.push_back(Frame);
+  }
 };
 
 /// Container for description of a global variable.
@@ -113,17 +105,7 @@ struct DIGlobal {
   uint64_t Start = 0;
   uint64_t Size = 0;
 
-  DIGlobal() : Name(DILineInfo::BadString) {}
-};
-
-struct DILocal {
-  std::string FunctionName;
-  std::string Name;
-  std::string DeclFile;
-  uint64_t DeclLine = 0;
-  Optional<int64_t> FrameOffset;
-  Optional<uint64_t> Size;
-  Optional<uint64_t> TagOffset;
+  DIGlobal() : Name("<invalid>") {}
 };
 
 /// A DINameKind is passed to name search methods to specify a
@@ -133,29 +115,20 @@ enum class DINameKind { None, ShortName, LinkageName };
 /// Controls which fields of DILineInfo container should be filled
 /// with data.
 struct DILineInfoSpecifier {
-  enum class FileLineInfoKind {
-    None,
-    // RawValue is whatever the compiler stored in the filename table.  Could be
-    // a full path, could be something else.
-    RawValue,
-    BaseNameOnly,
-    // Relative to the compilation directory.
-    RelativeFilePath,
-    AbsoluteFilePath
-  };
+  enum class FileLineInfoKind { None, Default, AbsoluteFilePath };
   using FunctionNameKind = DINameKind;
 
   FileLineInfoKind FLIKind;
   FunctionNameKind FNKind;
 
-  DILineInfoSpecifier(FileLineInfoKind FLIKind = FileLineInfoKind::RawValue,
+  DILineInfoSpecifier(FileLineInfoKind FLIKind = FileLineInfoKind::Default,
                       FunctionNameKind FNKind = FunctionNameKind::None)
       : FLIKind(FLIKind), FNKind(FNKind) {}
 };
 
 /// This is just a helper to programmatically construct DIDumpType.
 enum DIDumpTypeCounter {
-#define HANDLE_DWARF_SECTION(ENUM_NAME, ELF_NAME, CMDLINE_NAME, OPTION)        \
+#define HANDLE_DWARF_SECTION(ENUM_NAME, ELF_NAME, CMDLINE_NAME) \
   DIDT_ID_##ENUM_NAME,
 #include "llvm/BinaryFormat/Dwarf.def"
 #undef HANDLE_DWARF_SECTION
@@ -167,8 +140,8 @@ static_assert(DIDT_ID_Count <= 32, "section types overflow storage");
 /// Selects which debug sections get dumped.
 enum DIDumpType : unsigned {
   DIDT_Null,
-  DIDT_All = ~0U,
-#define HANDLE_DWARF_SECTION(ENUM_NAME, ELF_NAME, CMDLINE_NAME, OPTION)        \
+  DIDT_All             = ~0U,
+#define HANDLE_DWARF_SECTION(ENUM_NAME, ELF_NAME, CMDLINE_NAME) \
   DIDT_##ENUM_NAME = 1U << DIDT_ID_##ENUM_NAME,
 #include "llvm/BinaryFormat/Dwarf.def"
 #undef HANDLE_DWARF_SECTION
@@ -179,44 +152,36 @@ enum DIDumpType : unsigned {
 /// dumped.
 struct DIDumpOptions {
   unsigned DumpType = DIDT_All;
-  unsigned ChildRecurseDepth = -1U;
-  unsigned ParentRecurseDepth = -1U;
-  uint16_t Version = 0; // DWARF version to assume when extracting.
-  uint8_t AddrSize = 4; // Address byte size to assume when extracting.
+  unsigned RecurseDepth = -1U;
   bool ShowAddresses = true;
   bool ShowChildren = false;
   bool ShowParents = false;
   bool ShowForm = false;
   bool SummarizeTypes = false;
   bool Verbose = false;
-  bool DisplayRawContents = false;
 
   /// Return default option set for printing a single DIE without children.
   static DIDumpOptions getForSingleDIE() {
     DIDumpOptions Opts;
-    Opts.ChildRecurseDepth = 0;
-    Opts.ParentRecurseDepth = 0;
+    Opts.RecurseDepth = 0;
     return Opts;
   }
 
   /// Return the options with RecurseDepth set to 0 unless explicitly required.
   DIDumpOptions noImplicitRecursion() const {
     DIDumpOptions Opts = *this;
-    if (ChildRecurseDepth == -1U && !ShowChildren)
-      Opts.ChildRecurseDepth = 0;
-    if (ParentRecurseDepth == -1U && !ShowParents)
-      Opts.ParentRecurseDepth = 0;
+    if (RecurseDepth == -1U && !ShowChildren)
+      Opts.RecurseDepth = 0;
     return Opts;
   }
-
-  std::function<void(Error)> RecoverableErrorHandler =
-      WithColor::defaultErrorHandler;
-  std::function<void(Error)> WarningHandler = WithColor::defaultWarningHandler;
 };
 
 class DIContext {
 public:
-  enum DIContextKind { CK_DWARF, CK_PDB };
+  enum DIContextKind {
+    CK_DWARF,
+    CK_PDB
+  };
 
   DIContext(DIContextKind K) : Kind(K) {}
   virtual ~DIContext() = default;
@@ -230,18 +195,12 @@ public:
     return true;
   }
 
-  virtual DILineInfo getLineInfoForAddress(
-      object::SectionedAddress Address,
+  virtual DILineInfo getLineInfoForAddress(uint64_t Address,
       DILineInfoSpecifier Specifier = DILineInfoSpecifier()) = 0;
-  virtual DILineInfoTable getLineInfoForAddressRange(
-      object::SectionedAddress Address, uint64_t Size,
+  virtual DILineInfoTable getLineInfoForAddressRange(uint64_t Address,
+      uint64_t Size, DILineInfoSpecifier Specifier = DILineInfoSpecifier()) = 0;
+  virtual DIInliningInfo getInliningInfoForAddress(uint64_t Address,
       DILineInfoSpecifier Specifier = DILineInfoSpecifier()) = 0;
-  virtual DIInliningInfo getInliningInfoForAddress(
-      object::SectionedAddress Address,
-      DILineInfoSpecifier Specifier = DILineInfoSpecifier()) = 0;
-
-  virtual std::vector<DILocal>
-  getLocalsForAddress(object::SectionedAddress Address) = 0;
 
 private:
   const DIContextKind Kind;
@@ -300,10 +259,10 @@ protected:
 
 public:
   template <typename... Ts>
-  LoadedObjectInfoHelper(Ts &&...Args) : Base(std::forward<Ts>(Args)...) {}
+  LoadedObjectInfoHelper(Ts &&... Args) : Base(std::forward<Ts>(Args)...) {}
 
   std::unique_ptr<llvm::LoadedObjectInfo> clone() const override {
-    return std::make_unique<Derived>(static_cast<const Derived &>(*this));
+    return llvm::make_unique<Derived>(static_cast<const Derived &>(*this));
   }
 };
 

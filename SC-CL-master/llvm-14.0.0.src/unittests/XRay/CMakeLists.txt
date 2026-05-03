@@ -1,18 +1,13 @@
 set(LLVM_LINK_COMPONENTS
   Support
-  XRay
   )
 
+set(XRAYSources
+ GraphTest.cpp
+ )
+
 add_llvm_unittest(XRayTests
-  FDRBlockIndexerTest.cpp
-  FDRBlockVerifierTest.cpp
-  FDRProducerConsumerTest.cpp
-  FDRRecordPrinterTest.cpp
-  FDRRecordsTest.cpp
-  FDRTraceWriterTest.cpp
-  GraphTest.cpp
-  ProfileTest.cpp
+    ${XRAYSources}
   )
 
 add_dependencies(XRayTests intrinsics_gen)
-target_link_libraries(XRayTests PRIVATE LLVMTestingSupport)

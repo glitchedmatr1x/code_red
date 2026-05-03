@@ -1,8 +1,9 @@
 //===-- IntrinsicLowering.h - Intrinsic Function Lowering -------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -19,15 +20,20 @@
 
 namespace llvm {
 class CallInst;
+class Module;
 class DataLayout;
 
 class IntrinsicLowering {
   const DataLayout &DL;
 
-  bool Warned = false;
+  bool Warned;
 
 public:
-  explicit IntrinsicLowering(const DataLayout &DL) : DL(DL) {}
+  explicit IntrinsicLowering(const DataLayout &DL) : DL(DL), Warned(false) {}
+
+  /// Add all of the prototypes that might be needed by an intrinsic lowering
+  /// implementation to be inserted into the module specified.
+  void AddPrototypes(Module &M);
 
   /// Replace a call to the specified intrinsic function.
   /// If an intrinsic function must be implemented by the code generator

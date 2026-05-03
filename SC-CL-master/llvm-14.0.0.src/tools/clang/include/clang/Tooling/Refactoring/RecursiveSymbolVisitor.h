@@ -1,19 +1,20 @@
 //===--- RecursiveSymbolVisitor.h - Clang refactoring library -------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// A wrapper class around \c RecursiveASTVisitor that visits each
+/// \brief A wrapper class around \c RecursiveASTVisitor that visits each
 /// occurrences of a named symbol.
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_TOOLING_REFACTORING_RECURSIVESYMBOLVISITOR_H
-#define LLVM_CLANG_TOOLING_REFACTORING_RECURSIVESYMBOLVISITOR_H
+#ifndef LLVM_CLANG_TOOLING_REFACTOR_RECURSIVE_SYMBOL_VISITOR_H
+#define LLVM_CLANG_TOOLING_REFACTOR_RECURSIVE_SYMBOL_VISITOR_H
 
 #include "clang/AST/AST.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -73,7 +74,7 @@ public:
     for (unsigned I = 0, E = S->getNumComponents(); I != E; ++I) {
       const OffsetOfNode &Component = S->getComponent(I);
       if (Component.getKind() == OffsetOfNode::Field) {
-        if (!visit(Component.getField(), Component.getEndLoc()))
+        if (!visit(Component.getField(), Component.getLocEnd()))
           return false;
       }
       // FIXME: Try to resolve dependent field references.
@@ -98,17 +99,7 @@ public:
                  TypeBeginLoc, TypeEndLoc))
         return false;
     }
-    if (const Type *TP = Loc.getTypePtr()) {
-      if (TP->getTypeClass() == clang::Type::Record)
-        return visit(TP->getAsCXXRecordDecl(), TypeBeginLoc, TypeEndLoc);
-    }
-    return true;
-  }
-
-  bool VisitTypedefTypeLoc(TypedefTypeLoc TL) {
-    const SourceLocation TypeEndLoc =
-        Lexer::getLocForEndOfToken(TL.getBeginLoc(), 0, SM, LangOpts);
-    return visit(TL.getTypedefNameDecl(), TL.getBeginLoc(), TypeEndLoc);
+    return visit(Loc.getType()->getAsCXXRecordDecl(), TypeBeginLoc, TypeEndLoc);
   }
 
   bool TraverseNestedNameSpecifierLoc(NestedNameSpecifierLoc NNS) {
@@ -122,17 +113,6 @@ public:
     return BaseType::TraverseNestedNameSpecifierLoc(NNS);
   }
 
-  bool VisitDesignatedInitExpr(const DesignatedInitExpr *E) {
-    for (const DesignatedInitExpr::Designator &D : E->designators()) {
-      if (D.isFieldDesignator() && D.getField()) {
-        const FieldDecl *Decl = D.getField();
-        if (!visit(Decl, D.getFieldLoc(), D.getFieldLoc()))
-          return false;
-      }
-    }
-    return true;
-  }
-
 private:
   const SourceManager &SM;
   const LangOptions &LangOpts;
@@ -143,11 +123,12 @@ private:
         ND, SourceRange(BeginLoc, EndLoc));
   }
   bool visit(const NamedDecl *ND, SourceLocation Loc) {
-    return visit(ND, Loc, Lexer::getLocForEndOfToken(Loc, 0, SM, LangOpts));
+    return visit(ND, Loc,
+                 Loc.getLocWithOffset(ND->getNameAsString().length() - 1));
   }
 };
 
 } // end namespace tooling
 } // end namespace clang
 
-#endif // LLVM_CLANG_TOOLING_REFACTORING_RECURSIVESYMBOLVISITOR_H
+#endif // LLVM_CLANG_TOOLING_REFACTOR_RECURSIVE_SYMBOL_VISITOR_H

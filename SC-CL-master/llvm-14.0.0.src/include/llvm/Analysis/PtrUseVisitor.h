@@ -1,8 +1,9 @@
 //===- PtrUseVisitor.h - InstVisitors over a pointers uses ------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -26,6 +27,7 @@
 #include "llvm/ADT/PointerIntPair.h"
 #include "llvm/ADT/SmallPtrSet.h"
 #include "llvm/ADT/SmallVector.h"
+#include "llvm/IR/CallSite.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/InstVisitor.h"
@@ -45,7 +47,7 @@ namespace llvm {
 
 namespace detail {
 
-/// Implementation of non-dependent functionality for \c PtrUseVisitor.
+/// \brief Implementation of non-dependent functionality for \c PtrUseVisitor.
 ///
 /// See \c PtrUseVisitor for the public interface and detailed comments about
 /// usage. This class is just a helper base class which is not templated and
@@ -53,7 +55,7 @@ namespace detail {
 /// PtrUseVisitor.
 class PtrUseVisitorBase {
 public:
-  /// This class provides information about the result of a visit.
+  /// \brief This class provides information about the result of a visit.
   ///
   /// After walking all the users (recursively) of a pointer, the basic
   /// infrastructure records some commonly useful information such as escape
@@ -62,7 +64,7 @@ public:
   public:
     PtrInfo() : AbortedInfo(nullptr, false), EscapedInfo(nullptr, false) {}
 
-    /// Reset the pointer info, clearing all state.
+    /// \brief Reset the pointer info, clearing all state.
     void reset() {
       AbortedInfo.setPointer(nullptr);
       AbortedInfo.setInt(false);
@@ -70,37 +72,37 @@ public:
       EscapedInfo.setInt(false);
     }
 
-    /// Did we abort the visit early?
+    /// \brief Did we abort the visit early?
     bool isAborted() const { return AbortedInfo.getInt(); }
 
-    /// Is the pointer escaped at some point?
+    /// \brief Is the pointer escaped at some point?
     bool isEscaped() const { return EscapedInfo.getInt(); }
 
-    /// Get the instruction causing the visit to abort.
+    /// \brief Get the instruction causing the visit to abort.
     /// \returns a pointer to the instruction causing the abort if one is
     /// available; otherwise returns null.
     Instruction *getAbortingInst() const { return AbortedInfo.getPointer(); }
 
-    /// Get the instruction causing the pointer to escape.
+    /// \brief Get the instruction causing the pointer to escape.
     /// \returns a pointer to the instruction which escapes the pointer if one
     /// is available; otherwise returns null.
     Instruction *getEscapingInst() const { return EscapedInfo.getPointer(); }
 
-    /// Mark the visit as aborted. Intended for use in a void return.
+    /// \brief Mark the visit as aborted. Intended for use in a void return.
     /// \param I The instruction which caused the visit to abort, if available.
     void setAborted(Instruction *I = nullptr) {
       AbortedInfo.setInt(true);
       AbortedInfo.setPointer(I);
     }
 
-    /// Mark the pointer as escaped. Intended for use in a void return.
+    /// \brief Mark the pointer as escaped. Intended for use in a void return.
     /// \param I The instruction which escapes the pointer, if available.
     void setEscaped(Instruction *I = nullptr) {
       EscapedInfo.setInt(true);
       EscapedInfo.setPointer(I);
     }
 
-    /// Mark the pointer as escaped, and the visit as aborted. Intended
+    /// \brief Mark the pointer as escaped, and the visit as aborted. Intended
     /// for use in a void return.
     /// \param I The instruction which both escapes the pointer and aborts the
     /// visit, if available.
@@ -119,10 +121,10 @@ protected:
   /// \name Visitation infrastructure
   /// @{
 
-  /// The info collected about the pointer being visited thus far.
+  /// \brief The info collected about the pointer being visited thus far.
   PtrInfo PI;
 
-  /// A struct of the data needed to visit a particular use.
+  /// \brief A struct of the data needed to visit a particular use.
   ///
   /// This is used to maintain a worklist fo to-visit uses. This is used to
   /// make the visit be iterative rather than recursive.
@@ -133,10 +135,10 @@ protected:
     APInt Offset;
   };
 
-  /// The worklist of to-visit uses.
+  /// \brief The worklist of to-visit uses.
   SmallVector<UseToVisit, 8> Worklist;
 
-  /// A set of visited uses to break cycles in unreachable code.
+  /// \brief A set of visited uses to break cycles in unreachable code.
   SmallPtrSet<Use *, 8> VisitedUses;
 
   /// @}
@@ -145,14 +147,14 @@ protected:
   /// This state is reset for each instruction visited.
   /// @{
 
-  /// The use currently being visited.
+  /// \brief The use currently being visited.
   Use *U;
 
-  /// True if we have a known constant offset for the use currently
+  /// \brief True if we have a known constant offset for the use currently
   /// being visited.
   bool IsOffsetKnown;
 
-  /// The constant offset of the use if that is known.
+  /// \brief The constant offset of the use if that is known.
   APInt Offset;
 
   /// @}
@@ -161,13 +163,13 @@ protected:
   /// class, we can't create instances directly of this class.
   PtrUseVisitorBase(const DataLayout &DL) : DL(DL) {}
 
-  /// Enqueue the users of this instruction in the visit worklist.
+  /// \brief Enqueue the users of this instruction in the visit worklist.
   ///
   /// This will visit the users with the same offset of the current visit
   /// (including an unknown offset if that is the current state).
   void enqueueUsers(Instruction &I);
 
-  /// Walk the operands of a GEP and adjust the offset as appropriate.
+  /// \brief Walk the operands of a GEP and adjust the offset as appropriate.
   ///
   /// This routine does the heavy lifting of the pointer walk by computing
   /// offsets and looking through GEPs.
@@ -176,7 +178,7 @@ protected:
 
 } // end namespace detail
 
-/// A base class for visitors over the uses of a pointer value.
+/// \brief A base class for visitors over the uses of a pointer value.
 ///
 /// Once constructed, a user can call \c visit on a pointer value, and this
 /// will walk its uses and visit each instruction using an InstVisitor. It also
@@ -214,16 +216,16 @@ public:
                   "Must pass the derived type to this template!");
   }
 
-  /// Recursively visit the uses of the given pointer.
+  /// \brief Recursively visit the uses of the given pointer.
   /// \returns An info struct about the pointer. See \c PtrInfo for details.
   PtrInfo visitPtr(Instruction &I) {
     // This must be a pointer type. Get an integer type suitable to hold
     // offsets on this pointer.
     // FIXME: Support a vector of pointers.
     assert(I.getType()->isPointerTy());
-    IntegerType *IntIdxTy = cast<IntegerType>(DL.getIndexType(I.getType()));
+    IntegerType *IntPtrTy = cast<IntegerType>(DL.getIntPtrType(I.getType()));
     IsOffsetKnown = true;
-    Offset = APInt(IntIdxTy->getBitWidth(), 0);
+    Offset = APInt(IntPtrTy->getBitWidth(), 0);
     PI.reset();
 
     // Enqueue the uses of this pointer.
@@ -255,10 +257,6 @@ protected:
     enqueueUsers(BC);
   }
 
-  void visitAddrSpaceCastInst(AddrSpaceCastInst &ASC) {
-    enqueueUsers(ASC);
-  }
-
   void visitPtrToIntInst(PtrToIntInst &I) {
     PI.setEscaped(&I);
   }
@@ -277,7 +275,7 @@ protected:
     enqueueUsers(GEPI);
   }
 
-  // No-op intrinsics which we know don't escape the pointer to logic in
+  // No-op intrinsics which we know don't escape the pointer to to logic in
   // some other function.
   void visitDbgInfoIntrinsic(DbgInfoIntrinsic &I) {}
   void visitMemIntrinsic(MemIntrinsic &I) {}
@@ -294,9 +292,9 @@ protected:
 
   // Generically, arguments to calls and invokes escape the pointer to some
   // other function. Mark that.
-  void visitCallBase(CallBase &CB) {
-    PI.setEscaped(&CB);
-    Base::visitCallBase(CB);
+  void visitCallSite(CallSite CS) {
+    PI.setEscaped(CS.getInstruction());
+    Base::visitCallSite(CS);
   }
 };
 

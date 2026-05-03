@@ -19,16 +19,17 @@ namespace test1 {
 }
 
 namespace test2 {
-  void bar(); // expected-note 3{{'::test2::bar' declared here}}
+  void bar(); // expected-note {{'::test2::bar' declared here}}
 
-  void foo() { // expected-note 2{{'::test2::foo' declared here}}
+  void foo() { // expected-note {{'::test2::foo' declared here}}
     struct S1 {
       friend void foo(); // expected-error {{no matching function 'foo' found in local scope; did you mean '::test2::foo'?}}
     };
 
     void foo(); // expected-note {{local declaration nearly matches}}
     struct S2 {
-      friend void foo();
+      friend void foo(); // expected-note{{'::test2::foo' declared here}}
+      // TODO: the above note should go on line 24
     };
 
     {
@@ -46,6 +47,8 @@ namespace test2 {
 
     struct S4 {
       friend void bar(); // expected-error {{no matching function 'bar' found in local scope; did you mean '::test2::bar'?}}
+      // expected-note@-1 {{'::test2::bar' declared here}}
+      // TODO: the above note should go on line 22
     };
 
     { void bar(); }
@@ -78,6 +81,8 @@ namespace test2 {
     struct S9 {
       struct Inner {
         friend void baz(); // expected-error {{no matching function 'baz' found in local scope; did you mean 'bar'?}}
+        // expected-note@-1 {{'::test2::bar' declared here}}
+        // TODO: the above note should go on line 22
       };
     };
 

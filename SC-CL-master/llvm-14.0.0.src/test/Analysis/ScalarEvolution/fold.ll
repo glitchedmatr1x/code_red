@@ -1,4 +1,4 @@
-; RUN: opt -disable-output "-passes=print<scalar-evolution>" -S < %s 2>&1 | FileCheck %s
+; RUN: opt -analyze -scalar-evolution -S < %s | FileCheck %s
 
 define i16 @test1(i8 %x) {
   %A = zext i8 %x to i12
@@ -97,40 +97,4 @@ define void @test7(i32 %A) {
 ; CHECK: %E
 ; CHECK-NEXT: -->  0
   ret void
-}
-
-define i64 @test8(i64 %a) {
-; CHECK-LABEL: @test8
-  %t0 = udiv i64 %a, 56
-  %t1 = udiv i64 %t0, 56
-; CHECK: %t1
-; CHECK-NEXT: -->  (%a /u 3136)
-  ret i64 %t1
-}
-
-define i64 @test9(i64 %a) {
-; CHECK-LABEL: @test9
-  %t0 = udiv i64 %a, 100000000000000
-  %t1 = udiv i64 %t0, 100000000000000
-; CHECK: %t1
-; CHECK-NEXT: -->  0
-  ret i64 %t1
-}
-
-define i64 @test10(i64 %a, i64 %b) {
-; CHECK-LABEL: @test10
-  %t0 = udiv i64 %a, 100000000000000
-  %t1 = udiv i64 %t0, 100000000000000
-  %t2 = mul i64 %b, %t1
-; CHECK: %t2
-; CHECK-NEXT: -->  0
-  ret i64 %t2
-}
-
-define i64 @test11(i64 %a) {
-; CHECK-LABEL: @test11
-  %t0 = udiv i64 0, %a
-; CHECK: %t0
-; CHECK-NEXT: -->  0
-  ret i64 %t0
 }

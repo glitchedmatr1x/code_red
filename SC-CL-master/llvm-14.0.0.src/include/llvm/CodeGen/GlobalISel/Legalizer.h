@@ -1,8 +1,9 @@
-//== llvm/CodeGen/GlobalISel/Legalizer.h ---------------- -*- C++ -*-==//
+//== llvm/CodeGen/GlobalISel/LegalizePass.h ------------- -*- C++ -*-==//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -17,26 +18,22 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CODEGEN_GLOBALISEL_LEGALIZER_H
-#define LLVM_CODEGEN_GLOBALISEL_LEGALIZER_H
+#ifndef LLVM_CODEGEN_GLOBALISEL_LEGALIZEMACHINEIRPASS_H
+#define LLVM_CODEGEN_GLOBALISEL_LEGALIZEMACHINEIRPASS_H
 
 #include "llvm/CodeGen/GlobalISel/MachineIRBuilder.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 
 namespace llvm {
 
-class LostDebugLocObserver;
+class MachineRegisterInfo;
 
 class Legalizer : public MachineFunctionPass {
 public:
   static char ID;
 
-  struct MFResult {
-    bool Changed;
-    const MachineInstr *FailedOn;
-  };
-
 private:
+
   /// Initialize the field members using \p MF.
   void init(MachineFunction &MF);
 
@@ -58,18 +55,10 @@ public:
         MachineFunctionProperties::Property::Legalized);
   }
 
-  MachineFunctionProperties getClearedProperties() const override {
-    return MachineFunctionProperties().set(
-        MachineFunctionProperties::Property::NoPHIs);
-  }
+  bool combineExtracts(MachineInstr &MI, MachineRegisterInfo &MRI,
+                       const TargetInstrInfo &TII);
 
   bool runOnMachineFunction(MachineFunction &MF) override;
-
-  static MFResult
-  legalizeMachineFunction(MachineFunction &MF, const LegalizerInfo &LI,
-                          ArrayRef<GISelChangeObserver *> AuxObservers,
-                          LostDebugLocObserver &LocObserver,
-                          MachineIRBuilder &MIRBuilder);
 };
 } // End namespace llvm.
 

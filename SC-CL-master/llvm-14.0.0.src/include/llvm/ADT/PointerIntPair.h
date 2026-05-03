@@ -1,29 +1,27 @@
 //===- llvm/ADT/PointerIntPair.h - Pair for pointer and int -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file defines the PointerIntPair class.
-///
+//
+// This file defines the PointerIntPair class.
+//
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_POINTERINTPAIR_H
 #define LLVM_ADT_POINTERINTPAIR_H
 
-#include "llvm/Support/Compiler.h"
 #include "llvm/Support/PointerLikeTypeTraits.h"
-#include "llvm/Support/type_traits.h"
 #include <cassert>
 #include <cstdint>
 #include <limits>
 
 namespace llvm {
 
-template <typename T, typename Enable> struct DenseMapInfo;
+template <typename T> struct DenseMapInfo;
 template <typename PointerT, unsigned IntBits, typename PtrTraits>
 struct PointerIntPairInfo;
 
@@ -44,8 +42,6 @@ template <typename PointerTy, unsigned IntBits, typename IntType = unsigned,
           typename PtrTraits = PointerLikeTypeTraits<PointerTy>,
           typename Info = PointerIntPairInfo<PointerTy, IntBits, PtrTraits>>
 class PointerIntPair {
-  // Used by MSVC visualizer and generally helpful for debugging/visualizing.
-  using InfoTy = Info;
   intptr_t Value = 0;
 
 public:
@@ -61,19 +57,19 @@ public:
 
   IntType getInt() const { return (IntType)Info::getInt(Value); }
 
-  void setPointer(PointerTy PtrVal) LLVM_LVALUE_FUNCTION {
+  void setPointer(PointerTy PtrVal) {
     Value = Info::updatePointer(Value, PtrVal);
   }
 
-  void setInt(IntType IntVal) LLVM_LVALUE_FUNCTION {
+  void setInt(IntType IntVal) {
     Value = Info::updateInt(Value, static_cast<intptr_t>(IntVal));
   }
 
-  void initWithPointer(PointerTy PtrVal) LLVM_LVALUE_FUNCTION {
+  void initWithPointer(PointerTy PtrVal) {
     Value = Info::updatePointer(0, PtrVal);
   }
 
-  void setPointerAndInt(PointerTy PtrVal, IntType IntVal) LLVM_LVALUE_FUNCTION {
+  void setPointerAndInt(PointerTy PtrVal, IntType IntVal) {
     Value = Info::updateInt(Info::updatePointer(0, PtrVal),
                             static_cast<intptr_t>(IntVal));
   }
@@ -91,7 +87,7 @@ public:
 
   void *getOpaqueValue() const { return reinterpret_cast<void *>(Value); }
 
-  void setFromOpaqueValue(void *Val) LLVM_LVALUE_FUNCTION {
+  void setFromOpaqueValue(void *Val) {
     Value = reinterpret_cast<intptr_t>(Val);
   }
 
@@ -128,19 +124,6 @@ public:
   }
 };
 
-// Specialize is_trivially_copyable to avoid limitation of llvm::is_trivially_copyable
-// when compiled with gcc 4.9.
-template <typename PointerTy, unsigned IntBits, typename IntType,
-          typename PtrTraits,
-          typename Info>
-struct is_trivially_copyable<PointerIntPair<PointerTy, IntBits, IntType, PtrTraits, Info>> : std::true_type {
-#ifdef HAVE_STD_IS_TRIVIALLY_COPYABLE
-  static_assert(std::is_trivially_copyable<PointerIntPair<PointerTy, IntBits, IntType, PtrTraits, Info>>::value,
-                "inconsistent behavior between llvm:: and std:: implementation of is_trivially_copyable");
-#endif
-};
-
-
 template <typename PointerT, unsigned IntBits, typename PtrTraits>
 struct PointerIntPairInfo {
   static_assert(PtrTraits::NumLowBitsAvailable <
@@ -148,7 +131,7 @@ struct PointerIntPairInfo {
                 "cannot use a pointer type that has all bits free");
   static_assert(IntBits <= PtrTraits::NumLowBitsAvailable,
                 "PointerIntPair with integer size too large for pointer");
-  enum MaskAndShiftConstants : uintptr_t {
+  enum : uintptr_t {
     /// PointerBitMask - The bits that come from the pointer.
     PointerBitMask =
         ~(uintptr_t)(((intptr_t)1 << PtrTraits::NumLowBitsAvailable) - 1),
@@ -191,9 +174,15 @@ struct PointerIntPairInfo {
   }
 };
 
+template <typename T> struct isPodLike;
+template <typename PointerTy, unsigned IntBits, typename IntType>
+struct isPodLike<PointerIntPair<PointerTy, IntBits, IntType>> {
+  static const bool value = true;
+};
+
 // Provide specialization of DenseMapInfo for PointerIntPair.
 template <typename PointerTy, unsigned IntBits, typename IntType>
-struct DenseMapInfo<PointerIntPair<PointerTy, IntBits, IntType>, void> {
+struct DenseMapInfo<PointerIntPair<PointerTy, IntBits, IntType>> {
   using Ty = PointerIntPair<PointerTy, IntBits, IntType>;
 
   static Ty getEmptyKey() {
@@ -236,8 +225,7 @@ struct PointerLikeTypeTraits<
     return PointerIntPair<PointerTy, IntBits, IntType>::getFromOpaqueValue(P);
   }
 
-  static constexpr int NumLowBitsAvailable =
-      PtrTraits::NumLowBitsAvailable - IntBits;
+  enum { NumLowBitsAvailable = PtrTraits::NumLowBitsAvailable - IntBits };
 };
 
 } // end namespace llvm

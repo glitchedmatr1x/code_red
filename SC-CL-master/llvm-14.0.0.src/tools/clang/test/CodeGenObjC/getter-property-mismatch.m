@@ -15,4 +15,6 @@
 
 // CHECK:  [[CALL:%.*]] = tail call i8* @objc_getProperty
 // CHECK:  [[ONE:%.*]] = bitcast i8* [[CALL:%.*]] to [[T1:%.*]]*
-// CHECK:  ret [[T1]]* [[ONE]]
+// CHECK:  [[TWO:%.*]] = bitcast [[T1]]* [[ONE]] to [[T2:%.*]]*
+// CHECK:  ret [[T2]]* [[TWO]]
+

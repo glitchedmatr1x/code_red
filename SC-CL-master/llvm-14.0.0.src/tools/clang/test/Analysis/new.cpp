@@ -1,5 +1,4 @@
-// RUN: %clang_analyze_cc1 -analyzer-checker=core,unix.Malloc,debug.ExprInspection -analyzer-store region -std=c++11 -verify -analyzer-config eagerly-assume=false %s
-// RUN: %clang_analyze_cc1 -analyzer-checker=core,unix.Malloc,debug.ExprInspection -analyzer-store region -std=c++11 -DTEST_INLINABLE_ALLOCATORS -verify -analyzer-config eagerly-assume=false %s
+// RUN: %clang_analyze_cc1 -analyzer-checker=core,unix.Malloc,debug.ExprInspection -analyzer-store region -std=c++11 -verify %s
 #include "Inputs/system-header-simulator-cxx.h"
 
 void clang_analyzer_eval(bool);
@@ -35,7 +34,7 @@ void *testPlacementNew() {
 
   void *y = new (x) int;
   clang_analyzer_eval(x == y); // expected-warning{{TRUE}};
-  clang_analyzer_eval(*x == 1); // expected-warning{{TRUE}};
+  clang_analyzer_eval(*x == 1); // expected-warning{{UNKNOWN}};
 
   return y;
 }
@@ -115,6 +114,11 @@ void testUseAfter(int *p) {
   delete c;
 }
 
+//--------------------------------------------------------------------
+// Check for intersection with other checkers from MallocChecker.cpp 
+// bounded with unix.Malloc
+//--------------------------------------------------------------------
+
 // new/delete oparators are subjects of cplusplus.NewDelete.
 void testNewDeleteNoWarn() {
   int i;
@@ -130,11 +134,11 @@ void testNewDeleteNoWarn() {
   int *p3 = new int; // no-warning
 }
 
+// unix.Malloc does not know about operators new/delete.
 void testDeleteMallocked() {
   int *x = (int *)malloc(sizeof(int));
-  // unix.MismatchedDeallocator would catch this, but we're not testing it here.
-  delete x;
-}
+  delete x; // FIXME: Shoud detect pointer escape and keep silent after 'delete' is modeled properly.
+} // expected-warning{{Potential leak of memory pointed to by 'x'}}
 
 void testDeleteOpAfterFree() {
   int *p = (int *)malloc(sizeof(int));
@@ -196,7 +200,8 @@ int testNoInitializationPlacement() {
   int n;
   new (&n) int;
 
-  if (n) { // expected-warning{{Branch condition evaluates to a garbage value}}
+  // Should warn that n is uninitialized.
+  if (n) { // no-warning
     return 0;
   }
   return 1;
@@ -269,24 +274,6 @@ void test_var_delete() {
   clang_analyzer_eval(true); // expected-warning{{TRUE}}
 }
 
-void test_array_delete() {
-  class C {
-  public:
-    ~C() {}
-  };
-
-  auto c1 = new C[2][3];
-  delete[] c1; // no-crash // no-warning
-
-  C c2[4];
-  // FIXME: Should warn.
-  delete[] &c2; // no-crash
-
-  C c3[7][6];
-  // FIXME: Should warn.
-  delete[] &c3; // no-crash
-}
-
 void testDeleteNull() {
   NoReturnDtor *foo = 0;
   delete foo; // should not call destructor, checked below
@@ -324,7 +311,7 @@ void testArrayNull() {
 void testArrayDestr() {
   NoReturnDtor *p = new NoReturnDtor[2];
   delete[] p; // Calls the base destructor which aborts, checked below
-   //TODO: clang_analyzer_eval should not be called
+  //TODO: clang_analyzer_eval should not be called
   clang_analyzer_eval(true); // expected-warning{{TRUE}}
 }
 

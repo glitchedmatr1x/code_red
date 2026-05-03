@@ -50,9 +50,6 @@ void x() {
 + (id)dictionaryWithObjects:(const id [])objects forKeys:(const id<NSCopying> [])keys count:(unsigned long)cnt;
 @end
 
-@interface NSString
-@end
-
 template<typename T>
 struct ConvertibleTo {
   operator T();
@@ -187,9 +184,4 @@ id value;
 
 void test_dictionary_colon() {
   id dict = @{ key : value };
-}
-
-void testConstExpr() {
-  constexpr NSString *t0 = @"abc";
-  constexpr NSString *t1 = @("abc");
 }

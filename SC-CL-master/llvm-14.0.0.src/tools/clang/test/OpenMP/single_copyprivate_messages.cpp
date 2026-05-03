@@ -1,6 +1,6 @@
-// RUN: %clang_cc1 -verify -fopenmp %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp %s
 
-// RUN: %clang_cc1 -verify -fopenmp-simd %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp-simd %s
 
 void foo() {
 }
@@ -45,10 +45,8 @@ S5 m(4);
 
 template <class T, class C>
 T tmain(T argc, C **argv) {
-  T i, z;
+  T i;
   static T TA;
-#pragma omp single copyprivate(z)
-  ;
 #pragma omp parallel
 #pragma omp single copyprivate // expected-error {{expected '(' after 'copyprivate'}}
 #pragma omp parallel
@@ -123,7 +121,7 @@ using A::x;
 }
 
 int main(int argc, char **argv) {
-  int i, z;
+  int i;
   static int intA;
 #pragma omp parallel
 #pragma omp single copyprivate // expected-error {{expected '(' after 'copyprivate'}}
@@ -148,9 +146,9 @@ int main(int argc, char **argv) {
 #pragma omp parallel
 #pragma omp single copyprivate(m) // expected-error {{'operator=' is a private member of 'S5'}}
   foo();
-#pragma omp parallel private(i, z)
+#pragma omp parallel private(i)
   {
-#pragma omp single copyprivate(i, z)
+#pragma omp single copyprivate(i)
     foo();
   }
 #pragma omp parallel shared(i) // expected-note {{defined as shared}}

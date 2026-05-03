@@ -1,8 +1,9 @@
 //===-- ResourceScriptParser.h ----------------------------------*- C++-*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===---------------------------------------------------------------------===//
 //
@@ -24,6 +25,9 @@
 #include <vector>
 
 namespace llvm {
+namespace opt {
+class InputArgList;
+}
 namespace rc {
 
 class RCParser {
@@ -80,13 +84,12 @@ private:
   Expected<RCInt> readInt();               // Parse an integer.
   Expected<StringRef> readString();        // Parse a string.
   Expected<StringRef> readIdentifier();    // Parse an identifier.
-  Expected<StringRef> readFilename();      // Parse a filename.
   Expected<IntOrString> readIntOrString(); // Parse an integer or a string.
   Expected<IntOrString> readTypeOrName();  // Parse an integer or an identifier.
 
   // Helper integer expression parsing methods.
-  Expected<IntWithNotMask> parseIntExpr1();
-  Expected<IntWithNotMask> parseIntExpr2();
+  Expected<RCInt> parseIntExpr1();
+  Expected<RCInt> parseIntExpr2();
 
   // Advance the state by one, discarding the current token.
   // If the discarded token had an incorrect type, fail.
@@ -125,8 +128,6 @@ private:
   //    msdn.microsoft.com/en-us/library/windows/desktop/aa381002(v=vs.85).aspx
   enum class OptStmtType { BasicStmt, DialogStmt, DialogExStmt };
 
-  uint16_t parseMemoryFlags(uint16_t DefaultFlags);
-
   Expected<OptionalStmtList>
   parseOptionalStatements(OptStmtType StmtsType = OptStmtType::BasicStmt);
 
@@ -137,7 +138,6 @@ private:
   // Top-level resource parsers.
   ParseType parseLanguageResource();
   ParseType parseAcceleratorsResource();
-  ParseType parseBitmapResource();
   ParseType parseCursorResource();
   ParseType parseDialogResource(bool IsExtended);
   ParseType parseIconResource();
@@ -167,8 +167,6 @@ private:
   ParseOptionType parseCharacteristicsStmt();
   ParseOptionType parseVersionStmt();
   ParseOptionType parseCaptionStmt();
-  ParseOptionType parseClassStmt();
-  ParseOptionType parseExStyleStmt();
   ParseOptionType parseFontStmt(OptStmtType DialogType);
   ParseOptionType parseStyleStmt();
 

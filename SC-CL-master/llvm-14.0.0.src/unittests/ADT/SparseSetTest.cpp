@@ -1,8 +1,9 @@
 //===------ ADT/SparseSetTest.cpp - SparseSet unit tests -  -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -25,15 +26,15 @@ TEST(SparseSetTest, EmptySet) {
   Set.setUniverse(10);
 
   // Lookups on empty set.
-  EXPECT_FALSE(Set.contains(0));
-  EXPECT_FALSE(Set.contains(9));
+  EXPECT_TRUE(Set.find(0) == Set.end());
+  EXPECT_TRUE(Set.find(9) == Set.end());
 
   // Same thing on a const reference.
   const USet &CSet = Set;
   EXPECT_TRUE(CSet.empty());
   EXPECT_TRUE(CSet.begin() == CSet.end());
   EXPECT_EQ(0u, CSet.size());
-  EXPECT_FALSE(CSet.contains(0));
+  EXPECT_TRUE(CSet.find(0) == CSet.end());
   USet::const_iterator I = CSet.find(5);
   EXPECT_TRUE(I == CSet.end());
 }
@@ -51,9 +52,8 @@ TEST(SparseSetTest, SingleEntrySet) {
   EXPECT_TRUE(Set.begin() + 1 == Set.end());
   EXPECT_EQ(1u, Set.size());
 
-  EXPECT_FALSE(Set.contains(0));
-  EXPECT_FALSE(Set.contains(9));
-  EXPECT_TRUE(Set.contains(5));
+  EXPECT_TRUE(Set.find(0) == Set.end());
+  EXPECT_TRUE(Set.find(9) == Set.end());
 
   EXPECT_FALSE(Set.count(0));
   EXPECT_TRUE(Set.count(5));
@@ -72,7 +72,6 @@ TEST(SparseSetTest, SingleEntrySet) {
   USet::iterator I = Set.find(5);
   EXPECT_TRUE(I == Set.begin());
   I = Set.erase(I);
-  EXPECT_FALSE(Set.contains(5));
   EXPECT_TRUE(I == Set.end());
   EXPECT_TRUE(Set.empty());
 }

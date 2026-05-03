@@ -4,7 +4,7 @@
 # RUN: llvm-dwarfdump -debug-line %t.o | FileCheck %s --check-prefixes=PART1,PART2
 # RUN: llvm-dwarfdump -debug-line=0x32 %t.o | FileCheck %s --check-prefix=PART2
 
-        .section .debug_line.dwo,"e",@progbits
+        .section .debug_line.dwo,"",@progbits
 LH_1_start:
         .long   LH_1_end-LH_1_version   # Length of Unit
 LH_1_version:
@@ -44,12 +44,10 @@ LH_1_end:
 
 # PART1:      Line table prologue:
 # PART1-NEXT: total_length: 0x0000002e
-# PART1-NEXT: format: DWARF32
 # PART1-NEXT: version: 4
 # PART1-NEXT: prologue_length: 0x00000028
-# PART1:      include_directories[  1] = "Directory1"
-# PART1:      file_names[  1]
-# PART1:      name: "File1"
+# PART1:      include_directories[  1] = 'Directory1'
+# PART1:      file_names[  1] {{.*}} File1
 
 # Second line table.
 LH_2_start:
@@ -91,11 +89,9 @@ LH_2_end:
 
 # PART2:      Line table prologue:
 # PART2-NEXT: total_length: 0x00000028
-# PART2-NEXT: format: DWARF32
 # PART2-NEXT: version: 4
 # PART2-NEXT: prologue_length: 0x00000022
 # PART2-NOT:  prologue:
-# PART2:      include_directories[  1] = "Dir2"
-# PART2:      file_names[  1]
-# PART2:      name: "File2"
+# PART2:      include_directories[  1] = 'Dir2'
+# PART2:      file_names[  1] {{.*}} File2
 # PART2-NOT:  prologue:

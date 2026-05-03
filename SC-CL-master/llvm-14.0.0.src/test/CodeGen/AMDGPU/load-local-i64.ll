@@ -1,12 +1,8 @@
 ; RUN: llc -march=amdgcn -verify-machineinstrs < %s | FileCheck -check-prefixes=GCN,SICIVI,FUNC %s
-; RUN: llc -mtriple=amdgcn--amdhsa -mcpu=kaveri -mattr=-enable-ds128 -verify-machineinstrs < %s | FileCheck -check-prefixes=GCN,SICIVI,FUNC %s
-; RUN: llc -march=amdgcn -mcpu=tonga -mattr=-enable-ds128 -verify-machineinstrs < %s | FileCheck -check-prefixes=GCN,SICIVI,FUNC %s
-; RUN: llc -march=amdgcn -mcpu=gfx900 -mattr=-enable-ds128 -verify-machineinstrs < %s | FileCheck -check-prefixes=GCN,GFX9,FUNC %s
+; RUN: llc -mtriple=amdgcn--amdhsa -mcpu=kaveri -verify-machineinstrs < %s | FileCheck -check-prefixes=GCN,SICIVI,FUNC %s
+; RUN: llc -march=amdgcn -mcpu=tonga -verify-machineinstrs < %s | FileCheck -check-prefixes=GCN,SICIVI,FUNC %s
+; RUN: llc -march=amdgcn -mcpu=gfx900 -verify-machineinstrs < %s | FileCheck -check-prefixes=GCN,GFX9,FUNC %s
 ; RUN: llc -march=r600 -mcpu=redwood < %s | FileCheck -check-prefixes=EG,FUNC %s
-
-; Testing for ds_read/write_b128
-; RUN: llc -march=amdgcn -mcpu=tonga -verify-machineinstrs -mattr=+enable-ds128 < %s | FileCheck -check-prefixes=CIVI,FUNC %s
-; RUN: llc -march=amdgcn -mcpu=gfx900 -verify-machineinstrs -mattr=+enable-ds128 < %s | FileCheck -check-prefixes=CIVI,FUNC %s
 
 ; FUNC-LABEL: {{^}}local_load_i64:
 ; SICIVI: s_mov_b32 m0
@@ -37,19 +33,6 @@ define amdgpu_kernel void @local_load_v2i64(<2 x i64> addrspace(3)* %out, <2 x i
 entry:
   %ld = load <2 x i64>, <2 x i64> addrspace(3)* %in
   store <2 x i64> %ld, <2 x i64> addrspace(3)* %out
-  ret void
-}
-
-; Tests if ds_read/write_b128 gets generated for the 16 byte aligned load.
-; FUNC-LABEL: {{^}}local_load_v2i64_to_128:
-
-; CIVI: ds_read_b128
-; CIVI: ds_write_b128
-
-define amdgpu_kernel void @local_load_v2i64_to_128(<2 x i64> addrspace(3)* %out, <2 x i64> addrspace(3)* %in) {
-entry:
-  %ld = load <2 x i64>, <2 x i64> addrspace(3)* %in, align 16
-  store <2 x i64> %ld, <2 x i64> addrspace(3)* %out, align 16
   ret void
 }
 

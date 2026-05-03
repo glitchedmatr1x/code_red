@@ -27,6 +27,6 @@ normal_bkpt:
 arm_default_bkpt:
 	bkpt
 
-@ CHECK-LABEL: arm_default_bkpt
+@ CEHCK-LABEL: arm_default_bkpt
 @ CHECK: bkpt #0
 

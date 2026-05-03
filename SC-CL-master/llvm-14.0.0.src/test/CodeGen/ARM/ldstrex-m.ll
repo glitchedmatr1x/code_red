@@ -1,6 +1,6 @@
-; RUN: llc < %s -mtriple=thumbv7m-none-eabi -mcpu=cortex-m4 | FileCheck %s --check-prefix=CHECK --check-prefix=CHECK-V7
-; RUN: llc < %s -mtriple=thumbv8m.main-none-eabi | FileCheck %s --check-prefix=CHECK --check-prefix=CHECK-V8
-; RUN: llc < %s -mtriple=thumbv8m.base-none-eabi | FileCheck %s --check-prefix=CHECK --check-prefix=CHECK-V8
+; RUN: llc < %s -mtriple=thumbv7m-none-eabi -mcpu=cortex-m4 | FileCheck %s
+; RUN: llc < %s -mtriple=thumbv8m.main-none-eabi | FileCheck %s
+; RUN: llc < %s -mtriple=thumbv8m.base-none-eabi | FileCheck %s
 
 ; CHECK-LABEL: f0:
 ; CHECK-NOT: ldrexd
@@ -28,8 +28,7 @@ entry:
 }
 
 ; CHECK-LABEL: f3:
-; CHECK-V7: ldr
-; CHECK-V8: lda
+; CHECK: ldr
 define i32 @f3(i32* %p) nounwind readonly {
 entry:
   %0 = load atomic i32, i32* %p seq_cst, align 4
@@ -37,8 +36,7 @@ entry:
 }
 
 ; CHECK-LABEL: f4:
-; CHECK-V7: ldrb
-; CHECK-V8: ldab
+; CHECK: ldrb
 define i8 @f4(i8* %p) nounwind readonly {
 entry:
   %0 = load atomic i8, i8* %p seq_cst, align 4
@@ -46,8 +44,7 @@ entry:
 }
 
 ; CHECK-LABEL: f5:
-; CHECK-V7: str
-; CHECK-V8: stl
+; CHECK: str
 define void @f5(i32* %p) nounwind readonly {
 entry:
   store atomic i32 0, i32* %p seq_cst, align 4
@@ -55,10 +52,8 @@ entry:
 }
 
 ; CHECK-LABEL: f6:
-; CHECK-V7: ldrex
-; CHECK-V7: strex
-; CHECK-V8: ldaex
-; CHECK-V8: stlex
+; CHECK: ldrex
+; CHECK: strex
 define i32 @f6(i32* %p) nounwind readonly {
 entry:
   %0 = atomicrmw add i32* %p, i32 1 seq_cst

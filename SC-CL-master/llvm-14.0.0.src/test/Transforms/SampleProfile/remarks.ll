@@ -21,8 +21,7 @@
 
 ; We are expecting foo() to be inlined in main() (almost all the cycles are
 ; spent inside foo).
-; CHECK: remark: remarks.cc:13:21: '_Z3foov' inlined into 'main' to match profiling context with (cost=130, threshold=2147483647) at callsite main:0:21;
-; CHECK: remark: remarks.cc:9:19: 'rand' inlined into 'main' to match profiling context with (cost=always): always inline attribute at callsite _Z3foov:6:19 @ main:0:21;
+; CHECK: remark: remarks.cc:13:21: inlined hot callee '_Z3foov' into 'main'
 
 ; The back edge for the loop is the hottest edge in the loop subgraph.
 ; CHECK: remark: remarks.cc:6:9: most popular destination for conditional branches at remarks.cc:5:3
@@ -32,64 +31,19 @@
 
 ; Checking to see if YAML file is generated and contains remarks
 ;YAML:       --- !Passed
-;YAML-NEXT:  Pass:            sample-profile-inline
-;YAML-NEXT:  Name:            Inlined
+;YAML-NEXT:  Pass:            sample-profile
+;YAML-NEXT:  Name:            HotInline
 ;YAML-NEXT:  DebugLoc:        { File: remarks.cc, Line: 13, Column: 21 }
 ;YAML-NEXT:  Function:        main
 ;YAML-NEXT:  Args:
-;YAML-NEXT:    - String:          ''''
+;YAML-NEXT:    - String:          'inlined hot callee '''
 ;YAML-NEXT:    - Callee:          _Z3foov
 ;YAML-NEXT:      DebugLoc:        { File: remarks.cc, Line: 3, Column: 0 }
-;YAML-NEXT:    - String:          ''' inlined into '
+;YAML-NEXT:    - String:          ''' into '''
 ;YAML-NEXT:    - Caller:          main
 ;YAML-NEXT:        DebugLoc:        { File: remarks.cc, Line: 13, Column: 0 }
 ;YAML-NEXT:    - String:          ''''
-;YAML-NEXT:    - String:          ' to match profiling context'
-;YAML-NEXT:    - String:          ' with '
-;YAML-NEXT:    - String:          '(cost='
-;YAML-NEXT:    - Cost:            '130'
-;YAML-NEXT:    - String:          ', threshold='
-;YAML-NEXT:    - Threshold:       '2147483647'
-;YAML-NEXT:    - String:          ')'
-;YAML-NEXT:    - String:          ' at callsite '
-;YAML-NEXT:    - String:          main
-;YAML-NEXT:    - String:          ':'
-;YAML-NEXT:    - Line:            '0'
-;YAML-NEXT:    - String:          ':'
-;YAML-NEXT:    - Column:          '21'
-;YAML-NEXT:    - String:          ';'
 ;YAML-NEXT:  ...
-;YAML:       --- !Passed
-;YAML-NEXT:  Pass:            sample-profile-inline
-;YAML-NEXT:  Name:            AlwaysInline
-;YAML-NEXT:  DebugLoc:        { File: remarks.cc, Line: 9, Column: 19 }
-;YAML-NEXT:  Function:        main
-;YAML-NEXT:  Args:
-;YAML-NEXT:    - String:          ''''
-;YAML-NEXT:    - Callee:          rand
-;YAML-NEXT:      DebugLoc:        { File: remarks.cc, Line: 90, Column: 0 }
-;YAML-NEXT:    - String:          ''' inlined into '''
-;YAML-NEXT:    - Caller:          main
-;YAML-NEXT:      DebugLoc:        { File: remarks.cc, Line: 13, Column: 0 }
-;YAML-NEXT:    - String:          ''''
-;YAML-NEXT:    - String:          ' to match profiling context'
-;YAML-NEXT:    - String:          ' with '
-;YAML-NEXT:    - String:          '(cost=always)'
-;YAML-NEXT:    - String:          ': '
-;YAML-NEXT:    - Reason:          always inline attribute
-;YAML-NEXT:    - String:          ' at callsite '
-;YAML-NEXT:    - String:          _Z3foov
-;YAML-NEXT:    - String:          ':'
-;YAML-NEXT:    - Line:            '6'
-;YAML-NEXT:    - String:          ':'
-;YAML-NEXT:    - Column:          '19'
-;YAML-NEXT:    - String:          ' @ '
-;YAML-NEXT:    - String:          main
-;YAML-NEXT:    - String:          ':'
-;YAML-NEXT:    - Line:            '0'
-;YAML-NEXT:    - String:          ':'
-;YAML-NEXT:    - Column:          '21'
-;YAML-NEXT:    - String:          ';'
 ;YAML:  --- !Analysis
 ;YAML-NEXT:  Pass:            sample-profile
 ;YAML-NEXT:  Name:            AppliedSamples
@@ -185,9 +139,7 @@ declare void @llvm.lifetime.start.p0i8(i64, i8* nocapture) #1
 declare void @llvm.dbg.declare(metadata, metadata, metadata) #2
 
 ; Function Attrs: nounwind
-define i32 @rand() #3 !dbg !59 {
-  ret i32 1
-}
+declare i32 @rand() #3
 
 ; Function Attrs: nounwind argmemonly
 declare void @llvm.lifetime.end.p0i8(i64, i8* nocapture) #1
@@ -203,10 +155,10 @@ entry:
   ret i32 %conv, !dbg !58
 }
 
-attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" "use-sample-profile" }
+attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind argmemonly }
 attributes #2 = { nounwind readnone }
-attributes #3 = { nounwind alwaysinline "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #3 = { nounwind "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #4 = { nounwind }
 
 !llvm.dbg.cu = !{!0}
@@ -216,7 +168,7 @@ attributes #4 = { nounwind }
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, file: !1, producer: "clang version 3.8.0 (trunk 251041) (llvm/trunk 251053)", isOptimized: true, runtimeVersion: 0, emissionKind: NoDebug, enums: !2)
 !1 = !DIFile(filename: "remarks.cc", directory: ".")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3foov", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !8)
+!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3foov", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !8)
 !5 = !DISubroutineType(types: !6)
 !6 = !{!7}
 !7 = !DIBasicType(name: "long long int", size: 64, align: 64, encoding: DW_ATE_signed)
@@ -225,7 +177,7 @@ attributes #4 = { nounwind }
 !10 = !DILocalVariable(name: "i", scope: !11, file: !1, line: 5, type: !12)
 !11 = distinct !DILexicalBlock(scope: !4, file: !1, line: 5, column: 3)
 !12 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
-!13 = distinct !DISubprogram(name: "main", scope: !1, file: !1, line: 13, type: !14, isLocal: false, isDefinition: true, scopeLine: 13, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !2)
+!13 = distinct !DISubprogram(name: "main", scope: !1, file: !1, line: 13, type: !14, isLocal: false, isDefinition: true, scopeLine: 13, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !2)
 !14 = !DISubroutineType(types: !15)
 !15 = !{!12}
 !16 = !{i32 2, !"Dwarf Version", i32 4}
@@ -271,4 +223,3 @@ attributes #4 = { nounwind }
 !56 = !DILocation(line: 13, column: 21, scope: !13)
 !57 = !DILocation(line: 13, column: 27, scope: !13)
 !58 = !DILocation(line: 13, column: 14, scope: !13)
-!59 = distinct !DISubprogram(name: "rand", linkageName: "rand", scope: !1, file: !1, line: 90, type: !5, isLocal: false, isDefinition: true, scopeLine: 90, flags: DIFlagPrototyped, isOptimized: true, unit: !0)

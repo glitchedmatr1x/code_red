@@ -1,8 +1,9 @@
 //===-- llvm/BinaryFormat/COFF.h --------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -109,9 +110,6 @@ enum MachineTypes : unsigned {
   IMAGE_FILE_MACHINE_POWERPC = 0x1F0,
   IMAGE_FILE_MACHINE_POWERPCFP = 0x1F1,
   IMAGE_FILE_MACHINE_R4000 = 0x166,
-  IMAGE_FILE_MACHINE_RISCV32 = 0x5032,
-  IMAGE_FILE_MACHINE_RISCV64 = 0x5064,
-  IMAGE_FILE_MACHINE_RISCV128 = 0x5128,
   IMAGE_FILE_MACHINE_SH3 = 0x1A2,
   IMAGE_FILE_MACHINE_SH3DSP = 0x1A3,
   IMAGE_FILE_MACHINE_SH4 = 0x1A6,
@@ -311,7 +309,6 @@ enum SectionCharacteristics : uint32_t {
   IMAGE_SCN_ALIGN_2048BYTES = 0x00C00000,
   IMAGE_SCN_ALIGN_4096BYTES = 0x00D00000,
   IMAGE_SCN_ALIGN_8192BYTES = 0x00E00000,
-  IMAGE_SCN_ALIGN_MASK = 0x00F00000,
   IMAGE_SCN_LNK_NRELOC_OVFL = 0x01000000,
   IMAGE_SCN_MEM_DISCARDABLE = 0x02000000,
   IMAGE_SCN_MEM_NOT_CACHED = 0x04000000,
@@ -371,15 +368,13 @@ enum RelocationTypesARM : unsigned {
   IMAGE_REL_ARM_TOKEN = 0x0005,
   IMAGE_REL_ARM_BLX24 = 0x0008,
   IMAGE_REL_ARM_BLX11 = 0x0009,
-  IMAGE_REL_ARM_REL32 = 0x000A,
   IMAGE_REL_ARM_SECTION = 0x000E,
   IMAGE_REL_ARM_SECREL = 0x000F,
   IMAGE_REL_ARM_MOV32A = 0x0010,
   IMAGE_REL_ARM_MOV32T = 0x0011,
   IMAGE_REL_ARM_BRANCH20T = 0x0012,
   IMAGE_REL_ARM_BRANCH24T = 0x0014,
-  IMAGE_REL_ARM_BLX23T = 0x0015,
-  IMAGE_REL_ARM_PAIR = 0x0016,
+  IMAGE_REL_ARM_BLX23T = 0x0015
 };
 
 enum RelocationTypesARM64 : unsigned {
@@ -400,10 +395,9 @@ enum RelocationTypesARM64 : unsigned {
   IMAGE_REL_ARM64_ADDR64 = 0x000E,
   IMAGE_REL_ARM64_BRANCH19 = 0x000F,
   IMAGE_REL_ARM64_BRANCH14 = 0x0010,
-  IMAGE_REL_ARM64_REL32 = 0x0011,
 };
 
-enum COMDATType : uint8_t {
+enum COMDATType : unsigned {
   IMAGE_COMDAT_SELECT_NODUPLICATES = 1,
   IMAGE_COMDAT_SELECT_ANY,
   IMAGE_COMDAT_SELECT_SAME_SIZE,
@@ -439,8 +433,7 @@ struct AuxiliaryWeakExternal {
 enum WeakExternalCharacteristics : unsigned {
   IMAGE_WEAK_EXTERN_SEARCH_NOLIBRARY = 1,
   IMAGE_WEAK_EXTERN_SEARCH_LIBRARY = 2,
-  IMAGE_WEAK_EXTERN_SEARCH_ALIAS = 3,
-  IMAGE_WEAK_EXTERN_ANTI_DEPENDENCY = 4
+  IMAGE_WEAK_EXTERN_SEARCH_ALIAS = 3
 };
 
 struct AuxiliarySectionDefinition {
@@ -467,7 +460,7 @@ union Auxiliary {
   AuxiliarySectionDefinition SectionDefinition;
 };
 
-/// The Import Directory Table.
+/// @brief The Import Directory Table.
 ///
 /// There is a single array of these and one entry per imported DLL.
 struct ImportDirectoryTableEntry {
@@ -478,7 +471,7 @@ struct ImportDirectoryTableEntry {
   uint32_t ImportAddressTableRVA;
 };
 
-/// The PE32 Import Lookup Table.
+/// @brief The PE32 Import Lookup Table.
 ///
 /// There is an array of these for each imported DLL. It represents either
 /// the ordinal to import from the target DLL, or a name to lookup and import
@@ -489,32 +482,32 @@ struct ImportDirectoryTableEntry {
 struct ImportLookupTableEntry32 {
   uint32_t data;
 
-  /// Is this entry specified by ordinal, or name?
+  /// @brief Is this entry specified by ordinal, or name?
   bool isOrdinal() const { return data & 0x80000000; }
 
-  /// Get the ordinal value of this entry. isOrdinal must be true.
+  /// @brief Get the ordinal value of this entry. isOrdinal must be true.
   uint16_t getOrdinal() const {
     assert(isOrdinal() && "ILT entry is not an ordinal!");
     return data & 0xFFFF;
   }
 
-  /// Set the ordinal value and set isOrdinal to true.
+  /// @brief Set the ordinal value and set isOrdinal to true.
   void setOrdinal(uint16_t o) {
     data = o;
     data |= 0x80000000;
   }
 
-  /// Get the Hint/Name entry RVA. isOrdinal must be false.
+  /// @brief Get the Hint/Name entry RVA. isOrdinal must be false.
   uint32_t getHintNameRVA() const {
     assert(!isOrdinal() && "ILT entry is not a Hint/Name RVA!");
     return data;
   }
 
-  /// Set the Hint/Name entry RVA and set isOrdinal to false.
+  /// @brief Set the Hint/Name entry RVA and set isOrdinal to false.
   void setHintNameRVA(uint32_t rva) { data = rva; }
 };
 
-/// The DOS compatible header at the front of all PEs.
+/// @brief The DOS compatible header at the front of all PEs.
 struct DOSHeader {
   uint16_t Magic;
   uint16_t UsedBytesInTheLastPage;
@@ -549,7 +542,7 @@ struct PE32Header {
   uint32_t AddressOfEntryPoint; // RVA
   uint32_t BaseOfCode;          // RVA
   uint32_t BaseOfData;          // RVA
-  uint64_t ImageBase;
+  uint32_t ImageBase;
   uint32_t SectionAlignment;
   uint32_t FileAlignment;
   uint16_t MajorOperatingSystemVersion;
@@ -565,10 +558,10 @@ struct PE32Header {
   uint16_t Subsystem;
   // FIXME: This should be DllCharacteristics to match the COFF spec.
   uint16_t DLLCharacteristics;
-  uint64_t SizeOfStackReserve;
-  uint64_t SizeOfStackCommit;
-  uint64_t SizeOfHeapReserve;
-  uint64_t SizeOfHeapCommit;
+  uint32_t SizeOfStackReserve;
+  uint32_t SizeOfStackCommit;
+  uint32_t SizeOfHeapReserve;
+  uint32_t SizeOfHeapCommit;
   uint32_t LoaderFlags;
   // FIXME: This should be NumberOfRvaAndSizes to match the COFF spec.
   uint32_t NumberOfRvaAndSize;
@@ -604,7 +597,7 @@ enum WindowsSubsystem : unsigned {
   IMAGE_SUBSYSTEM_NATIVE = 1,  ///< Device drivers and native Windows processes
   IMAGE_SUBSYSTEM_WINDOWS_GUI = 2,      ///< The Windows GUI subsystem.
   IMAGE_SUBSYSTEM_WINDOWS_CUI = 3,      ///< The Windows character subsystem.
-  IMAGE_SUBSYSTEM_OS2_CUI = 5,          ///< The OS/2 character subsystem.
+  IMAGE_SUBSYSTEM_OS2_CUI = 5,          ///< The OS/2 character subsytem.
   IMAGE_SUBSYSTEM_POSIX_CUI = 7,        ///< The POSIX character subsystem.
   IMAGE_SUBSYSTEM_NATIVE_WINDOWS = 8,   ///< Native Windows 9x driver.
   IMAGE_SUBSYSTEM_WINDOWS_CE_GUI = 9,   ///< Windows CE.
@@ -644,11 +637,6 @@ enum DLLCharacteristics : unsigned {
   IMAGE_DLL_CHARACTERISTICS_TERMINAL_SERVER_AWARE = 0x8000
 };
 
-enum ExtendedDLLCharacteristics : unsigned {
-  /// Image is CET compatible
-  IMAGE_DLL_CHARACTERISTICS_EX_CET_COMPAT = 0x0001
-};
-
 enum DebugType : unsigned {
   IMAGE_DEBUG_TYPE_UNKNOWN = 0,
   IMAGE_DEBUG_TYPE_COFF = 1,
@@ -667,7 +655,6 @@ enum DebugType : unsigned {
   IMAGE_DEBUG_TYPE_ILTCG = 14,
   IMAGE_DEBUG_TYPE_MPX = 15,
   IMAGE_DEBUG_TYPE_REPRO = 16,
-  IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS = 20,
 };
 
 enum BaseRelocationType : unsigned {
@@ -730,10 +717,6 @@ enum CodeViewIdentifiers {
 inline bool isReservedSectionNumber(int32_t SectionNumber) {
   return SectionNumber <= 0;
 }
-
-/// Encode section name based on string table offset.
-/// The size of Out must be at least COFF::NameSize.
-bool encodeSectionName(char *Out, uint64_t Offset);
 
 } // End namespace COFF.
 } // End namespace llvm.

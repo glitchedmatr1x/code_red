@@ -1,8 +1,9 @@
 //===-- FileRemapper.h - File Remapping Helper ------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -12,13 +13,11 @@
 #include "clang/Basic/LLVM.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/PointerUnion.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringRef.h"
 #include <memory>
 
 namespace llvm {
   class MemoryBuffer;
-  class MemoryBufferRef;
 }
 
 namespace clang {
@@ -42,7 +41,7 @@ class FileRemapper {
 public:
   FileRemapper();
   ~FileRemapper();
-
+  
   bool initFromDisk(StringRef outputDir, DiagnosticsEngine &Diag,
                     bool ignoreIfFilesChanged);
   bool initFromFile(StringRef filePath, DiagnosticsEngine &Diag,
@@ -56,12 +55,6 @@ public:
   void remap(StringRef filePath, std::unique_ptr<llvm::MemoryBuffer> memBuf);
 
   void applyMappings(PreprocessorOptions &PPOpts) const;
-
-  /// Iterate through all the mappings.
-  void forEachMapping(
-      llvm::function_ref<void(StringRef, StringRef)> CaptureFile,
-      llvm::function_ref<void(StringRef, const llvm::MemoryBufferRef &)>
-          CaptureBuffer) const;
 
   void clear(StringRef outputDir = StringRef());
 

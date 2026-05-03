@@ -1,8 +1,9 @@
 //===- llvm/CodeGen/RegAllocRegistry.h --------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,7 +15,6 @@
 #ifndef LLVM_CODEGEN_REGALLOCREGISTRY_H
 #define LLVM_CODEGEN_REGALLOCREGISTRY_H
 
-#include "llvm/CodeGen/RegAllocCommon.h"
 #include "llvm/CodeGen/MachinePassRegistry.h"
 
 namespace llvm {
@@ -23,51 +23,43 @@ class FunctionPass;
 
 //===----------------------------------------------------------------------===//
 ///
-/// RegisterRegAllocBase class - Track the registration of register allocators.
+/// RegisterRegAlloc class - Track the registration of register allocators.
 ///
 //===----------------------------------------------------------------------===//
-template <class SubClass>
-class RegisterRegAllocBase : public MachinePassRegistryNode<FunctionPass *(*)()> {
+class RegisterRegAlloc : public MachinePassRegistryNode {
 public:
   using FunctionPassCtor = FunctionPass *(*)();
 
-  static MachinePassRegistry<FunctionPassCtor> Registry;
+  static MachinePassRegistry Registry;
 
-  RegisterRegAllocBase(const char *N, const char *D, FunctionPassCtor C)
-      : MachinePassRegistryNode(N, D, C) {
+  RegisterRegAlloc(const char *N, const char *D, FunctionPassCtor C)
+      : MachinePassRegistryNode(N, D, (MachinePassCtor)C) {
     Registry.Add(this);
   }
 
-  ~RegisterRegAllocBase() { Registry.Remove(this); }
+  ~RegisterRegAlloc() { Registry.Remove(this); }
 
   // Accessors.
-  SubClass *getNext() const {
-    return static_cast<SubClass *>(MachinePassRegistryNode::getNext());
+  RegisterRegAlloc *getNext() const {
+    return (RegisterRegAlloc *)MachinePassRegistryNode::getNext();
   }
 
-  static SubClass *getList() {
-    return static_cast<SubClass *>(Registry.getList());
+  static RegisterRegAlloc *getList() {
+    return (RegisterRegAlloc *)Registry.getList();
   }
 
-  static FunctionPassCtor getDefault() { return Registry.getDefault(); }
+  static FunctionPassCtor getDefault() {
+    return (FunctionPassCtor)Registry.getDefault();
+  }
 
-  static void setDefault(FunctionPassCtor C) { Registry.setDefault(C); }
+  static void setDefault(FunctionPassCtor C) {
+    Registry.setDefault((MachinePassCtor)C);
+  }
 
-  static void setListener(MachinePassRegistryListener<FunctionPassCtor> *L) {
+  static void setListener(MachinePassRegistryListener *L) {
     Registry.setListener(L);
   }
 };
-
-class RegisterRegAlloc : public RegisterRegAllocBase<RegisterRegAlloc> {
-public:
-  RegisterRegAlloc(const char *N, const char *D, FunctionPassCtor C)
-    : RegisterRegAllocBase(N, D, C) {}
-};
-
-/// RegisterRegAlloc's global Registry tracks allocator registration.
-template <class T>
-MachinePassRegistry<RegisterRegAlloc::FunctionPassCtor>
-RegisterRegAllocBase<T>::Registry;
 
 } // end namespace llvm
 

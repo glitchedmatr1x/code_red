@@ -1,8 +1,9 @@
 //===- ObjCARCAnalysisUtils.h - ObjC ARC Analysis Utilities -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 /// \file
@@ -19,77 +20,70 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_ANALYSIS_OBJCARCANALYSISUTILS_H
-#define LLVM_ANALYSIS_OBJCARCANALYSISUTILS_H
+#ifndef LLVM_LIB_ANALYSIS_OBJCARCANALYSISUTILS_H
+#define LLVM_LIB_ANALYSIS_OBJCARCANALYSISUTILS_H
 
 #include "llvm/ADT/Optional.h"
+#include "llvm/ADT/StringSwitch.h"
+#include "llvm/Analysis/AliasAnalysis.h"
 #include "llvm/Analysis/ObjCARCInstKind.h"
+#include "llvm/Analysis/Passes.h"
 #include "llvm/Analysis/ValueTracking.h"
+#include "llvm/IR/CallSite.h"
 #include "llvm/IR/Constants.h"
+#include "llvm/IR/InstIterator.h"
+#include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"
-#include "llvm/IR/ValueHandle.h"
+#include "llvm/Pass.h"
 
 namespace llvm {
+class raw_ostream;
+}
 
-class AAResults;
-
+namespace llvm {
 namespace objcarc {
 
-/// A handy option to enable/disable all ARC Optimizations.
+/// \brief A handy option to enable/disable all ARC Optimizations.
 extern bool EnableARCOpts;
 
-/// Test if the given module looks interesting to run ARC optimization
+/// \brief Test if the given module looks interesting to run ARC optimization
 /// on.
 inline bool ModuleHasARC(const Module &M) {
   return
-    M.getNamedValue("llvm.objc.retain") ||
-    M.getNamedValue("llvm.objc.release") ||
-    M.getNamedValue("llvm.objc.autorelease") ||
-    M.getNamedValue("llvm.objc.retainAutoreleasedReturnValue") ||
-    M.getNamedValue("llvm.objc.unsafeClaimAutoreleasedReturnValue") ||
-    M.getNamedValue("llvm.objc.retainBlock") ||
-    M.getNamedValue("llvm.objc.autoreleaseReturnValue") ||
-    M.getNamedValue("llvm.objc.autoreleasePoolPush") ||
-    M.getNamedValue("llvm.objc.loadWeakRetained") ||
-    M.getNamedValue("llvm.objc.loadWeak") ||
-    M.getNamedValue("llvm.objc.destroyWeak") ||
-    M.getNamedValue("llvm.objc.storeWeak") ||
-    M.getNamedValue("llvm.objc.initWeak") ||
-    M.getNamedValue("llvm.objc.moveWeak") ||
-    M.getNamedValue("llvm.objc.copyWeak") ||
-    M.getNamedValue("llvm.objc.retainedObject") ||
-    M.getNamedValue("llvm.objc.unretainedObject") ||
-    M.getNamedValue("llvm.objc.unretainedPointer") ||
-    M.getNamedValue("llvm.objc.clang.arc.use");
+    M.getNamedValue("objc_retain") ||
+    M.getNamedValue("objc_release") ||
+    M.getNamedValue("objc_autorelease") ||
+    M.getNamedValue("objc_retainAutoreleasedReturnValue") ||
+    M.getNamedValue("objc_unsafeClaimAutoreleasedReturnValue") ||
+    M.getNamedValue("objc_retainBlock") ||
+    M.getNamedValue("objc_autoreleaseReturnValue") ||
+    M.getNamedValue("objc_autoreleasePoolPush") ||
+    M.getNamedValue("objc_loadWeakRetained") ||
+    M.getNamedValue("objc_loadWeak") ||
+    M.getNamedValue("objc_destroyWeak") ||
+    M.getNamedValue("objc_storeWeak") ||
+    M.getNamedValue("objc_initWeak") ||
+    M.getNamedValue("objc_moveWeak") ||
+    M.getNamedValue("objc_copyWeak") ||
+    M.getNamedValue("objc_retainedObject") ||
+    M.getNamedValue("objc_unretainedObject") ||
+    M.getNamedValue("objc_unretainedPointer") ||
+    M.getNamedValue("clang.arc.use");
 }
 
-/// This is a wrapper around getUnderlyingObject which also knows how to
+/// \brief This is a wrapper around getUnderlyingObject which also knows how to
 /// look through objc_retain and objc_autorelease calls, which we know to return
 /// their argument verbatim.
-inline const Value *GetUnderlyingObjCPtr(const Value *V) {
+inline const Value *GetUnderlyingObjCPtr(const Value *V,
+                                                const DataLayout &DL) {
   for (;;) {
-    V = getUnderlyingObject(V);
+    V = GetUnderlyingObject(V, DL);
     if (!IsForwarding(GetBasicARCInstKind(V)))
       break;
     V = cast<CallInst>(V)->getArgOperand(0);
   }
 
   return V;
-}
-
-/// A wrapper for GetUnderlyingObjCPtr used for results memoization.
-inline const Value *GetUnderlyingObjCPtrCached(
-    const Value *V,
-    DenseMap<const Value *, std::pair<WeakVH, WeakTrackingVH>> &Cache) {
-  // The entry is invalid if either value handle is null.
-  auto InCache = Cache.lookup(V);
-  if (InCache.first && InCache.second)
-    return InCache.second;
-
-  const Value *Computed = GetUnderlyingObjCPtr(V);
-  Cache[V] =
-      std::make_pair(const_cast<Value *>(V), const_cast<Value *>(Computed));
-  return Computed;
 }
 
 /// The RCIdentity root of a value \p V is a dominating value U for which
@@ -125,7 +119,7 @@ inline Value *GetRCIdentityRoot(Value *V) {
   return const_cast<Value *>(GetRCIdentityRoot((const Value *)V));
 }
 
-/// Assuming the given instruction is one of the special calls such as
+/// \brief Assuming the given instruction is one of the special calls such as
 /// objc_retain or objc_release, return the RCIdentity root of the argument of
 /// the call.
 inline Value *GetArgRCIdentityRoot(Value *Inst) {
@@ -142,7 +136,7 @@ inline bool IsNoopInstruction(const Instruction *I) {
      cast<GetElementPtrInst>(I)->hasAllZeroIndices());
 }
 
-/// Test whether the given value is possible a retainable object pointer.
+/// \brief Test whether the given value is possible a retainable object pointer.
 inline bool IsPotentialRetainableObjPtr(const Value *Op) {
   // Pointers to static or stack storage are not valid retainable object
   // pointers.
@@ -150,7 +144,9 @@ inline bool IsPotentialRetainableObjPtr(const Value *Op) {
     return false;
   // Special arguments can not be a valid retainable object pointer.
   if (const Argument *Arg = dyn_cast<Argument>(Op))
-    if (Arg->hasPassPointeeByValueCopyAttr() || Arg->hasNestAttr() ||
+    if (Arg->hasByValAttr() ||
+        Arg->hasInAllocaAttr() ||
+        Arg->hasNestAttr() ||
         Arg->hasStructRetAttr())
       return false;
   // Only consider values with pointer types.
@@ -166,19 +162,37 @@ inline bool IsPotentialRetainableObjPtr(const Value *Op) {
   return true;
 }
 
-bool IsPotentialRetainableObjPtr(const Value *Op, AAResults &AA);
+inline bool IsPotentialRetainableObjPtr(const Value *Op,
+                                               AliasAnalysis &AA) {
+  // First make the rudimentary check.
+  if (!IsPotentialRetainableObjPtr(Op))
+    return false;
 
-/// Helper for GetARCInstKind. Determines what kind of construct CS
-/// is.
-inline ARCInstKind GetCallSiteClass(const CallBase &CB) {
-  for (const Use &U : CB.args())
-    if (IsPotentialRetainableObjPtr(U))
-      return CB.onlyReadsMemory() ? ARCInstKind::User : ARCInstKind::CallOrUser;
+  // Objects in constant memory are not reference-counted.
+  if (AA.pointsToConstantMemory(Op))
+    return false;
 
-  return CB.onlyReadsMemory() ? ARCInstKind::None : ARCInstKind::Call;
+  // Pointers in constant memory are not pointing to reference-counted objects.
+  if (const LoadInst *LI = dyn_cast<LoadInst>(Op))
+    if (AA.pointsToConstantMemory(LI->getPointerOperand()))
+      return false;
+
+  // Otherwise assume the worst.
+  return true;
 }
 
-/// Return true if this value refers to a distinct and identifiable
+/// \brief Helper for GetARCInstKind. Determines what kind of construct CS
+/// is.
+inline ARCInstKind GetCallSiteClass(ImmutableCallSite CS) {
+  for (ImmutableCallSite::arg_iterator I = CS.arg_begin(), E = CS.arg_end();
+       I != E; ++I)
+    if (IsPotentialRetainableObjPtr(*I))
+      return CS.onlyReadsMemory() ? ARCInstKind::User : ARCInstKind::CallOrUser;
+
+  return CS.onlyReadsMemory() ? ARCInstKind::None : ARCInstKind::Call;
+}
+
+/// \brief Return true if this value refers to a distinct and identifiable
 /// object.
 ///
 /// This is similar to AliasAnalysis's isIdentifiedObject, except that it uses
@@ -207,10 +221,11 @@ inline bool IsObjCIdentifiedObject(const Value *V) {
         return true;
 
       StringRef Section = GV->getSection();
-      if (Section.contains("__message_refs") ||
-          Section.contains("__objc_classrefs") ||
-          Section.contains("__objc_superrefs") ||
-          Section.contains("__objc_methname") || Section.contains("__cstring"))
+      if (Section.find("__message_refs") != StringRef::npos ||
+          Section.find("__objc_classrefs") != StringRef::npos ||
+          Section.find("__objc_superrefs") != StringRef::npos ||
+          Section.find("__objc_methname") != StringRef::npos ||
+          Section.find("__cstring") != StringRef::npos)
         return true;
     }
   }

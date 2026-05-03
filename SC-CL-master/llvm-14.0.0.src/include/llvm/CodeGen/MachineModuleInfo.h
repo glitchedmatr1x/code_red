@@ -1,8 +1,9 @@
 //===-- llvm/CodeGen/MachineModuleInfo.h ------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -33,7 +34,6 @@
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/PointerIntPair.h"
-#include "llvm/IR/PassManager.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCSymbol.h"
 #include "llvm/Pass.h"
@@ -44,17 +44,18 @@
 namespace llvm {
 
 class BasicBlock;
+class CallInst;
 class Function;
-class LLVMTargetMachine;
-class MMIAddrLabelMap;
 class MachineFunction;
+class MMIAddrLabelMap;
 class Module;
+class TargetMachine;
 
 //===----------------------------------------------------------------------===//
 /// This class can be derived from and used by targets to hold private
 /// target-specific information for each Module.  Objects of type are
-/// accessed/created with MachineModuleInfo::getObjFileInfo and destroyed when
-/// the MachineModuleInfo is destroyed.
+/// accessed/created with MMI::getInfo and destroyed when the MachineModuleInfo
+/// is destroyed.
 ///
 class MachineModuleInfoImpl {
 public:
@@ -74,17 +75,11 @@ protected:
 /// made by different debugging and exception handling schemes and reformated
 /// for specific use.
 ///
-class MachineModuleInfo {
-  friend class MachineModuleInfoWrapperPass;
-  friend class MachineModuleAnalysis;
-
-  const LLVMTargetMachine &TM;
+class MachineModuleInfo : public ImmutablePass {
+  const TargetMachine &TM;
 
   /// This is the MCContext used for the entire code generator.
   MCContext Context;
-  // This is an external context, that if assigned, will be used instead of the
-  // internal context.
-  MCContext *ExternalContext = nullptr;
 
   /// This is the LLVM Module being worked on.
   const Module *TheModule;
@@ -110,7 +105,7 @@ class MachineModuleInfo {
   /// basic block's address of label.
   MMIAddrLabelMap *AddrLabelSymbols;
 
-  // TODO: Ideally, what we'd like is to have a switch that allows emitting
+  // TODO: Ideally, what we'd like is to have a switch that allows emitting 
   // synchronous (precise at call-sites only) CFA into .eh_frame. However,
   // even under this switch, we'd like .debug_frame to be precise when using
   // -g. At this moment, there's no way to specify that some CFI directives
@@ -119,9 +114,10 @@ class MachineModuleInfo {
   /// True if debugging information is available in this module.
   bool DbgInfoAvailable;
 
-  /// True if this module is being built for windows/msvc, and uses floating
-  /// point.  This is used to emit an undefined reference to _fltused.
-  bool UsesMSVCFloatingPoint;
+  /// True if this module calls VarArg function with floating-point arguments.
+  /// This is used to emit an undefined reference to _fltused on Windows
+  /// targets.
+  bool UsesVAFloatArgument;
 
   /// True if the module calls the __morestack function indirectly, as is
   /// required under the large code model on x86. This is used to emit
@@ -146,37 +142,26 @@ class MachineModuleInfo {
   const Function *LastRequest = nullptr; ///< Used for shortcut/cache.
   MachineFunction *LastResult = nullptr; ///< Used for shortcut/cache.
 
-  MachineModuleInfo &operator=(MachineModuleInfo &&MMII) = delete;
-
 public:
-  explicit MachineModuleInfo(const LLVMTargetMachine *TM = nullptr);
+  static char ID; // Pass identification, replacement for typeid
 
-  explicit MachineModuleInfo(const LLVMTargetMachine *TM,
-                             MCContext *ExtContext);
+  explicit MachineModuleInfo(const TargetMachine *TM = nullptr);
+  ~MachineModuleInfo() override;
 
-  MachineModuleInfo(MachineModuleInfo &&MMII);
+  // Initialization and Finalization
+  bool doInitialization(Module &) override;
+  bool doFinalization(Module &) override;
 
-  ~MachineModuleInfo();
-
-  void initialize();
-  void finalize();
-
-  const LLVMTargetMachine &getTarget() const { return TM; }
-
-  const MCContext &getContext() const {
-    return ExternalContext ? *ExternalContext : Context;
-  }
-  MCContext &getContext() {
-    return ExternalContext ? *ExternalContext : Context;
-  }
+  const MCContext &getContext() const { return Context; }
+  MCContext &getContext() { return Context; }
 
   const Module *getModule() const { return TheModule; }
 
   /// Returns the MachineFunction constructed for the IR function \p F.
   /// Creates a new MachineFunction if none exists yet.
-  MachineFunction &getOrCreateMachineFunction(Function &F);
+  MachineFunction &getOrCreateMachineFunction(const Function &F);
 
-  /// \brief Returns the MachineFunction associated to IR function \p F if there
+  /// \bried Returns the MachineFunction associated to IR function \p F if there
   /// is one, otherwise nullptr.
   MachineFunction *getMachineFunction(const Function &F) const;
 
@@ -184,7 +169,7 @@ public:
   /// Machine Function map.
   void deleteMachineFunctionFor(Function &F);
 
-  /// Keep track of various per-module pieces of information for backends
+  /// Keep track of various per-function pieces of information for backends
   /// that would like to do so.
   template<typename Ty>
   Ty &getObjFileInfo() {
@@ -202,9 +187,13 @@ public:
   bool hasDebugInfo() const { return DbgInfoAvailable; }
   void setDebugInfoAvailability(bool avail) { DbgInfoAvailable = avail; }
 
-  bool usesMSVCFloatingPoint() const { return UsesMSVCFloatingPoint; }
+  bool usesVAFloatArgument() const {
+    return UsesVAFloatArgument;
+  }
 
-  void setUsesMSVCFloatingPoint(bool b) { UsesMSVCFloatingPoint = b; }
+  void setUsesVAFloatArgument(bool b) {
+    UsesVAFloatArgument = b;
+  }
 
   bool usesMorestackAddr() const {
     return UsesMorestackAddr;
@@ -267,48 +256,15 @@ public:
     return Personalities;
   }
   /// \}
-
-  // MMI owes MCContext. It should never be invalidated.
-  bool invalidate(Module &, const PreservedAnalyses &,
-                  ModuleAnalysisManager::Invalidator &) {
-    return false;
-  }
 }; // End class MachineModuleInfo
 
-class MachineModuleInfoWrapperPass : public ImmutablePass {
-  MachineModuleInfo MMI;
+//===- MMI building helpers -----------------------------------------------===//
 
-public:
-  static char ID; // Pass identification, replacement for typeid
-  explicit MachineModuleInfoWrapperPass(const LLVMTargetMachine *TM = nullptr);
-
-  explicit MachineModuleInfoWrapperPass(const LLVMTargetMachine *TM,
-                                        MCContext *ExtContext);
-
-  // Initialization and Finalization
-  bool doInitialization(Module &) override;
-  bool doFinalization(Module &) override;
-
-  MachineModuleInfo &getMMI() { return MMI; }
-  const MachineModuleInfo &getMMI() const { return MMI; }
-};
-
-/// An analysis that produces \c MachineInfo for a module.
-class MachineModuleAnalysis : public AnalysisInfoMixin<MachineModuleAnalysis> {
-  friend AnalysisInfoMixin<MachineModuleAnalysis>;
-  static AnalysisKey Key;
-
-  const LLVMTargetMachine *TM;
-
-public:
-  /// Provide the result type for this analysis pass.
-  using Result = MachineModuleInfo;
-
-  MachineModuleAnalysis(const LLVMTargetMachine *TM) : TM(TM) {}
-
-  /// Run the analysis pass and produce machine module information.
-  MachineModuleInfo run(Module &M, ModuleAnalysisManager &);
-};
+/// Determine if any floating-point values are being passed to this variadic
+/// function, and set the MachineModuleInfo's usesVAFloatArgument flag if so.
+/// This flag is used to emit an undefined reference to _fltused on Windows,
+/// which will link in MSVCRT's floating-point support.
+void computeUsesVAFloatArgument(const CallInst &I, MachineModuleInfo &MMI);
 
 } // end namespace llvm
 

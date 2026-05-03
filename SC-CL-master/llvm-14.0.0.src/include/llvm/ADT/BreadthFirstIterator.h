@@ -1,18 +1,18 @@
 //===- llvm/ADT/BreadthFirstIterator.h - Breadth First iterator -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file builds on the ADT/GraphTraits.h file to build a generic breadth
-/// first graph iterator.  This file exposes the following functions/types:
-///
-/// bf_begin/bf_end/bf_iterator
-///   * Normal breadth-first iteration - visit a graph level-by-level.
-///
+//
+// This file builds on the ADT/GraphTraits.h file to build a generic breadth
+// first graph iterator.  This file exposes the following functions/types:
+//
+// bf_begin/bf_end/bf_iterator
+//   * Normal breadth-first iteration - visit a graph level-by-level.
+//
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_BREADTHFIRSTITERATOR_H
@@ -45,15 +45,11 @@ template <class GraphT,
           class SetType =
               bf_iterator_default_set<typename GraphTraits<GraphT>::NodeRef>,
           class GT = GraphTraits<GraphT>>
-class bf_iterator : public bf_iterator_storage<SetType> {
-public:
-  using iterator_category = std::forward_iterator_tag;
-  using value_type = typename GT::NodeRef;
-  using difference_type = std::ptrdiff_t;
-  using pointer = value_type *;
-  using reference = value_type &;
+class bf_iterator
+    : public std::iterator<std::forward_iterator_tag, typename GT::NodeRef>,
+      public bf_iterator_storage<SetType> {
+  using super = std::iterator<std::forward_iterator_tag, typename GT::NodeRef>;
 
-private:
   using NodeRef = typename GT::NodeRef;
   using ChildItTy = typename GT::ChildIteratorType;
 
@@ -65,8 +61,9 @@ private:
   std::queue<Optional<QueueElement>> VisitQueue;
 
   // Current level.
-  unsigned Level = 0;
+  unsigned Level;
 
+private:
   inline bf_iterator(NodeRef Node) {
     this->Visited.insert(Node);
     Level = 0;
@@ -111,6 +108,8 @@ private:
   }
 
 public:
+  using pointer = typename super::pointer;
+
   // Provide static begin and end methods as our public "constructors"
   static bf_iterator begin(const GraphT &G) {
     return bf_iterator(GT::getEntryNode(G));
@@ -126,7 +125,7 @@ public:
 
   const NodeRef &operator*() const { return VisitQueue.front()->first; }
 
-  // This is a nonstandard operator-> that dereferences the pointer an extra
+  // This is a nonstandard operator-> that dereferenfces the pointer an extra
   // time so that you can actually call methods on the node, because the
   // contained type is a pointer.
   NodeRef operator->() const { return **this; }

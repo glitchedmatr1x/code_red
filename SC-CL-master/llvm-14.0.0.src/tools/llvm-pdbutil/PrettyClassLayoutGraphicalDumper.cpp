@@ -1,8 +1,9 @@
 //===- PrettyClassLayoutGraphicalDumper.h -----------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -49,9 +50,12 @@ bool PrettyClassLayoutGraphicalDumper::start(const UDTLayoutBase &Layout) {
     uint32_t RelativeOffset = Item->getOffsetInParent();
     CurrentAbsoluteOffset = ClassOffsetZero + RelativeOffset;
 
-    // This might be an empty base, in which case it could extend outside the
-    // bounds of the parent class.
+    // Since there is storage there, it should be set!  However, this might
+    // be an empty base, in which case it could extend outside the bounds of
+    // the parent class.
     if (RelativeOffset < UseMap.size() && (Item->getSize() > 0)) {
+      assert(UseMap.test(RelativeOffset));
+
       // If there is any remaining padding in this class, and the offset of the
       // new item is after the padding, then we must have just jumped over some
       // padding.  Print a padding row and then look for where the next block

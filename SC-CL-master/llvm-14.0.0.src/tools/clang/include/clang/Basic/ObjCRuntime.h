@@ -1,33 +1,30 @@
-//===- ObjCRuntime.h - Objective-C Runtime Configuration --------*- C++ -*-===//
+//===--- ObjCRuntime.h - Objective-C Runtime Configuration ------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-//
+///
 /// \file
-/// Defines types useful for describing an Objective-C runtime.
-//
+/// \brief Defines types useful for describing an Objective-C runtime.
+///
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_CLANG_BASIC_OBJCRUNTIME_H
 #define LLVM_CLANG_BASIC_OBJCRUNTIME_H
 
-#include "clang/Basic/LLVM.h"
-#include "llvm/ADT/StringRef.h"
+#include "clang/Basic/VersionTuple.h"
 #include "llvm/ADT/Triple.h"
 #include "llvm/Support/ErrorHandling.h"
-#include "llvm/Support/HashBuilder.h"
-#include "llvm/Support/VersionTuple.h"
-#include <string>
 
 namespace clang {
 
-/// The basic abstraction for the target Objective-C runtime.
+/// \brief The basic abstraction for the target Objective-C runtime.
 class ObjCRuntime {
 public:
-  /// The basic Objective-C runtimes that we know about.
+  /// \brief The basic Objective-C runtimes that we know about.
   enum Kind {
     /// 'macosx' is the Apple-provided NeXT-derived runtime on Mac OS
     /// X platforms that use the non-fragile ABI; the version is a
@@ -60,14 +57,15 @@ public:
   };
 
 private:
-  Kind TheKind = MacOSX;
+  Kind TheKind;
   VersionTuple Version;
 
 public:
   /// A bogus initialization of the runtime.
-  ObjCRuntime() = default;
+  ObjCRuntime() : TheKind(MacOSX) {}
+
   ObjCRuntime(Kind kind, const VersionTuple &version)
-      : TheKind(kind), Version(version) {}
+    : TheKind(kind), Version(version) {}
 
   void set(Kind kind, VersionTuple version) {
     TheKind = kind;
@@ -77,7 +75,7 @@ public:
   Kind getKind() const { return TheKind; }
   const VersionTuple &getVersion() const { return Version; }
 
-  /// Does this runtime follow the set of implied behaviors for a
+  /// \brief Does this runtime follow the set of implied behaviors for a
   /// "non-fragile" ABI?
   bool isNonFragile() const {
     switch (getKind()) {
@@ -115,7 +113,7 @@ public:
     return true;
   }
 
-  /// Is this runtime basically of the GNU family of runtimes?
+  /// \brief Is this runtime basically of the GNU family of runtimes?
   bool isGNUFamily() const {
     switch (getKind()) {
     case FragileMacOSX:
@@ -131,14 +129,14 @@ public:
     llvm_unreachable("bad kind");
   }
 
-  /// Is this runtime basically of the NeXT family of runtimes?
+  /// \brief Is this runtime basically of the NeXT family of runtimes?
   bool isNeXTFamily() const {
     // For now, this is just the inverse of isGNUFamily(), but that's
     // not inherently true.
     return !isGNUFamily();
   }
 
-  /// Does this runtime allow ARC at all?
+  /// \brief Does this runtime allow ARC at all?
   bool allowsARC() const {
     switch (getKind()) {
     case FragileMacOSX:
@@ -154,7 +152,7 @@ public:
     llvm_unreachable("bad kind");
   }
 
-  /// Does this runtime natively provide the ARC entrypoints?
+  /// \brief Does this runtime natively provide the ARC entrypoints? 
   ///
   /// ARC cannot be directly supported on a platform that does not provide
   /// these entrypoints, although it may be supportable via a stub
@@ -173,97 +171,7 @@ public:
     llvm_unreachable("bad kind");
   }
 
-  /// Does this runtime provide ARC entrypoints that are likely to be faster
-  /// than an ordinary message send of the appropriate selector?
-  ///
-  /// The ARC entrypoints are guaranteed to be equivalent to just sending the
-  /// corresponding message.  If the entrypoint is implemented naively as just a
-  /// message send, using it is a trade-off: it sacrifices a few cycles of
-  /// overhead to save a small amount of code.  However, it's possible for
-  /// runtimes to detect and special-case classes that use "standard"
-  /// retain/release behavior; if that's dynamically a large proportion of all
-  /// retained objects, using the entrypoint will also be faster than using a
-  /// message send.
-  ///
-  /// When this method returns true, Clang will turn non-super message sends of
-  /// certain selectors into calls to the correspond entrypoint:
-  ///   retain => objc_retain
-  ///   release => objc_release
-  ///   autorelease => objc_autorelease
-  bool shouldUseARCFunctionsForRetainRelease() const {
-    switch (getKind()) {
-    case FragileMacOSX:
-      return false;
-    case MacOSX:
-      return getVersion() >= VersionTuple(10, 10);
-    case iOS:
-      return getVersion() >= VersionTuple(8);
-    case WatchOS:
-      return true;
-    case GCC:
-      return false;
-    case GNUstep:
-      return false;
-    case ObjFW:
-      return false;
-    }
-    llvm_unreachable("bad kind");
-  }
-
-  /// Does this runtime provide entrypoints that are likely to be faster
-  /// than an ordinary message send of the "alloc" selector?
-  ///
-  /// The "alloc" entrypoint is guaranteed to be equivalent to just sending the
-  /// corresponding message.  If the entrypoint is implemented naively as just a
-  /// message send, using it is a trade-off: it sacrifices a few cycles of
-  /// overhead to save a small amount of code.  However, it's possible for
-  /// runtimes to detect and special-case classes that use "standard"
-  /// alloc behavior; if that's dynamically a large proportion of all
-  /// objects, using the entrypoint will also be faster than using a message
-  /// send.
-  ///
-  /// When this method returns true, Clang will turn non-super message sends of
-  /// certain selectors into calls to the corresponding entrypoint:
-  ///   alloc => objc_alloc
-  ///   allocWithZone:nil => objc_allocWithZone
-  bool shouldUseRuntimeFunctionsForAlloc() const {
-    switch (getKind()) {
-    case FragileMacOSX:
-      return false;
-    case MacOSX:
-      return getVersion() >= VersionTuple(10, 10);
-    case iOS:
-      return getVersion() >= VersionTuple(8);
-    case WatchOS:
-      return true;
-
-    case GCC:
-      return false;
-    case GNUstep:
-      return false;
-    case ObjFW:
-      return false;
-    }
-    llvm_unreachable("bad kind");
-  }
-
-  /// Does this runtime provide the objc_alloc_init entrypoint? This can apply
-  /// the same optimization as objc_alloc, but also sends an -init message,
-  /// reducing code size on the caller.
-  bool shouldUseRuntimeFunctionForCombinedAllocInit() const {
-    switch (getKind()) {
-    case MacOSX:
-      return getVersion() >= VersionTuple(10, 14, 4);
-    case iOS:
-      return getVersion() >= VersionTuple(12, 2);
-    case WatchOS:
-      return getVersion() >= VersionTuple(5, 2);
-    default:
-      return false;
-    }
-  }
-
-  /// Does this runtime supports optimized setter entrypoints?
+  /// \brief Does this runtime supports optimized setter entrypoints?
   bool hasOptimizedSetter() const {
     switch (getKind()) {
       case MacOSX:
@@ -274,8 +182,9 @@ public:
         return true;
       case GNUstep:
         return getVersion() >= VersionTuple(1, 7);
+    
       default:
-        return false;
+      return false;
     }
   }
 
@@ -284,7 +193,7 @@ public:
     return hasNativeWeak();
   }
 
-  /// Does this runtime natively provide ARC-compliant 'weak'
+  /// \brief Does this runtime natively provide ARC-compliant 'weak'
   /// entrypoints?
   bool hasNativeWeak() const {
     // Right now, this is always equivalent to whether the runtime
@@ -292,14 +201,14 @@ public:
     return hasNativeARC();
   }
 
-  /// Does this runtime directly support the subscripting methods?
+  /// \brief Does this runtime directly support the subscripting methods?
   ///
   /// This is really a property of the library, not the runtime.
   bool hasSubscripting() const {
     switch (getKind()) {
     case FragileMacOSX: return false;
-    case MacOSX: return getVersion() >= VersionTuple(10, 11);
-    case iOS: return getVersion() >= VersionTuple(9);
+    case MacOSX: return getVersion() >= VersionTuple(10, 8);
+    case iOS: return getVersion() >= VersionTuple(6);
     case WatchOS: return true;
 
     // This is really a lie, because some implementations and versions
@@ -312,12 +221,12 @@ public:
     llvm_unreachable("bad kind");
   }
 
-  /// Does this runtime allow sizeof or alignof on object types?
+  /// \brief Does this runtime allow sizeof or alignof on object types?
   bool allowsSizeofAlignof() const {
     return isFragile();
   }
 
-  /// Does this runtime allow pointer arithmetic on objects?
+  /// \brief Does this runtime allow pointer arithmetic on objects?
   ///
   /// This covers +, -, ++, --, and (if isSubscriptPointerArithmetic()
   /// yields true) [].
@@ -336,12 +245,12 @@ public:
     llvm_unreachable("bad kind");
   }
 
-  /// Is subscripting pointer arithmetic?
+  /// \brief Is subscripting pointer arithmetic?
   bool isSubscriptPointerArithmetic() const {
     return allowsPointerArithmetic();
   }
 
-  /// Does this runtime provide an objc_terminate function?
+  /// \brief Does this runtime provide an objc_terminate function?
   ///
   /// This is used in handlers for exceptions during the unwind process;
   /// without it, abort() must be used in pure ObjC files.
@@ -358,7 +267,7 @@ public:
     llvm_unreachable("bad kind");
   }
 
-  /// Does this runtime support weakly importing classes?
+  /// \brief Does this runtime support weakly importing classes?
   bool hasWeakClassImport() const {
     switch (getKind()) {
     case MacOSX: return true;
@@ -372,7 +281,7 @@ public:
     llvm_unreachable("bad kind");
   }
 
-  /// Does this runtime use zero-cost exceptions?
+  /// \brief Does this runtime use zero-cost exceptions?
   bool hasUnwindExceptions() const {
     switch (getKind()) {
     case MacOSX: return true;
@@ -411,6 +320,7 @@ public:
       return getVersion() >= VersionTuple(2);
     case GNUstep:
       return false;
+
     default:
       return false;
     }
@@ -430,38 +340,7 @@ public:
     }
   }
 
-  /// Returns true if this Objective-C runtime supports Objective-C class
-  /// stubs.
-  bool allowsClassStubs() const {
-    switch (getKind()) {
-    case FragileMacOSX:
-    case GCC:
-    case GNUstep:
-    case ObjFW:
-      return false;
-    case MacOSX:
-    case iOS:
-    case WatchOS:
-      return true;
-    }
-    llvm_unreachable("bad kind");
-  }
-
-  /// Does this runtime supports direct dispatch
-  bool allowsDirectDispatch() const {
-    switch (getKind()) {
-    case FragileMacOSX: return false;
-    case MacOSX: return true;
-    case iOS: return true;
-    case WatchOS: return true;
-    case GCC: return false;
-    case GNUstep: return false;
-    case ObjFW: return false;
-    }
-    llvm_unreachable("bad kind");
-  }
-
-  /// Try to parse an Objective-C runtime specification from the given
+  /// \brief Try to parse an Objective-C runtime specification from the given
   /// string.
   ///
   /// \return true on error.
@@ -477,20 +356,10 @@ public:
   friend bool operator!=(const ObjCRuntime &left, const ObjCRuntime &right) {
     return !(left == right);
   }
-
-  friend llvm::hash_code hash_value(const ObjCRuntime &OCR) {
-    return llvm::hash_combine(OCR.getKind(), OCR.getVersion());
-  }
-
-  template <typename HasherT, llvm::support::endianness Endianness>
-  friend void addHash(llvm::HashBuilderImpl<HasherT, Endianness> &HBuilder,
-                      const ObjCRuntime &OCR) {
-    HBuilder.add(OCR.getKind(), OCR.getVersion());
-  }
 };
 
 raw_ostream &operator<<(raw_ostream &out, const ObjCRuntime &value);
 
-} // namespace clang
+}  // end namespace clang
 
-#endif // LLVM_CLANG_BASIC_OBJCRUNTIME_H
+#endif

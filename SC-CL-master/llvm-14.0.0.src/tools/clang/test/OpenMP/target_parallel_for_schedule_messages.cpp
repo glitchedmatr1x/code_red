@@ -1,6 +1,6 @@
-// RUN: %clang_cc1 -verify -fopenmp %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp %s
 
-// RUN: %clang_cc1 -verify -fopenmp-simd %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp-simd %s
 
 void foo() {
 }
@@ -13,7 +13,6 @@ struct S1; // expected-note {{declared here}}
 
 template <class T, typename S, int N, int ST> // expected-note {{declared here}}
 T tmain(T argc, S **argv) {
-  T z;
   #pragma omp target parallel for schedule // expected-error {{expected '(' after 'schedule'}}
   for (int i = ST; i < N; i++) argv[0][i] = argv[0][i] - argv[0][i-ST];
   #pragma omp target parallel for schedule ( // expected-error {{expected 'static', 'dynamic', 'guided', 'auto', 'runtime', 'monotonic', 'nonmonotonic' or 'simd' in OpenMP clause 'schedule'}} expected-error {{expected ')'}} expected-note {{to match this '('}}
@@ -47,7 +46,7 @@ T tmain(T argc, S **argv) {
   // expected-error@+1 2 {{expression must have integral or unscoped enumeration type, not 'char *'}}
   #pragma omp target parallel for schedule (guided, argv[1]=2) // expected-error {{expected ')'}} expected-note {{to match this '('}}
   for (int i = ST; i < N; i++) argv[0][i] = argv[0][i] - argv[0][i-ST];
-  #pragma omp target parallel for schedule (dynamic, 1 + z)
+  #pragma omp target parallel for schedule (dynamic, 1)
   for (int i = ST; i < N; i++) argv[0][i] = argv[0][i] - argv[0][i-ST];
   #pragma omp target parallel for schedule (static, N) // expected-error {{argument to 'schedule' clause must be a strictly positive integer value}}
   for (T i = ST; i < N; i++) argv[0][i] = argv[0][i] - argv[0][i-ST];
@@ -55,7 +54,6 @@ T tmain(T argc, S **argv) {
 }
 
 int main(int argc, char **argv) {
-  int z;
   #pragma omp target parallel for schedule // expected-error {{expected '(' after 'schedule'}}
   for (int i = 4; i < 12; i++) argv[0][i] = argv[0][i] - argv[0][i-4];
   #pragma omp target parallel for schedule ( // expected-error {{expected 'static', 'dynamic', 'guided', 'auto', 'runtime', 'monotonic', 'nonmonotonic' or 'simd' in OpenMP clause 'schedule'}} expected-error {{expected ')'}} expected-note {{to match this '('}}
@@ -74,7 +72,7 @@ int main(int argc, char **argv) {
   for (int i = 4; i < 12; i++) argv[0][i] = argv[0][i] - argv[0][i-4];
   #pragma omp target parallel for schedule (static, 2+2)) // expected-warning {{extra tokens at the end of '#pragma omp target parallel for' are ignored}}
   for (int i = 4; i < 12; i++) argv[0][i] = argv[0][i] - argv[0][i-4];
-  #pragma omp target parallel for schedule (dynamic, foobool(1) > 0 ? 1 : 2 + z)
+  #pragma omp target parallel for schedule (dynamic, foobool(1) > 0 ? 1 : 2)
   for (int i = 4; i < 12; i++) argv[0][i] = argv[0][i] - argv[0][i-4];
   // expected-error@+2 2 {{directive '#pragma omp target parallel for' cannot contain more than one 'schedule' clause}}
   // expected-error@+1 {{argument to 'schedule' clause must be a strictly positive integer value}}

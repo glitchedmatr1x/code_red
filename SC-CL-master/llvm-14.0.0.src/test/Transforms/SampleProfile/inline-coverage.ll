@@ -16,7 +16,7 @@
 ;    11      return sum > 0 ? 0 : 1;
 ;    12    }
 ;
-; CHECK: remark: coverage.cc:10:12: previous inlining reattempted for hotness: '_Z3fool' into 'main'
+; CHECK: remark: coverage.cc:10:12: inlined hot callee '_Z3fool' into 'main'
 ; CHECK: remark: coverage.cc:9:21: Applied 23478 samples from profile (offset: 2.1)
 ; CHECK: remark: coverage.cc:10:16: Applied 23478 samples from profile (offset: 3)
 ; CHECK: remark: coverage.cc:4:10: Applied 31878 samples from profile (offset: 1)
@@ -32,7 +32,7 @@
 ; 110% coverage check.
 ; CHECK: warning: coverage.cc:7: 78834 of 78834 available profile samples (100%) were applied
 
-define i64 @_Z3fool(i64 %i) #0 !dbg !4 {
+define i64 @_Z3fool(i64 %i) !dbg !4 {
 entry:
   %i.addr = alloca i64, align 8
   store i64 %i, i64* %i.addr, align 8
@@ -48,7 +48,7 @@ declare void @llvm.dbg.declare(metadata, metadata, metadata)
 
 declare i32 @rand()
 
-define i32 @main() #0 !dbg !9 {
+define i32 @main() !dbg !9 {
 entry:
   %retval = alloca i32, align 4
   %sum = alloca i64, align 8
@@ -87,8 +87,6 @@ for.end:                                          ; preds = %for.cond
   ret i32 %cond, !dbg !42
 }
 
-attributes #0 = { "use-sample-profile" }
-
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!13, !14}
 !llvm.ident = !{!15}
@@ -96,12 +94,12 @@ attributes #0 = { "use-sample-profile" }
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, file: !1, producer: "clang version 3.8.0 (trunk 251738) (llvm/trunk 251737)", isOptimized: false, runtimeVersion: 0, emissionKind: NoDebug, enums: !2)
 !1 = !DIFile(filename: "coverage.cc", directory: ".")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fool", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
+!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fool", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
 !5 = !DISubroutineType(types: !6)
 !6 = !{!7, !8}
 !7 = !DIBasicType(name: "long long int", size: 64, align: 64, encoding: DW_ATE_signed)
 !8 = !DIBasicType(name: "long int", size: 64, align: 64, encoding: DW_ATE_signed)
-!9 = distinct !DISubprogram(name: "main", scope: !1, file: !1, line: 7, type: !10, isLocal: false, isDefinition: true, scopeLine: 7, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
+!9 = distinct !DISubprogram(name: "main", scope: !1, file: !1, line: 7, type: !10, isLocal: false, isDefinition: true, scopeLine: 7, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
 !10 = !DISubroutineType(types: !11)
 !11 = !{!12}
 !12 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)

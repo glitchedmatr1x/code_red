@@ -1,8 +1,9 @@
 //===--- DeprecatedHeadersCheck.cpp - clang-tidy---------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -29,8 +30,7 @@ public:
                           StringRef FileName, bool IsAngled,
                           CharSourceRange FilenameRange, const FileEntry *File,
                           StringRef SearchPath, StringRef RelativePath,
-                          const Module *Imported,
-                          SrcMgr::CharacteristicKind FileType) override;
+                          const Module *Imported) override;
 
 private:
   ClangTidyCheck &Check;
@@ -40,10 +40,12 @@ private:
 };
 } // namespace
 
-void DeprecatedHeadersCheck::registerPPCallbacks(
-    const SourceManager &SM, Preprocessor *PP, Preprocessor *ModuleExpanderPP) {
-    PP->addPPCallbacks(
-        ::std::make_unique<IncludeModernizePPCallbacks>(*this, getLangOpts()));
+void DeprecatedHeadersCheck::registerPPCallbacks(CompilerInstance &Compiler) {
+  if (this->getLangOpts().CPlusPlus) {
+    Compiler.getPreprocessor().addPPCallbacks(
+        ::llvm::make_unique<IncludeModernizePPCallbacks>(*this,
+                                                         this->getLangOpts()));
+  }
 }
 
 IncludeModernizePPCallbacks::IncludeModernizePPCallbacks(ClangTidyCheck &Check,
@@ -92,8 +94,7 @@ IncludeModernizePPCallbacks::IncludeModernizePPCallbacks(ClangTidyCheck &Check,
 void IncludeModernizePPCallbacks::InclusionDirective(
     SourceLocation HashLoc, const Token &IncludeTok, StringRef FileName,
     bool IsAngled, CharSourceRange FilenameRange, const FileEntry *File,
-    StringRef SearchPath, StringRef RelativePath, const Module *Imported,
-    SrcMgr::CharacteristicKind FileType) {
+    StringRef SearchPath, StringRef RelativePath, const Module *Imported) {
   // FIXME: Take care of library symbols from the global namespace.
   //
   // Reasonable options for the check:

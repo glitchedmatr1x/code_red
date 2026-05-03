@@ -1,5 +1,5 @@
-; RUN: llc -march=amdgcn -verify-machineinstrs -enable-misched=0 < %s | FileCheck -check-prefix=GCN -check-prefix=SI -check-prefix=FUNC %s
-; RUN: llc -march=amdgcn -mcpu=tonga -mattr=-flat-for-global,-xnack -enable-misched=0 -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=VI -check-prefix=FUNC %s
+; RUN: llc -march=amdgcn -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=SI -check-prefix=FUNC %s
+; RUN: llc -march=amdgcn -mcpu=tonga -mattr=-flat-for-global -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=VI -check-prefix=FUNC %s
 ; RUN: llc -march=r600 -mcpu=redwood < %s | FileCheck -check-prefix=R600 -check-prefix=FUNC %s
 
 
@@ -7,35 +7,37 @@
 ; (fabs (f32 bitcast (i32 a))) => (f32 bitcast (and (i32 a), 0x7FFFFFFF))
 ; unless isFabsFree returns true
 
-; FUNC-LABEL: {{^}}s_fabs_fn_free:
+; FUNC-LABEL: {{^}}fabs_fn_free:
 ; R600-NOT: AND
 ; R600: |PV.{{[XYZW]}}|
 
-; GCN: s_bitset0_b32 s{{[0-9]+}}, 31
-define amdgpu_kernel void @s_fabs_fn_free(float addrspace(1)* %out, i32 %in) {
+; GCN: v_and_b32
+
+define amdgpu_kernel void @fabs_fn_free(float addrspace(1)* %out, i32 %in) {
   %bc= bitcast i32 %in to float
   %fabs = call float @fabs(float %bc)
   store float %fabs, float addrspace(1)* %out
   ret void
 }
 
-; FUNC-LABEL: {{^}}s_fabs_free:
+; FUNC-LABEL: {{^}}fabs_free:
 ; R600-NOT: AND
 ; R600: |PV.{{[XYZW]}}|
 
-; GCN: s_bitset0_b32 s{{[0-9]+}}, 31
-define amdgpu_kernel void @s_fabs_free(float addrspace(1)* %out, i32 %in) {
+; GCN: v_and_b32
+
+define amdgpu_kernel void @fabs_free(float addrspace(1)* %out, i32 %in) {
   %bc= bitcast i32 %in to float
   %fabs = call float @llvm.fabs.f32(float %bc)
   store float %fabs, float addrspace(1)* %out
   ret void
 }
 
-; FUNC-LABEL: {{^}}s_fabs_f32:
+; FUNC-LABEL: {{^}}fabs_f32:
 ; R600: |{{(PV|T[0-9])\.[XYZW]}}|
 
-; GCN: s_bitset0_b32 s{{[0-9]+}}, 31
-define amdgpu_kernel void @s_fabs_f32(float addrspace(1)* %out, float %in) {
+; GCN: v_and_b32
+define amdgpu_kernel void @fabs_f32(float addrspace(1)* %out, float %in) {
   %fabs = call float @llvm.fabs.f32(float %in)
   store float %fabs, float addrspace(1)* %out
   ret void
@@ -45,8 +47,8 @@ define amdgpu_kernel void @s_fabs_f32(float addrspace(1)* %out, float %in) {
 ; R600: |{{(PV|T[0-9])\.[XYZW]}}|
 ; R600: |{{(PV|T[0-9])\.[XYZW]}}|
 
-; GCN: s_and_b32
-; GCN: s_and_b32
+; GCN: v_and_b32
+; GCN: v_and_b32
 define amdgpu_kernel void @fabs_v2f32(<2 x float> addrspace(1)* %out, <2 x float> %in) {
   %fabs = call <2 x float> @llvm.fabs.v2f32(<2 x float> %in)
   store <2 x float> %fabs, <2 x float> addrspace(1)* %out
@@ -59,10 +61,10 @@ define amdgpu_kernel void @fabs_v2f32(<2 x float> addrspace(1)* %out, <2 x float
 ; R600: |{{(PV|T[0-9])\.[XYZW]}}|
 ; R600: |{{(PV|T[0-9])\.[XYZW]}}|
 
-; GCN: s_and_b32
-; GCN: s_and_b32
-; GCN: s_and_b32
-; GCN: s_and_b32
+; GCN: v_and_b32
+; GCN: v_and_b32
+; GCN: v_and_b32
+; GCN: v_and_b32
 define amdgpu_kernel void @fabs_v4f32(<4 x float> addrspace(1)* %out, <4 x float> %in) {
   %fabs = call <4 x float> @llvm.fabs.v4f32(<4 x float> %in)
   store <4 x float> %fabs, <4 x float> addrspace(1)* %out
@@ -70,11 +72,10 @@ define amdgpu_kernel void @fabs_v4f32(<4 x float> addrspace(1)* %out, <4 x float
 }
 
 ; GCN-LABEL: {{^}}fabs_fn_fold:
-; SI: s_load_dwordx2 s{{\[}}[[ABS_VALUE:[0-9]+]]:[[MUL_VAL:[0-9]+]]{{\]}}, s[{{[0-9]+:[0-9]+}}], 0xb
-; VI: s_load_dwordx2 s{{\[}}[[ABS_VALUE:[0-9]+]]:[[MUL_VAL:[0-9]+]]{{\]}}, s[{{[0-9]+:[0-9]+}}], 0x2c
+; SI: s_load_dword [[ABS_VALUE:s[0-9]+]], s[{{[0-9]+:[0-9]+}}], 0xb
+; VI: s_load_dword [[ABS_VALUE:s[0-9]+]], s[{{[0-9]+:[0-9]+}}], 0x2c
 ; GCN-NOT: and
-; GCN: v_mov_b32_e32 [[V_MUL_VI:v[0-9]+]], s[[MUL_VAL]]
-; GCN: v_mul_f32_e64 v{{[0-9]+}}, |s[[ABS_VALUE]]|, [[V_MUL_VI]]
+; GCN: v_mul_f32_e64 v{{[0-9]+}}, |[[ABS_VALUE]]|, v{{[0-9]+}}
 define amdgpu_kernel void @fabs_fn_fold(float addrspace(1)* %out, float %in0, float %in1) {
   %fabs = call float @fabs(float %in0)
   %fmul = fmul float %fabs, %in1
@@ -83,11 +84,10 @@ define amdgpu_kernel void @fabs_fn_fold(float addrspace(1)* %out, float %in0, fl
 }
 
 ; FUNC-LABEL: {{^}}fabs_fold:
-; SI: s_load_dwordx2 s{{\[}}[[ABS_VALUE:[0-9]+]]:[[MUL_VAL:[0-9]+]]{{\]}}, s[{{[0-9]+:[0-9]+}}], 0xb
-; VI: s_load_dwordx2 s{{\[}}[[ABS_VALUE:[0-9]+]]:[[MUL_VAL:[0-9]+]]{{\]}}, s[{{[0-9]+:[0-9]+}}], 0x2c
+; SI: s_load_dword [[ABS_VALUE:s[0-9]+]], s[{{[0-9]+:[0-9]+}}], 0xb
+; VI: s_load_dword [[ABS_VALUE:s[0-9]+]], s[{{[0-9]+:[0-9]+}}], 0x2c
 ; GCN-NOT: and
-; GCN: v_mov_b32_e32 [[V_MUL_VI:v[0-9]+]], s[[MUL_VAL]]
-; GCN: v_mul_f32_e64 v{{[0-9]+}}, |s[[ABS_VALUE]]|, [[V_MUL_VI]]
+; GCN: v_mul_f32_e64 v{{[0-9]+}}, |[[ABS_VALUE]]|, v{{[0-9]+}}
 define amdgpu_kernel void @fabs_fold(float addrspace(1)* %out, float %in0, float %in1) {
   %fabs = call float @llvm.fabs.f32(float %in0)
   %fmul = fmul float %fabs, %in1

@@ -1,8 +1,9 @@
 //===- transforms_scalar.go - Bindings for scalaropts ---------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,7 +15,6 @@ package llvm
 
 /*
 #include "llvm-c/Transforms/Scalar.h"
-#include "llvm-c/Transforms/Utils.h"
 */
 import "C"
 
@@ -40,5 +40,6 @@ func (pm PassManager) AddScalarReplAggregatesPassWithThreshold(threshold int) {
 }
 func (pm PassManager) AddSimplifyLibCallsPass()       { C.LLVMAddSimplifyLibCallsPass(pm.C) }
 func (pm PassManager) AddTailCallEliminationPass()    { C.LLVMAddTailCallEliminationPass(pm.C) }
+func (pm PassManager) AddConstantPropagationPass()    { C.LLVMAddConstantPropagationPass(pm.C) }
 func (pm PassManager) AddDemoteMemoryToRegisterPass() { C.LLVMAddDemoteMemoryToRegisterPass(pm.C) }
 func (pm PassManager) AddVerifierPass()               { C.LLVMAddVerifierPass(pm.C) }

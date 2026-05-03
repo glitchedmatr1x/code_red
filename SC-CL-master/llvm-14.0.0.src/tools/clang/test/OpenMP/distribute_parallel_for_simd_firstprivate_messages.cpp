@@ -1,8 +1,7 @@
-// RUN: %clang_cc1 -verify -fopenmp %s -Wno-openmp-mapping -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp %s
 
-// RUN: %clang_cc1 -verify -fopenmp-simd %s -Wno-openmp-mapping -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp-simd %s
 
-extern int omp_default_mem_alloc;
 void foo() {
 }
 
@@ -10,14 +9,7 @@ bool foobool(int argc) {
   return argc;
 }
 
-void xxx(int argc) {
-  int fp; // expected-note {{initialize the variable 'fp' to silence this warning}}
-#pragma omp distribute parallel for simd firstprivate(fp) // expected-warning {{variable 'fp' is uninitialized when used here}}
-  for (int i = 0; i < 10; ++i)
-    ;
-}
-
-struct S1; // expected-note 2 {{declared here}} expected-note 3 {{forward declaration of 'S1'}}
+struct S1; // expected-note 2 {{declared here}} expected-note 2 {{forward declaration of 'S1'}}
 extern S1 a;
 class S2 {
   mutable int a;
@@ -74,7 +66,7 @@ template <class I, class C>
 int foomain(int argc, char **argv) {
   I e(4);
   C g(5);
-  int i, z;
+  int i;
   int &j = i;
 #pragma omp target
 #pragma omp teams
@@ -108,7 +100,7 @@ int foomain(int argc, char **argv) {
     ++k;
 #pragma omp target
 #pragma omp teams
-#pragma omp distribute parallel for simd firstprivate(argc, z)
+#pragma omp distribute parallel for simd firstprivate(argc)
   for (int k = 0; k < argc; ++k)
     ++k;
 #pragma omp target
@@ -169,14 +161,14 @@ int foomain(int argc, char **argv) {
 #pragma omp parallel private(i)
 #pragma omp target
 #pragma omp teams
-#pragma omp distribute parallel for simd firstprivate(i) // expected-note 2 {{defined as firstprivate}}
-  for (i = 0; i < argc; ++i) // expected-error 2 {{loop iteration variable in the associated loop of 'omp distribute parallel for simd' directive may not be firstprivate, predetermined as linear}}
+#pragma omp distribute parallel for simd firstprivate(i) // expected-note {{defined as firstprivate}}
+  for (i = 0; i < argc; ++i) // expected-error {{loop iteration variable in the associated loop of 'omp distribute parallel for simd' directive may not be firstprivate, predetermined as linear}}
     foo();
 #pragma omp parallel reduction(+ : i)
 #pragma omp target
 #pragma omp teams
-#pragma omp distribute parallel for simd firstprivate(i) // expected-note 2 {{defined as firstprivate}}
-  for (i = 0; i < argc; ++i) // expected-error 2 {{loop iteration variable in the associated loop of 'omp distribute parallel for simd' directive may not be firstprivate, predetermined as linear}}
+#pragma omp distribute parallel for simd firstprivate(i) // expected-note {{defined as firstprivate}}
+  for (i = 0; i < argc; ++i) // expected-error {{loop iteration variable in the associated loop of 'omp distribute parallel for simd' directive may not be firstprivate, predetermined as linear}}
     foo();
   return 0;
 }
@@ -196,7 +188,7 @@ int main(int argc, char **argv) {
   S5 g(5);
   S3 m;
   S6 n(2);
-  int i, z;
+  int i;
   int &j = i;
 #pragma omp target
 #pragma omp teams
@@ -230,7 +222,7 @@ int main(int argc, char **argv) {
     foo();
 #pragma omp target
 #pragma omp teams
-#pragma omp distribute parallel for simd firstprivate(argc) allocate , allocate(, allocate(omp_default , allocate(omp_default_mem_alloc, allocate(omp_default_mem_alloc:, allocate(omp_default_mem_alloc: argc, allocate(omp_default_mem_alloc: argv), allocate(argv) // expected-error {{expected '(' after 'allocate'}} expected-error 2 {{expected expression}} expected-error 2 {{expected ')'}} expected-error {{use of undeclared identifier 'omp_default'}} expected-note 2 {{to match this '('}}
+#pragma omp distribute parallel for simd firstprivate(argc)
   for (i = 0; i < argc; ++i)
     foo();
 #pragma omp target
@@ -240,7 +232,7 @@ int main(int argc, char **argv) {
     foo();
 #pragma omp target
 #pragma omp teams
-#pragma omp distribute parallel for simd firstprivate(a, b, c, d, f) // expected-error {{firstprivate variable with incomplete type 'S1'}} expected-error {{incomplete type 'S1' where a complete type is required}}
+#pragma omp distribute parallel for simd firstprivate(a, b, c, d, f) // expected-error {{firstprivate variable with incomplete type 'S1'}}
   for (i = 0; i < argc; ++i)
     foo();
 #pragma omp target
@@ -255,7 +247,7 @@ int main(int argc, char **argv) {
     foo();
 #pragma omp target
 #pragma omp teams
-#pragma omp distribute parallel for simd firstprivate(ba, z) // OK
+#pragma omp distribute parallel for simd firstprivate(ba) // OK
   for (i = 0; i < argc; ++i)
     foo();
 #pragma omp target

@@ -1,7 +1,7 @@
 // RUN: %clang_cc1 -fsyntax-only -fcxx-exceptions -verify -std=c++11 -Wall %s
 
 struct Bitfield {
-  int n : 3 = 7; // expected-warning {{C++20 extension}} expected-warning {{changes value from 7 to -1}}
+  int n : 3 = 7; // expected-warning {{C++2a extension}} expected-warning {{changes value from 7 to -1}}
 };
 
 int a;
@@ -13,28 +13,28 @@ public:
 
 bool b();
 int k;
-struct Recurse { // expected-error {{initializer for 'n' needed}}
+struct Recurse {
   int &n = // expected-note {{declared here}}
       b() ?
-      Recurse().n : // expected-note {{in evaluation of exception spec}}
+      Recurse().n : // expected-error {{initializer for 'n' needed}}
       k;
 };
 
 struct UnknownBound {
-  int as[] = { 1, 2, 3 }; // expected-error {{array bound cannot be deduced from a default member initializer}}
+  int as[] = { 1, 2, 3 }; // expected-error {{array bound cannot be deduced from an in-class initializer}}
   int bs[4] = { 4, 5, 6, 7 };
-  int cs[] = { 8, 9, 10 }; // expected-error {{array bound cannot be deduced from a default member initializer}}
+  int cs[] = { 8, 9, 10 }; // expected-error {{array bound cannot be deduced from an in-class initializer}}
 };
 
 template<int n> struct T { static const int B; };
 template<> struct T<2> { template<int C, int D> using B = int; };
 const int C = 0, D = 0;
 struct S {
-  int as[] = { decltype(x)::B<C, D>(0) }; // expected-error {{array bound cannot be deduced from a default member initializer}}
+  int as[] = { decltype(x)::B<C, D>(0) }; // expected-error {{array bound cannot be deduced from an in-class initializer}}
   T<sizeof(as) / sizeof(int)> x;
   // test that we handle invalid array bound deductions without crashing when the declarator name is itself invalid
   operator int[](){}; // expected-error {{'operator int' cannot be the name of a variable or data member}} \
-                      // expected-error {{array bound cannot be deduced from a default member initializer}}
+                      // expected-error {{array bound cannot be deduced from an in-class initializer}}
 };
 
 struct ThrowCtor { ThrowCtor(int) noexcept(false); };
@@ -51,7 +51,7 @@ struct CheckExcSpec {
   int n = 0;
 };
 struct CheckExcSpecFail {
-  CheckExcSpecFail() noexcept(true) = default; // ok, but calls terminate() on exception
+  CheckExcSpecFail() noexcept(true) = default; // expected-error {{exception specification of explicitly defaulted default constructor does not match the calculated one}}
   ThrowCtor tc = 123;
 };
 
@@ -64,7 +64,7 @@ namespace PR10578 {
   template<typename T>
   struct X { 
     X() {
-      T* x = 1; // expected-error{{cannot initialize a variable of type 'int *' with an rvalue of type 'int'}} expected-warning {{unused variable}}
+      T* x = 1; // expected-error{{cannot initialize a variable of type 'int *' with an rvalue of type 'int'}}
     }
   };
 
@@ -86,8 +86,9 @@ namespace PR14838 {
   };
   struct thing {};
   struct another {
-    another() : r(thing()) {} // expected-error {{binds to a temporary object}}
+    another() : r(thing()) {}
     // expected-error@-1 {{temporary of type 'PR14838::function' has private destructor}}
+    // expected-warning@-2 {{binding reference member 'r' to a temporary value}}
     const function &r; // expected-note {{reference member declared here}}
   } af;
 }
@@ -100,7 +101,7 @@ namespace rdar14084171 {
   struct Sprite {
     Point location = Point(0,0); // expected-error {{no matching constructor for initialization of 'rdar14084171::Point'}}
   };
-  void f(Sprite& x) { x = x; } // expected-warning {{explicitly assigning value of variable}}
+  void f(Sprite& x) { x = x; }
 }
 
 namespace PR18560 {
@@ -127,19 +128,19 @@ A::A() {}
 namespace template_default_ctor {
 struct A {
   template <typename T>
-  struct B { // expected-error {{initializer for 'm1' needed}}
+  struct B {
     int m1 = 0; // expected-note {{declared here}}
   };
-  enum { NOE = noexcept(B<int>()) }; // expected-note {{in evaluation of exception spec}}
+  enum { NOE = noexcept(B<int>()) }; // expected-error {{initializer for 'm1' needed}}
 };
 }
 
 namespace default_ctor {
 struct A {
-  struct B { // expected-error {{initializer for 'm1' needed}}
+  struct B {
     int m1 = 0; // expected-note {{declared here}}
   };
-  enum { NOE = noexcept(B()) }; // expected-note {{in evaluation of exception spec}}
+  enum { NOE = noexcept(B()) }; // expected-error {{initializer for 'm1' needed}}
 };
 }
 
@@ -147,17 +148,17 @@ namespace member_template {
 struct A {
   template <typename T>
   struct B {
-    struct C { // expected-error {{initializer for 'm1' needed}}
+    struct C {
       int m1 = 0; // expected-note {{declared here}}
     };
     template <typename U>
-    struct D { // expected-error {{initializer for 'm1' needed}}
+    struct D {
       int m1 = 0; // expected-note {{declared here}}
     };
   };
   enum {
-    NOE1 = noexcept(B<int>::C()), // expected-note {{in evaluation of exception spec}}
-    NOE2 = noexcept(B<int>::D<int>()) // expected-note {{in evaluation of exception spec}}
+    NOE1 = noexcept(B<int>::C()), // expected-error {{initializer for 'm1' needed}}
+    NOE2 = noexcept(B<int>::D<int>()) // expected-error {{initializer for 'm1' needed}}
   };
 };
 }
@@ -184,7 +185,7 @@ void g() { f<int>(); } // expected-note {{in instantiation of function template 
 namespace PR22056 {
 template <int N>
 struct S {
-  int x[3] = {[N] = 3}; // expected-warning {{C99 extension}}
+  int x[3] = {[N] = 3};
 };
 }
 

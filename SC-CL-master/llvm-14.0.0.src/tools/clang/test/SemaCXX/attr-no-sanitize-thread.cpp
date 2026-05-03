@@ -6,34 +6,34 @@
 #error "Should support no_sanitize_thread"
 #endif
 
-void no_analyze_fun() NO_SANITIZE_THREAD;
+void noanal_fun() NO_SANITIZE_THREAD;
 
-void no_analyze_alt() __attribute__((__no_sanitize_thread__));
+void noanal_fun_alt() __attribute__((__no_sanitize_thread__));
 
-void no_analyze_args() __attribute__((no_sanitize_thread(1))); // \
+void noanal_fun_args() __attribute__((no_sanitize_thread(1))); // \
   // expected-error {{'no_sanitize_thread' attribute takes no arguments}}
 
-int no_analyze_testfn(int y) NO_SANITIZE_THREAD;
+int noanal_testfn(int y) NO_SANITIZE_THREAD;
 
-int no_analyze_testfn(int y) {
+int noanal_testfn(int y) {
   int x NO_SANITIZE_THREAD = y; // \
     // expected-error {{'no_sanitize_thread' attribute only applies to functions}}
   return x;
 }
 
-int no_analyze_test_var NO_SANITIZE_THREAD; // \
+int noanal_test_var NO_SANITIZE_THREAD; // \
   // expected-error {{'no_sanitize_thread' attribute only applies to functions}}
 
-class NoAnalyzeFoo {
+class NoanalFoo {
  private:
   int test_field NO_SANITIZE_THREAD; // \
     // expected-error {{'no_sanitize_thread' attribute only applies to functions}}
   void test_method() NO_SANITIZE_THREAD;
 };
 
-class NO_SANITIZE_THREAD NoAnalyzeTestClass { // \
+class NO_SANITIZE_THREAD NoanalTestClass { // \
   // expected-error {{'no_sanitize_thread' attribute only applies to functions}}
 };
 
-void no_analyze_params(int lvar NO_SANITIZE_THREAD); // \
+void noanal_fun_params(int lvar NO_SANITIZE_THREAD); // \
   // expected-error {{'no_sanitize_thread' attribute only applies to functions}}

@@ -1,8 +1,9 @@
 //===- llvm/unittest/AsmParser/AsmParserTest.cpp - asm parser unittests ---===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -230,9 +231,9 @@ TEST(AsmParserTest, TypeWithSlotMappingParsing) {
   ASSERT_TRUE(Ty->isVectorTy());
 
   // Check the details of the vector.
-  auto *VT = cast<FixedVectorType>(Ty);
+  VectorType *VT = cast<VectorType>(Ty);
   ASSERT_TRUE(VT->getNumElements() == 5);
-  ASSERT_TRUE(VT->getPrimitiveSizeInBits().getFixedSize() == 160);
+  ASSERT_TRUE(VT->getBitWidth() == 160);
   Ty = VT->getElementType();
   ASSERT_TRUE(Ty->isIntegerTy());
   ASSERT_TRUE(Ty->getPrimitiveSizeInBits() == 32);
@@ -252,7 +253,9 @@ TEST(AsmParserTest, TypeWithSlotMappingParsing) {
   ASSERT_TRUE(Ty->isPointerTy());
 
   PointerType *PT = cast<PointerType>(Ty);
-  ASSERT_TRUE(PT->isOpaqueOrPointeeTypeMatches(Type::getIntNTy(Ctx, 32)));
+  Ty = PT->getElementType();
+  ASSERT_TRUE(Ty->isIntegerTy());
+  ASSERT_TRUE(Ty->getPrimitiveSizeInBits() == 32);
 
   // Two indirections.
   Ty = parseType("i32**", Error, M, &Mapping);
@@ -260,8 +263,13 @@ TEST(AsmParserTest, TypeWithSlotMappingParsing) {
   ASSERT_TRUE(Ty->isPointerTy());
 
   PT = cast<PointerType>(Ty);
-  Type *ExpectedElemTy = PointerType::getUnqual(Type::getIntNTy(Ctx, 32));
-  ASSERT_TRUE(PT->isOpaqueOrPointeeTypeMatches(ExpectedElemTy));
+  Ty = PT->getElementType();
+  ASSERT_TRUE(Ty->isPointerTy());
+
+  PT = cast<PointerType>(Ty);
+  Ty = PT->getElementType();
+  ASSERT_TRUE(Ty->isIntegerTy());
+  ASSERT_TRUE(Ty->getPrimitiveSizeInBits() == 32);
 
   // Check that we reject types with garbage.
   Ty = parseType("i32 garbage", Error, M, &Mapping);
@@ -355,9 +363,9 @@ TEST(AsmParserTest, TypeAtBeginningWithSlotMappingParsing) {
   ASSERT_TRUE(Read == 9);
 
   // Check the details of the vector.
-  auto *VT = cast<FixedVectorType>(Ty);
+  VectorType *VT = cast<VectorType>(Ty);
   ASSERT_TRUE(VT->getNumElements() == 5);
-  ASSERT_TRUE(VT->getPrimitiveSizeInBits().getFixedSize() == 160);
+  ASSERT_TRUE(VT->getBitWidth() == 160);
   Ty = VT->getElementType();
   ASSERT_TRUE(Ty->isIntegerTy());
   ASSERT_TRUE(Ty->getPrimitiveSizeInBits() == 32);
@@ -379,7 +387,9 @@ TEST(AsmParserTest, TypeAtBeginningWithSlotMappingParsing) {
   ASSERT_TRUE(Read == 4);
 
   PointerType *PT = cast<PointerType>(Ty);
-  ASSERT_TRUE(PT->isOpaqueOrPointeeTypeMatches(Type::getIntNTy(Ctx, 32)));
+  Ty = PT->getElementType();
+  ASSERT_TRUE(Ty->isIntegerTy());
+  ASSERT_TRUE(Ty->getPrimitiveSizeInBits() == 32);
 
   // Two indirections.
   Ty = parseTypeAtBeginning("i32**", Read, Error, M, &Mapping);
@@ -388,8 +398,13 @@ TEST(AsmParserTest, TypeAtBeginningWithSlotMappingParsing) {
   ASSERT_TRUE(Read == 5);
 
   PT = cast<PointerType>(Ty);
-  Type *ExpectedElemTy = PointerType::getUnqual(Type::getIntNTy(Ctx, 32));
-  ASSERT_TRUE(PT->isOpaqueOrPointeeTypeMatches(ExpectedElemTy));
+  Ty = PT->getElementType();
+  ASSERT_TRUE(Ty->isPointerTy());
+
+  PT = cast<PointerType>(Ty);
+  Ty = PT->getElementType();
+  ASSERT_TRUE(Ty->isIntegerTy());
+  ASSERT_TRUE(Ty->getPrimitiveSizeInBits() == 32);
 
   // Check that we reject types with garbage.
   Ty = parseTypeAtBeginning("i32 garbage", Read, Error, M, &Mapping);

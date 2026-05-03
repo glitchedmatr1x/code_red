@@ -1,13 +1,14 @@
 //===--- TestSupport.h - Clang-based refactoring tool -----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Declares datatypes and routines that are used by test-specific code
+/// \brief Declares datatypes and routines that are used by test-specific code
 /// in clang-refactor.
 ///
 //===----------------------------------------------------------------------===//
@@ -57,6 +58,9 @@ struct TestSelectionRangesInFile {
     SmallVector<TestSelectionRange, 8> Ranges;
   };
   std::vector<RangeGroup> GroupedRanges;
+
+  TestSelectionRangesInFile(TestSelectionRangesInFile &&) = default;
+  TestSelectionRangesInFile &operator=(TestSelectionRangesInFile &&) = default;
 
   bool foreachRange(const SourceManager &SM,
                     llvm::function_ref<void(SourceRange)> Callback) const;

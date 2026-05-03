@@ -29,7 +29,8 @@ void f();
 void e() { f(); }
 void f() { e(); }
 
-void g() {  // expected-warning{{call itself}}
+// Don't warn on infinite loops
+void g() {
   while (true)
     g();
 
@@ -51,28 +52,6 @@ void i(int x) {  // expected-warning{{call itself}}
 
 int j() {  // expected-warning{{call itself}}
   return 5 + j();
-}
-
-// Don't warn on infinite loops
-void k() {
-  while(true) {
-    k();
-  }
-}
-
-void l() {
-  while (true) {}
-
-  l();
-}
-
-void m() {
-  static int count = 5;
-  if (count >0) {
-    count--;
-    l();
-  }
-  while (true) {}
 }
 
 class S {

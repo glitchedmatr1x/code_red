@@ -1,8 +1,9 @@
 //===-- llvm/Operator.h - Operator utility subclass -------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,7 +15,6 @@
 #ifndef LLVM_IR_OPERATOR_H
 #define LLVM_IR_OPERATOR_H
 
-#include "llvm/ADT/MapVector.h"
 #include "llvm/ADT/None.h"
 #include "llvm/ADT/Optional.h"
 #include "llvm/IR/Constants.h"
@@ -59,10 +59,6 @@ public:
   static bool classof(const Value *V) {
     return isa<Instruction>(V) || isa<ConstantExpr>(V);
   }
-
-  /// Return true if this operator has flags which may cause this operator
-  /// to evaluate to poison despite having non-poison inputs.
-  bool hasPoisonGeneratingFlags() const;
 };
 
 /// Utility class for integer operators which may exhibit overflow - Add, Sub,
@@ -71,7 +67,6 @@ public:
 class OverflowingBinaryOperator : public Operator {
 public:
   enum {
-    AnyWrap        = 0,
     NoUnsignedWrap = (1 << 0),
     NoSignedWrap   = (1 << 1)
   };
@@ -193,12 +188,6 @@ public:
 
   FastMathFlags() = default;
 
-  static FastMathFlags getFast() {
-    FastMathFlags FMF;
-    FMF.setFast();
-    return FMF;
-  }
-
   bool any() const { return Flags != 0; }
   bool none() const { return Flags == 0; }
   bool all() const { return Flags == ~0U; }
@@ -218,47 +207,22 @@ public:
   bool isFast() const          { return all(); }
 
   /// Flag setters
-  void setAllowReassoc(bool B = true) {
-    Flags = (Flags & ~AllowReassoc) | B * AllowReassoc;
-  }
-  void setNoNaNs(bool B = true) {
-    Flags = (Flags & ~NoNaNs) | B * NoNaNs;
-  }
-  void setNoInfs(bool B = true) {
-    Flags = (Flags & ~NoInfs) | B * NoInfs;
-  }
-  void setNoSignedZeros(bool B = true) {
-    Flags = (Flags & ~NoSignedZeros) | B * NoSignedZeros;
-  }
-  void setAllowReciprocal(bool B = true) {
-    Flags = (Flags & ~AllowReciprocal) | B * AllowReciprocal;
-  }
-  void setAllowContract(bool B = true) {
+  void setAllowReassoc()    { Flags |= AllowReassoc; }
+  void setNoNaNs()          { Flags |= NoNaNs; }
+  void setNoInfs()          { Flags |= NoInfs; }
+  void setNoSignedZeros()   { Flags |= NoSignedZeros; }
+  void setAllowReciprocal() { Flags |= AllowReciprocal; }
+  // TODO: Change the other set* functions to take a parameter?
+  void setAllowContract(bool B) {
     Flags = (Flags & ~AllowContract) | B * AllowContract;
   }
-  void setApproxFunc(bool B = true) {
-    Flags = (Flags & ~ApproxFunc) | B * ApproxFunc;
-  }
-  void setFast(bool B = true) { B ? set() : clear(); }
+  void setApproxFunc()      { Flags |= ApproxFunc; }
+  void setFast()            { set(); }
 
   void operator&=(const FastMathFlags &OtherFlags) {
     Flags &= OtherFlags.Flags;
   }
-  void operator|=(const FastMathFlags &OtherFlags) {
-    Flags |= OtherFlags.Flags;
-  }
-  bool operator!=(const FastMathFlags &OtherFlags) const {
-    return Flags != OtherFlags.Flags;
-  }
-
-  /// Print fast-math flags to \p O.
-  void print(raw_ostream &O) const;
 };
-
-inline raw_ostream &operator<<(raw_ostream &O, FastMathFlags FMF) {
-  FMF.print(O);
-  return O;
-}
 
 /// Utility class for floating point operations which can have
 /// information about relaxed accuracy requirements attached to them.
@@ -389,40 +353,19 @@ public:
   /// precision.
   float getFPAccuracy() const;
 
-  static bool classof(const Value *V) {
-    unsigned Opcode;
-    if (auto *I = dyn_cast<Instruction>(V))
-      Opcode = I->getOpcode();
-    else if (auto *CE = dyn_cast<ConstantExpr>(V))
-      Opcode = CE->getOpcode();
-    else
-      return false;
+  static bool classof(const Instruction *I) {
+    return I->getType()->isFPOrFPVectorTy() ||
+      I->getOpcode() == Instruction::FCmp;
+  }
 
-    switch (Opcode) {
-    case Instruction::FNeg:
-    case Instruction::FAdd:
-    case Instruction::FSub:
-    case Instruction::FMul:
-    case Instruction::FDiv:
-    case Instruction::FRem:
-    // FIXME: To clean up and correct the semantics of fast-math-flags, FCmp
-    //        should not be treated as a math op, but the other opcodes should.
-    //        This would make things consistent with Select/PHI (FP value type
-    //        determines whether they are math ops and, therefore, capable of
-    //        having fast-math-flags).
-    case Instruction::FCmp:
-      return true;
-    case Instruction::PHI:
-    case Instruction::Select:
-    case Instruction::Call: {
-      Type *Ty = V->getType();
-      while (ArrayType *ArrTy = dyn_cast<ArrayType>(Ty))
-        Ty = ArrTy->getElementType();
-      return Ty->isFPOrFPVectorTy();
-    }
-    default:
-      return false;
-    }
+  static bool classof(const ConstantExpr *CE) {
+    return CE->getType()->isFPOrFPVectorTy() ||
+           CE->getOpcode() == Instruction::FCmp;
+  }
+
+  static bool classof(const Value *V) {
+    return (isa<Instruction>(V) && classof(cast<Instruction>(V))) ||
+           (isa<ConstantExpr>(V) && classof(cast<ConstantExpr>(V)));
   }
 };
 
@@ -503,14 +446,6 @@ public:
   inline op_iterator       idx_end()         { return op_end(); }
   inline const_op_iterator idx_end()   const { return op_end(); }
 
-  inline iterator_range<op_iterator> indices() {
-    return make_range(idx_begin(), idx_end());
-  }
-
-  inline iterator_range<const_op_iterator> indices() const {
-    return make_range(idx_begin(), idx_end());
-  }
-
   Value *getPointerOperand() {
     return getOperand(0);
   }
@@ -567,45 +502,20 @@ public:
   }
 
   unsigned countNonConstantIndices() const {
-    return count_if(indices(), [](const Use& use) {
+    return count_if(make_range(idx_begin(), idx_end()), [](const Use& use) {
         return !isa<ConstantInt>(*use);
       });
   }
 
-  /// Compute the maximum alignment that this GEP is garranteed to preserve.
-  Align getMaxPreservedAlignment(const DataLayout &DL) const;
-
-  /// Accumulate the constant address offset of this GEP if possible.
+  /// \brief Accumulate the constant address offset of this GEP if possible.
   ///
-  /// This routine accepts an APInt into which it will try to accumulate the
-  /// constant offset of this GEP.
-  ///
-  /// If \p ExternalAnalysis is provided it will be used to calculate a offset
-  /// when a operand of GEP is not constant.
-  /// For example, for a value \p ExternalAnalysis might try to calculate a
-  /// lower bound. If \p ExternalAnalysis is successful, it should return true.
-  ///
-  /// If the \p ExternalAnalysis returns false or the value returned by \p
-  /// ExternalAnalysis results in a overflow/underflow, this routine returns
-  /// false and the value of the offset APInt is undefined (it is *not*
-  /// preserved!).
-  ///
-  /// The APInt passed into this routine must be at exactly as wide as the
-  /// IntPtr type for the address space of the base GEP pointer.
-  bool accumulateConstantOffset(
-      const DataLayout &DL, APInt &Offset,
-      function_ref<bool(Value &, APInt &)> ExternalAnalysis = nullptr) const;
-
-  static bool accumulateConstantOffset(
-      Type *SourceType, ArrayRef<const Value *> Index, const DataLayout &DL,
-      APInt &Offset,
-      function_ref<bool(Value &, APInt &)> ExternalAnalysis = nullptr);
-
-  /// Collect the offset of this GEP as a map of Values to their associated
-  /// APInt multipliers, as well as a total Constant Offset.
-  bool collectOffset(const DataLayout &DL, unsigned BitWidth,
-                     MapVector<Value *, APInt> &VariableOffsets,
-                     APInt &ConstantOffset) const;
+  /// This routine accepts an APInt into which it will accumulate the constant
+  /// offset of this GEP if the GEP is in fact constant. If the GEP is not
+  /// all-constant, it returns false and the value of the offset APInt is
+  /// undefined (it is *not* preserved!). The APInt passed into this routine
+  /// must be at exactly as wide as the IntPtr type for the address space of the
+  /// base GEP pointer.
+  bool accumulateConstantOffset(const DataLayout &DL, APInt &Offset) const;
 };
 
 class PtrToIntOperator
@@ -648,25 +558,6 @@ public:
 
   Type *getDestTy() const {
     return getType();
-  }
-};
-
-class AddrSpaceCastOperator
-    : public ConcreteOperator<Operator, Instruction::AddrSpaceCast> {
-  friend class AddrSpaceCastInst;
-  friend class ConstantExpr;
-
-public:
-  Value *getPointerOperand() { return getOperand(0); }
-
-  const Value *getPointerOperand() const { return getOperand(0); }
-
-  unsigned getSrcAddressSpace() const {
-    return getPointerOperand()->getType()->getPointerAddressSpace();
-  }
-
-  unsigned getDestAddressSpace() const {
-    return getType()->getPointerAddressSpace();
   }
 };
 

@@ -1,3 +1,4 @@
+; RUN: opt < %s -sccp -S | FileCheck %s
 ; RUN: opt < %s -passes=sccp -S | FileCheck %s
 
 @0 = private unnamed_addr constant [2 x i32] [i32 -1, i32 1]

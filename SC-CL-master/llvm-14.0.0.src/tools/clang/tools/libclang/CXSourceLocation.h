@@ -1,8 +1,9 @@
 //===- CXSourceLocation.h - CXSourceLocations Utilities ---------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -24,19 +25,19 @@ class SourceManager;
 
 namespace cxloc {
 
-/// Translate a Clang source location into a CIndex source location.
+/// \brief Translate a Clang source location into a CIndex source location.
 static inline CXSourceLocation 
 translateSourceLocation(const SourceManager &SM, const LangOptions &LangOpts,
                         SourceLocation Loc) {
   if (Loc.isInvalid())
-    return clang_getNullLocation();
+    clang_getNullLocation();
 
   CXSourceLocation Result = { { &SM, &LangOpts, },
                               Loc.getRawEncoding() };
   return Result;
 }
   
-/// Translate a Clang source location into a CIndex source location.
+/// \brief Translate a Clang source location into a CIndex source location.
 static inline CXSourceLocation translateSourceLocation(ASTContext &Context,
                                                        SourceLocation Loc) {
   return translateSourceLocation(Context.getSourceManager(),
@@ -44,7 +45,7 @@ static inline CXSourceLocation translateSourceLocation(ASTContext &Context,
                                  Loc);
 }
 
-/// Translate a Clang source range into a CIndex source range.
+/// \brief Translate a Clang source range into a CIndex source range.
 ///
 /// Clang internally represents ranges where the end location points to the
 /// start of the token at the end. However, for external clients it is more
@@ -54,7 +55,7 @@ CXSourceRange translateSourceRange(const SourceManager &SM,
                                    const LangOptions &LangOpts,
                                    const CharSourceRange &R);
   
-/// Translate a Clang source range into a CIndex source range.
+/// \brief Translate a Clang source range into a CIndex source range.
 static inline CXSourceRange translateSourceRange(ASTContext &Context,
                                                  SourceRange R) {
   return translateSourceRange(Context.getSourceManager(),
@@ -71,11 +72,7 @@ static inline SourceRange translateCXSourceRange(CXSourceRange R) {
                      SourceLocation::getFromRawEncoding(R.end_int_data));
 }
 
-/// Translates CXSourceRange to CharSourceRange.
-/// The semantics of \p R are:
-/// R.begin_int_data is first character of the range.
-/// R.end_int_data is one character past the end of the range.
-CharSourceRange translateCXRangeToCharRange(CXSourceRange R);
+
 }} // end namespace: clang::cxloc
 
 #endif

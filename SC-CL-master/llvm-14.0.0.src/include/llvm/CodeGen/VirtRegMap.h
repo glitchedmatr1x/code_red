@@ -1,8 +1,9 @@
 //===- llvm/CodeGen/VirtRegMap.h - Virtual Register Map ---------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -19,7 +20,7 @@
 #include "llvm/ADT/IndexedMap.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/TargetRegisterInfo.h"
-#include "llvm/CodeGen/TileShapeInfo.h"
+#include "llvm/MC/MCRegisterInfo.h"
 #include "llvm/Pass.h"
 #include <cassert>
 
@@ -39,17 +40,17 @@ class TargetInstrInfo;
     };
 
   private:
-    MachineRegisterInfo *MRI = nullptr;
-    const TargetInstrInfo *TII = nullptr;
-    const TargetRegisterInfo *TRI = nullptr;
-    MachineFunction *MF = nullptr;
+    MachineRegisterInfo *MRI;
+    const TargetInstrInfo *TII;
+    const TargetRegisterInfo *TRI;
+    MachineFunction *MF;
 
     /// Virt2PhysMap - This is a virtual to physical register
     /// mapping. Each virtual register is required to have an entry in
     /// it; even spilled virtual registers (the register mapped to a
     /// spilled register is the temporary used to load it from the
     /// stack).
-    IndexedMap<Register, VirtReg2IndexFunctor> Virt2PhysMap;
+    IndexedMap<unsigned, VirtReg2IndexFunctor> Virt2PhysMap;
 
     /// Virt2StackSlotMap - This is virtual register to stack slot
     /// mapping. Each spilled virtual register has an entry in it
@@ -61,19 +62,14 @@ class TargetInstrInfo;
     /// mapping.
     IndexedMap<unsigned, VirtReg2IndexFunctor> Virt2SplitMap;
 
-    /// Virt2ShapeMap - For X86 AMX register whose register is bound shape
-    /// information.
-    DenseMap<unsigned, ShapeT> Virt2ShapeMap;
-
     /// createSpillSlot - Allocate a spill slot for RC from MFI.
     unsigned createSpillSlot(const TargetRegisterClass *RC);
 
   public:
     static char ID;
 
-    VirtRegMap()
-        : MachineFunctionPass(ID), Virt2PhysMap(NO_PHYS_REG),
-          Virt2StackSlotMap(NO_STACK_SLOT), Virt2SplitMap(0) {}
+    VirtRegMap() : MachineFunctionPass(ID), Virt2PhysMap(NO_PHYS_REG),
+                   Virt2StackSlotMap(NO_STACK_SLOT), Virt2SplitMap(0) {}
     VirtRegMap(const VirtRegMap &) = delete;
     VirtRegMap &operator=(const VirtRegMap &) = delete;
 
@@ -94,108 +90,89 @@ class TargetInstrInfo;
 
     void grow();
 
-    /// returns true if the specified virtual register is
+    /// @brief returns true if the specified virtual register is
     /// mapped to a physical register
-    bool hasPhys(Register virtReg) const {
+    bool hasPhys(unsigned virtReg) const {
       return getPhys(virtReg) != NO_PHYS_REG;
     }
 
-    /// returns the physical register mapped to the specified
+    /// @brief returns the physical register mapped to the specified
     /// virtual register
-    MCRegister getPhys(Register virtReg) const {
-      assert(virtReg.isVirtual());
-      return MCRegister::from(Virt2PhysMap[virtReg.id()]);
+    unsigned getPhys(unsigned virtReg) const {
+      assert(TargetRegisterInfo::isVirtualRegister(virtReg));
+      return Virt2PhysMap[virtReg];
     }
 
-    /// creates a mapping for the specified virtual register to
+    /// @brief creates a mapping for the specified virtual register to
     /// the specified physical register
-    void assignVirt2Phys(Register virtReg, MCPhysReg physReg);
+    void assignVirt2Phys(unsigned virtReg, MCPhysReg physReg);
 
-    bool isShapeMapEmpty() const { return Virt2ShapeMap.empty(); }
-
-    bool hasShape(Register virtReg) const {
-      return getShape(virtReg).isValid();
-    }
-
-    ShapeT getShape(Register virtReg) const {
-      assert(virtReg.isVirtual());
-      return Virt2ShapeMap.lookup(virtReg);
-    }
-
-    void assignVirt2Shape(Register virtReg, ShapeT shape) {
-      Virt2ShapeMap[virtReg.id()] = shape;
-    }
-
-    /// clears the specified virtual register's, physical
+    /// @brief clears the specified virtual register's, physical
     /// register mapping
-    void clearVirt(Register virtReg) {
-      assert(virtReg.isVirtual());
-      assert(Virt2PhysMap[virtReg.id()] != NO_PHYS_REG &&
+    void clearVirt(unsigned virtReg) {
+      assert(TargetRegisterInfo::isVirtualRegister(virtReg));
+      assert(Virt2PhysMap[virtReg] != NO_PHYS_REG &&
              "attempt to clear a not assigned virtual register");
-      Virt2PhysMap[virtReg.id()] = NO_PHYS_REG;
+      Virt2PhysMap[virtReg] = NO_PHYS_REG;
     }
 
-    /// clears all virtual to physical register mappings
+    /// @brief clears all virtual to physical register mappings
     void clearAllVirt() {
       Virt2PhysMap.clear();
       grow();
     }
 
-    /// returns true if VirtReg is assigned to its preferred physreg.
-    bool hasPreferredPhys(Register VirtReg) const;
+    /// @brief returns true if VirtReg is assigned to its preferred physreg.
+    bool hasPreferredPhys(unsigned VirtReg);
 
-    /// returns true if VirtReg has a known preferred register.
+    /// @brief returns true if VirtReg has a known preferred register.
     /// This returns false if VirtReg has a preference that is a virtual
     /// register that hasn't been assigned yet.
-    bool hasKnownPreference(Register VirtReg) const;
+    bool hasKnownPreference(unsigned VirtReg);
 
-    /// records virtReg is a split live interval from SReg.
-    void setIsSplitFromReg(Register virtReg, Register SReg) {
-      Virt2SplitMap[virtReg.id()] = SReg;
-      if (hasShape(SReg)) {
-        Virt2ShapeMap[virtReg.id()] = getShape(SReg);
-      }
+    /// @brief records virtReg is a split live interval from SReg.
+    void setIsSplitFromReg(unsigned virtReg, unsigned SReg) {
+      Virt2SplitMap[virtReg] = SReg;
     }
 
-    /// returns the live interval virtReg is split from.
-    Register getPreSplitReg(Register virtReg) const {
-      return Virt2SplitMap[virtReg.id()];
+    /// @brief returns the live interval virtReg is split from.
+    unsigned getPreSplitReg(unsigned virtReg) const {
+      return Virt2SplitMap[virtReg];
     }
 
     /// getOriginal - Return the original virtual register that VirtReg descends
     /// from through splitting.
     /// A register that was not created by splitting is its own original.
     /// This operation is idempotent.
-    Register getOriginal(Register VirtReg) const {
-      Register Orig = getPreSplitReg(VirtReg);
+    unsigned getOriginal(unsigned VirtReg) const {
+      unsigned Orig = getPreSplitReg(VirtReg);
       return Orig ? Orig : VirtReg;
     }
 
-    /// returns true if the specified virtual register is not
+    /// @brief returns true if the specified virtual register is not
     /// mapped to a stack slot or rematerialized.
-    bool isAssignedReg(Register virtReg) const {
+    bool isAssignedReg(unsigned virtReg) const {
       if (getStackSlot(virtReg) == NO_STACK_SLOT)
         return true;
       // Split register can be assigned a physical register as well as a
       // stack slot or remat id.
-      return (Virt2SplitMap[virtReg.id()] &&
-              Virt2PhysMap[virtReg.id()] != NO_PHYS_REG);
+      return (Virt2SplitMap[virtReg] && Virt2PhysMap[virtReg] != NO_PHYS_REG);
     }
 
-    /// returns the stack slot mapped to the specified virtual
+    /// @brief returns the stack slot mapped to the specified virtual
     /// register
-    int getStackSlot(Register virtReg) const {
-      assert(virtReg.isVirtual());
-      return Virt2StackSlotMap[virtReg.id()];
+    int getStackSlot(unsigned virtReg) const {
+      assert(TargetRegisterInfo::isVirtualRegister(virtReg));
+      return Virt2StackSlotMap[virtReg];
     }
 
-    /// create a mapping for the specifed virtual register to
+    /// @brief create a mapping for the specifed virtual register to
     /// the next available stack slot
-    int assignVirt2StackSlot(Register virtReg);
+    int assignVirt2StackSlot(unsigned virtReg);
 
-    /// create a mapping for the specified virtual register to
+    /// @brief create a mapping for the specified virtual register to
     /// the specified stack slot
-    void assignVirt2StackSlot(Register virtReg, int SS);
+    void assignVirt2StackSlot(unsigned virtReg, int frameIndex);
 
     void print(raw_ostream &OS, const Module* M = nullptr) const override;
     void dump() const;

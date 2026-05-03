@@ -1,6 +1,6 @@
 ; RUN: lli -jit-kind=orc-lazy -orc-lazy-debug=mods-to-stdout %s | FileCheck %s
 ;
-; CHECK: module-flags.ll.submodule
+; CHECK: module-flags.ll.globals
 ; CHECK-NOT: Module End
 ; CHECK: The Answer is {{.*}}42
 

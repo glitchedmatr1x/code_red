@@ -6,31 +6,31 @@
 #error "Should support no_sanitize_address"
 #endif
 
-void no_analyze() NO_SANITIZE_ADDRESS;
+void noanal_fun() NO_SANITIZE_ADDRESS;
 
-void no_analyze_alt() __attribute__((__no_sanitize_address__));
+void noanal_fun_alt() __attribute__((__no_sanitize_address__));
 
-void no_analyze_args() __attribute__((no_sanitize_address(1))); // \
+void noanal_fun_args() __attribute__((no_sanitize_address(1))); // \
   // expected-error {{'no_sanitize_address' attribute takes no arguments}}
 
-int no_analyze_testfn(int y) NO_SANITIZE_ADDRESS;
+int noanal_testfn(int y) NO_SANITIZE_ADDRESS;
 
-int no_analyze_testfn(int y) {
+int noanal_testfn(int y) {
   int x NO_SANITIZE_ADDRESS = y; // \
     // expected-error {{'no_sanitize_address' attribute only applies to functions}}
   return x;
 }
 
-class NoAnalyzeFoo {
+class NoanalFoo {
  private:
   int test_field NO_SANITIZE_ADDRESS; // \
     // expected-error {{'no_sanitize_address' attribute only applies to functions}}
   void test_method() NO_SANITIZE_ADDRESS;
 };
 
-class NO_SANITIZE_ADDRESS NoAnalyzeTestClass { // \
+class NO_SANITIZE_ADDRESS NoanalTestClass { // \
   // expected-error {{'no_sanitize_address' attribute only applies to functions}}
 };
 
-void no_analyze_params(int lvar NO_SANITIZE_ADDRESS); // \
+void noanal_fun_params(int lvar NO_SANITIZE_ADDRESS); // \
   // expected-error {{'no_sanitize_address' attribute only applies to functions}}

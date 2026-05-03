@@ -1,8 +1,9 @@
 //===- YAML.h ---------------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -20,7 +21,7 @@ class raw_ostream;
 
 namespace yaml {
 
-/// Specialized YAMLIO scalar type for representing a binary blob.
+/// \brief Specialized YAMLIO scalar type for representing a binary blob.
 ///
 /// A typical use case would be to represent the content of a section in a
 /// binary file.
@@ -63,19 +64,20 @@ namespace yaml {
 class BinaryRef {
   friend bool operator==(const BinaryRef &LHS, const BinaryRef &RHS);
 
-  /// Either raw binary data, or a string of hex bytes (must always
+  /// \brief Either raw binary data, or a string of hex bytes (must always
   /// be an even number of characters).
   ArrayRef<uint8_t> Data;
 
-  /// Discriminator between the two states of the `Data` member.
+  /// \brief Discriminator between the two states of the `Data` member.
   bool DataIsHexString = true;
 
 public:
   BinaryRef() = default;
   BinaryRef(ArrayRef<uint8_t> Data) : Data(Data), DataIsHexString(false) {}
-  BinaryRef(StringRef Data) : Data(arrayRefFromStringRef(Data)) {}
+  BinaryRef(StringRef Data)
+      : Data(reinterpret_cast<const uint8_t *>(Data.data()), Data.size()) {}
 
-  /// The number of bytes that are represented by this BinaryRef.
+  /// \brief The number of bytes that are represented by this BinaryRef.
   /// This is the number of bytes that writeAsBinary() will write.
   ArrayRef<uint8_t>::size_type binary_size() const {
     if (DataIsHexString)
@@ -83,12 +85,11 @@ public:
     return Data.size();
   }
 
-  /// Write the contents (regardless of whether it is binary or a
+  /// \brief Write the contents (regardless of whether it is binary or a
   /// hex string) as binary to the given raw_ostream.
-  /// N can be used to specify the maximum number of bytes.
-  void writeAsBinary(raw_ostream &OS, uint64_t N = UINT64_MAX) const;
+  void writeAsBinary(raw_ostream &OS) const;
 
-  /// Write the contents (regardless of whether it is binary or a
+  /// \brief Write the contents (regardless of whether it is binary or a
   /// hex string) as hex to the given raw_ostream.
   ///
   /// For example, a possible output could be `DEADBEEFCAFEBABE`.

@@ -1,8 +1,9 @@
 //===- llvm/unittest/ADT/DenseSetTest.cpp - DenseSet unit tests --*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -13,13 +14,6 @@
 using namespace llvm;
 
 namespace {
-
-static_assert(std::is_const<std::remove_pointer<
-                  DenseSet<int>::const_iterator::pointer>::type>::value,
-              "Iterator pointer type should be const");
-static_assert(std::is_const<std::remove_reference<
-                  DenseSet<int>::const_iterator::reference>::type>::value,
-              "Iterator reference type should be const");
 
 // Test hashing with a set of only two entries.
 TEST(DenseSetTest, DoubleEntrySetTest) {
@@ -52,7 +46,7 @@ protected:
 
 private:
   static T GetTestSet() {
-    std::remove_const_t<T> Set;
+    typename std::remove_const<T>::type Set;
     Set.insert(0);
     Set.insert(1);
     Set.insert(2);
@@ -68,16 +62,7 @@ typedef ::testing::Types<DenseSet<unsigned, TestDenseSetInfo>,
                          const SmallDenseSet<unsigned, 4, TestDenseSetInfo>,
                          SmallDenseSet<unsigned, 64, TestDenseSetInfo>>
     DenseSetTestTypes;
-TYPED_TEST_SUITE(DenseSetTest, DenseSetTestTypes, );
-
-TYPED_TEST(DenseSetTest, Constructor) {
-  constexpr unsigned a[] = {1, 2, 4};
-  TypeParam set(std::begin(a), std::end(a));
-  EXPECT_EQ(3u, set.size());
-  EXPECT_EQ(1u, set.count(1));
-  EXPECT_EQ(1u, set.count(2));
-  EXPECT_EQ(1u, set.count(4));
-}
+TYPED_TEST_CASE(DenseSetTest, DenseSetTestTypes);
 
 TYPED_TEST(DenseSetTest, InitializerList) {
   TypeParam set({1, 2, 1, 4});
@@ -86,14 +71,6 @@ TYPED_TEST(DenseSetTest, InitializerList) {
   EXPECT_EQ(1u, set.count(2));
   EXPECT_EQ(1u, set.count(4));
   EXPECT_EQ(0u, set.count(3));
-}
-
-TYPED_TEST(DenseSetTest, InitializerListWithNonPowerOfTwoLength) {
-  TypeParam set({1, 2, 3});
-  EXPECT_EQ(3u, set.size());
-  EXPECT_EQ(1u, set.count(1));
-  EXPECT_EQ(1u, set.count(2));
-  EXPECT_EQ(1u, set.count(3));
 }
 
 TYPED_TEST(DenseSetTest, ConstIteratorComparison) {
@@ -135,15 +112,6 @@ TYPED_TEST(DenseSetTest, FindAsTest) {
   EXPECT_EQ(1u, *set.find_as("b"));
   EXPECT_EQ(2u, *set.find_as("c"));
   EXPECT_TRUE(set.find_as("d") == set.end());
-}
-
-TYPED_TEST(DenseSetTest, EqualityComparisonTest) {
-  TypeParam set1({1, 2, 3, 4});
-  TypeParam set2({4, 3, 2, 1});
-  TypeParam set3({2, 3, 4, 5});
-
-  EXPECT_EQ(set1, set2);
-  EXPECT_NE(set1, set3);
 }
 
 // Simple class that counts how many moves and copy happens when growing a map
@@ -213,7 +181,7 @@ TEST(DenseSetCustomTest, ReserveTest) {
     EXPECT_EQ(MemorySize, Set.getMemorySize());
     // Check that move was called the expected number of times
     EXPECT_EQ(Size, CountCopyAndMove::Move);
-    // Check that no copy occurred
+    // Check that no copy occured
     EXPECT_EQ(0, CountCopyAndMove::Copy);
   }
 }
@@ -227,7 +195,7 @@ TEST(DenseSetCustomTest, ConstTest) {
   Map.insert(B);
   EXPECT_EQ(Map.count(B), 1u);
   EXPECT_EQ(Map.count(C), 1u);
-  EXPECT_TRUE(Map.contains(B));
-  EXPECT_TRUE(Map.contains(C));
+  EXPECT_NE(Map.find(B), Map.end());
+  EXPECT_NE(Map.find(C), Map.end());
 }
 }

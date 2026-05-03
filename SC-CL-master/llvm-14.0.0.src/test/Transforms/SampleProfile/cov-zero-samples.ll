@@ -18,7 +18,7 @@ source_filename = "test/Transforms/SampleProfile/cov-zero-samples.ll"
 @N = global i64 8000000000, align 8, !dbg !0
 @.str = private unnamed_addr constant [11 x i8] c"sum is %d\0A\00", align 1
 
-define i32 @_Z12never_calledi(i32 %i) #1 !dbg !11 {
+define i32 @_Z12never_calledi(i32 %i) !dbg !11 {
 entry:
   ret i32 0, !dbg !15
 }
@@ -26,7 +26,7 @@ entry:
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.declare(metadata, metadata, metadata) #0
 
-define i32 @main() #1 !dbg !17 {
+define i32 @main() !dbg !17 {
 entry:
   %retval = alloca i32, align 4
   %sum = alloca i32, align 4
@@ -85,7 +85,6 @@ for.end:                                          ; preds = %for.cond
 declare i32 @printf(i8*, ...)
 
 attributes #0 = { nounwind readnone }
-attributes #1 = {"use-sample-profile"}
 
 !llvm.dbg.cu = !{!2}
 !llvm.module.flags = !{!8, !9}
@@ -102,13 +101,13 @@ attributes #1 = {"use-sample-profile"}
 !8 = !{i32 2, !"Dwarf Version", i32 4}
 !9 = !{i32 2, !"Debug Info Version", i32 3}
 !10 = !{!"clang version 3.8.0 (trunk 253667) (llvm/trunk 253670)"}
-!11 = distinct !DISubprogram(name: "never_called", linkageName: "_Z12never_calledi", scope: !3, file: !3, line: 5, type: !12, isLocal: false, isDefinition: true, scopeLine: 5, flags: DIFlagPrototyped, isOptimized: false, unit: !2, retainedNodes: !4)
+!11 = distinct !DISubprogram(name: "never_called", linkageName: "_Z12never_calledi", scope: !3, file: !3, line: 5, type: !12, isLocal: false, isDefinition: true, scopeLine: 5, flags: DIFlagPrototyped, isOptimized: false, unit: !2, variables: !4)
 !12 = !DISubroutineType(types: !13)
 !13 = !{!14, !14}
 !14 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
 !15 = !DILocation(line: 5, column: 27, scope: !16)
 !16 = !DILexicalBlockFile(scope: !11, file: !3, discriminator: 6)
-!17 = distinct !DISubprogram(name: "main", scope: !3, file: !3, line: 7, type: !18, isLocal: false, isDefinition: true, scopeLine: 7, flags: DIFlagPrototyped, isOptimized: false, unit: !2, retainedNodes: !4)
+!17 = distinct !DISubprogram(name: "main", scope: !3, file: !3, line: 7, type: !18, isLocal: false, isDefinition: true, scopeLine: 7, flags: DIFlagPrototyped, isOptimized: false, unit: !2, variables: !4)
 !18 = !DISubroutineType(types: !19)
 !19 = !{!14}
 !20 = !DILocalVariable(name: "sum", scope: !17, file: !3, line: 8, type: !14)

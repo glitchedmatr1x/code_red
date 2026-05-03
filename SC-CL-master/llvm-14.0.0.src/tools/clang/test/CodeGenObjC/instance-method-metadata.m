@@ -1,5 +1,6 @@
 // REQUIRES: x86-registered-target
-// RUN: %clang_cc1 -triple x86_64-apple-darwin10 -S %s -o - | FileCheck %s
+// RUN: %clang_cc1 -triple x86_64-apple-darwin10 -S -o %t %s 
+// RUN: FileCheck < %t %s
 
 // rdar://9072317
 
@@ -26,7 +27,7 @@
 @synthesize prop;
 @end
 
-// CHECK: _OBJC_$_INSTANCE_METHODS_Bar:
+// CHECK: l_OBJC_$_INSTANCE_METHODS_Bar:
 // CHECK-NEXT:        .long   24
 // CHECK-NEXT:        .long   2
 // CHECK-NEXT:        .quad   L_OBJC_METH_VAR_NAME_

@@ -1,13 +1,4 @@
-// RUN: %clang_cc1 -std=c++11 -S -triple armv7-none-eabi -fmerge-all-constants -emit-llvm -o - %s | FileCheck %s
-
-// This creates and lifetime-extends a 'const char[5]' temporary.
-// CHECK: @_ZGR19extended_string_ref_ = internal constant [5 x i8] c"hi\00\00\00",
-// CHECK: @extended_string_ref ={{.*}} constant [5 x i8]* @_ZGR19extended_string_ref_,
-const char (&extended_string_ref)[5] = {"hi"};
-
-// This binds directly to a string literal object.
-// CHECK: @nonextended_string_ref ={{.*}} constant [3 x i8]* @.str
-const char (&nonextended_string_ref)[3] = {"hi"};
+// RUN: %clang_cc1 -std=c++11 -S -triple armv7-none-eabi -emit-llvm -o - %s | FileCheck %s
 
 namespace reference {
   struct A {
@@ -81,10 +72,10 @@ namespace reference {
   {
     // Ensure lifetime extension.
 
-    // CHECK: call noundef %"struct.reference::B"* @_ZN9reference1BC1Ev
+    // CHECK: call %"struct.reference::B"* @_ZN9reference1BC1Ev
     // CHECK-NEXT: store %{{.*}}* %{{.*}}, %{{.*}}** %
     const B &rb{ B() };
-    // CHECK: call noundef %"struct.reference::B"* @_ZN9reference1BD1Ev
+    // CHECK: call %"struct.reference::B"* @_ZN9reference1BD1Ev
   }
 
 }

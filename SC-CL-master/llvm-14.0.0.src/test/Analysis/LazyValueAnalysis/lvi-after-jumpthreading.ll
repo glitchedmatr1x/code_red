@@ -1,5 +1,4 @@
 ; RUN: opt < %s -jump-threading -print-lvi-after-jump-threading -disable-output 2>&1 | FileCheck %s
-; RUN: opt < %s -passes=jump-threading -print-lvi-after-jump-threading -disable-output 2>&1 | FileCheck %s
 
 ; Testing LVI cache after jump-threading
 
@@ -20,13 +19,10 @@ entry:
 ; CHECK-NEXT:     ; LatticeVal for: 'i32 %a' is: overdefined
 ; CHECK-NEXT:     ; LatticeVal for: 'i32 %length' is: overdefined
 ; CHECK-NEXT:     ; LatticeVal for: '  %iv = phi i32 [ 0, %entry ], [ %iv.next, %backedge ]' in BB: '%backedge' is: constantrange<0, 400>
-; CHECK-NEXT:     ; LatticeVal for: '  %iv = phi i32 [ 0, %entry ], [ %iv.next, %backedge ]' in BB: '%exit' is: constantrange<399, 400>
 ; CHECK-NEXT:  %iv = phi i32 [ 0, %entry ], [ %iv.next, %backedge ]
 ; CHECK-NEXT:     ; LatticeVal for: '  %iv.next = add nsw i32 %iv, 1' in BB: '%backedge' is: constantrange<1, 401>
-; CHECK-NEXT:     ; LatticeVal for: '  %iv.next = add nsw i32 %iv, 1' in BB: '%exit' is: constantrange<400, 401>
 ; CHECK-NEXT:  %iv.next = add nsw i32 %iv, 1
 ; CHECK-NEXT:     ; LatticeVal for: '  %cont = icmp slt i32 %iv.next, 400' in BB: '%backedge' is: overdefined
-; CHECK-NEXT:     ; LatticeVal for: '  %cont = icmp slt i32 %iv.next, 400' in BB: '%exit' is: constantrange<0, -1>
 ; CHECK-NEXT:  %cont = icmp slt i32 %iv.next, 400
 ; CHECK-NOT: loop
 loop:
@@ -54,9 +50,9 @@ entry:
 
 ; CHECK-LABEL: loop:
 ; CHECK-NEXT:    ; LatticeVal for: 'i32 %n' is: overdefined
-; CHECK-NEXT:    ; LatticeVal for: '  %iv = phi i32 [ 0, %entry ], [ %iv.next, %backedge ]' in BB: '%loop' is: constantrange<0, 400>
+; CHECK-NEXT:    ; LatticeVal for: '  %iv = phi i32 [ 0, %entry ], [ %iv.next, %backedge ]' in BB: '%loop' is: constantrange<0, -2147483647>
 ; CHECK-DAG:     ; LatticeVal for: '  %iv = phi i32 [ 0, %entry ], [ %iv.next, %backedge ]' in BB: '%backedge' is: constantrange<0, -2147483648>
-; CHECK-DAG:     ; LatticeVal for: '  %iv = phi i32 [ 0, %entry ], [ %iv.next, %backedge ]' in BB: '%exit' is: constantrange<0, -2147483648>
+; CHECK-DAG:     ; LatticeVal for: '  %iv = phi i32 [ 0, %entry ], [ %iv.next, %backedge ]' in BB: '%exit' is: constantrange<0, -2147483647>
 ; CHECK-NEXT:  %iv = phi i32 [ 0, %entry ], [ %iv.next, %backedge ]
 loop:
   %iv = phi i32 [0, %entry], [%iv.next, %backedge]
@@ -82,7 +78,7 @@ loop:
 
 ; CHECK-LABEL: backedge:
 ; CHECK-NEXT:    ; LatticeVal for: 'i32 %n' is: overdefined
-; CHECK-NEXT:    ; LatticeVal for: '  %iv.next = add nsw i32 %iv, 1' in BB: '%backedge' is: constantrange<1, -2147483648>
+; CHECK-NEXT:    ; LatticeVal for: '  %iv.next = add nsw i32 %iv, 1' in BB: '%backedge' is: constantrange<1, -2147483647>
 ; CHECK-NEXT:  %iv.next = add nsw i32 %iv, 1
 backedge:
   %iv.next = add nsw i32 %iv, 1
@@ -109,7 +105,7 @@ define i32 @test3(i32 %i, i1 %f, i32 %n) {
 ; CHECK-LABEL: LVI for function 'test3':
 ; CHECK-LABEL: entry
 ; CHECK:  ; LatticeVal for: 'i32 %i' is: overdefined
-; CHECK: %c = icmp ne i32 %i, -2134
+; CHECK: %c = icmp ne i32 %i, -2134 
 ; CHECK: br i1 %c, label %cont, label %exit
 entry:
   %c = icmp ne i32 %i, -2134
@@ -142,7 +138,7 @@ do:
   call void (i1, ...) @llvm.experimental.guard(i1 %cond) [ "deopt"() ]
   %cond.2 = icmp sgt i32 %i, 0
   br i1 %cond.2, label %exit, label %cont
-
+  
 exit2:
 ; CHECK-LABEL: exit2:
 ; LatticeVal for: 'i32 %i' is: constantrange<-2134, 1>

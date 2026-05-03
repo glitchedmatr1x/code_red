@@ -74,7 +74,7 @@ namespace dr512 { // dr512: yes
   };
   union U { A a; };
 #if __cplusplus < 201103L
-  // expected-error@-2 {{has a non-trivial default constructor}}
+  // expected-error@-2 {{has a non-trivial constructor}}
   // expected-note@-6 {{no default constructor}}
   // expected-note@-6 {{suppressed by user-declared constructor}}
 #endif
@@ -740,17 +740,17 @@ namespace dr573 { // dr573: no
 
 namespace dr574 { // dr574: yes
   struct A {
-    A &operator=(const A&) const; // expected-note {{different qualifiers}}
+    A &operator=(const A&) const; // expected-note {{does not match because it is const}}
   };
   struct B {
-    B &operator=(const B&) volatile; // expected-note {{different qualifiers}}
+    B &operator=(const B&) volatile; // expected-note {{nearly matches}}
   };
 #if __cplusplus >= 201103L
   struct C {
-    C &operator=(const C&) &; // expected-note {{not viable}} expected-note {{candidate}} expected-note {{here}}
+    C &operator=(const C&) &; // expected-note {{not viable}} expected-note {{nearly matches}} expected-note {{here}}
   };
   struct D {
-    D &operator=(const D&) &&; // expected-note {{not viable}} expected-note {{candidate}} expected-note {{here}}
+    D &operator=(const D&) &&; // expected-note {{not viable}} expected-note {{nearly matches}} expected-note {{here}}
   };
   void test(C c, D d) {
     c = c;

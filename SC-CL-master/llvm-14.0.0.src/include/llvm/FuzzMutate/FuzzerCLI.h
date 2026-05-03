@@ -1,8 +1,9 @@
 //===-- FuzzerCLI.h - Common logic for CLIs of fuzzers ----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -11,15 +12,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_FUZZMUTATE_FUZZERCLI_H
-#define LLVM_FUZZMUTATE_FUZZERCLI_H
+#ifndef LLVM_FUZZMUTATE_FUZZER_CLI_H
+#define LLVM_FUZZMUTATE_FUZZER_CLI_H
 
+#include "llvm/ADT/StringRef.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/Support/DataTypes.h"
 
 namespace llvm {
-
-class StringRef;
 
 /// Parse cl::opts from a fuzz target commandline.
 ///
@@ -68,12 +68,6 @@ std::unique_ptr<Module> parseModule(const uint8_t *Data, size_t Size,
 ///         returns 0 and leaves Dest unchanged.
 size_t writeModule(const Module &M, uint8_t *Dest, size_t MaxSize);
 
-/// Try to parse module and verify it. May output verification errors to the
-/// errs().
-/// \return New module or nullptr in case of error.
-std::unique_ptr<Module> parseAndVerify(const uint8_t *Data, size_t Size,
-                                       LLVMContext &Context);
-
 } // end llvm namespace
 
-#endif // LLVM_FUZZMUTATE_FUZZERCLI_H
+#endif // LLVM_FUZZMUTATE_FUZZER_CLI_H

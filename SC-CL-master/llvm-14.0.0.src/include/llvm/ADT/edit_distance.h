@@ -1,16 +1,16 @@
 //===-- llvm/ADT/edit_distance.h - Array edit distance function --- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file defines a Levenshtein distance function that works for any two
-/// sequences, with each element of each sequence being analogous to a character
-/// in a string.
-///
+//
+// This file defines a Levenshtein distance function that works for any two
+// sequences, with each element of each sequence being analogous to a character
+// in a string.
+//
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_EDIT_DISTANCE_H
@@ -22,7 +22,7 @@
 
 namespace llvm {
 
-/// Determine the edit distance between two sequences.
+/// \brief Determine the edit distance between two sequences.
 ///
 /// \param FromArray the first sequence to compare.
 ///

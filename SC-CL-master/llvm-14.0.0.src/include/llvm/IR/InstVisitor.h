@@ -1,8 +1,9 @@
 //===- InstVisitor.h - Instruction visitor templates ------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -10,6 +11,7 @@
 #ifndef LLVM_IR_INSTVISITOR_H
 #define LLVM_IR_INSTVISITOR_H
 
+#include "llvm/IR/CallSite.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/IntrinsicInst.h"
@@ -30,7 +32,7 @@ namespace llvm {
                visit##CLASS_TO_VISIT(static_cast<CLASS_TO_VISIT&>(I))
 
 
-/// Base class for instruction visitors
+/// @brief Base class for instruction visitors
 ///
 /// Instruction visitors are used when you want to perform different actions
 /// for different kinds of instructions without having to use lots of casts
@@ -164,6 +166,15 @@ public:
   // Specific Instruction type classes... note that all of the casts are
   // necessary because we use the instruction classes as opaque types...
   //
+  RetTy visitReturnInst(ReturnInst &I)            { DELEGATE(TerminatorInst);}
+  RetTy visitBranchInst(BranchInst &I)            { DELEGATE(TerminatorInst);}
+  RetTy visitSwitchInst(SwitchInst &I)            { DELEGATE(TerminatorInst);}
+  RetTy visitIndirectBrInst(IndirectBrInst &I)    { DELEGATE(TerminatorInst);}
+  RetTy visitResumeInst(ResumeInst &I)            { DELEGATE(TerminatorInst);}
+  RetTy visitUnreachableInst(UnreachableInst &I)  { DELEGATE(TerminatorInst);}
+  RetTy visitCleanupReturnInst(CleanupReturnInst &I) { DELEGATE(TerminatorInst);}
+  RetTy visitCatchReturnInst(CatchReturnInst &I)  { DELEGATE(TerminatorInst); }
+  RetTy visitCatchSwitchInst(CatchSwitchInst &I)  { DELEGATE(TerminatorInst);}
   RetTy visitICmpInst(ICmpInst &I)                { DELEGATE(CmpInst);}
   RetTy visitFCmpInst(FCmpInst &I)                { DELEGATE(CmpInst);}
   RetTy visitAllocaInst(AllocaInst &I)            { DELEGATE(UnaryInstruction);}
@@ -198,20 +209,13 @@ public:
   RetTy visitFuncletPadInst(FuncletPadInst &I) { DELEGATE(Instruction); }
   RetTy visitCleanupPadInst(CleanupPadInst &I) { DELEGATE(FuncletPadInst); }
   RetTy visitCatchPadInst(CatchPadInst &I)     { DELEGATE(FuncletPadInst); }
-  RetTy visitFreezeInst(FreezeInst &I)         { DELEGATE(Instruction); }
 
   // Handle the special instrinsic instruction classes.
-  RetTy visitDbgDeclareInst(DbgDeclareInst &I)    { DELEGATE(DbgVariableIntrinsic);}
-  RetTy visitDbgValueInst(DbgValueInst &I)        { DELEGATE(DbgVariableIntrinsic);}
-  RetTy visitDbgVariableIntrinsic(DbgVariableIntrinsic &I)
-                                                  { DELEGATE(DbgInfoIntrinsic);}
-  RetTy visitDbgLabelInst(DbgLabelInst &I)        { DELEGATE(DbgInfoIntrinsic);}
-  RetTy visitDbgInfoIntrinsic(DbgInfoIntrinsic &I){ DELEGATE(IntrinsicInst); }
+  RetTy visitDbgDeclareInst(DbgDeclareInst &I)    { DELEGATE(DbgInfoIntrinsic);}
+  RetTy visitDbgValueInst(DbgValueInst &I)        { DELEGATE(DbgInfoIntrinsic);}
+  RetTy visitDbgInfoIntrinsic(DbgInfoIntrinsic &I) { DELEGATE(IntrinsicInst); }
   RetTy visitMemSetInst(MemSetInst &I)            { DELEGATE(MemIntrinsic); }
   RetTy visitMemCpyInst(MemCpyInst &I)            { DELEGATE(MemTransferInst); }
-  RetTy visitMemCpyInlineInst(MemCpyInlineInst &I) {
-    DELEGATE(MemTransferInst);
-  }
   RetTy visitMemMoveInst(MemMoveInst &I)          { DELEGATE(MemTransferInst); }
   RetTy visitMemTransferInst(MemTransferInst &I)  { DELEGATE(MemIntrinsic); }
   RetTy visitMemIntrinsic(MemIntrinsic &I)        { DELEGATE(IntrinsicInst); }
@@ -219,58 +223,37 @@ public:
   RetTy visitVAEndInst(VAEndInst &I)              { DELEGATE(IntrinsicInst); }
   RetTy visitVACopyInst(VACopyInst &I)            { DELEGATE(IntrinsicInst); }
   RetTy visitIntrinsicInst(IntrinsicInst &I)      { DELEGATE(CallInst); }
-  RetTy visitCallInst(CallInst &I)                { DELEGATE(CallBase); }
-  RetTy visitInvokeInst(InvokeInst &I)            { DELEGATE(CallBase); }
-  RetTy visitCallBrInst(CallBrInst &I)            { DELEGATE(CallBase); }
 
-  // While terminators don't have a distinct type modeling them, we support
-  // intercepting them with dedicated a visitor callback.
-  RetTy visitReturnInst(ReturnInst &I) {
-    return static_cast<SubClass *>(this)->visitTerminator(I);
+  // Call and Invoke are slightly different as they delegate first through
+  // a generic CallSite visitor.
+  RetTy visitCallInst(CallInst &I) {
+    return static_cast<SubClass*>(this)->visitCallSite(&I);
   }
-  RetTy visitBranchInst(BranchInst &I) {
-    return static_cast<SubClass *>(this)->visitTerminator(I);
+  RetTy visitInvokeInst(InvokeInst &I) {
+    return static_cast<SubClass*>(this)->visitCallSite(&I);
   }
-  RetTy visitSwitchInst(SwitchInst &I) {
-    return static_cast<SubClass *>(this)->visitTerminator(I);
-  }
-  RetTy visitIndirectBrInst(IndirectBrInst &I) {
-    return static_cast<SubClass *>(this)->visitTerminator(I);
-  }
-  RetTy visitResumeInst(ResumeInst &I) {
-    return static_cast<SubClass *>(this)->visitTerminator(I);
-  }
-  RetTy visitUnreachableInst(UnreachableInst &I) {
-    return static_cast<SubClass *>(this)->visitTerminator(I);
-  }
-  RetTy visitCleanupReturnInst(CleanupReturnInst &I) {
-    return static_cast<SubClass *>(this)->visitTerminator(I);
-  }
-  RetTy visitCatchReturnInst(CatchReturnInst &I) {
-    return static_cast<SubClass *>(this)->visitTerminator(I);
-  }
-  RetTy visitCatchSwitchInst(CatchSwitchInst &I) {
-    return static_cast<SubClass *>(this)->visitTerminator(I);
-  }
-  RetTy visitTerminator(Instruction &I)    { DELEGATE(Instruction);}
 
   // Next level propagators: If the user does not overload a specific
   // instruction type, they can overload one of these to get the whole class
   // of instructions...
   //
   RetTy visitCastInst(CastInst &I)                { DELEGATE(UnaryInstruction);}
-  RetTy visitUnaryOperator(UnaryOperator &I)      { DELEGATE(UnaryInstruction);}
   RetTy visitBinaryOperator(BinaryOperator &I)    { DELEGATE(Instruction);}
   RetTy visitCmpInst(CmpInst &I)                  { DELEGATE(Instruction);}
+  RetTy visitTerminatorInst(TerminatorInst &I)    { DELEGATE(Instruction);}
   RetTy visitUnaryInstruction(UnaryInstruction &I){ DELEGATE(Instruction);}
 
-  // The next level delegation for `CallBase` is slightly more complex in order
-  // to support visiting cases where the call is also a terminator.
-  RetTy visitCallBase(CallBase &I) {
-    if (isa<InvokeInst>(I) || isa<CallBrInst>(I))
-      return static_cast<SubClass *>(this)->visitTerminator(I);
+  // Provide a special visitor for a 'callsite' that visits both calls and
+  // invokes. When unimplemented, properly delegates to either the terminator or
+  // regular instruction visitor.
+  RetTy visitCallSite(CallSite CS) {
+    assert(CS);
+    Instruction &I = *CS.getInstruction();
+    if (CS.isCall())
+      DELEGATE(Instruction);
 
-    DELEGATE(Instruction);
+    assert(CS.isInvoke());
+    DELEGATE(TerminatorInst);
   }
 
   // If the user wants a 'default' case, they can choose to override this
@@ -289,7 +272,6 @@ private:
       default:                     DELEGATE(IntrinsicInst);
       case Intrinsic::dbg_declare: DELEGATE(DbgDeclareInst);
       case Intrinsic::dbg_value:   DELEGATE(DbgValueInst);
-      case Intrinsic::dbg_label:   DELEGATE(DbgLabelInst);
       case Intrinsic::memcpy:      DELEGATE(MemCpyInst);
       case Intrinsic::memmove:     DELEGATE(MemMoveInst);
       case Intrinsic::memset:      DELEGATE(MemSetInst);

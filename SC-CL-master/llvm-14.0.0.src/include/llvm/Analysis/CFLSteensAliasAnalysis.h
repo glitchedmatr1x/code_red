@@ -1,8 +1,9 @@
 //==- CFLSteensAliasAnalysis.h - Unification-based Alias Analysis -*- C++-*-==//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 /// \file
@@ -42,8 +43,7 @@ class CFLSteensAAResult : public AAResultBase<CFLSteensAAResult> {
   class FunctionInfo;
 
 public:
-  explicit CFLSteensAAResult(
-      std::function<const TargetLibraryInfo &(Function &)> GetTLI);
+  explicit CFLSteensAAResult(const TargetLibraryInfo &TLI);
   CFLSteensAAResult(CFLSteensAAResult &&Arg);
   ~CFLSteensAAResult();
 
@@ -55,25 +55,24 @@ public:
     return false;
   }
 
-  /// Inserts the given Function into the cache.
+  /// \brief Inserts the given Function into the cache.
   void scan(Function *Fn);
 
   void evict(Function *Fn);
 
-  /// Ensures that the given function is available in the cache.
+  /// \brief Ensures that the given function is available in the cache.
   /// Returns the appropriate entry from the cache.
   const Optional<FunctionInfo> &ensureCached(Function *Fn);
 
-  /// Get the alias summary for the given function
+  /// \brief Get the alias summary for the given function
   /// Return nullptr if the summary is not found or not available
   const cflaa::AliasSummary *getAliasSummary(Function &Fn);
 
   AliasResult query(const MemoryLocation &LocA, const MemoryLocation &LocB);
 
-  AliasResult alias(const MemoryLocation &LocA, const MemoryLocation &LocB,
-                    AAQueryInfo &AAQI) {
+  AliasResult alias(const MemoryLocation &LocA, const MemoryLocation &LocB) {
     if (LocA.Ptr == LocB.Ptr)
-      return AliasResult::MustAlias;
+      return MustAlias;
 
     // Comparisons between global variables and other constants should be
     // handled by BasicAA.
@@ -81,19 +80,19 @@ public:
     // ConstantExpr, but every query needs to have at least one Value tied to a
     // Function, and neither GlobalValues nor ConstantExprs are.
     if (isa<Constant>(LocA.Ptr) && isa<Constant>(LocB.Ptr))
-      return AAResultBase::alias(LocA, LocB, AAQI);
+      return AAResultBase::alias(LocA, LocB);
 
     AliasResult QueryResult = query(LocA, LocB);
-    if (QueryResult == AliasResult::MayAlias)
-      return AAResultBase::alias(LocA, LocB, AAQI);
+    if (QueryResult == MayAlias)
+      return AAResultBase::alias(LocA, LocB);
 
     return QueryResult;
   }
 
 private:
-  std::function<const TargetLibraryInfo &(Function &)> GetTLI;
+  const TargetLibraryInfo &TLI;
 
-  /// Cached mapping of Functions to their StratifiedSets.
+  /// \brief Cached mapping of Functions to their StratifiedSets.
   /// If a function's sets are currently being built, it is marked
   /// in the cache as an Optional without a value. This way, if we
   /// have any kind of recursion, it is discernable from a function

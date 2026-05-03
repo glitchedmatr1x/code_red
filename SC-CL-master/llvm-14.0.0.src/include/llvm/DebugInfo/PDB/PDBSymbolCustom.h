@@ -1,8 +1,9 @@
 //===- PDBSymbolCustom.h - compiler-specific types --------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -22,8 +23,12 @@ namespace pdb {
 /// fit anywhere else in the lexical hierarchy.
 /// https://msdn.microsoft.com/en-us/library/d88sf09h.aspx
 class PDBSymbolCustom : public PDBSymbol {
-  DECLARE_PDB_SYMBOL_CONCRETE_TYPE(PDB_SymType::Custom)
 public:
+  PDBSymbolCustom(const IPDBSession &PDBSession,
+                  std::unique_ptr<IPDBRawSymbol> CustomSymbol);
+
+  DECLARE_PDB_SYMBOL_CONCRETE_TYPE(PDB_SymType::Custom)
+
   void dump(PDBSymDumper &Dumper) const override;
 
   void getDataBytes(llvm::SmallVector<uint8_t, 32> &bytes);

@@ -1,8 +1,4 @@
-// RUN: %clang_analyze_cc1 -verify %s -std=gnu99 \
-// RUN:  -analyzer-checker=core \
-// RUN:  -analyzer-checker=alpha.core \
-// RUN:  -analyzer-checker=unix \
-// RUN:  -analyzer-checker=alpha.unix
+// RUN: %clang_analyze_cc1 -analyzer-checker=core,alpha.core,unix,alpha.unix -std=gnu99 -analyzer-store=region -verify %s
 
 #include "Inputs/system-header-simulator.h"
 
@@ -26,7 +22,7 @@ void f14(int *a) {
 void foo() {
   int *x = malloc(sizeof(int));
   memset(x, 0, sizeof(int));
-  int n = 1 / *x; // expected-warning {{Division by zero}}
+  int n = 1 / *x; // FIXME: no-warning
   free(x);
 }
 
@@ -39,7 +35,7 @@ void bar() {
 
 void testConcreteNull() {
   int *x = 0;
-  memset(x, 0, 1); // expected-warning {{Null pointer passed as 1st argument to memory set function}}
+  memset(x, 0, 1); // expected-warning {{Null pointer argument in call to memory set function}}
 }
 
 void testStackArray() {
@@ -55,15 +51,12 @@ void testHeapSymbol() {
 
 void testStackArrayOutOfBound() {
   char buf[1];
-  memset(buf, 0, 1024);
-  // expected-warning@-1 {{Memory set function overflows the destination buffer}}
-  // expected-warning@-2 {{'memset' will always overflow; destination buffer has size 1, but size argument is 1024}}
+  memset(buf, 0, 1024); // expected-warning {{Memory set function accesses out-of-bound array element}}
 }
 
 void testHeapSymbolOutOfBound() {
   char *buf = (char *)malloc(1);
-  memset(buf, 0, 1024);
-  // expected-warning@-1 {{Memory set function overflows the destination buffer}}
+  memset(buf, 0, 1024); // expected-warning {{Memory set function accesses out-of-bound array element}}
   free(buf);
 }
 

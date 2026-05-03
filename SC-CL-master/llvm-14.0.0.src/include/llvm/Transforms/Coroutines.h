@@ -1,8 +1,9 @@
 //===-- Coroutines.h - Coroutine Transformations ----------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 // Declare accessor functions for coroutine lowering passes.
@@ -20,17 +21,17 @@ class PassManagerBuilder;
 void addCoroutinePassesToExtensionPoints(PassManagerBuilder &Builder);
 
 /// Lower coroutine intrinsics that are not needed by later passes.
-Pass *createCoroEarlyLegacyPass();
+Pass *createCoroEarlyPass();
 
 /// Split up coroutines into multiple functions driving their state machines.
-Pass *createCoroSplitLegacyPass(bool IsOptimizing = false);
+Pass *createCoroSplitPass();
 
 /// Analyze coroutines use sites, devirtualize resume/destroy calls and elide
 /// heap allocation for coroutine frame where possible.
-Pass *createCoroElideLegacyPass();
+Pass *createCoroElidePass();
 
 /// Lower all remaining coroutine intrinsics.
-Pass *createCoroCleanupLegacyPass();
+Pass *createCoroCleanupPass();
 
 }
 

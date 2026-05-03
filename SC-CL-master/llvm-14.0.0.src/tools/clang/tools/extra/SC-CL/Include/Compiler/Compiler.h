@@ -520,7 +520,7 @@ protected:
 	virtual void AddJumpLoc(const JumpInstructionType it, const std::string& label)
 	{
 		// this should only be called on jump forward
-		JumpLocations.push_back({ (uint32_t)CodePageData->getTotalSize(), it, label, false });
+		JumpLocations.push_back({ CodePageData->getTotalSize(), it, label, false });
 		LabelLocations[label].JumpIndexes.push_back(JumpLocations.size() - 1);
 		switch (it)
 		{
@@ -842,7 +842,7 @@ private:
 	virtual void AddJumpLoc(const JumpInstructionType it, const std::string& label) override
 	{
 		// this should only be called on jump forward
-		JumpLocations.push_back({ (uint32_t)CodePageData->getTotalSize(), it, label, false });
+		JumpLocations.push_back({ CodePageData->getTotalSize(), it, label, false });
 		LabelLocations[label].JumpIndexes.push_back(JumpLocations.size() - 1);
 		switch (it)
 		{
@@ -1214,6 +1214,7 @@ public:
 	
 	CompileGTAVPC(const Script& data, uint32_t nativesVersion, bool Disable_Function_Names) : CompileGTAV(data, Disable_Function_Names), nativeTranslation(nativesVersion)
 	{
+		TEST(false, "Compiling GTAV on PC has been disabled due to Rockstars actions against the GTA modding scene");
 	}
 
 	void Compile(const std::string& outDirectory) override

@@ -1,8 +1,9 @@
 //===- PredIteratorCache.h - pred_iterator Cache ----------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -44,7 +45,7 @@ private:
     if (Entry)
       return Entry;
 
-    SmallVector<BasicBlock *, 32> PredCache(predecessors(BB));
+    SmallVector<BasicBlock *, 32> PredCache(pred_begin(BB), pred_end(BB));
     PredCache.push_back(nullptr); // null terminator.
 
     BlockToPredCountMap[BB] = PredCache.size() - 1;
@@ -58,7 +59,7 @@ private:
     auto Result = BlockToPredCountMap.find(BB);
     if (Result != BlockToPredCountMap.end())
       return Result->second;
-    return BlockToPredCountMap[BB] = pred_size(BB);
+    return BlockToPredCountMap[BB] = std::distance(pred_begin(BB), pred_end(BB));
   }
 
 public:

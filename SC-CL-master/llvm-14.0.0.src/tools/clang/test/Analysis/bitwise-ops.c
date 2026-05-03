@@ -4,12 +4,13 @@ void clang_analyzer_eval(int);
 #define CHECK(expr) if (!(expr)) return; clang_analyzer_eval(expr)
 
 void testPersistentConstraints(int x, int y) {
-  // Basic check
+  // Sanity check
   CHECK(x); // expected-warning{{TRUE}}
   CHECK(x & 1); // expected-warning{{TRUE}}
   
-  CHECK(1 - x); // expected-warning{{TRUE}}
-  CHECK(x & y); // expected-warning{{TRUE}}
+  // False positives due to SValBuilder giving up on certain kinds of exprs.
+  CHECK(1 - x); // expected-warning{{UNKNOWN}}
+  CHECK(x & y); // expected-warning{{UNKNOWN}}
 }
 
 int testConstantShifts_PR18073(int which) {
@@ -48,11 +49,5 @@ int testNegativeLeftShift(int a) {
   if (a == -3) {
     return a << 1; // expected-warning{{The result of the left shift is undefined because the left operand is negative}}
   }
-  return 0;
-}
-
-int testUnrepresentableLeftShift(int a) {
-  if (a == 8)
-    return a << 30; // expected-warning{{The result of the left shift is undefined due to shifting '8' by '30', which is unrepresentable in the unsigned version of the return type 'int'}}
   return 0;
 }

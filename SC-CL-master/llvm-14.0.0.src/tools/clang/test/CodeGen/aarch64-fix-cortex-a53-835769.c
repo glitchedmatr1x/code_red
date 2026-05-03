@@ -1,3 +1,5 @@
+// REQUIRES: aarch64-registered-target
+
 // RUN: %clang -O3 -target aarch64-linux-eabi %s -S -o- \
 // RUN:   | FileCheck --check-prefix=CHECK-NO --check-prefix=CHECK %s
 // RUN: %clang -O3 -target aarch64-linux-eabi -mfix-cortex-a53-835769 %s -S -o- 2>&1 \
@@ -11,8 +13,6 @@
 // RUN:   | FileCheck --check-prefix=CHECK-YES --check-prefix=CHECK %s
 // RUN: %clang -O3 -target aarch64-android-eabi -mno-fix-cortex-a53-835769 %s -S -o- \
 // RUN:   | FileCheck --check-prefix=CHECK-NO --check-prefix=CHECK %s
-
-// REQUIRES: aarch64-registered-target
 
 typedef long int64_t;
 

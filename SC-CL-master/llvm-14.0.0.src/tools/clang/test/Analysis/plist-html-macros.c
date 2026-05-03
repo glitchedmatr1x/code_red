@@ -1,12 +1,9 @@
 // RUN: %clang_analyze_cc1 -analyzer-checker=core -verify %s
-// (basic correctness check)
+// (sanity check)
 
 // RUN: rm -rf %t.dir
 // RUN: mkdir -p %t.dir
-//
-// RUN: %clang_analyze_cc1 -o %t.dir/index.plist %s \
-// RUN:   -analyzer-checker=core -analyzer-output=plist-html
-//
+// RUN: %clang_analyze_cc1 -analyzer-checker=core -analyzer-output=plist-html -o %t.dir/index.plist %s
 // RUN: ls %t.dir | grep '\.html' | count 1
 // RUN: grep '\.html' %t.dir/index.plist | count 1
 

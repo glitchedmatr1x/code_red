@@ -1,8 +1,9 @@
 //===-- llvm/CodeGen/PseudoSourceValue.h ------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,19 +15,20 @@
 #define LLVM_CODEGEN_PSEUDOSOURCEVALUE_H
 
 #include "llvm/ADT/StringMap.h"
+#include "llvm/IR/GlobalValue.h"
+#include "llvm/IR/Value.h"
 #include "llvm/IR/ValueMap.h"
 #include <map>
 
 namespace llvm {
 
-class GlobalValue;
 class MachineFrameInfo;
 class MachineMemOperand;
-class MIRFormatter;
-class PseudoSourceValue;
 class raw_ostream;
 class TargetInstrInfo;
 
+raw_ostream &operator<<(raw_ostream &OS, const MachineMemOperand &MMO);
+class PseudoSourceValue;
 raw_ostream &operator<<(raw_ostream &OS, const PseudoSourceValue* PSV);
 
 /// Special value supplied for machine level alias analysis. It indicates that
@@ -34,7 +36,7 @@ raw_ostream &operator<<(raw_ostream &OS, const PseudoSourceValue* PSV);
 /// below the stack frame (e.g., argument space), or constant pool.
 class PseudoSourceValue {
 public:
-  enum PSVKind : unsigned {
+  enum PSVKind {
     Stack,
     GOT,
     JumpTable,
@@ -46,24 +48,23 @@ public:
   };
 
 private:
-  unsigned Kind;
+  PSVKind Kind;
   unsigned AddressSpace;
   friend raw_ostream &llvm::operator<<(raw_ostream &OS,
                                        const PseudoSourceValue* PSV);
 
   friend class MachineMemOperand; // For printCustom().
-  friend class MIRFormatter;      // For printCustom().
 
   /// Implement printing for PseudoSourceValue. This is called from
   /// Value::print or Value's operator<<.
   virtual void printCustom(raw_ostream &O) const;
 
 public:
-  explicit PseudoSourceValue(unsigned Kind, const TargetInstrInfo &TII);
+  explicit PseudoSourceValue(PSVKind Kind, const TargetInstrInfo &TII);
 
   virtual ~PseudoSourceValue();
 
-  unsigned kind() const { return Kind; }
+  PSVKind kind() const { return Kind; }
 
   bool isStack() const { return Kind == Stack; }
   bool isGOT() const { return Kind == GOT; }
@@ -115,7 +116,7 @@ public:
 
 class CallEntryPseudoSourceValue : public PseudoSourceValue {
 protected:
-  CallEntryPseudoSourceValue(unsigned Kind, const TargetInstrInfo &TII);
+  CallEntryPseudoSourceValue(PSVKind Kind, const TargetInstrInfo &TII);
 
 public:
   bool isConstant(const MachineFrameInfo *) const override;
@@ -123,7 +124,7 @@ public:
   bool mayAlias(const MachineFrameInfo *) const override;
 };
 
-/// A specialized pseudo source value for holding GlobalValue values.
+/// A specialized pseudo soruce value for holding GlobalValue values.
 class GlobalValuePseudoSourceValue : public CallEntryPseudoSourceValue {
   const GlobalValue *GV;
 

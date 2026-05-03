@@ -1,8 +1,9 @@
 //===- DAGDeltaAlgorithm.h - A DAG Minimization Algorithm ------*- C++ -*--===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_DAGDELTAALGORITHM_H
@@ -29,7 +30,7 @@ namespace llvm {
 ///
 ///   P(S) => P(S union pred(S))
 ///
-/// The minimization algorithm uses this dependency information to attempt to
+/// The minization algorithm uses this dependency information to attempt to
 /// eagerly prune large subsets of changes. As with \see DeltaAlgorithm, the DAG
 /// is not required to satisfy this property, but the algorithm will run
 /// substantially fewer tests with appropriate dependencies. \see DeltaAlgorithm

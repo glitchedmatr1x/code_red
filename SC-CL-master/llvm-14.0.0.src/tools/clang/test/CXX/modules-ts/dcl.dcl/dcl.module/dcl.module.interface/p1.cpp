@@ -10,7 +10,7 @@
 // expected-no-diagnostics
 export module A;
 #elif IMPLEMENTATION
-module A; // #module-decl
+module A;
  #ifdef BUILT_AS_INTERFACE
   // expected-error@-2 {{missing 'export' specifier in module declaration while building module interface}}
   #define INTERFACE
@@ -23,9 +23,6 @@ module A; // #module-decl
 
 #ifndef INTERFACE
 export int b; // expected-error {{export declaration can only be used within a module interface unit}}
-#ifdef IMPLEMENTATION
-// expected-note@#module-decl {{add 'export' here}}
-#endif
 #else
 export int a;
 #endif

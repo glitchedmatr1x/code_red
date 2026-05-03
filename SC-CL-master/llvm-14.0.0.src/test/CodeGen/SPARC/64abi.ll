@@ -50,7 +50,7 @@ define void @intarg(i8  %a0,   ; %i0
 ; CHECK-NOT: add %sp
 ; CHECK: restore
 define void @call_intarg(i32 %i0, i8* %i1) {
-  call void @intarg(i8 0, i8 1, i16 2, i32 3, i8* undef, i32 5, i32 signext %i0, i8* %i1)
+  call void @intarg(i8 0, i8 1, i16 2, i32 3, i8* undef, i32 5, i32 %i0, i8* %i1)
   ret void
 }
 
@@ -63,14 +63,14 @@ define void @call_intarg(i32 %i0, i8* %i1) {
 ; HARD: faddd %f6,
 ; HARD: fadds %f31, [[F]]
 ; SOFT: save %sp, -176, %sp
-; SOFT: ld [%fp+2299], %i4
-; SOFT: ld [%fp+2307], %i5
 ; SOFT: srl %i0, 0, %o0
 ; SOFT-NEXT: call __extendsfdf2
-; SOFT: mov  %o0, %o1
+; SOFT: mov  %o0, %i0
 ; SOFT: mov  %i1, %o0
 ; SOFT: mov  %i2, %o0
 ; SOFT: mov  %i3, %o0
+; SOFT: ld [%fp+2299], %o0
+; SOFT: ld [%fp+2307], %o1
 define double @floatarg(float %a0,    ; %f1
                         double %a1,   ; %d2
                         double %a2,   ; %d4
@@ -145,11 +145,13 @@ define void @call_floatarg(float %f1, double %d2, float %f5, double *%p) {
 ; HARD: fstod %f3
 ; HARD: faddd %f6
 ; HARD: faddd %f16
-; SOFT: mov  %o0, %o1
+; SOFT: mov  %o0, %i1
 ; SOFT-NEXT: mov  %i3, %o0
+; SOFT-NEXT: mov  %i1, %o1
 ; SOFT-NEXT: call __adddf3
-; SOFT: mov  %o0, %o1
+; SOFT: mov  %o0, %i1
 ; SOFT-NEXT: mov  %i0, %o0
+; SOFT-NEXT: mov  %i1, %o1
 ; SOFT-NEXT: call __adddf3
 ; HARD: std %f0, [%i1]
 ; SOFT: stx %o0, [%i5]
@@ -215,14 +217,14 @@ define i32 @inreg_fi(i32 inreg %a0,     ; high bits of %i0
 ; CHECK-LABEL: call_inreg_fi:
 ; Allocate space for 6 arguments, even when only 2 are used.
 ; CHECK: save %sp, -176, %sp
-; HARD-DAG:  sllx %i1, 32, %o0
-; HARD-DAG:  fmovs %f5, %f1
+; HARD:  sllx %i1, 32, %o0
+; HARD:  fmovs %f5, %f1
 ; SOFT:  srl %i2, 0, %i0
 ; SOFT:  sllx %i1, 32, %i1
 ; SOFT:  or %i1, %i0, %o0
 ; CHECK: call inreg_fi
 define void @call_inreg_fi(i32* %p, i32 %i1, float %f5) {
-  %x = call i32 @inreg_fi(i32 inreg %i1, float inreg %f5)
+  %x = call i32 @inreg_fi(i32 %i1, float %f5)
   ret void
 }
 
@@ -238,14 +240,14 @@ define float @inreg_ff(float inreg %a0,   ; %f0
 }
 
 ; CHECK-LABEL: call_inreg_ff:
-; HARD-DAG: fmovs %f3, %f0
-; HARD-DAG: fmovs %f5, %f1
+; HARD: fmovs %f3, %f0
+; HARD: fmovs %f5, %f1
 ; SOFT: srl %i2, 0, %i0
 ; SOFT: sllx %i1, 32, %i1
 ; SOFT: or %i1, %i0, %o0
 ; CHECK: call inreg_ff
 define void @call_inreg_ff(i32* %p, float %f3, float %f5) {
-  %x = call float @inreg_ff(float inreg %f3, float inreg %f5)
+  %x = call float @inreg_ff(float %f3, float %f5)
   ret void
 }
 
@@ -269,7 +271,7 @@ define i32 @inreg_if(float inreg %a0, ; %f0
 ; SOFT: or %i1, %i0, %o0
 ; CHECK: call inreg_if
 define void @call_inreg_if(i32* %p, float %f3, i32 %i2) {
-  %x = call i32 @inreg_if(float inreg %f3, i32 inreg %i2)
+  %x = call i32 @inreg_if(float %f3, i32 %i2)
   ret void
 }
 
@@ -289,7 +291,7 @@ define i32 @inreg_ii(i32 inreg %a0,   ; high bits of %i0
 ; CHECK: or [[R1]], [[R2]], %o0
 ; CHECK: call inreg_ii
 define void @call_inreg_ii(i32* %p, i32 %i1, i32 %i2) {
-  %x = call i32 @inreg_ii(i32 inreg %i1, i32 inreg %i2)
+  %x = call i32 @inreg_ii(i32 %i1, i32 %i2)
   ret void
 }
 
@@ -525,8 +527,9 @@ entry:
 ; CHECK:  call sinf
 ; HARD:   ld [%fp+[[Offset1]]], %f1
 ; HARD:   fmuls %f1, %f0, %f0
-; SOFT:   mov  %o0, %o1
+; SOFT:   mov  %o0, %i0
 ; SOFT:   mov  %i1, %o0
+; SOFT:   mov  %i0, %o1
 ; SOFT:   call __mulsf3
 ; SOFT:   sllx %o0, 32, %i0
 

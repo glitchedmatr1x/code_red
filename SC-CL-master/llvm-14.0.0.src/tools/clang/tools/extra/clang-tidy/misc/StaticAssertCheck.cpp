@@ -1,8 +1,9 @@
 //===--- StaticAssertCheck.cpp - clang-tidy -------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -27,6 +28,11 @@ StaticAssertCheck::StaticAssertCheck(StringRef Name, ClangTidyContext *Context)
     : ClangTidyCheck(Name, Context) {}
 
 void StaticAssertCheck::registerMatchers(MatchFinder *Finder) {
+  // This checker only makes sense for languages that have static assertion
+  // capabilities: C++11 and C11.
+  if (!(getLangOpts().CPlusPlus11 || getLangOpts().C11))
+    return;
+
   auto NegatedString = unaryOperator(
       hasOperatorName("!"), hasUnaryOperand(ignoringImpCasts(stringLiteral())));
   auto IsAlwaysFalse =
@@ -38,7 +44,7 @@ void StaticAssertCheck::registerMatchers(MatchFinder *Finder) {
                          .bind("castExpr")));
   auto AssertExprRoot = anyOf(
       binaryOperator(
-          hasAnyOperatorName("&&", "=="),
+          anyOf(hasOperatorName("&&"), hasOperatorName("==")),
           hasEitherOperand(ignoringImpCasts(stringLiteral().bind("assertMSG"))),
           anyOf(binaryOperator(hasEitherOperand(IsAlwaysFalseWithCast)),
                 anything()))
@@ -82,7 +88,7 @@ void StaticAssertCheck::check(const MatchFinder::MatchResult &Result) {
   const auto *AssertExprRoot =
       Result.Nodes.getNodeAs<BinaryOperator>("assertExprRoot");
   const auto *CastExpr = Result.Nodes.getNodeAs<CStyleCastExpr>("castExpr");
-  SourceLocation AssertExpansionLoc = CondStmt->getBeginLoc();
+  SourceLocation AssertExpansionLoc = CondStmt->getLocStart();
 
   if (!AssertExpansionLoc.isValid() || !AssertExpansionLoc.isMacroID())
     return;
@@ -104,8 +110,8 @@ void StaticAssertCheck::check(const MatchFinder::MatchResult &Result) {
 
     StringRef FalseMacroName =
         Lexer::getImmediateMacroName(FalseLiteralLoc, SM, Opts);
-    if (FalseMacroName.compare_insensitive("false") == 0 ||
-        FalseMacroName.compare_insensitive("null") == 0)
+    if (FalseMacroName.compare_lower("false") == 0 ||
+        FalseMacroName.compare_lower("null") == 0)
       return;
   }
 
@@ -118,16 +124,17 @@ void StaticAssertCheck::check(const MatchFinder::MatchResult &Result) {
     FixItHints.push_back(
         FixItHint::CreateReplacement(SourceRange(AssertLoc), "static_assert"));
 
+    std::string StaticAssertMSG = ", \"\"";
     if (AssertExprRoot) {
       FixItHints.push_back(FixItHint::CreateRemoval(
           SourceRange(AssertExprRoot->getOperatorLoc())));
       FixItHints.push_back(FixItHint::CreateRemoval(
-          SourceRange(AssertMSG->getBeginLoc(), AssertMSG->getEndLoc())));
-      FixItHints.push_back(FixItHint::CreateInsertion(
-          LastParenLoc, (Twine(", \"") + AssertMSG->getString() + "\"").str()));
-    } else if (!Opts.CPlusPlus17) {
-      FixItHints.push_back(FixItHint::CreateInsertion(LastParenLoc, ", \"\""));
+          SourceRange(AssertMSG->getLocStart(), AssertMSG->getLocEnd())));
+      StaticAssertMSG = (Twine(", \"") + AssertMSG->getString() + "\"").str();
     }
+
+    FixItHints.push_back(
+        FixItHint::CreateInsertion(LastParenLoc, StaticAssertMSG));
   }
 
   diag(AssertLoc, "found assert() that could be replaced by static_assert()")
@@ -139,8 +146,7 @@ SourceLocation StaticAssertCheck::getLastParenLoc(const ASTContext *ASTCtx,
   const LangOptions &Opts = ASTCtx->getLangOpts();
   const SourceManager &SM = ASTCtx->getSourceManager();
 
-  llvm::Optional<llvm::MemoryBufferRef> Buffer =
-      SM.getBufferOrNone(SM.getFileID(AssertLoc));
+  llvm::MemoryBuffer *Buffer = SM.getBuffer(SM.getFileID(AssertLoc));
   if (!Buffer)
     return SourceLocation();
 

@@ -12,10 +12,6 @@ struct POD {
   int y;
 };
 
-// expected-note@* 1+{{read of non-const variable}}
-// expected-note@* 1+{{function parameter}}
-// expected-note@* 1+{{declared here}}
-
 // We allow VLAs of POD types, only.
 void vla(int N) {
   int array1[N]; // expected-warning{{variable length arrays are a C99 feature}}
@@ -52,7 +48,7 @@ template<typename T> struct X0 { };
 // argument.
 void inst_with_vla(int N) {
   int array[N]; // expected-warning{{variable length arrays are a C99 feature}}
-  X0<__typeof__(array)> x0a; // expected-error{{variably modified type 'typeof (array)' (aka 'int[N]') cannot be used as a template argument}}
+  X0<__typeof__(array)> x0a; // expected-error{{variably modified type 'typeof (array)' (aka 'int [N]') cannot be used as a template argument}}
 }
 
 template<typename T>
@@ -70,7 +66,7 @@ X1<HasNonConstantValue> x1b; // expected-note{{in instantiation of}}
 // Template argument deduction does not allow deducing a size from a VLA.
 // FIXME: This diagnostic should make it clear that the two 'N's are different entities!
 template<typename T, unsigned N>
-void accept_array(T (&array)[N]); // expected-note{{candidate template ignored: could not match 'T[N]' against 'int[N]'}}
+void accept_array(T (&array)[N]); // expected-note{{candidate template ignored: could not match 'T [N]' against 'int [N]'}}
 
 void test_accept_array(int N) {
   int array[N]; // expected-warning{{variable length arrays are a C99 feature}}
@@ -78,7 +74,7 @@ void test_accept_array(int N) {
 }
 
 // Variably-modified types cannot be used in local classes.
-void local_classes(int N) {
+void local_classes(int N) { // expected-note {{declared here}}
   struct X {
     int size;
     int array[N]; // expected-error{{fields must have a constant size: 'variable length array in structure' extension will never be supported}} \
@@ -101,7 +97,7 @@ namespace rdar8020206 {
   template<typename T>
   void f(int i) {
     const unsigned value = i;
-    int array[value * i]; // expected-warning 2{{variable length arrays are a C99 feature}} expected-note 2{{initializer of 'value' is not a constant}}
+    int array[value * i]; // expected-warning 2{{variable length arrays are a C99 feature}}
   }
 
   template void f<int>(int); // expected-note{{instantiation of}}
@@ -153,7 +149,7 @@ namespace pr18633 {
   const int A1::sz2 = 11;
   template<typename T>
   void func () {
-    int arr[A1::sz]; // expected-warning{{variable length arrays are a C99 feature}} expected-note {{initializer of 'sz' is unknown}}
+    int arr[A1::sz]; // expected-warning{{variable length arrays are a C99 feature}}
   }
   template<typename T>
   void func2 () {

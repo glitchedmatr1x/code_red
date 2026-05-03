@@ -1,8 +1,9 @@
 //===- SymbolStringPool.h - Multi-threaded pool for JIT symbols -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -13,7 +14,6 @@
 #ifndef LLVM_EXECUTIONENGINE_ORC_SYMBOLSTRINGPOOL_H
 #define LLVM_EXECUTIONENGINE_ORC_SYMBOLSTRINGPOOL_H
 
-#include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/StringMap.h"
 #include <atomic>
 #include <mutex>
@@ -23,51 +23,42 @@ namespace orc {
 
 class SymbolStringPtr;
 
-/// String pool for symbol names used by the JIT.
+/// @brief String pool for symbol names used by the JIT.
 class SymbolStringPool {
   friend class SymbolStringPtr;
 public:
-  /// Destroy a SymbolStringPool.
-  ~SymbolStringPool();
-
-  /// Create a symbol string pointer from the given string.
+  /// @brief Create a symbol string pointer from the given string.
   SymbolStringPtr intern(StringRef S);
 
-  /// Remove from the pool any entries that are no longer referenced.
+  /// @brief Remove from the pool any entries that are no longer referenced.
   void clearDeadEntries();
 
-  /// Returns true if the pool is empty.
+  /// @brief Returns true if the pool is empty.
   bool empty() const;
 private:
-  using RefCountType = std::atomic<size_t>;
+  using RefCountType = std::atomic<uint64_t>;
   using PoolMap = StringMap<RefCountType>;
   using PoolMapEntry = StringMapEntry<RefCountType>;
   mutable std::mutex PoolMutex;
   PoolMap Pool;
 };
 
-/// Pointer to a pooled string representing a symbol name.
+/// @brief Pointer to a pooled string representing a symbol name.
 class SymbolStringPtr {
-  friend class OrcV2CAPIHelper;
   friend class SymbolStringPool;
-  friend struct DenseMapInfo<SymbolStringPtr>;
-
 public:
   SymbolStringPtr() = default;
-  SymbolStringPtr(std::nullptr_t) {}
   SymbolStringPtr(const SymbolStringPtr &Other)
     : S(Other.S) {
-    if (isRealPoolEntry(S))
+    if (S)
       ++S->getValue();
   }
 
   SymbolStringPtr& operator=(const SymbolStringPtr &Other) {
-    if (isRealPoolEntry(S)) {
-      assert(S->getValue() && "Releasing SymbolStringPtr with zero ref count");
+    if (S)
       --S->getValue();
-    }
     S = Other.S;
-    if (isRealPoolEntry(S))
+    if (S)
       ++S->getValue();
     return *this;
   }
@@ -77,101 +68,60 @@ public:
   }
 
   SymbolStringPtr& operator=(SymbolStringPtr &&Other) {
-    if (isRealPoolEntry(S)) {
-      assert(S->getValue() && "Releasing SymbolStringPtr with zero ref count");
+    if (S)
       --S->getValue();
-    }
     S = nullptr;
     std::swap(S, Other.S);
     return *this;
   }
 
   ~SymbolStringPtr() {
-    if (isRealPoolEntry(S)) {
-      assert(S->getValue() && "Releasing SymbolStringPtr with zero ref count");
+    if (S)
       --S->getValue();
-    }
   }
 
-  explicit operator bool() const { return S; }
-
-  StringRef operator*() const { return S->first(); }
-
-  friend bool operator==(const SymbolStringPtr &LHS,
-                         const SymbolStringPtr &RHS) {
-    return LHS.S == RHS.S;
+  bool operator==(const SymbolStringPtr &Other) const {
+    return S == Other.S;
   }
 
-  friend bool operator!=(const SymbolStringPtr &LHS,
-                         const SymbolStringPtr &RHS) {
-    return !(LHS == RHS);
+  bool operator!=(const SymbolStringPtr &Other) const {
+    return !(*this == Other);
   }
 
-  friend bool operator<(const SymbolStringPtr &LHS,
-                        const SymbolStringPtr &RHS) {
-    return LHS.S < RHS.S;
+  bool operator<(const SymbolStringPtr &Other) const {
+    return S->getValue() < Other.S->getValue();
   }
 
 private:
-  using PoolEntry = SymbolStringPool::PoolMapEntry;
-  using PoolEntryPtr = PoolEntry *;
 
   SymbolStringPtr(SymbolStringPool::PoolMapEntry *S)
       : S(S) {
-    if (isRealPoolEntry(S))
+    if (S)
       ++S->getValue();
   }
 
-  // Returns false for null, empty, and tombstone values, true otherwise.
-  bool isRealPoolEntry(PoolEntryPtr P) {
-    return ((reinterpret_cast<uintptr_t>(P) - 1) & InvalidPtrMask) !=
-           InvalidPtrMask;
-  }
-
-  static SymbolStringPtr getEmptyVal() {
-    return SymbolStringPtr(reinterpret_cast<PoolEntryPtr>(EmptyBitPattern));
-  }
-
-  static SymbolStringPtr getTombstoneVal() {
-    return SymbolStringPtr(reinterpret_cast<PoolEntryPtr>(TombstoneBitPattern));
-  }
-
-  constexpr static uintptr_t EmptyBitPattern =
-      std::numeric_limits<uintptr_t>::max()
-      << PointerLikeTypeTraits<PoolEntryPtr>::NumLowBitsAvailable;
-
-  constexpr static uintptr_t TombstoneBitPattern =
-      (std::numeric_limits<uintptr_t>::max() - 1)
-      << PointerLikeTypeTraits<PoolEntryPtr>::NumLowBitsAvailable;
-
-  constexpr static uintptr_t InvalidPtrMask =
-      (std::numeric_limits<uintptr_t>::max() - 3)
-      << PointerLikeTypeTraits<PoolEntryPtr>::NumLowBitsAvailable;
-
-  PoolEntryPtr S = nullptr;
+  SymbolStringPool::PoolMapEntry *S = nullptr;
 };
-
-inline SymbolStringPool::~SymbolStringPool() {
-#ifndef NDEBUG
-  clearDeadEntries();
-  assert(Pool.empty() && "Dangling references at pool destruction time");
-#endif // NDEBUG
-}
 
 inline SymbolStringPtr SymbolStringPool::intern(StringRef S) {
   std::lock_guard<std::mutex> Lock(PoolMutex);
-  PoolMap::iterator I;
+  auto I = Pool.find(S);
+  if (I != Pool.end())
+    return SymbolStringPtr(&*I);
+
   bool Added;
   std::tie(I, Added) = Pool.try_emplace(S, 0);
+  assert(Added && "Insert should always succeed here");
   return SymbolStringPtr(&*I);
 }
 
 inline void SymbolStringPool::clearDeadEntries() {
   std::lock_guard<std::mutex> Lock(PoolMutex);
   for (auto I = Pool.begin(), E = Pool.end(); I != E;) {
-    auto Tmp = I++;
-    if (Tmp->second == 0)
-      Pool.erase(Tmp);
+    auto Tmp = std::next(I);
+    if (I->second == 0)
+      Pool.erase(I);
+    I = Tmp;
   }
 }
 
@@ -181,28 +131,6 @@ inline bool SymbolStringPool::empty() const {
 }
 
 } // end namespace orc
-
-template <>
-struct DenseMapInfo<orc::SymbolStringPtr> {
-
-  static orc::SymbolStringPtr getEmptyKey() {
-    return orc::SymbolStringPtr::getEmptyVal();
-  }
-
-  static orc::SymbolStringPtr getTombstoneKey() {
-    return orc::SymbolStringPtr::getTombstoneVal();
-  }
-
-  static unsigned getHashValue(const orc::SymbolStringPtr &V) {
-    return DenseMapInfo<orc::SymbolStringPtr::PoolEntryPtr>::getHashValue(V.S);
-  }
-
-  static bool isEqual(const orc::SymbolStringPtr &LHS,
-                      const orc::SymbolStringPtr &RHS) {
-    return LHS.S == RHS.S;
-  }
-};
-
 } // end namespace llvm
 
 #endif // LLVM_EXECUTIONENGINE_ORC_SYMBOLSTRINGPOOL_H

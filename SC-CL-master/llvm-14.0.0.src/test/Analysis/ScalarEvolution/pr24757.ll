@@ -1,4 +1,4 @@
-; RUN: opt -disable-output "-passes=print<scalar-evolution>" < %s 2>&1 | FileCheck %s
+; RUN: opt -analyze -scalar-evolution < %s | FileCheck %s
 
 ; CHECK: Loop %bb1: backedge-taken count is ((2 * %a.promoted) /u 2)
 

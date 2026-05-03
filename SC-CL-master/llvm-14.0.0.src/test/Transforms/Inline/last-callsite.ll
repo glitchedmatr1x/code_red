@@ -1,5 +1,4 @@
 ; RUN: opt < %s -passes='cgscc(inline)' -inline-threshold=0 -S | FileCheck %s
-; RUN: opt < %s -passes='cgscc(inline)' -inline-threshold=0 -inline-enable-priority-order=true -S | FileCheck %s
 
 ; The 'test1_' prefixed functions test the basic 'last callsite' inline
 ; threshold adjustment where we specifically inline the last call site of an
@@ -52,7 +51,7 @@ entry:
 
 
 ; The 'test2_' prefixed functions test that we can discover the last callsite
-; bonus after having inlined the prior call site. For this to work, we need
+; bonus after having inlined the prior call site. For this to to work, we need
 ; a callsite dependent cost so we have a trivial predicate guarding all the
 ; cost, and set that in a particular direction.
 
@@ -111,7 +110,7 @@ entry:
   call void @test2_f(i1 true)
 ; CHECK-NOT: @test2_f
 
-  ; Check that two calls with the hard predicate remain uninlined.
+  ; Sanity check that two calls with the hard predicate remain uninlined.
   call void @test2_g(i1 true)
   call void @test2_g(i1 true)
 ; CHECK: call void @test2_g(i1 true)
@@ -183,7 +182,7 @@ entry:
   call void @test3_f(i1 false)
 ; CHECK-NOT: @test3_f
 
-  ; Check that two calls with the hard predicate remain uninlined.
+  ; Sanity check that two calls with the hard predicate remain uninlined.
   call void @test3_g(i1 true)
   call void @test3_g(i1 true)
 ; CHECK: call void @test3_g(i1 true)
@@ -260,10 +259,10 @@ entry:
   ; constant expression cannot be inlined because the constant expression forms
   ; a second use. If this part starts failing we need to use more complex
   ; constant expressions to reference a particular function with them.
-  %sink = alloca i64
-  store volatile i64 mul (i64 ptrtoint (void (i1)* @test4_g to i64), i64 ptrtoint(void (i1)* @test4_g to i64)), i64* %sink
+  %sink = alloca i1
+  store volatile i1 icmp ne (i64 ptrtoint (void (i1)* @test4_g to i64), i64 ptrtoint(void (i1)* @test4_g to i64)), i1* %sink
   call void @test4_g(i1 true)
-; CHECK: store volatile i64 mul (i64 ptrtoint (void (i1)* @test4_g to i64), i64 ptrtoint (void (i1)* @test4_g to i64)), i64* %sink
+; CHECK: store volatile i1 false
 ; CHECK: call void @test4_g(i1 true)
 
   ret void

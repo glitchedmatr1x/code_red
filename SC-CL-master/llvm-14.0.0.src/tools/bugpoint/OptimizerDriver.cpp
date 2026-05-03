@@ -1,8 +1,9 @@
 //===- OptimizerDriver.cpp - Allow BugPoint to run passes safely ----------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -15,7 +16,6 @@
 //===----------------------------------------------------------------------===//
 
 #include "BugDriver.h"
-#include "ToolRunner.h"
 #include "llvm/Bitcode/BitcodeWriter.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/IR/Module.h"
@@ -43,14 +43,18 @@ static cl::opt<bool> PreserveBitcodeUseListOrder(
     cl::desc("Preserve use-list order when writing LLVM bitcode."),
     cl::init(true), cl::Hidden);
 
+// ChildOutput - This option captures the name of the child output file that
+// is set up by the parent bugpoint process
+static cl::opt<std::string> ChildOutput("child-output", cl::ReallyHidden);
 static cl::opt<std::string>
     OptCmd("opt-command", cl::init(""),
            cl::desc("Path to opt. (default: search path "
                     "for 'opt'.)"));
 
-/// This writes the current "Program" to the named bitcode file.  If an error
-/// occurs, true is returned.
-static bool writeProgramToFileAux(ToolOutputFile &Out, const Module &M) {
+/// writeProgramToFile - This writes the current "Program" to the named bitcode
+/// file.  If an error occurs, true is returned.
+///
+static bool writeProgramToFileAux(ToolOutputFile &Out, const Module *M) {
   WriteBitcodeToFile(M, Out.os(), PreserveBitcodeUseListOrder);
   Out.os().close();
   if (!Out.os().has_error()) {
@@ -61,12 +65,12 @@ static bool writeProgramToFileAux(ToolOutputFile &Out, const Module &M) {
 }
 
 bool BugDriver::writeProgramToFile(const std::string &Filename, int FD,
-                                   const Module &M) const {
+                                   const Module *M) const {
   ToolOutputFile Out(Filename, FD);
   return writeProgramToFileAux(Out, M);
 }
 
-bool BugDriver::writeProgramToFile(int FD, const Module &M) const {
+bool BugDriver::writeProgramToFile(int FD, const Module *M) const {
   raw_fd_ostream OS(FD, /*shouldClose*/ false);
   WriteBitcodeToFile(M, OS, PreserveBitcodeUseListOrder);
   OS.flush();
@@ -77,17 +81,18 @@ bool BugDriver::writeProgramToFile(int FD, const Module &M) const {
 }
 
 bool BugDriver::writeProgramToFile(const std::string &Filename,
-                                   const Module &M) const {
+                                   const Module *M) const {
   std::error_code EC;
-  ToolOutputFile Out(Filename, EC, sys::fs::OF_None);
+  ToolOutputFile Out(Filename, EC, sys::fs::F_None);
   if (!EC)
     return writeProgramToFileAux(Out, M);
   return true;
 }
 
-/// This function is used to output the current Program to a file named
-/// "bugpoint-ID.bc".
-void BugDriver::EmitProgressBitcode(const Module &M, const std::string &ID,
+/// EmitProgressBitcode - This function is used to output the current Program
+/// to a file named "bugpoint-ID.bc".
+///
+void BugDriver::EmitProgressBitcode(const Module *M, const std::string &ID,
                                     bool NoFlyer) const {
   // Output the input to the current pass to a bitcode file, emit a message
   // telling the user how to reproduce it: opt -foo blah.bc
@@ -127,10 +132,11 @@ static cl::list<std::string> OptArgs("opt-args", cl::Positional,
 /// outs() a single line message indicating whether compilation was successful
 /// or failed.
 ///
-bool BugDriver::runPasses(Module &Program,
+bool BugDriver::runPasses(Module *Program,
                           const std::vector<std::string> &Passes,
                           std::string &OutputFilename, bool DeleteOutput,
-                          bool Quiet, ArrayRef<std::string> ExtraArgs) const {
+                          bool Quiet, unsigned NumExtraArgs,
+                          const char *const *ExtraArgs) const {
   // setup the output file name
   outs().flush();
   SmallString<128> UniqueFilename;
@@ -139,9 +145,9 @@ bool BugDriver::runPasses(Module &Program,
   if (EC) {
     errs() << getToolName()
            << ": Error making unique filename: " << EC.message() << "\n";
-    return true;
+    return 1;
   }
-  OutputFilename = std::string(UniqueFilename.str());
+  OutputFilename = UniqueFilename.str();
 
   // set up the input file name
   Expected<sys::fs::TempFile> Temp =
@@ -150,7 +156,7 @@ bool BugDriver::runPasses(Module &Program,
     errs() << getToolName()
            << ": Error making unique filename: " << toString(Temp.takeError())
            << "\n";
-    return true;
+    return 1;
   }
   DiscardTemp Discard{*Temp};
   raw_fd_ostream OS(Temp->FD, /*shouldClose*/ false);
@@ -160,24 +166,19 @@ bool BugDriver::runPasses(Module &Program,
   if (OS.has_error()) {
     errs() << "Error writing bitcode file: " << Temp->TmpName << "\n";
     OS.clear_error();
-    return true;
+    return 1;
   }
 
   std::string tool = OptCmd;
   if (OptCmd.empty()) {
-    if (ErrorOr<std::string> Path =
-            FindProgramByName("opt", getToolName(), &OutputPrefix))
+    if (ErrorOr<std::string> Path = sys::findProgramByName("opt"))
       tool = *Path;
     else
       errs() << Path.getError().message() << "\n";
   }
   if (tool.empty()) {
     errs() << "Cannot find `opt' in PATH!\n";
-    return true;
-  }
-  if (!sys::fs::exists(tool)) {
-    errs() << "Specified `opt' binary does not exist: " << tool << "\n";
-    return true;
+    return 1;
   }
 
   std::string Prog;
@@ -190,27 +191,24 @@ bool BugDriver::runPasses(Module &Program,
     Prog = tool;
   if (Prog.empty()) {
     errs() << "Cannot find `valgrind' in PATH!\n";
-    return true;
+    return 1;
   }
 
   // setup the child process' arguments
-  SmallVector<StringRef, 8> Args;
+  SmallVector<const char *, 8> Args;
   if (UseValgrind) {
     Args.push_back("valgrind");
     Args.push_back("--error-exitcode=1");
     Args.push_back("-q");
-    Args.push_back(tool);
+    Args.push_back(tool.c_str());
   } else
-    Args.push_back(tool);
+    Args.push_back(tool.c_str());
 
   for (unsigned i = 0, e = OptArgs.size(); i != e; ++i)
-    Args.push_back(OptArgs[i]);
-  // Pin to legacy PM since bugpoint has lots of infra and hacks revolving
-  // around the legacy PM.
-  Args.push_back("-enable-new-pm=0");
+    Args.push_back(OptArgs[i].c_str());
   Args.push_back("-disable-symbolication");
   Args.push_back("-o");
-  Args.push_back(OutputFilename);
+  Args.push_back(OutputFilename.c_str());
   std::vector<std::string> pass_args;
   for (unsigned i = 0, e = PluginLoader::getNumPlugins(); i != e; ++i) {
     pass_args.push_back(std::string("-load"));
@@ -223,14 +221,16 @@ bool BugDriver::runPasses(Module &Program,
   for (std::vector<std::string>::const_iterator I = pass_args.begin(),
                                                 E = pass_args.end();
        I != E; ++I)
-    Args.push_back(*I);
-  Args.push_back(Temp->TmpName);
-  Args.append(ExtraArgs.begin(), ExtraArgs.end());
+    Args.push_back(I->c_str());
+  Args.push_back(Temp->TmpName.c_str());
+  for (unsigned i = 0; i < NumExtraArgs; ++i)
+    Args.push_back(*ExtraArgs);
+  Args.push_back(nullptr);
 
-  LLVM_DEBUG(errs() << "\nAbout to run:\t";
-             for (unsigned i = 0, e = Args.size() - 1; i != e; ++i) errs()
-             << " " << Args[i];
-             errs() << "\n";);
+  DEBUG(errs() << "\nAbout to run:\t";
+        for (unsigned i = 0, e = Args.size() - 1; i != e; ++i) errs()
+        << " " << Args[i];
+        errs() << "\n";);
 
   Optional<StringRef> Redirects[3] = {None, None, None};
   // Redirect stdout and stderr to nowhere if SilencePasses is given.
@@ -240,8 +240,8 @@ bool BugDriver::runPasses(Module &Program,
   }
 
   std::string ErrMsg;
-  int result = sys::ExecuteAndWait(Prog, Args, None, Redirects, Timeout,
-                                   MemoryLimit, &ErrMsg);
+  int result = sys::ExecuteAndWait(Prog, Args.data(), nullptr, Redirects,
+                                   Timeout, MemoryLimit, &ErrMsg);
 
   // If we are supposed to delete the bitcode file or if the passes crashed,
   // remove it now.  This may fail if the file was never created, but that's ok.
@@ -269,10 +269,10 @@ bool BugDriver::runPasses(Module &Program,
 
 std::unique_ptr<Module>
 BugDriver::runPassesOn(Module *M, const std::vector<std::string> &Passes,
-                       ArrayRef<std::string> ExtraArgs) {
+                       unsigned NumExtraArgs, const char *const *ExtraArgs) {
   std::string BitcodeResult;
-  if (runPasses(*M, Passes, BitcodeResult, false /*delete*/, true /*quiet*/,
-                ExtraArgs)) {
+  if (runPasses(M, Passes, BitcodeResult, false /*delete*/, true /*quiet*/,
+                NumExtraArgs, ExtraArgs)) {
     return nullptr;
   }
 

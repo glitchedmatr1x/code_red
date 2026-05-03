@@ -1,8 +1,9 @@
 //===- ConstantFolder.h - Constant folding helper ---------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -17,161 +18,103 @@
 #define LLVM_IR_CONSTANTFOLDER_H
 
 #include "llvm/ADT/ArrayRef.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/IR/Constants.h"
-#include "llvm/IR/IRBuilderFolder.h"
 #include "llvm/IR/InstrTypes.h"
 #include "llvm/IR/Instruction.h"
 
 namespace llvm {
 
 /// ConstantFolder - Create constants with minimum, target independent, folding.
-class ConstantFolder final : public IRBuilderFolder {
-  virtual void anchor();
-
+class ConstantFolder {
 public:
   explicit ConstantFolder() = default;
-
-  //===--------------------------------------------------------------------===//
-  // Value-based folders.
-  //
-  // Return an existing value or a constant if the operation can be simplified.
-  // Otherwise return nullptr.
-  //===--------------------------------------------------------------------===//
-  Value *FoldAdd(Value *LHS, Value *RHS, bool HasNUW = false,
-                 bool HasNSW = false) const override {
-    auto *LC = dyn_cast<Constant>(LHS);
-    auto *RC = dyn_cast<Constant>(RHS);
-    if (LC && RC)
-      return ConstantExpr::getAdd(LC, RC, HasNUW, HasNSW);
-    return nullptr;
-  }
-
-  Value *FoldAnd(Value *LHS, Value *RHS) const override {
-    auto *LC = dyn_cast<Constant>(LHS);
-    auto *RC = dyn_cast<Constant>(RHS);
-    if (LC && RC)
-      return ConstantExpr::getAnd(LC, RC);
-    return nullptr;
-  }
-
-  Value *FoldOr(Value *LHS, Value *RHS) const override {
-    auto *LC = dyn_cast<Constant>(LHS);
-    auto *RC = dyn_cast<Constant>(RHS);
-    if (LC && RC)
-      return ConstantExpr::getOr(LC, RC);
-    return nullptr;
-  }
-
-  Value *FoldICmp(CmpInst::Predicate P, Value *LHS, Value *RHS) const override {
-    auto *LC = dyn_cast<Constant>(LHS);
-    auto *RC = dyn_cast<Constant>(RHS);
-    if (LC && RC)
-      return ConstantExpr::getCompare(P, LC, RC);
-    return nullptr;
-  }
-
-  Value *FoldGEP(Type *Ty, Value *Ptr, ArrayRef<Value *> IdxList,
-                 bool IsInBounds = false) const override {
-    if (auto *PC = dyn_cast<Constant>(Ptr)) {
-      // Every index must be constant.
-      if (any_of(IdxList, [](Value *V) { return !isa<Constant>(V); }))
-        return nullptr;
-
-      if (IsInBounds)
-        return ConstantExpr::getInBoundsGetElementPtr(Ty, PC, IdxList);
-      else
-        return ConstantExpr::getGetElementPtr(Ty, PC, IdxList);
-    }
-    return nullptr;
-  }
-
-  Value *FoldSelect(Value *C, Value *True, Value *False) const override {
-    auto *CC = dyn_cast<Constant>(C);
-    auto *TC = dyn_cast<Constant>(True);
-    auto *FC = dyn_cast<Constant>(False);
-    if (CC && TC && FC)
-      return ConstantExpr::getSelect(CC, TC, FC);
-    return nullptr;
-  }
 
   //===--------------------------------------------------------------------===//
   // Binary Operators
   //===--------------------------------------------------------------------===//
 
-  Constant *CreateFAdd(Constant *LHS, Constant *RHS) const override {
+  Constant *CreateAdd(Constant *LHS, Constant *RHS,
+                      bool HasNUW = false, bool HasNSW = false) const {
+    return ConstantExpr::getAdd(LHS, RHS, HasNUW, HasNSW);
+  }
+
+  Constant *CreateFAdd(Constant *LHS, Constant *RHS) const {
     return ConstantExpr::getFAdd(LHS, RHS);
   }
 
   Constant *CreateSub(Constant *LHS, Constant *RHS,
-                      bool HasNUW = false, bool HasNSW = false) const override {
+                      bool HasNUW = false, bool HasNSW = false) const {
     return ConstantExpr::getSub(LHS, RHS, HasNUW, HasNSW);
   }
 
-  Constant *CreateFSub(Constant *LHS, Constant *RHS) const override {
+  Constant *CreateFSub(Constant *LHS, Constant *RHS) const {
     return ConstantExpr::getFSub(LHS, RHS);
   }
 
   Constant *CreateMul(Constant *LHS, Constant *RHS,
-                      bool HasNUW = false, bool HasNSW = false) const override {
+                      bool HasNUW = false, bool HasNSW = false) const {
     return ConstantExpr::getMul(LHS, RHS, HasNUW, HasNSW);
   }
 
-  Constant *CreateFMul(Constant *LHS, Constant *RHS) const override {
+  Constant *CreateFMul(Constant *LHS, Constant *RHS) const {
     return ConstantExpr::getFMul(LHS, RHS);
   }
 
   Constant *CreateUDiv(Constant *LHS, Constant *RHS,
-                               bool isExact = false) const override {
+                       bool isExact = false) const {
     return ConstantExpr::getUDiv(LHS, RHS, isExact);
   }
 
   Constant *CreateSDiv(Constant *LHS, Constant *RHS,
-                               bool isExact = false) const override {
+                       bool isExact = false) const {
     return ConstantExpr::getSDiv(LHS, RHS, isExact);
   }
 
-  Constant *CreateFDiv(Constant *LHS, Constant *RHS) const override {
+  Constant *CreateFDiv(Constant *LHS, Constant *RHS) const {
     return ConstantExpr::getFDiv(LHS, RHS);
   }
 
-  Constant *CreateURem(Constant *LHS, Constant *RHS) const override {
+  Constant *CreateURem(Constant *LHS, Constant *RHS) const {
     return ConstantExpr::getURem(LHS, RHS);
   }
 
-  Constant *CreateSRem(Constant *LHS, Constant *RHS) const override {
+  Constant *CreateSRem(Constant *LHS, Constant *RHS) const {
     return ConstantExpr::getSRem(LHS, RHS);
   }
 
-  Constant *CreateFRem(Constant *LHS, Constant *RHS) const override {
+  Constant *CreateFRem(Constant *LHS, Constant *RHS) const {
     return ConstantExpr::getFRem(LHS, RHS);
   }
 
   Constant *CreateShl(Constant *LHS, Constant *RHS,
-                      bool HasNUW = false, bool HasNSW = false) const override {
+                      bool HasNUW = false, bool HasNSW = false) const {
     return ConstantExpr::getShl(LHS, RHS, HasNUW, HasNSW);
   }
 
   Constant *CreateLShr(Constant *LHS, Constant *RHS,
-                       bool isExact = false) const override {
+                       bool isExact = false) const {
     return ConstantExpr::getLShr(LHS, RHS, isExact);
   }
 
   Constant *CreateAShr(Constant *LHS, Constant *RHS,
-                       bool isExact = false) const override {
+                       bool isExact = false) const {
     return ConstantExpr::getAShr(LHS, RHS, isExact);
+  }
+
+  Constant *CreateAnd(Constant *LHS, Constant *RHS) const {
+    return ConstantExpr::getAnd(LHS, RHS);
   }
 
   Constant *CreateOr(Constant *LHS, Constant *RHS) const {
     return ConstantExpr::getOr(LHS, RHS);
   }
 
-  Constant *CreateXor(Constant *LHS, Constant *RHS) const override {
+  Constant *CreateXor(Constant *LHS, Constant *RHS) const {
     return ConstantExpr::getXor(LHS, RHS);
   }
 
   Constant *CreateBinOp(Instruction::BinaryOps Opc,
-                        Constant *LHS, Constant *RHS) const override {
+                        Constant *LHS, Constant *RHS) const {
     return ConstantExpr::get(Opc, LHS, RHS);
   }
 
@@ -180,20 +123,55 @@ public:
   //===--------------------------------------------------------------------===//
 
   Constant *CreateNeg(Constant *C,
-                      bool HasNUW = false, bool HasNSW = false) const override {
+                      bool HasNUW = false, bool HasNSW = false) const {
     return ConstantExpr::getNeg(C, HasNUW, HasNSW);
   }
 
-  Constant *CreateFNeg(Constant *C) const override {
+  Constant *CreateFNeg(Constant *C) const {
     return ConstantExpr::getFNeg(C);
   }
 
-  Constant *CreateNot(Constant *C) const override {
+  Constant *CreateNot(Constant *C) const {
     return ConstantExpr::getNot(C);
   }
 
-  Constant *CreateUnOp(Instruction::UnaryOps Opc, Constant *C) const override {
-    return ConstantExpr::get(Opc, C);
+  //===--------------------------------------------------------------------===//
+  // Memory Instructions
+  //===--------------------------------------------------------------------===//
+
+  Constant *CreateGetElementPtr(Type *Ty, Constant *C,
+                                ArrayRef<Constant *> IdxList) const {
+    return ConstantExpr::getGetElementPtr(Ty, C, IdxList);
+  }
+
+  Constant *CreateGetElementPtr(Type *Ty, Constant *C, Constant *Idx) const {
+    // This form of the function only exists to avoid ambiguous overload
+    // warnings about whether to convert Idx to ArrayRef<Constant *> or
+    // ArrayRef<Value *>.
+    return ConstantExpr::getGetElementPtr(Ty, C, Idx);
+  }
+
+  Constant *CreateGetElementPtr(Type *Ty, Constant *C,
+                                ArrayRef<Value *> IdxList) const {
+    return ConstantExpr::getGetElementPtr(Ty, C, IdxList);
+  }
+
+  Constant *CreateInBoundsGetElementPtr(Type *Ty, Constant *C,
+                                        ArrayRef<Constant *> IdxList) const {
+    return ConstantExpr::getInBoundsGetElementPtr(Ty, C, IdxList);
+  }
+
+  Constant *CreateInBoundsGetElementPtr(Type *Ty, Constant *C,
+                                        Constant *Idx) const {
+    // This form of the function only exists to avoid ambiguous overload
+    // warnings about whether to convert Idx to ArrayRef<Constant *> or
+    // ArrayRef<Value *>.
+    return ConstantExpr::getInBoundsGetElementPtr(Ty, C, Idx);
+  }
+
+  Constant *CreateInBoundsGetElementPtr(Type *Ty, Constant *C,
+                                        ArrayRef<Value *> IdxList) const {
+    return ConstantExpr::getInBoundsGetElementPtr(Ty, C, IdxList);
   }
 
   //===--------------------------------------------------------------------===//
@@ -201,49 +179,49 @@ public:
   //===--------------------------------------------------------------------===//
 
   Constant *CreateCast(Instruction::CastOps Op, Constant *C,
-                       Type *DestTy) const override {
+                       Type *DestTy) const {
     return ConstantExpr::getCast(Op, C, DestTy);
   }
 
-  Constant *CreatePointerCast(Constant *C, Type *DestTy) const override {
+  Constant *CreatePointerCast(Constant *C, Type *DestTy) const {
     return ConstantExpr::getPointerCast(C, DestTy);
   }
 
   Constant *CreatePointerBitCastOrAddrSpaceCast(Constant *C,
-                                                Type *DestTy) const override {
+                                                Type *DestTy) const {
     return ConstantExpr::getPointerBitCastOrAddrSpaceCast(C, DestTy);
   }
 
   Constant *CreateIntCast(Constant *C, Type *DestTy,
-                          bool isSigned) const override {
+                          bool isSigned) const {
     return ConstantExpr::getIntegerCast(C, DestTy, isSigned);
   }
 
-  Constant *CreateFPCast(Constant *C, Type *DestTy) const override {
+  Constant *CreateFPCast(Constant *C, Type *DestTy) const {
     return ConstantExpr::getFPCast(C, DestTy);
   }
 
-  Constant *CreateBitCast(Constant *C, Type *DestTy) const override {
+  Constant *CreateBitCast(Constant *C, Type *DestTy) const {
     return CreateCast(Instruction::BitCast, C, DestTy);
   }
 
-  Constant *CreateIntToPtr(Constant *C, Type *DestTy) const override {
+  Constant *CreateIntToPtr(Constant *C, Type *DestTy) const {
     return CreateCast(Instruction::IntToPtr, C, DestTy);
   }
 
-  Constant *CreatePtrToInt(Constant *C, Type *DestTy) const override {
+  Constant *CreatePtrToInt(Constant *C, Type *DestTy) const {
     return CreateCast(Instruction::PtrToInt, C, DestTy);
   }
 
-  Constant *CreateZExtOrBitCast(Constant *C, Type *DestTy) const override {
+  Constant *CreateZExtOrBitCast(Constant *C, Type *DestTy) const {
     return ConstantExpr::getZExtOrBitCast(C, DestTy);
   }
 
-  Constant *CreateSExtOrBitCast(Constant *C, Type *DestTy) const override {
+  Constant *CreateSExtOrBitCast(Constant *C, Type *DestTy) const {
     return ConstantExpr::getSExtOrBitCast(C, DestTy);
   }
 
-  Constant *CreateTruncOrBitCast(Constant *C, Type *DestTy) const override {
+  Constant *CreateTruncOrBitCast(Constant *C, Type *DestTy) const {
     return ConstantExpr::getTruncOrBitCast(C, DestTy);
   }
 
@@ -251,8 +229,13 @@ public:
   // Compare Instructions
   //===--------------------------------------------------------------------===//
 
+  Constant *CreateICmp(CmpInst::Predicate P, Constant *LHS,
+                       Constant *RHS) const {
+    return ConstantExpr::getCompare(P, LHS, RHS);
+  }
+
   Constant *CreateFCmp(CmpInst::Predicate P, Constant *LHS,
-                       Constant *RHS) const override {
+                       Constant *RHS) const {
     return ConstantExpr::getCompare(P, LHS, RHS);
   }
 
@@ -260,27 +243,31 @@ public:
   // Other Instructions
   //===--------------------------------------------------------------------===//
 
-  Constant *CreateExtractElement(Constant *Vec, Constant *Idx) const override {
+  Constant *CreateSelect(Constant *C, Constant *True, Constant *False) const {
+    return ConstantExpr::getSelect(C, True, False);
+  }
+
+  Constant *CreateExtractElement(Constant *Vec, Constant *Idx) const {
     return ConstantExpr::getExtractElement(Vec, Idx);
   }
 
   Constant *CreateInsertElement(Constant *Vec, Constant *NewElt,
-                                Constant *Idx) const override {
+                                Constant *Idx) const {
     return ConstantExpr::getInsertElement(Vec, NewElt, Idx);
   }
 
   Constant *CreateShuffleVector(Constant *V1, Constant *V2,
-                                ArrayRef<int> Mask) const override {
+                                Constant *Mask) const {
     return ConstantExpr::getShuffleVector(V1, V2, Mask);
   }
 
   Constant *CreateExtractValue(Constant *Agg,
-                               ArrayRef<unsigned> IdxList) const override {
+                               ArrayRef<unsigned> IdxList) const {
     return ConstantExpr::getExtractValue(Agg, IdxList);
   }
 
   Constant *CreateInsertValue(Constant *Agg, Constant *Val,
-                              ArrayRef<unsigned> IdxList) const override {
+                              ArrayRef<unsigned> IdxList) const {
     return ConstantExpr::getInsertValue(Agg, Val, IdxList);
   }
 };

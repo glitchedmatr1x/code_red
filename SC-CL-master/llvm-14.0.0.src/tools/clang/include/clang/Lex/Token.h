@@ -1,8 +1,9 @@
 //===--- Token.h - Token interface ------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -33,7 +34,7 @@ class IdentifierInfo;
 /// information about the SourceRange of the tokens and the type object.
 class Token {
   /// The location of the token. This is actually a SourceLocation.
-  SourceLocation::UIntTy Loc;
+  unsigned Loc;
 
   // Conceptually these next two fields could be in a union.  However, this
   // causes gcc 4.2 to pessimize LexTokenInternal, a very performance critical
@@ -43,7 +44,7 @@ class Token {
   /// UintData - This holds either the length of the token text, when
   /// a normal token, or the end of the SourceRange when an annotation
   /// token.
-  SourceLocation::UIntTy UintData;
+  unsigned UintData;
 
   /// PtrData - This is a union of four different pointer types, which depends
   /// on what type of token this is:
@@ -70,23 +71,20 @@ class Token {
 public:
   // Various flags set per token:
   enum TokenFlags {
-    StartOfLine = 0x01,   // At start of line or only after whitespace
-                          // (considering the line after macro expansion).
-    LeadingSpace = 0x02,  // Whitespace exists before this token (considering
-                          // whitespace after macro expansion).
-    DisableExpand = 0x04, // This identifier may never be macro expanded.
-    NeedsCleaning = 0x08, // Contained an escaped newline or trigraph.
+    StartOfLine   = 0x01,  // At start of line or only after whitespace
+                           // (considering the line after macro expansion).
+    LeadingSpace  = 0x02,  // Whitespace exists before this token (considering 
+                           // whitespace after macro expansion).
+    DisableExpand = 0x04,  // This identifier may never be macro expanded.
+    NeedsCleaning = 0x08,  // Contained an escaped newline or trigraph.
     LeadingEmptyMacro = 0x10, // Empty macro exists before this token.
-    HasUDSuffix = 0x20,  // This string or character literal has a ud-suffix.
-    HasUCN = 0x40,       // This identifier contains a UCN.
-    IgnoredComma = 0x80, // This comma is not a macro argument separator (MS).
+    HasUDSuffix = 0x20,    // This string or character literal has a ud-suffix.
+    HasUCN = 0x40,         // This identifier contains a UCN.
+    IgnoredComma = 0x80,   // This comma is not a macro argument separator (MS).
     StringifiedInMacro = 0x100, // This string or character literal is formed by
                                 // macro stringizing or charizing operator.
     CommaAfterElided = 0x200, // The comma following this token was elided (MS).
     IsEditorPlaceholder = 0x400, // This identifier is a placeholder.
-    IsReinjected = 0x800, // A phase 4 token that was produced before and
-                          // re-added, e.g. via EnterTokenStream. Annotation
-                          // tokens are *not* reinjected.
   };
 
   tok::TokenKind getKind() const { return Kind; }
@@ -104,24 +102,24 @@ public:
     return is(K1) || isOneOf(K2, Ks...);
   }
 
-  /// Return true if this is a raw identifier (when lexing
+  /// \brief Return true if this is a raw identifier (when lexing
   /// in raw mode) or a non-keyword identifier (when lexing in non-raw mode).
   bool isAnyIdentifier() const {
     return tok::isAnyIdentifier(getKind());
   }
 
-  /// Return true if this is a "literal", like a numeric
+  /// \brief Return true if this is a "literal", like a numeric
   /// constant, string, etc.
   bool isLiteral() const {
     return tok::isLiteral(getKind());
   }
 
-  /// Return true if this is any of tok::annot_* kind tokens.
+  /// \brief Return true if this is any of tok::annot_* kind tokens.
   bool isAnnotation() const {
     return tok::isAnnotation(getKind());
   }
 
-  /// Return a source location identifier for the specified
+  /// \brief Return a source location identifier for the specified
   /// offset in the current file.
   SourceLocation getLocation() const {
     return SourceLocation::getFromRawEncoding(Loc);
@@ -155,7 +153,7 @@ public:
                           : getLocation().getLocWithOffset(getLength());
   }
 
-  /// SourceRange of the group of tokens that this annotation token
+  /// \brief SourceRange of the group of tokens that this annotation token
   /// represents.
   SourceRange getAnnotationRange() const {
     return SourceRange(getLocation(), getAnnotationEndLoc());
@@ -167,7 +165,7 @@ public:
 
   const char *getName() const { return tok::getTokenName(Kind); }
 
-  /// Reset all flags to cleared.
+  /// \brief Reset all flags to cleared.
   void startToken() {
     Kind = tok::unknown;
     Flags = 0;
@@ -232,22 +230,22 @@ public:
     PtrData = val;
   }
 
-  /// Set the specified flag.
+  /// \brief Set the specified flag.
   void setFlag(TokenFlags Flag) {
     Flags |= Flag;
   }
 
-  /// Get the specified flag.
+  /// \brief Get the specified flag.
   bool getFlag(TokenFlags Flag) const {
     return (Flags & Flag) != 0;
   }
 
-  /// Unset the specified flag.
+  /// \brief Unset the specified flag.
   void clearFlag(TokenFlags Flag) {
     Flags &= ~Flag;
   }
 
-  /// Return the internal represtation of the flags.
+  /// \brief Return the internal represtation of the flags.
   ///
   /// This is only intended for low-level operations such as writing tokens to
   /// disk.
@@ -255,7 +253,7 @@ public:
     return Flags;
   }
 
-  /// Set a flag to either true or false.
+  /// \brief Set a flag to either true or false.
   void setFlagValue(TokenFlags Flag, bool Val) {
     if (Val)
       setFlag(Flag);
@@ -267,28 +265,28 @@ public:
   ///
   bool isAtStartOfLine() const { return getFlag(StartOfLine); }
 
-  /// Return true if this token has whitespace before it.
+  /// \brief Return true if this token has whitespace before it.
   ///
   bool hasLeadingSpace() const { return getFlag(LeadingSpace); }
 
-  /// Return true if this identifier token should never
+  /// \brief Return true if this identifier token should never
   /// be expanded in the future, due to C99 6.10.3.4p2.
   bool isExpandDisabled() const { return getFlag(DisableExpand); }
 
-  /// Return true if we have an ObjC keyword identifier.
+  /// \brief Return true if we have an ObjC keyword identifier.
   bool isObjCAtKeyword(tok::ObjCKeywordKind objcKey) const;
 
-  /// Return the ObjC keyword kind.
+  /// \brief Return the ObjC keyword kind.
   tok::ObjCKeywordKind getObjCKeywordID() const;
 
-  /// Return true if this token has trigraphs or escaped newlines in it.
+  /// \brief Return true if this token has trigraphs or escaped newlines in it.
   bool needsCleaning() const { return getFlag(NeedsCleaning); }
 
-  /// Return true if this token has an empty macro before it.
+  /// \brief Return true if this token has an empty macro before it.
   ///
   bool hasLeadingEmptyMacro() const { return getFlag(LeadingEmptyMacro); }
 
-  /// Return true if this token is a string or character literal which
+  /// \brief Return true if this token is a string or character literal which
   /// has a ud-suffix.
   bool hasUDSuffix() const { return getFlag(HasUDSuffix); }
 
@@ -310,25 +308,30 @@ public:
   bool isEditorPlaceholder() const { return getFlag(IsEditorPlaceholder); }
 };
 
-/// Information about the conditional stack (\#if directives)
+/// \brief Information about the conditional stack (\#if directives)
 /// currently active.
 struct PPConditionalInfo {
-  /// Location where the conditional started.
+  /// \brief Location where the conditional started.
   SourceLocation IfLoc;
 
-  /// True if this was contained in a skipping directive, e.g.,
+  /// \brief True if this was contained in a skipping directive, e.g.,
   /// in a "\#if 0" block.
   bool WasSkipping;
 
-  /// True if we have emitted tokens already, and now we're in
+  /// \brief True if we have emitted tokens already, and now we're in
   /// an \#else block or something.  Only useful in Skipping blocks.
   bool FoundNonSkip;
 
-  /// True if we've seen a \#else in this block.  If so,
+  /// \brief True if we've seen a \#else in this block.  If so,
   /// \#elif/\#else directives are not allowed.
   bool FoundElse;
 };
 
 } // end namespace clang
+
+namespace llvm {
+  template <>
+  struct isPodLike<clang::Token> { static const bool value = true; };
+} // end namespace llvm
 
 #endif // LLVM_CLANG_LEX_TOKEN_H

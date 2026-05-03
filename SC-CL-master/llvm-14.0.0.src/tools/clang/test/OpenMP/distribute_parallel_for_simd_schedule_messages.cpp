@@ -1,6 +1,6 @@
-// RUN: %clang_cc1 -verify -fopenmp %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp %s
 
-// RUN: %clang_cc1 -verify -fopenmp-simd %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp-simd %s
 
 void foo() {
 }
@@ -13,7 +13,6 @@ struct S1; // expected-note {{declared here}}
 
 template <class T, typename S, int N, int ST> // expected-note {{declared here}}
 T tmain(T argc, S **argv) {
-  T z;
 #pragma omp target
 #pragma omp teams
 #pragma omp distribute parallel for simd schedule // expected-error {{expected '(' after 'schedule'}}
@@ -58,7 +57,7 @@ T tmain(T argc, S **argv) {
   for (int i = ST; i < N; i++) argv[0][i] = argv[0][i] - argv[0][i-ST];
   #pragma omp target
 #pragma omp teams
-#pragma omp distribute parallel for simd schedule (guided, (ST > 0) ? 1 + ST : 2 + z)
+#pragma omp distribute parallel for simd schedule (guided, (ST > 0) ? 1 + ST : 2)
   for (int i = ST; i < N; i++) argv[0][i] = argv[0][i] - argv[0][i-ST];
   // expected-error@+4 2 {{directive '#pragma omp distribute parallel for simd' cannot contain more than one 'schedule' clause}}
   // expected-error@+3 {{argument to 'schedule' clause must be a strictly positive integer value}}
@@ -87,7 +86,6 @@ T tmain(T argc, S **argv) {
 }
 
 int main(int argc, char **argv) {
-  int z;
   #pragma omp target
 #pragma omp teams
 #pragma omp distribute parallel for simd schedule // expected-error {{expected '(' after 'schedule'}}
@@ -126,7 +124,7 @@ int main(int argc, char **argv) {
   for (int i = 4; i < 12; i++) argv[0][i] = argv[0][i] - argv[0][i-4];
   #pragma omp target
 #pragma omp teams
-#pragma omp distribute parallel for simd schedule (dynamic, foobool(1) > 0 ? 1 : 2 -z)
+#pragma omp distribute parallel for simd schedule (dynamic, foobool(1) > 0 ? 1 : 2)
   for (int i = 4; i < 12; i++) argv[0][i] = argv[0][i] - argv[0][i-4];
   // expected-error@+4 2 {{directive '#pragma omp distribute parallel for simd' cannot contain more than one 'schedule' clause}}
   // expected-error@+3 {{argument to 'schedule' clause must be a strictly positive integer value}}

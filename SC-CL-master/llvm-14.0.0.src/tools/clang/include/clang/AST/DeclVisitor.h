@@ -1,8 +1,9 @@
 //===- DeclVisitor.h - Visitor for Decl subclasses --------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -20,13 +21,16 @@
 #include "clang/AST/DeclObjC.h"
 #include "clang/AST/DeclOpenMP.h"
 #include "clang/AST/DeclTemplate.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/Support/ErrorHandling.h"
 
 namespace clang {
 
 namespace declvisitor {
-/// A simple visitor class that helps create declaration visitors.
+
+template <typename T> struct make_ptr { using type = T *; };
+template <typename T> struct make_const_ptr { using type = const T *; };
+
+/// \brief A simple visitor class that helps create declaration visitors.
 template<template <typename> class Ptr, typename ImplClass, typename RetTy=void>
 class Base {
 public:
@@ -58,20 +62,20 @@ public:
 
 } // namespace declvisitor
 
-/// A simple visitor class that helps create declaration visitors.
+/// \brief A simple visitor class that helps create declaration visitors.
 ///
 /// This class does not preserve constness of Decl pointers (see also
 /// ConstDeclVisitor).
-template <typename ImplClass, typename RetTy = void>
+template<typename ImplClass, typename RetTy = void>
 class DeclVisitor
-    : public declvisitor::Base<std::add_pointer, ImplClass, RetTy> {};
+ : public declvisitor::Base<declvisitor::make_ptr, ImplClass, RetTy> {};
 
-/// A simple visitor class that helps create declaration visitors.
+/// \brief A simple visitor class that helps create declaration visitors.
 ///
 /// This class preserves constness of Decl pointers (see also DeclVisitor).
-template <typename ImplClass, typename RetTy = void>
+template<typename ImplClass, typename RetTy = void>
 class ConstDeclVisitor
-    : public declvisitor::Base<llvm::make_const_ptr, ImplClass, RetTy> {};
+ : public declvisitor::Base<declvisitor::make_const_ptr, ImplClass, RetTy> {};
 
 } // namespace clang
 

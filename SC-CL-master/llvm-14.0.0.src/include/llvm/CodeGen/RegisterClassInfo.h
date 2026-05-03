@@ -1,8 +1,9 @@
 //===- RegisterClassInfo.h - Dynamic Register Class Info --------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -66,9 +67,6 @@ class RegisterClassInfo {
 
   std::unique_ptr<unsigned[]> PSetLimits;
 
-  // The register cost values.
-  ArrayRef<uint8_t> RegCosts;
-
   // Compute all information about RC.
   void compute(const TargetRegisterClass *RC) const;
 
@@ -111,26 +109,26 @@ public:
   }
 
   /// getLastCalleeSavedAlias - Returns the last callee saved register that
-  /// overlaps PhysReg, or NoRegister if Reg doesn't overlap a
-  /// CalleeSavedAliases.
-  MCRegister getLastCalleeSavedAlias(MCRegister PhysReg) const {
-    if (PhysReg.id() < CalleeSavedAliases.size())
+  /// overlaps PhysReg, or 0 if Reg doesn't overlap a CalleeSavedAliases.
+  unsigned getLastCalleeSavedAlias(unsigned PhysReg) const {
+    assert(TargetRegisterInfo::isPhysicalRegister(PhysReg));
+    if (PhysReg < CalleeSavedAliases.size())
       return CalleeSavedAliases[PhysReg];
-    return MCRegister::NoRegister;
+    return 0;
   }
 
   /// Get the minimum register cost in RC's allocation order.
-  /// This is the smallest value in RegCosts[Reg] for all
+  /// This is the smallest value returned by TRI->getCostPerUse(Reg) for all
   /// the registers in getOrder(RC).
-  uint8_t getMinCost(const TargetRegisterClass *RC) const {
+  unsigned getMinCost(const TargetRegisterClass *RC) {
     return get(RC).MinCost;
   }
 
   /// Get the position of the last cost change in getOrder(RC).
   ///
   /// All registers in getOrder(RC).slice(getLastCostChange(RC)) will have the
-  /// same cost according to RegCosts[Reg].
-  unsigned getLastCostChange(const TargetRegisterClass *RC) const {
+  /// same cost according to TRI->getCostPerUse().
+  unsigned getLastCostChange(const TargetRegisterClass *RC) {
     return get(RC).LastCostChange;
   }
 

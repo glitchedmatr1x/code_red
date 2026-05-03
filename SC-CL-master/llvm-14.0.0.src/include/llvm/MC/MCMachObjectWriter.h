@@ -1,8 +1,9 @@
 //===- llvm/MC/MCMachObjectWriter.h - Mach Object Writer --------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -16,7 +17,6 @@
 #include "llvm/MC/MCObjectWriter.h"
 #include "llvm/MC/MCSection.h"
 #include "llvm/MC/StringTableBuilder.h"
-#include "llvm/Support/EndianStream.h"
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -26,12 +26,10 @@ namespace llvm {
 
 class MachObjectWriter;
 
-class MCMachObjectTargetWriter : public MCObjectTargetWriter {
+class MCMachObjectTargetWriter {
   const unsigned Is64Bit : 1;
   const uint32_t CPUType;
-protected:
-  uint32_t CPUSubtype;
-public:
+  const uint32_t CPUSubtype;
   unsigned LocalDifference_RIT;
 
 protected:
@@ -44,11 +42,6 @@ protected:
 
 public:
   virtual ~MCMachObjectTargetWriter();
-
-  Triple::ObjectFormatType getFormat() const override { return Triple::MachO; }
-  static bool classof(const MCObjectTargetWriter *W) {
-    return W->getFormat() == Triple::MachO;
-  }
 
   /// \name Lifetime Management
   /// @{
@@ -114,7 +107,7 @@ class MachObjectWriter : public MCObjectWriter {
   /// \name Symbol Table Data
   /// @{
 
-  StringTableBuilder StringTable;
+  StringTableBuilder StringTable{StringTableBuilder::MachO};
   std::vector<MachSymbolData> LocalSymbolData;
   std::vector<MachSymbolData> ExternalSymbolData;
   std::vector<MachSymbolData> UndefinedSymbolData;
@@ -123,17 +116,11 @@ class MachObjectWriter : public MCObjectWriter {
 
   MachSymbolData *findSymbolData(const MCSymbol &Sym);
 
-  void writeWithPadding(StringRef Str, uint64_t Size);
-
 public:
   MachObjectWriter(std::unique_ptr<MCMachObjectTargetWriter> MOTW,
                    raw_pwrite_stream &OS, bool IsLittleEndian)
-      : TargetObjectWriter(std::move(MOTW)),
-        StringTable(TargetObjectWriter->is64Bit() ? StringTableBuilder::MachO64
-                                                  : StringTableBuilder::MachO),
-        W(OS, IsLittleEndian ? support::little : support::big) {}
-
-  support::endian::Writer W;
+      : MCObjectWriter(OS, IsLittleEndian),
+        TargetObjectWriter(std::move(MOTW)) {}
 
   const MCSymbol &findAliasedSymbol(const MCSymbol &Sym) const;
 
@@ -235,6 +222,16 @@ public:
     Relocations[Sec].push_back(P);
   }
 
+  void recordScatteredRelocation(const MCAssembler &Asm,
+                                 const MCAsmLayout &Layout,
+                                 const MCFragment *Fragment,
+                                 const MCFixup &Fixup, MCValue Target,
+                                 unsigned Log2Size, uint64_t &FixedValue);
+
+  void recordTLVPRelocation(const MCAssembler &Asm, const MCAsmLayout &Layout,
+                            const MCFragment *Fragment, const MCFixup &Fixup,
+                            MCValue Target, uint64_t &FixedValue);
+
   void recordRelocation(MCAssembler &Asm, const MCAsmLayout &Layout,
                         const MCFragment *Fragment, const MCFixup &Fixup,
                         MCValue Target, uint64_t &FixedValue) override;
@@ -263,7 +260,7 @@ public:
                                               const MCFragment &FB, bool InSet,
                                               bool IsPCRel) const override;
 
-  uint64_t writeObject(MCAssembler &Asm, const MCAsmLayout &Layout) override;
+  void writeObject(MCAssembler &Asm, const MCAsmLayout &Layout) override;
 };
 
 /// Construct a new Mach-O writer instance.

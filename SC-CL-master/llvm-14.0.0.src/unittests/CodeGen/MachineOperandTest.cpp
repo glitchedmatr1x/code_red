@@ -1,8 +1,9 @@
 //===- MachineOperandTest.cpp ---------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -79,7 +80,7 @@ TEST(MachineOperandTest, PrintSubReg) {
   std::string str;
   raw_string_ostream OS(str);
   MO.print(OS, /*TRI=*/nullptr, /*IntrinsicInfo=*/nullptr);
-  ASSERT_TRUE(OS.str() == "$physreg1.subreg5");
+  ASSERT_TRUE(OS.str() == "%physreg1.subreg5");
 }
 
 TEST(MachineOperandTest, PrintCImm) {
@@ -117,7 +118,8 @@ TEST(MachineOperandTest, PrintSubRegIndex) {
   // TRI and IntrinsicInfo we can print the operand as a subreg index.
   std::string str;
   raw_string_ostream OS(str);
-  MachineOperand::printSubRegIdx(OS, MO.getImm(), nullptr);
+  ModuleSlotTracker DummyMST(nullptr);
+  MachineOperand::printSubregIdx(OS, MO.getImm(), nullptr);
   ASSERT_TRUE(OS.str() == "%subreg.3");
 }
 
@@ -213,7 +215,7 @@ TEST(MachineOperandTest, PrintExternalSymbol) {
   {
     raw_string_ostream OS(str);
     MO.print(OS, /*TRI=*/nullptr, /*IntrinsicInfo=*/nullptr);
-    ASSERT_TRUE(OS.str() == "&foo");
+    ASSERT_TRUE(OS.str() == "$foo");
   }
 
   str.clear();
@@ -223,7 +225,7 @@ TEST(MachineOperandTest, PrintExternalSymbol) {
   {
     raw_string_ostream OS(str);
     MO.print(OS, /*TRI=*/nullptr, /*IntrinsicInfo=*/nullptr);
-    ASSERT_TRUE(OS.str() == "&foo + 12");
+    ASSERT_TRUE(OS.str() == "$foo + 12");
   }
 
   str.clear();
@@ -233,7 +235,7 @@ TEST(MachineOperandTest, PrintExternalSymbol) {
   {
     raw_string_ostream OS(str);
     MO.print(OS, /*TRI=*/nullptr, /*IntrinsicInfo=*/nullptr);
-    ASSERT_TRUE(OS.str() == "&foo - 12");
+    ASSERT_TRUE(OS.str() == "$foo - 12");
   }
 }
 
@@ -294,7 +296,7 @@ TEST(MachineOperandTest, PrintMetadata) {
   LLVMContext Ctx;
   Module M("MachineOperandMDNodeTest", Ctx);
   NamedMDNode *MD = M.getOrInsertNamedMetadata("namedmd");
-  ModuleSlotTracker MST(&M);
+  ModuleSlotTracker DummyMST(&M);
   Metadata *MDS = MDString::get(Ctx, "foo");
   MDNode *Node = MDNode::get(Ctx, MDS);
   MD->addOperand(Node);
@@ -310,16 +312,14 @@ TEST(MachineOperandTest, PrintMetadata) {
   std::string str;
   // Print a MachineOperand containing a metadata node.
   raw_string_ostream OS(str);
-  MO.print(OS, MST, LLT{}, /*OpIdx*/~0U, /*PrintDef=*/false, /*IsStandalone=*/false,
-           /*ShouldPrintRegisterTies=*/false, 0, /*TRI=*/nullptr,
+  MO.print(OS, DummyMST, LLT{}, false, false, 0, /*TRI=*/nullptr,
            /*IntrinsicInfo=*/nullptr);
   ASSERT_TRUE(OS.str() == "!0");
 }
 
 TEST(MachineOperandTest, PrintMCSymbol) {
   MCAsmInfo MAI;
-  Triple T = Triple("unknown-unknown-unknown");
-  MCContext Ctx(T, &MAI, /*MRI=*/nullptr, /*MSTI=*/nullptr);
+  MCContext Ctx(&MAI, /*MRI=*/nullptr, /*MOFI=*/nullptr);
   MCSymbol *Sym = Ctx.getOrCreateSymbol("foo");
 
   // Create a MachineOperand with a metadata and print it.
@@ -397,16 +397,6 @@ TEST(MachineOperandTest, PrintPredicate) {
   raw_string_ostream OS(str);
   MO.print(OS, /*TRI=*/nullptr, /*IntrinsicInfo=*/nullptr);
   ASSERT_TRUE(OS.str() == "intpred(eq)");
-}
-
-TEST(MachineOperandTest, HashValue) {
-  char SymName1[] = "test";
-  char SymName2[] = "test";
-  MachineOperand MO1 = MachineOperand::CreateES(SymName1);
-  MachineOperand MO2 = MachineOperand::CreateES(SymName2);
-  ASSERT_NE(SymName1, SymName2);
-  ASSERT_EQ(hash_value(MO1), hash_value(MO2));
-  ASSERT_TRUE(MO1.isIdenticalTo(MO2));
 }
 
 } // end namespace

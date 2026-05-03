@@ -1,5 +1,4 @@
 ; RUN: opt %s -passes='cgscc(inline)' -S | FileCheck %s
-; RUN: opt %s -passes='module-inline' -S | FileCheck %s
 
 declare void @external_func()
 declare void @abort()

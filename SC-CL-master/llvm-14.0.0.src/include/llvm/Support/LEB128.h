@@ -1,8 +1,9 @@
 //===- llvm/Support/LEB128.h - [SU]LEB128 utility functions -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -18,10 +19,9 @@
 
 namespace llvm {
 
-/// Utility function to encode a SLEB128 value to an output stream. Returns
-/// the length in bytes of the encoded value.
-inline unsigned encodeSLEB128(int64_t Value, raw_ostream &OS,
-                              unsigned PadTo = 0) {
+/// Utility function to encode a SLEB128 value to an output stream.
+inline void encodeSLEB128(int64_t Value, raw_ostream &OS,
+                          unsigned PadTo = 0) {
   bool More;
   unsigned Count = 0;
   do {
@@ -42,9 +42,7 @@ inline unsigned encodeSLEB128(int64_t Value, raw_ostream &OS,
     for (; Count < PadTo - 1; ++Count)
       OS << char(PadValue | 0x80);
     OS << char(PadValue);
-    Count++;
   }
-  return Count;
 }
 
 /// Utility function to encode a SLEB128 value to a buffer. Returns
@@ -75,10 +73,9 @@ inline unsigned encodeSLEB128(int64_t Value, uint8_t *p, unsigned PadTo = 0) {
   return (unsigned)(p - orig_p);
 }
 
-/// Utility function to encode a ULEB128 value to an output stream. Returns
-/// the length in bytes of the encoded value.
-inline unsigned encodeULEB128(uint64_t Value, raw_ostream &OS,
-                              unsigned PadTo = 0) {
+/// Utility function to encode a ULEB128 value to an output stream.
+inline void encodeULEB128(uint64_t Value, raw_ostream &OS,
+                          unsigned PadTo = 0) {
   unsigned Count = 0;
   do {
     uint8_t Byte = Value & 0x7f;
@@ -96,7 +93,6 @@ inline unsigned encodeULEB128(uint64_t Value, raw_ostream &OS,
     OS << '\x00';
     Count++;
   }
-  return Count;
 }
 
 /// Utility function to encode a ULEB128 value to a buffer. Returns
@@ -134,7 +130,7 @@ inline uint64_t decodeULEB128(const uint8_t *p, unsigned *n = nullptr,
   if (error)
     *error = nullptr;
   do {
-    if (p == end) {
+    if (end && p == end) {
       if (error)
         *error = "malformed uleb128, extends past end";
       if (n)
@@ -142,14 +138,14 @@ inline uint64_t decodeULEB128(const uint8_t *p, unsigned *n = nullptr,
       return 0;
     }
     uint64_t Slice = *p & 0x7f;
-    if ((Shift >= 64 && Slice != 0) || Slice << Shift >> Shift != Slice) {
+    if (Shift >= 64 || Slice << Shift >> Shift != Slice) {
       if (error)
         *error = "uleb128 too big for uint64";
       if (n)
         *n = (unsigned)(p - orig_p);
       return 0;
     }
-    Value += Slice << Shift;
+    Value += uint64_t(*p & 0x7f) << Shift;
     Shift += 7;
   } while (*p++ >= 128);
   if (n)
@@ -165,32 +161,20 @@ inline int64_t decodeSLEB128(const uint8_t *p, unsigned *n = nullptr,
   int64_t Value = 0;
   unsigned Shift = 0;
   uint8_t Byte;
-  if (error)
-    *error = nullptr;
   do {
-    if (p == end) {
+    if (end && p == end) {
       if (error)
         *error = "malformed sleb128, extends past end";
       if (n)
         *n = (unsigned)(p - orig_p);
       return 0;
     }
-    Byte = *p;
-    uint64_t Slice = Byte & 0x7f;
-    if ((Shift >= 64 && Slice != (Value < 0 ? 0x7f : 0x00)) ||
-        (Shift == 63 && Slice != 0 && Slice != 0x7f)) {
-      if (error)
-        *error = "sleb128 too big for int64";
-      if (n)
-        *n = (unsigned)(p - orig_p);
-      return 0;
-    }
-    Value |= Slice << Shift;
+    Byte = *p++;
+    Value |= (int64_t(Byte & 0x7f) << Shift);
     Shift += 7;
-    ++p;
   } while (Byte >= 128);
-  // Sign extend negative numbers if needed.
-  if (Shift < 64 && (Byte & 0x40))
+  // Sign extend negative numbers.
+  if (Byte & 0x40)
     Value |= (-1ULL) << Shift;
   if (n)
     *n = (unsigned)(p - orig_p);
@@ -205,4 +189,4 @@ extern unsigned getSLEB128Size(int64_t Value);
 
 } // namespace llvm
 
-#endif // LLVM_SUPPORT_LEB128_H
+#endif // LLVM_SYSTEM_LEB128_H

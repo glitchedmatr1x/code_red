@@ -18,7 +18,7 @@ define void @f3() comdat($f3) {
   ret void
 }
 
-$f4 = comdat nodeduplicate
+$f4 = comdat noduplicates
 @v4 = global i32 0, comdat($f4)
 define void @f4() comdat($f4) {
   ret void
@@ -89,4 +89,4 @@ $vftable = comdat largest
 ; CHECK: .globl  _f6
 ; CHECK: .section        .rdata,"dr",largest,_vftable
 ; CHECK: .globl  _vftable
-; CHECK: .set _vftable, L_some_name+4
+; CHECK: _vftable = L_some_name+4

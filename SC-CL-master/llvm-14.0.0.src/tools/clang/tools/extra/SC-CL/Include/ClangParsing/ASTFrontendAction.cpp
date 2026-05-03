@@ -136,5 +136,5 @@ std::unique_ptr<ASTConsumer> SCCL::ASTFrontendAction::CreateASTConsumer(Compiler
 	AddDefines(CI.getPreprocessor());
 	
 
-	return std::make_unique<SCCL::ASTConsumer>(TheRewriter, CI.getASTContext(), *scriptData);
+	return llvm::make_unique<SCCL::ASTConsumer>(TheRewriter, CI.getASTContext(), *scriptData);
 }

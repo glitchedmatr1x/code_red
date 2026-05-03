@@ -1,9 +1,6 @@
-// RUN: %clang -target powerpc-linux-gnu -emit-llvm -S -mabi=ibmlongdouble \
-// RUN:   -O0 %s -o - | FileCheck %s --check-prefixes=CHECK,CHECK-BE
-// RUN: %clang -target powerpc64-linux-gnu -emit-llvm -S -mabi=ibmlongdouble \
-// RUN:   -O0 %s -o - | FileCheck %s --check-prefixes=CHECK,CHECK-BE
-// RUN: %clang -target powerpc64le-linux-gnu -emit-llvm -S -mabi=ibmlongdouble \
-// RUN:   -O0 %s -o - | FileCheck %s --check-prefixes=CHECK,CHECK-LE
+// RUN: %clang -target powerpc-linux-gnu     -emit-llvm -S -O0 %s -o - | FileCheck %s --check-prefix=CHECK-BE --check-prefix=CHECK
+// RUN: %clang -target powerpc64-linux-gnu   -emit-llvm -S -O0 %s -o - | FileCheck %s --check-prefix=CHECK-BE --check-prefix=CHECK
+// RUN: %clang -target powerpc64le-linux-gnu -emit-llvm -S -O0 %s -o - | FileCheck %s --check-prefix=CHECK-LE --check-prefix=CHECK
 
 bool b;
 double d = -1.0;

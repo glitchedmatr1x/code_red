@@ -1,6 +1,6 @@
 ; RUN: llc -mtriple=x86_64-unknown-unknown -o - %s | FileCheck %s
 ; RUN: llc -mtriple=x86_64-unknown-unknown -filetype=obj < %s \
-; RUN:   | llvm-dwarfdump - | FileCheck %s --check-prefix=DWARF
+; RUN:   | llvm-dwarfdump -v - | FileCheck %s --check-prefix=DWARF
 
 define i1 @test() !dbg !4 {
 entry:
@@ -20,13 +20,9 @@ while.end:
 }
 
 ; CHECK-LABEL: test
-; To get the value of the variable, we need to do [$rsp+8], i.e:
-; CHECK:       #DEBUG_VALUE: test:w <- [DW_OP_plus_uconst 8, DW_OP_deref] $rsp
-; DWARF:  DW_AT_location (
-; DWARF-NEXT:   [{{.*}}, {{.*}}): DW_OP_breg7 RSP+8)
-
-; Note: A previous version of this test checked for `[DW_OP_plus_uconst 8] [$rsp+0]`,
-; which is incorrect, because it adds the stack offset after dereferencing the stack pointer.
+; CHECK:       #DEBUG_VALUE: test:w <- [DW_OP_plus_uconst 8] [%rsp+0]
+; DWARF:  DW_AT_location [DW_FORM_sec_offset] (
+; DWARF-NEXT:   {{.*}} - {{.*}}: DW_OP_breg7 RSP+8)
 
 declare i1 @fn(i64*, i64*, i64*, i8*, i64, i64*, i32*, i8*)
 declare void @llvm.dbg.value(metadata, metadata, metadata)
@@ -40,7 +36,7 @@ declare void @llvm.dbg.value(metadata, metadata, metadata)
 !3 = !{i32 2, !"Debug Info Version", i32 3}
 !4 = distinct !DISubprogram(name: "test", type: !10, unit: !0)
 !5 = !DILocalVariable(name: "w", scope: !4, type: !9)
-!6 = !DIExpression(DW_OP_deref)
+!6 = !DIExpression()
 !7 = !DILocation(line: 210, column: 12, scope: !4)
 !8 = !{!9}
 !9 = !DIBasicType(name: "bool", size: 8, encoding: DW_ATE_boolean)

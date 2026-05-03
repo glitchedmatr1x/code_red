@@ -1,8 +1,9 @@
 //===- llvm/SymbolTableListTraits.h - Traits for iplist ---------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -76,11 +77,9 @@ private:
   /// getListOwner - Return the object that owns this list.  If this is a list
   /// of instructions, it returns the BasicBlock that owns them.
   ItemParentClass *getListOwner() {
-    size_t Offset = reinterpret_cast<size_t>(
-        &((ItemParentClass *)nullptr->*ItemParentClass::getSublistAccess(
-                                           static_cast<ValueSubClass *>(
-                                               nullptr))));
-    ListTy *Anchor = static_cast<ListTy *>(this);
+    size_t Offset(size_t(&((ItemParentClass*)nullptr->*ItemParentClass::
+                           getSublistAccess(static_cast<ValueSubClass*>(nullptr)))));
+    ListTy *Anchor(static_cast<ListTy *>(this));
     return reinterpret_cast<ItemParentClass*>(reinterpret_cast<char*>(Anchor)-
                                               Offset);
   }

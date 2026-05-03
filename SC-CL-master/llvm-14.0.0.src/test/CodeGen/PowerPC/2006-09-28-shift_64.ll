@@ -1,7 +1,7 @@
 ; RUN: llc -verify-machineinstrs < %s
 
 target datalayout = "E-p:64:64"
-target triple = "powerpc64-unknown-linux-gnu"
+target triple = "powerpc64-apple-darwin8"
 
 define void @glArrayElement_CompExec() {
 entry:

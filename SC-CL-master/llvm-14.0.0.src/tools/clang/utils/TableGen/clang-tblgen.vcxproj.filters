@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\utils\TableGen\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ASTTableGen.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangASTNodesEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangASTPropertiesEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangAttrEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangCommentCommandInfoEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangCommentHTMLNamedCharacterReferenceEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangCommentHTMLTagsEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangDataCollectorsEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangDiagnosticsEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangOpcodesEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangOpenCLBuiltinEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangOptionDocEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangSACheckersEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangSyntaxEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\ClangTypeNodesEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\MveEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\NeonEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\RISCVVEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\SveEmitter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\tools\clang\utils\TableGen\obj.clang-tblgen.dir\$(Configuration)\TableGen.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\resources\windows_version_resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Object Libraries">
+      <UniqueIdentifier>{0AE485DF-7FB2-32F4-BFD2-D1CADC8CDB24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{3198AD8A-AA04-3A4D-84A3-8AF87059F7BB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

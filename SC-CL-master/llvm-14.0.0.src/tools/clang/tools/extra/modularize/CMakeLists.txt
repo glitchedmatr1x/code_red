@@ -11,17 +11,16 @@ add_clang_tool(modularize
   PreprocessorTracker.cpp
   )
 
-clang_target_link_libraries(modularize
+target_link_libraries(modularize
   PRIVATE
   clangAST
   clangBasic
   clangDriver
   clangFrontend
   clangLex
-  clangSerialization
   clangTooling
   )
 
 install(TARGETS modularize
-        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        RUNTIME DESTINATION bin
         COMPONENT clang-extras)

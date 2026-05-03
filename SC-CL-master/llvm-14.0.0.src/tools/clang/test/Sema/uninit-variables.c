@@ -1,5 +1,4 @@
 // RUN: %clang_cc1 -fsyntax-only -Wuninitialized -Wconditional-uninitialized -fsyntax-only -fblocks %s -verify
-// RUN: %clang_cc1 -fsyntax-only -Wuninitialized -Wconditional-uninitialized -ftrivial-auto-var-init=pattern -fsyntax-only -fblocks %s -verify
 
 typedef __typeof(sizeof(int)) size_t;
 void *malloc(size_t);
@@ -112,7 +111,7 @@ void test15() {
 
 int test15b() {
   // Warn here with the self-init, since it does result in a use of
-  // an uninitialized variable and this is the root cause.
+  // an unintialized variable and this is the root cause.
   int x = x; // expected-warning {{variable 'x' is uninitialized when used within its own initialization}}
   return x;
 }

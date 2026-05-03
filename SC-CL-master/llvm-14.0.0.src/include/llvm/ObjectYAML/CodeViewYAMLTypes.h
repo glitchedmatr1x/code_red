@@ -1,8 +1,9 @@
 //==- CodeViewYAMLTypes.h - CodeView YAMLIO Type implementation --*- C++ -*-==//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -50,10 +51,8 @@ struct LeafRecord {
   static Expected<LeafRecord> fromCodeViewRecord(codeview::CVType Type);
 };
 
-std::vector<LeafRecord> fromDebugT(ArrayRef<uint8_t> DebugTorP,
-                                   StringRef SectionName);
-ArrayRef<uint8_t> toDebugT(ArrayRef<LeafRecord>, BumpPtrAllocator &Alloc,
-                           StringRef SectionName);
+std::vector<LeafRecord> fromDebugT(ArrayRef<uint8_t> DebugT);
+ArrayRef<uint8_t> toDebugT(ArrayRef<LeafRecord>, BumpPtrAllocator &Alloc);
 
 } // end namespace CodeViewYAML
 

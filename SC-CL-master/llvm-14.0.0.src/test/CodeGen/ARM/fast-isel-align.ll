@@ -26,12 +26,12 @@
 define void @unaligned_store(float %x, float %y) nounwind {
 entry:
 ; ARM: @unaligned_store
-; ARM: vmov [[REG:r[0-9]+]], s0
-; ARM: str [[REG]], [{{r[0-9]+}}]
+; ARM: vmov r1, s0
+; ARM: str r1, [r0]
 
 ; THUMB: @unaligned_store
-; THUMB: vmov [[REG:r[0-9]+]], s0
-; THUMB: str [[REG]], [{{r[0-9]+}}]
+; THUMB: vmov r1, s0
+; THUMB: str r1, [r0]
 
   %add = fadd float %x, %y
   %0 = load %struct.anon*, %struct.anon** @a, align 4

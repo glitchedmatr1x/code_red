@@ -1,8 +1,9 @@
 //===--- UnnamedNamespaceInHeaderCheck.cpp - clang-tidy ---------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -23,11 +24,10 @@ UnnamedNamespaceInHeaderCheck::UnnamedNamespaceInHeaderCheck(
     : ClangTidyCheck(Name, Context),
       RawStringHeaderFileExtensions(Options.getLocalOrGlobal(
           "HeaderFileExtensions", utils::defaultHeaderFileExtensions())) {
-  if (!utils::parseFileExtensions(RawStringHeaderFileExtensions,
-                                  HeaderFileExtensions,
-                                  utils::defaultFileExtensionDelimiters())) {
-    this->configurationDiag("Invalid header file extension: '%0'")
-        << RawStringHeaderFileExtensions;
+  if (!utils::parseHeaderFileExtensions(RawStringHeaderFileExtensions,
+                                        HeaderFileExtensions, ',')) {
+    llvm::errs() << "Invalid header file extension: "
+                 << RawStringHeaderFileExtensions << "\n";
   }
 }
 
@@ -38,6 +38,9 @@ void UnnamedNamespaceInHeaderCheck::storeOptions(
 
 void UnnamedNamespaceInHeaderCheck::registerMatchers(
     ast_matchers::MatchFinder *Finder) {
+  // Only register the matchers for C++; the functionality currently does not
+  // provide any benefit to other languages, despite being benign.
+  if (getLangOpts().CPlusPlus)
     Finder->addMatcher(namespaceDecl(isAnonymous()).bind("anonymousNamespace"),
                        this);
 }
@@ -45,7 +48,7 @@ void UnnamedNamespaceInHeaderCheck::registerMatchers(
 void UnnamedNamespaceInHeaderCheck::check(
     const MatchFinder::MatchResult &Result) {
   const auto *N = Result.Nodes.getNodeAs<NamespaceDecl>("anonymousNamespace");
-  SourceLocation Loc = N->getBeginLoc();
+  SourceLocation Loc = N->getLocStart();
   if (!Loc.isValid())
     return;
 

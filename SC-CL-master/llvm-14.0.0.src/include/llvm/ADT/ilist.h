@@ -1,24 +1,24 @@
 //==-- llvm/ADT/ilist.h - Intrusive Linked List Template ---------*- C++ -*-==//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file defines classes to implement an intrusive doubly linked list class
-/// (i.e. each node of the list must contain a next and previous field for the
-/// list.
-///
-/// The ilist class itself should be a plug in replacement for list.  This list
-/// replacement does not provide a constant time size() method, so be careful to
-/// use empty() when you really want to know if it's empty.
-///
-/// The ilist class is implemented as a circular list.  The list itself contains
-/// a sentinel node, whose Next points at begin() and whose Prev points at
-/// rbegin().  The sentinel node itself serves as end() and rend().
-///
+//
+// This file defines classes to implement an intrusive doubly linked list class
+// (i.e. each node of the list must contain a next and previous field for the
+// list.
+//
+// The ilist class itself should be a plug in replacement for list.  This list
+// replacement does not provide a constant time size() method, so be careful to
+// use empty() when you really want to know if it's empty.
+//
+// The ilist class is implemented as a circular list.  The list itself contains
+// a sentinel node, whose Next points at begin() and whose Prev points at
+// rbegin().  The sentinel node itself serves as end() and rend().
+//
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_ILIST_H
@@ -66,8 +66,9 @@ template <typename NodeTy> struct ilist_callback_traits {
   void addNodeToList(NodeTy *) {}
   void removeNodeFromList(NodeTy *) {}
 
-  /// Callback before transferring nodes to this list. The nodes may already be
-  /// in this same list.
+  /// Callback before transferring nodes to this list.
+  ///
+  /// \pre \c this!=&OldList
   template <class Iterator>
   void transferNodesFromList(ilist_callback_traits &OldList, Iterator /*first*/,
                              Iterator /*last*/) {
@@ -83,11 +84,21 @@ template <typename NodeTy>
 struct ilist_node_traits : ilist_alloc_traits<NodeTy>,
                            ilist_callback_traits<NodeTy> {};
 
+/// Default template traits for intrusive list.
+///
+/// By inheriting from this, you can easily use default implementations for all
+/// common operations.
+///
+/// TODO: Remove this customization point.  Specializing ilist_traits is
+/// already fully general.
+template <typename NodeTy>
+struct ilist_default_traits : public ilist_node_traits<NodeTy> {};
+
 /// Template traits for intrusive list.
 ///
 /// Customize callbacks and allocation semantics.
 template <typename NodeTy>
-struct ilist_traits : public ilist_node_traits<NodeTy> {};
+struct ilist_traits : public ilist_default_traits<NodeTy> {};
 
 /// Const traits should never be instantiated.
 template <typename Ty> struct ilist_traits<const Ty> {};
@@ -104,7 +115,7 @@ template <class TraitsT, class NodeT> struct HasGetNext {
   template <size_t N> struct SFINAE {};
 
   template <class U>
-  static Yes &test(U *I, decltype(I->getNext(&make<NodeT>())) * = nullptr);
+  static Yes &test(U *I, decltype(I->getNext(&make<NodeT>())) * = 0);
   template <class> static No &test(...);
 
 public:
@@ -118,7 +129,7 @@ template <class TraitsT> struct HasCreateSentinel {
   typedef char No[2];
 
   template <class U>
-  static Yes &test(U *I, decltype(I->createSentinel()) * = nullptr);
+  static Yes &test(U *I, decltype(I->createSentinel()) * = 0);
   template <class> static No &test(...);
 
 public:
@@ -167,6 +178,9 @@ template <class IntrusiveListT, class TraitsT>
 class iplist_impl : public TraitsT, IntrusiveListT {
   typedef IntrusiveListT base_list_type;
 
+protected:
+  typedef iplist_impl iplist_impl_type;
+
 public:
   typedef typename base_list_type::pointer pointer;
   typedef typename base_list_type::const_pointer const_pointer;
@@ -199,12 +213,10 @@ public:
   iplist_impl &operator=(const iplist_impl &) = delete;
 
   iplist_impl(iplist_impl &&X)
-      : TraitsT(std::move(static_cast<TraitsT &>(X))),
-        IntrusiveListT(std::move(static_cast<IntrusiveListT &>(X))) {}
+      : TraitsT(std::move(X)), IntrusiveListT(std::move(X)) {}
   iplist_impl &operator=(iplist_impl &&X) {
-    *static_cast<TraitsT *>(this) = std::move(static_cast<TraitsT &>(X));
-    *static_cast<IntrusiveListT *>(this) =
-        std::move(static_cast<IntrusiveListT &>(X));
+    *static_cast<TraitsT *>(this) = std::move(X);
+    *static_cast<IntrusiveListT *>(this) = std::move(X);
     return *this;
   }
 
@@ -288,8 +300,8 @@ private:
     if (position == last)
       return;
 
-    // Notify traits we moved the nodes...
-    this->transferNodesFromList(L2, first, last);
+    if (this != &L2) // Notify traits we moved the nodes...
+      this->transferNodesFromList(L2, first, last);
 
     base_list_type::splice(position, L2, first, last);
   }
@@ -357,26 +369,26 @@ public:
 
   using base_list_type::sort;
 
-  /// Get the previous node, or \c nullptr for the list head.
+  /// \brief Get the previous node, or \c nullptr for the list head.
   pointer getPrevNode(reference N) const {
     auto I = N.getIterator();
     if (I == begin())
       return nullptr;
     return &*std::prev(I);
   }
-  /// Get the previous node, or \c nullptr for the list head.
+  /// \brief Get the previous node, or \c nullptr for the list head.
   const_pointer getPrevNode(const_reference N) const {
     return getPrevNode(const_cast<reference >(N));
   }
 
-  /// Get the next node, or \c nullptr for the list tail.
+  /// \brief Get the next node, or \c nullptr for the list tail.
   pointer getNextNode(reference N) const {
     auto Next = std::next(N.getIterator());
     if (Next == end())
       return nullptr;
     return &*Next;
   }
-  /// Get the next node, or \c nullptr for the list tail.
+  /// \brief Get the next node, or \c nullptr for the list tail.
   const_pointer getNextNode(const_reference N) const {
     return getNextNode(const_cast<reference >(N));
   }
@@ -390,7 +402,7 @@ public:
 template <class T, class... Options>
 class iplist
     : public iplist_impl<simple_ilist<T, Options...>, ilist_traits<T>> {
-  using iplist_impl_type = typename iplist::iplist_impl;
+  typedef typename iplist::iplist_impl_type iplist_impl_type;
 
 public:
   iplist() = default;

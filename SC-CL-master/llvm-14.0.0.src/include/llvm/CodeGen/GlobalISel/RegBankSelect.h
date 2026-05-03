@@ -1,15 +1,15 @@
 //=- llvm/CodeGen/GlobalISel/RegBankSelect.h - Reg Bank Selector --*- C++ -*-=//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
-/// \file
-/// This file describes the interface of the MachineFunctionPass
+/// \file This file describes the interface of the MachineFunctionPass
 /// responsible for assigning the generic virtual registers to register bank.
-///
+
 /// By default, the reg bank selector relies on local decisions to
 /// assign the register bank. In other words, it looks at one instruction
 /// at a time to decide where the operand of that instruction should live.
@@ -22,7 +22,7 @@
 /// of an instruction should live. It asks the target which banks may be
 /// used for each operand of the instruction and what is the cost. Then,
 /// it chooses the solution which minimize the cost of the instruction plus
-/// the cost of any move that may be needed to the values into the right
+/// the cost of any move that may be needed to to the values into the right
 /// register bank.
 /// In other words, the cost for an instruction on a register bank RegBank
 /// is: Cost of I on RegBank plus the sum of the cost for bringing the
@@ -253,7 +253,7 @@ public:
 
   public:
     MBBInsertPoint(MachineBasicBlock &MBB, bool Beginning = true)
-        : MBB(MBB), Beginning(Beginning) {
+        : InsertPoint(), MBB(MBB), Beginning(Beginning) {
       // If we try to insert before phis, we should use the insertion
       // points on the incoming edges.
       assert((!Beginning || MBB.getFirstNonPHI() == MBB.begin()) &&
@@ -299,7 +299,7 @@ public:
 
   public:
     EdgeInsertPoint(MachineBasicBlock &Src, MachineBasicBlock &Dst, Pass &P)
-        : Src(Src), DstOrSplit(&Dst), P(P) {}
+        : InsertPoint(), Src(Src), DstOrSplit(&Dst), P(P) {}
 
     bool isSplit() const override {
       return Src.succ_size() > 1 && DstOrSplit->pred_size() > 1;
@@ -524,7 +524,7 @@ private:
   /// \p OnlyAssign == true means that \p Reg just needs to be assigned a
   /// register bank.  I.e., no repairing is necessary to have the
   /// assignment match.
-  bool assignmentMatch(Register Reg,
+  bool assignmentMatch(unsigned Reg,
                        const RegisterBankInfo::ValueMapping &ValMapping,
                        bool &OnlyAssign) const;
 
@@ -563,7 +563,7 @@ private:
   bool repairReg(MachineOperand &MO,
                  const RegisterBankInfo::ValueMapping &ValMapping,
                  RegBankSelect::RepairingPlacement &RepairPt,
-                 const iterator_range<SmallVectorImpl<Register>::const_iterator>
+                 const iterator_range<SmallVectorImpl<unsigned>::const_iterator>
                      &NewVRegs);
 
   /// Return the cost of the instruction needed to map \p MO to \p ValMapping.
@@ -632,11 +632,6 @@ public:
   MachineFunctionProperties getSetProperties() const override {
     return MachineFunctionProperties().set(
         MachineFunctionProperties::Property::RegBankSelected);
-  }
-
-  MachineFunctionProperties getClearedProperties() const override {
-    return MachineFunctionProperties()
-      .set(MachineFunctionProperties::Property::NoPHIs);
   }
 
   /// Walk through \p MF and assign a register bank to every virtual register

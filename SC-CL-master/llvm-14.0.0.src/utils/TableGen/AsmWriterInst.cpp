@@ -1,8 +1,9 @@
 //===- AsmWriterInst.h - Classes encapsulating a printable inst -----------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -18,7 +19,12 @@
 
 using namespace llvm;
 
-static bool isIdentChar(char C) { return isAlnum(C) || C == '_'; }
+static bool isIdentChar(char C) {
+  return (C >= 'a' && C <= 'z') ||
+  (C >= 'A' && C <= 'Z') ||
+  (C >= '0' && C <= '9') ||
+  C == '_';
+}
 
 std::string AsmWriterOperand::getCode(bool PassSubtarget) const {
   if (OperandType == isLiteralTextOperand) {
@@ -31,8 +37,6 @@ std::string AsmWriterOperand::getCode(bool PassSubtarget) const {
     return Str;
 
   std::string Result = Str + "(MI";
-  if (PCRel)
-    Result += ", Address";
   if (MIOpNo != ~0U)
     Result += ", " + utostr(MIOpNo);
   if (PassSubtarget)
@@ -90,10 +94,8 @@ AsmWriterInst::AsmWriterInst(const CodeGenInstruction &CGI, unsigned CGIIndex,
                    != std::string::npos) {
           AddLiteralString(std::string(1, AsmString[DollarPos+1]));
         } else {
-          PrintFatalError(
-              CGI.TheDef->getLoc(),
-              "Non-supported escaped character found in instruction '" +
-                  CGI.TheDef->getName() + "'!");
+          PrintFatalError("Non-supported escaped character found in instruction '" +
+            CGI.TheDef->getName() + "'!");
         }
         LastEmitted = DollarPos+2;
         continue;
@@ -130,41 +132,33 @@ AsmWriterInst::AsmWriterInst(const CodeGenInstruction &CGI, unsigned CGIIndex,
       // brace.
       if (hasCurlyBraces) {
         if (VarEnd >= AsmString.size())
-          PrintFatalError(
-              CGI.TheDef->getLoc(),
-              "Reached end of string before terminating curly brace in '" +
-                  CGI.TheDef->getName() + "'");
+          PrintFatalError("Reached end of string before terminating curly brace in '"
+            + CGI.TheDef->getName() + "'");
 
         // Look for a modifier string.
         if (AsmString[VarEnd] == ':') {
           ++VarEnd;
           if (VarEnd >= AsmString.size())
-            PrintFatalError(
-                CGI.TheDef->getLoc(),
-                "Reached end of string before terminating curly brace in '" +
-                    CGI.TheDef->getName() + "'");
+            PrintFatalError("Reached end of string before terminating curly brace in '"
+              + CGI.TheDef->getName() + "'");
 
           std::string::size_type ModifierStart = VarEnd;
           while (VarEnd < AsmString.size() && isIdentChar(AsmString[VarEnd]))
             ++VarEnd;
-          Modifier = AsmString.substr(ModifierStart, VarEnd - ModifierStart);
+          Modifier = std::string(AsmString.begin()+ModifierStart,
+                                 AsmString.begin()+VarEnd);
           if (Modifier.empty())
-            PrintFatalError(CGI.TheDef->getLoc(),
-                            "Bad operand modifier name in '" +
-                                CGI.TheDef->getName() + "'");
+            PrintFatalError("Bad operand modifier name in '"+ CGI.TheDef->getName() + "'");
         }
 
         if (AsmString[VarEnd] != '}')
-          PrintFatalError(
-              CGI.TheDef->getLoc(),
-              "Variable name beginning with '{' did not end with '}' in '" +
-                  CGI.TheDef->getName() + "'");
+          PrintFatalError("Variable name beginning with '{' did not end with '}' in '"
+            + CGI.TheDef->getName() + "'");
         ++VarEnd;
       }
       if (VarName.empty() && Modifier.empty())
-        PrintFatalError(CGI.TheDef->getLoc(),
-                        "Stray '$' in '" + CGI.TheDef->getName() +
-                            "' asm string, maybe you want $$?");
+        PrintFatalError("Stray '$' in '" + CGI.TheDef->getName() +
+          "' asm string, maybe you want $$?");
 
       if (VarName.empty()) {
         // Just a modifier, pass this into PrintSpecial.
@@ -175,9 +169,7 @@ AsmWriterInst::AsmWriterInst(const CodeGenInstruction &CGI, unsigned CGIIndex,
         CGIOperandList::OperandInfo OpInfo = CGI.Operands[OpNo];
 
         unsigned MIOp = OpInfo.MIOperandNo;
-        Operands.emplace_back(OpInfo.PrinterMethodName, MIOp, Modifier,
-                              AsmWriterOperand::isMachineInstrOperand,
-                              OpInfo.OperandType == "MCOI::OPERAND_PCREL");
+        Operands.emplace_back(OpInfo.PrinterMethodName, MIOp, Modifier);
       }
       LastEmitted = VarEnd;
     }

@@ -1,8 +1,9 @@
 //===-- CXLoadedDiagnostic.cpp - Handling of persisent diags ----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -20,7 +21,7 @@
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/Twine.h"
-#include "llvm/Bitstream/BitstreamReader.h"
+#include "llvm/Bitcode/BitstreamReader.h"
 #include "llvm/Support/ErrorHandling.h"
 
 using namespace clang;
@@ -46,7 +47,7 @@ public:
   FileManager FakeFiles;
   llvm::DenseMap<unsigned, const FileEntry *> Files;
 
-  /// Copy the string into our own allocator.
+  /// \brief Copy the string into our own allocator.
   const char *copyString(StringRef Blob) {
     char *mem = Alloc.Allocate<char>(Blob.size() + 1);
     memcpy(mem, Blob.data(), Blob.size());
@@ -235,7 +236,7 @@ protected:
 
 public:
   DiagLoader(enum CXLoadDiag_Error *e, CXString *es)
-      : error(e), errorString(es) {
+      : SerializedDiagnosticReader(), error(e), errorString(es) {
     if (error)
       *error = CXLoadDiag_None;
     if (errorString)
@@ -247,7 +248,7 @@ public:
 } // end anonymous namespace
 
 CXDiagnosticSet DiagLoader::load(const char *file) {
-  TopDiags = std::make_unique<CXLoadedDiagnosticSetImpl>();
+  TopDiags = llvm::make_unique<CXLoadedDiagnosticSetImpl>();
 
   std::error_code EC = readDiagnostics(file);
   if (EC) {
@@ -306,7 +307,7 @@ DiagLoader::readRange(const serialized_diags::Location &SDStart,
 }
 
 std::error_code DiagLoader::visitStartOfDiagnostic() {
-  CurrentDiags.push_back(std::make_unique<CXLoadedDiagnostic>());
+  CurrentDiags.push_back(llvm::make_unique<CXLoadedDiagnostic>());
   return std::error_code();
 }
 

@@ -62,12 +62,10 @@ understanding the encoding.
 Magic Numbers
 -------------
 
-The first four bytes of a bitstream are used as an application-specific magic
-number.  Generic bitcode tools may look at the first four bytes to determine
-whether the stream is a known stream type.  However, these tools should *not*
-determine whether a bitstream is valid based on its magic number alone.  New
-application-specific bitstream formats are being developed all the time; tools
-should not reject them just because they have a hitherto unseen magic number.
+The first two bytes of a bitcode file are 'BC' (``0x42``, ``0x43``).  The second
+two bytes are an application-specific magic number.  Generic bitcode tools can
+look at only the first two bytes to verify the file is bitcode, while
+application-specific programs will want to look at all four.
 
 .. _primitives:
 
@@ -104,11 +102,11 @@ value (0 through 7) is encoded directly, with the high bit set to zero.  Values
 larger than N-1 bits emit their bits in a series of N-1 bit chunks, where all
 but the last set the high bit.
 
-For example, the value 30 (0x1E) is encoded as 62 (0b0011'1110) when emitted as
-a vbr4 value.  The first set of four bits starting from the least significant
-indicates the value 6 (110) with a continuation piece (indicated by a high bit
-of 1).  The next set of four bits indicates a value of 24 (011 << 3) with no
-continuation.  The sum (6+24) yields the value 30.
+For example, the value 27 (0x1B) is encoded as 1011 0011 when emitted as a vbr4
+value.  The first set of four bits indicates the value 3 (011) with a
+continuation piece (indicated by a high bit of 1).  The next word indicates a
+value of 24 (011 << 3) with no continuation.  The sum (3+24) yields the value
+27.
 
 .. _char6-encoded value:
 
@@ -264,7 +262,7 @@ Abbreviated Record Encoding
 
 ``[<abbrevid>, fields...]``
 
-An abbreviated record is an abbreviation id followed by a set of fields that are
+An abbreviated record is a abbreviation id followed by a set of fields that are
 encoded according to the `abbreviation definition`_.  This allows records to be
 encoded significantly more densely than records encoded with the
 `UNABBREV_RECORD`_ type, and allows the abbreviation types to be specified in
@@ -498,8 +496,11 @@ LLVM IR Magic Number
 The magic number for LLVM IR files is:
 
 :raw-html:`<tt><blockquote>`
-['B'\ :sub:`8`, 'C'\ :sub:`8`, 0x0\ :sub:`4`, 0xC\ :sub:`4`, 0xE\ :sub:`4`, 0xD\ :sub:`4`]
+[0x0\ :sub:`4`, 0xC\ :sub:`4`, 0xE\ :sub:`4`, 0xD\ :sub:`4`]
 :raw-html:`</blockquote></tt>`
+
+When combined with the bitcode magic number and viewed as bytes, this is
+``"BC 0xC0DE"``.
 
 .. _Signed VBRs:
 
@@ -557,10 +558,9 @@ MODULE_BLOCK Contents
 ---------------------
 
 The ``MODULE_BLOCK`` block (id 8) is the top-level block for LLVM bitcode files,
-and each module in a bitcode file must contain exactly one. A bitcode file with
-multi-module bitcode is valid. In addition to records (described below)
-containing information about the module, a ``MODULE_BLOCK`` block may contain
-the following sub-blocks:
+and each bitcode file must contain exactly one. In addition to records
+(described below) containing information about the module, a ``MODULE_BLOCK``
+block may contain the following sub-blocks:
 
 * `BLOCKINFO`_
 * `PARAMATTR_BLOCK`_
@@ -795,9 +795,6 @@ function. The operand fields are:
   * ``preserve_allcc``: code 15
   * ``swiftcc`` : code 16
   * ``cxx_fast_tlscc``: code 17
-  * ``tailcc`` : code 18
-  * ``cfguard_checkcc`` : code 19
-  * ``swifttailcc`` : code 20
   * ``x86_stdcallcc``: code 64
   * ``x86_fastcallcc``: code 65
   * ``arm_apcscc``: code 66
@@ -841,7 +838,7 @@ function. The operand fields are:
   plus 1.
 
 * *preemptionspecifier*: If present, an encoding of the :ref:`runtime preemption specifier<bcpreemptionspecifier>`  of this function.
-
+ 
 MODULE_CODE_ALIAS Record
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -907,7 +904,7 @@ PARAMATTR_CODE_ENTRY Record
 
 The ``ENTRY`` record (code 2) contains a variable number of values describing a
 unique set of function parameter attributes. Each *attrgrp* value is used as a
-key with which to look up an entry in the attribute group table described
+key with which to look up an entry in the the attribute group table described
 in the ``PARAMATTR_GROUP_BLOCK`` block.
 
 .. _PARAMATTR_CODE_ENTRY_OLD:
@@ -1014,7 +1011,7 @@ The integer codes are mapped to well-known attributes as follows.
 * code 9: ``noalias``
 * code 10: ``nobuiltin``
 * code 11: ``nocapture``
-* code 12: ``nodeduplicate``
+* code 12: ``noduplicates``
 * code 13: ``noimplicitfloat``
 * code 14: ``noinline``
 * code 15: ``nonlazybind``
@@ -1058,38 +1055,12 @@ The integer codes are mapped to well-known attributes as follows.
 * code 53: ``speculatable``
 * code 54: ``strictfp``
 * code 55: ``sanitize_hwaddress``
-* code 56: ``nocf_check``
-* code 57: ``optforfuzzing``
-* code 58: ``shadowcallstack``
-* code 59: ``speculative_load_hardening``
-* code 60: ``immarg``
-* code 61: ``willreturn``
-* code 62: ``nofree``
-* code 63: ``nosync``
-* code 64: ``sanitize_memtag``
-* code 65: ``preallocated``
-* code 66: ``no_merge``
-* code 67: ``null_pointer_is_valid``
-* code 68: ``noundef``
-* code 69: ``byref``
-* code 70: ``mustprogress``
-* code 74: ``vscale_range(<Min>[, <Max>])``
-* code 75: ``swiftasync``
-* code 76: ``nosanitize_coverage``
-* code 77: ``elementtype``
-* code 78: ``disable_sanitizer_instrumentation``
 
 .. note::
   The ``allocsize`` attribute has a special encoding for its arguments. Its two
   arguments, which are 32-bit integers, are packed into one 64-bit integer value
   (i.e. ``(EltSizeParam << 32) | NumEltsParam``), with ``NumEltsParam`` taking on
   the sentinel value -1 if it is not specified.
-
-.. note::
-  The ``vscale_range`` attribute has a special encoding for its arguments. Its two
-  arguments, which are 32-bit integers, are packed into one 64-bit integer value
-  (i.e. ``(Min << 32) | Max``), with ``Max`` taking on the value of ``Min`` if
-  it is not specified.
 
 .. _TYPE_BLOCK:
 
@@ -1131,14 +1102,6 @@ TYPE_CODE_HALF Record
 
 The ``HALF`` record (code 10) adds a ``half`` (16-bit floating point) type to
 the type table.
-
-TYPE_CODE_BFLOAT Record
-^^^^^^^^^^^^^^^^^^^^^^^
-
-``[BFLOAT]``
-
-The ``BFLOAT`` record (code 23) adds a ``bfloat`` (16-bit brain floating point)
-type to the type table.
 
 TYPE_CODE_FLOAT Record
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -1328,13 +1291,6 @@ operand fields are
 
 * *paramty*: Zero or more type indices representing the parameter types of the
   function
-
-TYPE_CODE_X86_AMX Record
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-``[X86_AMX]``
-
-The ``X86_AMX`` record (code 24) adds an ``x86_amx`` type to the type table.
 
 .. _CONSTANTS_BLOCK:
 

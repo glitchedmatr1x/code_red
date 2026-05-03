@@ -1,8 +1,8 @@
-# Install script for directory: C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build
+# Install script for directory: D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/LLVM")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files/LLVM")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -32,39 +32,45 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xscan-buildx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE PROGRAM FILES "C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build/bin/scan-build")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "scan-build" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE PROGRAM FILES "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build/bin/scan-build")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xscan-buildx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE PROGRAM FILES "C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build/bin/scan-build.bat")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "scan-build" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE PROGRAM FILES "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build/bin/scan-build.bat")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xscan-buildx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec" TYPE PROGRAM FILES "C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build/libexec/ccc-analyzer")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "scan-build" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec" TYPE PROGRAM FILES "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build/libexec/ccc-analyzer")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xscan-buildx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec" TYPE PROGRAM FILES "C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build/libexec/c++-analyzer")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "scan-build" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec" TYPE PROGRAM FILES "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build/libexec/c++-analyzer")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xscan-buildx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec" TYPE PROGRAM FILES "C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build/libexec/ccc-analyzer.bat")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "scan-build" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec" TYPE PROGRAM FILES "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build/libexec/ccc-analyzer.bat")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xscan-buildx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec" TYPE PROGRAM FILES "C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build/libexec/c++-analyzer.bat")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "scan-build" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/libexec" TYPE PROGRAM FILES "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build/libexec/c++-analyzer.bat")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xscan-buildx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/man/man1" TYPE PROGRAM FILES "C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build/man/scan-build.1")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "scan-build" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/man/man1" TYPE PROGRAM FILES "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build/man/scan-build.1")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xscan-buildx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/scan-build" TYPE FILE FILES "C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build/share/scan-build/scanview.css")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "scan-build" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/scan-build" TYPE FILE FILES "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build/share/scan-build/scanview.css")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xscan-buildx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/scan-build" TYPE FILE FILES "C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/scan-build/share/scan-build/sorttable.js")
+if(CMAKE_INSTALL_COMPONENT STREQUAL "scan-build" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/scan-build" TYPE FILE FILES "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src/tools/clang/tools/scan-build/share/scan-build/sorttable.js")
 endif()
 
+string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
+       "${CMAKE_INSTALL_MANIFEST_FILES}")
+if(CMAKE_INSTALL_LOCAL_ONLY)
+  file(WRITE "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/tools/clang/tools/scan-build/install_local_manifest.txt"
+     "${CMAKE_INSTALL_MANIFEST_CONTENT}")
+endif()

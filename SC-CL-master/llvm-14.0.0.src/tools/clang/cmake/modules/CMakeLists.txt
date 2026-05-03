@@ -1,7 +1,3 @@
-include(ExtendPath)
-include(LLVMDistributionSupport)
-include(FindPrefixFromConfig)
-
 # Generate a list of CMake library targets so that other CMake projects can
 # link against them. LLVM calls its version of this file LLVMExports.cmake, but
 # the usual CMake convention seems to be ${Project}Targets.cmake.
@@ -18,7 +14,7 @@ export(TARGETS ${CLANG_EXPORTS} FILE ${clang_cmake_builddir}/ClangTargets.cmake)
 # Generate ClangConfig.cmake for the build tree.
 set(CLANG_CONFIG_CMAKE_DIR "${clang_cmake_builddir}")
 set(CLANG_CONFIG_LLVM_CMAKE_DIR "${llvm_cmake_builddir}")
-set(CLANG_CONFIG_INCLUDE_EXPORTS "include(\"${clang_cmake_builddir}/ClangTargets.cmake\")")
+set(CLANG_CONFIG_EXPORTS_FILE "${clang_cmake_builddir}/ClangTargets.cmake")
 set(CLANG_CONFIG_INCLUDE_DIRS
   "${CLANG_SOURCE_DIR}/include"
   "${CLANG_BINARY_DIR}/include"
@@ -29,23 +25,24 @@ configure_file(
   @ONLY)
 set(CLANG_CONFIG_CMAKE_DIR)
 set(CLANG_CONFIG_LLVM_CMAKE_DIR)
-
-# For compatibility with projects that include(ClangConfig)
-# via CMAKE_MODULE_PATH, place API modules next to it.
-file(COPY .
-  DESTINATION ${clang_cmake_builddir}
-  FILES_MATCHING PATTERN *.cmake
-  PATTERN CMakeFiles EXCLUDE
-  )
+set(CLANG_CONFIG_EXPORTS_FILE)
 
 # Generate ClangConfig.cmake for the install tree.
-find_prefix_from_config(CLANG_CONFIG_CODE CLANG_INSTALL_PREFIX "${CLANG_INSTALL_PACKAGE_DIR}")
+set(CLANG_CONFIG_CODE "
+# Compute the installation prefix from this LLVMConfig.cmake file location.
+get_filename_component(CLANG_INSTALL_PREFIX \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)")
+# Construct the proper number of get_filename_component(... PATH)
+# calls to compute the installation prefix.
+string(REGEX REPLACE "/" ";" _count "${CLANG_INSTALL_PACKAGE_DIR}")
+foreach(p ${_count})
+  set(CLANG_CONFIG_CODE "${CLANG_CONFIG_CODE}
+get_filename_component(CLANG_INSTALL_PREFIX \"\${CLANG_INSTALL_PREFIX}\" PATH)")
+endforeach(p)
 set(CLANG_CONFIG_CMAKE_DIR "\${CLANG_INSTALL_PREFIX}/${CLANG_INSTALL_PACKAGE_DIR}")
 set(CLANG_CONFIG_LLVM_CMAKE_DIR "\${CLANG_INSTALL_PREFIX}/${LLVM_INSTALL_PACKAGE_DIR}")
-get_config_exports_includes(Clang CLANG_CONFIG_INCLUDE_EXPORTS)
-extend_path(base_includedir "\${CLANG_INSTALL_PREFIX}" "${CMAKE_INSTALL_INCLUDEDIR}")
+set(CLANG_CONFIG_EXPORTS_FILE "\${CLANG_CMAKE_DIR}/ClangTargets.cmake")
 set(CLANG_CONFIG_INCLUDE_DIRS
-  "${base_includedir}"
+  "\${CLANG_INSTALL_PREFIX}/include"
   )
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/ClangConfig.cmake.in
@@ -53,20 +50,15 @@ configure_file(
   @ONLY)
 set(CLANG_CONFIG_CODE)
 set(CLANG_CONFIG_CMAKE_DIR)
+set(CLANG_CONFIG_EXPORTS_FILE)
 
 if (NOT LLVM_INSTALL_TOOLCHAIN_ONLY)
-  install_distribution_exports(Clang)
+  get_property(clang_has_exports GLOBAL PROPERTY CLANG_HAS_EXPORTS)
+  if(clang_has_exports)
+    install(EXPORT ClangTargets DESTINATION ${CLANG_INSTALL_PACKAGE_DIR})
+  endif()
 
   install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/ClangConfig.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/AddClang.cmake
-    DESTINATION ${CLANG_INSTALL_PACKAGE_DIR}
-    COMPONENT clang-cmake-exports)
-
-  if(NOT LLVM_ENABLE_IDE)
-    # Add a dummy target so this can be used with LLVM_DISTRIBUTION_COMPONENTS
-    add_custom_target(clang-cmake-exports)
-    add_llvm_install_targets(install-clang-cmake-exports
-                             COMPONENT clang-cmake-exports)
-  endif()
+    DESTINATION ${CLANG_INSTALL_PACKAGE_DIR})
 endif()

@@ -1,4 +1,4 @@
-#!C:/Program Files/Python39/python.exe
+#!C:/Users/glitc/AppData/Local/Programs/Python/Python312/python.exe
 # -*- coding: utf-8 -*-
 
 import os
@@ -24,19 +24,11 @@ def path(p):
     return str((Path(__file__).parent / p).resolve())
 
 
-map_config(path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/extra/test/lit.cfg.py'), path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/extra/test/lit.site.cfg.py'))
-map_config(path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/extra/test/Unit/lit.cfg.py'), path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/extra/test/Unit/lit.site.cfg.py'))
-map_config(path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/extra/clangd/test/lit.cfg.py'), path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/tools/extra/clangd/test/lit.site.cfg.py'))
-map_config(path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/test/lit.cfg.py'), path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/test/lit.site.cfg.py'))
-map_config(path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/test/Unit/lit.cfg.py'), path(r'C:/projects/SC-CL/llvm-14.0.0.src/tools/clang/test/Unit/lit.site.cfg.py'))
-map_config(path(r'C:/projects/SC-CL/llvm-14.0.0.src/utils/lit/tests/lit.cfg'), path(r'C:/projects/SC-CL/llvm-14.0.0.src/utils/lit/lit.site.cfg'))
-map_config(path(r'C:/projects/SC-CL/llvm-14.0.0.src/test/lit.cfg.py'), path(r'C:/projects/SC-CL/llvm-14.0.0.src/test/lit.site.cfg.py'))
-map_config(path(r'C:/projects/SC-CL/llvm-14.0.0.src/test/Unit/lit.cfg.py'), path(r'C:/projects/SC-CL/llvm-14.0.0.src/test/Unit/lit.site.cfg.py'))
 
 builtin_parameters['config_map'] = config_map
 
 # Make sure we can find the lit package.
-llvm_source_root = path(r'C:/projects/SC-CL/llvm-14.0.0.src')
+llvm_source_root = path(r'D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src')
 sys.path.insert(0, os.path.join(llvm_source_root, 'utils', 'lit'))
 
 if __name__=='__main__':

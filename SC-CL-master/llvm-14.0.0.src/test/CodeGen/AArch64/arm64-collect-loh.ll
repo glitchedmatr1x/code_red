@@ -1,5 +1,4 @@
 ; RUN: llc -o - %s -mtriple=arm64-apple-ios -O2 | FileCheck %s
-; RUN: llc -o - %s -mtriple=arm64_32-apple-watchos -O2 | FileCheck %s
 ; RUN: llc -o - %s -mtriple=arm64-linux-gnu -O2 | FileCheck %s --check-prefix=CHECK-ELF
 
 ; CHECK-ELF-NOT: .loh
@@ -61,9 +60,9 @@ if.end4:                                          ; preds = %if.then2, %if.then,
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _C@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _C@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _C@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr w0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr w0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define i32 @getC() {
@@ -77,9 +76,9 @@ define i32 @getC() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _C@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _C@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _C@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldrsw x0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldrsw x0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define i64 @getSExtC() {
@@ -95,10 +94,10 @@ define i64 @getSExtC() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _C@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _C@GOTPAGEOFF]
-; CHECK-NEXT: ldr [[LOAD:w[0-9]+]], [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _C@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LOAD:w[0-9]+]], {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: add [[ADD:w[0-9]+]], [[LOAD]], w0
-; CHECK-NEXT: str [[ADD]], [x[[LDRGOT_REG]]]
+; CHECK-NEXT: str [[ADD]], {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGot [[ADRP_LABEL]], [[LDRGOT_LABEL]]
 define void @getSeveralC(i32 %t) {
@@ -115,9 +114,9 @@ entry:
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _C@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _C@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _C@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: str w0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: str w0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotStr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define void @setC(i32 %t) {
@@ -143,7 +142,7 @@ entry:
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpAddLdr [[ADRP_LABEL]], [[ADDGOT_LABEL]], [[LDR_LABEL]]
 define i32 @getInternalCPlus4() {
-  %addr = getelementptr inbounds i32, i32* @InternalC, i32 4
+  %addr = getelementptr i32, i32* @InternalC, i32 4
   %res = load i32, i32* %addr, align 4
   ret i32 %res
 }
@@ -160,7 +159,7 @@ define i32 @getInternalCPlus4() {
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpAddLdr [[ADRP_LABEL]], [[ADDGOT_LABEL]], [[LDR_LABEL]]
 define i64 @getSExtInternalCPlus4() {
-  %addr = getelementptr inbounds i32, i32* @InternalC, i32 4
+  %addr = getelementptr i32, i32* @InternalC, i32 4
   %res = load i32, i32* %addr, align 4
   %sextres = sext i32 %res to i64
   ret i64 %sextres
@@ -181,7 +180,7 @@ define i64 @getSExtInternalCPlus4() {
 ; CHECK: .loh AdrpAdd [[ADRP_LABEL]], [[ADDGOT_LABEL]]
 define void @getSeveralInternalCPlus4(i32 %t) {
 entry:
-  %addr = getelementptr inbounds i32, i32* @InternalC, i32 4
+  %addr = getelementptr i32, i32* @InternalC, i32 4
   %tmp = load i32, i32* %addr, align 4
   %add = add nsw i32 %tmp, %t
   store i32 %add, i32* %addr, align 4
@@ -201,7 +200,7 @@ entry:
 ; CHECK: .loh AdrpAddStr [[ADRP_LABEL]], [[ADDGOT_LABEL]], [[LDR_LABEL]]
 define void @setInternalCPlus4(i32 %t) {
 entry:
-  %addr = getelementptr inbounds i32, i32* @InternalC, i32 4
+  %addr = getelementptr i32, i32* @InternalC, i32 4
   store i32 %t, i32* %addr, align 4
   ret void
 }
@@ -277,8 +276,8 @@ entry:
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _D@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _D@GOTPAGEOFF]
-; CHECK-NEXT: ldrb w0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _D@GOTPAGEOFF]
+; CHECK-NEXT: ldrb w0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGot [[ADRP_LABEL]], [[LDRGOT_LABEL]]
 define i8 @getD() {
@@ -290,9 +289,9 @@ define i8 @getD() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _D@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _D@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _D@GOTPAGEOFF]
 ; CHECK-NEXT: [[STR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: strb w0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: strb w0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotStr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[STR_LABEL]]
 define void @setD(i8 %t) {
@@ -306,9 +305,9 @@ define void @setD(i8 %t) {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _D@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _D@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _D@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldrsb w0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldrsb w0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define i32 @getSExtD() {
@@ -323,9 +322,9 @@ define i32 @getSExtD() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _D@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _D@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _D@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldrsb x0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldrsb x0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define i64 @getSExt64D() {
@@ -342,8 +341,8 @@ define i64 @getSExt64D() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _E@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _E@GOTPAGEOFF]
-; CHECK-NEXT: ldrh w0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _E@GOTPAGEOFF]
+; CHECK-NEXT: ldrh w0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGot [[ADRP_LABEL]], [[LDRGOT_LABEL]]
 define i16 @getE() {
@@ -357,9 +356,9 @@ define i16 @getE() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _E@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _E@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _E@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldrsh w0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldrsh w0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define i32 @getSExtE() {
@@ -372,9 +371,9 @@ define i32 @getSExtE() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _E@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _E@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _E@GOTPAGEOFF]
 ; CHECK-NEXT: [[STR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: strh w0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: strh w0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotStr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[STR_LABEL]]
 define void @setE(i16 %t) {
@@ -388,9 +387,9 @@ define void @setE(i16 %t) {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _E@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _E@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _E@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldrsh x0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldrsh x0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define i64 @getSExt64E() {
@@ -407,9 +406,9 @@ define i64 @getSExt64E() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _F@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _F@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _F@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr x0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr x0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define i64 @getF() {
@@ -421,9 +420,9 @@ define i64 @getF() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _F@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _F@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _F@GOTPAGEOFF]
 ; CHECK-NEXT: [[STR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: str x0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: str x0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotStr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[STR_LABEL]]
 define void @setF(i64 %t) {
@@ -439,9 +438,9 @@ define void @setF(i64 %t) {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _G@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _G@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _G@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr s0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr s0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define float @getG() {
@@ -453,9 +452,9 @@ define float @getG() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _G@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _G@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _G@GOTPAGEOFF]
 ; CHECK-NEXT: [[STR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: str s0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: str s0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotStr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[STR_LABEL]]
 define void @setG(float %t) {
@@ -471,9 +470,9 @@ define void @setG(float %t) {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _H@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _H@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _H@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr h0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr h0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define half @getH() {
@@ -485,9 +484,9 @@ define half @getH() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _H@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _H@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _H@GOTPAGEOFF]
 ; CHECK-NEXT: [[STR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: str h0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: str h0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotStr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[STR_LABEL]]
 define void @setH(half %t) {
@@ -503,9 +502,9 @@ define void @setH(half %t) {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _I@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _I@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _I@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr d0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr d0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define double @getI() {
@@ -517,9 +516,9 @@ define double @getI() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _I@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _I@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _I@GOTPAGEOFF]
 ; CHECK-NEXT: [[STR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: str d0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: str d0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotStr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[STR_LABEL]]
 define void @setI(double %t) {
@@ -535,9 +534,9 @@ define void @setI(double %t) {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _J@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _J@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _J@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr d0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr d0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define <2 x i32> @getJ() {
@@ -549,9 +548,9 @@ define <2 x i32> @getJ() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _J@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _J@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _J@GOTPAGEOFF]
 ; CHECK-NEXT: [[STR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: str d0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: str d0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotStr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[STR_LABEL]]
 define void @setJ(<2 x i32> %t) {
@@ -567,9 +566,9 @@ define void @setJ(<2 x i32> %t) {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _K@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _K@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _K@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr q0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr q0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define <4 x i32> @getK() {
@@ -581,9 +580,9 @@ define <4 x i32> @getK() {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _K@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _K@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _K@GOTPAGEOFF]
 ; CHECK-NEXT: [[STR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: str q0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: str q0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotStr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[STR_LABEL]]
 define void @setK(<4 x i32> %t) {
@@ -599,9 +598,9 @@ define void @setK(<4 x i32> %t) {
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _L@GOTPAGE
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _L@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _L@GOTPAGEOFF]
 ; CHECK-NEXT: [[LDR_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr b0, [x[[LDRGOT_REG]]]
+; CHECK-NEXT: ldr b0, {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGotLdr [[ADRP_LABEL]], [[LDRGOT_LABEL]], [[LDR_LABEL]]
 define <1 x i8> @getL() {
@@ -612,12 +611,12 @@ define <1 x i8> @getL() {
 ; CHECK-LABEL: _setL
 ; CHECK: [[ADRP_LABEL:Lloh[0-9]+]]:
 ; CHECK-NEXT: adrp [[ADRP_REG:x[0-9]+]], _L@GOTPAGE
-; CHECK-NEXT: ; kill
 ; CHECK-NEXT: [[LDRGOT_LABEL:Lloh[0-9]+]]:
-; CHECK-NEXT: ldr {{[xw]}}[[LDRGOT_REG:[0-9]+]], {{\[}}[[ADRP_REG]], _L@GOTPAGEOFF]
+; CHECK-NEXT: ldr [[LDRGOT_REG:x[0-9]+]], {{\[}}[[ADRP_REG]], _L@GOTPAGEOFF]
+; CHECK-NEXT: ; kill
 ; Ultimately we should generate str b0, but right now, we match the vector
 ; variant which does not allow to fold the immediate into the store.
-; CHECK-NEXT: st1.b { v0 }[0], [x[[LDRGOT_REG]]]
+; CHECK-NEXT: st1.b { v0 }[0], {{\[}}[[LDRGOT_REG]]]
 ; CHECK-NEXT: ret
 ; CHECK: .loh AdrpLdrGot [[ADRP_LABEL]], [[LDRGOT_LABEL]]
 define void @setL(<1 x i8> %t) {
@@ -639,13 +638,13 @@ define void @setL(<1 x i8> %t) {
 ; CHECK: [[LOH_LABEL1:Lloh[0-9]+]]:
 ; CHECK: ldr q[[IDX:[0-9]+]], {{\[}}[[ADRP_REG]], [[CONSTPOOL]]@PAGEOFF]
 ; The tuple comes from the next instruction.
-; CHECK: ext.16b v{{[0-9]+}}, v{{[0-9]+}}, v{{[0-9]+}}, #1
+; CHECK-NEXT: tbl.16b v{{[0-9]+}}, { v{{[0-9]+}}, v{{[0-9]+}} }, v[[IDX]]
 ; CHECK: ret
 ; CHECK: .loh AdrpLdr [[LOH_LABEL0]], [[LOH_LABEL1]]
 define void @uninterestingSub(i8* nocapture %row) #0 {
   %tmp = bitcast i8* %row to <16 x i8>*
   %tmp1 = load <16 x i8>, <16 x i8>* %tmp, align 16
-  %vext43 = shufflevector <16 x i8> <i8 undef, i8 16, i8 15, i8 14, i8 13, i8 12, i8 11, i8 10, i8 9, i8 8, i8 7, i8 6, i8 5, i8 4, i8 3, i8 2>, <16 x i8> %tmp1, <16 x i32> <i32 1, i32 2, i32 3, i32 4, i32 5, i32 6, i32 7, i32 8, i32 9, i32 10, i32 11, i32 12, i32 13, i32 14, i32 15, i32 16>
+  %vext43 = shufflevector <16 x i8> <i8 undef, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0, i8 0>, <16 x i8> %tmp1, <16 x i32> <i32 1, i32 2, i32 3, i32 4, i32 5, i32 6, i32 7, i32 8, i32 9, i32 10, i32 11, i32 12, i32 13, i32 14, i32 15, i32 16>
   %add.i.414 = add <16 x i8> zeroinitializer, %vext43
   store <16 x i8> %add.i.414, <16 x i8>* %tmp, align 16
   %add.ptr51 = getelementptr inbounds i8, i8* %row, i64 16
@@ -662,7 +661,7 @@ define void @uninterestingSub(i8* nocapture %row) #0 {
 @.str.89 = external unnamed_addr constant [12 x i8], align 1
 @.str.90 = external unnamed_addr constant [5 x i8], align 1
 ; CHECK-LABEL: test_r274582
-define void @test_r274582(double %x) {
+define void @test_r274582() {
 entry:
   br i1 undef, label %if.then.i, label %if.end.i
 if.then.i:
@@ -672,10 +671,10 @@ if.end.i:
 ; CHECK: .loh AdrpLdrGot
 ; CHECK: .loh AdrpAdrp
 ; CHECK: .loh AdrpLdr
-  %mul = fmul double %x, 1.000000e-06
-  %add = fadd double %mul, %mul
-  %sub = fsub double %add, %add
-  call void (i8*, ...) @callee(i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.89, i64 0, i64 0), i8* getelementptr inbounds ([5 x i8], [5 x i8]* @.str.90, i64 0, i64 0), double %sub)
+  %mul.i.i.i = fmul double undef, 1.000000e-06
+  %add.i.i.i = fadd double undef, %mul.i.i.i
+  %sub.i.i = fsub double %add.i.i.i, undef
+  call void (i8*, ...) @callee(i8* getelementptr inbounds ([12 x i8], [12 x i8]* @.str.89, i64 0, i64 0), i8* getelementptr inbounds ([5 x i8], [5 x i8]* @.str.90, i64 0, i64 0), double %sub.i.i)
   unreachable
 }
 declare void @callee(i8* nocapture readonly, ...) 

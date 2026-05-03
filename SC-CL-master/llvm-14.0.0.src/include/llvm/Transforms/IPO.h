@@ -1,8 +1,9 @@
 //===- llvm/Transforms/IPO.h - Interprocedural Transformations --*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,7 +15,6 @@
 #ifndef LLVM_TRANSFORMS_IPO_H
 #define LLVM_TRANSFORMS_IPO_H
 
-#include "llvm/ADT/SmallVector.h"
 #include <functional>
 #include <vector>
 
@@ -25,16 +25,10 @@ class StringRef;
 class ModuleSummaryIndex;
 class ModulePass;
 class Pass;
+class Function;
 class BasicBlock;
 class GlobalValue;
 class raw_ostream;
-
-//===----------------------------------------------------------------------===//
-//
-// This pass adds !annotation metadata to entries in the
-// @llvm.global.annotations global constant.
-//
-ModulePass *createAnnotation2MetadataLegacyPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -49,6 +43,10 @@ ModulePass *createStripSymbolsPass(bool OnlyDebugInfo = false);
 // Only debugging information is not stripped.
 //
 ModulePass *createStripNonDebugSymbolsPass();
+
+/// This function returns a new pass that downgrades the debug info in the
+/// module to line tables only.
+ModulePass *createStripNonLineTableDebugInfoPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -90,12 +88,10 @@ ModulePass *createEliminateAvailableExternallyPass();
 //===----------------------------------------------------------------------===//
 /// createGVExtractionPass - If deleteFn is true, this pass deletes
 /// the specified global values. Otherwise, it deletes as much of the module as
-/// possible, except for the global values specified. If keepConstInit is true,
-/// the initializers of global constants are not deleted even if they are
-/// unused.
+/// possible, except for the global values specified.
 ///
 ModulePass *createGVExtractionPass(std::vector<GlobalValue*>& GVs, bool
-                                  deleteFn = false, bool keepConstInit = false);
+                                   deleteFn = false);
 
 //===----------------------------------------------------------------------===//
 /// This pass performs iterative function importing from other modules.
@@ -159,8 +155,10 @@ ModulePass *createDeadArgHackingPass();
 Pass *createArgumentPromotionPass(unsigned maxElements = 3);
 
 //===----------------------------------------------------------------------===//
-/// createOpenMPOptLegacyPass - OpenMP specific optimizations.
-Pass *createOpenMPOptCGSCCLegacyPass();
+/// createIPConstantPropagationPass - This pass propagates constants from call
+/// sites into the bodies of functions.
+///
+ModulePass *createIPConstantPropagationPass();
 
 //===----------------------------------------------------------------------===//
 /// createIPSCCPPass - This pass propagates constants from call sites into the
@@ -168,11 +166,6 @@ Pass *createOpenMPOptCGSCCLegacyPass();
 /// in the process.
 ///
 ModulePass *createIPSCCPPass();
-
-//===----------------------------------------------------------------------===//
-/// createFunctionSpecializationPass - This pass propagates constants from call
-/// sites to the specialized version of the callee function.
-ModulePass *createFunctionSpecializationPass();
 
 //===----------------------------------------------------------------------===//
 //
@@ -186,17 +179,10 @@ Pass *createLoopExtractorPass();
 ///
 Pass *createSingleLoopExtractorPass();
 
-/// createBlockExtractorPass - This pass extracts all the specified blocks
-/// from the functions in the module.
+/// createBlockExtractorPass - This pass extracts all blocks (except those
+/// specified in the argument list) from the functions in the module.
 ///
 ModulePass *createBlockExtractorPass();
-ModulePass *
-createBlockExtractorPass(const SmallVectorImpl<BasicBlock *> &BlocksToExtract,
-                         bool EraseFunctions);
-ModulePass *
-createBlockExtractorPass(const SmallVectorImpl<SmallVector<BasicBlock *, 16>>
-                             &GroupsOfBlocksToExtract,
-                         bool EraseFunctions);
 
 /// createStripDeadPrototypesPass - This pass removes any function declarations
 /// (prototypes) that are not used.
@@ -216,19 +202,14 @@ Pass *createReversePostOrderFunctionAttrsPass();
 ModulePass *createMergeFunctionsPass();
 
 //===----------------------------------------------------------------------===//
-/// createHotColdSplittingPass - This pass outlines cold blocks into a separate
-/// function(s).
-ModulePass *createHotColdSplittingPass();
-
-//===----------------------------------------------------------------------===//
-/// createIROutlinerPass - This pass finds similar code regions and factors
-/// those regions out into functions.
-ModulePass *createIROutlinerPass();
-
-//===----------------------------------------------------------------------===//
 /// createPartialInliningPass - This pass inlines parts of functions.
 ///
 ModulePass *createPartialInliningPass();
+
+//===----------------------------------------------------------------------===//
+// createMetaRenamerPass - Rename everything with metasyntatic names.
+//
+ModulePass *createMetaRenamerPass();
 
 //===----------------------------------------------------------------------===//
 /// createBarrierNoopPass - This pass is purely a module pass barrier in a pass
@@ -246,26 +227,23 @@ enum class PassSummaryAction {
   Export, ///< Export information to summary.
 };
 
-/// This pass lowers type metadata and the llvm.type.test intrinsic to
+/// \brief This pass lowers type metadata and the llvm.type.test intrinsic to
 /// bitsets.
 ///
 /// The behavior depends on the summary arguments:
 /// - If ExportSummary is non-null, this pass will export type identifiers to
 ///   the given summary.
-/// - If ImportSummary is non-null, this pass will import type identifiers from
-///   the given summary.
-/// - Otherwise, if both are null and DropTypeTests is true, all type test
-///   assume sequences will be removed from the IR.
-/// It is invalid for both ExportSummary and ImportSummary to be non-null
-/// unless DropTypeTests is true.
+/// - Otherwise, if ImportSummary is non-null, this pass will import type
+///   identifiers from the given summary.
+/// - Otherwise it does neither.
+/// It is invalid for both ExportSummary and ImportSummary to be non-null.
 ModulePass *createLowerTypeTestsPass(ModuleSummaryIndex *ExportSummary,
-                                     const ModuleSummaryIndex *ImportSummary,
-                                     bool DropTypeTests = false);
+                                     const ModuleSummaryIndex *ImportSummary);
 
-/// This pass export CFI checks for use by external modules.
+/// \brief This pass export CFI checks for use by external modules.
 ModulePass *createCrossDSOCFIPass();
 
-/// This pass implements whole-program devirtualization using type
+/// \brief This pass implements whole-program devirtualization using type
 /// metadata.
 ///
 /// The behavior depends on the summary arguments:

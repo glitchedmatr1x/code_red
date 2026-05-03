@@ -1,8 +1,9 @@
 //===- llvm/unittest/Linker/LinkModulesTest.cpp - IRBuilder tests ---------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -72,7 +73,7 @@ protected:
 };
 
 static void expectNoDiags(const DiagnosticInfo &DI, void *C) {
-  llvm_unreachable("expectNoDiags called!");
+  EXPECT_TRUE(false);
 }
 
 TEST_F(LinkModuleTest, BlockAddress) {
@@ -83,7 +84,7 @@ TEST_F(LinkModuleTest, BlockAddress) {
   GEPIndices.push_back(&*F->arg_begin());
 
   Value *GEP = Builder.CreateGEP(AT, GV, GEPIndices, "switch.gep");
-  Value *Load = Builder.CreateLoad(AT->getElementType(), GEP, "switch.load");
+  Value *Load = Builder.CreateLoad(GEP, "switch.load");
 
   Builder.CreateRet(Load);
 
@@ -277,7 +278,7 @@ TEST_F(LinkModuleTest, MoveDistinctMDs) {
   EXPECT_EQ(M3, M4->getOperand(0));
 
   // Link into destination module.
-  auto Dst = std::make_unique<Module>("Linked", C);
+  auto Dst = llvm::make_unique<Module>("Linked", C);
   ASSERT_TRUE(Dst.get());
   Ctx.setDiagnosticHandlerCallBack(expectNoDiags);
   Linker::linkModules(*Dst, std::move(Src));
@@ -346,7 +347,7 @@ TEST_F(LinkModuleTest, RemangleIntrinsics) {
   ASSERT_TRUE(Bar->getFunction("llvm.memset.p0s_struct.rtx_def.0s.i32"));
 
   // Link two modules together.
-  auto Dst = std::make_unique<Module>("Linked", C);
+  auto Dst = llvm::make_unique<Module>("Linked", C);
   ASSERT_TRUE(Dst.get());
   Ctx.setDiagnosticHandlerCallBack(expectNoDiags);
   bool Failed = Linker::linkModules(*Foo, std::move(Bar));

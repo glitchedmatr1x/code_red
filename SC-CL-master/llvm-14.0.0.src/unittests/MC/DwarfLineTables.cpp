@@ -1,8 +1,9 @@
 //===- llvm/unittest/MC/DwarfLineTables.cpp ------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -12,8 +13,7 @@
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCDwarf.h"
 #include "llvm/MC/MCRegisterInfo.h"
-#include "llvm/MC/MCTargetOptions.h"
-#include "llvm/MC/TargetRegistry.h"
+#include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/TargetSelect.h"
 #include "gtest/gtest.h"
 
@@ -21,7 +21,7 @@ using namespace llvm;
 
 namespace {
 struct Context {
-  const char *TripleName = "x86_64-pc-linux";
+  const char *Triple = "x86_64-pc-linux";
   std::unique_ptr<MCRegisterInfo> MRI;
   std::unique_ptr<MCAsmInfo> MAI;
   std::unique_ptr<MCContext> Ctx;
@@ -33,15 +33,13 @@ struct Context {
 
     // If we didn't build x86, do not run the test.
     std::string Error;
-    const Target *TheTarget = TargetRegistry::lookupTarget(TripleName, Error);
+    const Target *TheTarget = TargetRegistry::lookupTarget(Triple, Error);
     if (!TheTarget)
       return;
 
-    MRI.reset(TheTarget->createMCRegInfo(TripleName));
-    MCTargetOptions MCOptions;
-    MAI.reset(TheTarget->createMCAsmInfo(*MRI, TripleName, MCOptions));
-    Ctx = std::make_unique<MCContext>(Triple(TripleName), MAI.get(), MRI.get(),
-                                      /*MSTI=*/nullptr);
+    MRI.reset(TheTarget->createMCRegInfo(Triple));
+    MAI.reset(TheTarget->createMCAsmInfo(*MRI, Triple));
+    Ctx = llvm::make_unique<MCContext>(MAI.get(), MRI.get(), nullptr);
   }
 
   operator bool() { return Ctx.get(); }
@@ -60,7 +58,9 @@ void verifyEncoding(MCDwarfLineTableParams Params, int LineDelta, int AddrDelta,
   raw_svector_ostream EncodingOS(Buffer);
   MCDwarfLineAddr::Encode(getContext(), Params, LineDelta, AddrDelta,
                           EncodingOS);
-  EXPECT_EQ(ExpectedEncoding, arrayRefFromStringRef(Buffer));
+  ArrayRef<uint8_t> Encoding(reinterpret_cast<uint8_t *>(Buffer.data()),
+                             Buffer.size());
+  EXPECT_EQ(ExpectedEncoding, Encoding);
 }
 
 TEST(DwarfLineTables, TestDefaultParams) {

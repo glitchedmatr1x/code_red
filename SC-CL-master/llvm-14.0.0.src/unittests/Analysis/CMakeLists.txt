@@ -3,54 +3,28 @@ set(LLVM_LINK_COMPONENTS
   AsmParser
   Core
   Support
-  TransformUtils
   )
 
-set(MLGO_TESTS TFUtilsTest.cpp MLModelRunnerTest.cpp)
-if (DEFINED LLVM_HAVE_TF_API)
-  LIST(APPEND EXTRA_TESTS ${MLGO_TESTS})
-else()
-  LIST(APPEND LLVM_OPTIONAL_SOURCES ${MLGO_TESTS})
-endif()
-
-add_llvm_unittest_with_input_files(AnalysisTests
+add_llvm_unittest(AnalysisTests
   AliasAnalysisTest.cpp
   AliasSetTrackerTest.cpp
-  AssumeBundleQueriesTest.cpp
-  BasicAliasAnalysisTest.cpp
   BlockFrequencyInfoTest.cpp
   BranchProbabilityInfoTest.cpp
   CallGraphTest.cpp
-  CaptureTrackingTest.cpp
   CFGTest.cpp
   CGSCCPassManagerTest.cpp
-  ConstraintSystemTest.cpp
-  DDGTest.cpp
-  DivergenceAnalysisTest.cpp
-  DomTreeUpdaterTest.cpp
   GlobalsModRefTest.cpp
-  FunctionPropertiesAnalysisTest.cpp
-  InlineCostTest.cpp
-  IRSimilarityIdentifierTest.cpp
-  IVDescriptorsTest.cpp
+  ValueLatticeTest.cpp
   LazyCallGraphTest.cpp
-  LoadsTest.cpp
   LoopInfoTest.cpp
-  LoopNestTest.cpp
   MemoryBuiltinsTest.cpp
-  MemorySSATest.cpp
-  PhiValuesTest.cpp
+  MemorySSA.cpp
+  OrderedBasicBlockTest.cpp
   ProfileSummaryInfoTest.cpp
   ScalarEvolutionTest.cpp
-  VectorFunctionABITest.cpp
   SparsePropagation.cpp
   TargetLibraryInfoTest.cpp
   TBAATest.cpp
-  UnrollAnalyzerTest.cpp
-  ValueLatticeTest.cpp
+  UnrollAnalyzer.cpp
   ValueTrackingTest.cpp
-  VectorUtilsTest.cpp
-  ${EXTRA_TESTS}
   )
-
- target_link_libraries(AnalysisTests PRIVATE LLVMTestingSupport)

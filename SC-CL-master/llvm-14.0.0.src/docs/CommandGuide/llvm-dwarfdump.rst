@@ -1,8 +1,6 @@
 llvm-dwarfdump - dump and verify DWARF debug information
 ========================================================
 
-.. program:: llvm-dwarfdump
-
 SYNOPSIS
 --------
 
@@ -16,16 +14,12 @@ archives, and `.dSYM` bundles and prints their contents in
 human-readable form. Only the .debug_info section is printed unless one of
 the section-specific options or :option:`--all` is specified.
 
-If no input file is specified, `a.out` is used instead. If `-` is used as the
-input file, :program:`llvm-dwarfdump` reads the input from its standard input
-stream.
-
 OPTIONS
 -------
 
 .. option:: -a, --all
 
-            Dump all supported DWARF sections.
+            Disassemble all supported DWARF sections.
 
 .. option:: --arch=<arch>
 
@@ -37,13 +31,9 @@ OPTIONS
 
 .. option:: -c, --show-children
 
-            Show a debug info entry's children when selectively printing with
-            the `=<offset>` argument of :option:`--debug-info`, or options such
-            as :option:`--find` or :option:`--name`.
-
-.. option:: --color
-
-            Use colors in output.
+            Show a debug info entry's children when using
+            the :option:`--debug-info`, :option:`--find`,
+            and :option:`--name` options.
 
 .. option:: -f <name>, --find=<name>
 
@@ -61,69 +51,48 @@ OPTIONS
 
             Show help and usage for this command.
 
-.. option:: --help-list
-
-            Show help and usage for this command without grouping the options
-            into categories.
-
 .. option:: -i, --ignore-case
 
-            Ignore case distinctions when using :option:`--name`.
+            Ignore case distinctions in when searching entries by name
+            or by regular expression.
 
-.. option:: -n <name>, --name=<name>
+.. option:: -n <pattern>, --name=<pattern>
 
             Find and print all debug info entries whose name
-            (`DW_AT_name` attribute) is <name>.
+            (`DW_AT_name` attribute) matches the exact text in
+            <pattern>. Use the :option:`--regex` option to have
+            <pattern> become a regular expression for more flexible
+            pattern matching.
 
 .. option:: --lookup=<address>
 
-            Look up <address> in the debug information and print out the file,
+            Lookup <address> in the debug information and print out the file,
             function, block, and line table details.
 
-.. option:: -o <path>
+.. option:: -o <path>, --out-file=<path>
 
-            Redirect output to a file specified by <path>, where `-` is the
-            standard output stream.
+            Redirect output to a file specified by <path>.
 
 .. option:: -p, --show-parents
 
-            Show a debug info entry's parents when selectively printing with
-            the `=<offset>` argument of :option:`--debug-info`, or options such
-            as :option:`--find` or :option:`--name`.
+            Show a debug info entry's parent objects when using the
+            :option:`--debug-info`, :option:`--find`, and
+            :option:`--name` options.
 
-.. option:: --parent-recurse-depth=<N>
+.. option:: -r <n>, --recurse-depth=<n>
 
-            When displaying debug info entry parents, only show them to a
-            maximum depth of <N>.
-
-.. option:: --quiet
-
-            Use with :option:`--verify` to not emit to `STDOUT`.
-
-.. option:: -r <N>, --recurse-depth=<N>
-
-            When displaying debug info entries, only show children to a maximum
-            depth of <N>.
-
-.. option:: --show-section-sizes
-
-            Show the sizes of all debug sections, expressed in bytes.
+            Only recurse to a maximum depth of <n> when dumping debug info
+            entries.
 
 .. option:: --statistics
 
             Collect debug info quality metrics and print the results
-            as machine-readable single-line JSON output. The output
-            format is described in the section below (:ref:`stats-format`).
-
-.. option:: --summarize-types
-
-            Abbreviate the description of type unit entries.
+            as machine-readable single-line JSON output.
 
 .. option:: -x, --regex
 
-            Treat any <name> strings as regular expressions when searching
-            with :option:`--name`. If :option:`--ignore-case` is also specified,
-            the regular expression becomes case-insensitive.
+            Treat any <pattern> strings as regular expressions when searching
+            instead of just as an exact string match.
 
 .. option:: -u, --uuid
 
@@ -149,7 +118,7 @@ OPTIONS
 
             Display the version of the tool.
 
-.. option:: --debug-abbrev, --debug-addr, --debug-aranges, --debug-cu-index, --debug-frame [=<offset>], --debug-gnu-pubnames, --debug-gnu-pubtypes, --debug-info [=<offset>], --debug-line [=<offset>], --debug-line-str, --debug-loc [=<offset>], --debug-loclists [=<offset>], --debug-macro, --debug-names, --debug-pubnames, --debug-pubtypes, --debug-ranges, --debug-rnglists, --debug-str, --debug-str-offsets, --debug-tu-index, --debug-types [=<offset>], --eh-frame [=<offset>], --gdb-index, --apple-names, --apple-types, --apple-namespaces, --apple-objc
+.. option:: --debug-abbrev, --debug-aranges, --debug-cu-index, --debug-frame [=<offset>], --debug-gnu-pubnames, --debug-gnu-pubtypes, --debug-info [=<offset>], --debug-line [=<offset>], --debug-loc [=<offset>], --debug-macro, --debug-pubnames, --debug-pubtypes, --debug-ranges, --debug-str, --debug-str-offsets, --debug-tu-index, --debug-types, --eh-frame, --gdb-index, --apple-names, --apple-types, --apple-namespaces, --apple-objc
 
             Dump the specified DWARF section by name. Only the
             `.debug_info` section is shown by default. Some entries
@@ -157,39 +126,9 @@ OPTIONS
             optional offset of the exact entry to dump within the
             respective section. When an offset is provided, only the
             entry at that offset will be dumped, else the entire
-            section will be dumped.
-
-            The :option:`--debug-macro` option prints both the .debug_macro and the .debug_macinfo sections.
-
-            The :option:`--debug-frame` and :option:`--eh-frame` options are aliases, in cases where both sections are present one command outputs both.
-
-.. option:: @<FILE>
-
-            Read command-line options from `<FILE>`.
-
-.. _stats-format:
-
-FORMAT OF STATISTICS OUTPUT
----------------------------
-
-The :option:`--statistics` option generates single-line JSON output
-representing quality metrics of the processed debug info. These metrics are
-useful to compare changes between two compilers, particularly for judging
-the effect that a change to the compiler has on the debug info quality.
-
-The output is formatted as key-value pairs. The first pair contains a version
-number. The following naming scheme is used for the keys:
-
-      - `variables` ==> local variables and parameters
-      - `local vars` ==> local variables
-      - `params` ==> formal parameters
-
-For aggregated values, the following keys are used:
-
-      - `sum_of_all_variables(...)` ==> the sum applied to all variables
-      - `#bytes` ==> the number of bytes
-      - `#variables - entry values ...` ==> the number of variables excluding
-        the entry values etc.
+            section will be dumped. Children of items at a specific
+            offset can be dumped by also using the
+            :option:`--show-children` option where applicable.
 
 EXIT STATUS
 -----------

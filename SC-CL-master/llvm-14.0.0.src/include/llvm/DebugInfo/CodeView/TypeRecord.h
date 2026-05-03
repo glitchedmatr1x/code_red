@@ -1,8 +1,9 @@
 //===- TypeRecord.h ---------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -14,6 +15,7 @@
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/iterator_range.h"
 #include "llvm/DebugInfo/CodeView/CVRecord.h"
 #include "llvm/DebugInfo/CodeView/CodeView.h"
 #include "llvm/DebugInfo/CodeView/GUID.h"
@@ -31,10 +33,15 @@ using support::little32_t;
 using support::ulittle16_t;
 using support::ulittle32_t;
 
+using CVType = CVRecord<TypeLeafKind>;
+using RemappedType = RemappedRecord<TypeLeafKind>;
+
 struct CVMemberRecord {
   TypeLeafKind Kind;
   ArrayRef<uint8_t> Data;
 };
+using CVTypeArray = VarStreamArray<CVType>;
+using CVTypeRange = iterator_range<CVTypeArray::Iterator>;
 
 /// Equvalent to CV_fldattr_t in cvinfo.h.
 struct MemberAttributes {
@@ -88,11 +95,6 @@ struct MemberAttributes {
     return MP == MethodKind::IntroducingVirtual ||
            MP == MethodKind::PureIntroducingVirtual;
   }
-
-  /// Is this method static.
-  bool isStatic() const {
-    return getMethodKind() == MethodKind::Static;
-  }
 };
 
 // Does not correspond to any tag, this is the tail of an LF_POINTER record
@@ -111,8 +113,7 @@ public:
   }
 
   TypeIndex ContainingType;
-  PointerToMemberRepresentation Representation =
-      PointerToMemberRepresentation::Unknown;
+  PointerToMemberRepresentation Representation;
 };
 
 class TypeRecord {
@@ -139,7 +140,7 @@ public:
   ModifierOptions getModifiers() const { return Modifiers; }
 
   TypeIndex ModifiedType;
-  ModifierOptions Modifiers = ModifierOptions::None;
+  ModifierOptions Modifiers;
 };
 
 // LF_PROCEDURE
@@ -161,9 +162,9 @@ public:
   TypeIndex getArgumentList() const { return ArgumentList; }
 
   TypeIndex ReturnType;
-  CallingConvention CallConv = CallingConvention::NearC;
-  FunctionOptions Options = FunctionOptions::None;
-  uint16_t ParameterCount = 0;
+  CallingConvention CallConv;
+  FunctionOptions Options;
+  uint16_t ParameterCount;
   TypeIndex ArgumentList;
 };
 
@@ -195,11 +196,11 @@ public:
   TypeIndex ReturnType;
   TypeIndex ClassType;
   TypeIndex ThisType;
-  CallingConvention CallConv = CallingConvention::NearC;
-  FunctionOptions Options = FunctionOptions::None;
-  uint16_t ParameterCount = 0;
+  CallingConvention CallConv;
+  FunctionOptions Options;
+  uint16_t ParameterCount;
   TypeIndex ArgumentList;
-  int32_t ThisPointerAdjustment = 0;
+  int32_t ThisPointerAdjustment;
 };
 
 // LF_LABEL
@@ -210,7 +211,7 @@ public:
 
   LabelRecord(LabelType Mode) : TypeRecord(TypeRecordKind::Label), Mode(Mode) {}
 
-  LabelType Mode = LabelType::Near;
+  LabelType Mode;
 };
 
 // LF_MFUNC_ID
@@ -263,18 +264,14 @@ public:
 // LF_POINTER
 class PointerRecord : public TypeRecord {
 public:
-  // ---------------------------XXXXX
   static const uint32_t PointerKindShift = 0;
   static const uint32_t PointerKindMask = 0x1F;
 
-  // ------------------------XXX-----
   static const uint32_t PointerModeShift = 5;
   static const uint32_t PointerModeMask = 0x07;
 
-  // ----------XXX------XXXXX--------
-  static const uint32_t PointerOptionMask = 0x381f00;
+  static const uint32_t PointerOptionMask = 0xFF;
 
-  // -------------XXXXXX------------
   static const uint32_t PointerSizeShift = 13;
   static const uint32_t PointerSizeMask = 0xFF;
 
@@ -308,7 +305,7 @@ public:
   }
 
   PointerOptions getOptions() const {
-    return static_cast<PointerOptions>(Attrs & PointerOptionMask);
+    return static_cast<PointerOptions>(Attrs);
   }
 
   uint8_t getSize() const {
@@ -333,20 +330,8 @@ public:
     return !!(Attrs & uint32_t(PointerOptions::Unaligned));
   }
 
-  bool isRestrict() const {
-    return !!(Attrs & uint32_t(PointerOptions::Restrict));
-  }
-
-  bool isLValueReferenceThisPtr() const {
-    return !!(Attrs & uint32_t(PointerOptions::LValueRefThisPointer));
-  }
-
-  bool isRValueReferenceThisPtr() const {
-    return !!(Attrs & uint32_t(PointerOptions::RValueRefThisPointer));
-  }
-
   TypeIndex ReferentType;
-  uint32_t Attrs = 0;
+  uint32_t Attrs;
   Optional<MemberPointerInfo> MemberInfo;
 
   void setAttrs(PointerKind PK, PointerMode PM, PointerOptions PO,
@@ -409,7 +394,7 @@ public:
 
   TypeIndex ElementType;
   TypeIndex IndexType;
-  uint64_t Size = 0;
+  uint64_t Size;
   StringRef Name;
 };
 
@@ -440,22 +425,14 @@ public:
     return (Options & ClassOptions::ForwardReference) != ClassOptions::None;
   }
 
-  bool containsNestedClass() const {
-    return (Options & ClassOptions::ContainsNestedClass) != ClassOptions::None;
-  }
-
-  bool isScoped() const {
-    return (Options & ClassOptions::Scoped) != ClassOptions::None;
-  }
-
   uint16_t getMemberCount() const { return MemberCount; }
   ClassOptions getOptions() const { return Options; }
   TypeIndex getFieldList() const { return FieldList; }
   StringRef getName() const { return Name; }
   StringRef getUniqueName() const { return UniqueName; }
 
-  uint16_t MemberCount = 0;
-  ClassOptions Options = ClassOptions::None;
+  uint16_t MemberCount;
+  ClassOptions Options;
   TypeIndex FieldList;
   StringRef Name;
   StringRef UniqueName;
@@ -491,7 +468,7 @@ public:
 
   TypeIndex DerivationList;
   TypeIndex VTableShape;
-  uint64_t Size = 0;
+  uint64_t Size;
 };
 
 // LF_UNION
@@ -512,7 +489,7 @@ struct UnionRecord : public TagRecord {
 
   uint64_t getSize() const { return Size; }
 
-  uint64_t Size = 0;
+  uint64_t Size;
 };
 
 // LF_ENUM
@@ -545,8 +522,8 @@ public:
   uint8_t getBitSize() const { return BitSize; }
 
   TypeIndex Type;
-  uint8_t BitSize = 0;
-  uint8_t BitOffset = 0;
+  uint8_t BitSize;
+  uint8_t BitOffset;
 };
 
 // LF_VTSHAPE
@@ -586,8 +563,8 @@ public:
   uint32_t getAge() const { return Age; }
   StringRef getName() const { return Name; }
 
-  GUID Guid = {};
-  uint32_t Age = 0;
+  GUID Guid;
+  uint32_t Age;
   StringRef Name;
 };
 
@@ -639,7 +616,7 @@ public:
 
   TypeIndex UDT;
   TypeIndex SourceFile;
-  uint32_t LineNumber = 0;
+  uint32_t LineNumber;
 };
 
 // LF_UDT_MOD_SRC_LINE
@@ -659,8 +636,8 @@ public:
 
   TypeIndex UDT;
   TypeIndex SourceFile;
-  uint32_t LineNumber = 0;
-  uint16_t Module = 0;
+  uint32_t LineNumber;
+  uint16_t Module;
 };
 
 // LF_BUILDINFO
@@ -674,17 +651,7 @@ public:
 
   ArrayRef<TypeIndex> getArgs() const { return ArgIndices; }
 
-  /// Indices of known build info arguments.
-  enum BuildInfoArg {
-    CurrentDirectory, ///< Absolute CWD path
-    BuildTool,        ///< Absolute compiler path
-    SourceFile,       ///< Path to main source file, relative or absolute
-    TypeServerPDB,    ///< Absolute path of type server PDB (/Fd)
-    CommandLine,      ///< Full canonical command line (maybe -cc1)
-    MaxArgs
-  };
-
-  SmallVector<TypeIndex, MaxArgs> ArgIndices;
+  SmallVector<TypeIndex, 4> ArgIndices;
 };
 
 // LF_VFTABLE
@@ -698,7 +665,7 @@ public:
       : TypeRecord(TypeRecordKind::VFTable), CompleteClass(CompleteClass),
         OverriddenVFTable(OverriddenVFTable), VFPtrOffset(VFPtrOffset) {
     MethodNames.push_back(Name);
-    llvm::append_range(MethodNames, Methods);
+    MethodNames.insert(MethodNames.end(), Methods.begin(), Methods.end());
   }
 
   TypeIndex getCompleteClass() const { return CompleteClass; }
@@ -712,7 +679,7 @@ public:
 
   TypeIndex CompleteClass;
   TypeIndex OverriddenVFTable;
-  uint32_t VFPtrOffset = 0;
+  uint32_t VFPtrOffset;
   std::vector<StringRef> MethodNames;
 };
 
@@ -744,7 +711,7 @@ public:
 
   TypeIndex Type;
   MemberAttributes Attrs;
-  int32_t VFTableOffset = 0;
+  int32_t VFTableOffset;
   StringRef Name;
 };
 
@@ -775,7 +742,7 @@ public:
   TypeIndex getMethodList() const { return MethodList; }
   StringRef getName() const { return Name; }
 
-  uint16_t NumOverloads = 0;
+  uint16_t NumOverloads;
   TypeIndex MethodList;
   StringRef Name;
 };
@@ -801,7 +768,7 @@ public:
 
   MemberAttributes Attrs;
   TypeIndex Type;
-  uint64_t FieldOffset = 0;
+  uint64_t FieldOffset;
   StringRef Name;
 };
 
@@ -878,7 +845,7 @@ public:
 
   MemberAttributes Attrs;
   TypeIndex Type;
-  uint64_t Offset = 0;
+  uint64_t Offset;
 };
 
 // LF_VBCLASS, LF_IVBCLASS
@@ -906,8 +873,8 @@ public:
   MemberAttributes Attrs;
   TypeIndex BaseType;
   TypeIndex VBPtrType;
-  uint64_t VBPtrOffset = 0;
-  uint64_t VTableIndex = 0;
+  uint64_t VBPtrOffset;
+  uint64_t VTableIndex;
 };
 
 /// LF_INDEX - Used to chain two large LF_FIELDLIST or LF_METHODLIST records
@@ -923,34 +890,6 @@ public:
   TypeIndex getContinuationIndex() const { return ContinuationIndex; }
 
   TypeIndex ContinuationIndex;
-};
-
-// LF_PRECOMP
-class PrecompRecord : public TypeRecord {
-public:
-  PrecompRecord() = default;
-  explicit PrecompRecord(TypeRecordKind Kind) : TypeRecord(Kind) {}
-
-  uint32_t getStartTypeIndex() const { return StartTypeIndex; }
-  uint32_t getTypesCount() const { return TypesCount; }
-  uint32_t getSignature() const { return Signature; }
-  StringRef getPrecompFilePath() const { return PrecompFilePath; }
-
-  uint32_t StartTypeIndex = 0;
-  uint32_t TypesCount = 0;
-  uint32_t Signature = 0;
-  StringRef PrecompFilePath;
-};
-
-// LF_ENDPRECOMP
-class EndPrecompRecord : public TypeRecord {
-public:
-  EndPrecompRecord() = default;
-  explicit EndPrecompRecord(TypeRecordKind Kind) : TypeRecord(Kind) {}
-
-  uint32_t getSignature() const { return Signature; }
-
-  uint32_t Signature = 0;
 };
 
 } // end namespace codeview

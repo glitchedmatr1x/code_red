@@ -44,8 +44,8 @@ define amdgpu_kernel void @fneg_fabs_free_f64(double addrspace(1)* %out, i64 %in
 }
 
 ; GCN-LABEL: {{^}}fneg_fabs_fn_free_f64:
-; SI: s_bitset1_b32
-; VI:  s_or_b32 s{{[0-9]+}}, s{{[0-9]+}}, 0x80000000
+; GCN: v_bfrev_b32_e32 [[IMMREG:v[0-9]+]], 1{{$}}
+; GCN: v_or_b32_e32 v{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
 define amdgpu_kernel void @fneg_fabs_fn_free_f64(double addrspace(1)* %out, i64 %in) {
   %bc = bitcast i64 %in to double
   %fabs = call double @fabs(double %bc)
@@ -55,13 +55,14 @@ define amdgpu_kernel void @fneg_fabs_fn_free_f64(double addrspace(1)* %out, i64 
 }
 
 ; GCN-LABEL: {{^}}fneg_fabs_f64:
-; SI-DAG: s_load_dwordx2 s{{\[}}[[LO_X:[0-9]+]]:[[HI_X:[0-9]+]]{{\]}}, s[{{[0-9]+:[0-9]+}}], 0x13
-; VI-DAG: s_load_dwordx2 s{{\[}}[[LO_X:[0-9]+]]:[[HI_X:[0-9]+]]{{\]}}, s[{{[0-9]+:[0-9]+}}], 0x4c
-; GCN-DAG: s_bitset1_b32 s[[HI_X]], 31
+; GCN-DAG: s_load_dwordx2
+; GCN-DAG: v_bfrev_b32_e32 [[IMMREG:v[0-9]+]], 1{{$}}
+; SI-DAG: s_load_dwordx2 s{{\[}}[[LO_X:[0-9]+]]:[[HI_X:[0-9]+]]{{\]}}, s[{{[0-9]+:[0-9]+}}], 0xb
+; VI-DAG: s_load_dwordx2 s{{\[}}[[LO_X:[0-9]+]]:[[HI_X:[0-9]+]]{{\]}}, s[{{[0-9]+:[0-9]+}}], 0x2c
+; GCN-DAG: v_or_b32_e32 v[[HI_V:[0-9]+]], s[[HI_X]], [[IMMREG]]
 ; GCN-DAG: v_mov_b32_e32 v[[LO_V:[0-9]+]], s[[LO_X]]
-; GCN-DAG: v_mov_b32_e32 v[[HI_V:[0-9]+]], s[[HI_X]]
 ; GCN: buffer_store_dwordx2 v{{\[}}[[LO_V]]:[[HI_V]]{{\]}}
-define amdgpu_kernel void @fneg_fabs_f64(double addrspace(1)* %out, [8 x i32], double %in) {
+define amdgpu_kernel void @fneg_fabs_f64(double addrspace(1)* %out, double %in) {
   %fabs = call double @llvm.fabs.f64(double %in)
   %fsub = fsub double -0.000000e+00, %fabs
   store double %fsub, double addrspace(1)* %out, align 8
@@ -69,10 +70,10 @@ define amdgpu_kernel void @fneg_fabs_f64(double addrspace(1)* %out, [8 x i32], d
 }
 
 ; GCN-LABEL: {{^}}fneg_fabs_v2f64:
-; GCN: s_brev_b32 [[IMMREG:s[0-9]+]], 1{{$}}
+; GCN: v_bfrev_b32_e32 [[IMMREG:v[0-9]+]], 1{{$}}
 ; GCN-NOT: 0x80000000
-; GCN: s_or_b32 s{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
-; GCN: s_or_b32 s{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
+; GCN: v_or_b32_e32 v{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
+; GCN: v_or_b32_e32 v{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
 define amdgpu_kernel void @fneg_fabs_v2f64(<2 x double> addrspace(1)* %out, <2 x double> %in) {
   %fabs = call <2 x double> @llvm.fabs.v2f64(<2 x double> %in)
   %fsub = fsub <2 x double> <double -0.000000e+00, double -0.000000e+00>, %fabs
@@ -81,12 +82,12 @@ define amdgpu_kernel void @fneg_fabs_v2f64(<2 x double> addrspace(1)* %out, <2 x
 }
 
 ; GCN-LABEL: {{^}}fneg_fabs_v4f64:
-; GCN: s_brev_b32 [[IMMREG:s[0-9]+]], 1{{$}}
+; GCN: v_bfrev_b32_e32 [[IMMREG:v[0-9]+]], 1{{$}}
 ; GCN-NOT: 0x80000000
-; GCN: s_or_b32 s{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
-; GCN: s_or_b32 s{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
-; GCN: s_or_b32 s{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
-; GCN: s_or_b32 s{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
+; GCN: v_or_b32_e32 v{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
+; GCN: v_or_b32_e32 v{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
+; GCN: v_or_b32_e32 v{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
+; GCN: v_or_b32_e32 v{{[0-9]+}}, s{{[0-9]+}}, [[IMMREG]]
 define amdgpu_kernel void @fneg_fabs_v4f64(<4 x double> addrspace(1)* %out, <4 x double> %in) {
   %fabs = call <4 x double> @llvm.fabs.v4f64(<4 x double> %in)
   %fsub = fsub <4 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %fabs

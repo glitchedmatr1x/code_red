@@ -1,8 +1,9 @@
 //===-- arcmt-test.cpp - ARC Migration Tool testbed -----------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -121,7 +122,7 @@ static bool checkForMigration(StringRef resourcesPath,
   }
 
   CompilerInvocation CI;
-  if (!CompilerInvocation::CreateFromArgs(CI, Args, *Diags))
+  if (!CompilerInvocation::CreateFromArgs(CI, Args.begin(), Args.end(), *Diags))
     return true;
 
   if (CI.getFrontendOpts().Inputs.empty()) {
@@ -129,7 +130,7 @@ static bool checkForMigration(StringRef resourcesPath,
     return true;
   }
 
-  if (!CI.getLangOpts()->ObjC)
+  if (!CI.getLangOpts()->ObjC1)
     return false;
 
   arcmt::checkForManualIssues(CI, CI.getFrontendOpts().Inputs[0],
@@ -139,10 +140,11 @@ static bool checkForMigration(StringRef resourcesPath,
 }
 
 static void printResult(FileRemapper &remapper, raw_ostream &OS) {
-  remapper.forEachMapping([](StringRef, StringRef) {},
-                          [&](StringRef, const llvm::MemoryBufferRef &Buffer) {
-                            OS << Buffer.getBuffer();
-                          });
+  PreprocessorOptions PPOpts;
+  remapper.applyMappings(PPOpts);
+  // The changed files will be in memory buffers, print them.
+  for (const auto &RB : PPOpts.RemappedFileBuffers)
+    OS << RB.second->getBuffer();
 }
 
 static bool performTransformations(StringRef resourcesPath,
@@ -159,7 +161,8 @@ static bool performTransformations(StringRef resourcesPath,
       new DiagnosticsEngine(DiagID, &*DiagOpts, &*DiagClient));
 
   CompilerInvocation origCI;
-  if (!CompilerInvocation::CreateFromArgs(origCI, Args, *TopDiags))
+  if (!CompilerInvocation::CreateFromArgs(origCI, Args.begin(), Args.end(),
+                                     *TopDiags))
     return true;
 
   if (origCI.getFrontendOpts().Inputs.empty()) {
@@ -167,7 +170,7 @@ static bool performTransformations(StringRef resourcesPath,
     return true;
   }
 
-  if (!origCI.getLangOpts()->ObjC)
+  if (!origCI.getLangOpts()->ObjC1)
     return false;
 
   MigrationProcess migration(origCI, std::make_shared<PCHContainerOperations>(),
@@ -207,13 +210,11 @@ static bool performTransformations(StringRef resourcesPath,
 static bool filesCompareEqual(StringRef fname1, StringRef fname2) {
   using namespace llvm;
 
-  ErrorOr<std::unique_ptr<MemoryBuffer>> file1 =
-      MemoryBuffer::getFile(fname1, /*IsText=*/true);
+  ErrorOr<std::unique_ptr<MemoryBuffer>> file1 = MemoryBuffer::getFile(fname1);
   if (!file1)
     return false;
 
-  ErrorOr<std::unique_ptr<MemoryBuffer>> file2 =
-      MemoryBuffer::getFile(fname2, /*IsText=*/true);
+  ErrorOr<std::unique_ptr<MemoryBuffer>> file2 = MemoryBuffer::getFile(fname2);
   if (!file2)
     return false;
 
@@ -242,7 +243,7 @@ static bool verifyTransformedFiles(ArrayRef<std::string> resultFiles) {
   if (RemappingsFile.empty())
     inputBuf = MemoryBuffer::getSTDIN();
   else
-    inputBuf = MemoryBuffer::getFile(RemappingsFile, /*IsText=*/true);
+    inputBuf = MemoryBuffer::getFile(RemappingsFile);
   if (!inputBuf) {
     errs() << "error: could not read remappings input\n";
     return true;

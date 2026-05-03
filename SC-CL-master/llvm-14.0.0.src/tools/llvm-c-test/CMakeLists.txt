@@ -1,9 +1,5 @@
 set(LLVM_LINK_COMPONENTS
-  AllTargetsAsmParsers
-  AllTargetsCodeGens
-  AllTargetsDescs
-  AllTargetsDisassemblers
-  AllTargetsInfos
+  ${LLVM_TARGETS_TO_BUILD}
   BitReader
   Core
   MCDisassembler

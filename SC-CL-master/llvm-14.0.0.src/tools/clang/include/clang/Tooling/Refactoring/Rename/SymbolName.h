@@ -1,13 +1,14 @@
 //===--- SymbolName.h - Clang refactoring library -------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_TOOLING_REFACTORING_RENAME_SYMBOLNAME_H
-#define LLVM_CLANG_TOOLING_REFACTORING_RENAME_SYMBOLNAME_H
+#ifndef LLVM_CLANG_TOOLING_REFACTOR_RENAME_SYMBOL_NAME_H
+#define LLVM_CLANG_TOOLING_REFACTOR_RENAME_SYMBOL_NAME_H
 
 #include "clang/Basic/LLVM.h"
 #include "llvm/ADT/ArrayRef.h"
@@ -20,7 +21,7 @@ namespace tooling {
 /// A name of a symbol.
 ///
 /// Symbol's name can be composed of multiple strings. For example, Objective-C
-/// methods can contain multiple argument labels:
+/// methods can contain multiple argument lables:
 ///
 /// \code
 /// - (void) myMethodNamePiece: (int)x anotherNamePieces:(int)y;
@@ -45,4 +46,4 @@ private:
 } // end namespace tooling
 } // end namespace clang
 
-#endif // LLVM_CLANG_TOOLING_REFACTORING_RENAME_SYMBOLNAME_H
+#endif // LLVM_CLANG_TOOLING_REFACTOR_RENAME_SYMBOL_NAME_H

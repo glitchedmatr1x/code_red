@@ -1,6 +1,5 @@
 """Utilities for enumeration of finite and countably infinite sets.
 """
-from __future__ import absolute_import, division, print_function
 ###
 # Countable iteration
 
@@ -18,7 +17,7 @@ class Aleph0(int):
         return 1
 
     def __sub__(self, b):
-        raise ValueError("Cannot subtract aleph0")
+        raise ValueError,"Cannot subtract aleph0"
     __rsub__ = __sub__
 
     def __add__(self, b): 
@@ -47,8 +46,7 @@ aleph0 = Aleph0()
 def base(line):
     return line*(line+1)//2
 
-def pairToN(pair):
-    x,y = pair
+def pairToN((x,y)):
     line,index = x+y,y
     return base(line)+index
 
@@ -88,9 +86,9 @@ def getNthPairBounded(N,W=aleph0,H=aleph0,useDivmod=False):
     Return the N-th pair such that 0 <= x < W and 0 <= y < H."""
 
     if W <= 0 or H <= 0:
-        raise ValueError("Invalid bounds")
+        raise ValueError,"Invalid bounds"
     elif N >= W*H:
-        raise ValueError("Invalid input (out of bounds)")
+        raise ValueError,"Invalid input (out of bounds)"
 
     # Simple case...
     if W is aleph0 and H is aleph0:
@@ -172,7 +170,7 @@ def getNthTuple(N, maxSize=aleph0, maxElement=aleph0, useDivmod=False, useLeftTo
     N -= 1
     if maxElement is not aleph0:
         if maxSize is aleph0:
-            raise NotImplementedError('Max element size without max size unhandled')
+            raise NotImplementedError,'Max element size without max size unhandled'
         bounds = [maxElement**i for i in range(1, maxSize+1)]
         S,M = getNthPairVariableBounds(N, bounds)
     else:
@@ -195,12 +193,12 @@ def getNthPairVariableBounds(N, bounds):
     bounds[x]."""
 
     if not bounds:
-        raise ValueError("Invalid bounds")
+        raise ValueError,"Invalid bounds"
     if not (0 <= N < sum(bounds)):
-        raise ValueError("Invalid input (out of bounds)")
+        raise ValueError,"Invalid input (out of bounds)"
 
     level = 0
-    active = list(range(len(bounds)))
+    active = range(len(bounds))
     active.sort(key=lambda i: bounds[i])
     prevLevel = 0
     for i,index in enumerate(active):
@@ -218,7 +216,7 @@ def getNthPairVariableBounds(N, bounds):
             N -= levelSize
             prevLevel = level
     else:
-        raise RuntimError("Unexpected loop completion")
+        raise RuntimError,"Unexpected loop completion"
 
 def getNthPairVariableBoundsChecked(N, bounds, GNVP=getNthPairVariableBounds):
     x,y = GNVP(N,bounds)
@@ -235,18 +233,18 @@ def testPairs():
     for i in range(min(W*H,40)):
         x,y = getNthPairBounded(i,W,H)
         x2,y2 = getNthPairBounded(i,W,H,useDivmod=True)
-        print(i,(x,y),(x2,y2))
+        print i,(x,y),(x2,y2)
         a[y][x] = '%2d'%i
         b[y2][x2] = '%2d'%i
 
-    print('-- a --')
+    print '-- a --'
     for ln in a[::-1]:
         if ''.join(ln).strip():
-            print('  '.join(ln))
-    print('-- b --')
+            print '  '.join(ln)
+    print '-- b --'
     for ln in b[::-1]:
         if ''.join(ln).strip():
-            print('  '.join(ln))
+            print '  '.join(ln)
 
 def testPairsVB():
     bounds = [2,2,4,aleph0,5,aleph0]
@@ -254,13 +252,13 @@ def testPairsVB():
     b = [['  ' for x in range(15)] for y in range(15)]
     for i in range(min(sum(bounds),40)):
         x,y = getNthPairVariableBounds(i, bounds)
-        print(i,(x,y))
+        print i,(x,y)
         a[y][x] = '%2d'%i
 
-    print('-- a --')
+    print '-- a --'
     for ln in a[::-1]:
         if ''.join(ln).strip():
-            print('  '.join(ln))
+            print '  '.join(ln)
 
 ###
 

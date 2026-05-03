@@ -20,10 +20,11 @@ Sections:
     Info:            .text
     Relocations:
       - Offset:          0x0000000000000000
+        Symbol:          ''
         Type:            R_X86_64_NONE
 Symbols:
-  - Name: _main
-    Section: .text
-    Binding: STB_GLOBAL
-    Value: 0
-    Size: 4
+  Global:
+    - Name: _main
+      Section: .text
+      Value: 0
+      Size: 4

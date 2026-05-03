@@ -118,10 +118,10 @@ namespace dr9 { // dr9: yes
     int m; // expected-note {{here}}
     friend int R1();
   };
-  struct N : protected B { // expected-note {{protected}}
+  struct N : protected B { // expected-note 2{{protected}}
     friend int R2();
   } n;
-  int R1() { return n.m; } // expected-error {{protected member}}
+  int R1() { return n.m; } // expected-error {{protected base class}} expected-error {{protected member}}
   int R2() { return n.m; }
 }
 
@@ -204,10 +204,10 @@ namespace dr16 { // dr16: yes
     void f(); // expected-note {{here}}
     friend class C;
   };
-  class B : A {}; // expected-note 3{{here}}
+  class B : A {}; // expected-note 4{{here}}
   class C : B {
     void g() {
-      f(); // expected-error {{private member}}
+      f(); // expected-error {{private member}} expected-error {{private base}}
       A::f(); // expected-error {{private member}} expected-error {{private base}}
     }
   };
@@ -316,16 +316,15 @@ namespace dr25 { // dr25: yes
 namespace dr26 { // dr26: yes
   struct A { A(A, const A & = A()); }; // expected-error {{must pass its first argument by reference}}
   struct B {
-    B();
-    // FIXME: In C++98, we diagnose this twice.
+    B(); // expected-note 0-1{{candidate}}
     B(const B &, B = B());
 #if __cplusplus <= 201402L
-    // expected-error@-2 1+{{recursive evaluation of default argument}} expected-note@-2 1+{{used here}}
+    // expected-error@-2 {{no matching constructor}} expected-note@-2 {{candidate}} expected-note@-2 {{here}}
 #endif
   };
   struct C {
     static C &f();
-    C(const C &, C = f()); // expected-error {{recursive evaluation of default argument}} expected-note {{used here}}
+    C(const C &, C = f()); // expected-error {{no matching constructor}} expected-note {{candidate}} expected-note {{here}}
   };
 }
 
@@ -414,36 +413,6 @@ namespace dr33 { // dr33: yes
   void g(X::S);
   template<typename Z> Z g(Y::T);
   void h() { f(&g); } // expected-error {{ambiguous}}
-
-  template<typename T> void t(X::S);
-  template<typename T, typename U = void> void u(X::S); // expected-error 0-1{{default template argument}}
-  void templ() { f(t<int>); f(u<int>); }
-
-  // Even though v<int> cannot select the first overload, ADL considers it
-  // and adds namespace Z to the set of associated namespaces, and then picks
-  // Z::f even though that function has nothing to do with any associated type.
-  namespace Z { struct Q; void f(void(*)()); }
-  template<int> Z::Q v();
-  template<typename> void v();
-  void unrelated_templ() { f(v<int>); }
-
-  namespace dependent {
-    struct X {};
-    template<class T> struct Y {
-      friend int operator+(X, void(*)(Y)) {}
-    };
-
-    template<typename T> void f(Y<T>);
-    int use = X() + f<int>; // expected-error {{invalid operands}}
-  }
-
-  namespace member {
-    struct Q {};
-    struct Y { friend int operator+(Q, Y (*)()); };
-    struct X { template<typename> static Y f(); };
-    int m = Q() + X().f<int>; // ok
-    int n = Q() + (&(X().f<int>)); // ok
-  }
 }
 
 // dr34: na
@@ -530,10 +499,10 @@ namespace dr42 { // dr42: yes
 
 // dr43: na
 
-namespace dr44 { // dr44: sup 727
+namespace dr44 { // dr44: yes
   struct A {
     template<int> void f();
-    template<> void f<0>();
+    template<> void f<0>(); // expected-error {{explicit specialization of 'f' in class scope}}
   };
 }
 
@@ -870,17 +839,18 @@ namespace dr68 { // dr68: yes
 }
 
 namespace dr69 { // dr69: yes
-  template<typename T> static void f() {} // #dr69-f
+  template<typename T> static void f() {}
   // FIXME: Should we warn here?
   inline void g() { f<int>(); }
-  extern template void f<char>(); // expected-error {{explicit instantiation declaration of 'f' with internal linkage}}
+  // FIXME: This should be rejected, per [temp.explicit]p11.
+  extern template void f<char>();
 #if __cplusplus < 201103L
   // expected-error@-2 {{C++11 extension}}
 #endif
   template<void(*)()> struct Q {};
   Q<&f<int> > q;
 #if __cplusplus < 201103L
-  // expected-error@-2 {{internal linkage}} expected-note@#dr69-f {{here}}
+  // expected-error@-2 {{internal linkage}} expected-note@-11 {{here}}
 #endif
 }
 
@@ -915,7 +885,7 @@ namespace dr75 { // dr75: yes
 
 namespace dr76 { // dr76: yes
   const volatile int n = 1;
-  int arr[n]; // expected-error +{{variable length array}} expected-note {{read of volatile}}
+  int arr[n]; // expected-error +{{variable length array}}
 }
 
 namespace dr77 { // dr77: yes
@@ -941,8 +911,9 @@ namespace dr80 { // dr80: yes
     static int B; // expected-error {{same name as its class}}
   };
   struct C {
-    int C; // expected-error {{same name as its class}}
-    C();
+    int C; // expected-note {{hidden by}}
+    // FIXME: These diagnostics aren't very good.
+    C(); // expected-error {{must use 'struct' tag to refer to}} expected-error {{expected member name}}
   };
   struct D {
     D();

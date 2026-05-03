@@ -13,7 +13,7 @@ struct S {
 };
 
 union U {
-  __weak id a;
+  __weak id a; // expected-error {{ARC forbids Objective-C objects in union}}
   S b;         // expected-error {{union member 'b' has a non-trivial copy constructor}}
 };
 

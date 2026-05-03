@@ -1,8 +1,9 @@
 //===--- UseDefaultMemberInitCheck.cpp - clang-tidy------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -17,12 +18,6 @@ namespace clang {
 namespace tidy {
 namespace modernize {
 
-namespace {
-AST_MATCHER_P(InitListExpr, initCountIs, unsigned, N) {
-  return Node.getNumInits() == N;
-}
-} // namespace
-
 static StringRef getValueOfValueInit(const QualType InitType) {
   switch (InitType->getScalarTypeKind()) {
   case Type::STK_CPointer:
@@ -35,7 +30,7 @@ static StringRef getValueOfValueInit(const QualType InitType) {
     return "false";
 
   case Type::STK_Integral:
-    switch (InitType->castAs<BuiltinType>()->getKind()) {
+    switch (InitType->getAs<BuiltinType>()->getKind()) {
     case BuiltinType::Char_U:
     case BuiltinType::UChar:
     case BuiltinType::Char_S:
@@ -53,7 +48,7 @@ static StringRef getValueOfValueInit(const QualType InitType) {
     }
 
   case Type::STK_Floating:
-    switch (InitType->castAs<BuiltinType>()->getKind()) {
+    switch (InitType->getAs<BuiltinType>()->getKind()) {
     case BuiltinType::Half:
     case BuiltinType::Float:
       return "0.0f";
@@ -64,49 +59,7 @@ static StringRef getValueOfValueInit(const QualType InitType) {
   case Type::STK_FloatingComplex:
   case Type::STK_IntegralComplex:
     return getValueOfValueInit(
-        InitType->castAs<ComplexType>()->getElementType());
-
-  case Type::STK_FixedPoint:
-    switch (InitType->castAs<BuiltinType>()->getKind()) {
-    case BuiltinType::ShortAccum:
-    case BuiltinType::SatShortAccum:
-      return "0.0hk";
-    case BuiltinType::Accum:
-    case BuiltinType::SatAccum:
-      return "0.0k";
-    case BuiltinType::LongAccum:
-    case BuiltinType::SatLongAccum:
-      return "0.0lk";
-    case BuiltinType::UShortAccum:
-    case BuiltinType::SatUShortAccum:
-      return "0.0uhk";
-    case BuiltinType::UAccum:
-    case BuiltinType::SatUAccum:
-      return "0.0uk";
-    case BuiltinType::ULongAccum:
-    case BuiltinType::SatULongAccum:
-      return "0.0ulk";
-    case BuiltinType::ShortFract:
-    case BuiltinType::SatShortFract:
-      return "0.0hr";
-    case BuiltinType::Fract:
-    case BuiltinType::SatFract:
-      return "0.0r";
-    case BuiltinType::LongFract:
-    case BuiltinType::SatLongFract:
-      return "0.0lr";
-    case BuiltinType::UShortFract:
-    case BuiltinType::SatUShortFract:
-      return "0.0uhr";
-    case BuiltinType::UFract:
-    case BuiltinType::SatUFract:
-      return "0.0ur";
-    case BuiltinType::ULongFract:
-    case BuiltinType::SatULongFract:
-      return "0.0ulr";
-    default:
-      llvm_unreachable("Unhandled fixed point BuiltinType");
-    }
+        InitType->getAs<ComplexType>()->getElementType());
   }
   llvm_unreachable("Invalid scalar type kind");
 }
@@ -143,7 +96,7 @@ static const Expr *ignoreUnaryPlus(const Expr *E) {
 static const Expr *getInitializer(const Expr *E) {
   auto *InitList = dyn_cast<InitListExpr>(E);
   if (InitList && InitList->getNumInits() == 1)
-    return InitList->getInit(0)->IgnoreParenImpCasts();
+    return InitList->getInit(0);
   return E;
 }
 
@@ -186,8 +139,8 @@ static bool sameValue(const Expr *E1, const Expr *E2) {
 UseDefaultMemberInitCheck::UseDefaultMemberInitCheck(StringRef Name,
                                                      ClangTidyContext *Context)
     : ClangTidyCheck(Name, Context),
-      UseAssignment(Options.get("UseAssignment", false)),
-      IgnoreMacros(Options.getLocalOrGlobal("IgnoreMacros", true)) {}
+      UseAssignment(Options.get("UseAssignment", 0) != 0),
+      IgnoreMacros(Options.getLocalOrGlobal("IgnoreMacros", true) != 0) {}
 
 void UseDefaultMemberInitCheck::storeOptions(
     ClangTidyOptions::OptionMap &Opts) {
@@ -196,37 +149,39 @@ void UseDefaultMemberInitCheck::storeOptions(
 }
 
 void UseDefaultMemberInitCheck::registerMatchers(MatchFinder *Finder) {
-  auto InitBase =
+  if (!getLangOpts().CPlusPlus11)
+    return;
+
+  auto Init =
       anyOf(stringLiteral(), characterLiteral(), integerLiteral(),
-            unaryOperator(hasAnyOperatorName("+", "-"),
+            unaryOperator(anyOf(hasOperatorName("+"), hasOperatorName("-")),
                           hasUnaryOperand(integerLiteral())),
             floatLiteral(),
-            unaryOperator(hasAnyOperatorName("+", "-"),
+            unaryOperator(anyOf(hasOperatorName("+"), hasOperatorName("-")),
                           hasUnaryOperand(floatLiteral())),
             cxxBoolLiteral(), cxxNullPtrLiteralExpr(), implicitValueInitExpr(),
             declRefExpr(to(enumConstantDecl())));
 
-  auto Init =
-      anyOf(initListExpr(anyOf(allOf(initCountIs(1), hasInit(0, InitBase)),
-                               initCountIs(0))),
-            InitBase);
-
   Finder->addMatcher(
-      cxxConstructorDecl(forEachConstructorInitializer(
-          cxxCtorInitializer(
-              forField(unless(anyOf(
-                  getLangOpts().CPlusPlus20 ? unless(anything()) : isBitField(),
-                  hasInClassInitializer(anything()),
-                  hasParent(recordDecl(isUnion()))))),
-              withInitializer(Init))
-              .bind("default"))),
+      cxxConstructorDecl(
+          isDefaultConstructor(), unless(isInstantiated()),
+          forEachConstructorInitializer(
+              cxxCtorInitializer(
+                  forField(unless(anyOf(isBitField(),
+                                        hasInClassInitializer(anything()),
+                                        hasParent(recordDecl(isUnion()))))),
+                  isWritten(), withInitializer(ignoringImplicit(Init)))
+                  .bind("default"))),
       this);
 
   Finder->addMatcher(
-      cxxConstructorDecl(forEachConstructorInitializer(
-          cxxCtorInitializer(forField(hasInClassInitializer(anything())),
-                             withInitializer(Init))
-              .bind("existing"))),
+      cxxConstructorDecl(
+          unless(ast_matchers::isTemplateInstantiation()),
+          forEachConstructorInitializer(
+              cxxCtorInitializer(forField(hasInClassInitializer(anything())),
+                                 isWritten(),
+                                 withInitializer(ignoringImplicit(Init)))
+                  .bind("existing"))),
       this);
 }
 
@@ -245,15 +200,7 @@ void UseDefaultMemberInitCheck::checkDefaultInit(
     const MatchFinder::MatchResult &Result, const CXXCtorInitializer *Init) {
   const FieldDecl *Field = Init->getAnyMember();
 
-  // Check whether we have multiple hand-written constructors and bomb out, as
-  // it is hard to reconcile their sets of member initializers.
-  const auto *ClassDecl = cast<CXXRecordDecl>(Field->getParent());
-  if (llvm::count_if(ClassDecl->ctors(), [](const CXXConstructorDecl *Ctor) {
-        return !Ctor->isCopyOrMoveConstructor();
-      }) > 1)
-    return;
-
-  SourceLocation StartLoc = Field->getBeginLoc();
+  SourceLocation StartLoc = Field->getLocStart();
   if (StartLoc.isMacroID() && IgnoreMacros)
     return;
 
@@ -265,20 +212,17 @@ void UseDefaultMemberInitCheck::checkDefaultInit(
   CharSourceRange InitRange =
       CharSourceRange::getCharRange(LParenEnd, Init->getRParenLoc());
 
-  bool ValueInit = isa<ImplicitValueInitExpr>(Init->getInit());
-  bool CanAssign = UseAssignment && (!ValueInit || !Init->getInit()->getType()->isEnumeralType());
-
   auto Diag =
       diag(Field->getLocation(), "use default member initializer for %0")
       << Field
-      << FixItHint::CreateInsertion(FieldEnd, CanAssign ? " = " : "{")
+      << FixItHint::CreateInsertion(FieldEnd, UseAssignment ? " = " : "{")
       << FixItHint::CreateInsertionFromRange(FieldEnd, InitRange);
 
-  if (CanAssign && ValueInit)
+  if (UseAssignment && isa<ImplicitValueInitExpr>(Init->getInit()))
     Diag << FixItHint::CreateInsertion(
         FieldEnd, getValueOfValueInit(Init->getInit()->getType()));
 
-  if (!CanAssign)
+  if (!UseAssignment)
     Diag << FixItHint::CreateInsertion(FieldEnd, "}");
 
   Diag << FixItHint::CreateRemoval(Init->getSourceRange());
@@ -286,7 +230,7 @@ void UseDefaultMemberInitCheck::checkDefaultInit(
 
 void UseDefaultMemberInitCheck::checkExistingInit(
     const MatchFinder::MatchResult &Result, const CXXCtorInitializer *Init) {
-  const FieldDecl *Field = Init->getAnyMember();
+  const FieldDecl *Field = Init->getMember();
 
   if (!sameValue(Field->getInClassInitializer(), Init->getInit()))
     return;

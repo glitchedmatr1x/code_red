@@ -106,8 +106,6 @@ namespace Utils {
 		inline int64_t CeilDivInt(uint32_t a, uint32_t b) { return a == 0 || b == 0 ? 0 : 1 + ((a - 1) / b); }
 		inline int32_t DivInt(uint32_t a, uint32_t b) { return a == 0 || b == 0 ? 0 : a / b; }
 	}
-
-#if 0
 	namespace Compression
 	{
 		class xCompress
@@ -198,8 +196,6 @@ namespace Utils {
         void ZLIB_Compress(const std::vector<uint8_t>& in, std::vector<uint8_t> &out);
 		std::string ZLIB_ErrorCodeToStr(int32_t errorcode);
 	}
-#endif
-
 	namespace Crypt
 	{
 		bool AES_Decrypt(uint8_t * data, size_t length, const uint8_t key[32]);

@@ -1,8 +1,9 @@
 //===- CIndexHigh.cpp - Higher level API functions ------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -64,7 +65,7 @@ struct FindFileIdRefVisitData {
     return cxtu::getASTUnit(TU)->getASTContext();
   }
 
-  /// We are looking to find all semantically relevant identifiers,
+  /// \brief We are looking to find all semantically relevant identifiers,
   /// so the definition of "canonical" here is different than in the AST, e.g.
   ///
   /// \code
@@ -109,14 +110,16 @@ struct FindFileIdRefVisitData {
 
 private:
   bool isOverriddingMethod(const Decl *D) const {
-    if (llvm::is_contained(TopMethods, D))
+    if (std::find(TopMethods.begin(), TopMethods.end(), D) !=
+          TopMethods.end())
       return true;
 
     TopMethodsTy methods;
     getTopOverriddenMethods(TU, D, methods);
     for (TopMethodsTy::iterator
            I = methods.begin(), E = methods.end(); I != E; ++I) {
-      if (llvm::is_contained(TopMethods, *I))
+      if (std::find(TopMethods.begin(), TopMethods.end(), *I) !=
+            TopMethods.end())
         return true;
     }
 
@@ -126,7 +129,7 @@ private:
 
 } // end anonymous namespace.
 
-/// For a macro \arg Loc, returns the file spelling location and sets
+/// \brief For a macro \arg Loc, returns the file spelling location and sets
 /// to \arg isMacroArg whether the spelling resides inside a macro definition or
 /// a macro argument.
 static SourceLocation getFileSpellingLoc(SourceManager &SM,

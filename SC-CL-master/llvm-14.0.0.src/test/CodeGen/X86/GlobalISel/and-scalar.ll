@@ -19,9 +19,8 @@ define i32 @test_and_i1(i32 %arg1, i32 %arg2) {
 define i8 @test_and_i8(i8 %arg1, i8 %arg2) {
 ; ALL-LABEL: test_and_i8:
 ; ALL:       # %bb.0:
+; ALL-NEXT:    andb %dil, %sil
 ; ALL-NEXT:    movl %esi, %eax
-; ALL-NEXT:    andb %dil, %al
-; ALL-NEXT:    # kill: def $al killed $al killed $eax
 ; ALL-NEXT:    retq
   %ret = and i8 %arg1, %arg2
   ret i8 %ret
@@ -30,9 +29,8 @@ define i8 @test_and_i8(i8 %arg1, i8 %arg2) {
 define i16 @test_and_i16(i16 %arg1, i16 %arg2) {
 ; ALL-LABEL: test_and_i16:
 ; ALL:       # %bb.0:
+; ALL-NEXT:    andw %di, %si
 ; ALL-NEXT:    movl %esi, %eax
-; ALL-NEXT:    andw %di, %ax
-; ALL-NEXT:    # kill: def $ax killed $ax killed $eax
 ; ALL-NEXT:    retq
   %ret = and i16 %arg1, %arg2
   ret i16 %ret
@@ -41,8 +39,8 @@ define i16 @test_and_i16(i16 %arg1, i16 %arg2) {
 define i32 @test_and_i32(i32 %arg1, i32 %arg2) {
 ; ALL-LABEL: test_and_i32:
 ; ALL:       # %bb.0:
+; ALL-NEXT:    andl %edi, %esi
 ; ALL-NEXT:    movl %esi, %eax
-; ALL-NEXT:    andl %edi, %eax
 ; ALL-NEXT:    retq
   %ret = and i32 %arg1, %arg2
   ret i32 %ret
@@ -51,8 +49,8 @@ define i32 @test_and_i32(i32 %arg1, i32 %arg2) {
 define i64 @test_and_i64(i64 %arg1, i64 %arg2) {
 ; ALL-LABEL: test_and_i64:
 ; ALL:       # %bb.0:
+; ALL-NEXT:    andq %rdi, %rsi
 ; ALL-NEXT:    movq %rsi, %rax
-; ALL-NEXT:    andq %rdi, %rax
 ; ALL-NEXT:    retq
   %ret = and i64 %arg1, %arg2
   ret i64 %ret

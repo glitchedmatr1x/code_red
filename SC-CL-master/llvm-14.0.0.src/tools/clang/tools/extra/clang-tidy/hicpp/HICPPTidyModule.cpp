@@ -1,17 +1,16 @@
 //===------- HICPPTidyModule.cpp - clang-tidy -----------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #include "../ClangTidy.h"
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
-#include "../bugprone/UndelegatedConstructorCheck.h"
 #include "../bugprone/UseAfterMoveCheck.h"
-#include "../cppcoreguidelines/AvoidGotoCheck.h"
 #include "../cppcoreguidelines/NoMallocCheck.h"
 #include "../cppcoreguidelines/ProBoundsArrayToPointerDecayCheck.h"
 #include "../cppcoreguidelines/ProTypeMemberInitCheck.h"
@@ -21,7 +20,7 @@
 #include "../google/ExplicitConstructorCheck.h"
 #include "../misc/NewDeleteOverloadsCheck.h"
 #include "../misc/StaticAssertCheck.h"
-#include "../modernize/AvoidCArraysCheck.h"
+#include "../misc/UndelegatedConstructor.h"
 #include "../modernize/DeprecatedHeadersCheck.h"
 #include "../modernize/UseAutoCheck.h"
 #include "../modernize/UseEmplaceCheck.h"
@@ -34,10 +33,8 @@
 #include "../performance/NoexceptMoveConstructorCheck.h"
 #include "../readability/BracesAroundStatementsCheck.h"
 #include "../readability/FunctionSizeCheck.h"
-#include "../readability/NamedParameterCheck.h"
-#include "../readability/UppercaseLiteralSuffixCheck.h"
+#include "../readability/IdentifierNamingCheck.h"
 #include "ExceptionBaseclassCheck.h"
-#include "MultiwayPathsCoveredCheck.h"
 #include "NoAssemblerCheck.h"
 #include "SignedBitwiseCheck.h"
 
@@ -48,24 +45,19 @@ namespace hicpp {
 class HICPPModule : public ClangTidyModule {
 public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
-    CheckFactories.registerCheck<modernize::AvoidCArraysCheck>(
-        "hicpp-avoid-c-arrays");
-    CheckFactories.registerCheck<cppcoreguidelines::AvoidGotoCheck>(
-        "hicpp-avoid-goto");
     CheckFactories.registerCheck<readability::BracesAroundStatementsCheck>(
         "hicpp-braces-around-statements");
     CheckFactories.registerCheck<modernize::DeprecatedHeadersCheck>(
         "hicpp-deprecated-headers");
     CheckFactories.registerCheck<ExceptionBaseclassCheck>(
         "hicpp-exception-baseclass");
-    CheckFactories.registerCheck<MultiwayPathsCoveredCheck>(
-        "hicpp-multiway-paths-covered");
-    CheckFactories.registerCheck<SignedBitwiseCheck>("hicpp-signed-bitwise");
+    CheckFactories.registerCheck<SignedBitwiseCheck>(
+        "hicpp-signed-bitwise");
     CheckFactories.registerCheck<google::ExplicitConstructorCheck>(
         "hicpp-explicit-conversions");
     CheckFactories.registerCheck<readability::FunctionSizeCheck>(
         "hicpp-function-size");
-    CheckFactories.registerCheck<readability::NamedParameterCheck>(
+    CheckFactories.registerCheck<readability::IdentifierNamingCheck>(
         "hicpp-named-parameter");
     CheckFactories.registerCheck<bugprone::UseAfterMoveCheck>(
         "hicpp-invalid-access-moved");
@@ -89,7 +81,7 @@ public:
     CheckFactories.registerCheck<misc::StaticAssertCheck>(
         "hicpp-static-assert");
     CheckFactories.registerCheck<modernize::UseAutoCheck>("hicpp-use-auto");
-    CheckFactories.registerCheck<bugprone::UndelegatedConstructorCheck>(
+    CheckFactories.registerCheck<misc::UndelegatedConstructorCheck>(
         "hicpp-undelegated-constructor");
     CheckFactories.registerCheck<modernize::UseEmplaceCheck>(
         "hicpp-use-emplace");
@@ -103,8 +95,6 @@ public:
         "hicpp-use-nullptr");
     CheckFactories.registerCheck<modernize::UseOverrideCheck>(
         "hicpp-use-override");
-    CheckFactories.registerCheck<readability::UppercaseLiteralSuffixCheck>(
-        "hicpp-uppercase-literal-suffix");
     CheckFactories.registerCheck<cppcoreguidelines::ProTypeVarargCheck>(
         "hicpp-vararg");
   }

@@ -1,17 +1,6 @@
-// RUN: %clang_cc1 -verify -fopenmp -fopenmp-version=50 %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp %s
 
-// RUN: %clang_cc1 -verify -fopenmp-simd -fopenmp-version=50 %s -Wuninitialized
-
-typedef void **omp_allocator_handle_t;
-extern const omp_allocator_handle_t omp_null_allocator;
-extern const omp_allocator_handle_t omp_default_mem_alloc;
-extern const omp_allocator_handle_t omp_large_cap_mem_alloc;
-extern const omp_allocator_handle_t omp_const_mem_alloc;
-extern const omp_allocator_handle_t omp_high_bw_mem_alloc;
-extern const omp_allocator_handle_t omp_low_lat_mem_alloc;
-extern const omp_allocator_handle_t omp_cgroup_mem_alloc;
-extern const omp_allocator_handle_t omp_pteam_mem_alloc;
-extern const omp_allocator_handle_t omp_thread_mem_alloc;
+// RUN: %clang_cc1 -verify -fopenmp-simd %s
 
 void foo() {
 }
@@ -56,7 +45,7 @@ public:
   S5(int v) : a(v) {}
   S5 &operator=(S5 &s) {
 #pragma omp target simd private(a) private(this->a) private(s.a) // expected-error {{expected variable name or data member of current class}}
-    for (int k = 0; k < s.a; ++k) // expected-warning {{Type 'S5' is not trivially copyable and not guaranteed to be mapped correctly}}
+    for (int k = 0; k < s.a; ++k)
       ++s.a;
     return *this;
   }
@@ -69,7 +58,7 @@ public:
 
   S6() : a(0) {}
   S6(T v) : a(v) {
-#pragma omp target simd private(a) private(this->a) allocate(omp_thread_mem_alloc: a) // expected-warning {{allocator with the 'thread' trait access has unspecified behavior on 'target simd' directive}} expected-error {{allocator must be specified in the 'uses_allocators' clause}}
+#pragma omp target simd private(a) private(this->a)
     for (int k = 0; k < v; ++k)
       ++this->a;
   }
@@ -107,7 +96,7 @@ template <class I, class C>
 int foomain(I argc, C **argv) {
   I e(4);
   I g(5);
-  int i, z;
+  int i;
   int &j = i;
 #pragma omp target simd private // expected-error {{expected '(' after 'private'}}
   for (int k = 0; k < argc; ++k)
@@ -127,7 +116,7 @@ int foomain(I argc, C **argv) {
 #pragma omp target simd private(argc > 0 ? argv[1] : argv[2]) // expected-error {{expected variable name}}
   for (int k = 0; k < argc; ++k)
     ++k;
-#pragma omp target simd private(argc) allocate , allocate(, allocate(omp_default , allocate(omp_default_mem_alloc, allocate(omp_default_mem_alloc:, allocate(omp_default_mem_alloc: argc, allocate(omp_default_mem_alloc: argv), allocate(argv) // expected-error {{expected '(' after 'allocate'}} expected-error 2 {{expected expression}} expected-error 2 {{expected ')'}} expected-error {{use of undeclared identifier 'omp_default'}} expected-note 2 {{to match this '('}}
+#pragma omp target simd private(argc)
   for (int k = 0; k < argc; ++k)
     ++k;
 #pragma omp target simd private(S1) // expected-error {{'S1' does not refer to a value}}
@@ -139,7 +128,7 @@ int foomain(I argc, C **argv) {
 #pragma omp target simd private(argv[1]) // expected-error {{expected variable name}}
   for (int k = 0; k < argc; ++k)
     ++k;
-#pragma omp target simd private(e, g, z)
+#pragma omp target simd private(e, g)
   for (int k = 0; k < argc; ++k)
     ++k;
 #pragma omp target simd private(h) // expected-error {{threadprivate or thread local variable cannot be private}}
@@ -177,9 +166,9 @@ using A::x;
 int main(int argc, char **argv) {
   S4 e(4);
   S5 g(5);
-  S6<float> s6(0.0) , s6_0(1.0); // expected-note {{in instantiation of member function 'S6<float>::S6' requested here}}
+  S6<float> s6(0.0) , s6_0(1.0);
   S7<S6<float> > s7(0.0) , s7_0(1.0);
-  int i, z;
+  int i;
   int &j = i;
 #pragma omp target simd private // expected-error {{expected '(' after 'private'}}
   for (int k = 0; k < argc; ++k)
@@ -199,7 +188,7 @@ int main(int argc, char **argv) {
 #pragma omp target simd private(argc > 0 ? argv[1] : argv[2]) // expected-error {{expected variable name}}
   for (int k = 0; k < argc; ++k)
     ++k;
-#pragma omp target simd private(argc, z)
+#pragma omp target simd private(argc)
   for (int k = 0; k < argc; ++k)
     ++k;
 #pragma omp target simd private(S1) // expected-error {{'S1' does not refer to a value}}
@@ -238,7 +227,7 @@ int main(int argc, char **argv) {
     m = k + 2;
 
   s6 = s6_0; // expected-note {{in instantiation of member function 'S6<float>::operator=' requested here}}
-  s7 = s7_0; // expected-note {{in instantiation of member function 'S7<S6<float>>::operator=' requested here}}
+  s7 = s7_0; // expected-note {{in instantiation of member function 'S7<S6<float> >::operator=' requested here}}
   return foomain(argc, argv); // expected-note {{in instantiation of function template specialization 'foomain<int, char>' requested here}}
 }
 

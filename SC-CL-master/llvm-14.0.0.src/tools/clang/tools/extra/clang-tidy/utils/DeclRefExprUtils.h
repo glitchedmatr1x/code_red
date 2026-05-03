@@ -1,8 +1,9 @@
 //===--- DeclRefExprUtils.h - clang-tidy-------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,7 +19,7 @@ namespace tidy {
 namespace utils {
 namespace decl_ref_expr {
 
-/// Returns true if all ``DeclRefExpr`` to the variable within ``Stmt``
+/// \brief Returns true if all ``DeclRefExpr`` to the variable within ``Stmt``
 /// do not modify it.
 ///
 /// Returns ``true`` if only const methods or operators are called on the
@@ -39,6 +40,12 @@ allDeclRefExprs(const VarDecl &VarDecl, const Decl &Decl, ASTContext &Context);
 /// ``VarDecl`` is guaranteed to be accessed in a const fashion.
 llvm::SmallPtrSet<const DeclRefExpr *, 16>
 constReferenceDeclRefExprs(const VarDecl &VarDecl, const Stmt &Stmt,
+                           ASTContext &Context);
+
+/// Returns set of all ``DeclRefExprs`` to ``VarDecl`` within ``Decl`` where
+/// ``VarDecl`` is guaranteed to be accessed in a const fashion.
+llvm::SmallPtrSet<const DeclRefExpr *, 16>
+constReferenceDeclRefExprs(const VarDecl &VarDecl, const Decl &Decl,
                            ASTContext &Context);
 
 /// Returns ``true`` if ``DeclRefExpr`` is the argument of a copy-constructor

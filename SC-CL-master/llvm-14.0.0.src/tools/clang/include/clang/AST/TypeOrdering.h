@@ -1,13 +1,14 @@
-//===-------------- TypeOrdering.h - Total ordering for types ---*- C++ -*-===//
+//===-------------- TypeOrdering.h - Total ordering for types -------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Allows QualTypes to be sorted and hence used in maps and sets.
+/// \brief Allows QualTypes to be sorted and hence used in maps and sets.
 ///
 /// Defines clang::QualTypeOrdering, a total ordering on clang::QualType,
 /// and hence enables QualType values to be sorted and to be used in
@@ -24,7 +25,7 @@
 
 namespace clang {
 
-/// Function object that provides a total ordering on QualType values.
+/// \brief Function object that provides a total ordering on QualType values.
 struct QualTypeOrdering {
   bool operator()(QualType T1, QualType T2) const {
     return std::less<void*>()(T1.getAsOpaquePtr(), T2.getAsOpaquePtr());
@@ -34,6 +35,7 @@ struct QualTypeOrdering {
 }
 
 namespace llvm {
+  template<class> struct DenseMapInfo;
 
   template<> struct DenseMapInfo<clang::QualType> {
     static inline clang::QualType getEmptyKey() { return clang::QualType(); }
@@ -54,20 +56,20 @@ namespace llvm {
   };
 
   template<> struct DenseMapInfo<clang::CanQualType> {
-    static inline clang::CanQualType getEmptyKey() {
-      return clang::CanQualType();
+    static inline clang::CanQualType getEmptyKey() { 
+      return clang::CanQualType(); 
     }
-
+    
     static inline clang::CanQualType getTombstoneKey() {
       using clang::CanQualType;
       return CanQualType::getFromOpaquePtr(reinterpret_cast<clang::Type *>(-1));
     }
-
+    
     static unsigned getHashValue(clang::CanQualType Val) {
       return (unsigned)((uintptr_t)Val.getAsOpaquePtr()) ^
       ((unsigned)((uintptr_t)Val.getAsOpaquePtr() >> 9));
     }
-
+    
     static bool isEqual(clang::CanQualType LHS, clang::CanQualType RHS) {
       return LHS == RHS;
     }

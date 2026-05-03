@@ -1,13 +1,14 @@
 //===- InfoStreamBuilder.h - PDB Info Stream Creation -----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_DEBUGINFO_PDB_NATIVE_INFOSTREAMBUILDER_H
-#define LLVM_DEBUGINFO_PDB_NATIVE_INFOSTREAMBUILDER_H
+#ifndef LLVM_DEBUGINFO_PDB_RAW_PDBINFOSTREAMBUILDER_H
+#define LLVM_DEBUGINFO_PDB_RAW_PDBINFOSTREAMBUILDER_H
 
 #include "llvm/ADT/Optional.h"
 #include "llvm/Support/Error.h"
@@ -34,21 +35,10 @@ public:
   InfoStreamBuilder &operator=(const InfoStreamBuilder &) = delete;
 
   void setVersion(PdbRaw_ImplVer V);
-  void addFeature(PdbRaw_FeatureSig Sig);
-
-  // If this is true, the PDB contents are hashed and this hash is used as
-  // PDB GUID and as Signature. The age is always 1.
-  void setHashPDBContentsToGUID(bool B);
-
-  // These only have an effect if hashPDBContentsToGUID() is false.
   void setSignature(uint32_t S);
   void setAge(uint32_t A);
   void setGuid(codeview::GUID G);
-
-  bool hashPDBContentsToGUID() const { return HashPDBContentsToGUID; }
-  uint32_t getAge() const { return Age; }
-  codeview::GUID getGuid() const { return Guid; }
-  Optional<uint32_t> getSignature() const { return Signature; }
+  void addFeature(PdbRaw_FeatureSig Sig);
 
   uint32_t finalize();
 
@@ -62,11 +52,9 @@ private:
 
   std::vector<PdbRaw_FeatureSig> Features;
   PdbRaw_ImplVer Ver;
+  uint32_t Sig;
   uint32_t Age;
-  Optional<uint32_t> Signature;
   codeview::GUID Guid;
-
-  bool HashPDBContentsToGUID = false;
 
   NamedStreamMap &NamedStreams;
 };

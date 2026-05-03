@@ -1,8 +1,9 @@
 //===- StmtIterator.h - Iterators for Statements ----------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -32,14 +33,14 @@ protected:
     DeclGroupMode = 0x2,
     Flags = 0x3
   };
-
+  
   union {
     Stmt **stmt;
     Decl **DGI;
   };
   uintptr_t RawVAPtr = 0;
   Decl **DGE;
-
+  
   StmtIteratorBase(Stmt **s) : stmt(s) {}
   StmtIteratorBase(const VariableArrayType *t);
   StmtIteratorBase(Decl **dgi, Decl **dge);
@@ -74,17 +75,14 @@ protected:
 };
 
 template <typename DERIVED, typename REFERENCE>
-class StmtIteratorImpl : public StmtIteratorBase {
+class StmtIteratorImpl : public StmtIteratorBase,
+                         public std::iterator<std::forward_iterator_tag,
+                                              REFERENCE, ptrdiff_t,
+                                              REFERENCE, REFERENCE> {
 protected:
   StmtIteratorImpl(const StmtIteratorBase& RHS) : StmtIteratorBase(RHS) {}
 
 public:
-  using iterator_category = std::forward_iterator_tag;
-  using value_type = REFERENCE;
-  using difference_type = std::ptrdiff_t;
-  using pointer = REFERENCE;
-  using reference = REFERENCE;
-
   StmtIteratorImpl() = default;
   StmtIteratorImpl(Stmt **s) : StmtIteratorBase(s) {}
   StmtIteratorImpl(Decl **dgi, Decl **dge) : StmtIteratorBase(dgi, dge) {}
@@ -107,13 +105,12 @@ public:
     return tmp;
   }
 
-  friend bool operator==(const DERIVED &LHS, const DERIVED &RHS) {
-    return LHS.stmt == RHS.stmt && LHS.DGI == RHS.DGI &&
-           LHS.RawVAPtr == RHS.RawVAPtr;
+  bool operator==(const DERIVED& RHS) const {
+    return stmt == RHS.stmt && DGI == RHS.DGI && RawVAPtr == RHS.RawVAPtr;
   }
 
-  friend bool operator!=(const DERIVED &LHS, const DERIVED &RHS) {
-    return !(LHS == RHS);
+  bool operator!=(const DERIVED& RHS) const {
+    return stmt != RHS.stmt || DGI != RHS.DGI || RawVAPtr != RHS.RawVAPtr;
   }
 
   REFERENCE operator*() const {

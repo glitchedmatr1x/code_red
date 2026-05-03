@@ -62,10 +62,6 @@ void f(Short s, Long l, Enum1 e1, Enum2 e2, Xpmf pmf) {
   // FIXME: should pass (void)static_cast<no&>(islong(e1 % e2));
 }
 
-struct BoolRef {
-  operator bool&();
-};
-
 struct ShortRef { // expected-note{{candidate function (the implicit copy assignment operator) not viable}}
 #if __cplusplus >= 201103L // C++11 or later
 // expected-note@-2 {{candidate function (the implicit move assignment operator) not viable}}
@@ -75,10 +71,6 @@ struct ShortRef { // expected-note{{candidate function (the implicit copy assign
 
 struct LongRef {
   operator volatile long&();
-};
-
-struct FloatRef {
-  operator float&();
 };
 
 struct XpmfRef { // expected-note{{candidate function (the implicit copy assignment operator) not viable}}
@@ -92,18 +84,12 @@ struct E2Ref {
   operator E2&();
 };
 
-void g(BoolRef br, ShortRef sr, LongRef lr, FloatRef fr, E2Ref e2_ref, XpmfRef pmf_ref) {
+void g(ShortRef sr, LongRef lr, E2Ref e2_ref, XpmfRef pmf_ref) {
   // C++ [over.built]p3
   short s1 = sr++;
 
-  // C++ [over.built]p4
+  // C++ [over.built]p3
   long l1 = lr--;
-
-  // C++ [over.built]p4
-  float f1 = fr--;
-
-  // C++ [over.built]p4
-  bool b2 = br--; // expected-error{{cannot decrement value of type 'BoolRef'}}
 
   // C++ [over.built]p18
   short& sr1 = (sr *= lr);
@@ -194,8 +180,10 @@ struct A {
 };
 
 void test_dr425(A a) {
+  // FIXME: lots of candidates here!
   (void)(1.0f * a); // expected-error{{ambiguous}} \
-                    // expected-note 12{{candidate}}
+                    // expected-note 4{{candidate}} \
+                    // expected-note {{remaining 140 candidates omitted; pass -fshow-overloads=all to show them}}
 }
 
 // pr5432
@@ -235,10 +223,9 @@ namespace PR8477 {
     (void)(foo - zero);
     (void)(zero + foo);
     (void)(zero[foo]);
-    // FIXME: It would be nice to report fewer candidates here.
     (void)(foo - foo); // expected-error{{use of overloaded operator '-' is ambiguous}} \
     // expected-note 4{{built-in candidate operator-}} \
-    // expected-note{{142 candidates omitted}}
+    // expected-note{{candidates omitted}}
     return foo[zero] == zero;
   }
 }

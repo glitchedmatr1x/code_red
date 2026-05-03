@@ -6,13 +6,13 @@ int DefinedInDifferentFile(int *a);
 // RUN: %clang_cc1 -std=c++11 -triple x86_64-apple-darwin -disable-O0-optnone -emit-llvm -o - %s -include %t.extra-source.cpp | FileCheck -check-prefix=WITHOUT %s
 // RUN: %clang_cc1 -std=c++11 -triple x86_64-apple-darwin -disable-O0-optnone -emit-llvm -o - %s -include %t.extra-source.cpp -fsanitize=address | FileCheck -check-prefix=ASAN %s
 
-// RUN: echo "fun:*IgnorelistedFunction*" > %t.func.ignorelist
-// RUN: %clang_cc1 -std=c++11 -triple x86_64-apple-darwin -disable-O0-optnone -emit-llvm -o - %s -include %t.extra-source.cpp -fsanitize=address -fsanitize-ignorelist=%t.func.ignorelist | FileCheck -check-prefix=BLFUNC %s
+// RUN: echo "fun:*BlacklistedFunction*" > %t.func.blacklist
+// RUN: %clang_cc1 -std=c++11 -triple x86_64-apple-darwin -disable-O0-optnone -emit-llvm -o - %s -include %t.extra-source.cpp -fsanitize=address -fsanitize-blacklist=%t.func.blacklist | FileCheck -check-prefix=BLFUNC %s
 
-// The ignorelist file uses regexps, so escape backslashes, which are common in
+// The blacklist file uses regexps, so escape backslashes, which are common in
 // Windows paths.
-// RUN: echo "src:%s" | sed -e 's/\\/\\\\/g' > %t.file.ignorelist
-// RUN: %clang_cc1 -std=c++11 -triple x86_64-apple-darwin -disable-O0-optnone -emit-llvm -o - %s -include %t.extra-source.cpp -fsanitize=address -fsanitize-ignorelist=%t.file.ignorelist | FileCheck -check-prefix=BLFILE %s
+// RUN: echo "src:%s" | sed -e 's/\\/\\\\/g' > %t.file.blacklist
+// RUN: %clang_cc1 -std=c++11 -triple x86_64-apple-darwin -disable-O0-optnone -emit-llvm -o - %s -include %t.extra-source.cpp -fsanitize=address -fsanitize-blacklist=%t.file.blacklist | FileCheck -check-prefix=BLFILE %s
 
 // The sanitize_address attribute should be attached to functions
 // when AddressSanitizer is enabled, unless no_sanitize_address attribute
@@ -25,7 +25,7 @@ int DefinedInDifferentFile(int *a);
 // ASAN:    DefinedInDifferentFile{{.*}} [[WITH:#[0-9]+]]
 
 // Check that functions generated for global in different source file are
-// not ignorelisted.
+// not blacklisted.
 // WITHOUT: @__cxx_global_var_init{{.*}}[[NOATTR:#[0-9]+]]
 // WITHOUT: @__cxx_global_array_dtor{{.*}}[[NOATTR]]
 // BLFILE: @__cxx_global_var_init{{.*}}[[WITH:#[0-9]+]]
@@ -35,7 +35,8 @@ int DefinedInDifferentFile(int *a);
 // ASAN: @__cxx_global_var_init{{.*}}[[WITH:#[0-9]+]]
 // ASAN: @__cxx_global_array_dtor{{.*}}[[WITH]]
 
-// WITHOUT:  NoAddressSafety1{{.*}}) [[NOATTR:#[0-9]+]]
+
+// WITHOUT:  NoAddressSafety1{{.*}}) [[NOATTR]]
 // BLFILE:  NoAddressSafety1{{.*}}) [[NOATTR:#[0-9]+]]
 // BLFUNC:  NoAddressSafety1{{.*}}) [[NOATTR:#[0-9]+]]
 // ASAN:  NoAddressSafety1{{.*}}) [[NOATTR:#[0-9]+]]
@@ -82,15 +83,15 @@ int NoAddressSafety6(int *a) { return *a; }
 
 // WITHOUT:  AddressSafetyOk{{.*}}) [[NOATTR]]
 // BLFILE:  AddressSafetyOk{{.*}}) [[NOATTR]]
-// BLFUNC: AddressSafetyOk{{.*}}) [[WITH:#[0-9]+]]
-// ASAN: AddressSafetyOk{{.*}}) [[WITH:#[0-9]+]]
+// BLFUNC: AddressSafetyOk{{.*}}) [[WITH]]
+// ASAN: AddressSafetyOk{{.*}}) [[WITH]]
 int AddressSafetyOk(int *a) { return *a; }
 
-// WITHOUT:  IgnorelistedFunction{{.*}}) [[NOATTR]]
-// BLFILE:  IgnorelistedFunction{{.*}}) [[NOATTR]]
-// BLFUNC:  IgnorelistedFunction{{.*}}) [[NOATTR]]
-// ASAN:  IgnorelistedFunction{{.*}}) [[WITH]]
-int IgnorelistedFunction(int *a) { return *a; }
+// WITHOUT:  BlacklistedFunction{{.*}}) [[NOATTR]]
+// BLFILE:  BlacklistedFunction{{.*}}) [[NOATTR]]
+// BLFUNC:  BlacklistedFunction{{.*}}) [[NOATTR]]
+// ASAN:  BlacklistedFunction{{.*}}) [[WITH]]
+int BlacklistedFunction(int *a) { return *a; }
 
 #define GENERATE_FUNC(name) \
     int name(int *a) { return *a; }
@@ -137,10 +138,10 @@ int force_instance = TemplateAddressSafetyOk<42>()
 // Check that __cxx_global_var_init* get the sanitize_address attribute.
 int global1 = 0;
 int global2 = *(int*)((char*)&global1+1);
-// WITHOUT: @__cxx_global_var_init{{.*}}[[NOATTR:#[0-9]+]]
+// WITHOUT: @__cxx_global_var_init{{.*}}[[NOATTR]]
 // BLFILE: @__cxx_global_var_init{{.*}}[[NOATTR:#[0-9]+]]
-// BLFUNC: @__cxx_global_var_init{{.*}}[[WITH:#[0-9]+]]
-// ASAN: @__cxx_global_var_init{{.*}}[[WITH:#[0-9]+]]
+// BLFUNC: @__cxx_global_var_init{{.*}}[[WITH]]
+// ASAN: @__cxx_global_var_init{{.*}}[[WITH]]
 
 // WITHOUT: attributes [[NOATTR]] = { noinline nounwind{{.*}} }
 
@@ -148,7 +149,7 @@ int global2 = *(int*)((char*)&global1+1);
 // BLFILE: attributes [[NOATTR]] = { noinline nounwind{{.*}} }
 
 // BLFUNC: attributes [[WITH]] = { noinline nounwind sanitize_address{{.*}} }
-// BLFUNC: attributes [[NOATTR]] = { mustprogress noinline nounwind{{.*}} }
+// BLFUNC: attributes [[NOATTR]] = { noinline nounwind{{.*}} }
 
 // ASAN: attributes [[WITH]] = { noinline nounwind sanitize_address{{.*}} }
-// ASAN: attributes [[NOATTR]] = { mustprogress noinline nounwind{{.*}} }
+// ASAN: attributes [[NOATTR]] = { noinline nounwind{{.*}} }

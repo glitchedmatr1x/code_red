@@ -1,8 +1,8 @@
-; RUN: llc -march=hexagon -verify-machineinstrs -hexagon-initial-cfg-cleanup=0 < %s | FileCheck %s
+; RUN: llc -march=hexagon -verify-machineinstrs < %s | FileCheck %s
 ; REQUIRES: asserts
 
 ; Check for some output (as opposed to a crash).
-; CHECK: fred
+; CHECK: loop0
 
 target triple = "hexagon"
 

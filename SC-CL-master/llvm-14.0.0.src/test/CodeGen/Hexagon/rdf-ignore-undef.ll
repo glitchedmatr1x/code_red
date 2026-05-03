@@ -49,7 +49,7 @@ if.end88.do.body_crit_edge:                       ; preds = %if.end88
   br label %do.body
 
 if.then124:                                       ; preds = %if.end88, %do.body
-  ret i32 0
+  unreachable
 }
 
 attributes #0 = { nounwind }

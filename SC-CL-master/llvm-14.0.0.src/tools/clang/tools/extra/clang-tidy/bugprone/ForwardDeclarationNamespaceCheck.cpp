@@ -1,8 +1,9 @@
 //===--- ForwardDeclarationNamespaceCheck.cpp - clang-tidy ------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -63,7 +64,7 @@ void ForwardDeclarationNamespaceCheck::check(
     const auto *Decl = Result.Nodes.getNodeAs<FriendDecl>("friend_decl");
     assert(Decl && "Decl is neither record_decl nor friend decl!");
 
-    // Classes used in friend declarations are not marked referenced in AST,
+    // Classes used in friend delarations are not marked referenced in AST,
     // so we need to check classes used in friend declarations manually to
     // reduce the rate of false positive.
     // For example, in
@@ -123,7 +124,7 @@ void ForwardDeclarationNamespaceCheck::onEndOfTranslationUnit() {
       if (CurDecl->hasDefinition() || CurDecl->isReferenced()) {
         continue; // Skip forward declarations that are used/referenced.
       }
-      if (FriendTypes.contains(CurDecl->getTypeForDecl())) {
+      if (FriendTypes.count(CurDecl->getTypeForDecl()) != 0) {
         continue; // Skip forward declarations referenced as friend.
       }
       if (CurDecl->getLocation().isMacroID() ||

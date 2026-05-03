@@ -1,13 +1,14 @@
 //===--- DeclSpec.h - Parsed declaration specifiers -------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file defines the classes used to store parsed information about
+/// \brief This file defines the classes used to store parsed information about
 /// declaration-specifiers and declarators.
 ///
 /// \verbatim
@@ -22,16 +23,14 @@
 #ifndef LLVM_CLANG_SEMA_DECLSPEC_H
 #define LLVM_CLANG_SEMA_DECLSPEC_H
 
-#include "clang/AST/DeclCXX.h"
-#include "clang/AST/DeclObjCCommon.h"
 #include "clang/AST/NestedNameSpecifier.h"
 #include "clang/Basic/ExceptionSpecificationType.h"
 #include "clang/Basic/Lambda.h"
 #include "clang/Basic/OperatorKinds.h"
 #include "clang/Basic/Specifiers.h"
 #include "clang/Lex/Token.h"
+#include "clang/Sema/AttributeList.h"
 #include "clang/Sema/Ownership.h"
-#include "clang/Sema/ParsedAttr.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/Support/Compiler.h"
 #include "llvm/Support/ErrorHandling.h"
@@ -49,7 +48,7 @@ namespace clang {
   class Declarator;
   struct TemplateIdAnnotation;
 
-/// Represents a C++ nested-name-specifier or a global scope specifier.
+/// \brief Represents a C++ nested-name-specifier or a global scope specifier.
 ///
 /// These can be in 3 states:
 ///   1) Not present, identified by isEmpty()
@@ -62,7 +61,7 @@ namespace clang {
 ///
 /// The actual scope is described by getScopeRep().
 class CXXScopeSpec {
-  SourceRange Range;
+  SourceRange Range;  
   NestedNameSpecifierLocBuilder Builder;
 
 public:
@@ -73,12 +72,12 @@ public:
   SourceLocation getBeginLoc() const { return Range.getBegin(); }
   SourceLocation getEndLoc() const { return Range.getEnd(); }
 
-  /// Retrieve the representation of the nested-name-specifier.
-  NestedNameSpecifier *getScopeRep() const {
-    return Builder.getRepresentation();
+  /// \brief Retrieve the representation of the nested-name-specifier.
+  NestedNameSpecifier *getScopeRep() const { 
+    return Builder.getRepresentation(); 
   }
 
-  /// Extend the current nested-name-specifier by another
+  /// \brief Extend the current nested-name-specifier by another
   /// nested-name-specifier component of the form 'type::'.
   ///
   /// \param Context The AST context in which this nested-name-specifier
@@ -92,7 +91,7 @@ public:
   void Extend(ASTContext &Context, SourceLocation TemplateKWLoc, TypeLoc TL,
               SourceLocation ColonColonLoc);
 
-  /// Extend the current nested-name-specifier by another
+  /// \brief Extend the current nested-name-specifier by another 
   /// nested-name-specifier component of the form 'identifier::'.
   ///
   /// \param Context The AST context in which this nested-name-specifier
@@ -106,7 +105,7 @@ public:
   void Extend(ASTContext &Context, IdentifierInfo *Identifier,
               SourceLocation IdentifierLoc, SourceLocation ColonColonLoc);
 
-  /// Extend the current nested-name-specifier by another
+  /// \brief Extend the current nested-name-specifier by another 
   /// nested-name-specifier component of the form 'namespace::'.
   ///
   /// \param Context The AST context in which this nested-name-specifier
@@ -120,7 +119,7 @@ public:
   void Extend(ASTContext &Context, NamespaceDecl *Namespace,
               SourceLocation NamespaceLoc, SourceLocation ColonColonLoc);
 
-  /// Extend the current nested-name-specifier by another
+  /// \brief Extend the current nested-name-specifier by another 
   /// nested-name-specifier component of the form 'namespace-alias::'.
   ///
   /// \param Context The AST context in which this nested-name-specifier
@@ -128,18 +127,18 @@ public:
   ///
   /// \param Alias The namespace alias.
   ///
-  /// \param AliasLoc The location of the namespace alias
+  /// \param AliasLoc The location of the namespace alias 
   /// name.
   ///
   /// \param ColonColonLoc The location of the trailing '::'.
   void Extend(ASTContext &Context, NamespaceAliasDecl *Alias,
               SourceLocation AliasLoc, SourceLocation ColonColonLoc);
 
-  /// Turn this (empty) nested-name-specifier into the global
+  /// \brief Turn this (empty) nested-name-specifier into the global
   /// nested-name-specifier '::'.
   void MakeGlobal(ASTContext &Context, SourceLocation ColonColonLoc);
-
-  /// Turns this (empty) nested-name-specifier into '__super'
+  
+  /// \brief Turns this (empty) nested-name-specifier into '__super'
   /// nested-name-specifier.
   ///
   /// \param Context The AST context in which this nested-name-specifier
@@ -155,27 +154,27 @@ public:
   void MakeSuper(ASTContext &Context, CXXRecordDecl *RD,
                  SourceLocation SuperLoc, SourceLocation ColonColonLoc);
 
-  /// Make a new nested-name-specifier from incomplete source-location
+  /// \brief Make a new nested-name-specifier from incomplete source-location
   /// information.
   ///
   /// FIXME: This routine should be used very, very rarely, in cases where we
   /// need to synthesize a nested-name-specifier. Most code should instead use
   /// \c Adopt() with a proper \c NestedNameSpecifierLoc.
-  void MakeTrivial(ASTContext &Context, NestedNameSpecifier *Qualifier,
+  void MakeTrivial(ASTContext &Context, NestedNameSpecifier *Qualifier, 
                    SourceRange R);
-
-  /// Adopt an existing nested-name-specifier (with source-range
+  
+  /// \brief Adopt an existing nested-name-specifier (with source-range 
   /// information).
   void Adopt(NestedNameSpecifierLoc Other);
-
-  /// Retrieve a nested-name-specifier with location information, copied
+  
+  /// \brief Retrieve a nested-name-specifier with location information, copied
   /// into the given AST context.
   ///
   /// \param Context The context into which this nested-name-specifier will be
   /// copied.
   NestedNameSpecifierLoc getWithLocInContext(ASTContext &Context) const;
 
-  /// Retrieve the location of the name in the last qualifier
+  /// \brief Retrieve the location of the name in the last qualifier
   /// in this nested name specifier.
   ///
   /// For example, the location of \c bar
@@ -187,24 +186,24 @@ public:
   SourceLocation getLastQualifierNameLoc() const;
 
   /// No scope specifier.
-  bool isEmpty() const { return Range.isInvalid() && getScopeRep() == nullptr; }
+  bool isEmpty() const { return !Range.isValid(); }
   /// A scope specifier is present, but may be valid or invalid.
   bool isNotEmpty() const { return !isEmpty(); }
 
   /// An error occurred during parsing of the scope specifier.
-  bool isInvalid() const { return Range.isValid() && getScopeRep() == nullptr; }
+  bool isInvalid() const { return isNotEmpty() && getScopeRep() == nullptr; }
   /// A scope specifier is present, and it refers to a real scope.
-  bool isValid() const { return getScopeRep() != nullptr; }
+  bool isValid() const { return isNotEmpty() && getScopeRep() != nullptr; }
 
-  /// Indicate that this nested-name-specifier is invalid.
-  void SetInvalid(SourceRange R) {
+  /// \brief Indicate that this nested-name-specifier is invalid.
+  void SetInvalid(SourceRange R) { 
     assert(R.isValid() && "Must have a valid source range");
     if (Range.getBegin().isInvalid())
       Range.setBegin(R.getBegin());
     Range.setEnd(R.getEnd());
     Builder.Clear();
   }
-
+  
   /// Deprecated.  Some call sites intend isNotEmpty() while others intend
   /// isValid().
   bool isSet() const { return getScopeRep() != nullptr; }
@@ -214,21 +213,21 @@ public:
     Builder.Clear();
   }
 
-  /// Retrieve the data associated with the source-location information.
+  /// \brief Retrieve the data associated with the source-location information.
   char *location_data() const { return Builder.getBuffer().first; }
-
-  /// Retrieve the size of the data associated with source-location
+  
+  /// \brief Retrieve the size of the data associated with source-location 
   /// information.
   unsigned location_size() const { return Builder.getBuffer().second; }
 };
 
-/// Captures information about "declaration specifiers".
+/// \brief Captures information about "declaration specifiers".
 ///
 /// "Declaration specifiers" encompasses storage-class-specifiers,
 /// type-specifiers, type-qualifiers, and function-specifiers.
 class DeclSpec {
 public:
-  /// storage-class-specifier
+  /// \brief storage-class-specifier
   /// \note The order of these enumerators is important for diagnostics.
   enum SCS {
     SCS_unspecified = 0,
@@ -249,11 +248,24 @@ public:
   static const TSCS TSCS_thread_local = clang::TSCS_thread_local;
   static const TSCS TSCS__Thread_local = clang::TSCS__Thread_local;
 
+  // Import type specifier width enumeration and constants.
+  typedef TypeSpecifierWidth TSW;
+  static const TSW TSW_unspecified = clang::TSW_unspecified;
+  static const TSW TSW_short = clang::TSW_short;
+  static const TSW TSW_long = clang::TSW_long;
+  static const TSW TSW_longlong = clang::TSW_longlong;
+  
   enum TSC {
     TSC_unspecified,
     TSC_imaginary,
     TSC_complex
   };
+
+  // Import type specifier sign enumeration and constants.
+  typedef TypeSpecifierSign TSS;
+  static const TSS TSS_unspecified = clang::TSS_unspecified;
+  static const TSS TSS_signed = clang::TSS_signed;
+  static const TSS TSS_unsigned = clang::TSS_unsigned;
 
   // Import type specifier type enumeration and constants.
   typedef TypeSpecifierType TST;
@@ -261,21 +273,15 @@ public:
   static const TST TST_void = clang::TST_void;
   static const TST TST_char = clang::TST_char;
   static const TST TST_wchar = clang::TST_wchar;
-  static const TST TST_char8 = clang::TST_char8;
   static const TST TST_char16 = clang::TST_char16;
   static const TST TST_char32 = clang::TST_char32;
   static const TST TST_int = clang::TST_int;
   static const TST TST_int128 = clang::TST_int128;
-  static const TST TST_bitint = clang::TST_bitint;
   static const TST TST_half = clang::TST_half;
-  static const TST TST_BFloat16 = clang::TST_BFloat16;
   static const TST TST_float = clang::TST_float;
   static const TST TST_double = clang::TST_double;
   static const TST TST_float16 = clang::TST_Float16;
-  static const TST TST_accum = clang::TST_Accum;
-  static const TST TST_fract = clang::TST_Fract;
   static const TST TST_float128 = clang::TST_float128;
-  static const TST TST_ibm128 = clang::TST_ibm128;
   static const TST TST_bool = clang::TST_bool;
   static const TST TST_decimal32 = clang::TST_decimal32;
   static const TST TST_decimal64 = clang::TST_decimal64;
@@ -320,7 +326,6 @@ public:
     PQ_TypeSpecifier         = 2,
     PQ_TypeQualifier         = 4,
     PQ_FunctionSpecifier     = 8
-    // FIXME: Attributes should be included here.
   };
 
 private:
@@ -330,7 +335,7 @@ private:
   unsigned SCS_extern_in_linkage_spec : 1;
 
   // type-specifier
-  /*TypeSpecifierWidth*/ unsigned TypeSpecWidth : 2;
+  /*TSW*/unsigned TypeSpecWidth : 2;
   /*TSC*/unsigned TypeSpecComplex : 2;
   /*TSS*/unsigned TypeSpecSign : 2;
   /*TST*/unsigned TypeSpecType : 6;
@@ -339,8 +344,6 @@ private:
   unsigned TypeAltiVecBool : 1;
   unsigned TypeSpecOwned : 1;
   unsigned TypeSpecPipe : 1;
-  unsigned TypeSpecSat : 1;
-  unsigned ConstrainedAuto : 1;
 
   // type-qualifiers
   unsigned TypeQualifiers : 5;  // Bitwise OR of TQ.
@@ -349,23 +352,20 @@ private:
   unsigned FS_inline_specified : 1;
   unsigned FS_forceinline_specified: 1;
   unsigned FS_virtual_specified : 1;
+  unsigned FS_explicit_specified : 1;
   unsigned FS_noreturn_specified : 1;
 
   // friend-specifier
   unsigned Friend_specified : 1;
 
   // constexpr-specifier
-  unsigned ConstexprSpecifier : 2;
+  unsigned Constexpr_specified : 1;
 
   union {
     UnionParsedType TypeRep;
     Decl *DeclRep;
     Expr *ExprRep;
-    TemplateIdAnnotation *TemplateIdRep;
   };
-
-  /// ExplicitSpecifier - Store information about explicit spicifer.
-  ExplicitSpecifier FS_explicit_specifier;
 
   // attributes.
   ParsedAttributes Attrs;
@@ -379,7 +379,7 @@ private:
 
   SourceLocation StorageClassSpecLoc, ThreadStorageClassSpecLoc;
   SourceRange TSWRange;
-  SourceLocation TSCLoc, TSSLoc, TSTLoc, AltiVecLoc, TSSatLoc;
+  SourceLocation TSCLoc, TSSLoc, TSTLoc, AltiVecLoc;
   /// TSTNameLoc - If TypeSpecType is any of class, enum, struct, union,
   /// typename, then this is the location of the named type (if present);
   /// otherwise, it is the same as TSTLoc. Hence, the pair TSTLoc and
@@ -389,7 +389,6 @@ private:
   SourceLocation TQ_constLoc, TQ_restrictLoc, TQ_volatileLoc, TQ_atomicLoc,
       TQ_unalignedLoc;
   SourceLocation FS_inlineLoc, FS_virtualLoc, FS_explicitLoc, FS_noreturnLoc;
-  SourceLocation FS_explicitCloseParenLoc;
   SourceLocation FS_forceinlineLoc;
   SourceLocation FriendLoc, ModulePrivateLoc, ConstexprLoc;
   SourceLocation TQ_pipeLoc;
@@ -404,10 +403,7 @@ private:
             T == TST_underlyingType || T == TST_atomic);
   }
   static bool isExprRep(TST T) {
-    return (T == TST_typeofExpr || T == TST_decltype || T == TST_bitint);
-  }
-  static bool isTemplateIdRep(TST T) {
-    return (T == TST_auto || T == TST_decltype_auto);
+    return (T == TST_typeofExpr || T == TST_decltype);
   }
 
   DeclSpec(const DeclSpec &) = delete;
@@ -420,21 +416,30 @@ public:
   }
 
   DeclSpec(AttributeFactory &attrFactory)
-      : StorageClassSpec(SCS_unspecified),
-        ThreadStorageClassSpec(TSCS_unspecified),
-        SCS_extern_in_linkage_spec(false),
-        TypeSpecWidth(static_cast<unsigned>(TypeSpecifierWidth::Unspecified)),
-        TypeSpecComplex(TSC_unspecified),
-        TypeSpecSign(static_cast<unsigned>(TypeSpecifierSign::Unspecified)),
-        TypeSpecType(TST_unspecified), TypeAltiVecVector(false),
-        TypeAltiVecPixel(false), TypeAltiVecBool(false), TypeSpecOwned(false),
-        TypeSpecPipe(false), TypeSpecSat(false), ConstrainedAuto(false),
-        TypeQualifiers(TQ_unspecified), FS_inline_specified(false),
-        FS_forceinline_specified(false), FS_virtual_specified(false),
-        FS_noreturn_specified(false), Friend_specified(false),
-        ConstexprSpecifier(
-            static_cast<unsigned>(ConstexprSpecKind::Unspecified)),
-        Attrs(attrFactory), writtenBS(), ObjCQualifiers(nullptr) {}
+    : StorageClassSpec(SCS_unspecified),
+      ThreadStorageClassSpec(TSCS_unspecified),
+      SCS_extern_in_linkage_spec(false),
+      TypeSpecWidth(TSW_unspecified),
+      TypeSpecComplex(TSC_unspecified),
+      TypeSpecSign(TSS_unspecified),
+      TypeSpecType(TST_unspecified),
+      TypeAltiVecVector(false),
+      TypeAltiVecPixel(false),
+      TypeAltiVecBool(false),
+      TypeSpecOwned(false),
+      TypeSpecPipe(false),
+      TypeQualifiers(TQ_unspecified),
+      FS_inline_specified(false),
+      FS_forceinline_specified(false),
+      FS_virtual_specified(false),
+      FS_explicit_specified(false),
+      FS_noreturn_specified(false),
+      Friend_specified(false),
+      Constexpr_specified(false),
+      Attrs(attrFactory),
+      writtenBS(),
+      ObjCQualifiers(nullptr) {
+  }
 
   // storage-class-specifier
   SCS getStorageClassSpec() const { return (SCS)StorageClassSpec; }
@@ -466,13 +471,9 @@ public:
   }
 
   // type-specifier
-  TypeSpecifierWidth getTypeSpecWidth() const {
-    return static_cast<TypeSpecifierWidth>(TypeSpecWidth);
-  }
+  TSW getTypeSpecWidth() const { return (TSW)TypeSpecWidth; }
   TSC getTypeSpecComplex() const { return (TSC)TypeSpecComplex; }
-  TypeSpecifierSign getTypeSpecSign() const {
-    return static_cast<TypeSpecifierSign>(TypeSpecSign);
-  }
+  TSS getTypeSpecSign() const { return (TSS)TypeSpecSign; }
   TST getTypeSpecType() const { return (TST)TypeSpecType; }
   bool isTypeAltiVecVector() const { return TypeAltiVecVector; }
   bool isTypeAltiVecPixel() const { return TypeAltiVecPixel; }
@@ -480,8 +481,6 @@ public:
   bool isTypeSpecOwned() const { return TypeSpecOwned; }
   bool isTypeRep() const { return isTypeRep((TST) TypeSpecType); }
   bool isTypeSpecPipe() const { return TypeSpecPipe; }
-  bool isTypeSpecSat() const { return TypeSpecSat; }
-  bool isConstrainedAuto() const { return ConstrainedAuto; }
 
   ParsedType getRepAsType() const {
     assert(isTypeRep((TST) TypeSpecType) && "DeclSpec does not store a type");
@@ -495,17 +494,12 @@ public:
     assert(isExprRep((TST) TypeSpecType) && "DeclSpec does not store an expr");
     return ExprRep;
   }
-  TemplateIdAnnotation *getRepAsTemplateId() const {
-    assert(isTemplateIdRep((TST) TypeSpecType) &&
-           "DeclSpec does not store a template id");
-    return TemplateIdRep;
-  }
   CXXScopeSpec &getTypeSpecScope() { return TypeScope; }
   const CXXScopeSpec &getTypeSpecScope() const { return TypeScope; }
 
   SourceRange getSourceRange() const LLVM_READONLY { return Range; }
-  SourceLocation getBeginLoc() const LLVM_READONLY { return Range.getBegin(); }
-  SourceLocation getEndLoc() const LLVM_READONLY { return Range.getEnd(); }
+  SourceLocation getLocStart() const LLVM_READONLY { return Range.getBegin(); }
+  SourceLocation getLocEnd() const LLVM_READONLY { return Range.getEnd(); }
 
   SourceLocation getTypeSpecWidthLoc() const { return TSWRange.getBegin(); }
   SourceRange getTypeSpecWidthRange() const { return TSWRange; }
@@ -513,7 +507,6 @@ public:
   SourceLocation getTypeSpecSignLoc() const { return TSSLoc; }
   SourceLocation getTypeSpecTypeLoc() const { return TSTLoc; }
   SourceLocation getAltiVecLoc() const { return AltiVecLoc; }
-  SourceLocation getTypeSpecSatLoc() const { return TSSatLoc; }
 
   SourceLocation getTypeSpecTypeNameLoc() const {
     assert(isDeclRep((TST) TypeSpecType) || TypeSpecType == TST_typename);
@@ -530,16 +523,15 @@ public:
 
   bool hasTagDefinition() const;
 
-  /// Turn a type-specifier-type into a string like "_Bool" or "union".
+  /// \brief Turn a type-specifier-type into a string like "_Bool" or "union".
   static const char *getSpecifierName(DeclSpec::TST T,
                                       const PrintingPolicy &Policy);
   static const char *getSpecifierName(DeclSpec::TQ Q);
-  static const char *getSpecifierName(TypeSpecifierSign S);
+  static const char *getSpecifierName(DeclSpec::TSS S);
   static const char *getSpecifierName(DeclSpec::TSC C);
-  static const char *getSpecifierName(TypeSpecifierWidth W);
+  static const char *getSpecifierName(DeclSpec::TSW W);
   static const char *getSpecifierName(DeclSpec::SCS S);
   static const char *getSpecifierName(DeclSpec::TSCS S);
-  static const char *getSpecifierName(ConstexprSpecKind C);
 
   // type-qualifiers
 
@@ -552,7 +544,7 @@ public:
   SourceLocation getUnalignedSpecLoc() const { return TQ_unalignedLoc; }
   SourceLocation getPipeLoc() const { return TQ_pipeLoc; }
 
-  /// Clear out all of the type qualifiers.
+  /// \brief Clear out all of the type qualifiers.
   void ClearTypeQualifiers() {
     TypeQualifiers = 0;
     TQ_constLoc = SourceLocation();
@@ -571,22 +563,11 @@ public:
     return FS_inline_specified ? FS_inlineLoc : FS_forceinlineLoc;
   }
 
-  ExplicitSpecifier getExplicitSpecifier() const {
-    return FS_explicit_specifier;
-  }
-
   bool isVirtualSpecified() const { return FS_virtual_specified; }
   SourceLocation getVirtualSpecLoc() const { return FS_virtualLoc; }
 
-  bool hasExplicitSpecifier() const {
-    return FS_explicit_specifier.isSpecified();
-  }
+  bool isExplicitSpecified() const { return FS_explicit_specified; }
   SourceLocation getExplicitSpecLoc() const { return FS_explicitLoc; }
-  SourceRange getExplicitSpecRange() const {
-    return FS_explicit_specifier.getExpr()
-               ? SourceRange(FS_explicitLoc, FS_explicitCloseParenLoc)
-               : SourceRange(FS_explicitLoc);
-  }
 
   bool isNoreturnSpecified() const { return FS_noreturn_specified; }
   SourceLocation getNoreturnSpecLoc() const { return FS_noreturnLoc; }
@@ -598,34 +579,21 @@ public:
     FS_forceinlineLoc = SourceLocation();
     FS_virtual_specified = false;
     FS_virtualLoc = SourceLocation();
-    FS_explicit_specifier = ExplicitSpecifier();
+    FS_explicit_specified = false;
     FS_explicitLoc = SourceLocation();
-    FS_explicitCloseParenLoc = SourceLocation();
     FS_noreturn_specified = false;
     FS_noreturnLoc = SourceLocation();
   }
 
-  /// This method calls the passed in handler on each CVRU qual being
-  /// set.
-  /// Handle - a handler to be invoked.
-  void forEachCVRUQualifier(
-      llvm::function_ref<void(TQ, StringRef, SourceLocation)> Handle);
-
-  /// This method calls the passed in handler on each qual being
-  /// set.
-  /// Handle - a handler to be invoked.
-  void forEachQualifier(
-      llvm::function_ref<void(TQ, StringRef, SourceLocation)> Handle);
-
-  /// Return true if any type-specifier has been found.
+  /// \brief Return true if any type-specifier has been found.
   bool hasTypeSpecifier() const {
     return getTypeSpecType() != DeclSpec::TST_unspecified ||
-           getTypeSpecWidth() != TypeSpecifierWidth::Unspecified ||
+           getTypeSpecWidth() != DeclSpec::TSW_unspecified ||
            getTypeSpecComplex() != DeclSpec::TSC_unspecified ||
-           getTypeSpecSign() != TypeSpecifierSign::Unspecified;
+           getTypeSpecSign() != DeclSpec::TSS_unspecified;
   }
 
-  /// Return a bitmask of which flavors of specifiers this
+  /// \brief Return a bitmask of which flavors of specifiers this
   /// DeclSpec includes.
   unsigned getParsedSpecifiers() const;
 
@@ -653,26 +621,18 @@ public:
                            const PrintingPolicy &Policy);
   bool SetStorageClassSpecThread(TSCS TSC, SourceLocation Loc,
                                  const char *&PrevSpec, unsigned &DiagID);
-  bool SetTypeSpecWidth(TypeSpecifierWidth W, SourceLocation Loc,
-                        const char *&PrevSpec, unsigned &DiagID,
-                        const PrintingPolicy &Policy);
+  bool SetTypeSpecWidth(TSW W, SourceLocation Loc, const char *&PrevSpec,
+                        unsigned &DiagID, const PrintingPolicy &Policy);
   bool SetTypeSpecComplex(TSC C, SourceLocation Loc, const char *&PrevSpec,
                           unsigned &DiagID);
-  bool SetTypeSpecSign(TypeSpecifierSign S, SourceLocation Loc,
-                       const char *&PrevSpec, unsigned &DiagID);
+  bool SetTypeSpecSign(TSS S, SourceLocation Loc, const char *&PrevSpec,
+                       unsigned &DiagID);
   bool SetTypeSpecType(TST T, SourceLocation Loc, const char *&PrevSpec,
                        unsigned &DiagID, const PrintingPolicy &Policy);
   bool SetTypeSpecType(TST T, SourceLocation Loc, const char *&PrevSpec,
                        unsigned &DiagID, ParsedType Rep,
                        const PrintingPolicy &Policy);
   bool SetTypeSpecType(TST T, SourceLocation Loc, const char *&PrevSpec,
-                       unsigned &DiagID, TypeResult Rep,
-                       const PrintingPolicy &Policy) {
-    if (Rep.isInvalid())
-      return SetTypeSpecError();
-    return SetTypeSpecType(T, Loc, PrevSpec, DiagID, Rep.get(), Policy);
-  }
-  bool SetTypeSpecType(TST T, SourceLocation Loc, const char *&PrevSpec,
                        unsigned &DiagID, Decl *Rep, bool Owned,
                        const PrintingPolicy &Policy);
   bool SetTypeSpecType(TST T, SourceLocation TagKwLoc,
@@ -682,9 +642,6 @@ public:
   bool SetTypeSpecType(TST T, SourceLocation TagKwLoc,
                        SourceLocation TagNameLoc, const char *&PrevSpec,
                        unsigned &DiagID, Decl *Rep, bool Owned,
-                       const PrintingPolicy &Policy);
-  bool SetTypeSpecType(TST T, SourceLocation Loc, const char *&PrevSpec,
-                       unsigned &DiagID, TemplateIdAnnotation *Rep,
                        const PrintingPolicy &Policy);
 
   bool SetTypeSpecType(TST T, SourceLocation Loc, const char *&PrevSpec,
@@ -702,11 +659,6 @@ public:
   bool SetTypePipe(bool isPipe, SourceLocation Loc,
                        const char *&PrevSpec, unsigned &DiagID,
                        const PrintingPolicy &Policy);
-  bool SetBitIntType(SourceLocation KWLoc, Expr *BitWidth,
-                     const char *&PrevSpec, unsigned &DiagID,
-                     const PrintingPolicy &Policy);
-  bool SetTypeSpecSat(SourceLocation Loc, const char *&PrevSpec,
-                      unsigned &DiagID);
   bool SetTypeSpecError();
   void UpdateDeclRep(Decl *Rep) {
     assert(isDeclRep((TST) TypeSpecType));
@@ -721,8 +673,6 @@ public:
     ExprRep = Rep;
   }
 
-  bool SetTypeQual(TQ T, SourceLocation Loc);
-
   bool SetTypeQual(TQ T, SourceLocation Loc, const char *&PrevSpec,
                    unsigned &DiagID, const LangOptions &Lang);
 
@@ -733,8 +683,7 @@ public:
   bool setFunctionSpecVirtual(SourceLocation Loc, const char *&PrevSpec,
                               unsigned &DiagID);
   bool setFunctionSpecExplicit(SourceLocation Loc, const char *&PrevSpec,
-                               unsigned &DiagID, ExplicitSpecifier ExplicitSpec,
-                               SourceLocation CloseParenLoc);
+                               unsigned &DiagID);
   bool setFunctionSpecNoreturn(SourceLocation Loc, const char *&PrevSpec,
                                unsigned &DiagID);
 
@@ -742,26 +691,20 @@ public:
                      unsigned &DiagID);
   bool setModulePrivateSpec(SourceLocation Loc, const char *&PrevSpec,
                             unsigned &DiagID);
-  bool SetConstexprSpec(ConstexprSpecKind ConstexprKind, SourceLocation Loc,
-                        const char *&PrevSpec, unsigned &DiagID);
+  bool SetConstexprSpec(SourceLocation Loc, const char *&PrevSpec,
+                        unsigned &DiagID);
 
   bool isFriendSpecified() const { return Friend_specified; }
   SourceLocation getFriendSpecLoc() const { return FriendLoc; }
 
   bool isModulePrivateSpecified() const { return ModulePrivateLoc.isValid(); }
   SourceLocation getModulePrivateSpecLoc() const { return ModulePrivateLoc; }
-
-  ConstexprSpecKind getConstexprSpecifier() const {
-    return ConstexprSpecKind(ConstexprSpecifier);
-  }
-
+  
+  bool isConstexprSpecified() const { return Constexpr_specified; }
   SourceLocation getConstexprSpecLoc() const { return ConstexprLoc; }
-  bool hasConstexprSpecifier() const {
-    return getConstexprSpecifier() != ConstexprSpecKind::Unspecified;
-  }
 
   void ClearConstexprSpec() {
-    ConstexprSpecifier = static_cast<unsigned>(ConstexprSpecKind::Unspecified);
+    Constexpr_specified = false;
     ConstexprLoc = SourceLocation();
   }
 
@@ -769,7 +712,7 @@ public:
     return Attrs.getPool();
   }
 
-  /// Concatenates two attribute lists.
+  /// \brief Concatenates two attribute lists.
   ///
   /// The GCC attribute syntax allows for the following:
   ///
@@ -786,8 +729,8 @@ public:
   /// int __attribute__((may_alias)) __attribute__((aligned(16))) var;
   /// \endcode
   ///
-  void addAttributes(ParsedAttributesView &AL) {
-    Attrs.addAll(AL.begin(), AL.end());
+  void addAttributes(AttributeList *AL) {
+    Attrs.addAll(AL);
   }
 
   bool hasAttributes() const { return !Attrs.empty(); }
@@ -811,13 +754,13 @@ public:
   ObjCDeclSpec *getObjCQualifiers() const { return ObjCQualifiers; }
   void setObjCQualifiers(ObjCDeclSpec *quals) { ObjCQualifiers = quals; }
 
-  /// Checks if this DeclSpec can stand alone, without a Declarator.
+  /// \brief Checks if this DeclSpec can stand alone, without a Declarator.
   ///
   /// Only tag declspecs can stand alone.
   bool isMissingDeclaratorOk();
 };
 
-/// Captures information about "declaration specifiers" specific to
+/// \brief Captures information about "declaration specifiers" specific to
 /// Objective-C.
 class ObjCDeclSpec {
 public:
@@ -838,10 +781,30 @@ public:
     DQ_CSNullability = 0x40
   };
 
+  /// PropertyAttributeKind - list of property attributes.
+  /// Keep this list in sync with LLVM's Dwarf.h ApplePropertyAttributes.
+  enum ObjCPropertyAttributeKind {
+    DQ_PR_noattr = 0x0,
+    DQ_PR_readonly = 0x01,
+    DQ_PR_getter = 0x02,
+    DQ_PR_assign = 0x04,
+    DQ_PR_readwrite = 0x08,
+    DQ_PR_retain = 0x10,
+    DQ_PR_copy = 0x20,
+    DQ_PR_nonatomic = 0x40,
+    DQ_PR_setter = 0x80,
+    DQ_PR_atomic = 0x100,
+    DQ_PR_weak =   0x200,
+    DQ_PR_strong = 0x400,
+    DQ_PR_unsafe_unretained = 0x800,
+    DQ_PR_nullability = 0x1000,
+    DQ_PR_null_resettable = 0x2000,
+    DQ_PR_class = 0x4000
+  };
+
   ObjCDeclSpec()
-      : objcDeclQualifier(DQ_None),
-        PropertyAttributes(ObjCPropertyAttribute::kind_noattr), Nullability(0),
-        GetterName(nullptr), SetterName(nullptr) {}
+    : objcDeclQualifier(DQ_None), PropertyAttributes(DQ_PR_noattr),
+      Nullability(0), GetterName(nullptr), SetterName(nullptr) { }
 
   ObjCDeclQualifier getObjCDeclQualifier() const {
     return (ObjCDeclQualifier)objcDeclQualifier;
@@ -853,35 +816,32 @@ public:
     objcDeclQualifier = (ObjCDeclQualifier) (objcDeclQualifier & ~DQVal);
   }
 
-  ObjCPropertyAttribute::Kind getPropertyAttributes() const {
-    return ObjCPropertyAttribute::Kind(PropertyAttributes);
+  ObjCPropertyAttributeKind getPropertyAttributes() const {
+    return ObjCPropertyAttributeKind(PropertyAttributes);
   }
-  void setPropertyAttributes(ObjCPropertyAttribute::Kind PRVal) {
+  void setPropertyAttributes(ObjCPropertyAttributeKind PRVal) {
     PropertyAttributes =
-        (ObjCPropertyAttribute::Kind)(PropertyAttributes | PRVal);
+      (ObjCPropertyAttributeKind)(PropertyAttributes | PRVal);
   }
 
   NullabilityKind getNullability() const {
-    assert(
-        ((getObjCDeclQualifier() & DQ_CSNullability) ||
-         (getPropertyAttributes() & ObjCPropertyAttribute::kind_nullability)) &&
-        "Objective-C declspec doesn't have nullability");
+    assert(((getObjCDeclQualifier() & DQ_CSNullability) ||
+            (getPropertyAttributes() & DQ_PR_nullability)) &&
+           "Objective-C declspec doesn't have nullability");
     return static_cast<NullabilityKind>(Nullability);
   }
 
   SourceLocation getNullabilityLoc() const {
-    assert(
-        ((getObjCDeclQualifier() & DQ_CSNullability) ||
-         (getPropertyAttributes() & ObjCPropertyAttribute::kind_nullability)) &&
-        "Objective-C declspec doesn't have nullability");
+    assert(((getObjCDeclQualifier() & DQ_CSNullability) ||
+            (getPropertyAttributes() & DQ_PR_nullability)) &&
+           "Objective-C declspec doesn't have nullability");
     return NullabilityLoc;
   }
 
   void setNullability(SourceLocation loc, NullabilityKind kind) {
-    assert(
-        ((getObjCDeclQualifier() & DQ_CSNullability) ||
-         (getPropertyAttributes() & ObjCPropertyAttribute::kind_nullability)) &&
-        "Set the nullability declspec or property attribute first");
+    assert(((getObjCDeclQualifier() & DQ_CSNullability) ||
+            (getPropertyAttributes() & DQ_PR_nullability)) &&
+           "Set the nullability declspec or property attribute first");
     Nullability = static_cast<unsigned>(kind);
     NullabilityLoc = loc;
   }
@@ -908,8 +868,8 @@ private:
   // (space saving is negligible).
   unsigned objcDeclQualifier : 7;
 
-  // NOTE: VC++ treats enums as signed, avoid using ObjCPropertyAttribute::Kind
-  unsigned PropertyAttributes : NumObjCPropertyAttrsBits;
+  // NOTE: VC++ treats enums as signed, avoid using ObjCPropertyAttributeKind
+  unsigned PropertyAttributes : 15;
 
   unsigned Nullability : 2;
 
@@ -922,98 +882,98 @@ private:
 
 };
 
-/// Describes the kind of unqualified-id parsed.
+/// \brief Describes the kind of unqualified-id parsed.
 enum class UnqualifiedIdKind {
-  /// An identifier.
+  /// \brief An identifier.
   IK_Identifier,
-  /// An overloaded operator name, e.g., operator+.
+  /// \brief An overloaded operator name, e.g., operator+.
   IK_OperatorFunctionId,
-  /// A conversion function name, e.g., operator int.
+  /// \brief A conversion function name, e.g., operator int.
   IK_ConversionFunctionId,
-  /// A user-defined literal name, e.g., operator "" _i.
+  /// \brief A user-defined literal name, e.g., operator "" _i.
   IK_LiteralOperatorId,
-  /// A constructor name.
+  /// \brief A constructor name.
   IK_ConstructorName,
-  /// A constructor named via a template-id.
+  /// \brief A constructor named via a template-id.
   IK_ConstructorTemplateId,
-  /// A destructor name.
+  /// \brief A destructor name.
   IK_DestructorName,
-  /// A template-id, e.g., f<int>.
+  /// \brief A template-id, e.g., f<int>.
   IK_TemplateId,
-  /// An implicit 'self' parameter
+  /// \brief An implicit 'self' parameter
   IK_ImplicitSelfParam,
-  /// A deduction-guide name (a template-name)
+  /// \brief A deduction-guide name (a template-name)
   IK_DeductionGuideName
 };
 
-/// Represents a C++ unqualified-id that has been parsed.
+/// \brief Represents a C++ unqualified-id that has been parsed. 
 class UnqualifiedId {
 private:
   UnqualifiedId(const UnqualifiedId &Other) = delete;
   const UnqualifiedId &operator=(const UnqualifiedId &) = delete;
 
 public:
-  /// Describes the kind of unqualified-id parsed.
+  /// \brief Describes the kind of unqualified-id parsed.
   UnqualifiedIdKind Kind;
 
   struct OFI {
-    /// The kind of overloaded operator.
+    /// \brief The kind of overloaded operator.
     OverloadedOperatorKind Operator;
 
-    /// The source locations of the individual tokens that name
-    /// the operator, e.g., the "new", "[", and "]" tokens in
-    /// operator new [].
+    /// \brief The source locations of the individual tokens that name
+    /// the operator, e.g., the "new", "[", and "]" tokens in 
+    /// operator new []. 
     ///
     /// Different operators have different numbers of tokens in their name,
     /// up to three. Any remaining source locations in this array will be
     /// set to an invalid value for operators with fewer than three tokens.
-    SourceLocation SymbolLocations[3];
+    unsigned SymbolLocations[3];
   };
 
-  /// Anonymous union that holds extra data associated with the
+  /// \brief Anonymous union that holds extra data associated with the
   /// parsed unqualified-id.
   union {
-    /// When Kind == IK_Identifier, the parsed identifier, or when
+    /// \brief When Kind == IK_Identifier, the parsed identifier, or when
     /// Kind == IK_UserLiteralId, the identifier suffix.
     IdentifierInfo *Identifier;
-
-    /// When Kind == IK_OperatorFunctionId, the overloaded operator
+    
+    /// \brief When Kind == IK_OperatorFunctionId, the overloaded operator
     /// that we parsed.
     struct OFI OperatorFunctionId;
-
-    /// When Kind == IK_ConversionFunctionId, the type that the
+    
+    /// \brief When Kind == IK_ConversionFunctionId, the type that the 
     /// conversion function names.
     UnionParsedType ConversionFunctionId;
 
-    /// When Kind == IK_ConstructorName, the class-name of the type
+    /// \brief When Kind == IK_ConstructorName, the class-name of the type
     /// whose constructor is being referenced.
     UnionParsedType ConstructorName;
-
-    /// When Kind == IK_DestructorName, the type referred to by the
+    
+    /// \brief When Kind == IK_DestructorName, the type referred to by the
     /// class-name.
     UnionParsedType DestructorName;
 
-    /// When Kind == IK_DeductionGuideName, the parsed template-name.
+    /// \brief When Kind == IK_DeductionGuideName, the parsed template-name.
     UnionParsedTemplateTy TemplateName;
-
-    /// When Kind == IK_TemplateId or IK_ConstructorTemplateId,
+    
+    /// \brief When Kind == IK_TemplateId or IK_ConstructorTemplateId,
     /// the template-id annotation that contains the template name and
     /// template arguments.
     TemplateIdAnnotation *TemplateId;
   };
-
-  /// The location of the first token that describes this unqualified-id,
+  
+  /// \brief The location of the first token that describes this unqualified-id,
   /// which will be the location of the identifier, "operator" keyword,
   /// tilde (for a destructor), or the template name of a template-id.
   SourceLocation StartLocation;
-
-  /// The location of the last token that describes this unqualified-id.
+  
+  /// \brief The location of the last token that describes this unqualified-id.
   SourceLocation EndLocation;
 
   UnqualifiedId()
       : Kind(UnqualifiedIdKind::IK_Identifier), Identifier(nullptr) {}
 
-  /// Clear out this unqualified-id, setting it to default (invalid)
+  /// \brief Clear out this unqualified-id, setting it to default (invalid) 
   /// state.
   void clear() {
     Kind = UnqualifiedIdKind::IK_Identifier;
@@ -1021,17 +981,18 @@ public:
     StartLocation = SourceLocation();
     EndLocation = SourceLocation();
   }
-
-  /// Determine whether this unqualified-id refers to a valid name.
+  
+  /// \brief Determine whether this unqualified-id refers to a valid name.
   bool isValid() const { return StartLocation.isValid(); }
 
-  /// Determine whether this unqualified-id refers to an invalid name.
+  /// \brief Determine whether this unqualified-id refers to an invalid name.
   bool isInvalid() const { return !isValid(); }
-
-  /// Determine what kind of name we have.
+  
+  /// \brief Determine what kind of name we have.
   UnqualifiedIdKind getKind() const { return Kind; }
-
-  /// Specify that this unqualified-id was parsed as an identifier.
+  void setKind(UnqualifiedIdKind kind) { Kind = kind; } 
+  
+  /// \brief Specify that this unqualified-id was parsed as an identifier.
   ///
   /// \param Id the parsed identifier.
   /// \param IdLoc the location of the parsed identifier.
@@ -1040,8 +1001,8 @@ public:
     Identifier = const_cast<IdentifierInfo *>(Id);
     StartLocation = EndLocation = IdLoc;
   }
-
-  /// Specify that this unqualified-id was parsed as an
+  
+  /// \brief Specify that this unqualified-id was parsed as an 
   /// operator-function-id.
   ///
   /// \param OperatorLoc the location of the 'operator' keyword.
@@ -1050,11 +1011,11 @@ public:
   ///
   /// \param SymbolLocations the locations of the individual operator symbols
   /// in the operator.
-  void setOperatorFunctionId(SourceLocation OperatorLoc,
+  void setOperatorFunctionId(SourceLocation OperatorLoc, 
                              OverloadedOperatorKind Op,
                              SourceLocation SymbolLocations[3]);
-
-  /// Specify that this unqualified-id was parsed as a
+  
+  /// \brief Specify that this unqualified-id was parsed as a 
   /// conversion-function-id.
   ///
   /// \param OperatorLoc the location of the 'operator' keyword.
@@ -1062,7 +1023,7 @@ public:
   /// \param Ty the type to which this conversion function is converting.
   ///
   /// \param EndLoc the location of the last token that makes up the type name.
-  void setConversionFunctionId(SourceLocation OperatorLoc,
+  void setConversionFunctionId(SourceLocation OperatorLoc, 
                                ParsedType Ty,
                                SourceLocation EndLoc) {
     Kind = UnqualifiedIdKind::IK_ConversionFunctionId;
@@ -1071,7 +1032,7 @@ public:
     ConversionFunctionId = Ty;
   }
 
-  /// Specific that this unqualified-id was parsed as a
+  /// \brief Specific that this unqualified-id was parsed as a
   /// literal-operator-id.
   ///
   /// \param Id the parsed identifier.
@@ -1086,15 +1047,15 @@ public:
     StartLocation = OpLoc;
     EndLocation = IdLoc;
   }
-
-  /// Specify that this unqualified-id was parsed as a constructor name.
+  
+  /// \brief Specify that this unqualified-id was parsed as a constructor name.
   ///
   /// \param ClassType the class type referred to by the constructor name.
   ///
   /// \param ClassNameLoc the location of the class name.
   ///
   /// \param EndLoc the location of the last token that makes up the type name.
-  void setConstructorName(ParsedType ClassType,
+  void setConstructorName(ParsedType ClassType, 
                           SourceLocation ClassNameLoc,
                           SourceLocation EndLoc) {
     Kind = UnqualifiedIdKind::IK_ConstructorName;
@@ -1103,7 +1064,7 @@ public:
     ConstructorName = ClassType;
   }
 
-  /// Specify that this unqualified-id was parsed as a
+  /// \brief Specify that this unqualified-id was parsed as a
   /// template-id that names a constructor.
   ///
   /// \param TemplateId the template-id annotation that describes the parsed
@@ -1111,7 +1072,7 @@ public:
   /// \p TemplateId and will free it on destruction.
   void setConstructorTemplateId(TemplateIdAnnotation *TemplateId);
 
-  /// Specify that this unqualified-id was parsed as a destructor name.
+  /// \brief Specify that this unqualified-id was parsed as a destructor name.
   ///
   /// \param TildeLoc the location of the '~' that introduces the destructor
   /// name.
@@ -1125,15 +1086,15 @@ public:
     EndLocation = EndLoc;
     DestructorName = ClassType;
   }
-
-  /// Specify that this unqualified-id was parsed as a template-id.
+  
+  /// \brief Specify that this unqualified-id was parsed as a template-id.
   ///
   /// \param TemplateId the template-id annotation that describes the parsed
   /// template-id. This UnqualifiedId instance will take ownership of the
   /// \p TemplateId and will free it on destruction.
   void setTemplateId(TemplateIdAnnotation *TemplateId);
 
-  /// Specify that this unqualified-id was parsed as a template-name for
+  /// \brief Specify that this unqualified-id was parsed as a template-name for
   /// a deduction-guide.
   ///
   /// \param Template The parsed template-name.
@@ -1144,35 +1105,23 @@ public:
     TemplateName = Template;
     StartLocation = EndLocation = TemplateLoc;
   }
-
-  /// Specify that this unqualified-id is an implicit 'self'
-  /// parameter.
-  ///
-  /// \param Id the identifier.
-  void setImplicitSelfParam(const IdentifierInfo *Id) {
-    Kind = UnqualifiedIdKind::IK_ImplicitSelfParam;
-    Identifier = const_cast<IdentifierInfo *>(Id);
-    StartLocation = EndLocation = SourceLocation();
+  
+  /// \brief Return the source range that covers this unqualified-id.
+  SourceRange getSourceRange() const LLVM_READONLY { 
+    return SourceRange(StartLocation, EndLocation); 
   }
-
-  /// Return the source range that covers this unqualified-id.
-  SourceRange getSourceRange() const LLVM_READONLY {
-    return SourceRange(StartLocation, EndLocation);
-  }
-  SourceLocation getBeginLoc() const LLVM_READONLY { return StartLocation; }
-  SourceLocation getEndLoc() const LLVM_READONLY { return EndLocation; }
+  SourceLocation getLocStart() const LLVM_READONLY { return StartLocation; }
+  SourceLocation getLocEnd() const LLVM_READONLY { return EndLocation; }
 };
 
-/// A set of tokens that has been cached for later parsing.
+/// \brief A set of tokens that has been cached for later parsing.
 typedef SmallVector<Token, 4> CachedTokens;
 
-/// One instance of this struct is used for each type in a
+/// \brief One instance of this struct is used for each type in a
 /// declarator that is parsed.
 ///
 /// This is intended to be a small value object.
 struct DeclaratorChunk {
-  DeclaratorChunk() {};
-
   enum {
     Pointer, Reference, Array, Function, BlockPointer, MemberPointer, Paren, Pipe
   } Kind;
@@ -1188,32 +1137,34 @@ struct DeclaratorChunk {
     return SourceRange(Loc, EndLoc);
   }
 
-  ParsedAttributesView AttrList;
+  struct TypeInfoCommon {
+    AttributeList *AttrList;
+  };
 
-  struct PointerTypeInfo {
+  struct PointerTypeInfo : TypeInfoCommon {
     /// The type qualifiers: const/volatile/restrict/unaligned/atomic.
     unsigned TypeQuals : 5;
 
     /// The location of the const-qualifier, if any.
-    SourceLocation ConstQualLoc;
+    unsigned ConstQualLoc;
 
     /// The location of the volatile-qualifier, if any.
-    SourceLocation VolatileQualLoc;
+    unsigned VolatileQualLoc;
 
     /// The location of the restrict-qualifier, if any.
-    SourceLocation RestrictQualLoc;
+    unsigned RestrictQualLoc;
 
     /// The location of the _Atomic-qualifier, if any.
-    SourceLocation AtomicQualLoc;
+    unsigned AtomicQualLoc;
 
     /// The location of the __unaligned-qualifier, if any.
-    SourceLocation UnalignedQualLoc;
+    unsigned UnalignedQualLoc;
 
     void destroy() {
     }
   };
 
-  struct ReferenceTypeInfo {
+  struct ReferenceTypeInfo : TypeInfoCommon {
     /// The type qualifier: restrict. [GNU] C++ extension
     bool HasRestrict : 1;
     /// True if this is an lvalue reference, false if it's an rvalue reference.
@@ -1222,7 +1173,7 @@ struct DeclaratorChunk {
     }
   };
 
-  struct ArrayTypeInfo {
+  struct ArrayTypeInfo : TypeInfoCommon {
     /// The type qualifiers for the array:
     /// const/volatile/restrict/__unaligned/_Atomic.
     unsigned TypeQuals : 5;
@@ -1273,7 +1224,7 @@ struct DeclaratorChunk {
     SourceRange Range;
   };
 
-  struct FunctionTypeInfo {
+  struct FunctionTypeInfo : TypeInfoCommon {
     /// hasPrototype - This is true if the function had at least one typed
     /// parameter.  If the function is () or (a,b,c), then it has no prototype,
     /// and is treated as a K&R-style function.
@@ -1287,9 +1238,13 @@ struct DeclaratorChunk {
     /// Can this declaration be a constructor-style initializer?
     unsigned isAmbiguous : 1;
 
-    /// Whether the ref-qualifier (if any) is an lvalue reference.
+    /// \brief Whether the ref-qualifier (if any) is an lvalue reference.
     /// Otherwise, it's an rvalue reference.
     unsigned RefQualifierIsLValueRef : 1;
+
+    /// The type qualifiers: const/volatile/restrict/__unaligned
+    /// The qualifier bitmask values are the same as in QualType.
+    unsigned TypeQuals : 4;
 
     /// ExceptionSpecType - An ExceptionSpecificationType value.
     unsigned ExceptionSpecType : 4;
@@ -1302,13 +1257,13 @@ struct DeclaratorChunk {
     unsigned HasTrailingReturnType : 1;
 
     /// The location of the left parenthesis in the source.
-    SourceLocation LParenLoc;
+    unsigned LParenLoc;
 
     /// When isVariadic is true, the location of the ellipsis in the source.
-    SourceLocation EllipsisLoc;
+    unsigned EllipsisLoc;
 
     /// The location of the right parenthesis in the source.
-    SourceLocation RParenLoc;
+    unsigned RParenLoc;
 
     /// NumParams - This is the number of formal parameters specified by the
     /// declarator.
@@ -1319,43 +1274,52 @@ struct DeclaratorChunk {
     /// number of declarations in the function prototype.
     unsigned NumExceptionsOrDecls;
 
-    /// The location of the ref-qualifier, if any.
+    /// \brief The location of the ref-qualifier, if any.
     ///
     /// If this is an invalid location, there is no ref-qualifier.
-    SourceLocation RefQualifierLoc;
+    unsigned RefQualifierLoc;
 
-    /// The location of the 'mutable' qualifer in a lambda-declarator, if
+    /// \brief The location of the const-qualifier, if any.
+    ///
+    /// If this is an invalid location, there is no const-qualifier.
+    unsigned ConstQualifierLoc;
+
+    /// \brief The location of the volatile-qualifier, if any.
+    ///
+    /// If this is an invalid location, there is no volatile-qualifier.
+    unsigned VolatileQualifierLoc;
+
+    /// \brief The location of the restrict-qualifier, if any.
+    ///
+    /// If this is an invalid location, there is no restrict-qualifier.
+    unsigned RestrictQualifierLoc;
+
+    /// \brief The location of the 'mutable' qualifer in a lambda-declarator, if
     /// any.
-    SourceLocation MutableLoc;
+    unsigned MutableLoc;
 
-    /// The beginning location of the exception specification, if any.
-    SourceLocation ExceptionSpecLocBeg;
+    /// \brief The beginning location of the exception specification, if any.
+    unsigned ExceptionSpecLocBeg;
 
-    /// The end location of the exception specification, if any.
-    SourceLocation ExceptionSpecLocEnd;
+    /// \brief The end location of the exception specification, if any.
+    unsigned ExceptionSpecLocEnd;
 
     /// Params - This is a pointer to a new[]'d array of ParamInfo objects that
     /// describe the parameters specified by this function declarator.  null if
     /// there are no parameters specified.
     ParamInfo *Params;
 
-    /// DeclSpec for the function with the qualifier related info.
-    DeclSpec *MethodQualifiers;
-
-    /// AtttibuteFactory for the MethodQualifiers.
-    AttributeFactory *QualAttrFactory;
-
     union {
-      /// Pointer to a new[]'d array of TypeAndRange objects that
+      /// \brief Pointer to a new[]'d array of TypeAndRange objects that
       /// contain the types in the function's dynamic exception specification
       /// and their locations, if there is one.
       TypeAndRange *Exceptions;
 
-      /// Pointer to the expression in the noexcept-specifier of this
+      /// \brief Pointer to the expression in the noexcept-specifier of this
       /// function, if it has one.
       Expr *NoexceptExpr;
-
-      /// Pointer to the cached tokens for an exception-specification
+  
+      /// \brief Pointer to the cached tokens for an exception-specification
       /// that has not yet been parsed.
       CachedTokens *ExceptionSpecTokens;
 
@@ -1365,15 +1329,11 @@ struct DeclaratorChunk {
       NamedDecl **DeclsInPrototype;
     };
 
-    /// If HasTrailingReturnType is true, this is the trailing return
+    /// \brief If HasTrailingReturnType is true, this is the trailing return
     /// type specified.
     UnionParsedType TrailingReturnType;
 
-    /// If HasTrailingReturnType is true, this is the location of the trailing
-    /// return type.
-    SourceLocation TrailingReturnTypeLoc;
-
-    /// Reset the parameter list to having zero parameters.
+    /// \brief Reset the parameter list to having zero parameters.
     ///
     /// This is used in various places for error recovery.
     void freeParams() {
@@ -1387,9 +1347,8 @@ struct DeclaratorChunk {
     }
 
     void destroy() {
-      freeParams();
-      delete QualAttrFactory;
-      delete MethodQualifiers;
+      if (DeleteParams)
+        delete[] Params;
       switch (getExceptionSpecType()) {
       default:
         break;
@@ -1406,111 +1365,95 @@ struct DeclaratorChunk {
       }
     }
 
-    DeclSpec &getOrCreateMethodQualifiers() {
-      if (!MethodQualifiers) {
-        QualAttrFactory = new AttributeFactory();
-        MethodQualifiers = new DeclSpec(*QualAttrFactory);
-      }
-      return *MethodQualifiers;
-    }
-
     /// isKNRPrototype - Return true if this is a K&R style identifier list,
     /// like "void foo(a,b,c)".  In a function definition, this will be followed
     /// by the parameter type definitions.
     bool isKNRPrototype() const { return !hasPrototype && NumParams != 0; }
 
-    SourceLocation getLParenLoc() const { return LParenLoc; }
+    SourceLocation getLParenLoc() const {
+      return SourceLocation::getFromRawEncoding(LParenLoc);
+    }
 
-    SourceLocation getEllipsisLoc() const { return EllipsisLoc; }
+    SourceLocation getEllipsisLoc() const {
+      return SourceLocation::getFromRawEncoding(EllipsisLoc);
+    }
 
-    SourceLocation getRParenLoc() const { return RParenLoc; }
+    SourceLocation getRParenLoc() const {
+      return SourceLocation::getFromRawEncoding(RParenLoc);
+    }
 
     SourceLocation getExceptionSpecLocBeg() const {
-      return ExceptionSpecLocBeg;
+      return SourceLocation::getFromRawEncoding(ExceptionSpecLocBeg);
     }
 
     SourceLocation getExceptionSpecLocEnd() const {
-      return ExceptionSpecLocEnd;
+      return SourceLocation::getFromRawEncoding(ExceptionSpecLocEnd);
     }
 
     SourceRange getExceptionSpecRange() const {
       return SourceRange(getExceptionSpecLocBeg(), getExceptionSpecLocEnd());
     }
 
-    /// Retrieve the location of the ref-qualifier, if any.
-    SourceLocation getRefQualifierLoc() const { return RefQualifierLoc; }
+    /// \brief Retrieve the location of the ref-qualifier, if any.
+    SourceLocation getRefQualifierLoc() const {
+      return SourceLocation::getFromRawEncoding(RefQualifierLoc);
+    }
 
-    /// Retrieve the location of the 'const' qualifier.
+    /// \brief Retrieve the location of the 'const' qualifier, if any.
     SourceLocation getConstQualifierLoc() const {
-      assert(MethodQualifiers);
-      return MethodQualifiers->getConstSpecLoc();
+      return SourceLocation::getFromRawEncoding(ConstQualifierLoc);
     }
 
-    /// Retrieve the location of the 'volatile' qualifier.
+    /// \brief Retrieve the location of the 'volatile' qualifier, if any.
     SourceLocation getVolatileQualifierLoc() const {
-      assert(MethodQualifiers);
-      return MethodQualifiers->getVolatileSpecLoc();
+      return SourceLocation::getFromRawEncoding(VolatileQualifierLoc);
     }
 
-    /// Retrieve the location of the 'restrict' qualifier.
+    /// \brief Retrieve the location of the 'restrict' qualifier, if any.
     SourceLocation getRestrictQualifierLoc() const {
-      assert(MethodQualifiers);
-      return MethodQualifiers->getRestrictSpecLoc();
+      return SourceLocation::getFromRawEncoding(RestrictQualifierLoc);
     }
 
-    /// Retrieve the location of the 'mutable' qualifier, if any.
-    SourceLocation getMutableLoc() const { return MutableLoc; }
+    /// \brief Retrieve the location of the 'mutable' qualifier, if any.
+    SourceLocation getMutableLoc() const {
+      return SourceLocation::getFromRawEncoding(MutableLoc);
+    }
 
-    /// Determine whether this function declaration contains a
+    /// \brief Determine whether this function declaration contains a 
     /// ref-qualifier.
     bool hasRefQualifier() const { return getRefQualifierLoc().isValid(); }
 
-    /// Determine whether this lambda-declarator contains a 'mutable'
+    /// \brief Determine whether this lambda-declarator contains a 'mutable'
     /// qualifier.
     bool hasMutableQualifier() const { return getMutableLoc().isValid(); }
 
-    /// Determine whether this method has qualifiers.
-    bool hasMethodTypeQualifiers() const {
-      return MethodQualifiers && (MethodQualifiers->getTypeQualifiers() ||
-                                  MethodQualifiers->getAttributes().size());
-    }
-
-    /// Get the type of exception specification this function has.
+    /// \brief Get the type of exception specification this function has.
     ExceptionSpecificationType getExceptionSpecType() const {
       return static_cast<ExceptionSpecificationType>(ExceptionSpecType);
     }
 
-    /// Get the number of dynamic exception specifications.
+    /// \brief Get the number of dynamic exception specifications.
     unsigned getNumExceptions() const {
       assert(ExceptionSpecType != EST_None);
       return NumExceptionsOrDecls;
     }
 
-    /// Get the non-parameter decls defined within this function
+    /// \brief Get the non-parameter decls defined within this function
     /// prototype. Typically these are tag declarations.
     ArrayRef<NamedDecl *> getDeclsInPrototype() const {
       assert(ExceptionSpecType == EST_None);
       return llvm::makeArrayRef(DeclsInPrototype, NumExceptionsOrDecls);
     }
 
-    /// Determine whether this function declarator had a
+    /// \brief Determine whether this function declarator had a
     /// trailing-return-type.
     bool hasTrailingReturnType() const { return HasTrailingReturnType; }
 
-    /// Get the trailing-return-type for this function declarator.
-    ParsedType getTrailingReturnType() const {
-      assert(HasTrailingReturnType);
-      return TrailingReturnType;
-    }
-
-    /// Get the trailing-return-type location for this function declarator.
-    SourceLocation getTrailingReturnTypeLoc() const {
-      assert(HasTrailingReturnType);
-      return TrailingReturnTypeLoc;
-    }
+    /// \brief Get the trailing-return-type for this function declarator.
+    ParsedType getTrailingReturnType() const { return TrailingReturnType; }
   };
 
-  struct BlockPointerTypeInfo {
+  struct BlockPointerTypeInfo : TypeInfoCommon {
     /// For now, sema will catch these as invalid.
     /// The type qualifiers: const/volatile/restrict/__unaligned/_Atomic.
     unsigned TypeQuals : 5;
@@ -1519,11 +1462,9 @@ struct DeclaratorChunk {
     }
   };
 
-  struct MemberPointerTypeInfo {
+  struct MemberPointerTypeInfo : TypeInfoCommon {
     /// The type qualifiers: const/volatile/restrict/__unaligned/_Atomic.
     unsigned TypeQuals : 5;
-    /// Location of the '*' token.
-    SourceLocation StarLoc;
     // CXXScopeSpec has a constructor, so it can't be a direct member.
     // So we need some pointer-aligned storage and a bit of trickery.
     alignas(CXXScopeSpec) char ScopeMem[sizeof(CXXScopeSpec)];
@@ -1538,14 +1479,15 @@ struct DeclaratorChunk {
     }
   };
 
-  struct PipeTypeInfo {
-    /// The access writes.
-    unsigned AccessWrites : 3;
+  struct PipeTypeInfo : TypeInfoCommon {
+  /// The access writes.
+  unsigned AccessWrites : 3;
 
-    void destroy() {}
+  void destroy() {}
   };
 
   union {
+    TypeInfoCommon        Common;
     PointerTypeInfo       Ptr;
     ReferenceTypeInfo     Ref;
     ArrayTypeInfo         Arr;
@@ -1568,12 +1510,17 @@ struct DeclaratorChunk {
     }
   }
 
-  /// If there are attributes applied to this declaratorchunk, return
+  /// \brief If there are attributes applied to this declaratorchunk, return
   /// them.
-  const ParsedAttributesView &getAttrs() const { return AttrList; }
-  ParsedAttributesView &getAttrs() { return AttrList; }
+  const AttributeList *getAttrs() const {
+    return Common.AttrList;
+  }
 
-  /// Return a DeclaratorChunk for a pointer.
+  AttributeList *&getAttrListRef() {
+    return Common.AttrList;
+  }
+
+  /// \brief Return a DeclaratorChunk for a pointer.
   static DeclaratorChunk getPointer(unsigned TypeQuals, SourceLocation Loc,
                                     SourceLocation ConstQualLoc,
                                     SourceLocation VolatileQualLoc,
@@ -1583,17 +1530,17 @@ struct DeclaratorChunk {
     DeclaratorChunk I;
     I.Kind                = Pointer;
     I.Loc                 = Loc;
-    new (&I.Ptr) PointerTypeInfo;
     I.Ptr.TypeQuals       = TypeQuals;
-    I.Ptr.ConstQualLoc    = ConstQualLoc;
-    I.Ptr.VolatileQualLoc = VolatileQualLoc;
-    I.Ptr.RestrictQualLoc = RestrictQualLoc;
-    I.Ptr.AtomicQualLoc   = AtomicQualLoc;
-    I.Ptr.UnalignedQualLoc = UnalignedQualLoc;
+    I.Ptr.ConstQualLoc    = ConstQualLoc.getRawEncoding();
+    I.Ptr.VolatileQualLoc = VolatileQualLoc.getRawEncoding();
+    I.Ptr.RestrictQualLoc = RestrictQualLoc.getRawEncoding();
+    I.Ptr.AtomicQualLoc   = AtomicQualLoc.getRawEncoding();
+    I.Ptr.UnalignedQualLoc = UnalignedQualLoc.getRawEncoding();
+    I.Ptr.AttrList        = nullptr;
     return I;
   }
 
-  /// Return a DeclaratorChunk for a reference.
+  /// \brief Return a DeclaratorChunk for a reference.
   static DeclaratorChunk getReference(unsigned TypeQuals, SourceLocation Loc,
                                       bool lvalue) {
     DeclaratorChunk I;
@@ -1601,10 +1548,11 @@ struct DeclaratorChunk {
     I.Loc             = Loc;
     I.Ref.HasRestrict = (TypeQuals & DeclSpec::TQ_restrict) != 0;
     I.Ref.LValueRef   = lvalue;
+    I.Ref.AttrList    = nullptr;
     return I;
   }
 
-  /// Return a DeclaratorChunk for an array.
+  /// \brief Return a DeclaratorChunk for an array.
   static DeclaratorChunk getArray(unsigned TypeQuals,
                                   bool isStatic, bool isStar, Expr *NumElts,
                                   SourceLocation LBLoc, SourceLocation RBLoc) {
@@ -1612,6 +1560,7 @@ struct DeclaratorChunk {
     I.Kind          = Array;
     I.Loc           = LBLoc;
     I.EndLoc        = RBLoc;
+    I.Arr.AttrList  = nullptr;
     I.Arr.TypeQuals = TypeQuals;
     I.Arr.hasStatic = isStatic;
     I.Arr.isStar    = isStar;
@@ -1627,8 +1576,12 @@ struct DeclaratorChunk {
                                      ParamInfo *Params, unsigned NumParams,
                                      SourceLocation EllipsisLoc,
                                      SourceLocation RParenLoc,
+                                     unsigned TypeQuals,
                                      bool RefQualifierIsLvalueRef,
                                      SourceLocation RefQualifierLoc,
+                                     SourceLocation ConstQualifierLoc,
+                                     SourceLocation VolatileQualifierLoc,
+                                     SourceLocation RestrictQualifierLoc,
                                      SourceLocation MutableLoc,
                                      ExceptionSpecificationType ESpecType,
                                      SourceRange ESpecRange,
@@ -1642,53 +1595,51 @@ struct DeclaratorChunk {
                                      SourceLocation LocalRangeEnd,
                                      Declarator &TheDeclarator,
                                      TypeResult TrailingReturnType =
-                                                    TypeResult(),
-                                     SourceLocation TrailingReturnTypeLoc =
-                                                    SourceLocation(),
-                                     DeclSpec *MethodQualifiers = nullptr);
+                                                    TypeResult());
 
-  /// Return a DeclaratorChunk for a block.
+  /// \brief Return a DeclaratorChunk for a block.
   static DeclaratorChunk getBlockPointer(unsigned TypeQuals,
                                          SourceLocation Loc) {
     DeclaratorChunk I;
     I.Kind          = BlockPointer;
     I.Loc           = Loc;
     I.Cls.TypeQuals = TypeQuals;
+    I.Cls.AttrList  = nullptr;
     return I;
   }
 
-  /// Return a DeclaratorChunk for a block.
+  /// \brief Return a DeclaratorChunk for a block.
   static DeclaratorChunk getPipe(unsigned TypeQuals,
                                  SourceLocation Loc) {
     DeclaratorChunk I;
     I.Kind          = Pipe;
     I.Loc           = Loc;
     I.Cls.TypeQuals = TypeQuals;
+    I.Cls.AttrList  = nullptr;
     return I;
   }
 
   static DeclaratorChunk getMemberPointer(const CXXScopeSpec &SS,
                                           unsigned TypeQuals,
-                                          SourceLocation StarLoc,
-                                          SourceLocation EndLoc) {
+                                          SourceLocation Loc) {
     DeclaratorChunk I;
     I.Kind          = MemberPointer;
     I.Loc           = SS.getBeginLoc();
-    I.EndLoc = EndLoc;
-    new (&I.Mem) MemberPointerTypeInfo;
-    I.Mem.StarLoc = StarLoc;
+    I.EndLoc        = Loc;
     I.Mem.TypeQuals = TypeQuals;
+    I.Mem.AttrList  = nullptr;
     new (I.Mem.ScopeMem) CXXScopeSpec(SS);
     return I;
   }
 
-  /// Return a DeclaratorChunk for a paren.
+  /// \brief Return a DeclaratorChunk for a paren.
   static DeclaratorChunk getParen(SourceLocation LParenLoc,
                                   SourceLocation RParenLoc) {
     DeclaratorChunk I;
     I.Kind          = Paren;
     I.Loc           = LParenLoc;
     I.EndLoc        = RParenLoc;
+    I.Common.AttrList = nullptr;
     return I;
   }
 
@@ -1749,46 +1700,44 @@ public:
   }
 };
 
-/// Described the kind of function definition (if any) provided for
+/// \brief Described the kind of function definition (if any) provided for
 /// a function.
-enum class FunctionDefinitionKind {
-  Declaration,
-  Definition,
-  Defaulted,
-  Deleted
+enum FunctionDefinitionKind {
+  FDK_Declaration,
+  FDK_Definition,
+  FDK_Defaulted,
+  FDK_Deleted
 };
 
 enum class DeclaratorContext {
-  File,                // File scope declaration.
-  Prototype,           // Within a function prototype.
-  ObjCResult,          // An ObjC method result type.
-  ObjCParameter,       // An ObjC method parameter type.
-  KNRTypeList,         // K&R type definition list for formals.
-  TypeName,            // Abstract declarator for types.
-  FunctionalCast,      // Type in a C++ functional cast expression.
-  Member,              // Struct/Union field.
-  Block,               // Declaration within a block in a function.
-  ForInit,             // Declaration within first part of a for loop.
-  SelectionInit,       // Declaration within optional init stmt of if/switch.
-  Condition,           // Condition declaration in a C++ if/switch/while/for.
-  TemplateParam,       // Within a template parameter list.
-  CXXNew,              // C++ new-expression.
-  CXXCatch,            // C++ catch exception-declaration
-  ObjCCatch,           // Objective-C catch exception-declaration
-  BlockLiteral,        // Block literal declarator.
-  LambdaExpr,          // Lambda-expression declarator.
-  LambdaExprParameter, // Lambda-expression parameter declarator.
-  ConversionId,        // C++ conversion-type-id.
-  TrailingReturn,      // C++11 trailing-type-specifier.
-  TrailingReturnVar,   // C++11 trailing-type-specifier for variable.
-  TemplateArg,         // Any template argument (in template argument list).
-  TemplateTypeArg,     // Template type argument (in default argument).
-  AliasDecl,           // C++11 alias-declaration.
-  AliasTemplate,       // C++11 alias-declaration template.
-  RequiresExpr         // C++2a requires-expression.
+    FileContext,         // File scope declaration.
+    PrototypeContext,    // Within a function prototype.
+    ObjCResultContext,   // An ObjC method result type.
+    ObjCParameterContext,// An ObjC method parameter type.
+    KNRTypeListContext,  // K&R type definition list for formals.
+    TypeNameContext,     // Abstract declarator for types.
+    FunctionalCastContext, // Type in a C++ functional cast expression.
+    MemberContext,       // Struct/Union field.
+    BlockContext,        // Declaration within a block in a function.
+    ForContext,          // Declaration within first part of a for loop.
+    InitStmtContext,     // Declaration within optional init stmt of if/switch.
+    ConditionContext,    // Condition declaration in a C++ if/switch/while/for.
+    TemplateParamContext,// Within a template parameter list.
+    CXXNewContext,       // C++ new-expression.
+    CXXCatchContext,     // C++ catch exception-declaration
+    ObjCCatchContext,    // Objective-C catch exception-declaration
+    BlockLiteralContext, // Block literal declarator.
+    LambdaExprContext,   // Lambda-expression declarator.
+    LambdaExprParameterContext, // Lambda-expression parameter declarator.
+    ConversionIdContext, // C++ conversion-type-id.
+    TrailingReturnContext, // C++11 trailing-type-specifier.
+    TemplateTypeArgContext, // Template type argument.
+    AliasDeclContext,    // C++11 alias-declaration.
+    AliasTemplateContext // C++11 alias-declaration template.
 };
 
-/// Information about one declarator, including the parsed type
+
+/// \brief Information about one declarator, including the parsed type
 /// information and the identifier.
 ///
 /// When the declarator is fully formed, this is turned into the appropriate
@@ -1801,14 +1750,14 @@ enum class DeclaratorContext {
 /// Instances of this class should be a transient object that lives on the
 /// stack, not objects that are allocated in large quantities on the heap.
 class Declarator {
-
+  
 private:
   const DeclSpec &DS;
   CXXScopeSpec SS;
   UnqualifiedId Name;
   SourceRange Range;
 
-  /// Where we are parsing this declarator.
+  /// \brief Where we are parsing this declarator.
   DeclaratorContext Context;
 
   /// The C++17 structured binding, if any. This is an alternative to a Name.
@@ -1826,47 +1775,32 @@ private:
   /// GroupingParens - Set by Parser::ParseParenDeclarator().
   unsigned GroupingParens : 1;
 
-  /// FunctionDefinition - Is this Declarator for a function or member
+  /// FunctionDefinition - Is this Declarator for a function or member 
   /// definition and, if so, what kind?
   ///
   /// Actually a FunctionDefinitionKind.
   unsigned FunctionDefinition : 2;
 
-  /// Is this Declarator a redeclaration?
+  /// \brief Is this Declarator a redeclaration?
   unsigned Redeclaration : 1;
 
-  /// true if the declaration is preceded by \c __extension__.
+  /// \brief true if the declaration is preceded by \c __extension__.
   unsigned Extension : 1;
 
   /// Indicates whether this is an Objective-C instance variable.
   unsigned ObjCIvar : 1;
-
+    
   /// Indicates whether this is an Objective-C 'weak' property.
   unsigned ObjCWeakProperty : 1;
 
   /// Indicates whether the InlineParams / InlineBindings storage has been used.
   unsigned InlineStorageUsed : 1;
 
-  /// Indicates whether this declarator has an initializer.
-  unsigned HasInitializer : 1;
-
   /// Attrs - Attributes.
   ParsedAttributes Attrs;
 
-  /// The asm label, if specified.
+  /// \brief The asm label, if specified.
   Expr *AsmLabel;
-
-  /// \brief The constraint-expression specified by the trailing
-  /// requires-clause, or null if no such clause was specified.
-  Expr *TrailingRequiresClause;
-
-  /// If this declarator declares a template, its template parameter lists.
-  ArrayRef<TemplateParameterList *> TemplateParameterLists;
-
-  /// If the declarator declares an abbreviated function template, the innermost
-  /// template parameter list containing the invented and explicit template
-  /// parameters (if any).
-  TemplateParameterList *InventedTemplateParameterList;
 
 #ifndef _MSC_VER
   union {
@@ -1880,27 +1814,24 @@ private:
   };
 #endif
 
-  /// If this is the second or subsequent declarator in this declaration,
+  /// \brief If this is the second or subsequent declarator in this declaration,
   /// the location of the comma before this declarator.
   SourceLocation CommaLoc;
 
-  /// If provided, the source location of the ellipsis used to describe
+  /// \brief If provided, the source location of the ellipsis used to describe
   /// this declarator as a parameter pack.
   SourceLocation EllipsisLoc;
-
+  
   friend struct DeclaratorChunk;
 
 public:
   Declarator(const DeclSpec &ds, DeclaratorContext C)
       : DS(ds), Range(ds.getSourceRange()), Context(C),
         InvalidType(DS.getTypeSpecType() == DeclSpec::TST_error),
-        GroupingParens(false), FunctionDefinition(static_cast<unsigned>(
-                                   FunctionDefinitionKind::Declaration)),
+        GroupingParens(false), FunctionDefinition(FDK_Declaration),
         Redeclaration(false), Extension(false), ObjCIvar(false),
         ObjCWeakProperty(false), InlineStorageUsed(false),
-        HasInitializer(false), Attrs(ds.getAttributePool().getFactory()),
-        AsmLabel(nullptr), TrailingRequiresClause(nullptr),
-        InventedTemplateParameterList(nullptr) {}
+        Attrs(ds.getAttributePool().getFactory()), AsmLabel(nullptr) {}
 
   ~Declarator() {
     clear();
@@ -1925,26 +1856,26 @@ public:
   const CXXScopeSpec &getCXXScopeSpec() const { return SS; }
   CXXScopeSpec &getCXXScopeSpec() { return SS; }
 
-  /// Retrieve the name specified by this declarator.
+  /// \brief Retrieve the name specified by this declarator.
   UnqualifiedId &getName() { return Name; }
 
   const DecompositionDeclarator &getDecompositionDeclarator() const {
     return BindingGroup;
   }
-
+  
   DeclaratorContext getContext() const { return Context; }
 
   bool isPrototypeContext() const {
-    return (Context == DeclaratorContext::Prototype ||
-            Context == DeclaratorContext::ObjCParameter ||
-            Context == DeclaratorContext::ObjCResult ||
-            Context == DeclaratorContext::LambdaExprParameter);
+    return (Context == DeclaratorContext::PrototypeContext ||
+            Context == DeclaratorContext::ObjCParameterContext ||
+            Context == DeclaratorContext::ObjCResultContext ||
+            Context == DeclaratorContext::LambdaExprParameterContext);
   }
 
-  /// Get the source range that spans this declarator.
+  /// \brief Get the source range that spans this declarator.
   SourceRange getSourceRange() const LLVM_READONLY { return Range; }
-  SourceLocation getBeginLoc() const LLVM_READONLY { return Range.getBegin(); }
-  SourceLocation getEndLoc() const LLVM_READONLY { return Range.getEnd(); }
+  SourceLocation getLocStart() const LLVM_READONLY { return Range.getBegin(); }
+  SourceLocation getLocEnd() const LLVM_READONLY { return Range.getEnd(); }
 
   void SetSourceRange(SourceRange R) { Range = R; }
   /// SetRangeBegin - Set the start of the source range to Loc, unless it's
@@ -1969,7 +1900,7 @@ public:
       Range.setEnd(SR.getEnd());
   }
 
-  /// Reset the contents of this Declarator.
+  /// \brief Reset the contents of this Declarator.
   void clear() {
     SS.clear();
     Name.clear();
@@ -1982,7 +1913,6 @@ public:
     Attrs.clear();
     AsmLabel = nullptr;
     InlineStorageUsed = false;
-    HasInitializer = false;
     ObjCIvar = false;
     ObjCWeakProperty = false;
     CommaLoc = SourceLocation();
@@ -1994,35 +1924,32 @@ public:
   /// parameter lists.
   bool mayOmitIdentifier() const {
     switch (Context) {
-    case DeclaratorContext::File:
-    case DeclaratorContext::KNRTypeList:
-    case DeclaratorContext::Member:
-    case DeclaratorContext::Block:
-    case DeclaratorContext::ForInit:
-    case DeclaratorContext::SelectionInit:
-    case DeclaratorContext::Condition:
+    case DeclaratorContext::FileContext:
+    case DeclaratorContext::KNRTypeListContext:
+    case DeclaratorContext::MemberContext:
+    case DeclaratorContext::BlockContext:
+    case DeclaratorContext::ForContext:
+    case DeclaratorContext::InitStmtContext:
+    case DeclaratorContext::ConditionContext:
       return false;
 
-    case DeclaratorContext::TypeName:
-    case DeclaratorContext::FunctionalCast:
-    case DeclaratorContext::AliasDecl:
-    case DeclaratorContext::AliasTemplate:
-    case DeclaratorContext::Prototype:
-    case DeclaratorContext::LambdaExprParameter:
-    case DeclaratorContext::ObjCParameter:
-    case DeclaratorContext::ObjCResult:
-    case DeclaratorContext::TemplateParam:
-    case DeclaratorContext::CXXNew:
-    case DeclaratorContext::CXXCatch:
-    case DeclaratorContext::ObjCCatch:
-    case DeclaratorContext::BlockLiteral:
-    case DeclaratorContext::LambdaExpr:
-    case DeclaratorContext::ConversionId:
-    case DeclaratorContext::TemplateArg:
-    case DeclaratorContext::TemplateTypeArg:
-    case DeclaratorContext::TrailingReturn:
-    case DeclaratorContext::TrailingReturnVar:
-    case DeclaratorContext::RequiresExpr:
+    case DeclaratorContext::TypeNameContext:
+    case DeclaratorContext::FunctionalCastContext:
+    case DeclaratorContext::AliasDeclContext:
+    case DeclaratorContext::AliasTemplateContext:
+    case DeclaratorContext::PrototypeContext:
+    case DeclaratorContext::LambdaExprParameterContext:
+    case DeclaratorContext::ObjCParameterContext:
+    case DeclaratorContext::ObjCResultContext:
+    case DeclaratorContext::TemplateParamContext:
+    case DeclaratorContext::CXXNewContext:
+    case DeclaratorContext::CXXCatchContext:
+    case DeclaratorContext::ObjCCatchContext:
+    case DeclaratorContext::BlockLiteralContext:
+    case DeclaratorContext::LambdaExprContext:
+    case DeclaratorContext::ConversionIdContext:
+    case DeclaratorContext::TemplateTypeArgContext:
+    case DeclaratorContext::TrailingReturnContext:
       return true;
     }
     llvm_unreachable("unknown context kind!");
@@ -2033,35 +1960,32 @@ public:
   /// typenames.
   bool mayHaveIdentifier() const {
     switch (Context) {
-    case DeclaratorContext::File:
-    case DeclaratorContext::KNRTypeList:
-    case DeclaratorContext::Member:
-    case DeclaratorContext::Block:
-    case DeclaratorContext::ForInit:
-    case DeclaratorContext::SelectionInit:
-    case DeclaratorContext::Condition:
-    case DeclaratorContext::Prototype:
-    case DeclaratorContext::LambdaExprParameter:
-    case DeclaratorContext::TemplateParam:
-    case DeclaratorContext::CXXCatch:
-    case DeclaratorContext::ObjCCatch:
-    case DeclaratorContext::RequiresExpr:
+    case DeclaratorContext::FileContext:
+    case DeclaratorContext::KNRTypeListContext:
+    case DeclaratorContext::MemberContext:
+    case DeclaratorContext::BlockContext:
+    case DeclaratorContext::ForContext:
+    case DeclaratorContext::InitStmtContext:
+    case DeclaratorContext::ConditionContext:
+    case DeclaratorContext::PrototypeContext:
+    case DeclaratorContext::LambdaExprParameterContext:
+    case DeclaratorContext::TemplateParamContext:
+    case DeclaratorContext::CXXCatchContext:
+    case DeclaratorContext::ObjCCatchContext:
       return true;
 
-    case DeclaratorContext::TypeName:
-    case DeclaratorContext::FunctionalCast:
-    case DeclaratorContext::CXXNew:
-    case DeclaratorContext::AliasDecl:
-    case DeclaratorContext::AliasTemplate:
-    case DeclaratorContext::ObjCParameter:
-    case DeclaratorContext::ObjCResult:
-    case DeclaratorContext::BlockLiteral:
-    case DeclaratorContext::LambdaExpr:
-    case DeclaratorContext::ConversionId:
-    case DeclaratorContext::TemplateArg:
-    case DeclaratorContext::TemplateTypeArg:
-    case DeclaratorContext::TrailingReturn:
-    case DeclaratorContext::TrailingReturnVar:
+    case DeclaratorContext::TypeNameContext:
+    case DeclaratorContext::FunctionalCastContext:
+    case DeclaratorContext::CXXNewContext:
+    case DeclaratorContext::AliasDeclContext:
+    case DeclaratorContext::AliasTemplateContext:
+    case DeclaratorContext::ObjCParameterContext:
+    case DeclaratorContext::ObjCResultContext:
+    case DeclaratorContext::BlockLiteralContext:
+    case DeclaratorContext::LambdaExprContext:
+    case DeclaratorContext::ConversionIdContext:
+    case DeclaratorContext::TemplateTypeArgContext:
+    case DeclaratorContext::TrailingReturnContext:
       return false;
     }
     llvm_unreachable("unknown context kind!");
@@ -2070,41 +1994,38 @@ public:
   /// Return true if the context permits a C++17 decomposition declarator.
   bool mayHaveDecompositionDeclarator() const {
     switch (Context) {
-    case DeclaratorContext::File:
+    case DeclaratorContext::FileContext:
       // FIXME: It's not clear that the proposal meant to allow file-scope
       // structured bindings, but it does.
-    case DeclaratorContext::Block:
-    case DeclaratorContext::ForInit:
-    case DeclaratorContext::SelectionInit:
-    case DeclaratorContext::Condition:
+    case DeclaratorContext::BlockContext:
+    case DeclaratorContext::ForContext:
+    case DeclaratorContext::InitStmtContext:
+    case DeclaratorContext::ConditionContext:
       return true;
 
-    case DeclaratorContext::Member:
-    case DeclaratorContext::Prototype:
-    case DeclaratorContext::TemplateParam:
-    case DeclaratorContext::RequiresExpr:
+    case DeclaratorContext::MemberContext:
+    case DeclaratorContext::PrototypeContext:
+    case DeclaratorContext::TemplateParamContext:
       // Maybe one day...
       return false;
 
     // These contexts don't allow any kind of non-abstract declarator.
-    case DeclaratorContext::KNRTypeList:
-    case DeclaratorContext::TypeName:
-    case DeclaratorContext::FunctionalCast:
-    case DeclaratorContext::AliasDecl:
-    case DeclaratorContext::AliasTemplate:
-    case DeclaratorContext::LambdaExprParameter:
-    case DeclaratorContext::ObjCParameter:
-    case DeclaratorContext::ObjCResult:
-    case DeclaratorContext::CXXNew:
-    case DeclaratorContext::CXXCatch:
-    case DeclaratorContext::ObjCCatch:
-    case DeclaratorContext::BlockLiteral:
-    case DeclaratorContext::LambdaExpr:
-    case DeclaratorContext::ConversionId:
-    case DeclaratorContext::TemplateArg:
-    case DeclaratorContext::TemplateTypeArg:
-    case DeclaratorContext::TrailingReturn:
-    case DeclaratorContext::TrailingReturnVar:
+    case DeclaratorContext::KNRTypeListContext:
+    case DeclaratorContext::TypeNameContext:
+    case DeclaratorContext::FunctionalCastContext:
+    case DeclaratorContext::AliasDeclContext:
+    case DeclaratorContext::AliasTemplateContext:
+    case DeclaratorContext::LambdaExprParameterContext:
+    case DeclaratorContext::ObjCParameterContext:
+    case DeclaratorContext::ObjCResultContext:
+    case DeclaratorContext::CXXNewContext:
+    case DeclaratorContext::CXXCatchContext:
+    case DeclaratorContext::ObjCCatchContext:
+    case DeclaratorContext::BlockLiteralContext:
+    case DeclaratorContext::LambdaExprContext:
+    case DeclaratorContext::ConversionIdContext:
+    case DeclaratorContext::TemplateTypeArgContext:
+    case DeclaratorContext::TrailingReturnContext:
       return false;
     }
     llvm_unreachable("unknown context kind!");
@@ -2119,7 +2040,7 @@ public:
       return false;
 
     if (getDeclSpec().getStorageClassSpec() == DeclSpec::SCS_extern &&
-        Context != DeclaratorContext::File)
+        Context != DeclaratorContext::FileContext)
       return false;
 
     // Special names can't have direct initializers.
@@ -2127,40 +2048,37 @@ public:
       return false;
 
     switch (Context) {
-    case DeclaratorContext::File:
-    case DeclaratorContext::Block:
-    case DeclaratorContext::ForInit:
-    case DeclaratorContext::SelectionInit:
-    case DeclaratorContext::TrailingReturnVar:
+    case DeclaratorContext::FileContext:
+    case DeclaratorContext::BlockContext:
+    case DeclaratorContext::ForContext:
+    case DeclaratorContext::InitStmtContext:
       return true;
 
-    case DeclaratorContext::Condition:
+    case DeclaratorContext::ConditionContext:
       // This may not be followed by a direct initializer, but it can't be a
       // function declaration either, and we'd prefer to perform a tentative
       // parse in order to produce the right diagnostic.
       return true;
 
-    case DeclaratorContext::KNRTypeList:
-    case DeclaratorContext::Member:
-    case DeclaratorContext::Prototype:
-    case DeclaratorContext::LambdaExprParameter:
-    case DeclaratorContext::ObjCParameter:
-    case DeclaratorContext::ObjCResult:
-    case DeclaratorContext::TemplateParam:
-    case DeclaratorContext::CXXCatch:
-    case DeclaratorContext::ObjCCatch:
-    case DeclaratorContext::TypeName:
-    case DeclaratorContext::FunctionalCast: // FIXME
-    case DeclaratorContext::CXXNew:
-    case DeclaratorContext::AliasDecl:
-    case DeclaratorContext::AliasTemplate:
-    case DeclaratorContext::BlockLiteral:
-    case DeclaratorContext::LambdaExpr:
-    case DeclaratorContext::ConversionId:
-    case DeclaratorContext::TemplateArg:
-    case DeclaratorContext::TemplateTypeArg:
-    case DeclaratorContext::TrailingReturn:
-    case DeclaratorContext::RequiresExpr:
+    case DeclaratorContext::KNRTypeListContext:
+    case DeclaratorContext::MemberContext:
+    case DeclaratorContext::PrototypeContext:
+    case DeclaratorContext::LambdaExprParameterContext:
+    case DeclaratorContext::ObjCParameterContext:
+    case DeclaratorContext::ObjCResultContext:
+    case DeclaratorContext::TemplateParamContext:
+    case DeclaratorContext::CXXCatchContext:
+    case DeclaratorContext::ObjCCatchContext:
+    case DeclaratorContext::TypeNameContext:
+    case DeclaratorContext::FunctionalCastContext: // FIXME
+    case DeclaratorContext::CXXNewContext:
+    case DeclaratorContext::AliasDeclContext:
+    case DeclaratorContext::AliasTemplateContext:
+    case DeclaratorContext::BlockLiteralContext:
+    case DeclaratorContext::LambdaExprContext:
+    case DeclaratorContext::ConversionIdContext:
+    case DeclaratorContext::TemplateTypeArgContext:
+    case DeclaratorContext::TrailingReturnContext:
       return false;
     }
     llvm_unreachable("unknown context kind!");
@@ -2185,15 +2103,15 @@ public:
     return BindingGroup.isSet();
   }
 
-  IdentifierInfo *getIdentifier() const {
+  IdentifierInfo *getIdentifier() const { 
     if (Name.getKind() == UnqualifiedIdKind::IK_Identifier)
       return Name.Identifier;
-
+    
     return nullptr;
   }
   SourceLocation getIdentifierLoc() const { return Name.StartLocation; }
 
-  /// Set the name of this declarator to be the given identifier.
+  /// \brief Set the name of this declarator to be the given identifier.
   void SetIdentifier(IdentifierInfo *Id, SourceLocation IdLoc) {
     Name.setIdentifier(Id, IdLoc);
   }
@@ -2206,33 +2124,23 @@ public:
 
   /// AddTypeInfo - Add a chunk to this declarator. Also extend the range to
   /// EndLoc, which should be the last token of the chunk.
-  /// This function takes attrs by R-Value reference because it takes ownership
-  /// of those attributes from the parameter.
-  void AddTypeInfo(const DeclaratorChunk &TI, ParsedAttributes &&attrs,
+  void AddTypeInfo(const DeclaratorChunk &TI,
+                   ParsedAttributes &attrs,
                    SourceLocation EndLoc) {
     DeclTypeInfo.push_back(TI);
-    DeclTypeInfo.back().getAttrs().addAll(attrs.begin(), attrs.end());
+    DeclTypeInfo.back().getAttrListRef() = attrs.getList();
     getAttributePool().takeAllFrom(attrs.getPool());
 
     if (!EndLoc.isInvalid())
       SetRangeEnd(EndLoc);
   }
 
-  /// AddTypeInfo - Add a chunk to this declarator. Also extend the range to
-  /// EndLoc, which should be the last token of the chunk.
-  void AddTypeInfo(const DeclaratorChunk &TI, SourceLocation EndLoc) {
-    DeclTypeInfo.push_back(TI);
-
-    if (!EndLoc.isInvalid())
-      SetRangeEnd(EndLoc);
-  }
-
-  /// Add a new innermost chunk to this declarator.
+  /// \brief Add a new innermost chunk to this declarator.
   void AddInnermostTypeInfo(const DeclaratorChunk &TI) {
     DeclTypeInfo.insert(DeclTypeInfo.begin(), TI);
   }
 
-  /// Return the number of types applied to this declarator.
+  /// \brief Return the number of types applied to this declarator.
   unsigned getNumTypeObjects() const { return DeclTypeInfo.size(); }
 
   /// Return the specified TypeInfo from this declarator.  TypeInfo #0 is
@@ -2339,50 +2247,47 @@ public:
     return const_cast<Declarator*>(this)->getFunctionTypeInfo();
   }
 
-  /// Determine whether the declaration that will be produced from
+  /// \brief Determine whether the declaration that will be produced from 
   /// this declaration will be a function.
-  ///
+  /// 
   /// A declaration can declare a function even if the declarator itself
   /// isn't a function declarator, if the type specifier refers to a function
   /// type. This routine checks for both cases.
   bool isDeclarationOfFunction() const;
 
-  /// Return true if this declaration appears in a context where a
+  /// \brief Return true if this declaration appears in a context where a
   /// function declarator would be a function declaration.
   bool isFunctionDeclarationContext() const {
     if (getDeclSpec().getStorageClassSpec() == DeclSpec::SCS_typedef)
       return false;
 
     switch (Context) {
-    case DeclaratorContext::File:
-    case DeclaratorContext::Member:
-    case DeclaratorContext::Block:
-    case DeclaratorContext::ForInit:
-    case DeclaratorContext::SelectionInit:
+    case DeclaratorContext::FileContext:
+    case DeclaratorContext::MemberContext:
+    case DeclaratorContext::BlockContext:
+    case DeclaratorContext::ForContext:
+    case DeclaratorContext::InitStmtContext:
       return true;
 
-    case DeclaratorContext::Condition:
-    case DeclaratorContext::KNRTypeList:
-    case DeclaratorContext::TypeName:
-    case DeclaratorContext::FunctionalCast:
-    case DeclaratorContext::AliasDecl:
-    case DeclaratorContext::AliasTemplate:
-    case DeclaratorContext::Prototype:
-    case DeclaratorContext::LambdaExprParameter:
-    case DeclaratorContext::ObjCParameter:
-    case DeclaratorContext::ObjCResult:
-    case DeclaratorContext::TemplateParam:
-    case DeclaratorContext::CXXNew:
-    case DeclaratorContext::CXXCatch:
-    case DeclaratorContext::ObjCCatch:
-    case DeclaratorContext::BlockLiteral:
-    case DeclaratorContext::LambdaExpr:
-    case DeclaratorContext::ConversionId:
-    case DeclaratorContext::TemplateArg:
-    case DeclaratorContext::TemplateTypeArg:
-    case DeclaratorContext::TrailingReturn:
-    case DeclaratorContext::TrailingReturnVar:
-    case DeclaratorContext::RequiresExpr:
+    case DeclaratorContext::ConditionContext:
+    case DeclaratorContext::KNRTypeListContext:
+    case DeclaratorContext::TypeNameContext:
+    case DeclaratorContext::FunctionalCastContext:
+    case DeclaratorContext::AliasDeclContext:
+    case DeclaratorContext::AliasTemplateContext:
+    case DeclaratorContext::PrototypeContext:
+    case DeclaratorContext::LambdaExprParameterContext:
+    case DeclaratorContext::ObjCParameterContext:
+    case DeclaratorContext::ObjCResultContext:
+    case DeclaratorContext::TemplateParamContext:
+    case DeclaratorContext::CXXNewContext:
+    case DeclaratorContext::CXXCatchContext:
+    case DeclaratorContext::ObjCCatchContext:
+    case DeclaratorContext::BlockLiteralContext:
+    case DeclaratorContext::LambdaExprContext:
+    case DeclaratorContext::ConversionIdContext:
+    case DeclaratorContext::TemplateTypeArgContext:
+    case DeclaratorContext::TrailingReturnContext:
       return false;
     }
     llvm_unreachable("unknown context kind!");
@@ -2392,45 +2297,42 @@ public:
   /// expression could appear.
   bool isExpressionContext() const {
     switch (Context) {
-    case DeclaratorContext::File:
-    case DeclaratorContext::KNRTypeList:
-    case DeclaratorContext::Member:
+    case DeclaratorContext::FileContext:
+    case DeclaratorContext::KNRTypeListContext:
+    case DeclaratorContext::MemberContext:
 
     // FIXME: sizeof(...) permits an expression.
-    case DeclaratorContext::TypeName:
-
-    case DeclaratorContext::FunctionalCast:
-    case DeclaratorContext::AliasDecl:
-    case DeclaratorContext::AliasTemplate:
-    case DeclaratorContext::Prototype:
-    case DeclaratorContext::LambdaExprParameter:
-    case DeclaratorContext::ObjCParameter:
-    case DeclaratorContext::ObjCResult:
-    case DeclaratorContext::TemplateParam:
-    case DeclaratorContext::CXXNew:
-    case DeclaratorContext::CXXCatch:
-    case DeclaratorContext::ObjCCatch:
-    case DeclaratorContext::BlockLiteral:
-    case DeclaratorContext::LambdaExpr:
-    case DeclaratorContext::ConversionId:
-    case DeclaratorContext::TrailingReturn:
-    case DeclaratorContext::TrailingReturnVar:
-    case DeclaratorContext::TemplateTypeArg:
-    case DeclaratorContext::RequiresExpr:
+    case DeclaratorContext::TypeNameContext: 
+    
+    case DeclaratorContext::FunctionalCastContext:
+    case DeclaratorContext::AliasDeclContext:
+    case DeclaratorContext::AliasTemplateContext:
+    case DeclaratorContext::PrototypeContext:
+    case DeclaratorContext::LambdaExprParameterContext:
+    case DeclaratorContext::ObjCParameterContext:
+    case DeclaratorContext::ObjCResultContext:
+    case DeclaratorContext::TemplateParamContext:
+    case DeclaratorContext::CXXNewContext:
+    case DeclaratorContext::CXXCatchContext:
+    case DeclaratorContext::ObjCCatchContext:
+    case DeclaratorContext::BlockLiteralContext:
+    case DeclaratorContext::LambdaExprContext:
+    case DeclaratorContext::ConversionIdContext:
+    case DeclaratorContext::TrailingReturnContext:
       return false;
 
-    case DeclaratorContext::Block:
-    case DeclaratorContext::ForInit:
-    case DeclaratorContext::SelectionInit:
-    case DeclaratorContext::Condition:
-    case DeclaratorContext::TemplateArg:
+    case DeclaratorContext::BlockContext:
+    case DeclaratorContext::ForContext:
+    case DeclaratorContext::InitStmtContext:
+    case DeclaratorContext::ConditionContext:
+    case DeclaratorContext::TemplateTypeArgContext:
       return true;
     }
 
     llvm_unreachable("unknown context kind!");
   }
-
-  /// Return true if a function declarator at this position would be a
+  
+  /// \brief Return true if a function declarator at this position would be a
   /// function declaration.
   bool isFunctionDeclaratorAFunctionDeclaration() const {
     if (!isFunctionDeclarationContext())
@@ -2443,7 +2345,7 @@ public:
     return true;
   }
 
-  /// Determine whether a trailing return type was written (at any
+  /// \brief Determine whether a trailing return type was written (at any
   /// level) within this declarator.
   bool hasTrailingReturnType() const {
     for (const auto &Chunk : type_objects())
@@ -2451,57 +2353,6 @@ public:
           Chunk.Fun.hasTrailingReturnType())
         return true;
     return false;
-  }
-  /// Get the trailing return type appearing (at any level) within this
-  /// declarator.
-  ParsedType getTrailingReturnType() const {
-    for (const auto &Chunk : type_objects())
-      if (Chunk.Kind == DeclaratorChunk::Function &&
-          Chunk.Fun.hasTrailingReturnType())
-        return Chunk.Fun.getTrailingReturnType();
-    return ParsedType();
-  }
-
-  /// \brief Sets a trailing requires clause for this declarator.
-  void setTrailingRequiresClause(Expr *TRC) {
-    TrailingRequiresClause = TRC;
-
-    SetRangeEnd(TRC->getEndLoc());
-  }
-
-  /// \brief Sets a trailing requires clause for this declarator.
-  Expr *getTrailingRequiresClause() {
-    return TrailingRequiresClause;
-  }
-
-  /// \brief Determine whether a trailing requires clause was written in this
-  /// declarator.
-  bool hasTrailingRequiresClause() const {
-    return TrailingRequiresClause != nullptr;
-  }
-
-  /// Sets the template parameter lists that preceded the declarator.
-  void setTemplateParameterLists(ArrayRef<TemplateParameterList *> TPLs) {
-    TemplateParameterLists = TPLs;
-  }
-
-  /// The template parameter lists that preceded the declarator.
-  ArrayRef<TemplateParameterList *> getTemplateParameterLists() const {
-    return TemplateParameterLists;
-  }
-
-  /// Sets the template parameter list generated from the explicit template
-  /// parameters along with any invented template parameters from
-  /// placeholder-typed parameters.
-  void setInventedTemplateParameterList(TemplateParameterList *Invented) {
-    InventedTemplateParameterList = Invented;
-  }
-
-  /// The template parameter list generated from the explicit template
-  /// parameters along with any invented template parameters from
-  /// placeholder-typed parameters, if there were any such parameters.
-  TemplateParameterList * getInventedTemplateParameterList() const {
-    return InventedTemplateParameterList;
   }
 
   /// takeAttributes - Takes attributes from the given parsed-attributes
@@ -2520,25 +2371,29 @@ public:
       SetRangeEnd(lastLoc);
   }
 
-  const ParsedAttributes &getAttributes() const { return Attrs; }
-  ParsedAttributes &getAttributes() { return Attrs; }
+  const AttributeList *getAttributes() const { return Attrs.getList(); }
+  AttributeList *getAttributes() { return Attrs.getList(); }
+
+  AttributeList *&getAttrListRef() { return Attrs.getListRef(); }
 
   /// hasAttributes - do we contain any attributes?
   bool hasAttributes() const {
-    if (!getAttributes().empty() || getDeclSpec().hasAttributes())
-      return true;
+    if (getAttributes() || getDeclSpec().hasAttributes()) return true;
     for (unsigned i = 0, e = getNumTypeObjects(); i != e; ++i)
-      if (!getTypeObject(i).getAttrs().empty())
+      if (getTypeObject(i).getAttrs())
         return true;
     return false;
   }
 
-  /// Return a source range list of C++11 attributes associated
+  /// \brief Return a source range list of C++11 attributes associated
   /// with the declarator.
   void getCXX11AttributeRanges(SmallVectorImpl<SourceRange> &Ranges) {
-    for (const ParsedAttr &AL : Attrs)
-      if (AL.isCXX11Attribute())
-        Ranges.push_back(AL.getRange());
+    AttributeList *AttrList = Attrs.getList();
+    while (AttrList) {
+      if (AttrList->isCXX11Attribute())
+        Ranges.push_back(AttrList->getRange());
+      AttrList = AttrList->getNext();
+    }
   }
 
   void setAsmLabel(Expr *E) { AsmLabel = E; }
@@ -2549,7 +2404,7 @@ public:
 
   void setObjCIvar(bool Val = true) { ObjCIvar = Val; }
   bool isObjCIvar() const { return ObjCIvar; }
-
+    
   void setObjCWeakProperty(bool Val = true) { ObjCWeakProperty = Val; }
   bool isObjCWeakProperty() const { return ObjCWeakProperty; }
 
@@ -2569,24 +2424,21 @@ public:
   SourceLocation getEllipsisLoc() const { return EllipsisLoc; }
   void setEllipsisLoc(SourceLocation EL) { EllipsisLoc = EL; }
 
-  void setFunctionDefinitionKind(FunctionDefinitionKind Val) {
-    FunctionDefinition = static_cast<unsigned>(Val);
+  void setFunctionDefinitionKind(FunctionDefinitionKind Val) { 
+    FunctionDefinition = Val; 
   }
-
+  
   bool isFunctionDefinition() const {
-    return getFunctionDefinitionKind() != FunctionDefinitionKind::Declaration;
+    return getFunctionDefinitionKind() != FDK_Declaration;
   }
-
-  FunctionDefinitionKind getFunctionDefinitionKind() const {
-    return (FunctionDefinitionKind)FunctionDefinition;
+  
+  FunctionDefinitionKind getFunctionDefinitionKind() const { 
+    return (FunctionDefinitionKind)FunctionDefinition; 
   }
-
-  void setHasInitializer(bool Val = true) { HasInitializer = Val; }
-  bool hasInitializer() const { return HasInitializer; }
 
   /// Returns true if this declares a real member and not a friend.
   bool isFirstDeclarationOfMember() {
-    return getContext() == DeclaratorContext::Member &&
+    return getContext() == DeclaratorContext::MemberContext &&
            !getDeclSpec().isFriendSpecified();
   }
 
@@ -2602,16 +2454,17 @@ public:
   bool isRedeclaration() const { return Redeclaration; }
 };
 
-/// This little struct is used to capture information about
+/// \brief This little struct is used to capture information about
 /// structure field declarators, which is basically just a bitfield size.
 struct FieldDeclarator {
   Declarator D;
   Expr *BitfieldSize;
   explicit FieldDeclarator(const DeclSpec &DS)
-      : D(DS, DeclaratorContext::Member), BitfieldSize(nullptr) {}
+      : D(DS, DeclaratorContext::MemberContext),
+        BitfieldSize(nullptr) {}
 };
 
-/// Represents a C++11 virt-specifier-seq.
+/// \brief Represents a C++11 virt-specifier-seq.
 class VirtSpecifiers {
 public:
   enum Specifier {
@@ -2620,8 +2473,7 @@ public:
     VS_Final = 2,
     VS_Sealed = 4,
     // Represents the __final keyword, which is legal for gcc in pre-C++11 mode.
-    VS_GNU_Final = 8,
-    VS_Abstract = 16
+    VS_GNU_Final = 8
   };
 
   VirtSpecifiers() : Specifiers(0), LastSpecifier(VS_None) { }
@@ -2637,7 +2489,6 @@ public:
   bool isFinalSpecified() const { return Specifiers & (VS_Final | VS_Sealed | VS_GNU_Final); }
   bool isFinalSpelledSealed() const { return Specifiers & VS_Sealed; }
   SourceLocation getFinalLoc() const { return VS_finalLoc; }
-  SourceLocation getAbstractLoc() const { return VS_abstractLoc; }
 
   void clear() { Specifiers = 0; }
 
@@ -2646,12 +2497,12 @@ public:
   SourceLocation getFirstLocation() const { return FirstLocation; }
   SourceLocation getLastLocation() const { return LastLocation; }
   Specifier getLastSpecifier() const { return LastSpecifier; }
-
+  
 private:
   unsigned Specifiers;
   Specifier LastSpecifier;
 
-  SourceLocation VS_overrideLoc, VS_finalLoc, VS_abstractLoc;
+  SourceLocation VS_overrideLoc, VS_finalLoc;
   SourceLocation FirstLocation;
   SourceLocation LastLocation;
 };
@@ -2663,9 +2514,9 @@ enum class LambdaCaptureInitKind {
   ListInit    //!< [a{b}]
 };
 
-/// Represents a complete lambda introducer.
+/// \brief Represents a complete lambda introducer.
 struct LambdaIntroducer {
-  /// An individual capture in a lambda introducer.
+  /// \brief An individual capture in a lambda introducer.
   struct LambdaCapture {
     LambdaCaptureKind Kind;
     SourceLocation Loc;
@@ -2674,16 +2525,12 @@ struct LambdaIntroducer {
     LambdaCaptureInitKind InitKind;
     ExprResult Init;
     ParsedType InitCaptureType;
-    SourceRange ExplicitRange;
-
     LambdaCapture(LambdaCaptureKind Kind, SourceLocation Loc,
                   IdentifierInfo *Id, SourceLocation EllipsisLoc,
                   LambdaCaptureInitKind InitKind, ExprResult Init,
-                  ParsedType InitCaptureType,
-                  SourceRange ExplicitRange)
+                  ParsedType InitCaptureType)
         : Kind(Kind), Loc(Loc), Id(Id), EllipsisLoc(EllipsisLoc),
-          InitKind(InitKind), Init(Init), InitCaptureType(InitCaptureType),
-          ExplicitRange(ExplicitRange) {}
+          InitKind(InitKind), Init(Init), InitCaptureType(InitCaptureType) {}
   };
 
   SourceRange Range;
@@ -2694,38 +2541,17 @@ struct LambdaIntroducer {
   LambdaIntroducer()
     : Default(LCD_None) {}
 
-  /// Append a capture in a lambda introducer.
+  /// \brief Append a capture in a lambda introducer.
   void addCapture(LambdaCaptureKind Kind,
                   SourceLocation Loc,
                   IdentifierInfo* Id,
                   SourceLocation EllipsisLoc,
                   LambdaCaptureInitKind InitKind,
-                  ExprResult Init,
-                  ParsedType InitCaptureType,
-                  SourceRange ExplicitRange) {
+                  ExprResult Init, 
+                  ParsedType InitCaptureType) {
     Captures.push_back(LambdaCapture(Kind, Loc, Id, EllipsisLoc, InitKind, Init,
-                                     InitCaptureType, ExplicitRange));
+                                     InitCaptureType));
   }
-};
-
-struct InventedTemplateParameterInfo {
-  /// The number of parameters in the template parameter list that were
-  /// explicitly specified by the user, as opposed to being invented by use
-  /// of an auto parameter.
-  unsigned NumExplicitTemplateParams = 0;
-
-  /// If this is a generic lambda or abbreviated function template, use this
-  /// as the depth of each 'auto' parameter, during initial AST construction.
-  unsigned AutoTemplateParameterDepth = 0;
-
-  /// Store the list of the template parameters for a generic lambda or an
-  /// abbreviated function template.
-  /// If this is a generic lambda or abbreviated function template, this holds
-  /// the explicit template parameters followed by the auto parameters
-  /// converted into TemplateTypeParmDecls.
-  /// It can be used to construct the generic lambda or abbreviated template's
-  /// template parameter list during initial AST construction.
-  SmallVector<NamedDecl*, 4> TemplateParams;
 };
 
 } // end namespace clang

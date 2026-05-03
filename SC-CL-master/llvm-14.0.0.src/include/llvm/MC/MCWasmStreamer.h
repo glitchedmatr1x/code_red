@@ -1,8 +1,9 @@
 //===- MCWasmStreamer.h - MCStreamer Wasm Object File Interface -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -11,22 +12,23 @@
 
 #include "MCAsmBackend.h"
 #include "MCCodeEmitter.h"
+#include "llvm/ADT/SmallPtrSet.h"
 #include "llvm/MC/MCDirectives.h"
 #include "llvm/MC/MCObjectStreamer.h"
-#include "llvm/MC/MCObjectWriter.h"
+#include "llvm/MC/SectionKind.h"
 #include "llvm/Support/DataTypes.h"
 
 namespace llvm {
+class MCAssembler;
 class MCExpr;
 class MCInst;
+class raw_ostream;
 
 class MCWasmStreamer : public MCObjectStreamer {
 public:
   MCWasmStreamer(MCContext &Context, std::unique_ptr<MCAsmBackend> TAB,
-                 std::unique_ptr<MCObjectWriter> OW,
-                 std::unique_ptr<MCCodeEmitter> Emitter)
-      : MCObjectStreamer(Context, std::move(TAB), std::move(OW),
-                         std::move(Emitter)),
+                 raw_pwrite_stream &OS, std::unique_ptr<MCCodeEmitter> Emitter)
+      : MCObjectStreamer(Context, std::move(TAB), OS, std::move(Emitter)),
         SeenIdent(false) {}
 
   ~MCWasmStreamer() override;
@@ -40,40 +42,38 @@ public:
   /// \name MCStreamer Interface
   /// @{
 
-  void changeSection(MCSection *Section, const MCExpr *Subsection) override;
-  void emitLabel(MCSymbol *Symbol, SMLoc Loc = SMLoc()) override;
-  void emitLabelAtPos(MCSymbol *Symbol, SMLoc Loc, MCFragment *F,
-                      uint64_t Offset) override;
-  void emitAssemblerFlag(MCAssemblerFlag Flag) override;
-  void emitThumbFunc(MCSymbol *Func) override;
-  void emitWeakReference(MCSymbol *Alias, const MCSymbol *Symbol) override;
-  bool emitSymbolAttribute(MCSymbol *Symbol, MCSymbolAttr Attribute) override;
-  void emitSymbolDesc(MCSymbol *Symbol, unsigned DescValue) override;
-  void emitCommonSymbol(MCSymbol *Symbol, uint64_t Size,
+  void ChangeSection(MCSection *Section, const MCExpr *Subsection) override;
+  void EmitAssemblerFlag(MCAssemblerFlag Flag) override;
+  void EmitThumbFunc(MCSymbol *Func) override;
+  void EmitWeakReference(MCSymbol *Alias, const MCSymbol *Symbol) override;
+  bool EmitSymbolAttribute(MCSymbol *Symbol, MCSymbolAttr Attribute) override;
+  void EmitSymbolDesc(MCSymbol *Symbol, unsigned DescValue) override;
+  void EmitCommonSymbol(MCSymbol *Symbol, uint64_t Size,
                         unsigned ByteAlignment) override;
 
   void emitELFSize(MCSymbol *Symbol, const MCExpr *Value) override;
 
-  void emitLocalCommonSymbol(MCSymbol *Symbol, uint64_t Size,
+  void EmitLocalCommonSymbol(MCSymbol *Symbol, uint64_t Size,
                              unsigned ByteAlignment) override;
 
-  void emitZerofill(MCSection *Section, MCSymbol *Symbol = nullptr,
-                    uint64_t Size = 0, unsigned ByteAlignment = 0,
-                    SMLoc Loc = SMLoc()) override;
-  void emitTBSSSymbol(MCSection *Section, MCSymbol *Symbol, uint64_t Size,
+  void EmitZerofill(MCSection *Section, MCSymbol *Symbol = nullptr,
+                    uint64_t Size = 0, unsigned ByteAlignment = 0) override;
+  void EmitTBSSSymbol(MCSection *Section, MCSymbol *Symbol, uint64_t Size,
                       unsigned ByteAlignment = 0) override;
+  void EmitValueImpl(const MCExpr *Value, unsigned Size,
+                     SMLoc Loc = SMLoc()) override;
 
-  void emitIdent(StringRef IdentString) override;
+  void EmitIdent(StringRef IdentString) override;
 
-  void finishImpl() override;
+  void EmitValueToAlignment(unsigned, int64_t, unsigned, unsigned) override;
+
+  void FinishImpl() override;
 
 private:
-  void emitInstToFragment(const MCInst &Inst, const MCSubtargetInfo &) override;
-  void emitInstToData(const MCInst &Inst, const MCSubtargetInfo &) override;
+  void EmitInstToFragment(const MCInst &Inst, const MCSubtargetInfo &) override;
+  void EmitInstToData(const MCInst &Inst, const MCSubtargetInfo &) override;
 
-  void fixSymbolsInTLSFixups(const MCExpr *expr);
-
-  /// Merge the content of the fragment \p EF into the fragment \p DF.
+  /// \brief Merge the content of the fragment \p EF into the fragment \p DF.
   void mergeFragment(MCDataFragment *, MCDataFragment *);
 
   bool SeenIdent;

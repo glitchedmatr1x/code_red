@@ -1,8 +1,9 @@
 //===- StreamUtil.cpp - PDB stream utilities --------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -32,7 +33,7 @@ std::string StreamInfo::getLongName() const {
 StreamInfo StreamInfo::createStream(StreamPurpose Purpose, StringRef Name,
                                     uint32_t StreamIndex) {
   StreamInfo Result;
-  Result.Name = std::string(Name);
+  Result.Name = Name;
   Result.StreamIndex = StreamIndex;
   Result.Purpose = Purpose;
   return Result;
@@ -41,16 +42,23 @@ StreamInfo StreamInfo::createStream(StreamPurpose Purpose, StringRef Name,
 StreamInfo StreamInfo::createModuleStream(StringRef Module,
                                           uint32_t StreamIndex, uint32_t Modi) {
   StreamInfo Result;
-  Result.Name = std::string(Module);
+  Result.Name = Module;
   Result.StreamIndex = StreamIndex;
   Result.ModuleIndex = Modi;
   Result.Purpose = StreamPurpose::ModuleStream;
   return Result;
 }
 
-static inline StreamInfo stream(StreamPurpose Purpose, StringRef Label,
-                                uint32_t Idx) {
-  return StreamInfo::createStream(Purpose, Label, Idx);
+static inline StreamInfo otherStream(StringRef Label, uint32_t Idx) {
+  return StreamInfo::createStream(StreamPurpose::Other, Label, Idx);
+}
+
+static inline StreamInfo namedStream(StringRef Label, uint32_t Idx) {
+  return StreamInfo::createStream(StreamPurpose::NamedStream, Label, Idx);
+}
+
+static inline StreamInfo symbolStream(StringRef Label, uint32_t Idx) {
+  return StreamInfo::createStream(StreamPurpose::Symbols, Label, Idx);
 }
 
 static inline StreamInfo moduleStream(StringRef Label, uint32_t StreamIdx,
@@ -90,82 +98,67 @@ void llvm::pdb::discoverStreamPurposes(PDBFile &File,
   if (Info) {
     for (auto &NSE : Info->named_streams()) {
       if (NSE.second != kInvalidStreamIndex)
-        NamedStreams[NSE.second] = std::string(NSE.first());
+        NamedStreams[NSE.second] = NSE.first();
     }
   }
 
   Streams.resize(StreamCount);
   for (uint16_t StreamIdx = 0; StreamIdx < StreamCount; ++StreamIdx) {
     if (StreamIdx == OldMSFDirectory)
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "Old MSF Directory", StreamIdx);
+      Streams[StreamIdx] = otherStream("Old MSF Directory", StreamIdx);
     else if (StreamIdx == StreamPDB)
-      Streams[StreamIdx] = stream(StreamPurpose::PDB, "PDB Stream", StreamIdx);
+      Streams[StreamIdx] = otherStream("PDB Stream", StreamIdx);
     else if (StreamIdx == StreamDBI)
-      Streams[StreamIdx] = stream(StreamPurpose::DBI, "DBI Stream", StreamIdx);
+      Streams[StreamIdx] = otherStream("DBI Stream", StreamIdx);
     else if (StreamIdx == StreamTPI)
-      Streams[StreamIdx] = stream(StreamPurpose::TPI, "TPI Stream", StreamIdx);
+      Streams[StreamIdx] = otherStream("TPI Stream", StreamIdx);
     else if (StreamIdx == StreamIPI)
-      Streams[StreamIdx] = stream(StreamPurpose::IPI, "IPI Stream", StreamIdx);
+      Streams[StreamIdx] = otherStream("IPI Stream", StreamIdx);
     else if (Dbi && StreamIdx == Dbi->getGlobalSymbolStreamIndex())
-      Streams[StreamIdx] =
-          stream(StreamPurpose::GlobalHash, "Global Symbol Hash", StreamIdx);
+      Streams[StreamIdx] = otherStream("Global Symbol Hash", StreamIdx);
     else if (Dbi && StreamIdx == Dbi->getPublicSymbolStreamIndex())
-      Streams[StreamIdx] =
-          stream(StreamPurpose::PublicHash, "Public Symbol Hash", StreamIdx);
+      Streams[StreamIdx] = otherStream("Public Symbol Hash", StreamIdx);
     else if (Dbi && StreamIdx == Dbi->getSymRecordStreamIndex())
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Symbols, "Symbol Records", StreamIdx);
+      Streams[StreamIdx] = symbolStream("Symbol Records", StreamIdx);
     else if (Tpi && StreamIdx == Tpi->getTypeHashStreamIndex())
-      Streams[StreamIdx] =
-          stream(StreamPurpose::TpiHash, "TPI Hash", StreamIdx);
+      Streams[StreamIdx] = otherStream("TPI Hash", StreamIdx);
     else if (Tpi && StreamIdx == Tpi->getTypeHashStreamAuxIndex())
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "TPI Aux Hash", StreamIdx);
+      Streams[StreamIdx] = otherStream("TPI Aux Hash", StreamIdx);
     else if (Ipi && StreamIdx == Ipi->getTypeHashStreamIndex())
-      Streams[StreamIdx] =
-          stream(StreamPurpose::IpiHash, "IPI Hash", StreamIdx);
+      Streams[StreamIdx] = otherStream("IPI Hash", StreamIdx);
     else if (Ipi && StreamIdx == Ipi->getTypeHashStreamAuxIndex())
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "IPI Aux Hash", StreamIdx);
+      Streams[StreamIdx] = otherStream("IPI Aux Hash", StreamIdx);
     else if (Dbi &&
              StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::Exception))
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "Exception Data", StreamIdx);
+      Streams[StreamIdx] = otherStream("Exception Data", StreamIdx);
     else if (Dbi && StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::Fixup))
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "Fixup Data", StreamIdx);
+      Streams[StreamIdx] = otherStream("Fixup Data", StreamIdx);
     else if (Dbi && StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::FPO))
-      Streams[StreamIdx] = stream(StreamPurpose::Other, "FPO Data", StreamIdx);
+      Streams[StreamIdx] = otherStream("FPO Data", StreamIdx);
     else if (Dbi &&
              StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::NewFPO))
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "New FPO Data", StreamIdx);
+      Streams[StreamIdx] = otherStream("New FPO Data", StreamIdx);
     else if (Dbi &&
              StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::OmapFromSrc))
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "Omap From Source Data", StreamIdx);
+      Streams[StreamIdx] = otherStream("Omap From Source Data", StreamIdx);
     else if (Dbi &&
              StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::OmapToSrc))
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "Omap To Source Data", StreamIdx);
+      Streams[StreamIdx] = otherStream("Omap To Source Data", StreamIdx);
     else if (Dbi && StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::Pdata))
-      Streams[StreamIdx] = stream(StreamPurpose::Other, "Pdata", StreamIdx);
+      Streams[StreamIdx] = otherStream("Pdata", StreamIdx);
     else if (Dbi &&
              StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::SectionHdr))
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "Section Header Data", StreamIdx);
+      Streams[StreamIdx] = otherStream("Section Header Data", StreamIdx);
     else if (Dbi &&
              StreamIdx ==
                  Dbi->getDebugStreamIndex(DbgHeaderType::SectionHdrOrig))
-      Streams[StreamIdx] = stream(StreamPurpose::Other,
-                                  "Section Header Original Data", StreamIdx);
+      Streams[StreamIdx] =
+          otherStream("Section Header Original Data", StreamIdx);
     else if (Dbi &&
              StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::TokenRidMap))
-      Streams[StreamIdx] =
-          stream(StreamPurpose::Other, "Token Rid Data", StreamIdx);
+      Streams[StreamIdx] = otherStream("Token Rid Data", StreamIdx);
     else if (Dbi && StreamIdx == Dbi->getDebugStreamIndex(DbgHeaderType::Xdata))
-      Streams[StreamIdx] = stream(StreamPurpose::Other, "Xdata", StreamIdx);
+      Streams[StreamIdx] = otherStream("Xdata", StreamIdx);
     else {
       auto ModIter = ModStreams.find(StreamIdx);
       auto NSIter = NamedStreams.find(StreamIdx);
@@ -174,10 +167,9 @@ void llvm::pdb::discoverStreamPurposes(PDBFile &File,
             moduleStream(ModIter->second.Descriptor.getModuleName(), StreamIdx,
                          ModIter->second.Modi);
       } else if (NSIter != NamedStreams.end()) {
-        Streams[StreamIdx] =
-            stream(StreamPurpose::NamedStream, NSIter->second, StreamIdx);
+        Streams[StreamIdx] = namedStream(NSIter->second, StreamIdx);
       } else {
-        Streams[StreamIdx] = stream(StreamPurpose::Other, "???", StreamIdx);
+        Streams[StreamIdx] = otherStream("???", StreamIdx);
       }
     }
   }

@@ -16,7 +16,7 @@
 ; RUN: llvm-lto -exported-symbol=main -exported-symbol=_main -o %t/bcsection.macho.o %t/bcsection.macho.bco
 ; RUN: llvm-nm %t/bcsection.macho.o | FileCheck %s
 
-target triple = "x86_64-unknown-linux-gnu"
+; REQUIRES: default_triple
 
 ; CHECK: main
 define i32 @main() {
