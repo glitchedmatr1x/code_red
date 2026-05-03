@@ -2,6 +2,14 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "CodeRED Script Workshop: Self-Test",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["related_apps/CodeRED_Script_Workshop/CodeRED_Script_Workshop.py", "self-test"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
       "label": "CodeRED Script Workshop: Scan/Refresh",
       "type": "shell",
       "command": "${command:python.interpreterPath}",
