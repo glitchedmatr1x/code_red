@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 """Code RED SC-CL Build From Source helper.
 
-This helper is intentionally diagnostic-first. SC-CL is an LLVM/Clang-derived
-compiler and many local folders contain a tool/subproject layout, stale generated
-LLVM.sln files, or only partial source. This script now avoids treating those as
-straightforward top-level builds.
+Diagnostic-first builder for SC-CL. It is tuned for the upstream Bitbucket
+SC-CL/LLVM layout and avoids stale/generated or example Visual Studio solutions.
 
-It will:
-1. Probe a local SC-CL source folder.
-2. Reuse/adopt SC-CL.exe if it already exists anywhere under that folder.
-3. Detect stale/generated LLVM.sln files and skip them when they point at old paths.
-4. Detect CMakeLists.txt files that are Clang tool subprojects, not top-level CMake roots.
-5. Try a clean LLVM CMake source root only when llvm-14.0.0.src/CMakeLists.txt exists.
-6. Write exact proof logs and next steps.
+Important behavior:
+- Reuses/adopts SC-CL.exe when it already exists.
+- Skips stale LLVM.sln files and example/test/Visual Studio extension solutions.
+- Uses llvm-14.0.0.src as the clean CMake root when present.
+- Adds the modern-CMake compatibility flag needed by old LLVM trees:
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+- Builds SC-CL target first, then falls back to a Release build.
 """
 from __future__ import annotations
 
@@ -28,7 +26,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
-VERSION = "1.1.0-sccl-llvm-layout-diagnostics"
+VERSION = "1.2.0-sccl-cmake-policy-fix"
 KIT = Path("related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1")
 DROP = Path("resources/SC-CL_DROP_HERE")
 REPORT_JSON = Path("logs/CodeRED_SCCL_Build_From_Source_Report.json")
@@ -81,6 +79,7 @@ def root_from_arg(raw: str | None) -> Path:
 
 def default_source(root: Path) -> Path:
     for candidate in [
+        root / "resources" / "SC-CL_bitbucket_source",
         root / "SC-CL-master",
         root / "SC-CL",
         root / "resources" / "SC-CL-master",
@@ -89,7 +88,7 @@ def default_source(root: Path) -> Path:
     ]:
         if candidate.exists():
             return candidate
-    return root / "SC-CL-master"
+    return root / "resources" / "SC-CL_bitbucket_source"
 
 
 def rel(path: Path, root: Path) -> str:
@@ -182,6 +181,8 @@ def find_sccl_exe(source: Path) -> Path | None:
         return None
     preferred = [
         source / "SC-CL.exe",
+        source / "sc-cl.exe",
+        source / "sccl.exe",
         source / "bin" / "SC-CL.exe",
         source / "Release" / "SC-CL.exe",
         source / "x64" / "Release" / "SC-CL.exe",
@@ -192,12 +193,13 @@ def find_sccl_exe(source: Path) -> Path | None:
         source / "llvm-14.0.0.src" / "MinSizeRel" / "bin" / "SC-CL.exe",
         source / "codered_llvm_build" / "Release" / "bin" / "SC-CL.exe",
         source / "codered_llvm_build" / "bin" / "Release" / "SC-CL.exe",
+        source / "codered_llvm_build" / "tools" / "clang" / "tools" / "extra" / "SC-CL" / "Release" / "SC-CL.exe",
     ]
     for path in preferred:
         if path.exists():
             return path
-    for path in source.rglob("SC-CL.exe"):
-        if path.exists():
+    for path in source.rglob("*.exe"):
+        if path.name.lower() in {"sc-cl.exe", "sccl.exe", "sc_cl.exe"}:
             return path
     return None
 
@@ -225,16 +227,19 @@ def adopt_exe(root: Path, exe: Path) -> Path:
 
 def solution_skip_reason(sln: Path, source: Path) -> str:
     name = sln.name.lower()
+    path_text = str(sln).replace("\\", "/").lower()
     if name in {"menubase.sln", "test.sln"}:
         return "example/test solution, not SC-CL.exe"
+    if "clang-format-vs" in path_text or "clang-tidy-vs" in path_text:
+        return "Visual Studio extension solution, not SC-CL.exe"
+    if name in {"clangformat.sln", "clangtidy.sln"}:
+        return "Visual Studio extension solution, not SC-CL.exe"
     if name == "llvm.sln":
         zero = source / "ZERO_CHECK.vcxproj"
         text = read_text(zero)
         if zero.exists() and ("code_red_sccl_windows_build_kit_v1" in text or "output/SC-CL-master" in text or "output\\SC-CL-master" in text):
             return "stale generated LLVM.sln/ZERO_CHECK points at an old Code RED output path"
-        if not (source / "llvm-14.0.0.src").exists() and "llvm-14.0.0.src" in text:
-            return "generated LLVM.sln expects llvm-14.0.0.src but that folder is missing"
-        return "generated LLVM solution; prefer a clean CMake configure from the real LLVM source root"
+        return "generated LLVM solution; prefer clean CMake configure from llvm-14.0.0.src"
     return ""
 
 
@@ -248,9 +253,8 @@ def select_buildable_solutions(source: Path, report: BuildReport) -> list[Path]:
             report.skipped_solutions.append({"solution": str(sln), "reason": reason})
         else:
             buildable.append(sln)
-    # Prefer explicitly named SC-CL solutions if any exist.
-    buildable.sort(key=lambda p: ("sc-cl" not in p.name.lower() and "sccl" not in p.name.lower(), len(str(p))))
-    return buildable
+    # Only build solutions that explicitly look like the compiler solution.
+    return [p for p in buildable if "sc-cl" in p.name.lower() or "sccl" in p.name.lower()]
 
 
 def cmake_file_diagnostics(cmake_lists: Path) -> tuple[bool, str]:
@@ -270,7 +274,6 @@ def cmake_file_diagnostics(cmake_lists: Path) -> tuple[bool, str]:
 def select_cmake_source(source: Path, report: BuildReport) -> Path | None:
     root_cmake = source / "CMakeLists.txt"
     report.cmake_lists = str(root_cmake) if root_cmake.exists() else None
-    # Full LLVM source folder is the useful case if present.
     llvm_src = source / "llvm-14.0.0.src"
     llvm_cmake = llvm_src / "CMakeLists.txt"
     if llvm_cmake.exists():
@@ -300,31 +303,38 @@ def try_cmake_build(source_root: Path, source: Path, report: BuildReport, cmake:
         "-DLLVM_INCLUDE_TESTS=OFF",
         "-DLLVM_INCLUDE_BENCHMARKS=OFF",
         "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
     ]
-    configure = run_attempt("CMake configure clean source", configure_cmd, source)
+    configure = run_attempt("CMake configure clean LLVM source", configure_cmd, source)
     report.attempts.append(configure)
     if configure.exit_code != 0:
         return False
 
-    # Try specific target first, then a normal release build if that target is not known.
-    for target_cmd in [
-        [cmake, "--build", str(build_dir), "--config", "Release", "--target", "SC-CL", "--parallel"],
-        [cmake, "--build", str(build_dir), "--config", "Release", "--parallel"],
-    ]:
-        attempt = run_attempt("CMake build " + ("SC-CL target" if "--target" in target_cmd else "Release"), target_cmd, source, timeout=1800)
+    target_names = ["SC-CL", "sc-cl", "sccl"]
+    for target_name in target_names:
+        target_cmd = [cmake, "--build", str(build_dir), "--config", "Release", "--target", target_name, "--parallel"]
+        attempt = run_attempt(f"CMake build target {target_name}", target_cmd, source, timeout=1800)
         report.attempts.append(attempt)
-        exe = find_sccl_exe(source)
-        if not exe:
-            exe = find_sccl_exe(build_dir)
+        exe = find_sccl_exe(source) or find_sccl_exe(build_dir)
         if exe:
             report.sccl_exe = str(exe)
             if adopt:
                 report.adopted_to = str(adopt_exe(root, exe))
             report.ok = True
             return True
+        # If target name failed immediately, try the next spelling.
         if attempt.exit_code == 0:
-            # Successful build but no exe is still useful to report, then continue scan.
-            continue
+            break
+
+    full = run_attempt("CMake build Release", [cmake, "--build", str(build_dir), "--config", "Release", "--parallel"], source, timeout=3600)
+    report.attempts.append(full)
+    exe = find_sccl_exe(source) or find_sccl_exe(build_dir)
+    if exe:
+        report.sccl_exe = str(exe)
+        if adopt:
+            report.adopted_to = str(adopt_exe(root, exe))
+        report.ok = True
+        return True
     return False
 
 
@@ -340,7 +350,7 @@ def build(root: Path, source: Path, adopt: bool, no_build: bool) -> BuildReport:
     )
     if not source.exists():
         report.warnings.append(f"SC-CL source folder does not exist: {source}")
-        report.next_steps = ["Put SC-CL-master in the Code RED root or pass --source with the real folder."]
+        report.next_steps = ["Put SC-CL source in resources/SC-CL_bitbucket_source or pass --source with the real folder."]
         return report
 
     report.rdr_ready_markers = rdr_markers(source)
@@ -356,8 +366,7 @@ def build(root: Path, source: Path, adopt: bool, no_build: bool) -> BuildReport:
             report.adopted_to = str(adopt_exe(root, exe))
         report.ok = True
         report.next_steps = [
-            "Run: py -3 tools\\codered_sccl_easy_setup.py status --run-validator",
-            "Run: related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\run_build_then_compile_vehicle_menu_probe.bat",
+            "Run: py -3 tools\\codered_sccl_finalize_build.py --validate --compile-helper",
         ]
         return report
 
@@ -367,10 +376,16 @@ def build(root: Path, source: Path, adopt: bool, no_build: bool) -> BuildReport:
 
     if no_build:
         report.warnings.append("No SC-CL.exe found and --no-build was used.")
-        report.next_steps = ["Run without --no-build to attempt a clean build, or stage a prebuilt SC-CL.exe."]
+        report.next_steps = ["Run without --no-build to attempt the clean LLVM CMake build, or stage a prebuilt SC-CL.exe."]
         return report
 
-    if buildable_solutions and msbuild:
+    # Prefer clean CMake for LLVM-derived SC-CL. MSBuild is only used if an explicit SC-CL solution exists.
+    if cmake_source and cmake:
+        try_cmake_build(cmake_source, source, report, cmake, adopt, root)
+    elif cmake_source and not cmake:
+        report.attempts.append(BuildAttempt(name="CMake", command=[], cwd=str(source), exit_code=None, skipped_reason="CMake source exists but cmake was not detected"))
+
+    if not report.ok and buildable_solutions and msbuild:
         sln = buildable_solutions[0]
         for platform in ["x64", "Win32", "Any CPU"]:
             cmd = [str(msbuild), str(sln), "/m", "/p:Configuration=Release", f"/p:Platform={platform}"]
@@ -383,32 +398,25 @@ def build(root: Path, source: Path, adopt: bool, no_build: bool) -> BuildReport:
                     report.adopted_to = str(adopt_exe(root, exe))
                 report.ok = True
                 break
-    elif buildable_solutions and not msbuild:
-        report.attempts.append(BuildAttempt(name="MSBuild", command=[], cwd=str(source), exit_code=None, skipped_reason="buildable .sln exists but MSBuild was not detected"))
-
-    if not report.ok and cmake_source and cmake:
-        try_cmake_build(cmake_source, source, report, cmake, adopt, root)
-    elif not report.ok and cmake_source and not cmake:
-        report.attempts.append(BuildAttempt(name="CMake", command=[], cwd=str(source), exit_code=None, skipped_reason="CMake source exists but cmake was not detected"))
+    elif not report.ok and buildable_solutions and not msbuild:
+        report.attempts.append(BuildAttempt(name="MSBuild", command=[], cwd=str(source), exit_code=None, skipped_reason="explicit SC-CL .sln exists but MSBuild was not detected"))
 
     if report.ok:
         report.next_steps = [
-            "Run: py -3 tools\\codered_sccl_easy_setup.py status --run-validator",
-            "Run: related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\run_build_then_compile_vehicle_menu_probe.bat",
+            "Run: py -3 tools\\codered_sccl_finalize_build.py --validate --compile-helper",
         ]
     else:
         if not report.rdr_ready_markers:
             report.warnings.append("This source folder did not show RDR markers like RDR_SCO/RDR_#SC/Red Dead Redemption.")
         if report.skipped_solutions:
-            report.warnings.append("Generated/example solutions were skipped. The previous LLVM.sln failure was stale and should not be retried as-is.")
+            report.warnings.append("Generated/example/Visual Studio extension solutions were skipped; they are not SC-CL.exe build targets.")
         if not cmake_source:
-            report.warnings.append("No standalone top-level CMake source root was found. The root CMakeLists appears to be a Clang/LLVM tool subproject, not a complete build root.")
-        report.warnings.append("SC-CL.exe was not produced. A full LLVM source root or a prebuilt SC-CL.exe is still needed.")
+            report.warnings.append("No standalone top-level CMake source root was found. Need llvm-14.0.0.src/CMakeLists.txt or a prebuilt exe.")
+        report.warnings.append("SC-CL.exe was not produced. Review the CMake build output and the target list.")
         report.next_steps = [
-            "Check whether SC-CL-master contains llvm-14.0.0.src. If it does not, this is probably a partial/tool-only source tree.",
-            "If you have a full SC-CL source archive, extract it so llvm-14.0.0.src is inside SC-CL-master.",
-            "If you only have the partial source, obtain a prebuilt SC-CL.exe matching the GTAResources/SC-CL RDR-capable family.",
-            "After SC-CL.exe exists, run: py -3 tools\\codered_sccl_easy_setup.py adopt --sccl resources\\SC-CL_DROP_HERE\\SC-CL.exe --run-validator",
+            "Open logs\\CodeRED_SCCL_Build_From_Source_Output.txt and find the first CMake error after the policy fix.",
+            "If configure succeeds but target SC-CL is unknown, build ALL_BUILD in Visual Studio from codered_llvm_build and then run the finalizer.",
+            "After SC-CL.exe exists, run: py -3 tools\\codered_sccl_finalize_build.py --validate --compile-helper",
         ]
     return report
 
@@ -479,15 +487,15 @@ def write_outputs(root: Path, report: BuildReport) -> None:
     write_text(root / BUILD_LOG, "\n\n".join(lines) + "\n")
     write_text(root / PASS_LOG,
         "# Code RED SC-CL Build From Source Lane Pass\n\n"
-        "Added guided source-build/adopt helper for SC-CL-master with LLVM-layout diagnostics.\n\n"
+        "Updated source-build helper to skip Visual Studio extension solutions and add the modern CMake policy compatibility flag.\n\n"
         f"Report: `{REPORT_MD.as_posix()}`\n",
     )
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Build or adopt SC-CL.exe from a local SC-CL-master source folder.")
+    p = argparse.ArgumentParser(description="Build or adopt SC-CL.exe from a local SC-CL source folder.")
     p.add_argument("--root", default=None)
-    p.add_argument("--source", default=None, help="Path to SC-CL-master. Defaults to common Code RED locations.")
+    p.add_argument("--source", default=None, help="Path to SC-CL source. Defaults to resources/SC-CL_bitbucket_source or SC-CL-master.")
     p.add_argument("--adopt", action="store_true", help="Copy found/built SC-CL.exe into the Code RED build kit.")
     p.add_argument("--no-build", action="store_true", help="Only probe; do not run MSBuild/CMake.")
     return p
