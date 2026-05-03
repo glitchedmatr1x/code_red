@@ -1,0 +1,7 @@
+void Function_957() //Position: 0x38636
+{
+    SET_ACTOR_UPDATE_PRIORITY(&Local_6 + 1184[02], 0);
+    Unknown_Function();
+    SET_VEHICLE_EJECTION_ENABLED(&Local_6 + 1184[02], 0);
+    return;
+}
