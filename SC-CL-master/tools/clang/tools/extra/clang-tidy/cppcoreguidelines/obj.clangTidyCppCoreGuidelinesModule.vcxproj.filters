@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\AvoidGotoCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\AvoidNonConstGlobalVariablesCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\CppCoreGuidelinesTidyModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\InitVariablesCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\InterfacesGlobalInitCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\MacroUsageCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\NarrowingConversionsCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\NoMallocCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\OwningMemoryCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\PreferMemberInitializerCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProBoundsArrayToPointerDecayCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProBoundsConstantArrayIndexCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProBoundsPointerArithmeticCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeConstCastCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeCstyleCastCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeMemberInitCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeReinterpretCastCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeStaticCastDowncastCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeUnionAccessCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeVarargCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\SlicingCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\SpecialMemberFunctionsCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\VirtualClassDestructorCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\AvoidGotoCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\AvoidNonConstGlobalVariablesCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\InitVariablesCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\InterfacesGlobalInitCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\MacroUsageCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\NarrowingConversionsCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\NoMallocCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\OwningMemoryCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\PreferMemberInitializerCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProBoundsArrayToPointerDecayCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProBoundsConstantArrayIndexCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProBoundsPointerArithmeticCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeConstCastCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeCstyleCastCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeMemberInitCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeReinterpretCastCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeStaticCastDowncastCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeUnionAccessCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\ProTypeVarargCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\SlicingCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\SpecialMemberFunctionsCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\VirtualClassDestructorCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\clang-tidy\cppcoreguidelines\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2646F2BE-B953-3110-BE77-E73A9667C1AB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{539B23F3-1AA3-3AF1-906F-2169A4B62364}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

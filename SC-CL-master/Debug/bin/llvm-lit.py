@@ -1,0 +1,36 @@
+#!C:/Users/glitc/AppData/Local/Programs/Python/Python312/python.exe
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
+config_map = {}
+
+def map_config(source_dir, site_config):
+    global config_map
+    source_dir = os.path.realpath(source_dir)
+    source_dir = os.path.normcase(source_dir)
+    site_config = os.path.normpath(site_config)
+    config_map[source_dir] = site_config
+
+# Set up some builtin parameters, so that by default the LLVM test suite
+# configuration file knows how to find the object tree.
+builtin_parameters = { 'build_mode' : 'Debug' }
+
+# Allow generated file to be relocatable.
+from pathlib import Path
+def path(p):
+    if not p: return ''
+    return str((Path(__file__).parent / p).resolve())
+
+
+
+builtin_parameters['config_map'] = config_map
+
+# Make sure we can find the lit package.
+llvm_source_root = path(r'D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src')
+sys.path.insert(0, os.path.join(llvm_source_root, 'utils', 'lit'))
+
+if __name__=='__main__':
+    from lit.main import main
+    main(builtin_parameters)

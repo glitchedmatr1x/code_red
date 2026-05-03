@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "file": "src/xenia/kernel/xsession.h",
+      "exists": true,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "file": "src/xenia/kernel/xsession.cc",
+      "exists": true,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "file": "src/xenia/kernel/xam/apps/xgi_app.cc",
+      "exists": true,
+      "missing": [],
+      "passed": true
+    },
+    {
+      "file": "docs/codered/rdr_netplay_pass_f_session_layout.md",
+      "exists": true,
+      "missing": [],
+      "passed": true
+    }
+  ]
+}
