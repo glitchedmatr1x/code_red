@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TumbleweedConfig>
+    <MinWindForcePosOffset x="0.000000" y="0.000000" z="0.000000"/>
+    <MaxWindForcePosOffset x="0.000000" y="0.000000" z="0.000000"/>
+    <RollSpeed x="0.000000" y="0.000000"/>
+    <TimeToSpawn x="1.000000" y="1.000000"/>
+    <SpawnDepth x="20.000000" y="1.000000"/>
+    <SpawnDistFromFrustum x="1.000000" y="0.000000"/>
+    <PropName>steamer01x</PropName>
+    <EvictFramesOffscreen value="0"/>
+    <SpawnOffsetX value="1.000000"/>
+    <SpawnOffsetY value="0.000010"/>
+    <GroundProbeDistance value="10.000000"/>
+    <WindForceYOffset value="-0.350000"/>
+    <AirDensity value="1.000000"/>
+    <DragCoefficient value="0.000000"/>
+    <MaxTumbleweeds value="1"/>
+</TumbleweedConfig>

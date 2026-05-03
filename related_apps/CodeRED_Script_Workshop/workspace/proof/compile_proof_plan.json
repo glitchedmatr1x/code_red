@@ -1,0 +1,5 @@
+{
+  "windows_bat": "related_apps/CodeRED_Script_Workshop/workspace/proof/Run_Windows_Compile_Proof.bat",
+  "windows_ps1": "related_apps/CodeRED_Script_Workshop/workspace/proof/Run_Windows_Compile_Proof.ps1",
+  "linux_sh": "related_apps/CodeRED_Script_Workshop/workspace/proof/run_linux_compile_prep_check.sh"
+}

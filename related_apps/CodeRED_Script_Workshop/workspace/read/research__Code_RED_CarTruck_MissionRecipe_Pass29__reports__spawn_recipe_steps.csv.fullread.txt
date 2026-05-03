@@ -1,0 +1,8 @@
+step,name,decompiled_anchor,evidence,risk
+1,Pick true vehicle enum,1194 Car01 / 1193 Truck01,GET_ACTOR_ENUM checks in Function_955/956/958 and actor enum map,"low as data, not raw patch"
+2,Create/obtain vehicle actor,Local_6 + 1184[02],Mission uses Local_6 + 1184[02] as vehicle actor handle repeatedly,requires script/native route
+3,Apply car settings decor,Function_956 -> carSettings mask 1017,DECOR_SET_INT actor carSettings after set/clear bit operations,safe if actor is valid vehicle
+4,Start engine and allow driving,Function_453,START_VEHICLE and SET_VEHICLE_ENGINE_RUNNING,safe for valid car/truck
+5,Disable ejection if desired,Function_957,"SET_VEHICLE_EJECTION_ENABLED(&Local_6 + 1184[02], 0)",optional
+6,Seat actors,Function_408 / Function_428 / Function_452,SET_ACTOR_IN_VEHICLE and TASK_VEHICLE_ENTER_SPECIFIC_LOCATION,depends on seat/locset
+7,Population fallback,Function_646/794,GET_RAND_ACTORENUM_FROM_POPULATION_NATIVE returns direct actor enum,requires population script decode to override

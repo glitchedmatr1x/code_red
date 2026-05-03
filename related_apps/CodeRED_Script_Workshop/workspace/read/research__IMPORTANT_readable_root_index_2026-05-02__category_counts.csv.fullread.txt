@@ -1,0 +1,9 @@
+category,count
+model_resource_refs,1538
+world_nav_placement,1067
+strings_ui_text,729
+cutscenes_cameras,514
+vehicle_spawning,410
+multiplayer_scripts,372
+gringos_scripts,284
+npc_ai_factions,182

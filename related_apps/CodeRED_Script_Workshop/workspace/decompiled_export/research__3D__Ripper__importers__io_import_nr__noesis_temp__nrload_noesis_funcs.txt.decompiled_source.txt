@@ -1,0 +1,104 @@
+# Code RED source/decompiled export
+# Source: research/3D Ripper/importers/io_import_nr/noesis_temp/nrload_noesis_funcs.txt
+# SHA1: 310be2225d2080192ba4371ef99e8a2370ee74a4
+
+# For Noesis 
+# Return bytes() object
+def unpackVertexComponentAsBytes(vert, vertexData, va):
+    vertBaseOffs = 0
+    fmt = va.getFormat()
+    res = bytes()
+    for idx in range(0, vert.getVertexCount()):
+        vertDataOffs = vertBaseOffs + va.offs
+        p = struct.unpack_from(fmt, vertexData, vertDataOffs)
+        
+        c = len(p)
+        if   4 == c:
+            res += struct.pack(fmt, p[0], p[1], p[2], p[3])
+        elif 3 == c:
+            res += struct.pack(fmt, p[0], p[1], p[2])
+        elif 2 == c:
+            res += struct.pack(fmt, p[0], p[1])
+        elif 1 == c:
+            res += struct.pack(fmt, p[0])
+        else:
+            raise RuntimeError("Unknown components count")
+
+        vertBaseOffs = vertBaseOffs + vert.getVertexSize()
+    return res
+
+
+# For Noesis
+def restorePositionAsBytes(vert, vertexData, posVatr, projMat):
+    invProjMat = matrixinvert(projMat)
+
+    if 4 != posVatr.compCount:
+        raise RuntimeError("Post vs position not 4 component")
+        
+    outVertBuff = bytes()
+    fmt = posVatr.getFormat()
+    for vertIdx in range(0, vert.getVertexCount()):
+        vertDataOffs = vertIdx * vert.getVertexSize()
+        vertDataOffs = vertDataOffs + posVatr.offs
+        p = struct.unpack_from(fmt, vertexData, vertDataOffs)
+        viewp = matrixmult([p], invProjMat)
+        vp = viewp[0]
+        outVertBuff += struct.pack("fff", vp[0], vp[1], vp[2])
+    return outVertBuff
+
+
+
+# For Noesis
+# Input: vertexData in float32
+#        comp Idx: 0,1,2   - postion x,y,z
+#                  0,1,2,3 - x,y,z,w
+def extractVertexComponentsAsBytes(vert, vertexData, compIdxArr):
+    outVertBuff = bytes()
+    outCompCnt = len(compIdxArr)  # Output components count 1,2,3,4
+    if 0 == outCompCnt:
+        return None
+
+    print("vertex data size in bytes={:d}".format(len(vertexData)))
+    print("vertex count={:d}".format(vert.getVertexCount()))
+    print("vertex size={:d}".format(vert.getVertexSize()))
+
+    for vertIdx in range(0, vert.getVertexCount()):
+        vertDataOffsBase = vertIdx * vert.getVertexSize()
+
+        vdata = []
+        for compIdx in compIdxArr:
+            vertDataOffs = vertDataOffsBase + 4 * compIdx    # Offset in bytes from vertex data start
+            p = struct.unpack_from("f", vertexData, vertDataOffs)
+            vdata.append(p[0])
+
+        c = len(vdata)
+        if   4 == c:
+            outVertBuff += struct.pack("ffff", vdata[0], vdata[1], vdata[2], vdata[3])
+        elif 3 == c:
+            outVertBuff += struct.pack("fff",  vdata[0], vdata[1], vdata[2])
+        elif 2 == c:
+            outVertBuff += struct.pack("ff",   vdata[0], vdata[1])
+        elif 1 == c:
+            outVertBuff += struct.pack("f",    vdata[0])
+
+    print("output extracted vertex data size in bytes={:d}".format(len(outVertBuff)))
+    return outVertBuff
+
+
+
+
+
+def restorePositionAsBytes4(vert, vertexData4, projMat):
+    print("restorePositionAsBytes4 vertex data size={:d}".format(len(vertexData4)))
+
+    invProjMat = matrixinvert(projMat)
+        
+    outVertBuff = bytes()
+    for vertIdx in range(0, vert.getVertexCount()):
+        vertDataOffs = vertIdx * 4 * 4     # idx * sizeof(float32) * 4(x,y,z,w)
+        p = struct.unpack_from("ffff", vertexData4, vertDataOffs)
+        viewp = matrixmult([p], invProjMat)
+        vp = viewp[0]
+        outVertBuff += struct.pack("fff", vp[0], vp[1], vp[2])
+    return outVertBuff
+

@@ -1,0 +1,31 @@
+{
+  "schema": "codered.wft_wedt_attachment_scan.v1",
+  "counts": {
+    "model_resources": 148,
+    "candidate_transforms": 934,
+    "fragment_bundles": 42,
+    "smic_attachment_rows": 891,
+    "weapon_rows": 7,
+    "errors": 0,
+    "extensions": {
+      ".wedt": 35,
+      ".wfd": 72,
+      ".wft": 41
+    },
+    "resource_types": {
+      "11": 35,
+      "1": 72,
+      "138": 41
+    }
+  },
+  "outputs": {
+    "model_resource_summary": "model_resource_summary.csv",
+    "candidate_transforms": "candidate_transforms.csv",
+    "fragment_bundle_map": "fragment_bundle_map.csv",
+    "smic_attachment_map": "smic_attachment_map.csv",
+    "weapon_dualgun_comparison": "weapon_dualgun_comparison.csv",
+    "script_hook_dualgun_attachment_plan": "script_hook_dualgun_attachment_plan.json",
+    "scan_errors": "scan_errors.csv"
+  },
+  "safety": "read-only; no archive mutation; transform candidates are heuristic until matched to CodeX/Magic-RDR semantic classes"
+}

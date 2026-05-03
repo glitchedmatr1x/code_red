@@ -1,0 +1,51 @@
+{
+  "schema": "codered.dualgun_left_hand_bypass_plan.v1",
+  "mode": "script_hook_runtime_bypass",
+  "goal": "Make left-hand pistol usable without waiting for full native dual-wield animation rebuild.",
+  "decision": "Do not rely on base_dualpistol native AnimSet yet; it resolves to DoNothing/no AnimSet in current tune data.",
+  "right_hand": {
+    "mode": "native_equipped_weapon",
+    "reason": "Keep normal game weapon, camera, ammo, and right-trigger path stable."
+  },
+  "left_hand": {
+    "mode": "attached_prop_plus_simulated_fire",
+    "first_locator": "smic_player_default_hand_1_rm",
+    "fallback_locator": "smic_player_default_hand_1",
+    "initial_offset": [
+      0.03,
+      0.018,
+      -0.055
+    ],
+    "initial_eulers": [
+      -6.0,
+      0.0,
+      88.0
+    ],
+    "initial_muzzle_offset": [
+      0.0,
+      0.03,
+      -0.1
+    ],
+    "requires_native_probe": [
+      "create object/prop or usable weapon fragment instance",
+      "attach object/prop to player locator/bone",
+      "raycast/projectile/damage native for independent left fire"
+    ]
+  },
+  "weapon_data": {
+    "base_dualpistol": {},
+    "base_pistol": {},
+    "long_gun_act_animset_references": []
+  },
+  "source_counts": {
+    "player_hand_rows": 0,
+    "gunbelt_rows": 0,
+    "weapon_rows": 0
+  },
+  "guardrails": [
+    "No WFT/WEDT mutation in this pass.",
+    "No guessed actor enum spawns.",
+    "No native attach/fire call unless SDK hash and signature are confirmed.",
+    "Save offsets to scratch/codered_dualgunlab_state.json before patching tune/model data."
+  ]
+}

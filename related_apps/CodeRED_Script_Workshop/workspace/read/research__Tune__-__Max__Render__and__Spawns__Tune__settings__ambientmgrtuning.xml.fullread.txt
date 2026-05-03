@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiwAmbientManagerTuning>
+    <Cull>
+        <EffectivePosAveragingTime value="0.200000"/>
+        <EffectivePosExtrapolationTime value="0.000000"/>
+        <EffectivePosMaxExtrapolationDist value="1000.000000"/>
+        <MaxVisibleRange value="10000.000000"/>
+        <ScoringMaxCameraDirAngleDegrees value="45.000000"/>
+        <VisibilityProbeYOffset value="1.500000"/>
+        <VisibilitySphereCenterYOffset value="1.000000"/>
+        <VisibilitySphereRadius value="10000.000000"/>
+    </Cull>
+    <CheckExcludeTime value="0.000000"/>
+    <DespawnExcludeCheckTime value="0.000000"/>
+    <DespawnMaxCheckDistance value="10000.000000"/>
+    <DespawnMinCheckDelay value="0.000000"/>
+    <DespawnNotVisibleTime value="1000.000001"/>
+    <MaxNumActorsTotal value="10000"/>
+    <NumActorsPreemptiveDestroy value="0"/>
+    <SpawnExcludeTime value="0.000000"/>
+</aiwAmbientManagerTuning>

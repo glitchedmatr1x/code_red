@@ -1,0 +1,113 @@
+# Code RED source/decompiled export
+# Source: research/3D Ripper/importers/io_import_nr/noesis_temp/worldprojmat.py
+# SHA1: 513ba90e4661c0bdc3df842b21ad9e885427305b
+
+
+import os
+import struct
+import math
+
+
+
+def identMat44():
+    return [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]]
+
+
+def stringToMat44(s):
+    s = s.replace(' ', '')
+    s = s.replace('[', '')
+    s = s.replace(']', '')
+    s = s.replace(';', '')
+    arr = s.split(',')
+    
+    mat = identMat44()
+    if len(arr) < 16:
+        return mat
+
+    b = 0
+    for i in range(0, 4):
+        r = [None] * 4
+        r[0] = float(arr[b + 0])
+        r[1] = float(arr[b + 1])
+        r[2] = float(arr[b + 2])
+        r[3] = float(arr[b + 3])
+        mat[i] = r
+        b = b + 4
+    return mat
+
+
+
+def matrixmult(A, B):
+    rows_A = len(A)
+    cols_A = len(A[0])
+    rows_B = len(B)
+    cols_B = len(B[0])
+
+    if cols_A != rows_B:
+        return None
+
+    # Create the result matrix
+    # Dimensions would be rows_A x cols_B
+    C = [[0 for row in range(cols_B)] for col in range(rows_A)]
+    for i in range(rows_A):
+        for j in range(cols_B):
+            for k in range(cols_A):
+                C[i][j] += A[i][k] * B[k][j]
+    return C
+
+
+def matrixinvert(A):
+    ''' Returns the inverse of A, where  A is a square matrix in the form of a nested list of lists. '''
+    try:
+        A = [A[i]+[int(i==j) for j in range(len(A))] for i in range(len(A))]
+        for i in range(len(A)):
+            A[i:] = sorted(A[i:], key=lambda r: -abs(r[i]))
+            A[i] = [A[i][j]/A[i][i] for j in range(len(A)*2)]
+            A = [[A[j][k] if i==j else A[j][k]-A[i][k]*A[j][i] for k in range(len(A)*2)] for j in range(len(A))]
+        return [A[i][-len(A):] for i in range(len(A))]
+    except:
+        return None
+
+def createMat(rows, cols):
+    listoflists = []
+    for i in range(0, rows):
+        sublist = []
+        for j in range(0, cols):
+            sublist.append(0.0)
+        listoflists.append(sublist)
+    return listoflists
+
+def transposeMat(A):
+    mat = createMat(len(A), len(A[0]))
+    for i in range(len(A)):
+        for j in range(len(A[0])):
+            mat[j][i] = A[i][j]
+    return mat
+
+
+res = stringToMat44('[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 00, 0]]')
+print(res)
+inv = matrixinvert(res)
+print(inv)
+
+'''
+proj = stringToMat44('[[0.0, 1.0, 2.0, 3.0], [4.0, 5.0, 6.0, 7.0], [8.0, 9.0, 10.0, 11.0], [12.0, 13.0, 14.0, 15.0]]')
+print(proj)
+
+#print(str(proj[0][3]))
+
+trans = transposeMat(proj)
+print(trans)
+
+
+#mat = createMat(4, 4)
+#print(mat)
+
+
+world = stringToMat44('[[-0.367738, -0.92993, -0, 0], [0.92993, -0.367738, 0, 0], [-0, 0, 1, 0], [0, 0, 0.36066, 1]]')
+res = matrixmult(world, proj)
+print(res)
+print("\n")
+inv = matrixinvert(res)
+print(inv)
+'''

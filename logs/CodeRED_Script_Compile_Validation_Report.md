@@ -1,53 +1,97 @@
 # Code RED Script Compile Validation Report
 
-Generated UTC: `2026-05-03T08:24:11Z`
-Result: **PASS**
+Generated UTC: `2026-05-03T11:20:59Z`
+Result: **FAIL**
 
 ## Summary
 
-- Lab root: `/mnt/data/codered_work/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1`
-- Build kit root: `/mnt/data/codered_work/related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1`
-- Missing lab files: 0
-- Missing build-kit files: 0
-- Bundled validator exit: 0
-- Missing native symbols: 0
-- Missing constants: 0
+- Lab root: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1`
+- Build kit root: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1`
+- Missing lab files: 7
+- Missing build-kit files: 6
+- Bundled validator exit: 1
+- Missing native symbols: 24
+- Missing constants: 3
 
 ## Toolchain
 
 - sccl_exe: `None`
 - cl_exe: `None`
-- gcc: `/usr/bin/gcc`
-- python: `/opt/pyvenv/bin/python3`
-- windows_host: `False`
+- gcc: `None`
+- python: `C:\Users\glitc\AppData\Local\Programs\Python\Python312\python.exe`
+- windows_host: `True`
 
 ## Source Checks
 
-- source_exists: `True`
-- source_bytes: `7581`
-- brace_balance: `True`
-- paren_balance: `True`
-- has_main_loop: `True`
-- has_visible_menu: `True`
-- has_vehicle_spawn: `True`
-- has_live_tune: `True`
-- has_script_registration: `True`
-- native_requirements: `24`
-- constant_requirements: `3`
+- source_exists: `False`
+
+## Missing Lab Files
+
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\types.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\constants.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\intrinsics.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\natives.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\natives32.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\consts32.h`
+
+## Missing Build Kit Files
+
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.bat`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.ps1`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.bat`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.ps1`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\run_build_then_compile_vehicle_menu_probe.bat`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\README_SCCL_DETECTION_V3.txt`
+
+## Missing Native Symbols
+
+- `_CLEAR_PRINTS`
+- `_PRINT_SUBTITLE`
+- `_IS_KEY_PRESSED`
+- `GET_PLAYER_ACTOR`
+- `_IS_LAYOUT_VALID`
+- `CREATE_LAYOUT`
+- `FIND_ACTOR_IN_LAYOUT`
+- `DESTROY_ACTOR`
+- `STREAMING_REQUEST_ACTOR`
+- `CREATE_ACTOR_IN_LAYOUT`
+- `IS_ACTOR_VALID`
+- `IS_ACTOR_VEHICLE`
+- `ENABLE_VEHICLE_SEAT`
+- `SET_VEHICLE_ALLOWED_TO_DRIVE`
+- `SET_VEHICLE_ENGINE_RUNNING`
+- `VEHICLE_SET_HANDBRAKE`
+- `START_VEHICLE`
+- `SET_ACTOR_IN_VEHICLE`
+- `SET_ACTOR_MAX_SPEED`
+- `SET_ACTOR_MAX_SPEED_ABSOLUTE`
+- `SET_ACTOR_SPEED`
+- `ADD_PERSISTENT_SCRIPT`
+- `_GET_ID_OF_THIS_SCRIPT`
+- `WAIT`
+
+## Missing Constants
+
+- `ACTOR_VEHICLE_Car01`
+- `ACTOR_VEHICLE_Truck01`
+- `KEY_F5`
 
 ## Bundled Validator Output
 
 ```text
-source_exists: True
-brace_balance: True
-paren_balance: True
-has_main_loop: True
-has_visible_menu: True
-has_vehicle_spawn: True
-has_live_tune: True
-missing_symbols: []
-RESULT: PASS
 
+Traceback (most recent call last):
+  File "D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\scripts\validate_vehicle_menu_probe.py", line 9, in <module>
+    text = src.read_text(encoding='utf-8')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\glitc\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\glitc\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c'
 ```
 
 ## Notes

@@ -1,0 +1,213 @@
+# Code RED source/decompiled export
+# Source: research/CodeRed_Refgroup_Parent_File_Findings_Pass12.txt
+# SHA1: 12907e7ba376b5b0811b4bee63ee1345be967382
+
+Code RED Refgroup + Parent File Findings
+=======================================
+
+Scope
+-----
+Checked the staged tune/content/navres/gringores research outputs and direct RPF inventories, with focus on:
+- tune_d11generic.rpf .refgroup files
+- content ambient placement parent files
+- navres battle/prop support files
+- fragmentslist.bin compatibility clues
+
+Main conclusion
+---------------
+Refgroups are real, readable, and useful for filling the world. They are usually not standalone world-coordinate spawners. A .refgroup is a local layout: model references plus local transform offsets. The parent system decides where in the world the set appears.
+
+True brand-new .refgroup insertion is possible in theory, but not the safest immediate path. The current Code RED RPF patch lane can reliably replace/expand existing file payloads, but adding a brand-new archive entry requires RPF TOC/directory/debug-name insertion and then a parent reference that the engine actually uses. For battleSets, it may also require matching navres entries. Safer immediate path: expand/repurpose existing used refgroup files and increase their parent event/ambient frequencies.
+
+Inventory
+---------
+tune_d11generic.rpf contains 585 .refgroup files.
+Top folders:
+- 260  root/tune/refgroups/0x342C19E7/area/hennigans/all
+- 105  root/tune/refgroups/gringorefgroups/gringoprops
+- 38   root/tune/refgroups/0x342C19E7/area/blackwater
+- 38   root/tune/refgroups/0x342C19E7/rockgroups
+- 35   root/tune/refgroups/campsitesets
+- 32   root/tune/refgroups/cover
+- 29   root/tune/refgroups/battlesets
+- 18   root/tune/refgroups/gringorefgroups
+- 15   root/tune/refgroups/breakables
+- 9    root/tune/refgroups/0x342C19E7
+- 6    root/tune/refgroups/0x342C19E7/treegroups
+
+Important refgroup families
+---------------------------
+1. campsitesets
+   Examples:
+   - cam_campfirextralrg01x.refgroup
+   - cam_campfiremedium01x.refgroup
+   - cam_campfirelarge01x.refgroup
+   - cam_campfiresmall01x.refgroup
+   - cam_camprebel01x.refgroup
+   - cam_hunterscamp01x.refgroup
+   - cam_merchantcamp01x.refgroup
+   - cam_survivorfight01x/02x/03x/04x.refgroup
+   - cam_deadbody01x/02x/03x.refgroup
+   - cam_hermitnormal01x.refgroup
+   - cam_hermitgruesome01x.refgroup
+   - cam_corpsepileburning01x/02x/03x.refgroup
+
+   These are the best immediate targets for making wilderness feel alive. They already hold tents, campfires, barrels, crates, bedrolls, wagons, tables, corpse piles, debris, etc. These can be enriched and then made more common through content/ambient placement.
+
+2. battlesets
+   Examples:
+   - cho_battleset01x/02x/03x/refgroup
+   - die_battleset01x/02x
+   - gap_battleset01x/02x/enemy01x
+   - gre_battleset01x/02x/03x/enemy01x
+   - gri_battleset01x/02x/03x/enemy01x
+   - hen_battleset01x/02x/03x/enemy01x
+   - per_battleset02x/03x/enemy01x
+   - pun_battleset01x/03x/enemy01x
+   - rio_battleset03x
+   - treasurehunter01
+
+   These are best for rival gang showdowns, fortified roadside cover, ambush camps, and repeated town-edge battles. These have a known navres parent map in navres/battlesets.txt.
+
+3. gringorefgroups/gringoprops
+   Examples:
+   - weapon_p_gen_gatlinggun01x.refgroup
+   - weapon_p_gen_gatlingmaxim02x.refgroup
+   - campfire_p_gen_campfirecombined01x.refgroup
+   These are single-prop or interaction prop layouts used by gringo/action systems. Good for shop/store/camp/action scenes.
+
+4. cover
+   Examples:
+   - p_gen_wagon01x.refgroup
+   - i_gen_wagonbroken01x.refgroup
+   - i_gen_chuckwagon02x.refgroup
+   - p_gen_wagonburn03x.refgroup
+   These are useful for adding cover and visual clutter to roadblocks/showdowns.
+
+5. area/hennigans/all and area/blackwater
+   These are likely static-area placement refgroups. Many are single-prop files like campfire, doors, wheels, etc. They look useful, but parent coverage is less clear than campsitesets/battlesets.
+
+Observed refgroup format
+------------------------
+Refgroups are plain text. Common pattern:
+
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate01x.mb
+transform 1.210670583 0 -1.483687843 0 -37.6197558 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+
+The transform appears to be:
+- first three numbers: local position offset within the set
+- last three numbers: local rotation/euler values
+The refgroup itself does not include absolute world X/Y/Z in most campsite/battle cases. Parent/event/locator systems place the full set.
+
+Sample findings
+---------------
+cam_survivorfight01x.refgroup contains battle barrels, crates, flour sacks, table, bedrolls, multiplayer ammo crates, debris piles.
+cam_camprebel01x.refgroup contains Mexico tents, battle crates, tables, barrels, bedrolls, etc.
+cam_merchantcamp01x.refgroup contains chuck wagon, tarp, barrel, bedroll, boiler, campfire, counter, kindling pile.
+hen_battleset01x.refgroup contains moonshine pot, bucket, battle wagon, crates, barrels, cans, boiler, packages.
+pun_battlesetenemy01x.refgroup contains crates, broken parts, flour sacks, Punta Orgullo rocks, battle wagon, etc.
+weapon_p_gen_gatlinggun01x.refgroup contains a single gatling gun prop at origin.
+p_gen_wagon01x.refgroup contains a single wagon prop at origin.
+p_gen_campfirecombined01x.refgroup contains a single campfire prop at origin.
+
+Parent chain found
+------------------
+1. content/ambient/placementglobals.xml
+   This is the practical event parent for world population pressure.
+   It lists events and allowed placement sets:
+   - Roadside Events
+   - Trailside Events
+   - Wilderness Normal (30-60m from any road/train/path)
+   - Wilderness Isolated (60m from any road/train/path)
+   Events include:
+   - event_campfire01
+   - mexican_rev_rebelCamp
+   - event_broken_wagon01
+   - event_roadside_ambush
+   - beat_roadside_robbery
+   - beat_crime_wagonthief
+   - event_stickup
+   - event_wild_animals
+   - event_loot_dead_body
+   - event_criminal_chase
+   - event_hanging
+   - event_night_procession
+   - event_landmark_attack
+
+   This does not directly name every refgroup, but it is the parent pressure layer that makes camp/battle/event content appear.
+
+2. navres/battlesets.txt
+   This directly maps tune battle refgroups to nav resources:
+   - $/tune/refGroups/battleSets/cho_battleSet01x -> $/navres/rsc_battlesets_#/cho_battleSet01x
+   - ...
+   - $/tune/refGroups/battleSets/hen_battleSet01x -> $/navres/rsc_battlesets_#/hen_battleSet01x
+   - ...
+   - $/tune/refGroups/battleSets/pun_battleSetEnemy01x -> $/navres/rsc_battlesets_#/pun_battleSetEnemy01x
+
+   This proves battleSets are nav-supported. It also means brand-new battleSet names are riskier than editing existing battleSet files, because new names would need matching nav resources or navres mapping changes.
+
+3. navres/territory/props.xml
+   This defines which props contribute to static navigation and obstacle boxes.
+   Confirmed useful props include:
+   - p_gen_bedrollclosed01x
+   - p_gen_barrel01x
+   - p_gen_crate14x
+   - p_gen_crate16x
+   - p_gen_campfire02x / campfirecombined variants from previous navres scan
+   - p_gen_gatlingun01x from previous navres scan
+   - p_gen_brokenwagon01x / wagonbroken variants from previous navres scan
+
+   This should be used as a safety filter for added camp/refgroup props.
+
+4. content inventory XML
+   content inventory exposes SpawnTemplate, EntityTypeName, LocatorName, BoneName, Offset, Eulers, etc. It is more about attachable/equippable/inventory/gringo items than world campsite layouts, but it confirms the broader spawn-template/locator style used in content.
+
+Can we add new .refgroup files?
+-------------------------------
+Possible in theory:
+- A new RPF file entry could be inserted into tune_d11generic.rpf with a new name hash and directory count update.
+- A parent file/event/template would then need to reference that new name.
+
+Not recommended as the next step:
+- Code RED's current proven RPF patcher can replace/relocate existing file payloads, not safely insert new TOC entries yet.
+- The engine may not scan arbitrary new .refgroup files unless a parent path references them.
+- battleSets appear to need navres support; a brand-new battleSet without navres mapping/resources could create pathfinding or placement issues.
+- campsitesets may be more forgiving, but still require the camp/event parent to select the new file name.
+
+Recommended immediate strategy
+------------------------------
+1. Expand existing campsite refgroups.
+   Add more props from fragmentslist/navres-supported props into:
+   - cam_campfirelarge01x
+   - cam_campfiremedium01x
+   - cam_campfirextralrg01x
+   - cam_camprebel01x
+   - cam_hunterscamp01x
+   - cam_merchantcamp01x
+   - cam_survivorfight01x/02x/03x/04x
+   Then increase event_campfire01 / mexican_rev_rebelCamp / event_broken_wagon01 pressure in placementglobals and level.pop.
+
+2. Expand existing battleSets instead of creating new battleSets.
+   Use navres/battlesets.txt-supported names:
+   - hen, cho, gap, gri, gre, per, pun, die, rio
+   Add cover props, wagons, crates, barrels, Gatling props, tents, campfire/debris to those existing battle sets.
+
+3. Use fragmentslist.bin as prop eligibility, then cross-check navres props.xml where possible.
+   If fragmentslist has a prop but navres lacks it, keep it decorative/non-blocking and do not spam it.
+   If navres supports it as obstacle/static nav, it is safer for cover/camps.
+
+4. Add Code RED support for future new entries.
+   Add RPF TOC insertion + directory count + debug-name/hash update.
+   Then build a new-refgroup experiment pack with only one new campsite file and one known parent reference.
+
+Best next pass idea
+-------------------
+Pass 13 should be a Refgroup Expansion + Navres-Safe World Fill pass:
+- Keep Pass 12 features.
+- Add more wilderness/camp/roadblock events through content placement.
+- Enrich campsite refgroups with fragment-list-confirmed props.
+- Enrich navres-supported battleSets for rival gang showdowns.
+- Avoid brand-new .refgroup entries for now.
+- Generate a validation report listing every added prop and whether it appears in navres/territory/props.xml.
+

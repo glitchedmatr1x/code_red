@@ -1,0 +1,47 @@
+# Code RED Active Folder Importance
+
+These folder names are active runtime paths and must keep their original names:
+
+- `data/`
+- `logs/`
+- `related_apps/`
+
+Do **not** rename them to cleanup labels such as:
+
+- `data - Important/`
+- `logs - Organize/`
+- `related_apps - Combine/`
+
+Those labels are useful as notes, but the folder names themselves are referenced by launchers, tools, validation reports, and runtime helpers. Renaming the folders makes the repository look tidy but breaks expected paths.
+
+## Correct cleanup rule
+
+Keep the active folder names unchanged and document their purpose instead:
+
+- `data/` = active runtime data, actor enum maps, NPC rosters, trainer profiles, and ScriptHookRDR reference data.
+- `logs/` = active reports, validation output, pass logs, handoffs, and proof files.
+- `related_apps/` = active companion apps, tuner, arcade demo, build helpers, faction-war passes, WSI/WGD tools, and ScriptHookRDR plugin/reference projects.
+
+## Repair rule
+
+If a cleanup pass creates labeled folders, change them back before continuing:
+
+```text
+`data - Important/`       -> `data/`
+`logs - Organize/`        -> `logs/`
+`related_apps - Combine/` -> `related_apps/`
+```
+
+After repair, run the normal launch checks:
+
+```bat
+Run_Code_RED.bat
+Run_CodeRED_AI_Menu_Setup.bat
+```
+
+Then verify the tuner path exists again:
+
+```text
+related_apps/CodeRED_Tuner/run_CodeRED_Tuner.bat
+related_apps/CodeRED_Tuner/run_CodeRed_Arcade.bat
+```

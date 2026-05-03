@@ -1,0 +1,6 @@
+# Code RED source/decompiled export
+# Source: research/model_resource_extract_outputs/roundtrip_results.csv
+# SHA1: b466a9a585a6a35d089a159082d613e98d9fd658
+
+decoded_file,decoded_size,decoded_sha1,recompressed_size,roundtrip_ok
+fragments2__00002__root__0xE60ADCAC__0x02290D41.decoded.bin,8192,bcca5fd406a44d5e70f7cff99c7e032616703ce5,1830,true

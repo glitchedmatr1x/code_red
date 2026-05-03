@@ -1,0 +1,105 @@
+archive,source_path,line,model,declared_count,smic_count,smics,has_player_hand,has_gunbelt,has_holster,has_left_or_right
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,607,player_bandito,2,2,smic_player_bandito_1 smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,608,player_bandito_cs,3,3,smic_player_bandito_1 smic_player_default_IM_texture_rm smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,611,player_cattleRustler,2,2,smic_player_cattleRustler_1 smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,612,player_cattleRustler_cs,3,3,smic_player_cattleRustler_1 smic_player_default_IM_texture_rm smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,615,player_default,2,2,smic_player_default_1_rm smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,616,player_default_cs,3,3,smic_player_default_1_rm smic_player_default_IM_texture_rm smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,618,player_default_intro,2,2,smic_player_default_hand_1_rm smic_player_default_intro_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,619,player_default_intro_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_default_intro_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,623,player_default_wounded01,2,2,smic_player_default_hand_1_rm smic_player_default_wounded01_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,624,player_default_wounded01_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_default_wounded01_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,627,player_default_wounded02,2,2,smic_player_default_hand_1_rm smic_player_default_wounded02_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,628,player_default_wounded02_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_default_wounded02_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,631,player_drunkDirty,2,2,smic_player_default_hand_1_rm smic_player_drunkDirty_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,632,player_drunkDirty_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_drunkDirty_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,635,player_elegantSuit,2,2,smic_player_default_hand_1_rm smic_player_elegantSuit_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,636,player_elegantSuit_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_elegantSuit_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,639,player_jack_bandito,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,640,player_jack_cattleRustler,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,641,player_jack_default,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,642,player_jack_drunkDirty,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,643,player_jack_elegantSuit,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,644,player_jack_fbi,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,645,player_jack_legend,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,646,player_jack_mexicanRebel,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,647,player_jack_oldDuster,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,648,player_jack_oldPoncho,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,649,player_jack_oneEye,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,650,player_jack_rancher,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,651,player_jack_social,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,652,player_jack_treasureHunter,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,653,player_jack_usArmy,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,654,player_jack_usLaw,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,655,player_legend,2,2,smic_player_default_hand_1_rm smic_player_legend_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,656,player_legend_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_legend_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,659,player_mexicanRebel,2,2,smic_player_default_hand_1_rm smic_player_mexicanRebel_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,660,player_mexicanRebel_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_mexicanRebel_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,662,player_oldDuster,2,2,smic_player_default_hand_1_rm smic_player_oldDuster_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,663,player_oldDuster_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_oldDuster_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,666,player_oldPoncho,2,2,smic_player_default_hand_1_rm smic_player_oldPoncho_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,667,player_oldPoncho_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_oldPoncho_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,670,player_oneEye,2,2,smic_player_default_hand_1_rm smic_player_oneEye_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,671,player_oneEye_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_oneEye_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,674,player_rancher,2,2,smic_player_default_hand_1_rm smic_player_rancher_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,675,player_rancher_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_rancher_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,677,player_rancher_dead,1,1,smic_player_default_hand_1_rm,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,679,player_social,2,2,smic_player_default_hand_1_rm smic_player_social_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,680,player_social_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_social_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,681,player_treasureHunter,2,2,smic_player_default_hand_1_rm smic_player_treasureHunter_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap_rm.txt,682,player_treasureHunter_cs,3,3,smic_player_default_IM_texture_rm smic_player_default_hand_1_rm smic_player_treasureHunter_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,940,player_bandito,2,2,smic_player_bandito_1 smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,941,player_bandito_cs,3,3,smic_player_bandito_1 smic_player_default_IM_texture smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,944,player_cattleRustler,2,2,smic_player_cattleRustler_1 smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,945,player_cattleRustler_cs,3,3,smic_player_cattleRustler_1 smic_player_default_IM_texture smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,948,player_default,2,2,smic_player_default_1 smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,949,player_default_cs,3,3,smic_player_default_1 smic_player_default_IM_texture smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,951,player_default_intro,2,2,smic_player_default_hand_1 smic_player_default_intro_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,952,player_default_intro_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_default_intro_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,956,player_default_wounded01,2,2,smic_player_default_hand_1 smic_player_default_wounded01_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,957,player_default_wounded01_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_default_wounded01_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,960,player_default_wounded02,2,2,smic_player_default_hand_1 smic_player_default_wounded02_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,961,player_default_wounded02_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_default_wounded02_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,962,player_drunkDirty,2,2,smic_player_default_hand_1 smic_player_drunkDirty_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,963,player_drunkDirty_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_drunkDirty_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,966,player_elegantSuit,2,2,smic_player_default_hand_1 smic_player_elegantSuit_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,967,player_elegantSuit_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_elegantSuit_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,970,player_jack_bandito,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,971,player_jack_cattleRustler,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,972,player_jack_default,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,973,player_jack_drunkDirty,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,974,player_jack_elegantSuit,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,975,player_jack_fbi,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,976,player_jack_legend,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,977,player_jack_mexicanRebel,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,978,player_jack_oldDuster,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,979,player_jack_oldPoncho,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,980,player_jack_oneEye,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,981,player_jack_rancher,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,982,player_jack_social,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,983,player_jack_treasureHunter,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,984,player_jack_usArmy,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,985,player_jack_usLaw,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,986,player_legend,2,2,smic_player_default_hand_1 smic_player_legend_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,987,player_legend_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_legend_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,990,player_loa,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,991,player_mexicanRebel,2,2,smic_player_default_hand_1 smic_player_mexicanRebel_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,992,player_mexicanRebel_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_mexicanRebel_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,993,player_oldDuster,2,2,smic_player_default_hand_1 smic_player_oldDuster_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,994,player_oldDuster_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_oldDuster_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,997,player_oldPoncho,2,2,smic_player_default_hand_1 smic_player_oldPoncho_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,998,player_oldPoncho_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_oldPoncho_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1001,player_oneEye,2,2,smic_player_default_hand_1 smic_player_oneEye_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1002,player_oneEye_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_oneEye_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1005,player_rancher,2,2,smic_player_default_hand_1 smic_player_rancher_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1006,player_rancher_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_rancher_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1008,player_rancher_dead,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1010,player_rancher_wet,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1011,player_smallCloths,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1012,player_smallCloths_cs,2,2,smic_player_default_IM_texture smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1013,player_social,2,2,smic_player_default_hand_1 smic_player_social_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1014,player_social_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_social_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1015,player_treasureHunter,2,2,smic_player_default_hand_1 smic_player_treasureHunter_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1016,player_treasureHunter_cs,3,3,smic_player_default_IM_texture smic_player_default_hand_1 smic_player_treasureHunter_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1017,player_usArmy,1,1,smic_player_default_hand_1,1,0,0,0
+tune_d11generic.rpf,root/tune/settings/smictofragmap.txt,1018,player_zombieHunter,1,1,smic_player_default_hand_1,1,0,0,0

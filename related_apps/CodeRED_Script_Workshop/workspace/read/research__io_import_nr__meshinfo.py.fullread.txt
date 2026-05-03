@@ -1,0 +1,54 @@
+import sys
+import os
+import re
+import struct
+
+import nrfile
+import nrdump
+
+
+nr = nrfile.NRFile()
+
+#testFile = "C:\\Work\\test2.nr"
+#testFile = "C:\\Work\\mesh_44_1707.nr"
+#testFile = "C:/work/mesh_1.nr"
+
+
+#print(len(sys.argv))
+#print(sys.argv[0])
+if 2 > len(sys.argv):
+    print("Empty command line parameter")
+    exit()
+
+
+fileName = sys.argv[1]
+
+if False == nr.parse(fileName):
+    print("File parsing error: {:s}".format(nr.getErrorString()))
+    exit()
+
+print("NR.Version={:d}".format(nr.getNrVersion()))
+print("Meshs count={:d}".format(nr.getMeshCount()))
+nrdump.printChunks(nr)
+
+maxIndexDumpCount  = 16
+maxVertexDumpCount = 16
+
+
+for meshIdx in range(0, nr.getMeshCount()):
+    mesh = nr.getMesh(meshIdx)
+    shaderStage = nrdump.ShaderStageToString(mesh.getShaderStage())
+    print("******************************Mesh idx={:d} ShaderStage={:s}".format(meshIdx, shaderStage))
+
+    nrdump.printProperties(nr, mesh)
+    nrdump.printTextures(mesh)
+    nrdump.printShaders(mesh)
+
+    vertIdx = 0
+    while (True):
+        res = nrdump.printVertAttribs(mesh, vertIdx)
+        if not res:
+            break
+        maxIndex = nrdump.printIndexes(mesh, maxIndexDumpCount, vertIdx)
+        nrdump.printVertexes(mesh, maxIndex, maxVertexDumpCount, vertIdx)
+        vertIdx = vertIdx + 1

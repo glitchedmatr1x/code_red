@@ -1,0 +1,500 @@
+# Code RED source/decompiled export
+# Source: research/io_import_nr/nrblendimp - Copy.py
+# SHA1: f58ad989fbc274f4f9ccbec8af834351e3e05ad8
+
+import os
+import sys
+import bpy, bmesh, mathutils
+import time, struct, os
+from bpy.props import *
+
+
+import glob
+
+import nrfile
+import nrtools
+import nrdump
+import nrblendtools
+
+
+# Short wrapper
+def writeLog(s):
+    nrblendtools.writeLog(s)
+
+
+def retVal(status, msg, created, skipped):
+    res = {}
+    res['status']  = status
+    res['msg']     = msg
+    res['created'] = created
+    res['skipped'] = skipped
+    return res
+
+
+def isMeshSkippedFromImport(options, rsttProps):
+    if not rsttProps:
+        return False
+
+    if options['ignoreDepthEnableFalse'] and rsttProps.isFalse('DEPTH_ENABLE'):
+        writeLog("Ignoring mesh DEPTH_ENABLE==FALSE")
+        return True
+
+    if options['ignoreDepthWriteEnableFalse'] and rsttProps.isFalse('DEPTH_WRITE_ENABLE'):
+        writeLog("Ignoring mesh DEPTH_WRITE_ENABLE==FALSE")
+        return True
+
+    if options['ignoreRGBWriteDisabled'] and rsttProps.isTrue('RGBWRITE_DISABLED'):
+        writeLog("Ignoring mesh RGBWRITE_DISABLED==TRUE")
+        return True
+
+    if options['ignoreIfRenderedToRenderTarget'] and rsttProps.isTrue('RENDERED_TO_RENDERTARGET'):
+        writeLog("Ignoring mesh RENDERED_TO_RENDERTARGET==TRUE")
+        return True
+
+    if options['ignoreIfRenderedToBackBuffer'] and rsttProps.isFalse('RENDERED_TO_RENDERTARGET'):
+        writeLog("Ignoring mesh RENDERED_TO_RENDERTARGET==FALSE")
+        return True
+
+    if options['ignoreIfRenderTargetWidthDoesNotMatchToBackBuffer'] and rsttProps.isTrue('RT_WIDTH_NOT_MATCH_BACKBUF'):
+        writeLog("Ignoring mesh RT_WIDTH_NOT_MATCH_BACKBUF==TRUE")
+        return True
+
+    return False
+
+
+def isPostShaderStage(shaderStage):
+    if shaderStage == nrfile.ShaderStage.Vs:
+        return True
+    if shaderStage == nrfile.ShaderStage.DsGs:
+        return True
+    return False
+
+
+def assignNormals(options, mesh, vatrs, vert, vertexData, faces):
+    normalsTab = options['normalsTab']
+    if normalsTab == 'DISABLED':
+        return
+    elif normalsTab == 'AUTO':
+        # Assign normals
+        # TODO: Manual settings
+        mesh.polygons.foreach_set("use_smooth", [True] * len(faces))
+        normalsVaList  = vatrs.findSemantic("NORMAL")
+        if len(normalsVaList):
+            # Check for normal is 3 components
+            if normalsVaList[0].compCount == 3:
+                normals = nrtools.unpackVertexComponentAsList(vert, vertexData, normalsVaList[0])
+                if normals is not None:
+                    mesh.use_auto_smooth = True
+                    if hasattr(mesh, "show_normal_vertex"):
+                        mesh.show_normal_vertex = True
+                    if hasattr(mesh, "show_normal_loop"):
+                        mesh.show_normal_loop = True
+                    mesh.normals_split_custom_set_from_vertices(normals)
+    elif normalsTab == 'MANUAL':
+        normalAttrCompX  = options['normalAttrCompX']  # [attrIdx, compIdx]
+        normalAttrCompY  = options['normalAttrCompY']  # [attrIdx, compIdx]
+        normalAttrCompZ  = options['normalAttrCompZ']  # [attrIdx, compIdx]
+
+        normals = nrtools.unpackVertexComponentVaAsList(vert, vertexData, vatrs, [normalAttrCompX, normalAttrCompY, normalAttrCompZ])
+        if normals is not None:
+            mesh.use_auto_smooth = True
+            if hasattr(mesh, "show_normal_vertex"):
+                mesh.show_normal_vertex = True
+            if hasattr(mesh, "show_normal_loop"):
+                mesh.show_normal_loop = True
+            mesh.normals_split_custom_set_from_vertices(normals)
+
+
+def impNrFile(filename, options, matCache, groupMgr):    
+    nr = nrfile.NRFile()
+    if not nr.parse(filename):        
+        errMsg = "Ninja Ripper file parsing failed: " + nr.getErrorString()
+        writeLog(errMsg)
+        return retVal(False, errMsg, 0, 0)
+
+    writeLog("Load: {:s}".format(filename))
+
+    fileDirectory = os.path.dirname(os.path.abspath(filename))
+    
+
+    grp = None
+    if groupMgr:
+        grp = groupMgr.getGroup(filename)
+
+    createdMeshsCount = 0
+
+    for meshIdx in range(0, nr.getMeshCount()):
+        nrmesh = nr.getMesh(meshIdx)
+
+        if nrfile.ShaderStage.PreVs == nrmesh.getShaderStage():
+            #writeLog("Skipping PreVs")
+            continue
+
+        rsttProps = nrmesh.getProperties(nrfile.createTag('R', 'S', 'T', 'T'))
+
+        if isMeshSkippedFromImport(options, rsttProps):
+            continue
+
+
+        vert  = nrmesh.getVertexes(0)
+        if None == vert:
+            writeLog("vertexes == Null")
+            continue
+        
+        indx  = nrmesh.getIndexes(0)
+        if None == indx:
+            writeLog("indexes == Null")
+            continue
+        
+        if indx.getIndexTopology() != nrfile.IndexTopology.TriangleList:
+            writeLog("IndexTopology != TriangleList  (Topology={:s})".format(nrdump.topologyToStr(indx.getIndexTopology())))
+            continue
+    
+        vatrs = nrmesh.getVertexAttributes(0)
+        if None == vatrs:
+            writeLog("vertexAttribs == Null")
+            continue
+        
+
+        # Extra vatrs/vertexes
+        vert1  = nrmesh.getVertexes(1)
+        vatrs1 = nrmesh.getVertexAttributes(1)
+        if vert1:
+            vertexData1 = vert1.read()
+
+        extraVertexDataOk = True
+        if (not vert1) or (not vertexData1) or (not vatrs1):
+            extraVertexDataOk = False
+
+        if extraVertexDataOk:
+            if vert.getVertexCount() != vert1.getVertexCount():
+                extraVertexDataOk = False
+                writeLog("Vertex count != Extra vertex count {:d} != {:d}".format(vert.getVertexCount(), vert1.getVertexCount()))
+
+
+
+        # Get Textures object (TXTR tag in rip file)
+        #  textures = texture files list
+        textures = nrmesh.getTextures()
+
+
+        # Attr 0 is POSITION
+        if vatrs.getAttr(0).compCount != 4:
+            writeLog("Post vs position not 4 component")
+            continue
+
+        vertexData = vert.read()
+        positions3 = nrtools.restorePositionAsList(vert, vertexData, vatrs.getAttr(0), options['projmat'])
+        if None == positions3:
+            writeLog("positions3 == Null")
+            continue
+
+        # Create list of faces
+        triangles = indx.read()
+        faces = []
+        for idx in range(0, int(indx.getIndexCount()/3) ):
+            p = struct.unpack_from("iii", triangles, 12*idx)
+            f = (p[0], p[1], p[2])
+            faces.append(f)
+
+
+        #Define mesh and object
+        meshName = os.path.basename(filename)
+        mesh = bpy.data.meshes.new(meshName)
+        obj  = bpy.data.objects.new(meshName, mesh)
+
+
+        if grp:
+            # If collection created then add object to its collection
+            grp.objects.link(obj)
+
+        #Set location and scene of object
+        if hasattr(bpy.context.scene, "cursor_location"):
+            obj.location = bpy.context.scene.cursor_location
+            bpy.context.scene.objects.link(obj)
+        elif hasattr(bpy.context.scene.cursor, "location"):
+            obj.location = bpy.context.scene.cursor.location
+            bpy.context.collection.objects.link(obj)
+
+
+        #Create mesh
+        mesh.from_pydata(positions3, [], faces)
+
+        assignNormals(options, mesh, vatrs, vert, vertexData, faces)
+
+
+        # Create material if textures presented
+        if None != textures:
+            texList = []
+            if textures.getTexturesCount() > 0:
+                texCount = textures.getTexturesCount()
+                # Blender texture slots count maximum 8?
+                if texCount > 8:
+                    texCount = 8
+
+                for i in range(0, texCount):
+                    texName = fileDirectory + "\\" + textures.getTexture(i).fileName
+                    texList.append(texName)
+
+            mat = matCache.createMaterial(texList)
+            if mat:
+                obj.data.materials.append(mat)
+
+        mesh.update()
+
+        # Switch to bmesh
+        bm = bmesh.new()
+
+        try:
+            bm.from_mesh(mesh)
+            bm.verts.ensure_lookup_table()
+
+            if options['texMode'] == 'AUTO' or options['texMode'] == 'TEXCOORDBYNAME':
+                nrblendtools.createTexCoords(bm, options, vert, vertexData, vatrs)
+            elif options['texMode'] == 'SCATTERTEXCOORD':
+                nrblendtools.createTexCoordsScatter(bm, options, vert, vertexData, vatrs)
+            elif options['texMode'] == 'EXTRA_TEXCOORDBYNAME' and extraVertexDataOk:
+                nrblendtools.createTexCoords(bm, options, vert1, vertexData1, vatrs1)
+            elif options['texMode'] == 'EXTRA_SCATTERTEXCOORD' and extraVertexDataOk:
+                nrblendtools.createTexCoordsScatter(bm, options, vert1, vertexData1, vatrs1)
+
+            bm.to_mesh(mesh)
+        finally:
+            bm.free()
+
+        # Finalize
+        mesh.update()
+        createdMeshsCount = createdMeshsCount + 1
+
+    return retVal(True, '', createdMeshsCount, nr.getMeshCount() - createdMeshsCount)
+
+
+def importNrFiles(paths, options):
+
+    if 'logger' in options:
+        nrblendtools.setLogger(options['logger'])
+
+    matCache = nrblendtools.MaterialCache()
+    groupMgr = nrblendtools.GroupManager()
+
+    totalFilesCount = 0
+    totalCreated = 0
+    totalSkipped = 0
+
+    for file in paths:
+        if os.path.isfile(file):
+            status = impNrFile(file, options, matCache, groupMgr)
+            totalFilesCount = totalFilesCount + 1
+            totalCreated    = totalCreated + status['created']
+            totalSkipped    = totalSkipped + status['skipped']
+        elif os.path.isdir(file):
+            fileList = glob.glob(file + "*.nr")
+            for file in fileList:
+                status = impNrFile(file, options, matCache, groupMgr)
+                totalFilesCount = totalFilesCount + 1
+                totalCreated    = totalCreated + status['created']
+                totalSkipped    = totalSkipped + status['skipped']
+
+    writeLog("PostVS. Total parsed files count={:d}".format(totalFilesCount))
+    writeLog("Total created/skipped meshs {:d}/{:d}".format(totalCreated, totalSkipped))
+    writeLog("Images loaded={:d}. Images failed={:d}".format(len(matCache.loadedImgs), len(matCache.failedImgs)))
+    for filename in matCache.failedImgs:
+      writeLog("Failed: {:s}".format(filename))
+
+    nrblendtools.setFarClipDistance()
+
+
+
+
+
+
+###################################################################################################
+###################################################################################################
+###################################################################################################
+## PREVS
+###################################################################################################
+###################################################################################################
+###################################################################################################
+
+
+def impNrFilePreVs(filename, options, matCache):    
+    nr = nrfile.NRFile()
+    if not nr.parse(filename):        
+        errMsg = "Ninja Ripper file parsing failed: " + nr.getErrorString()
+        writeLog(errMsg)
+        retVal(False, errMsg, 0, 0)
+
+    writeLog("Load: {:s}".format(filename))
+
+    fileDirectory = os.path.dirname(os.path.abspath(filename))
+    
+    createdMeshsCount = 0
+
+    for meshIdx in range(0, nr.getMeshCount()):
+        nrmesh = nr.getMesh(meshIdx)
+
+        if nrfile.ShaderStage.PreVs != nrmesh.getShaderStage():
+            continue
+
+        vert  = nrmesh.getVertexes(0)
+        if None == vert:
+            writeLog("vertexes == Null")
+            continue
+        
+        indx  = nrmesh.getIndexes(0)
+        if None == indx:
+            writeLog("indexes == Null")
+            continue
+        
+        if indx.getIndexTopology() != nrfile.IndexTopology.TriangleList:
+            writeLog("IndexTopology != TriangleList  (Topology={:s})".format(nrdump.topologyToStr(indx.getIndexTopology())))
+            continue
+    
+        vatrs = nrmesh.getVertexAttributes(0)
+        if None == vatrs:
+            writeLog("vertexAttribs == Null")
+            continue
+        
+
+        # Extra vatrs/vertexes
+        vert1  = nrmesh.getVertexes(1)
+        vatrs1 = nrmesh.getVertexAttributes(1)
+        if vert1:
+            vertexData1 = vert1.read()
+
+        extraVertexDataOk = True
+        if (not vert1) or (not vertexData1) or (not vatrs1):
+            extraVertexDataOk = False
+
+        if extraVertexDataOk:
+            if vert.getVertexCount() != vert1.getVertexCount():
+                extraVertexDataOk = False
+                writeLog("Vertex count != Extra vertex count {:d} != {:d}".format(vert.getVertexCount(), vert1.getVertexCount()))
+
+
+        # Get Textures object (TXTR tag in rip file)
+        #  textures = texture files list
+        textures = nrmesh.getTextures()
+
+        vertexData = vert.read()
+
+        positions3 = []
+        if options['vertexLayoutTab'] == 'AUTO':
+            positions3 = nrtools.unpackVertexComponentVaAsList(vert, vertexData, vatrs, [[0,0], [0,1], [0,2]])
+        elif options['vertexLayoutTab'] == 'MANUAL':
+            positions3 = nrtools.unpackVertexComponentVaAsList(vert, vertexData, vatrs, [options['posX'], options['posY'], options['posZ']])
+        
+        if None == positions3:
+            writeLog("positions3 == Null")
+            continue
+
+
+        # Create list of faces
+        triangles = indx.read()
+        faces = []
+        for idx in range(0, int(indx.getIndexCount()/3) ):
+            p = struct.unpack_from("iii", triangles, 12*idx)
+            f = (p[0], p[1], p[2])
+            faces.append(f)
+
+
+        #Define mesh and object
+        meshName = os.path.basename(filename)
+        mesh = bpy.data.meshes.new(meshName)
+        obj  = bpy.data.objects.new(meshName, mesh)
+
+
+        #Set location and scene of object
+        if hasattr(bpy.context.scene, "cursor_location"):
+            obj.location = bpy.context.scene.cursor_location
+            bpy.context.scene.objects.link(obj)
+        elif hasattr(bpy.context.scene.cursor, "location"):
+            obj.location = bpy.context.scene.cursor.location
+            bpy.context.collection.objects.link(obj)
+
+
+        #Create mesh
+        mesh.from_pydata(positions3, [], faces)
+
+        # Normals assign
+        assignNormals(options, mesh, vatrs, vert, vertexData, faces)
+
+
+        # Create material if textures presented
+        if None != textures:
+            texList = []
+            if textures.getTexturesCount() > 0:
+                texCount = textures.getTexturesCount()
+                # Blender texture slots count maximum 18?
+                if texCount > 8:
+                    texCount = 8
+
+                for i in range(0, texCount):
+                    texName = fileDirectory + "\\" + textures.getTexture(i).fileName
+                    texList.append(texName)
+
+            mat = matCache.createMaterial(texList)
+            if mat:
+                obj.data.materials.append(mat)
+
+        mesh.update()
+
+        # Switch to bmesh
+        bm = bmesh.new()
+
+        try:
+            bm.from_mesh(mesh)
+            bm.verts.ensure_lookup_table()
+
+            if options['texMode'] == 'AUTO' or options['texMode'] == 'TEXCOORDBYNAME':
+                nrblendtools.createTexCoords(bm, options, vert, vertexData, vatrs)
+            elif options['texMode'] == 'SCATTERTEXCOORD':
+                nrblendtools.createTexCoordsScatter(bm, options, vert, vertexData, vatrs)
+            elif options['texMode'] == 'EXTRA_TEXCOORDBYNAME' and extraVertexDataOk:
+                nrblendtools.createTexCoords(bm, options, vert1, vertexData1, vatrs1)
+            elif options['texMode'] == 'EXTRA_SCATTERTEXCOORD' and extraVertexDataOk:
+                nrblendtools.createTexCoordsScatter(bm, options, vert1, vertexData1, vatrs1)
+
+            bm.to_mesh(mesh)
+        finally:
+            bm.free()
+
+        # Finalize
+        mesh.update()
+        createdMeshsCount = createdMeshsCount + 1
+
+    return retVal(True, '', createdMeshsCount, nr.getMeshCount() - createdMeshsCount)
+
+
+def importNrFilesPreVs(paths, options):
+
+    if 'logger' in options:
+        nrblendtools.setLogger(options['logger'])
+
+
+    matCache = nrblendtools.MaterialCache()
+
+    totalFilesCount = 0
+    totalCreated = 0
+    totalSkipped = 0
+    for file in paths:
+        if os.path.isfile(file):
+            status = impNrFilePreVs(file, options, matCache)
+            totalFilesCount = totalFilesCount + 1
+            totalCreated    = totalCreated + status['created']
+            totalSkipped    = totalSkipped + status['skipped']
+        elif os.path.isdir(file):
+            fileList = glob.glob(file + "*.nr")
+            for file in fileList:
+                status = impNrFilePreVs(file, options, matCache)
+                totalFilesCount = totalFilesCount + 1
+                totalCreated    = totalCreated + status['created']
+                totalSkipped    = totalSkipped + status['skipped']
+
+    writeLog("PreVS. Total parsed files count={:d}".format(totalFilesCount))
+    writeLog("Total created/skipped meshs {:d}/{:d}".format(totalCreated, totalSkipped))
+    writeLog("Images loaded={:d}. Images failed={:d}".format(len(matCache.loadedImgs), len(matCache.failedImgs)))
+    for filename in matCache.failedImgs:
+      writeLog("Failed: {:s}".format(filename))
+
+    nrblendtools.setFarClipDistance()

@@ -1,0 +1,3 @@
+archive,layer,count
+terrainboundres.rpf,plain_text,2
+terrainboundres.rpf,terrain_bounds_wtb,5376

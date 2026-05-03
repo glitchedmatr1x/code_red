@@ -1,0 +1,10 @@
+# Code RED source/decompiled export
+# Source: research/Code_RED_Car_Truck_FBI_Pass26_RESEARCH/RUN_PARSE_DECOMPILED_FBI_CAR_TRUCK.bat
+# SHA1: ff02826ac17452d7743329d22bfe2604e9598fc0
+
+@echo off
+setlocal
+cd /d "%~dp0"
+py -3 tools\parse_decompiled_fbi_car_truck.py
+if errorlevel 1 python tools\parse_decompiled_fbi_car_truck.py
+pause

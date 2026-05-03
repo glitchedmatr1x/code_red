@@ -1,0 +1,141 @@
+
+from inc_noesis import *
+
+import noesis
+import rapi
+import os
+import hashlib
+import json
+import sys
+import ninjaripper
+
+#----------------------
+# Global settings
+#----------------------
+# Projection matrix 
+#g_mvp = [[1.20635,0,0,0],[0,2.14462,0,0], [0,0,-1.00001,-1],[0,0,-0.100001,0]]
+
+g_fov = 45.0
+g_width = 1024.0
+g_height = 768.0
+g_nearDist = 0.01
+g_farDist = 1000.0
+
+g_posIdx = 0
+g_norIdx = -1
+
+
+def registerNoesisTypes():
+    noesis.logPopup()
+
+    handle = noesis.register("NinjaRipper", ".nr")
+    noesis.setHandlerTypeCheck(handle, nrCheckType)
+    noesis.setHandlerLoadModel(handle, nrLoadModel)
+    return 1
+
+
+def nrCheckType(data):
+    if len(data) < 8:
+        return 0
+
+    nr = ninjaripper.NR()
+
+    bs = NoeBitStream(data)
+    if bs.readUInt() != ninjaripper.kMagic():
+        return 0
+
+    version = bs.readUInt()
+    if version != ninjaripper.kVersion():
+        return 0
+    return 1
+
+
+def nrLoadModel(data, mdlList):
+    ctx = rapi.rpgCreateContext()
+    filename = rapi.getInputName()
+
+    print("Ninja Ripper file: " + filename)
+
+    nr = ninjaripper.NR()
+    if not nr.parse(filename):
+        noesis.messagePrompt("Ninja Ripper file parsing failed. Error: " + nr.errorStr)
+        return 0
+
+
+    fileDirectory = os.path.dirname(os.path.abspath(filename))
+    #mdl.setModelMaterials(NoeModelMaterials(parser.texList, parser.matList))
+
+    rapi.rpgSetName(filename)
+
+    for meshIdx in range(0, nr.getMeshCount()):
+        mesh = nr.getMesh(meshIdx)
+
+        vert  = mesh.getVertexes()
+        if None == vert:
+            noesis.logError("Verexes not found")
+            continue
+
+        indx  = mesh.getIndexes()
+        if None == indx:
+            noesis.logError("Indexes not found")
+            continue
+            
+        vatrs = mesh.getVertexAttributes()
+        if None == vatrs:
+            noesis.logError("Verex attributes not found")
+            continue
+
+        # Material create
+        material = None
+        matList = []
+        texList = []
+        #textures = mesh.getTextures()
+        #if None != textures:
+        #    if textures.getTexturesCount() > 0:
+        #        tex0 = textures.getTexture(0)
+        #        texName = fileDirectory + "\\" + tex0.fileName
+        #        textureObj = rapi.loadExternalTex(texName)
+                
+        #        material = NoeMaterial(texName, texName)
+        #        material.setTexture(texName)
+        #        matList.append(material)
+        #        texList.append(textureObj)
+        #        rapi.rpgSetMaterial(texName)
+                
+        
+        vertexData = vert.read()
+        
+        
+        #normalsVaList  = vatrs.findSemantic("NORMAL")
+        ## Set normals if exist
+        #if len(normalsVaList):
+        #    normals = ninjaripper.unpackVertexComponentAsBytes(vert, vertexData, normalsVaList[0])
+        #    rapi.rpgBindNormalBuffer(normals, noesis.RPGEODATA_FLOAT, 12)
+
+        #texcoordVaList = vatrs.findSemantic("TEXCOORD")
+        #if len(texcoordVaList):
+        #    uvs = ninjaripper.unpackVertexComponentAsBytes(vert, vertexData, texcoordVaList[0])
+        #    rapi.rpgBindUV1Buffer(uvs, noesis.RPGEODATA_FLOAT, texcoordVaList[0].getSize())
+
+
+
+        #####################################
+        #####################################
+        mvp = ninjaripper.perspMatFovLH(g_fov, g_width, g_height, g_nearDist, g_farDist)
+        #positions = ninjaripper.restorePositionAsBytes(vert, vertexData, vatrs.getAttr(0), mvp)
+
+        posIdxArr = [4, 5, 6]
+        positions = ninjaripper.extractVertexComponentsAsBytes(vert, vertexData, posIdxArr)
+        #positions = ninjaripper.restorePositionAsBytes4(vert, positions, mvp)
+
+
+        rapi.rpgBindPositionBuffer(positions, noesis.RPGEODATA_FLOAT, 12)
+        
+        triangles = indx.read()
+        rapi.rpgCommitTriangles(triangles, noesis.RPGEODATA_UINT, indx.getIndexCount(), noesis.RPGEO_TRIANGLE, 1)
+        rapi.rpgClearBufferBinds() #reset in case a subsequent mesh doesn't have the same components
+
+        mdl = rapi.rpgConstructModel()
+        #mdl.setModelMaterials(NoeModelMaterials(texList, matList))
+        mdlList.append(mdl)
+    return 1

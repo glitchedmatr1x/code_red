@@ -1,0 +1,46 @@
+{
+  "pass": "26",
+  "name": "FBI Car/Truck Focus Research",
+  "input_files": [
+    {
+      "file": "fbi02.wsc",
+      "size": 66276,
+      "sha1": "9447b1eed406fa5ddb43622f6a4c708429748777",
+      "magic": "52534385",
+      "looks_rsc85": true,
+      "entropy": 7.996732,
+      "ascii_CAR_count": 0,
+      "ascii_TRUCK_count": 0,
+      "ascii_vehicle_words_found": {}
+    },
+    {
+      "file": "fbi04.wsc",
+      "size": 99608,
+      "sha1": "c32281db05ea1956d7832f9e87e774e32e7e0c4f",
+      "magic": "52534385",
+      "looks_rsc85": true,
+      "entropy": 7.998288,
+      "ascii_CAR_count": 0,
+      "ascii_TRUCK_count": 0,
+      "ascii_vehicle_words_found": {}
+    }
+  ],
+  "notes": [],
+  "raw_hit_overview": {
+    "total_hits_logged": 223,
+    "counts_report": "reports/fbi_car_truck_raw_hit_counts.csv",
+    "raw_hit_report": "reports/fbi_car_truck_raw_hits.csv",
+    "candidate_swap_table": "reports/candidate_vehicle_value_swap_table_DO_NOT_PATCH_YET.csv"
+  },
+  "conclusion": [
+    "Uploaded fbi02.wsc and fbi04.wsc are raw RSC85 script resources, not decompiled text.",
+    "The switch text case 0x3C -> CAR is not present as readable ASCII in the uploaded raw files.",
+    "Car01 and Truck01 actor enum byte patterns do appear in both raw files, but raw high-entropy hits are not safe patch points.",
+    "The next safe step is to export Code RED decompiled text and parse the vehicle switch/native context, or use a runtime spawn proof."
+  ],
+  "recommended_next": [
+    "Open the WSCs in Code RED, export/decompile the readable text, and drop it into DROP_DECOMPILED_FBI_HERE.",
+    "Run RUN_PARSE_DECOMPILED_FBI_CAR_TRUCK.bat.",
+    "Use only confirmed switch/native rows to pick a one-value car/truck test."
+  ]
+}

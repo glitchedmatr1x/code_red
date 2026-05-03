@@ -1,0 +1,184 @@
+# Code RED source/decompiled export
+# Source: research/IMPORTANT_later_rpf_compare_2026-05-02/later_rpf_compare.md
+# SHA1: a15ab121e7e51a830e5921987a57e0788da394cf
+
+# IMPORTANT - Later RPF Temporary Extraction Compare
+
+Generated: 2026-05-02T03:25:33
+
+## Scope
+
+Temporarily extracted readable/text-bearing entries from later/live RPF archives in the Red Dead `game` folder for comparison against the extracted reference root.
+
+Temporary extraction folder: `D:\Games\Red Dead Redemption\game\_CodeRED_Temp_Later_RPF_Extract_20260502`
+Reference root: `D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root`
+
+## Archive Results
+
+- `live_content` files=1320 extracted=727 skipped=593 errors=0 path=`D:\Games\Red Dead Redemption\game\content.rpf`
+- `live_2026_content` files=1320 extracted=727 skipped=593 errors=0 path=`D:\Games\Red Dead Redemption\game\2026\content.rpf`
+- `live_camera` files=778 extracted=45 skipped=733 errors=0 path=`D:\Games\Red Dead Redemption\game\camera.rpf`
+- `live_tune` files=1917 extracted=352 skipped=1565 errors=0 path=`D:\Games\Red Dead Redemption\game\tune_d11generic.rpf`
+- `live_gringores` files=39 extracted=39 skipped=0 errors=0 path=`D:\Games\Red Dead Redemption\game\gringores.rpf`
+- `live_strings` files=8939 extracted=8594 skipped=345 errors=0 path=`D:\Games\Red Dead Redemption\game\strings_d11generic.rpf`
+- `live_navres` files=978 extracted=3 skipped=975 errors=0 path=`D:\Games\Red Dead Redemption\game\navres.rpf`
+- `live_psocache` files=2300 extracted=2300 skipped=0 errors=0 path=`D:\Games\Red Dead Redemption\game\psocache.rpf`
+- `base_content` files=2 extracted=0 skipped=2 errors=0 path=`D:\Games\Red Dead Redemption\game\base\content.rpf`
+- `base_cutscene` files=6 extracted=3 skipped=3 errors=0 path=`D:\Games\Red Dead Redemption\game\base\cutscene.rpf`
+- `base_old_tune` files=1913 extracted=351 skipped=1562 errors=0 path=`D:\Games\Red Dead Redemption\game\base\OLDtune_d11generic.rpf`
+- `putback_content` files=1320 extracted=727 skipped=593 errors=0 path=`D:\Games\Red Dead Redemption\game\PUT BACK ASAP\content.rpf`
+- `putback_camera` files=778 extracted=45 skipped=733 errors=0 path=`D:\Games\Red Dead Redemption\game\PUT BACK ASAP\camera.rpf`
+- `putback_tune` files=1917 extracted=352 skipped=1565 errors=0 path=`D:\Games\Red Dead Redemption\game\PUT BACK ASAP\tune_d11generic.rpf`
+
+## Compare Summary
+
+- Extracted readable entries: 14265
+- Match statuses: `{"exact_path_changed": 117, "exact_path_same": 165, "leaf_hash_changed": 367, "leaf_hash_same": 781, "no_reference": 12786, "sha1_same_elsewhere": 49}`
+- Version counts: `{"base_cutscene": 3, "base_old_tune": 351, "live_2026_content": 727, "live_camera": 45, "live_content": 727, "live_gringores": 39, "live_navres": 3, "live_psocache": 2300, "live_strings": 8594, "live_tune": 352, "putback_camera": 45, "putback_content": 727, "putback_tune": 352}`
+- Version-diff rows: 12063
+- Changed across versions: 53
+
+## Changed Across Versions
+
+- `0x25584DB6\0xE3D8C737\cinvehicletracking.txt` versions=live_camera|putback_camera sha1s=2 terms=camera;cinvehicle;cutscene;ui;vehicle
+- `0x25584DB6\0xE3D8C737\horserider.txt` versions=live_camera|putback_camera sha1s=2 terms=camera;cutscene;ui
+- `0xA562A52D\0x22B6CAA7\0x3F87D01A\materials.list` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=
+- `0xA562A52D\0x22B6CAA7\physics.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=
+- `0xA562A52D\0x34203459\tumbleweeds.xml` versions=base_old_tune|live_tune|putback_tune sha1s=3 terms=spawn
+- `0xA562A52D\0x54A69840\rain_render.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=
+- `0xA562A52D\0x5791780F\treetypesettings.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=law;ui
+- `0xA562A52D\0x6536F8C2\environment.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=
+- `0xA562A52D\0x6536F8C2\moon.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=
+- `0xA562A52D\0x6F0783F5\hrssimtune.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=ui;wagon
+- `0xA562A52D\0x6F0783F5\input_boat.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=menu;nav;ui
+- `0xA562A52D\0x6F0783F5\input_car.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;menu;ui
+- `0xA562A52D\0x6F0783F5\input_train.xml` versions=base_old_tune|live_tune|putback_tune sha1s=3 terms=menu;ui
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_dualpistol.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_lasso.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_maxim.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_melee.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_pistol.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_repeater.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_rifle.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_shotgun.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_sniperrifle.weap` versions=base_old_tune|live_tune|putback_tune sha1s=3 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_thrown.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_thrown_exploding.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\0x803E392C\base_turret.weap` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;gringo;ui;vehicle
+- `0xA562A52D\0xA4FEB6F7\huddata.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=menu;multiplayer;nav;string
+- `0xA562A52D\0xA4FEB6F7\lasso.tune` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=
+- `0xA562A52D\0xA4FEB6F7\smictofragmap.txt` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=gringo;law;stagecoach;ui;wagon
+- `0xA562A52D\0xA4FEB6F7\targettuning.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=ui
+- `0xA562A52D\0xA4FEB6F7\weatherspheres.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=
+- `0xA562A52D\0xABD6FBF8\gent.xml` versions=base_old_tune|live_tune|putback_tune sha1s=3 terms=camera;faction;nav;vehicle
+- `0xA562A52D\0xABD6FBF8\hrs.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;faction;nav;vehicle
+- `0xA562A52D\0xABD6FBF8\sheriff.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=camera;faction;nav;vehicle
+- `0xA562A52D\0xBEE46552\components.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=ally;camera;cinvehicle;enemy;faction;hostile;law;locset;spawn;stagecoach;string;ui;vehicle
+- `0xA562A52D\0xBEE46552\template_base_horse.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=faction;hostile;spawn;string
+- `0xA562A52D\0xBEE46552\template_base_human.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=hostile;spawn;string;ui
+- `0xA562A52D\0xBEE46552\template_base_train.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=faction;locset;spawn;stagecoach;string;template_vehicle;vehicle
+- `0xA562A52D\0xBEE46552\template_draftvehicle.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=locset;stagecoach;string;vehicle
+- `0xA562A52D\0xBEE46552\template_mplayer.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=faction;hostile;spawn;string;ui
+- `0xA562A52D\0xBEE46552\template_vehicle.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=string;template_vehicle;vehicle
+- `0xA562A52D\0xBEE46552\template_vehicleraft01.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=faction;locset;spawn;stagecoach;string;template_vehicle;vehicle
+- `0xA562A52D\0xBEE46552\template_vehicleraft02.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=faction;locset;spawn;stagecoach;string;template_vehicle;vehicle
+- `0xA562A52D\0xC8D33EA3\ppplist.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=ui
+- `0xA562A52D\0xDD245B9C\0x0C450B86\locset_car01.xml` versions=base_old_tune|live_tune|putback_tune sha1s=3 terms=locset;vehicle
+- `0xA562A52D\0xDD245B9C\0x0C450B86\locset_minecart01.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=locset;vehicle
+- `0xA562A52D\0xDD245B9C\0x0C450B86\locset_northpassenger01x.xml` versions=base_old_tune|live_tune|putback_tune sha1s=3 terms=locset;vehicle
+- `0xA562A52D\0xDD245B9C\0x0C450B86\locset_onedoubleentry.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=locset;vehicle
+- `0xA562A52D\0xDD245B9C\0x0C450B86\locset_passenger01x.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=locset;vehicle
+- `0xA562A52D\0xDD245B9C\0x0C450B86\locset_stagecoach.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=locset;stagecoach;vehicle
+- `0xA562A52D\0xDD245B9C\0x0C450B86\locset_threepos.xml` versions=base_old_tune|live_tune|putback_tune sha1s=2 terms=locset;vehicle;wagon
+
+## Best Remap Leads
+
+- `base_cutscene:cutscene\cutscenelist.txt` -> `no_reference` old=`` terms=wagon;law;cutscene
+- `base_cutscene:cutscene\cutscenelist_z.txt` -> `no_reference` old=`` terms=cutscene
+- `base_cutscene:cutscene\rebel_leader_06\rebel_leader_06.cutbin` -> `no_reference` old=`` terms=companion;cutscene;camera;subtitle
+- `base_old_tune:0xA562A52D\0x0ADC283D\audio.tr` -> `leaf_hash_changed` old=`content\ai\audio.tr` terms=enemy;ally;ui
+- `base_old_tune:0xA562A52D\0x0ADC283D\game_main.tr` -> `leaf_hash_changed` old=`content\ai\game_main.tr` terms=vehicle;stagecoach;faction;law;hostile;enemy;ally;follow;gringo;ui
+- `base_old_tune:0xA562A52D\0x0ADC283D\motives.xml` -> `leaf_hash_changed` old=`content\ai\motives.xml` terms=faction
+- `base_old_tune:0xA562A52D\0x22B6CAA7\0x3F87D01A\materials.list` -> `leaf_hash_changed` old=`tune\materials\materials.list` terms=
+- `base_old_tune:0xA562A52D\0x22B6CAA7\liquid.xml` -> `leaf_hash_changed` old=`tune\physics\liquid.xml` terms=ui
+- `base_old_tune:0xA562A52D\0x22B6CAA7\physics.xml` -> `leaf_hash_changed` old=`tune\physics\physics.xml` terms=
+- `base_old_tune:0xA562A52D\0x34203459\tumbleweeds.xml` -> `leaf_hash_same` old=`tune\debris\tumbleweeds.xml` terms=spawn
+- `base_old_tune:0xA562A52D\0x3F87D01A\adobeorstucco_general.mtl` -> `leaf_hash_same` old=`tune\materials\adobeorstucco_general.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\air.mtl` -> `leaf_hash_same` old=`tune\materials\air.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\ankle_l_nm.mtl` -> `leaf_hash_same` old=`tune\materials\ankle_l_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\ankle_r_nm.mtl` -> `leaf_hash_same` old=`tune\materials\ankle_r_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\arm_l_nm.mtl` -> `leaf_hash_same` old=`tune\materials\arm_l_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\arm_r_nm.mtl` -> `leaf_hash_same` old=`tune\materials\arm_r_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\ball_l_nm.mtl` -> `leaf_hash_same` old=`tune\materials\ball_l_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\ball_r_nm.mtl` -> `leaf_hash_same` old=`tune\materials\ball_r_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\brick.mtl` -> `leaf_hash_changed` old=`tune\materials\brick.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\brick_general.mtl` -> `leaf_hash_changed` old=`tune\materials\brick_general.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\buttocks.mtl` -> `leaf_hash_same` old=`tune\materials\buttocks.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\cement.mtl` -> `leaf_hash_changed` old=`tune\materials\cement.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\ceramic_roof.mtl` -> `leaf_hash_changed` old=`tune\materials\ceramic_roof.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\clavicle_l_nm.mtl` -> `leaf_hash_same` old=`tune\materials\clavicle_l_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\clavicle_left.mtl` -> `leaf_hash_same` old=`tune\materials\clavicle_left.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\clavicle_r_nm.mtl` -> `leaf_hash_same` old=`tune\materials\clavicle_r_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\clavicle_right.mtl` -> `leaf_hash_same` old=`tune\materials\clavicle_right.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\cloth.mtl` -> `leaf_hash_same` old=`tune\materials\cloth.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\clothoranimalskin.mtl` -> `leaf_hash_same` old=`tune\materials\clothoranimalskin.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\coarse_mover.mtl` -> `leaf_hash_changed` old=`tune\materials\coarse_mover.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\cobblestone.mtl` -> `leaf_hash_changed` old=`tune\materials\cobblestone.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid0.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid0.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid1.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid1.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid10.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid10.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid11.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid11.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid12.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid12.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid13.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid13.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid2.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid2.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid3.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid3.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid4.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid4.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid5.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid5.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid6.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid6.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid7.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid7.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid8.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid8.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\compositecompid9.mtl` -> `leaf_hash_same` old=`tune\materials\compositecompid9.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\default.mtl` -> `leaf_hash_changed` old=`tune\materials\default.mtl` terms=spawn
+- `base_old_tune:0xA562A52D\0x3F87D01A\default_0.mtl` -> `leaf_hash_same` old=`tune\materials\default_0.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\default_nm_xml.mtl` -> `leaf_hash_same` old=`tune\materials\default_nm_xml.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\defaultcar.mtl` -> `leaf_hash_same` old=`tune\materials\defaultcar.mtl` terms=vehicle
+- `base_old_tune:0xA562A52D\0x3F87D01A\dirt.mtl` -> `leaf_hash_same` old=`tune\materials\dirt.mtl` terms=spawn
+- `base_old_tune:0xA562A52D\0x3F87D01A\dirt_gravel.mtl` -> `leaf_hash_same` old=`tune\materials\dirt_gravel.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\elbow_l_nm.mtl` -> `leaf_hash_same` old=`tune\materials\elbow_l_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\elbow_r_nm.mtl` -> `leaf_hash_same` old=`tune\materials\elbow_r_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\finger_l_nm.mtl` -> `leaf_hash_same` old=`tune\materials\finger_l_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\finger_r_nm.mtl` -> `leaf_hash_same` old=`tune\materials\finger_r_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\fixed_blocker_bnd_0.mtl` -> `leaf_hash_same` old=`tune\materials\fixed_blocker_bnd_0.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\fixed_blocker_bnd_0_1.mtl` -> `leaf_hash_same` old=`tune\materials\fixed_blocker_bnd_0_1.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\fixed_blocker_bnd_0_1_2.mtl` -> `leaf_hash_same` old=`tune\materials\fixed_blocker_bnd_0_1_2.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\fixed_blocker_bnd_0_1_2_3.mtl` -> `leaf_hash_same` old=`tune\materials\fixed_blocker_bnd_0_1_2_3.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\fixed_blocker_bnd_0_1_3.mtl` -> `leaf_hash_same` old=`tune\materials\fixed_blocker_bnd_0_1_3.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\fixed_blocker_bnd_0_2.mtl` -> `leaf_hash_same` old=`tune\materials\fixed_blocker_bnd_0_2.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\fixed_blocker_bnd_1.mtl` -> `leaf_hash_same` old=`tune\materials\fixed_blocker_bnd_1.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\fixed_blocker_bnd_1_3.mtl` -> `leaf_hash_same` old=`tune\materials\fixed_blocker_bnd_1_3.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\fixedblockermaterials.txt` -> `leaf_hash_same` old=`tune\materials\fixedblockermaterials.txt` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\flesh.mtl` -> `leaf_hash_same` old=`tune\materials\flesh.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\foot_left.mtl` -> `leaf_hash_same` old=`tune\materials\foot_left.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\foot_right.mtl` -> `leaf_hash_same` old=`tune\materials\foot_right.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\glass.mtl` -> `leaf_hash_changed` old=`tune\materials\glass.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\grass.mtl` -> `leaf_hash_changed` old=`tune\materials\grass.mtl` terms=spawn
+- `base_old_tune:0xA562A52D\0x3F87D01A\grass_general.mtl` -> `leaf_hash_same` old=`tune\materials\grass_general.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\grenade.mtl` -> `leaf_hash_changed` old=`tune\materials\grenade.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\hand_left.mtl` -> `leaf_hash_same` old=`tune\materials\hand_left.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\hand_right.mtl` -> `leaf_hash_same` old=`tune\materials\hand_right.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\hay.mtl` -> `leaf_hash_same` old=`tune\materials\hay.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\head.mtl` -> `leaf_hash_same` old=`tune\materials\head.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\head_nm.mtl` -> `leaf_hash_same` old=`tune\materials\head_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\hip_l_nm.mtl` -> `leaf_hash_same` old=`tune\materials\hip_l_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\hip_r_nm.mtl` -> `leaf_hash_same` old=`tune\materials\hip_r_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\knee_l_nm.mtl` -> `leaf_hash_same` old=`tune\materials\knee_l_nm.mtl` terms=
+- `base_old_tune:0xA562A52D\0x3F87D01A\knee_r_nm.mtl` -> `leaf_hash_same` old=`tune\materials\knee_r_nm.mtl` terms=
+
+## Output Files
+
+- `later_rpf_extract_manifest.csv` - every extracted readable entry.
+- `later_rpf_archive_summary.csv` - per-archive extraction/error counts.
+- `later_rpf_remap_candidates.csv` - rows with old-root comparison status for remapping.
+- `later_rpf_version_diffs.csv` - same internal paths grouped across later/live versions.
+- `later_rpf_changed_between_versions.csv` - only entries whose payload changed across versions.
+- `later_rpf_compare.json` - structured archive and extraction metadata.

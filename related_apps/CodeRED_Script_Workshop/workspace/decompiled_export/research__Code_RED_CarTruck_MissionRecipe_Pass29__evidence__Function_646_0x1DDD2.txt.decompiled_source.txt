@@ -1,0 +1,8 @@
+# Code RED source/decompiled export
+# Source: research/Code_RED_CarTruck_MissionRecipe_Pass29/evidence/Function_646_0x1DDD2.txt
+# SHA1: 24f38582b27be9bd4bf0fa8b058723e19a91365b
+
+var Function_646(var uParam0, struct<2> Param1, var uParam3, var uParam4, var uParam5) //Position: 0x1DDD2
+{
+    return GET_RAND_ACTORENUM_FROM_POPULATION_NATIVE(&uParam0, &uParam3, &uParam4, &uParam5, 1, Param1);
+}

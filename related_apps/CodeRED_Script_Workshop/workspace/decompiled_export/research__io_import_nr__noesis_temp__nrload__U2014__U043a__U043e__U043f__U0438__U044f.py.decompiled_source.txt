@@ -1,0 +1,451 @@
+# Code RED source/decompiled export
+# Source: research/io_import_nr/noesis_temp/nrload #U2014 #U043a#U043e#U043f#U0438#U044f.py
+# SHA1: 6b399f82b1c991c3b0ebde325dd76d4fefadd7a1
+
+
+import bpy, bmesh, mathutils
+import time, struct, os
+from bpy.props import *
+
+
+import glob
+
+
+if "ninjaripper" in locals():
+    import importlib
+    importlib.reload(ninjaripper)
+
+from . import ninjaripper
+
+
+######################################
+# Blender versions workaround
+######################################
+def ver_blender():
+    if bpy.app.version < (2, 80, 0):
+        return 0
+    return 1
+
+
+g_logger = None
+def writeLog(s):
+    if g_logger:
+        g_logger.write(s)
+
+
+def isImageLoaded(img):
+    if (0==img.size[0]) and (img.size[1]==0):
+        return False
+    return True
+
+
+class GroupManager(object):
+    def __init__(self):
+        self.colDict = {}
+
+    def getGroup(self, fileName):
+
+        if 0 == ver_blender():
+            # Blender < 2.8 has no collections??????
+            return None
+
+        baseFileName = os.path.basename(fileName)
+        arr = baseFileName.split("_")
+
+        meshgrpName = None
+        if len(arr) >= 2:
+            meshgrpName = "grp_" + arr[1]
+
+        grp = None
+        if meshgrpName:
+            # Name parsed successfully
+            grp = self.colDict.get(meshgrpName, "notfound")
+            if grp == "notfound":
+                # Create group
+                grp = None
+                grp = bpy.data.collections.new(name=meshgrpName)  # Create new collection
+                bpy.context.scene.collection.children.link(grp)   # Add to scene
+                self.colDict[meshgrpName] = grp
+        return grp
+
+
+class MaterialCache(object):    
+    def __init__(self):
+        self.__matId = 0
+        self.__materialCache = {}
+        self.__textureCache  = {}
+        self.loadedImgs = []
+        self.failedImgs = []
+
+    def __matHash(self, texList):
+        res = ""
+        for texFile in texList:
+            res = res + texFile
+        return res
+
+
+    def createMaterial(self, texList):
+        if 0 == len(texList):
+            return None
+
+        matHash = self.__matHash(texList)
+
+        mat = self.__materialCache.get(matHash, "materialnotfound")
+        if "materialnotfound" == mat:
+            mat = None
+
+            # Create new material
+            matName = "mat_" + str(self.__matId)
+            self.__matId = self.__matId + 1
+            if 0 == ver_blender():
+                # Blender < 2.8
+                mat = self.__createMat27(matName, texList)
+            else:
+                # Blender >= 2.8
+                mat = self.__createMat28(matName, texList)
+
+
+            # Add to cache.
+            # If mat == None then material create error
+            self.__materialCache[matHash] = mat
+        return mat
+
+
+    # Blender < 2.8
+    def __createImageTexture(self, fullpath):
+        tex = self.__textureCache.get(fullpath, "notexturefound")
+        if "notexturefound" == tex:
+            tex = None
+            #writeLog("--> Image load: {:s}".format(fullpath))
+            try:
+                img = bpy.data.images.load(fullpath, True)
+                if isImageLoaded(img):
+                    writeLog("--> SUCCESSFULL load: {:s}".format(fullpath))
+                    self.loadedImgs.append(fullpath)
+                    # Image loaded successfully
+                    #   Create texture
+                    tex = bpy.data.textures.new(fullpath, type='IMAGE')
+                    tex.image = img
+                else:
+                    writeLog("--> FAILED to load: {:s}".format(fullpath))
+                    self.failedImgs.append(fullpath)
+                    bpy.data.images.remove(img)
+                    tex = None
+                    img = None
+            except Exception as e:
+                tex = None
+
+            self.__textureCache[fullpath] = tex
+        return tex
+
+
+    def __createMat27(self, matName, texList):
+        texObjList = []
+        for texFile in texList:
+            tex = self.__createImageTexture(texFile)
+            if tex:
+                texObjList.append(tex)
+
+        # Material textures load failed.
+        # No textures -> exit
+        if 0 == len(texObjList):
+            return None
+
+        # We have at least one texture -> create material
+        mat = bpy.data.materials.new(matName)
+        first = True
+        i = 0
+        for tex in texObjList:
+            slot = mat.texture_slots.create(i)
+            slot.texture = tex
+            slot.use = first
+            first = False
+            i = i + 1
+        return mat
+
+
+    # Blender >= 2.8
+    def __createImage(self, fullpath):
+        img = self.__textureCache.get(fullpath, "notexturefound")
+        if "notexturefound" == img:
+            img = None
+            #writeLog("--> Image load: {:s}".format(fullpath))
+            try:
+                img = bpy.data.images.load(fullpath)
+                if isImageLoaded(img):
+                    writeLog("--> SUCCESSFULL load: {:s}".format(fullpath))
+                    self.loadedImgs.append(fullpath)
+                    self.__textureCache[fullpath] = img
+                else:
+                    writeLog("--> FAILED to load: {:s}".format(fullpath))
+                    self.failedImgs.append(fullpath)
+                    bpy.data.images.remove(img)
+                    img = None
+            except Exception as e:
+                img = None
+
+            self.__textureCache[fullpath] = img
+
+        return img
+
+
+    def __createMat28(self, matName, texList):
+        # Blender >= 2.8
+        imgObjList = []
+        for texFile in texList:
+            img = self.__createImage(texFile)
+            if img:
+                imgObjList.append(img)
+
+        if 0 == len(imgObjList):
+            return None
+
+        mat = bpy.data.materials.new(matName)
+        mat.use_nodes = True
+        # CF2 user fix
+        for i, ib in enumerate(imgObjList):
+            b = int(str(i/3)[:1])+1
+            texImage = mat.node_tree.nodes.new('ShaderNodeTexImage')
+            texImage.image = imgObjList[i]
+            texImage.location.x -= b*300
+            texImage.location.y -= (i-b*3)*300+600
+        #img = imgObjList[0]
+        ##for texFile in texList:
+        #while True:
+        #    bsdf = mat.node_tree.nodes["Principled BSDF"]  #   Diffuse BSDF?
+        #    texImage = mat.node_tree.nodes.new('ShaderNodeTexImage')
+        #    texImage.image = img
+        #    mat.node_tree.links.new(bsdf.inputs['Base Color'], texImage.outputs['Color'])
+        #    break
+        return mat
+
+
+def impNrFile(filename, options, matCache, groupMgr):    
+    nr = ninjaripper.NR()
+    if not nr.parse(filename):        
+        errMsg = "Ninja Ripper file parsing failed. Error: " + nr.getErrorString()
+        writeLog(errMsg)
+        return {'status': False, 'msg': errMsg}
+
+    writeLog("Load: {:s}".format(filename))
+
+    fileDirectory = os.path.dirname(os.path.abspath(filename))
+    
+
+    grp = None
+    if groupMgr:
+        grp = groupMgr.getGroup(filename)
+
+
+    for meshIdx in range(0, nr.getMeshCount()):
+        nrmesh = nr.getMesh(meshIdx)
+
+        vert  = nrmesh.getVertexes()
+        if None == vert:
+            writeLog("vertexes == Null")
+            continue
+        
+        indx  = nrmesh.getIndexes()
+        if None == indx:
+            writeLog("indexes == Null")
+            continue
+        
+        if indx.getTopology() != ninjaripper.kTopologyTriangleList():
+            writeLog("Topology != TriangleList")
+            continue
+    
+        vatrs = nrmesh.getVertexAttributes()
+        if None == vatrs:
+            writeLog("vertexAttribs == Null")
+            continue
+        
+        # Get Textures object (TXTR tag in rip file)
+        #  textures = texture files list
+        textures = nrmesh.getTextures()
+
+        # Attr 0 is POSITION
+        if vatrs.getAttr(0).compCount != 4:
+            writeLog("Post vs position not 4 component")
+            continue
+
+        vertexData = vert.read()
+        positions3 = ninjaripper.restorePositionAsList(vert, vertexData, vatrs.getAttr(0), options['projmat'])
+
+        # Create list of faces
+        triangles = indx.read()
+        faces = []
+        for idx in range(0, int(indx.getIndexCount()/3) ):
+            p = struct.unpack_from("iii", triangles, 12*idx)
+            f = (p[0], p[1], p[2])
+            faces.append(f)
+
+
+        #Define mesh and object
+        meshName = os.path.basename(filename)
+        mesh = bpy.data.meshes.new(meshName)
+        obj  = bpy.data.objects.new(meshName, mesh)
+
+
+        if grp:
+            # If collection created then add object to its collection
+            grp.objects.link(obj)
+
+        #Set location and scene of object
+        if hasattr(bpy.context.scene, "cursor_location"):
+            obj.location = bpy.context.scene.cursor_location
+            bpy.context.scene.objects.link(obj)
+        elif hasattr(bpy.context.scene.cursor, "location"):
+            obj.location = bpy.context.scene.cursor.location
+            bpy.context.collection.objects.link(obj)
+
+
+        #Create mesh
+        mesh.from_pydata(positions3, [], faces)
+
+        # Assign normals
+        mesh.polygons.foreach_set("use_smooth", [True] * len(faces))
+        normalsVaList  = vatrs.findSemantic("NORMAL")
+        if len(normalsVaList):
+            # Check for normal is 3 components
+            if normalsVaList[0].compCount == 3:
+                normals = ninjaripper.unpackVertexComponentAsList(vert, vertexData, normalsVaList[0])
+                if normals is not None:
+                    mesh.use_auto_smooth = True
+                    if hasattr(mesh, "show_normal_vertex"):
+                        mesh.show_normal_vertex = True
+                    if hasattr(mesh, "show_normal_loop"):
+                        mesh.show_normal_loop = True
+                    mesh.normals_split_custom_set_from_vertices(normals)
+
+
+        # Create material if textures presented
+        if None != textures:
+            texList = []
+            if textures.getTexturesCount() > 0:
+                texCount = textures.getTexturesCount()
+                # Blender texture slots count maximum 18?
+                if texCount > 8:
+                    texCount = 8
+
+                for i in range(0, texCount):
+                    texName = fileDirectory + "\\" + textures.getTexture(i).fileName
+                    texList.append(texName)
+
+            mat = matCache.createMaterial(texList)
+            if mat:
+                obj.data.materials.append(mat)
+
+        mesh.update()
+
+        # Switch to bmesh
+        bm = bmesh.new()
+
+        try:
+            bm.from_mesh(mesh)
+            bm.verts.ensure_lookup_table()
+
+            if options['texMode'] == 'AUTO' or options['texMode'] == 'TEXCOORDBYNAME':
+                createTexCoords(bm, options, vert, vertexData, vatrs)
+            elif options['texMode'] == 'SCATTERTEXCOORD':
+                createTexCoordsScatter(bm, options, vert, vertexData, vatrs)
+
+            bm.to_mesh(mesh)
+        finally:
+            bm.free()
+
+        # Finalize
+        mesh.update()
+    return {'status': True, 'msg': ''}
+
+
+def createTexCoordsScatter(bm, options, vert, vertexData, vatrs):
+    texScatterU  = options['texScatterU']  # [attrIdx, compIdx]
+    texScatterV  = options['texScatterV']  # [attrIdx, compIdx]
+
+    texCoords = ninjaripper.unpackVertexComponentVaAsList(vert, vertexData, vatrs, [texScatterU, texScatterV])
+    if None == texCoords:
+        return
+
+    uv_lay = bm.loops.layers.uv.new('uv')
+
+    for face in bm.faces:
+        for vv in face.loops:
+            vertIndex = vv.vert.index
+            uv = mathutils.Vector(texCoords[vertIndex])
+            vv[uv_lay].uv.x = uv.x
+            vv[uv_lay].uv.y = 1.0 - uv.y
+
+
+def createTexCoords(bm, options, vert, vertexData, vatrs):
+    # Create UV maps
+    texCoordAttribName  = options['texCoordAttribName']  # Default TEXCOORD
+    texUvComponentU_Idx = options['texUvComponentIdx'][0]
+    texUvComponentV_Idx = options['texUvComponentIdx'][1]
+
+    texcoordVaList = vatrs.findSemantic(texCoordAttribName)
+    if len(texcoordVaList):
+        # UV coordinates loop
+        #TEXCOORD_0
+        #TEXCOORD_1
+        #TEXCOORD_2
+        #TEXCOORD_3
+        #TEXCOORD_4
+        for uvIdx in range(0, len(texcoordVaList)):
+            tcVa = texcoordVaList[uvIdx]   # Vertex attribute for texture coordinates
+
+            #v0 uvw
+            #v1 uvw
+            #v2 uvw
+            #....
+            layerTextureCoordinates = ninjaripper.unpackVertexComponentAsList(vert, vertexData, tcVa)
+            layerTextureCoordinates = ninjaripper.extractComponentsAsList(layerTextureCoordinates, [texUvComponentU_Idx, texUvComponentV_Idx])
+            if 0 == len(layerTextureCoordinates):
+                writeLog("No texture coordinates")
+                continue
+            if len(layerTextureCoordinates[0]) < 2:
+                writeLog("UV components < 2")
+                continue
+
+            uv_lay = bm.loops.layers.uv.new('uv_' + str(uvIdx))
+
+            for face in bm.faces:
+                for vv in face.loops:
+                    vertIndex = vv.vert.index
+                    uv = mathutils.Vector(layerTextureCoordinates[vertIndex])
+                    vv[uv_lay].uv.x = uv.x
+                    vv[uv_lay].uv.y = 1.0 - uv.y
+    else:
+        writeLog("Texture coords attribute {:s} not found".format(texCoordAttribName))
+
+
+def importNrFiles(paths, options):
+
+    global g_logger
+    if 'logger' in options:
+        g_logger = options['logger']
+
+    totalFilesCount = 0
+    matCache = MaterialCache()
+    groupMgr = GroupManager()
+
+    for file in paths:
+        if os.path.isfile(file):
+            impNrFile(file, options, matCache, groupMgr)
+            totalFilesCount = totalFilesCount + 1
+        elif os.path.isdir(file):
+            fileList = glob.glob(file + "*.nr")
+            for file in fileList:
+                impNrFile(file, options, matCache, groupMgr)
+                totalFilesCount = totalFilesCount + 1
+
+    writeLog("Total imported files count={:d}".format(totalFilesCount))
+    writeLog("Images loaded={:d}. Images failed={:d}".format(len(matCache.loadedImgs), len(matCache.failedImgs)))
+    for filename in matCache.failedImgs:
+      writeLog("Failed: {:s}".format(filename))
+
+    # Set far clip distance
+    for a in bpy.context.screen.areas:
+        if a.type == 'VIEW_3D':
+            for s in a.spaces:
+                if s.type == 'VIEW_3D':
+                    s.clip_end = 1000000.0

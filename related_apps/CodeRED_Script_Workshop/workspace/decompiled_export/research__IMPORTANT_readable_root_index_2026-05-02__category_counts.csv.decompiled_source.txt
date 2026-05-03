@@ -1,0 +1,13 @@
+# Code RED source/decompiled export
+# Source: research/IMPORTANT_readable_root_index_2026-05-02/category_counts.csv
+# SHA1: 21a1f68b3155c5bc6f4a8ab3c93f7fd57df8a9fc
+
+category,count
+model_resource_refs,1538
+world_nav_placement,1067
+strings_ui_text,729
+cutscenes_cameras,514
+vehicle_spawning,410
+multiplayer_scripts,372
+gringos_scripts,284
+npc_ai_factions,182

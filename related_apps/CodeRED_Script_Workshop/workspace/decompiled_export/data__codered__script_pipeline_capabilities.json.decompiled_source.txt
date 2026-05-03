@@ -1,0 +1,50 @@
+# Code RED source/decompiled export
+# Source: data/codered/script_pipeline_capabilities.json
+# SHA1: 9999abfca812df0efb941b5fccd4fffec02526e1
+
+{
+  "version": "1.0.0-script-pipeline",
+  "generated_utc": "2026-05-03T10:13:10Z",
+  "workflow": [
+    "scan",
+    "read",
+    "open",
+    "edit",
+    "export_decompiled_or_readable",
+    "import_queue",
+    "recompile_queue"
+  ],
+  "ready_now": [
+    "full script scan",
+    "full source/text read",
+    "safe open targets",
+    "safe edit workspace",
+    "source/text decompiled exports",
+    "compiled binary raw exports",
+    "compiled binary readable string/native reports",
+    "source import queue",
+    "source recompile queue",
+    "new script templates"
+  ],
+  "blocked_until_proof": [
+    "semantic bytecode decompile",
+    "compiled binary recompile from pseudo-decompiled report",
+    "automatic archive reintegration",
+    "live game script install"
+  ],
+  "outputs": {
+    "pipeline_root": "scratch/script_workshop_pipeline",
+    "scan_index_json": "scratch/script_workshop_pipeline/scan_index/script_pipeline_scan_index.json",
+    "scan_index_csv": "scratch/script_workshop_pipeline/scan_index/script_pipeline_scan_index.csv",
+    "open_helper": "scratch/script_workshop_pipeline/open_script_workshop.bat",
+    "guide": "scratch/script_workshop_pipeline/SCRIPT_PIPELINE_GUIDE.md",
+    "import_queue": "scratch/script_workshop_pipeline/import_queue/IMPORT_QUEUE.json",
+    "recompile_queue": "scratch/script_workshop_pipeline/recompile_queue/RECOMPILE_QUEUE.json",
+    "recompile_helper": "scratch/script_workshop_pipeline/recompile_queue/run_import_recompile_probe.bat",
+    "report_json": "logs/CodeRED_Script_Pipeline_Report.json",
+    "report_md": "logs/CodeRED_Script_Pipeline_Report.md",
+    "pipeline_manifest_json": "data/codered/script_pipeline_manifest.json",
+    "pipeline_manifest_csv": "data/codered/script_pipeline_manifest.csv",
+    "capabilities": "data/codered/script_pipeline_capabilities.json"
+  }
+}

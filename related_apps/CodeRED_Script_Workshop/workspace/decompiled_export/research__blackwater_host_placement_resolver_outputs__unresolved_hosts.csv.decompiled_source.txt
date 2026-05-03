@@ -1,0 +1,7 @@
+# Code RED source/decompiled export
+# Source: research/blackwater_host_placement_resolver_outputs/unresolved_hosts.csv
+# SHA1: dc8aa8058d029875708517e66ad94706aadde041
+
+wsi_source,host_name,host_hash_guess,string_occurrence_count,pointer_reference_count,hash_reference_count,reason
+/mnt/data/codered_run/blackwater_type134/0224_0x19839F99.wsi.decoded,p_gen_lumberCart01x,0x023CD4E8,1,1,not_used_in_pass3,no pointer reference resolved to props/drawable_instances known record layout
+/mnt/data/codered_run/blackwater_type134/0224_0x19839F99.wsi.decoded,p_gen_lumberCart03x,0x220584C9,1,1,not_used_in_pass3,no pointer reference resolved to props/drawable_instances known record layout

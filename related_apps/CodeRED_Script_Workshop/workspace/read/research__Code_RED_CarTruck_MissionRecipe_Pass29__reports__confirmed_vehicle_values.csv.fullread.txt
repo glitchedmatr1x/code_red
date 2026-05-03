@@ -1,0 +1,7 @@
+label,decimal,hex,notes
+ACTOR_VEHICLE_Truck01,1193,0x000004A9,confirmed car/truck script lane
+ACTOR_VEHICLE_Car01,1194,0x000004AA,confirmed car/truck script lane
+ACTOR_VEHICLE_WagonPrison01,1197,0x000004AD,draft/coach helper special-case: disables seats after 2
+ACTOR_VEHICLE_Wagon02,1199,0x000004AF,known wagon candidate
+ACTOR_VEHICLE_Coach01,1202,0x000004B2,known coach candidate
+ACTOR_RIDEABLE_ANIMAL_Horse01,976,0x000003D8,default horse value in draft helper

@@ -1,0 +1,9 @@
+# Code RED source/decompiled export
+# Source: research/extracted_root_research/category_counts.csv
+# SHA1: dbbd08af86a3e0552ce41bf7275c59af23b04bdd
+
+category,count
+vehicle_spawning,666
+strings,557
+gringos,286
+cutscenes,115

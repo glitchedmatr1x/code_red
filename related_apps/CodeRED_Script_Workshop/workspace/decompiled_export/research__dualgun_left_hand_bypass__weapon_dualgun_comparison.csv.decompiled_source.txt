@@ -1,0 +1,12 @@
+# Code RED source/decompiled export
+# Source: research/dualgun_left_hand_bypass/weapon_dualgun_comparison.csv
+# SHA1: c91bc8392e2f3bca15aa89828dea33afb56e647d
+
+archive,entry_path,weapon_file,base_weapon,AnimType,TrigHoldMode,ACTFileName,ACTRoot,AnimSet,IKOffset,IKOffsetHold,MuzzleOffset,CameraSpeedScalar,CameraSpeedScalarZoomed,WeaponArcGroupName,CanShootFromCamera,has_real_act_animset,dual_gun_relevance
+tune_d11generic.rpf,root/tune/settings/weapons/base_repeater.weap,base_repeater.weap,base_repeater,rfl,Single,Rifle_1892Win,Rifle_1892Win,Rifle_1892Win,-0.045000002	-0.012	-0.18799999,-0.075000003	0.07	-0.138,0	0.013	-0.64999998,1,1,Rifle,1,1,long_gun_ik_reference
+tune_d11generic.rpf,root/tune/settings/weapons/base_dualpistol.weap,base_dualpistol.weap,base_dualpistol,ptl,Single,donothing,DoNothing,<none>,0	0	0,0	0	0,0	0.029999999	-0.1,1,1,Pistol,1,0,primary_target
+tune_d11generic.rpf,root/tune/settings/weapons/base_shotgun.weap,base_shotgun.weap,base_shotgun,rfl,Single,rifle_1892Win,rifle_1892Win,rifle_1892Win,-0.059999999	-0.032000002	-0.18799999,-0.075000003	0.025	-0.138,0	0.013	-0.64999998,1,1,Shotgun,1,1,long_gun_ik_reference
+tune_d11generic.rpf,root/tune/settings/weapons/base_bow.weap,base_bow.weap,base_bow,rfl,Single,Rifle_1892Win,Rifle_1892Win,Rifle_1892Win,-0.045000002	-0.012	-0.18799999,-0.075000003	0.07	-0.138,0	0.013	-0.64999998,1,1,Rifle,1,1,
+tune_d11generic.rpf,root/tune/settings/weapons/base_rifle.weap,base_rifle.weap,base_rifle,rfl,Single,rifle_1892Win,rifle_1892Win,rifle_1892Win,-0.059999999	-0.032000002	-0.18799999,-0.075000003	0.025	-0.138,0	0.013	-0.64999998,1,1,Rifle,1,1,long_gun_ik_reference
+tune_d11generic.rpf,root/tune/settings/weapons/base_sniperrifle.weap,base_sniperrifle.weap,base_sniperrifle,rfl,Single,rifle_1892Win,rifle_1892Win,rifle_1892Win,-0.059999999	-0.032000002	-0.18799999,-0.075000003	0.025	-0.138,0	0.013	-0.64999998,1,1,SniperRifle,1,1,long_gun_ik_reference
+tune_d11generic.rpf,root/tune/settings/weapons/base_pistol.weap,base_pistol.weap,base_pistol,ptl,Single,donothing,DoNothing,<none>,0	0	0,0	0	0,0	0.029999999	-0.1,1,1,Pistol,1,0,pistol_baseline
