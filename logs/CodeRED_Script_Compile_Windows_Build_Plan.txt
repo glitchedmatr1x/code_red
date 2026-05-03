@@ -7,14 +7,14 @@ Purpose:
 - Keep existing binary .wsc/.xsc/.sco roundtrip proof-gated until separately proven.
 
 Validated files:
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c : missing
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c : present
 - related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\scripts\validate_vehicle_menu_probe.py : present
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\types.h : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\constants.h : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\intrinsics.h : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\natives.h : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\natives32.h : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\consts32.h : missing
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\types.h : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\constants.h : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\intrinsics.h : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\natives.h : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\natives32.h : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\consts32.h : present
 - related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.bat : missing
 - related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.ps1 : missing
 - related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.bat : missing

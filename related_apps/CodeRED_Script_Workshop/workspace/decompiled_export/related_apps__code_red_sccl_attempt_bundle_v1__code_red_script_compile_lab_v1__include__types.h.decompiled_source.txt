@@ -1,0 +1,19 @@
+# Code RED source/decompiled export
+# Source: related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h
+# SHA1: d69c8fe4c4ea8ca8a16feaca8866aa85ec926381
+
+#pragma once
+
+/* Minimal source-first types for the Code RED script compile proof lane. */
+
+typedef int Actor;
+typedef int Layout;
+typedef int ScriptId;
+typedef int BOOL;
+
+#ifndef true
+#define true 1
+#endif
+#ifndef false
+#define false 0
+#endif

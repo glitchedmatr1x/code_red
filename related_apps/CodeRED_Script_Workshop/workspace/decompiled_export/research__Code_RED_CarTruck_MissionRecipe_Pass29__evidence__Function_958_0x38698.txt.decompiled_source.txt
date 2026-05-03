@@ -1,23 +1,23 @@
 # Code RED source/decompiled export
 # Source: research/Code_RED_CarTruck_MissionRecipe_Pass29/evidence/Function_958_0x38698.txt
-# SHA1: 6c925671596dc7d75c2c1b7e2ffcd4bbfee76938
+# SHA1: e5e413184fb993f7a1d13e729ba8f132ac25c4f1
 
-void Function_958(var uParam0, var uParam1) //Position: 0x38698
-{
-    if (!IS_ACTOR_VALID(&uParam0))
-    {
-        return;
-    }
-    if (GET_ACTOR_ENUM(&uParam0) == 1194 && GET_ACTOR_ENUM(&uParam0) == 1193)
-    {
-        return;
-    }
-    if (!DECOR_CHECK_EXIST(&uParam0, "carSettings"))
-    {
-        Unknown_Function();
-    }
-    uVar0 = DECOR_GET_INT(&uParam0, "carSettings");
-    Function_38(&uVar0, uParam1);
-    DECOR_SET_INT(&uParam0, "carSettings", uVar0);
-    return;
-}
+void Function_958(var uParam0, var uParam1) //Position: 0x38698
+{
+    if (!IS_ACTOR_VALID(&uParam0))
+    {
+        return;
+    }
+    if (GET_ACTOR_ENUM(&uParam0) == 1194 && GET_ACTOR_ENUM(&uParam0) == 1193)
+    {
+        return;
+    }
+    if (!DECOR_CHECK_EXIST(&uParam0, "carSettings"))
+    {
+        Unknown_Function();
+    }
+    uVar0 = DECOR_GET_INT(&uParam0, "carSettings");
+    Function_38(&uVar0, uParam1);
+    DECOR_SET_INT(&uParam0, "carSettings", uVar0);
+    return;
+}

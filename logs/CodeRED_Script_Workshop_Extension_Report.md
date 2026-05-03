@@ -1,15 +1,15 @@
 # Code RED Script Workshop Extension Report
 
-Generated: 2026-05-03T11:20:58Z
+Generated: 2026-05-03T11:35:25Z
 Version: `1.1.0-script-workshop-extension-hardening`
 
 ## Summary
 
-- Records: `287`
-- Editable source/text files: `276`
+- Records: `295`
+- Editable source/text files: `284`
 - Compiled binary read-only files: `11`
-- Import queue items: `276`
-- Recompile queue items: `4`
+- Import queue items: `284`
+- Recompile queue items: `12`
 - New script templates: `3`
 
 ## Safety

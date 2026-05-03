@@ -1,318 +1,318 @@
-#!/usr/bin/env python3
-"""Validate Code RED's in-app RPF/archive lane.
-
-This proof pass is intentionally conservative:
-- it does not modify archives;
-- it inventories staged RPF6 archives;
-- it sample-reads entries to prove the parser/extractor path works;
-- it writes markdown/json reports for the one-app dashboard.
-"""
-from __future__ import annotations
-
-import argparse
-import importlib.util
-import json
-import sys
-from collections import Counter
-from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any
-
-VERSION = "1.0.0-archive-lane-validation"
-DEFAULT_ARCHIVE_NAMES = (
-    "content.rpf",
-    "tune_d11generic.rpf",
-    "terrainboundres.rpf",
-    "camera.rpf",
-    "gringores.rpf",
-    "navres.rpf",
-    "strings_d11generic.rpf",
-)
-
-
-@dataclass
-class ArchiveSummary:
-    archive_path: str
-    exists: bool
-    parsed: bool = False
-    entry_count: int = 0
-    file_count: int = 0
-    dir_count: int = 0
-    resolved_count: int = 0
-    storage_counts: dict[str, int] = field(default_factory=dict)
-    extension_counts: dict[str, int] = field(default_factory=dict)
-    module_counts: dict[str, int] = field(default_factory=dict)
-    sample_attempts: int = 0
-    sample_extract_ok: int = 0
-    sample_extract_fail: int = 0
-    sample_text_like: int = 0
-    sample_resource: int = 0
-    largest_entries: list[dict[str, Any]] = field(default_factory=list)
-    sample_entries: list[dict[str, Any]] = field(default_factory=list)
-    error: str = ""
-
-
-@dataclass
-class ArchiveLaneReport:
-    version: str
-    generated_utc: str
-    root: str
-    status: str
-    archive_count: int
-    parsed_count: int
-    total_entries: int
-    total_files: int
-    total_sample_attempts: int
-    total_sample_ok: int
-    total_sample_fail: int
-    archives: list[ArchiveSummary]
-    outputs: dict[str, str] = field(default_factory=dict)
-
-
-def utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-
-
-def load_workbench(root: Path):
-    module_path = root / "python_workbench.py"
-    if not module_path.exists():
-        raise FileNotFoundError(module_path)
-    spec = importlib.util.spec_from_file_location("codered_workbench_archive_validation", module_path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"Could not load {module_path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-def discover_archives(root: Path, explicit: list[Path]) -> list[Path]:
-    found: list[Path] = []
-    seen: set[str] = set()
-
-    def add(path: Path) -> None:
-        try:
-            resolved = str(path.resolve())
-        except Exception:
-            resolved = str(path)
-        if resolved in seen or not path.exists() or path.is_dir() or path.suffix.lower() != ".rpf":
-            return
-        seen.add(resolved)
-        found.append(path)
-
-    for item in explicit:
-        add(item.resolve() if not item.is_absolute() else item)
-
-    candidate_dirs = [
-        root / "imports",
-        root / "game",
-        root,
-        root.parent,
-    ]
-    for folder in candidate_dirs:
-        for name in DEFAULT_ARCHIVE_NAMES:
-            add(folder / name)
-    return found
-
-
-def safe_int(value: Any) -> int:
-    try:
-        return int(value or 0)
-    except Exception:
-        return 0
-
-
-def summarize_archive(wb, archive_path: Path, sample_limit: int) -> ArchiveSummary:
-    summary = ArchiveSummary(archive_path=str(archive_path), exists=archive_path.exists())
-    if not archive_path.exists():
-        summary.error = "archive missing"
-        return summary
-    try:
-        info = wb.parse_rpf6(archive_path)
-    except Exception as exc:
-        summary.error = f"parse failed: {exc}"
-        return summary
-    if info is None:
-        summary.error = "parse returned no RPF6 inventory"
-        return summary
-
-    summary.parsed = True
-    summary.entry_count = safe_int(info.get("entry_count"))
-    summary.file_count = safe_int(info.get("file_count"))
-    summary.dir_count = safe_int(info.get("dir_count"))
-    summary.resolved_count = safe_int(info.get("resolved_count"))
-
-    storage_counts: Counter[str] = Counter()
-    module_counts: Counter[str] = Counter()
-    extension_counts: Counter[str] = Counter()
-    file_entries = [ent for ent in info.get("entries", []) if ent.get("type") == "file"]
-    for ent in file_entries:
-        storage_counts[wb._codered_storage_kind(ent)] += 1
-        module_counts[wb._codered_module_name_for_virtual_path(ent.get("path") or ent.get("name") or "")] += 1
-        extension_counts[ent.get("extension") or ""] += 1
-
-    summary.storage_counts = dict(sorted(storage_counts.items()))
-    summary.module_counts = dict(sorted(module_counts.items()))
-    summary.extension_counts = dict(extension_counts.most_common(24))
-    largest = sorted(file_entries, key=lambda ent: safe_int(ent.get("size_in_archive")), reverse=True)[:10]
-    summary.largest_entries = [
-        {
-            "index": ent.get("index"),
-            "path": ent.get("path"),
-            "extension": ent.get("extension"),
-            "storage": wb._codered_storage_kind(ent),
-            "size_in_archive": safe_int(ent.get("size_in_archive")),
-            "total_size": safe_int(ent.get("total_size")),
-        }
-        for ent in largest
-    ]
-
-    sample_candidates = sorted(file_entries, key=lambda ent: (0 if ent.get("extension") in {".xml", ".txt", ".wsc", ".csc", ".strtbl"} else 1, safe_int(ent.get("index"))))[: max(0, sample_limit)]
-    for ent in sample_candidates:
-        row = {
-            "index": ent.get("index"),
-            "path": ent.get("path"),
-            "extension": ent.get("extension"),
-            "storage": wb._codered_storage_kind(ent),
-            "size_in_archive": safe_int(ent.get("size_in_archive")),
-        }
-        summary.sample_attempts += 1
-        try:
-            data = wb.extract_rpf_entry(archive_path, ent)
-            row["extract_ok"] = True
-            row["extracted_size"] = len(data)
-            resource = wb.parse_resource_header(data)
-            if resource:
-                summary.sample_resource += 1
-                row["resource_type"] = resource.get("resource_type")
-                payload_info = wb.extract_resource_payload(data, resource)
-                payload = payload_info.get("payload", data) or data
-            else:
-                payload = data
-            if wb.is_probably_text(payload[:8192]):
-                summary.sample_text_like += 1
-                row["text_like"] = True
-            else:
-                row["text_like"] = False
-            summary.sample_extract_ok += 1
-        except Exception as exc:
-            row["extract_ok"] = False
-            row["error"] = str(exc)
-            summary.sample_extract_fail += 1
-        summary.sample_entries.append(row)
-    return summary
-
-
-def render_markdown(report: ArchiveLaneReport) -> str:
-    lines = [
-        "# Code RED Archive / RPF Lane Validation Report",
-        "",
-        f"Generated UTC: `{report.generated_utc}`",
-        f"Root: `{report.root}`",
-        f"Status: **{report.status}**",
-        "",
-        "## Summary",
-        "",
-        f"- Archives discovered: {report.archive_count}",
-        f"- Archives parsed: {report.parsed_count}",
-        f"- Total entries: {report.total_entries}",
-        f"- Total files: {report.total_files}",
-        f"- Sample reads: {report.total_sample_ok}/{report.total_sample_attempts} ok",
-        f"- Sample failures: {report.total_sample_fail}",
-        "",
-        "## Archives",
-        "",
-    ]
-    for archive in report.archives:
-        lines.extend([
-            f"### {Path(archive.archive_path).name}",
-            "",
-            f"Path: `{archive.archive_path}`",
-            f"Parsed: {'yes' if archive.parsed else 'no'}",
-        ])
-        if archive.error:
-            lines.append(f"Error: `{archive.error}`")
-        if archive.parsed:
-            lines.extend([
-                f"Entries: {archive.entry_count}  Files: {archive.file_count}  Dirs: {archive.dir_count}",
-                f"Resolved names: {archive.resolved_count}/{archive.entry_count}",
-                f"Sample reads: {archive.sample_extract_ok}/{archive.sample_attempts} ok; failed={archive.sample_extract_fail}; text-like={archive.sample_text_like}; resource={archive.sample_resource}",
-                "",
-                "Top storage counts:",
-            ])
-            for key, count in sorted(archive.storage_counts.items()):
-                lines.append(f"- {key}: {count}")
-            lines.extend(["", "Top module counts:"])
-            for key, count in sorted(archive.module_counts.items(), key=lambda item: item[1], reverse=True)[:10]:
-                lines.append(f"- {key}: {count}")
-            lines.extend(["", "Sample entries:"])
-            for row in archive.sample_entries[:12]:
-                state = "ok" if row.get("extract_ok") else "fail"
-                extra = " text" if row.get("text_like") else ""
-                lines.append(f"- [{state}] {row.get('path')} | {row.get('storage')} | {row.get('extension')} | {row.get('extracted_size', 0)} bytes{extra}")
-        lines.append("")
-    lines.extend([
-        "## Safety",
-        "",
-        "This validation is read-only. It inventories and sample-reads staged RPF6 archives, but does not modify source archives.",
-        "Patch/install operations must continue to use copied archives and proof reports.",
-        "",
-    ])
-    return "\n".join(lines)
-
-
-def write_reports(root: Path, report: ArchiveLaneReport) -> ArchiveLaneReport:
-    logs = root / "logs"
-    logs.mkdir(parents=True, exist_ok=True)
-    md_path = logs / "CodeRED_Archive_Lane_Validation_Report.md"
-    json_path = logs / "CodeRED_Archive_Lane_Validation_Report.json"
-    report.outputs = {"markdown": str(md_path), "json": str(json_path)}
-    md_path.write_text(render_markdown(report), encoding="utf-8")
-    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
-    return report
-
-
-def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Validate Code RED archive/RPF lane readiness.")
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--archive", type=Path, action="append", default=[], help="Explicit RPF archive to validate. Can be repeated.")
-    parser.add_argument("--sample-limit", type=int, default=8, help="Maximum entries to sample-read per archive.")
-    return parser
-
-
-def main() -> int:
-    args = build_arg_parser().parse_args()
-    root = args.root.resolve()
-    wb = load_workbench(root)
-    archives = discover_archives(root, args.archive)
-    summaries = [summarize_archive(wb, path, args.sample_limit) for path in archives]
-    parsed_count = sum(1 for item in summaries if item.parsed)
-    total_sample_attempts = sum(item.sample_attempts for item in summaries)
-    total_sample_ok = sum(item.sample_extract_ok for item in summaries)
-    total_sample_fail = sum(item.sample_extract_fail for item in summaries)
-    status = "PASS" if summaries and parsed_count == len(summaries) and total_sample_fail == 0 and total_sample_ok > 0 else "PARTIAL"
-    report = ArchiveLaneReport(
-        version=VERSION,
-        generated_utc=utc_now(),
-        root=str(root),
-        status=status,
-        archive_count=len(summaries),
-        parsed_count=parsed_count,
-        total_entries=sum(item.entry_count for item in summaries),
-        total_files=sum(item.file_count for item in summaries),
-        total_sample_attempts=total_sample_attempts,
-        total_sample_ok=total_sample_ok,
-        total_sample_fail=total_sample_fail,
-        archives=summaries,
-    )
-    report = write_reports(root, report)
-    print(f"Archive lane validation: {report.status}")
-    print(f"Archives parsed: {report.parsed_count}/{report.archive_count}")
-    print(f"Sample reads: {report.total_sample_ok}/{report.total_sample_attempts} ok")
-    print(f"Report: {report.outputs['markdown']}")
-    return 0 if report.status == "PASS" else 2
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+#!/usr/bin/env python3
+"""Validate Code RED's in-app RPF/archive lane.
+
+This proof pass is intentionally conservative:
+- it does not modify archives;
+- it inventories staged RPF6 archives;
+- it sample-reads entries to prove the parser/extractor path works;
+- it writes markdown/json reports for the one-app dashboard.
+"""
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import json
+import sys
+from collections import Counter
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+VERSION = "1.0.0-archive-lane-validation"
+DEFAULT_ARCHIVE_NAMES = (
+    "content.rpf",
+    "tune_d11generic.rpf",
+    "terrainboundres.rpf",
+    "camera.rpf",
+    "gringores.rpf",
+    "navres.rpf",
+    "strings_d11generic.rpf",
+)
+
+
+@dataclass
+class ArchiveSummary:
+    archive_path: str
+    exists: bool
+    parsed: bool = False
+    entry_count: int = 0
+    file_count: int = 0
+    dir_count: int = 0
+    resolved_count: int = 0
+    storage_counts: dict[str, int] = field(default_factory=dict)
+    extension_counts: dict[str, int] = field(default_factory=dict)
+    module_counts: dict[str, int] = field(default_factory=dict)
+    sample_attempts: int = 0
+    sample_extract_ok: int = 0
+    sample_extract_fail: int = 0
+    sample_text_like: int = 0
+    sample_resource: int = 0
+    largest_entries: list[dict[str, Any]] = field(default_factory=list)
+    sample_entries: list[dict[str, Any]] = field(default_factory=list)
+    error: str = ""
+
+
+@dataclass
+class ArchiveLaneReport:
+    version: str
+    generated_utc: str
+    root: str
+    status: str
+    archive_count: int
+    parsed_count: int
+    total_entries: int
+    total_files: int
+    total_sample_attempts: int
+    total_sample_ok: int
+    total_sample_fail: int
+    archives: list[ArchiveSummary]
+    outputs: dict[str, str] = field(default_factory=dict)
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def load_workbench(root: Path):
+    module_path = root / "python_workbench.py"
+    if not module_path.exists():
+        raise FileNotFoundError(module_path)
+    spec = importlib.util.spec_from_file_location("codered_workbench_archive_validation", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Could not load {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def discover_archives(root: Path, explicit: list[Path]) -> list[Path]:
+    found: list[Path] = []
+    seen: set[str] = set()
+
+    def add(path: Path) -> None:
+        try:
+            resolved = str(path.resolve())
+        except Exception:
+            resolved = str(path)
+        if resolved in seen or not path.exists() or path.is_dir() or path.suffix.lower() != ".rpf":
+            return
+        seen.add(resolved)
+        found.append(path)
+
+    for item in explicit:
+        add(item.resolve() if not item.is_absolute() else item)
+
+    candidate_dirs = [
+        root / "imports",
+        root / "game",
+        root,
+        root.parent,
+    ]
+    for folder in candidate_dirs:
+        for name in DEFAULT_ARCHIVE_NAMES:
+            add(folder / name)
+    return found
+
+
+def safe_int(value: Any) -> int:
+    try:
+        return int(value or 0)
+    except Exception:
+        return 0
+
+
+def summarize_archive(wb, archive_path: Path, sample_limit: int) -> ArchiveSummary:
+    summary = ArchiveSummary(archive_path=str(archive_path), exists=archive_path.exists())
+    if not archive_path.exists():
+        summary.error = "archive missing"
+        return summary
+    try:
+        info = wb.parse_rpf6(archive_path)
+    except Exception as exc:
+        summary.error = f"parse failed: {exc}"
+        return summary
+    if info is None:
+        summary.error = "parse returned no RPF6 inventory"
+        return summary
+
+    summary.parsed = True
+    summary.entry_count = safe_int(info.get("entry_count"))
+    summary.file_count = safe_int(info.get("file_count"))
+    summary.dir_count = safe_int(info.get("dir_count"))
+    summary.resolved_count = safe_int(info.get("resolved_count"))
+
+    storage_counts: Counter[str] = Counter()
+    module_counts: Counter[str] = Counter()
+    extension_counts: Counter[str] = Counter()
+    file_entries = [ent for ent in info.get("entries", []) if ent.get("type") == "file"]
+    for ent in file_entries:
+        storage_counts[wb._codered_storage_kind(ent)] += 1
+        module_counts[wb._codered_module_name_for_virtual_path(ent.get("path") or ent.get("name") or "")] += 1
+        extension_counts[ent.get("extension") or ""] += 1
+
+    summary.storage_counts = dict(sorted(storage_counts.items()))
+    summary.module_counts = dict(sorted(module_counts.items()))
+    summary.extension_counts = dict(extension_counts.most_common(24))
+    largest = sorted(file_entries, key=lambda ent: safe_int(ent.get("size_in_archive")), reverse=True)[:10]
+    summary.largest_entries = [
+        {
+            "index": ent.get("index"),
+            "path": ent.get("path"),
+            "extension": ent.get("extension"),
+            "storage": wb._codered_storage_kind(ent),
+            "size_in_archive": safe_int(ent.get("size_in_archive")),
+            "total_size": safe_int(ent.get("total_size")),
+        }
+        for ent in largest
+    ]
+
+    sample_candidates = sorted(file_entries, key=lambda ent: (0 if ent.get("extension") in {".xml", ".txt", ".wsc", ".csc", ".strtbl"} else 1, safe_int(ent.get("index"))))[: max(0, sample_limit)]
+    for ent in sample_candidates:
+        row = {
+            "index": ent.get("index"),
+            "path": ent.get("path"),
+            "extension": ent.get("extension"),
+            "storage": wb._codered_storage_kind(ent),
+            "size_in_archive": safe_int(ent.get("size_in_archive")),
+        }
+        summary.sample_attempts += 1
+        try:
+            data = wb.extract_rpf_entry(archive_path, ent)
+            row["extract_ok"] = True
+            row["extracted_size"] = len(data)
+            resource = wb.parse_resource_header(data)
+            if resource:
+                summary.sample_resource += 1
+                row["resource_type"] = resource.get("resource_type")
+                payload_info = wb.extract_resource_payload(data, resource)
+                payload = payload_info.get("payload", data) or data
+            else:
+                payload = data
+            if wb.is_probably_text(payload[:8192]):
+                summary.sample_text_like += 1
+                row["text_like"] = True
+            else:
+                row["text_like"] = False
+            summary.sample_extract_ok += 1
+        except Exception as exc:
+            row["extract_ok"] = False
+            row["error"] = str(exc)
+            summary.sample_extract_fail += 1
+        summary.sample_entries.append(row)
+    return summary
+
+
+def render_markdown(report: ArchiveLaneReport) -> str:
+    lines = [
+        "# Code RED Archive / RPF Lane Validation Report",
+        "",
+        f"Generated UTC: `{report.generated_utc}`",
+        f"Root: `{report.root}`",
+        f"Status: **{report.status}**",
+        "",
+        "## Summary",
+        "",
+        f"- Archives discovered: {report.archive_count}",
+        f"- Archives parsed: {report.parsed_count}",
+        f"- Total entries: {report.total_entries}",
+        f"- Total files: {report.total_files}",
+        f"- Sample reads: {report.total_sample_ok}/{report.total_sample_attempts} ok",
+        f"- Sample failures: {report.total_sample_fail}",
+        "",
+        "## Archives",
+        "",
+    ]
+    for archive in report.archives:
+        lines.extend([
+            f"### {Path(archive.archive_path).name}",
+            "",
+            f"Path: `{archive.archive_path}`",
+            f"Parsed: {'yes' if archive.parsed else 'no'}",
+        ])
+        if archive.error:
+            lines.append(f"Error: `{archive.error}`")
+        if archive.parsed:
+            lines.extend([
+                f"Entries: {archive.entry_count}  Files: {archive.file_count}  Dirs: {archive.dir_count}",
+                f"Resolved names: {archive.resolved_count}/{archive.entry_count}",
+                f"Sample reads: {archive.sample_extract_ok}/{archive.sample_attempts} ok; failed={archive.sample_extract_fail}; text-like={archive.sample_text_like}; resource={archive.sample_resource}",
+                "",
+                "Top storage counts:",
+            ])
+            for key, count in sorted(archive.storage_counts.items()):
+                lines.append(f"- {key}: {count}")
+            lines.extend(["", "Top module counts:"])
+            for key, count in sorted(archive.module_counts.items(), key=lambda item: item[1], reverse=True)[:10]:
+                lines.append(f"- {key}: {count}")
+            lines.extend(["", "Sample entries:"])
+            for row in archive.sample_entries[:12]:
+                state = "ok" if row.get("extract_ok") else "fail"
+                extra = " text" if row.get("text_like") else ""
+                lines.append(f"- [{state}] {row.get('path')} | {row.get('storage')} | {row.get('extension')} | {row.get('extracted_size', 0)} bytes{extra}")
+        lines.append("")
+    lines.extend([
+        "## Safety",
+        "",
+        "This validation is read-only. It inventories and sample-reads staged RPF6 archives, but does not modify source archives.",
+        "Patch/install operations must continue to use copied archives and proof reports.",
+        "",
+    ])
+    return "\n".join(lines)
+
+
+def write_reports(root: Path, report: ArchiveLaneReport) -> ArchiveLaneReport:
+    logs = root / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    md_path = logs / "CodeRED_Archive_Lane_Validation_Report.md"
+    json_path = logs / "CodeRED_Archive_Lane_Validation_Report.json"
+    report.outputs = {"markdown": str(md_path), "json": str(json_path)}
+    md_path.write_text(render_markdown(report), encoding="utf-8")
+    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
+    return report
+
+
+def build_arg_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Validate Code RED archive/RPF lane readiness.")
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--archive", type=Path, action="append", default=[], help="Explicit RPF archive to validate. Can be repeated.")
+    parser.add_argument("--sample-limit", type=int, default=8, help="Maximum entries to sample-read per archive.")
+    return parser
+
+
+def main() -> int:
+    args = build_arg_parser().parse_args()
+    root = args.root.resolve()
+    wb = load_workbench(root)
+    archives = discover_archives(root, args.archive)
+    summaries = [summarize_archive(wb, path, args.sample_limit) for path in archives]
+    parsed_count = sum(1 for item in summaries if item.parsed)
+    total_sample_attempts = sum(item.sample_attempts for item in summaries)
+    total_sample_ok = sum(item.sample_extract_ok for item in summaries)
+    total_sample_fail = sum(item.sample_extract_fail for item in summaries)
+    status = "PASS" if summaries and parsed_count == len(summaries) and total_sample_fail == 0 and total_sample_ok > 0 else "PARTIAL"
+    report = ArchiveLaneReport(
+        version=VERSION,
+        generated_utc=utc_now(),
+        root=str(root),
+        status=status,
+        archive_count=len(summaries),
+        parsed_count=parsed_count,
+        total_entries=sum(item.entry_count for item in summaries),
+        total_files=sum(item.file_count for item in summaries),
+        total_sample_attempts=total_sample_attempts,
+        total_sample_ok=total_sample_ok,
+        total_sample_fail=total_sample_fail,
+        archives=summaries,
+    )
+    report = write_reports(root, report)
+    print(f"Archive lane validation: {report.status}")
+    print(f"Archives parsed: {report.parsed_count}/{report.archive_count}")
+    print(f"Sample reads: {report.total_sample_ok}/{report.total_sample_attempts} ok")
+    print(f"Report: {report.outputs['markdown']}")
+    return 0 if report.status == "PASS" else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

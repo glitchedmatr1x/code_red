@@ -1,0 +1,121 @@
+/*
+   Code RED Vehicle Menu Probe
+   Source-first compile proof target for the Script Workshop / SC-CL lane.
+
+   This file is intentionally conservative. It is a probe used to prove that
+   Code RED can stage a script source, validate native/constant coverage, and
+   prepare a Windows compile run. It is not installed into a live archive by
+   this lane.
+*/
+
+#include "../include/types.h"
+#include "../include/constants.h"
+#include "../include/intrinsics.h"
+#include "../include/natives.h"
+#include "../include/RDR/natives32.h"
+#include "../include/RDR/consts32.h"
+
+static Layout g_codeRedLayout = 0;
+static Actor g_player = 0;
+static Actor g_vehicle = 0;
+static int g_selectedVehicle = ACTOR_VEHICLE_Car01;
+static float g_speedCap = 18.0f;
+
+static void CR_Print(const char* text)
+{
+    _CLEAR_PRINTS();
+    _PRINT_SUBTITLE(text, 3000, 1, 1, 1);
+}
+
+static void CR_EnsureLayout(void)
+{
+    if (!_IS_LAYOUT_VALID(g_codeRedLayout))
+    {
+        g_codeRedLayout = CREATE_LAYOUT("CodeREDVehicleProbe");
+    }
+}
+
+static void CR_DestroyVehicle(void)
+{
+    Actor existing = FIND_ACTOR_IN_LAYOUT(g_codeRedLayout, "CodeREDProbeVehicle");
+    if (IS_ACTOR_VALID(existing))
+    {
+        DESTROY_ACTOR(existing);
+    }
+    g_vehicle = 0;
+}
+
+static void CR_ApplyTune(Actor vehicle)
+{
+    if (!IS_ACTOR_VALID(vehicle))
+    {
+        return;
+    }
+    if (!IS_ACTOR_VEHICLE(vehicle))
+    {
+        return;
+    }
+
+    ENABLE_VEHICLE_SEAT(vehicle, 0, 1);
+    SET_VEHICLE_ALLOWED_TO_DRIVE(vehicle, 1);
+    SET_VEHICLE_ENGINE_RUNNING(vehicle, 1);
+    VEHICLE_SET_HANDBRAKE(vehicle, 0);
+    SET_ACTOR_MAX_SPEED(vehicle, g_speedCap);
+    SET_ACTOR_MAX_SPEED_ABSOLUTE(vehicle, g_speedCap);
+    SET_ACTOR_SPEED(vehicle, g_speedCap);
+    START_VEHICLE(vehicle);
+}
+
+static void CR_SpawnVehicle(int actorModel)
+{
+    CR_EnsureLayout();
+    CR_DestroyVehicle();
+
+    g_player = GET_PLAYER_ACTOR(0);
+    STREAMING_REQUEST_ACTOR(actorModel, 1, 1);
+    g_vehicle = CREATE_ACTOR_IN_LAYOUT(g_codeRedLayout, "CodeREDProbeVehicle", actorModel, 0.0f, 0.0f, 0.0f, 0.0f);
+
+    if (IS_ACTOR_VALID(g_vehicle))
+    {
+        CR_ApplyTune(g_vehicle);
+        if (IS_ACTOR_VALID(g_player))
+        {
+            SET_ACTOR_IN_VEHICLE(g_player, g_vehicle, 0);
+        }
+        CR_Print("CODE RED VEH MENU: vehicle spawned");
+    }
+    else
+    {
+        CR_Print("CODE RED VEH MENU: spawn failed");
+    }
+}
+
+static void CR_HandleInput(void)
+{
+    if (_IS_KEY_PRESSED(KEY_F5))
+    {
+        if (g_selectedVehicle == ACTOR_VEHICLE_Car01)
+        {
+            g_selectedVehicle = ACTOR_VEHICLE_Truck01;
+            CR_Print("CODE RED VEH MENU: Truck01 selected");
+        }
+        else
+        {
+            g_selectedVehicle = ACTOR_VEHICLE_Car01;
+            CR_Print("CODE RED VEH MENU: Car01 selected");
+        }
+        CR_SpawnVehicle(g_selectedVehicle);
+    }
+}
+
+void main(void)
+{
+    ADD_PERSISTENT_SCRIPT(_GET_ID_OF_THIS_SCRIPT());
+    CR_Print("CODE RED VEH MENU: ready");
+
+    while (true)
+    {
+        CR_HandleInput();
+        WAIT(0);
+    }
+}

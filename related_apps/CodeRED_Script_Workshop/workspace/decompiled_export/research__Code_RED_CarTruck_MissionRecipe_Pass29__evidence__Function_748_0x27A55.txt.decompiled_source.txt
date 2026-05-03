@@ -1,15 +1,15 @@
 # Code RED source/decompiled export
 # Source: research/Code_RED_CarTruck_MissionRecipe_Pass29/evidence/Function_748_0x27A55.txt
-# SHA1: 3b84f39a9640f4dce3800a7493b38f3f0e3c849b
+# SHA1: 615f58364f7e7ad39afb18ded1e172bff7c558e9
 
-void Function_748() //Position: 0x27A55
-{
-    var uVar0;
-    
-    TELEPORT_OBJECT_TO_OBJECT(0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1065353216);
-    _GRINGO_SET_IS_USABLE_BY_PLAYER(&uVar0, "MaximShootTruck", 0);
-    _GRINGO_SET_IS_USABLE_BY_PLAYER(&uVar0, "MaximShoot", 1);
-    SNAP_ACTOR_TO_GRINGO(&Global_54076, &uLocal_1393, "MaximShoot", 1, 0, 0);
-    UI_HIDE("reticule");
-    return;
-}
+void Function_748() //Position: 0x27A55
+{
+    var uVar0;
+    
+    TELEPORT_OBJECT_TO_OBJECT(0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1065353216);
+    _GRINGO_SET_IS_USABLE_BY_PLAYER(&uVar0, "MaximShootTruck", 0);
+    _GRINGO_SET_IS_USABLE_BY_PLAYER(&uVar0, "MaximShoot", 1);
+    SNAP_ACTOR_TO_GRINGO(&Global_54076, &uLocal_1393, "MaximShoot", 1, 0, 0);
+    UI_HIDE("reticule");
+    return;
+}

@@ -1,11 +1,11 @@
 # Code RED source/decompiled export
 # Source: research/Code_RED_CarTruck_MissionRecipe_Pass29/evidence/Function_957_0x38636.txt
-# SHA1: d612a3a96295c2d3b16a4c1475b03262fc23cacf
+# SHA1: 18549a39c2ac0bbcb97e6a9e05f471fe04bf38e1
 
-void Function_957() //Position: 0x38636
-{
-    SET_ACTOR_UPDATE_PRIORITY(&Local_6 + 1184[02], 0);
-    Unknown_Function();
-    SET_VEHICLE_EJECTION_ENABLED(&Local_6 + 1184[02], 0);
-    return;
-}
+void Function_957() //Position: 0x38636
+{
+    SET_ACTOR_UPDATE_PRIORITY(&Local_6 + 1184[02], 0);
+    Unknown_Function();
+    SET_VEHICLE_EJECTION_ENABLED(&Local_6 + 1184[02], 0);
+    return;
+}

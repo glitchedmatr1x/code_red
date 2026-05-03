@@ -174,9 +174,57 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/script_api.h",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/script_api.h",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/script_api.h",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/scripts/validate_vehicle_menu_probe.py",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/scripts/validate_vehicle_menu_probe.py",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/scripts/validate_vehicle_menu_probe.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
     "state": "safe_text_import_candidate"
   },
   {

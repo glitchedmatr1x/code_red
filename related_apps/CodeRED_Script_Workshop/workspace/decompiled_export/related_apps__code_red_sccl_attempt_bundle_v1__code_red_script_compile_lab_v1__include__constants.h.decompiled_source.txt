@@ -1,0 +1,7 @@
+# Code RED source/decompiled export
+# Source: related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h
+# SHA1: 9881ce6b73c3b9899ab5e696272003aaa8e18eda
+
+#pragma once
+
+#include "RDR/consts32.h"

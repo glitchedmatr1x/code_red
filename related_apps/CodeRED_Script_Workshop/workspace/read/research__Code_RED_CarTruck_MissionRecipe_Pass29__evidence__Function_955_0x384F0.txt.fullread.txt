@@ -1,19 +1,19 @@
-void Function_955(var uParam0, var uParam1) //Position: 0x384F0
-{
-    if (!IS_ACTOR_VALID(&uParam0))
-    {
-        return;
-    }
-    if (GET_ACTOR_ENUM(&uParam0) == 1194 && GET_ACTOR_ENUM(&uParam0) == 1193)
-    {
-        return;
-    }
-    if (!DECOR_CHECK_EXIST(&uParam0, "carSettings"))
-    {
-        Unknown_Function();
-    }
-    uVar0 = DECOR_GET_INT(&uParam0, "carSettings");
-    Function_77(&uVar0, uParam1);
-    DECOR_SET_INT(&uParam0, "carSettings", uVar0);
-    return;
-}
+void Function_955(var uParam0, var uParam1) //Position: 0x384F0
+{
+    if (!IS_ACTOR_VALID(&uParam0))
+    {
+        return;
+    }
+    if (GET_ACTOR_ENUM(&uParam0) == 1194 && GET_ACTOR_ENUM(&uParam0) == 1193)
+    {
+        return;
+    }
+    if (!DECOR_CHECK_EXIST(&uParam0, "carSettings"))
+    {
+        Unknown_Function();
+    }
+    uVar0 = DECOR_GET_INT(&uParam0, "carSettings");
+    Function_77(&uVar0, uParam1);
+    DECOR_SET_INT(&uParam0, "carSettings", uVar0);
+    return;
+}

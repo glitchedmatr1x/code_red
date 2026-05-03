@@ -1,28 +1,28 @@
 # Code RED source/decompiled export
 # Source: research/Code_RED_CarTruck_MissionRecipe_Pass29/evidence/Function_408_0x12323.txt
-# SHA1: 5c23bc845435116c39524a74817f58d2b95ce405
+# SHA1: 80d005ceaba851a5404139ee9fa581a807092c06
 
-void Function_408() //Position: 0x12323
-{
-    if (!IS_ACTOR_RIDING_VEHICLE(&Local_6 + 1208[02]))
-    {
-        SET_ACTOR_IN_VEHICLE(&Local_6 + 1208[02], &Local_6 + 1184[02], 0);
-    }
-    if (iLocal_1164 == 2)
-    {
-        SET_ACTOR_INVULNERABILITY(&Local_6 + 1208[02], 1);
-        SET_ACTOR_PROOF(&Local_6 + 1208[02], 8);
-        SET_ACTOR_PROOF(&Local_6 + 1208[02], 16);
-    }
-    if (!IS_ACTOR_RIDING_VEHICLE(&iLocal_1189))
-    {
-        SET_ACTOR_IN_VEHICLE(&iLocal_1189, &Local_6 + 1184[02], 1);
-    }
-    if (iLocal_1164 == 2)
-    {
-        SET_ACTOR_INVULNERABILITY(&iLocal_1189, 1);
-        SET_ACTOR_PROOF(&iLocal_1189, 8);
-        SET_ACTOR_PROOF(&iLocal_1189, 16);
-    }
-    return;
-}
+void Function_408() //Position: 0x12323
+{
+    if (!IS_ACTOR_RIDING_VEHICLE(&Local_6 + 1208[02]))
+    {
+        SET_ACTOR_IN_VEHICLE(&Local_6 + 1208[02], &Local_6 + 1184[02], 0);
+    }
+    if (iLocal_1164 == 2)
+    {
+        SET_ACTOR_INVULNERABILITY(&Local_6 + 1208[02], 1);
+        SET_ACTOR_PROOF(&Local_6 + 1208[02], 8);
+        SET_ACTOR_PROOF(&Local_6 + 1208[02], 16);
+    }
+    if (!IS_ACTOR_RIDING_VEHICLE(&iLocal_1189))
+    {
+        SET_ACTOR_IN_VEHICLE(&iLocal_1189, &Local_6 + 1184[02], 1);
+    }
+    if (iLocal_1164 == 2)
+    {
+        SET_ACTOR_INVULNERABILITY(&iLocal_1189, 1);
+        SET_ACTOR_PROOF(&iLocal_1189, 8);
+        SET_ACTOR_PROOF(&iLocal_1189, 16);
+    }
+    return;
+}

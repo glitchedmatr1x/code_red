@@ -1,416 +1,416 @@
 # Code RED source/decompiled export
 # Source: tools/codered_ai_trainer_validation.py
-# SHA1: 0107ea741549c9a8f4ce9fe7d488d53189ad360a
+# SHA1: 8aea4f35bd48556521c496cbda8a0af059e24324
 
-#!/usr/bin/env python3
-"""Validate the Code RED AI Trainer data lane.
-
-This is a one-app proof gate for the trainer/menu work. It validates the actor
-map, safe roster, behavior action table, and core AI menu native hooks without
-attaching to the game or installing an ASI.
-"""
-from __future__ import annotations
-
-import argparse
-import csv
-import json
-import re
-from dataclasses import asdict, dataclass, field
-from datetime import UTC, datetime
-from pathlib import Path
-from typing import Iterable
-
-VERSION = "1.0.0-ai-trainer-validation-lane"
-DEFAULT_MAP = Path("data/codered/actor_enum_map.csv")
-DEFAULT_ROSTER = Path("data/codered/npc_roster.txt")
-DEFAULT_ACTIONS = Path("data/codered/ai_behavior_actions.csv")
-DEFAULT_CPP = Path("related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp")
-DEFAULT_INI = Path("related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.ini")
-DEFAULT_REPORT = Path("logs/CodeRED_AI_Trainer_Validation_Report.json")
-DEFAULT_MARKDOWN = Path("logs/CodeRED_AI_Trainer_Validation_Report.md")
-
-KNOWN_EXPECTED: dict[str, int] = {
-    "ACTOR_CAUCASIAN_ARMY_Easy01": 369,
-    "AE_CAUCASIAN_ARMY_EASY01": 369,
-    "ACTOR_RIDEABLE_ANIMAL_Horse01": 976,
-    "ACTOR_RIDEABLE_ANIMAL_MEX_Mule01": 1000,
-    "ACTOR_RIDEABLE_ANIMAL_Buffalo": 1004,
-    "ACTOR_VEHICLE_Stagecoach": 1177,
-    "ACTOR_VEHICLE_Cart01": 1183,
-    "ACTOR_VEHICLE_Canoe01": 1189,
-    "ACTOR_VEHICLE_Raft01": 1192,
-    "ACTOR_VEHICLE_Truck01": 1193,
-    "ACTOR_VEHICLE_Car01": 1194,
-    "ACTOR_VEHICLE_Wagon02": 1199,
-    "ACTOR_VEHICLE_Coach01": 1202,
-}
-
-REQUIRED_ACTIONS = {
-    "spawn_selected_npc_request",
-    "follow_player_request",
-    "guard_position_request",
-    "defend_player_request",
-    "attack_nearest_hostile_request",
-    "idle_spawned_request",
-    "wander_spawned_request",
-    "regroup_near_player_request",
-    "make_spawned_lawmen_request",
-    "side_lawman_immunity_request",
-    "side_gang_immunity_request",
-    "restore_player_faction_request",
-    "dismiss_ai_guest_request",
-    "status_request",
-}
-
-# Native hash hooks expected in the current ScriptHookRDR AI Menu source.
-# These labels are human-readable anchors; the hashes are what we can prove here.
-REQUIRED_NATIVE_HASHES: dict[str, str] = {
-    "GET_ACTOR_ENUM_FROM_STRING": "0xC739D1D2",
-    "CREATE_LAYOUT / FIND_LAYOUT": "0x5699DE7E",
-    "ALT_LAYOUT_CREATE": "0x6CA53214",
-    "IS_ACTOR_VALID": "0xBA6C3E92",
-    "GET_PLAYER_ACTOR": "0xE8CFDD53",
-    "GET_POSITION": "0x99BD9D6F",
-    "GET_HEADING": "0x42DE39F0",
-    "CREATE_ACTOR_IN_LAYOUT": "0x8D67F397",
-    "SET_HEADING": "0xECE8520B",
-    "SET_COMPANION / FOLLOW_FLAGS": "0x4C94EB9E",
-    "TASK_FOLLOW_ACTOR": "0x12F0911A",
-    "CLEAR_TASKS": "0x16876A25",
-    "TASK_STAND_STILL": "0x6F80965D",
-    "TASK_WANDER": "0x17BCA08E",
-    "TASK_KILL_CHAR": "0x1AE4B75B",
-}
-
-
-@dataclass
-class RosterResolution:
-    line: str
-    label: str
-    resolved: bool
-    actor_enum: int | None = None
-    actor_enum_hex: str | None = None
-    source: str = ""
-    warning: str = ""
-
-
-@dataclass
-class ValidationReport:
-    version: str
-    generated_utc: str
-    root: str
-    ok: bool
-    enum_map: str
-    roster: str
-    actions: str
-    ai_menu_cpp: str
-    ai_menu_ini: str
-    enum_rows: int
-    enum_lookup_keys: int
-    roster_entries: int
-    roster_resolved: int
-    roster_unresolved: int
-    action_rows: int
-    enabled_actions: int
-    missing_required_actions: list[str] = field(default_factory=list)
-    disabled_required_actions: list[str] = field(default_factory=list)
-    sanity_errors: list[str] = field(default_factory=list)
-    native_hook_errors: list[str] = field(default_factory=list)
-    ini_errors: list[str] = field(default_factory=list)
-    roster_results: list[RosterResolution] = field(default_factory=list)
-    notes: list[str] = field(default_factory=list)
-
-
-def utc_now() -> str:
-    return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
-
-
-def parse_int(text: str) -> int:
-    value = text.strip()
-    return int(value, 16) if value.lower().startswith("0x") else int(value)
-
-
-def strip_inline_comment(raw: str) -> str:
-    in_quotes = False
-    out: list[str] = []
-    for ch in raw:
-        if ch == '"':
-            in_quotes = not in_quotes
-        if not in_quotes and ch in "#;":
-            break
-        out.append(ch)
-    return "".join(out).strip()
-
-
-def read_csv_rows(path: Path) -> list[dict[str, str]]:
-    if not path.exists():
-        raise FileNotFoundError(path)
-    lines = [line for line in path.read_text(encoding="utf-8", errors="ignore").splitlines() if line.strip() and not line.lstrip().startswith("#")]
-    if not lines:
-        return []
-    return list(csv.DictReader(lines))
-
-
-def build_enum_lookup(rows: Iterable[dict[str, str]]) -> tuple[dict[str, dict[str, str]], int]:
-    lookup: dict[str, dict[str, str]] = {}
-    row_count = 0
-    for row in rows:
-        row_count += 1
-        label = (row.get("label") or "").strip()
-        enum_text = (row.get("actor_enum") or "").strip()
-        if not label or not enum_text:
-            continue
-        lookup[label.lower()] = row
-        lookup[enum_text.lower()] = row
-        for alias in re.split(r"[|;]", row.get("aliases") or ""):
-            alias = alias.strip()
-            if alias:
-                lookup[alias.lower()] = row
-    return lookup, row_count
-
-
-def display_label(raw: str) -> str:
-    clean = strip_inline_comment(raw)
-    for marker in ("|", "=", ","):
-        if marker in clean:
-            return clean.split(marker, 1)[0].strip()
-    return clean.strip()
-
-
-def inline_enum(raw: str) -> int | None:
-    clean = strip_inline_comment(raw)
-    for marker in ("|", "=", ","):
-        if marker in clean:
-            try:
-                return parse_int(clean.split(marker, 1)[1])
-            except ValueError:
-                return None
-    try:
-        return parse_int(clean)
-    except ValueError:
-        return None
-
-
-def read_roster_lines(path: Path) -> list[str]:
-    if not path.exists():
-        raise FileNotFoundError(path)
-    return [line.strip() for line in path.read_text(encoding="utf-8", errors="ignore").splitlines() if display_label(line)]
-
-
-def resolve_roster(path: Path, lookup: dict[str, dict[str, str]]) -> list[RosterResolution]:
-    results: list[RosterResolution] = []
-    for raw in read_roster_lines(path):
-        label = display_label(raw)
-        direct = inline_enum(raw)
-        if direct is not None:
-            results.append(RosterResolution(raw, label, True, direct, f"0x{direct:08X}", "inline roster value"))
-            continue
-        row = lookup.get(label.lower())
-        if row and (row.get("actor_enum") or "").strip():
-            value = parse_int(row["actor_enum"])
-            results.append(RosterResolution(raw, label, True, value, f"0x{value:08X}", row.get("source") or "actor_enum_map.csv"))
-        else:
-            results.append(RosterResolution(raw, label, False, warning="unresolved_actor_enum"))
-    return results
-
-
-def validate_known_values(lookup: dict[str, dict[str, str]]) -> list[str]:
-    errors: list[str] = []
-    for label, expected in KNOWN_EXPECTED.items():
-        row = lookup.get(label.lower())
-        if not row:
-            errors.append(f"{label} is missing; expected {expected}")
-            continue
-        try:
-            actual = parse_int(row.get("actor_enum") or "")
-        except ValueError:
-            errors.append(f"{label} has invalid actor_enum={row.get('actor_enum')!r}; expected {expected}")
-            continue
-        if actual != expected:
-            errors.append(f"{label} has actor_enum={actual}; expected {expected}")
-    return errors
-
-
-def validate_actions(path: Path) -> tuple[int, int, list[str], list[str]]:
-    rows = read_csv_rows(path)
-    found: dict[str, bool] = {}
-    for row in rows:
-        action = (row.get("action") or row.get("id") or "").strip()
-        if not action:
-            continue
-        enabled_text = (row.get("enabled") or "1").strip().lower()
-        found[action] = enabled_text in {"", "1", "true", "yes", "on", "enabled"}
-    missing = sorted(action for action in REQUIRED_ACTIONS if action not in found)
-    disabled = sorted(action for action in REQUIRED_ACTIONS if action in found and not found[action])
-    enabled_count = sum(1 for value in found.values() if value)
-    return len(rows), enabled_count, missing, disabled
-
-
-def validate_native_hooks(cpp_path: Path) -> list[str]:
-    if not cpp_path.exists():
-        return [f"AI menu source missing: {cpp_path}"]
-    text = cpp_path.read_text(encoding="utf-8", errors="ignore")
-    errors: list[str] = []
-    for label, hash_value in REQUIRED_NATIVE_HASHES.items():
-        if hash_value.lower() not in text.lower():
-            errors.append(f"Missing native hook {label}: {hash_value}")
-    for required_text in ("spawnSelectedNpc", "selectedActorEnum", "loadActorEnumMap", "loadActions", "writeActionPlan"):
-        if required_text not in text:
-            errors.append(f"Missing AI menu function/text anchor: {required_text}")
-    return errors
-
-
-def validate_ini(ini_path: Path) -> list[str]:
-    if not ini_path.exists():
-        return [f"AI menu INI missing: {ini_path}"]
-    text = ini_path.read_text(encoding="utf-8", errors="ignore").lower()
-    errors: list[str] = []
-    expected = {
-        "roster": "data/codered",
-        "actor_enum_map": "actor_enum_map.csv",
-        "behavior_actions": "ai_behavior_actions.csv",
-    }
-    for key, needle in expected.items():
-        if key not in text or needle not in text:
-            errors.append(f"INI does not appear to configure {key} with {needle}")
-    return errors
-
-
-def build_report(root: Path, enum_map: Path, roster: Path, actions: Path, cpp: Path, ini: Path) -> ValidationReport:
-    enum_rows = read_csv_rows(enum_map)
-    lookup, enum_row_count = build_enum_lookup(enum_rows)
-    roster_results = resolve_roster(roster, lookup)
-    roster_resolved = sum(1 for item in roster_results if item.resolved)
-    action_rows, enabled_actions, missing_actions, disabled_actions = validate_actions(actions)
-    sanity = validate_known_values(lookup)
-    native_errors = validate_native_hooks(cpp)
-    ini_errors = validate_ini(ini)
-    unresolved = len(roster_results) - roster_resolved
-    ok = not (sanity or missing_actions or disabled_actions or native_errors or ini_errors or unresolved)
-    notes = [
-        "This is an offline data/source validation pass only; it does not install or run an ASI.",
-        "A ready report means the AI Trainer lane is safe enough to proceed to compile/install proof.",
-    ]
-    return ValidationReport(
-        version=VERSION,
-        generated_utc=utc_now(),
-        root=str(root),
-        ok=ok,
-        enum_map=str(enum_map),
-        roster=str(roster),
-        actions=str(actions),
-        ai_menu_cpp=str(cpp),
-        ai_menu_ini=str(ini),
-        enum_rows=enum_row_count,
-        enum_lookup_keys=len(lookup),
-        roster_entries=len(roster_results),
-        roster_resolved=roster_resolved,
-        roster_unresolved=unresolved,
-        action_rows=action_rows,
-        enabled_actions=enabled_actions,
-        missing_required_actions=missing_actions,
-        disabled_required_actions=disabled_actions,
-        sanity_errors=sanity,
-        native_hook_errors=native_errors,
-        ini_errors=ini_errors,
-        roster_results=roster_results,
-        notes=notes,
-    )
-
-
-def report_to_markdown(report: ValidationReport) -> str:
-    lines = [
-        "# Code RED AI Trainer Validation Report",
-        "",
-        f"Generated: `{report.generated_utc}`",
-        f"Result: **{'PASS' if report.ok else 'FAIL'}**",
-        "",
-        "## Data",
-        "",
-        f"- Enum map: `{report.enum_map}`",
-        f"- Enum rows: {report.enum_rows:,}",
-        f"- Enum lookup keys: {report.enum_lookup_keys:,}",
-        f"- Roster: `{report.roster}`",
-        f"- Roster entries: {report.roster_entries}",
-        f"- Roster resolved: {report.roster_resolved}",
-        f"- Roster unresolved: {report.roster_unresolved}",
-        f"- Behavior actions: `{report.actions}`",
-        f"- Action rows: {report.action_rows}",
-        f"- Enabled actions: {report.enabled_actions}",
-        "",
-        "## Errors",
-        "",
-    ]
-    errors = []
-    errors.extend(report.sanity_errors)
-    errors.extend(f"Missing required action: {item}" for item in report.missing_required_actions)
-    errors.extend(f"Disabled required action: {item}" for item in report.disabled_required_actions)
-    errors.extend(report.native_hook_errors)
-    errors.extend(report.ini_errors)
-    errors.extend(f"Unresolved roster entry: {item.label}" for item in report.roster_results if not item.resolved)
-    if errors:
-        lines.extend([f"- {error}" for error in errors])
-    else:
-        lines.append("- none")
-    lines.extend(["", "## Roster proof", "", "| Label | Enum | Hex | Source |", "|---|---:|---|---|"])
-    for item in report.roster_results:
-        lines.append(f"| {item.label} | {item.actor_enum if item.actor_enum is not None else ''} | {item.actor_enum_hex or ''} | {item.source or item.warning} |")
-    lines.extend(["", "## Notes", ""])
-    lines.extend([f"- {note}" for note in report.notes])
-    return "\n".join(lines) + "\n"
-
-
-def write_report(report: ValidationReport, json_path: Path, md_path: Path) -> None:
-    json_path.parent.mkdir(parents=True, exist_ok=True)
-    md_path.parent.mkdir(parents=True, exist_ok=True)
-    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
-    md_path.write_text(report_to_markdown(report), encoding="utf-8")
-
-
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Validate Code RED AI Trainer enum/roster/action data.")
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--enum-map", type=Path, default=DEFAULT_MAP)
-    parser.add_argument("--roster", type=Path, default=DEFAULT_ROSTER)
-    parser.add_argument("--actions", type=Path, default=DEFAULT_ACTIONS)
-    parser.add_argument("--cpp", type=Path, default=DEFAULT_CPP)
-    parser.add_argument("--ini", type=Path, default=DEFAULT_INI)
-    parser.add_argument("--report", type=Path, default=DEFAULT_REPORT)
-    parser.add_argument("--markdown", type=Path, default=DEFAULT_MARKDOWN)
-    parser.add_argument("--json", action="store_true", help="Print JSON instead of a compact summary.")
-    return parser
-
-
-def resolve(root: Path, path: Path) -> Path:
-    return path if path.is_absolute() else root / path
-
-
-def main() -> int:
-    args = build_parser().parse_args()
-    root = args.root.resolve()
-    report = build_report(
-        root,
-        resolve(root, args.enum_map),
-        resolve(root, args.roster),
-        resolve(root, args.actions),
-        resolve(root, args.cpp),
-        resolve(root, args.ini),
-    )
-    write_report(report, resolve(root, args.report), resolve(root, args.markdown))
-    if args.json:
-        print(json.dumps(asdict(report), indent=2))
-    else:
-        print(f"AI Trainer validation: {'PASS' if report.ok else 'FAIL'}")
-        print(f"Enum rows:       {report.enum_rows}")
-        print(f"Roster resolved: {report.roster_resolved}/{report.roster_entries}")
-        print(f"Actions enabled: {report.enabled_actions}/{report.action_rows}")
-        print(f"Sanity errors:   {len(report.sanity_errors)}")
-        print(f"Native errors:   {len(report.native_hook_errors)}")
-        print(f"INI errors:      {len(report.ini_errors)}")
-        print(f"Report JSON:     {resolve(root, args.report)}")
-        print(f"Report MD:       {resolve(root, args.markdown)}")
-    return 0 if report.ok else 2
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+#!/usr/bin/env python3
+"""Validate the Code RED AI Trainer data lane.
+
+This is a one-app proof gate for the trainer/menu work. It validates the actor
+map, safe roster, behavior action table, and core AI menu native hooks without
+attaching to the game or installing an ASI.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import re
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Iterable
+
+VERSION = "1.0.0-ai-trainer-validation-lane"
+DEFAULT_MAP = Path("data/codered/actor_enum_map.csv")
+DEFAULT_ROSTER = Path("data/codered/npc_roster.txt")
+DEFAULT_ACTIONS = Path("data/codered/ai_behavior_actions.csv")
+DEFAULT_CPP = Path("related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp")
+DEFAULT_INI = Path("related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.ini")
+DEFAULT_REPORT = Path("logs/CodeRED_AI_Trainer_Validation_Report.json")
+DEFAULT_MARKDOWN = Path("logs/CodeRED_AI_Trainer_Validation_Report.md")
+
+KNOWN_EXPECTED: dict[str, int] = {
+    "ACTOR_CAUCASIAN_ARMY_Easy01": 369,
+    "AE_CAUCASIAN_ARMY_EASY01": 369,
+    "ACTOR_RIDEABLE_ANIMAL_Horse01": 976,
+    "ACTOR_RIDEABLE_ANIMAL_MEX_Mule01": 1000,
+    "ACTOR_RIDEABLE_ANIMAL_Buffalo": 1004,
+    "ACTOR_VEHICLE_Stagecoach": 1177,
+    "ACTOR_VEHICLE_Cart01": 1183,
+    "ACTOR_VEHICLE_Canoe01": 1189,
+    "ACTOR_VEHICLE_Raft01": 1192,
+    "ACTOR_VEHICLE_Truck01": 1193,
+    "ACTOR_VEHICLE_Car01": 1194,
+    "ACTOR_VEHICLE_Wagon02": 1199,
+    "ACTOR_VEHICLE_Coach01": 1202,
+}
+
+REQUIRED_ACTIONS = {
+    "spawn_selected_npc_request",
+    "follow_player_request",
+    "guard_position_request",
+    "defend_player_request",
+    "attack_nearest_hostile_request",
+    "idle_spawned_request",
+    "wander_spawned_request",
+    "regroup_near_player_request",
+    "make_spawned_lawmen_request",
+    "side_lawman_immunity_request",
+    "side_gang_immunity_request",
+    "restore_player_faction_request",
+    "dismiss_ai_guest_request",
+    "status_request",
+}
+
+# Native hash hooks expected in the current ScriptHookRDR AI Menu source.
+# These labels are human-readable anchors; the hashes are what we can prove here.
+REQUIRED_NATIVE_HASHES: dict[str, str] = {
+    "GET_ACTOR_ENUM_FROM_STRING": "0xC739D1D2",
+    "CREATE_LAYOUT / FIND_LAYOUT": "0x5699DE7E",
+    "ALT_LAYOUT_CREATE": "0x6CA53214",
+    "IS_ACTOR_VALID": "0xBA6C3E92",
+    "GET_PLAYER_ACTOR": "0xE8CFDD53",
+    "GET_POSITION": "0x99BD9D6F",
+    "GET_HEADING": "0x42DE39F0",
+    "CREATE_ACTOR_IN_LAYOUT": "0x8D67F397",
+    "SET_HEADING": "0xECE8520B",
+    "SET_COMPANION / FOLLOW_FLAGS": "0x4C94EB9E",
+    "TASK_FOLLOW_ACTOR": "0x12F0911A",
+    "CLEAR_TASKS": "0x16876A25",
+    "TASK_STAND_STILL": "0x6F80965D",
+    "TASK_WANDER": "0x17BCA08E",
+    "TASK_KILL_CHAR": "0x1AE4B75B",
+}
+
+
+@dataclass
+class RosterResolution:
+    line: str
+    label: str
+    resolved: bool
+    actor_enum: int | None = None
+    actor_enum_hex: str | None = None
+    source: str = ""
+    warning: str = ""
+
+
+@dataclass
+class ValidationReport:
+    version: str
+    generated_utc: str
+    root: str
+    ok: bool
+    enum_map: str
+    roster: str
+    actions: str
+    ai_menu_cpp: str
+    ai_menu_ini: str
+    enum_rows: int
+    enum_lookup_keys: int
+    roster_entries: int
+    roster_resolved: int
+    roster_unresolved: int
+    action_rows: int
+    enabled_actions: int
+    missing_required_actions: list[str] = field(default_factory=list)
+    disabled_required_actions: list[str] = field(default_factory=list)
+    sanity_errors: list[str] = field(default_factory=list)
+    native_hook_errors: list[str] = field(default_factory=list)
+    ini_errors: list[str] = field(default_factory=list)
+    roster_results: list[RosterResolution] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+def utc_now() -> str:
+    return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def parse_int(text: str) -> int:
+    value = text.strip()
+    return int(value, 16) if value.lower().startswith("0x") else int(value)
+
+
+def strip_inline_comment(raw: str) -> str:
+    in_quotes = False
+    out: list[str] = []
+    for ch in raw:
+        if ch == '"':
+            in_quotes = not in_quotes
+        if not in_quotes and ch in "#;":
+            break
+        out.append(ch)
+    return "".join(out).strip()
+
+
+def read_csv_rows(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        raise FileNotFoundError(path)
+    lines = [line for line in path.read_text(encoding="utf-8", errors="ignore").splitlines() if line.strip() and not line.lstrip().startswith("#")]
+    if not lines:
+        return []
+    return list(csv.DictReader(lines))
+
+
+def build_enum_lookup(rows: Iterable[dict[str, str]]) -> tuple[dict[str, dict[str, str]], int]:
+    lookup: dict[str, dict[str, str]] = {}
+    row_count = 0
+    for row in rows:
+        row_count += 1
+        label = (row.get("label") or "").strip()
+        enum_text = (row.get("actor_enum") or "").strip()
+        if not label or not enum_text:
+            continue
+        lookup[label.lower()] = row
+        lookup[enum_text.lower()] = row
+        for alias in re.split(r"[|;]", row.get("aliases") or ""):
+            alias = alias.strip()
+            if alias:
+                lookup[alias.lower()] = row
+    return lookup, row_count
+
+
+def display_label(raw: str) -> str:
+    clean = strip_inline_comment(raw)
+    for marker in ("|", "=", ","):
+        if marker in clean:
+            return clean.split(marker, 1)[0].strip()
+    return clean.strip()
+
+
+def inline_enum(raw: str) -> int | None:
+    clean = strip_inline_comment(raw)
+    for marker in ("|", "=", ","):
+        if marker in clean:
+            try:
+                return parse_int(clean.split(marker, 1)[1])
+            except ValueError:
+                return None
+    try:
+        return parse_int(clean)
+    except ValueError:
+        return None
+
+
+def read_roster_lines(path: Path) -> list[str]:
+    if not path.exists():
+        raise FileNotFoundError(path)
+    return [line.strip() for line in path.read_text(encoding="utf-8", errors="ignore").splitlines() if display_label(line)]
+
+
+def resolve_roster(path: Path, lookup: dict[str, dict[str, str]]) -> list[RosterResolution]:
+    results: list[RosterResolution] = []
+    for raw in read_roster_lines(path):
+        label = display_label(raw)
+        direct = inline_enum(raw)
+        if direct is not None:
+            results.append(RosterResolution(raw, label, True, direct, f"0x{direct:08X}", "inline roster value"))
+            continue
+        row = lookup.get(label.lower())
+        if row and (row.get("actor_enum") or "").strip():
+            value = parse_int(row["actor_enum"])
+            results.append(RosterResolution(raw, label, True, value, f"0x{value:08X}", row.get("source") or "actor_enum_map.csv"))
+        else:
+            results.append(RosterResolution(raw, label, False, warning="unresolved_actor_enum"))
+    return results
+
+
+def validate_known_values(lookup: dict[str, dict[str, str]]) -> list[str]:
+    errors: list[str] = []
+    for label, expected in KNOWN_EXPECTED.items():
+        row = lookup.get(label.lower())
+        if not row:
+            errors.append(f"{label} is missing; expected {expected}")
+            continue
+        try:
+            actual = parse_int(row.get("actor_enum") or "")
+        except ValueError:
+            errors.append(f"{label} has invalid actor_enum={row.get('actor_enum')!r}; expected {expected}")
+            continue
+        if actual != expected:
+            errors.append(f"{label} has actor_enum={actual}; expected {expected}")
+    return errors
+
+
+def validate_actions(path: Path) -> tuple[int, int, list[str], list[str]]:
+    rows = read_csv_rows(path)
+    found: dict[str, bool] = {}
+    for row in rows:
+        action = (row.get("action") or row.get("id") or "").strip()
+        if not action:
+            continue
+        enabled_text = (row.get("enabled") or "1").strip().lower()
+        found[action] = enabled_text in {"", "1", "true", "yes", "on", "enabled"}
+    missing = sorted(action for action in REQUIRED_ACTIONS if action not in found)
+    disabled = sorted(action for action in REQUIRED_ACTIONS if action in found and not found[action])
+    enabled_count = sum(1 for value in found.values() if value)
+    return len(rows), enabled_count, missing, disabled
+
+
+def validate_native_hooks(cpp_path: Path) -> list[str]:
+    if not cpp_path.exists():
+        return [f"AI menu source missing: {cpp_path}"]
+    text = cpp_path.read_text(encoding="utf-8", errors="ignore")
+    errors: list[str] = []
+    for label, hash_value in REQUIRED_NATIVE_HASHES.items():
+        if hash_value.lower() not in text.lower():
+            errors.append(f"Missing native hook {label}: {hash_value}")
+    for required_text in ("spawnSelectedNpc", "selectedActorEnum", "loadActorEnumMap", "loadActions", "writeActionPlan"):
+        if required_text not in text:
+            errors.append(f"Missing AI menu function/text anchor: {required_text}")
+    return errors
+
+
+def validate_ini(ini_path: Path) -> list[str]:
+    if not ini_path.exists():
+        return [f"AI menu INI missing: {ini_path}"]
+    text = ini_path.read_text(encoding="utf-8", errors="ignore").lower()
+    errors: list[str] = []
+    expected = {
+        "roster": "data/codered",
+        "actor_enum_map": "actor_enum_map.csv",
+        "behavior_actions": "ai_behavior_actions.csv",
+    }
+    for key, needle in expected.items():
+        if key not in text or needle not in text:
+            errors.append(f"INI does not appear to configure {key} with {needle}")
+    return errors
+
+
+def build_report(root: Path, enum_map: Path, roster: Path, actions: Path, cpp: Path, ini: Path) -> ValidationReport:
+    enum_rows = read_csv_rows(enum_map)
+    lookup, enum_row_count = build_enum_lookup(enum_rows)
+    roster_results = resolve_roster(roster, lookup)
+    roster_resolved = sum(1 for item in roster_results if item.resolved)
+    action_rows, enabled_actions, missing_actions, disabled_actions = validate_actions(actions)
+    sanity = validate_known_values(lookup)
+    native_errors = validate_native_hooks(cpp)
+    ini_errors = validate_ini(ini)
+    unresolved = len(roster_results) - roster_resolved
+    ok = not (sanity or missing_actions or disabled_actions or native_errors or ini_errors or unresolved)
+    notes = [
+        "This is an offline data/source validation pass only; it does not install or run an ASI.",
+        "A ready report means the AI Trainer lane is safe enough to proceed to compile/install proof.",
+    ]
+    return ValidationReport(
+        version=VERSION,
+        generated_utc=utc_now(),
+        root=str(root),
+        ok=ok,
+        enum_map=str(enum_map),
+        roster=str(roster),
+        actions=str(actions),
+        ai_menu_cpp=str(cpp),
+        ai_menu_ini=str(ini),
+        enum_rows=enum_row_count,
+        enum_lookup_keys=len(lookup),
+        roster_entries=len(roster_results),
+        roster_resolved=roster_resolved,
+        roster_unresolved=unresolved,
+        action_rows=action_rows,
+        enabled_actions=enabled_actions,
+        missing_required_actions=missing_actions,
+        disabled_required_actions=disabled_actions,
+        sanity_errors=sanity,
+        native_hook_errors=native_errors,
+        ini_errors=ini_errors,
+        roster_results=roster_results,
+        notes=notes,
+    )
+
+
+def report_to_markdown(report: ValidationReport) -> str:
+    lines = [
+        "# Code RED AI Trainer Validation Report",
+        "",
+        f"Generated: `{report.generated_utc}`",
+        f"Result: **{'PASS' if report.ok else 'FAIL'}**",
+        "",
+        "## Data",
+        "",
+        f"- Enum map: `{report.enum_map}`",
+        f"- Enum rows: {report.enum_rows:,}",
+        f"- Enum lookup keys: {report.enum_lookup_keys:,}",
+        f"- Roster: `{report.roster}`",
+        f"- Roster entries: {report.roster_entries}",
+        f"- Roster resolved: {report.roster_resolved}",
+        f"- Roster unresolved: {report.roster_unresolved}",
+        f"- Behavior actions: `{report.actions}`",
+        f"- Action rows: {report.action_rows}",
+        f"- Enabled actions: {report.enabled_actions}",
+        "",
+        "## Errors",
+        "",
+    ]
+    errors = []
+    errors.extend(report.sanity_errors)
+    errors.extend(f"Missing required action: {item}" for item in report.missing_required_actions)
+    errors.extend(f"Disabled required action: {item}" for item in report.disabled_required_actions)
+    errors.extend(report.native_hook_errors)
+    errors.extend(report.ini_errors)
+    errors.extend(f"Unresolved roster entry: {item.label}" for item in report.roster_results if not item.resolved)
+    if errors:
+        lines.extend([f"- {error}" for error in errors])
+    else:
+        lines.append("- none")
+    lines.extend(["", "## Roster proof", "", "| Label | Enum | Hex | Source |", "|---|---:|---|---|"])
+    for item in report.roster_results:
+        lines.append(f"| {item.label} | {item.actor_enum if item.actor_enum is not None else ''} | {item.actor_enum_hex or ''} | {item.source or item.warning} |")
+    lines.extend(["", "## Notes", ""])
+    lines.extend([f"- {note}" for note in report.notes])
+    return "\n".join(lines) + "\n"
+
+
+def write_report(report: ValidationReport, json_path: Path, md_path: Path) -> None:
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    md_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
+    md_path.write_text(report_to_markdown(report), encoding="utf-8")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Validate Code RED AI Trainer enum/roster/action data.")
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--enum-map", type=Path, default=DEFAULT_MAP)
+    parser.add_argument("--roster", type=Path, default=DEFAULT_ROSTER)
+    parser.add_argument("--actions", type=Path, default=DEFAULT_ACTIONS)
+    parser.add_argument("--cpp", type=Path, default=DEFAULT_CPP)
+    parser.add_argument("--ini", type=Path, default=DEFAULT_INI)
+    parser.add_argument("--report", type=Path, default=DEFAULT_REPORT)
+    parser.add_argument("--markdown", type=Path, default=DEFAULT_MARKDOWN)
+    parser.add_argument("--json", action="store_true", help="Print JSON instead of a compact summary.")
+    return parser
+
+
+def resolve(root: Path, path: Path) -> Path:
+    return path if path.is_absolute() else root / path
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    root = args.root.resolve()
+    report = build_report(
+        root,
+        resolve(root, args.enum_map),
+        resolve(root, args.roster),
+        resolve(root, args.actions),
+        resolve(root, args.cpp),
+        resolve(root, args.ini),
+    )
+    write_report(report, resolve(root, args.report), resolve(root, args.markdown))
+    if args.json:
+        print(json.dumps(asdict(report), indent=2))
+    else:
+        print(f"AI Trainer validation: {'PASS' if report.ok else 'FAIL'}")
+        print(f"Enum rows:       {report.enum_rows}")
+        print(f"Roster resolved: {report.roster_resolved}/{report.roster_entries}")
+        print(f"Actions enabled: {report.enabled_actions}/{report.action_rows}")
+        print(f"Sanity errors:   {len(report.sanity_errors)}")
+        print(f"Native errors:   {len(report.native_hook_errors)}")
+        print(f"INI errors:      {len(report.ini_errors)}")
+        print(f"Report JSON:     {resolve(root, args.report)}")
+        print(f"Report MD:       {resolve(root, args.markdown)}")
+    return 0 if report.ok else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

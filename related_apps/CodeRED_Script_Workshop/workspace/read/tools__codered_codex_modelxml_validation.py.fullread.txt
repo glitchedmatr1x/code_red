@@ -1,393 +1,393 @@
-#!/usr/bin/env python3
-"""Validate the Code RED CodeX / Model XML bundle lane.
-
-This proof lane is intentionally conservative:
-- it does not mutate source archives
-- it exports one model-like entry into CodeX-style and ModelXML-style bundles
-- it imports each bundle in raw-clone mode
-- it imports each bundle back into a rebuilt resource file
-- optional copied-archive readback is available with --archive-readback, but the Archive/RPF lane owns archive patch proof
-- it writes markdown/json proof reports for the one-app dashboard
-"""
-from __future__ import annotations
-
-import argparse
-import ast
-import json
-import os
-import re
-import shutil
-import subprocess
-import sys
-import zipfile
-import tempfile
-from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any
-
-VERSION = "1.0.0-codex-modelxml-validation"
-DEFAULT_ENTRY_FILTERS = (
-    "zombie_caucasianmaleold_01_set_zombie_caucasianmaleold_01_hat.wft",
-    "zombie_hispanicmaleposse_01_set_zombie_caucasianmaleold_01_hat.wft",
-    "zombie_gore_toxicccriminal_01.wft",
-    "car01x.wft",
-    "truck01x.wft",
-    ".wft",
-    ".wfd",
-    ".wvd",
-)
-
-@dataclass
-class CommandResult:
-    command: list[str]
-    returncode: int
-    stdout: str
-    stderr: str
-
-@dataclass
-class LaneProof:
-    name: str
-    ok: bool
-    export_bundle: str = ""
-    export_manifest: str = ""
-    import_report: str = ""
-    copied_archive: str = ""
-    notes: list[str] = field(default_factory=list)
-    errors: list[str] = field(default_factory=list)
-
-@dataclass
-class Report:
-    version: str
-    generated_utc: str
-    root: str
-    source_archive: str
-    selected_entry: str
-    tools_present: dict[str, bool]
-    code_compile_ok: bool
-    modelxml_compile_ok: bool
-    codex: LaneProof
-    modelxml: LaneProof
-    ok: bool
-    report_markdown: str = ""
-    report_json: str = ""
-
-
-def utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-
-
-def run_command(args: list[str], cwd: Path, timeout: int = 120) -> CommandResult:
-    env = dict(os.environ)
-    env.setdefault("PYTHONDONTWRITEBYTECODE", "1")
-    proc = subprocess.run(args, cwd=str(cwd), env=env, capture_output=True, text=True, timeout=timeout, check=False)
-    return CommandResult(args, proc.returncode, proc.stdout or "", proc.stderr or "")
-
-
-def parse_json_from_output(text: str) -> Any:
-    text = (text or "").strip()
-    if not text:
-        raise ValueError("empty JSON output")
-    # First try direct parse.
-    try:
-        return json.loads(text)
-    except Exception:
-        pass
-    # Then find the first plausible JSON opener.
-    positions = [pos for pos in (text.find("{"), text.find("[")) if pos >= 0]
-    for pos in sorted(positions):
-        try:
-            return json.loads(text[pos:])
-        except Exception:
-            continue
-    raise ValueError("could not parse JSON from command output")
-
-
-def tool_paths(root: Path) -> dict[str, Path]:
-    return {
-        "codex_export": root / "tools" / "codered_codex_bundle_cli.py",
-        "codex_import": root / "tools" / "codered_codex_bundle_import_cli.py",
-        "modelxml_export": root / "tools" / "codered_modelxml_bundle_cli.py",
-        "modelxml_import": root / "tools" / "codered_modelxml_bundle_import_cli.py",
-    }
-
-
-def find_or_stage_source_archive(root: Path) -> Path | None:
-    candidates = [
-        root / "imports" / "fragments2.rpf",
-        root / "game" / "fragments2.rpf",
-        root / "fragments2.rpf",
-        root.parent / "fragments2.rpf",
-        Path("/mnt/data/fragments2.rpf"),
-    ]
-    for candidate in candidates:
-        if candidate.exists() and candidate.is_file():
-            return candidate
-
-    zip_candidates = [
-        root / "imports" / "fragments2.zip",
-        root / "game" / "fragments2.zip",
-        root / "fragments2.zip",
-        root.parent / "fragments2.zip",
-        Path("/mnt/data/fragments2.zip"),
-    ]
-    for zip_path in zip_candidates:
-        if not zip_path.exists():
-            continue
-        try:
-            with zipfile.ZipFile(zip_path) as zf:
-                names = zf.namelist()
-                target = next((name for name in names if name.lower().endswith("fragments2.rpf")), "")
-                if not target:
-                    continue
-                staged = root / "imports" / "fragments2.rpf"
-                staged.parent.mkdir(parents=True, exist_ok=True)
-                if not staged.exists() or staged.stat().st_size == 0:
-                    with zf.open(target) as src, staged.open("wb") as dst:
-                        shutil.copyfileobj(src, dst)
-                return staged
-        except Exception:
-            continue
-
-    # Last fallback: any model-heavy archive in common locations.
-    for folder in (root / "imports", root / "game", root, root.parent):
-        if not folder.exists() or not folder.is_dir():
-            continue
-        for candidate in sorted(folder.glob("*.rpf")):
-            if candidate.name.lower() in {"content.rpf", "tune_d11generic.rpf"}:
-                continue
-            return candidate
-    return None
-
-
-def choose_model_entry(root: Path, archive: Path, codex_export: Path) -> tuple[str, list[dict[str, Any]]]:
-    result = run_command([sys.executable, "-B", str(codex_export), "--archive", str(archive), "--list"], root, timeout=90)
-    if result.returncode != 0:
-        raise RuntimeError(f"model entry list failed: {result.stderr or result.stdout}")
-    listing = parse_json_from_output(result.stdout)
-    if not isinstance(listing, list) or not listing:
-        raise RuntimeError("model entry list was empty")
-    for needle in DEFAULT_ENTRY_FILTERS:
-        for item in listing:
-            path = str(item.get("path", ""))
-            if needle.lower() in path.lower():
-                return path, listing
-    return str(listing[0].get("path", "")), listing
-
-
-def validate_python_files(root: Path, paths: dict[str, Path]) -> tuple[bool, bool]:
-    def ast_ok(files: list[Path]) -> bool:
-        for file in files:
-            try:
-                ast.parse(file.read_text(encoding="utf-8", errors="ignore"))
-            except Exception:
-                return False
-        return True
-    codex_files = [paths["codex_export"], paths["codex_import"]]
-    modelxml_files = [paths["modelxml_export"], paths["modelxml_import"]]
-    return ast_ok(codex_files), ast_ok(modelxml_files)
-
-
-def validate_lane(root: Path, archive: Path, entry: str, *, kind: str, export_tool: Path, import_tool: Path, out_root: Path, archive_readback: bool = False) -> LaneProof:
-    proof = LaneProof(name=kind, ok=False)
-    export_dir = out_root / f"{kind}_export"
-    import_dir = out_root / f"{kind}_import"
-    copied_archive = out_root / f"{archive.stem}_{kind}_copy{archive.suffix}"
-    shutil.rmtree(export_dir, ignore_errors=True)
-    shutil.rmtree(import_dir, ignore_errors=True)
-    export_dir.mkdir(parents=True, exist_ok=True)
-    import_dir.mkdir(parents=True, exist_ok=True)
-    if copied_archive.exists():
-        copied_archive.unlink()
-
-    export_cmd = [sys.executable, "-B", str(export_tool), "--archive", str(archive), "--entry", entry, "--out", str(export_dir)]
-    if kind == "modelxml":
-        export_cmd.append("--no-family")
-    export_result = run_command(export_cmd, root, timeout=180)
-    if export_result.returncode != 0:
-        proof.errors.append(f"export failed: {export_result.stderr or export_result.stdout}")
-        return proof
-    try:
-        export_payload = parse_json_from_output(export_result.stdout)
-    except Exception as exc:
-        proof.errors.append(f"export JSON parse failed: {exc}")
-        return proof
-    bundle = Path(str(export_payload.get("bundle", "")))
-    manifest = Path(str(export_payload.get("manifest", "")))
-    if not bundle.exists() or not manifest.exists():
-        proof.errors.append("export did not produce bundle/manifest")
-        return proof
-    proof.export_bundle = str(bundle)
-    proof.export_manifest = str(manifest)
-
-    import_cmd = [
-        sys.executable,
-        "-B",
-        str(import_tool),
-        "--bundle", str(bundle),
-        "--out", str(import_dir),
-        "--no-reexport-proof",
-    ]
-    if archive_readback:
-        import_cmd.extend([
-            "--archive", str(archive),
-            "--entry", entry,
-            "--out-archive", str(copied_archive),
-        ])
-    import_result = run_command(import_cmd, root, timeout=240)
-    if import_result.returncode != 0:
-        proof.errors.append(f"import/readback failed: {import_result.stderr or import_result.stdout}")
-        return proof
-    proof.copied_archive = str(copied_archive) if copied_archive.exists() else ""
-    reports = sorted(import_dir.glob("*.archive_import_report.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-    generic_reports = sorted(list(import_dir.glob("*_import_report.json")) + list(import_dir.glob("*.import_report.json")), key=lambda p: p.stat().st_mtime, reverse=True)
-    if reports:
-        proof.import_report = str(reports[0])
-        proof.notes.append("archive copy patch/readback report present")
-    elif generic_reports:
-        proof.import_report = str(generic_reports[0])
-        proof.notes.append("raw import proof report present")
-    else:
-        proof.errors.append("import did not write a proof report")
-        return proof
-    if archive_readback:
-        if not copied_archive.exists() or copied_archive.stat().st_size <= 0:
-            proof.errors.append("copied archive was not created")
-            return proof
-    else:
-        proof.notes.append("archive readback skipped; Archive/RPF lane owns copied-archive proof")
-    proof.ok = True
-    return proof
-
-
-def write_report(root: Path, report: Report) -> Report:
-    logs = root / "logs"
-    logs.mkdir(parents=True, exist_ok=True)
-    md_path = logs / "CodeRED_CodeX_ModelXML_Validation_Report.md"
-    json_path = logs / "CodeRED_CodeX_ModelXML_Validation_Report.json"
-    lane_log = logs / "CodeRED_CodeX_ModelXML_Lane_Pass_2026-05-03.md"
-    lines = [
-        "Code RED CodeX / Model XML Validation Report",
-        "==============================================",
-        "",
-        f"Generated UTC: {report.generated_utc}",
-        f"Root: {report.root}",
-        f"Source archive: {report.source_archive or 'missing'}",
-        f"Selected entry: {report.selected_entry or 'missing'}",
-        f"Overall: {'PASS' if report.ok else 'PARTIAL/FAIL'}",
-        "",
-        "Tool status:",
-    ]
-    for name, present in sorted(report.tools_present.items()):
-        lines.append(f"- {name}: {'present' if present else 'missing'}")
-    lines.extend([
-        f"- CodeX Python compile: {'pass' if report.code_compile_ok else 'fail'}",
-        f"- ModelXML Python compile: {'pass' if report.modelxml_compile_ok else 'fail'}",
-        "",
-    ])
-    for proof in (report.codex, report.modelxml):
-        lines.extend([
-            f"{proof.name} lane",
-            "-" * (len(proof.name) + 5),
-            f"Status: {'PASS' if proof.ok else 'PARTIAL/FAIL'}",
-            f"Export bundle: {proof.export_bundle or 'none'}",
-            f"Export manifest: {proof.export_manifest or 'none'}",
-            f"Import report: {proof.import_report or 'none'}",
-            f"Copied archive: {proof.copied_archive or 'none'}",
-        ])
-        if proof.notes:
-            lines.append("Notes:")
-            lines.extend(f"- {item}" for item in proof.notes)
-        if proof.errors:
-            lines.append("Errors:")
-            lines.extend(f"- {item}" for item in proof.errors)
-        lines.append("")
-    lines.extend([
-        "Safety notes:",
-        "- Source archives are not modified.",
-        "- Default proof does not mutate archives; optional archive readback writes copied archives only.",
-        "- This replaces manual CodeX/Magic-style bundle checking for this proof lane, not full semantic model editing yet.",
-    ])
-    report.report_markdown = str(md_path)
-    report.report_json = str(json_path)
-    md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
-    lane_log.write_text(
-        "# CodeRED CodeX / Model XML Lane Pass - 2026-05-03\n\n"
-        "Added one-app validation for CodeX-style and ModelXML-style bundle export/import proof.\n\n"
-        f"Result: {'PASS' if report.ok else 'PARTIAL/FAIL'}\n\n"
-        f"Report: `{md_path}`\n",
-        encoding="utf-8",
-    )
-    return report
-
-
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Validate Code RED CodeX / ModelXML bundle lane.")
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--archive", type=Path, default=None)
-    parser.add_argument("--entry", default="")
-    parser.add_argument("--out", type=Path, default=None)
-    parser.add_argument("--archive-readback", action="store_true", help="Also patch a copied archive and re-read the selected entry. Disabled by default to keep this lane lightweight; the Archive/RPF lane owns copied-archive proof.")
-    return parser
-
-
-def main() -> int:
-    args = build_parser().parse_args()
-    root = args.root.resolve()
-    paths = tool_paths(root)
-    tools_present = {name: path.exists() for name, path in paths.items()}
-    codex_compile_ok = False
-    modelxml_compile_ok = False
-    codex_proof = LaneProof(name="CodeX-style", ok=False)
-    modelxml_proof = LaneProof(name="ModelXML-style", ok=False)
-    archive = args.archive.resolve() if args.archive else None
-    selected_entry = args.entry
-    try:
-        if not all(tools_present.values()):
-            missing = [name for name, present in tools_present.items() if not present]
-            raise RuntimeError(f"missing tools: {', '.join(missing)}")
-        codex_compile_ok, modelxml_compile_ok = validate_python_files(root, paths)
-        if not (codex_compile_ok and modelxml_compile_ok):
-            raise RuntimeError("one or more bundle tools failed Python compile")
-        archive = archive if archive and archive.exists() else find_or_stage_source_archive(root)
-        if archive is None or not archive.exists():
-            raise RuntimeError("no model source archive found; stage fragments2.rpf or fragments2.zip in imports/")
-        if not selected_entry:
-            selected_entry, listing = choose_model_entry(root, archive, paths["codex_export"])
-            if not selected_entry:
-                raise RuntimeError("could not choose a model-like entry from archive")
-        out_root = args.out or (Path(tempfile.gettempdir()) / "codered_codex_modelxml_validation")
-        out_root.mkdir(parents=True, exist_ok=True)
-        codex_proof = validate_lane(root, archive, selected_entry, kind="codex", export_tool=paths["codex_export"], import_tool=paths["codex_import"], out_root=out_root, archive_readback=args.archive_readback)
-        modelxml_proof = validate_lane(root, archive, selected_entry, kind="modelxml", export_tool=paths["modelxml_export"], import_tool=paths["modelxml_import"], out_root=out_root, archive_readback=args.archive_readback)
-    except Exception as exc:
-        if not codex_proof.errors and not codex_proof.ok:
-            codex_proof.errors.append(str(exc))
-        if not modelxml_proof.errors and not modelxml_proof.ok:
-            modelxml_proof.errors.append(str(exc))
-
-    report = Report(
-        version=VERSION,
-        generated_utc=utc_now(),
-        root=str(root),
-        source_archive=str(archive or ""),
-        selected_entry=selected_entry,
-        tools_present=tools_present,
-        code_compile_ok=codex_compile_ok,
-        modelxml_compile_ok=modelxml_compile_ok,
-        codex=codex_proof,
-        modelxml=modelxml_proof,
-        ok=bool(codex_proof.ok and modelxml_proof.ok),
-    )
-    report = write_report(root, report)
-    print(f"CodeX/ModelXML validation: {'PASS' if report.ok else 'PARTIAL/FAIL'}")
-    print(f"Source archive: {report.source_archive}")
-    print(f"Selected entry: {report.selected_entry}")
-    print(f"CodeX: {'PASS' if report.codex.ok else 'FAIL'}")
-    print(f"ModelXML: {'PASS' if report.modelxml.ok else 'FAIL'}")
-    print(f"Report: {report.report_markdown}")
-    return 0 if report.ok else 2
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+#!/usr/bin/env python3
+"""Validate the Code RED CodeX / Model XML bundle lane.
+
+This proof lane is intentionally conservative:
+- it does not mutate source archives
+- it exports one model-like entry into CodeX-style and ModelXML-style bundles
+- it imports each bundle in raw-clone mode
+- it imports each bundle back into a rebuilt resource file
+- optional copied-archive readback is available with --archive-readback, but the Archive/RPF lane owns archive patch proof
+- it writes markdown/json proof reports for the one-app dashboard
+"""
+from __future__ import annotations
+
+import argparse
+import ast
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import zipfile
+import tempfile
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+VERSION = "1.0.0-codex-modelxml-validation"
+DEFAULT_ENTRY_FILTERS = (
+    "zombie_caucasianmaleold_01_set_zombie_caucasianmaleold_01_hat.wft",
+    "zombie_hispanicmaleposse_01_set_zombie_caucasianmaleold_01_hat.wft",
+    "zombie_gore_toxicccriminal_01.wft",
+    "car01x.wft",
+    "truck01x.wft",
+    ".wft",
+    ".wfd",
+    ".wvd",
+)
+
+@dataclass
+class CommandResult:
+    command: list[str]
+    returncode: int
+    stdout: str
+    stderr: str
+
+@dataclass
+class LaneProof:
+    name: str
+    ok: bool
+    export_bundle: str = ""
+    export_manifest: str = ""
+    import_report: str = ""
+    copied_archive: str = ""
+    notes: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+
+@dataclass
+class Report:
+    version: str
+    generated_utc: str
+    root: str
+    source_archive: str
+    selected_entry: str
+    tools_present: dict[str, bool]
+    code_compile_ok: bool
+    modelxml_compile_ok: bool
+    codex: LaneProof
+    modelxml: LaneProof
+    ok: bool
+    report_markdown: str = ""
+    report_json: str = ""
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def run_command(args: list[str], cwd: Path, timeout: int = 120) -> CommandResult:
+    env = dict(os.environ)
+    env.setdefault("PYTHONDONTWRITEBYTECODE", "1")
+    proc = subprocess.run(args, cwd=str(cwd), env=env, capture_output=True, text=True, timeout=timeout, check=False)
+    return CommandResult(args, proc.returncode, proc.stdout or "", proc.stderr or "")
+
+
+def parse_json_from_output(text: str) -> Any:
+    text = (text or "").strip()
+    if not text:
+        raise ValueError("empty JSON output")
+    # First try direct parse.
+    try:
+        return json.loads(text)
+    except Exception:
+        pass
+    # Then find the first plausible JSON opener.
+    positions = [pos for pos in (text.find("{"), text.find("[")) if pos >= 0]
+    for pos in sorted(positions):
+        try:
+            return json.loads(text[pos:])
+        except Exception:
+            continue
+    raise ValueError("could not parse JSON from command output")
+
+
+def tool_paths(root: Path) -> dict[str, Path]:
+    return {
+        "codex_export": root / "tools" / "codered_codex_bundle_cli.py",
+        "codex_import": root / "tools" / "codered_codex_bundle_import_cli.py",
+        "modelxml_export": root / "tools" / "codered_modelxml_bundle_cli.py",
+        "modelxml_import": root / "tools" / "codered_modelxml_bundle_import_cli.py",
+    }
+
+
+def find_or_stage_source_archive(root: Path) -> Path | None:
+    candidates = [
+        root / "imports" / "fragments2.rpf",
+        root / "game" / "fragments2.rpf",
+        root / "fragments2.rpf",
+        root.parent / "fragments2.rpf",
+        Path("/mnt/data/fragments2.rpf"),
+    ]
+    for candidate in candidates:
+        if candidate.exists() and candidate.is_file():
+            return candidate
+
+    zip_candidates = [
+        root / "imports" / "fragments2.zip",
+        root / "game" / "fragments2.zip",
+        root / "fragments2.zip",
+        root.parent / "fragments2.zip",
+        Path("/mnt/data/fragments2.zip"),
+    ]
+    for zip_path in zip_candidates:
+        if not zip_path.exists():
+            continue
+        try:
+            with zipfile.ZipFile(zip_path) as zf:
+                names = zf.namelist()
+                target = next((name for name in names if name.lower().endswith("fragments2.rpf")), "")
+                if not target:
+                    continue
+                staged = root / "imports" / "fragments2.rpf"
+                staged.parent.mkdir(parents=True, exist_ok=True)
+                if not staged.exists() or staged.stat().st_size == 0:
+                    with zf.open(target) as src, staged.open("wb") as dst:
+                        shutil.copyfileobj(src, dst)
+                return staged
+        except Exception:
+            continue
+
+    # Last fallback: any model-heavy archive in common locations.
+    for folder in (root / "imports", root / "game", root, root.parent):
+        if not folder.exists() or not folder.is_dir():
+            continue
+        for candidate in sorted(folder.glob("*.rpf")):
+            if candidate.name.lower() in {"content.rpf", "tune_d11generic.rpf"}:
+                continue
+            return candidate
+    return None
+
+
+def choose_model_entry(root: Path, archive: Path, codex_export: Path) -> tuple[str, list[dict[str, Any]]]:
+    result = run_command([sys.executable, "-B", str(codex_export), "--archive", str(archive), "--list"], root, timeout=90)
+    if result.returncode != 0:
+        raise RuntimeError(f"model entry list failed: {result.stderr or result.stdout}")
+    listing = parse_json_from_output(result.stdout)
+    if not isinstance(listing, list) or not listing:
+        raise RuntimeError("model entry list was empty")
+    for needle in DEFAULT_ENTRY_FILTERS:
+        for item in listing:
+            path = str(item.get("path", ""))
+            if needle.lower() in path.lower():
+                return path, listing
+    return str(listing[0].get("path", "")), listing
+
+
+def validate_python_files(root: Path, paths: dict[str, Path]) -> tuple[bool, bool]:
+    def ast_ok(files: list[Path]) -> bool:
+        for file in files:
+            try:
+                ast.parse(file.read_text(encoding="utf-8", errors="ignore"))
+            except Exception:
+                return False
+        return True
+    codex_files = [paths["codex_export"], paths["codex_import"]]
+    modelxml_files = [paths["modelxml_export"], paths["modelxml_import"]]
+    return ast_ok(codex_files), ast_ok(modelxml_files)
+
+
+def validate_lane(root: Path, archive: Path, entry: str, *, kind: str, export_tool: Path, import_tool: Path, out_root: Path, archive_readback: bool = False) -> LaneProof:
+    proof = LaneProof(name=kind, ok=False)
+    export_dir = out_root / f"{kind}_export"
+    import_dir = out_root / f"{kind}_import"
+    copied_archive = out_root / f"{archive.stem}_{kind}_copy{archive.suffix}"
+    shutil.rmtree(export_dir, ignore_errors=True)
+    shutil.rmtree(import_dir, ignore_errors=True)
+    export_dir.mkdir(parents=True, exist_ok=True)
+    import_dir.mkdir(parents=True, exist_ok=True)
+    if copied_archive.exists():
+        copied_archive.unlink()
+
+    export_cmd = [sys.executable, "-B", str(export_tool), "--archive", str(archive), "--entry", entry, "--out", str(export_dir)]
+    if kind == "modelxml":
+        export_cmd.append("--no-family")
+    export_result = run_command(export_cmd, root, timeout=180)
+    if export_result.returncode != 0:
+        proof.errors.append(f"export failed: {export_result.stderr or export_result.stdout}")
+        return proof
+    try:
+        export_payload = parse_json_from_output(export_result.stdout)
+    except Exception as exc:
+        proof.errors.append(f"export JSON parse failed: {exc}")
+        return proof
+    bundle = Path(str(export_payload.get("bundle", "")))
+    manifest = Path(str(export_payload.get("manifest", "")))
+    if not bundle.exists() or not manifest.exists():
+        proof.errors.append("export did not produce bundle/manifest")
+        return proof
+    proof.export_bundle = str(bundle)
+    proof.export_manifest = str(manifest)
+
+    import_cmd = [
+        sys.executable,
+        "-B",
+        str(import_tool),
+        "--bundle", str(bundle),
+        "--out", str(import_dir),
+        "--no-reexport-proof",
+    ]
+    if archive_readback:
+        import_cmd.extend([
+            "--archive", str(archive),
+            "--entry", entry,
+            "--out-archive", str(copied_archive),
+        ])
+    import_result = run_command(import_cmd, root, timeout=240)
+    if import_result.returncode != 0:
+        proof.errors.append(f"import/readback failed: {import_result.stderr or import_result.stdout}")
+        return proof
+    proof.copied_archive = str(copied_archive) if copied_archive.exists() else ""
+    reports = sorted(import_dir.glob("*.archive_import_report.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    generic_reports = sorted(list(import_dir.glob("*_import_report.json")) + list(import_dir.glob("*.import_report.json")), key=lambda p: p.stat().st_mtime, reverse=True)
+    if reports:
+        proof.import_report = str(reports[0])
+        proof.notes.append("archive copy patch/readback report present")
+    elif generic_reports:
+        proof.import_report = str(generic_reports[0])
+        proof.notes.append("raw import proof report present")
+    else:
+        proof.errors.append("import did not write a proof report")
+        return proof
+    if archive_readback:
+        if not copied_archive.exists() or copied_archive.stat().st_size <= 0:
+            proof.errors.append("copied archive was not created")
+            return proof
+    else:
+        proof.notes.append("archive readback skipped; Archive/RPF lane owns copied-archive proof")
+    proof.ok = True
+    return proof
+
+
+def write_report(root: Path, report: Report) -> Report:
+    logs = root / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    md_path = logs / "CodeRED_CodeX_ModelXML_Validation_Report.md"
+    json_path = logs / "CodeRED_CodeX_ModelXML_Validation_Report.json"
+    lane_log = logs / "CodeRED_CodeX_ModelXML_Lane_Pass_2026-05-03.md"
+    lines = [
+        "Code RED CodeX / Model XML Validation Report",
+        "==============================================",
+        "",
+        f"Generated UTC: {report.generated_utc}",
+        f"Root: {report.root}",
+        f"Source archive: {report.source_archive or 'missing'}",
+        f"Selected entry: {report.selected_entry or 'missing'}",
+        f"Overall: {'PASS' if report.ok else 'PARTIAL/FAIL'}",
+        "",
+        "Tool status:",
+    ]
+    for name, present in sorted(report.tools_present.items()):
+        lines.append(f"- {name}: {'present' if present else 'missing'}")
+    lines.extend([
+        f"- CodeX Python compile: {'pass' if report.code_compile_ok else 'fail'}",
+        f"- ModelXML Python compile: {'pass' if report.modelxml_compile_ok else 'fail'}",
+        "",
+    ])
+    for proof in (report.codex, report.modelxml):
+        lines.extend([
+            f"{proof.name} lane",
+            "-" * (len(proof.name) + 5),
+            f"Status: {'PASS' if proof.ok else 'PARTIAL/FAIL'}",
+            f"Export bundle: {proof.export_bundle or 'none'}",
+            f"Export manifest: {proof.export_manifest or 'none'}",
+            f"Import report: {proof.import_report or 'none'}",
+            f"Copied archive: {proof.copied_archive or 'none'}",
+        ])
+        if proof.notes:
+            lines.append("Notes:")
+            lines.extend(f"- {item}" for item in proof.notes)
+        if proof.errors:
+            lines.append("Errors:")
+            lines.extend(f"- {item}" for item in proof.errors)
+        lines.append("")
+    lines.extend([
+        "Safety notes:",
+        "- Source archives are not modified.",
+        "- Default proof does not mutate archives; optional archive readback writes copied archives only.",
+        "- This replaces manual CodeX/Magic-style bundle checking for this proof lane, not full semantic model editing yet.",
+    ])
+    report.report_markdown = str(md_path)
+    report.report_json = str(json_path)
+    md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
+    lane_log.write_text(
+        "# CodeRED CodeX / Model XML Lane Pass - 2026-05-03\n\n"
+        "Added one-app validation for CodeX-style and ModelXML-style bundle export/import proof.\n\n"
+        f"Result: {'PASS' if report.ok else 'PARTIAL/FAIL'}\n\n"
+        f"Report: `{md_path}`\n",
+        encoding="utf-8",
+    )
+    return report
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Validate Code RED CodeX / ModelXML bundle lane.")
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--archive", type=Path, default=None)
+    parser.add_argument("--entry", default="")
+    parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--archive-readback", action="store_true", help="Also patch a copied archive and re-read the selected entry. Disabled by default to keep this lane lightweight; the Archive/RPF lane owns copied-archive proof.")
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    root = args.root.resolve()
+    paths = tool_paths(root)
+    tools_present = {name: path.exists() for name, path in paths.items()}
+    codex_compile_ok = False
+    modelxml_compile_ok = False
+    codex_proof = LaneProof(name="CodeX-style", ok=False)
+    modelxml_proof = LaneProof(name="ModelXML-style", ok=False)
+    archive = args.archive.resolve() if args.archive else None
+    selected_entry = args.entry
+    try:
+        if not all(tools_present.values()):
+            missing = [name for name, present in tools_present.items() if not present]
+            raise RuntimeError(f"missing tools: {', '.join(missing)}")
+        codex_compile_ok, modelxml_compile_ok = validate_python_files(root, paths)
+        if not (codex_compile_ok and modelxml_compile_ok):
+            raise RuntimeError("one or more bundle tools failed Python compile")
+        archive = archive if archive and archive.exists() else find_or_stage_source_archive(root)
+        if archive is None or not archive.exists():
+            raise RuntimeError("no model source archive found; stage fragments2.rpf or fragments2.zip in imports/")
+        if not selected_entry:
+            selected_entry, listing = choose_model_entry(root, archive, paths["codex_export"])
+            if not selected_entry:
+                raise RuntimeError("could not choose a model-like entry from archive")
+        out_root = args.out or (Path(tempfile.gettempdir()) / "codered_codex_modelxml_validation")
+        out_root.mkdir(parents=True, exist_ok=True)
+        codex_proof = validate_lane(root, archive, selected_entry, kind="codex", export_tool=paths["codex_export"], import_tool=paths["codex_import"], out_root=out_root, archive_readback=args.archive_readback)
+        modelxml_proof = validate_lane(root, archive, selected_entry, kind="modelxml", export_tool=paths["modelxml_export"], import_tool=paths["modelxml_import"], out_root=out_root, archive_readback=args.archive_readback)
+    except Exception as exc:
+        if not codex_proof.errors and not codex_proof.ok:
+            codex_proof.errors.append(str(exc))
+        if not modelxml_proof.errors and not modelxml_proof.ok:
+            modelxml_proof.errors.append(str(exc))
+
+    report = Report(
+        version=VERSION,
+        generated_utc=utc_now(),
+        root=str(root),
+        source_archive=str(archive or ""),
+        selected_entry=selected_entry,
+        tools_present=tools_present,
+        code_compile_ok=codex_compile_ok,
+        modelxml_compile_ok=modelxml_compile_ok,
+        codex=codex_proof,
+        modelxml=modelxml_proof,
+        ok=bool(codex_proof.ok and modelxml_proof.ok),
+    )
+    report = write_report(root, report)
+    print(f"CodeX/ModelXML validation: {'PASS' if report.ok else 'PARTIAL/FAIL'}")
+    print(f"Source archive: {report.source_archive}")
+    print(f"Selected entry: {report.selected_entry}")
+    print(f"CodeX: {'PASS' if report.codex.ok else 'FAIL'}")
+    print(f"ModelXML: {'PASS' if report.modelxml.ok else 'FAIL'}")
+    print(f"Report: {report.report_markdown}")
+    return 0 if report.ok else 2
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,7 @@
+# Code RED source/decompiled export
+# Source: related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h
+# SHA1: 38ad06725dd68126c24809c516a36dc207ebe8bb
+
+#pragma once
+
+#include "script_api.h"

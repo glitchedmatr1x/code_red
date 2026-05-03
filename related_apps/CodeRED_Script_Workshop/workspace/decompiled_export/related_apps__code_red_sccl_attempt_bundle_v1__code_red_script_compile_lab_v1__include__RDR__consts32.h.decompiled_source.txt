@@ -1,0 +1,9 @@
+# Code RED source/decompiled export
+# Source: related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h
+# SHA1: 0c2b02abe1c609bce08397b613b4e2fe711d5b5f
+
+#pragma once
+
+#define ACTOR_VEHICLE_Car01 1194
+#define ACTOR_VEHICLE_Truck01 1193
+#define KEY_F5 116

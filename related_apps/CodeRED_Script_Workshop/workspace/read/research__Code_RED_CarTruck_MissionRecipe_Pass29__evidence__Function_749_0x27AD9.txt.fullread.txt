@@ -1,13 +1,13 @@
-void Function_749() //Position: 0x27AD9
-{
-    struct<2> Var0;
-    struct<2> Var2;
-    
-    if (IS_OBJECT_VALID(&uLocal_1391))
-    {
-        REMOVE_OBJECT_ATTACHMENT(_GET_OBJECT_ATTACHMENT(&uLocal_1391));
-        GET_LOCATOR_OFFSETS(GET_PHYSINST_FROM_OBJECT(&Local_6 + 1184[02]), "gattling_attach", &Var0, &Var2);
-        ATTACH_OBJECTS(&uLocal_1391, &Local_6 + 1184[02], Function_54(), Var0, Var2, 4294967295);
-    }
-    return;
-}
+void Function_749() //Position: 0x27AD9
+{
+    struct<2> Var0;
+    struct<2> Var2;
+    
+    if (IS_OBJECT_VALID(&uLocal_1391))
+    {
+        REMOVE_OBJECT_ATTACHMENT(_GET_OBJECT_ATTACHMENT(&uLocal_1391));
+        GET_LOCATOR_OFFSETS(GET_PHYSINST_FROM_OBJECT(&Local_6 + 1184[02]), "gattling_attach", &Var0, &Var2);
+        ATTACH_OBJECTS(&uLocal_1391, &Local_6 + 1184[02], Function_54(), Var0, Var2, 4294967295);
+    }
+    return;
+}

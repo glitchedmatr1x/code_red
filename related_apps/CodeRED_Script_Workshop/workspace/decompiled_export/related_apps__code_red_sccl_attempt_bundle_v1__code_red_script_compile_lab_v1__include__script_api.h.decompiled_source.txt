@@ -1,0 +1,7 @@
+# Code RED source/decompiled export
+# Source: related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/script_api.h
+# SHA1: b26fd6ec753a54f2ad3261834e0b0571cbe4faf8
+
+#pragma once
+
+#include "RDR/natives32.h"

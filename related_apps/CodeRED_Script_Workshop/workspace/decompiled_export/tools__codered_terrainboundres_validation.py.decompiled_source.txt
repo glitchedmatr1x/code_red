@@ -1,241 +1,241 @@
 # Code RED source/decompiled export
 # Source: tools/codered_terrainboundres_validation.py
-# SHA1: 9a4b991f95ee106555a44ea0c02c0e433d85ca13
+# SHA1: 79fdf35c7bcaaea4fbda331cce765ca2b7b4de64
 
-#!/usr/bin/env python3
-"""Validate the Code RED terrainboundres lane.
-
-This proof gate keeps the terrain-bound workflow honest:
-- finds a staged terrainboundres.rpf or accepts --archive
-- inventories the archive through codered_terrainboundres_tool.py
-- decodes a small sample of WTB tiles
-- writes compact proof reports for the one-app dashboard
-
-The validator is read-only. It never patches source archives.
-"""
-from __future__ import annotations
-
-import argparse
-import json
-import sys
-from dataclasses import asdict, dataclass
-from datetime import UTC, datetime
-from pathlib import Path
-from typing import Any
-
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT / "tools") not in sys.path:
-    sys.path.insert(0, str(ROOT / "tools"))
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-try:
-    from codered_terrainboundres_tool import build_inventory, render_inventory_md, write_csv
-except Exception as exc:  # pragma: no cover - report handled in main
-    build_inventory = None  # type: ignore[assignment]
-    render_inventory_md = None  # type: ignore[assignment]
-    write_csv = None  # type: ignore[assignment]
-    IMPORT_ERROR = exc
-else:
-    IMPORT_ERROR = None
-
-VERSION = "1.0.0-one-app-terrainboundres-proof"
-REPORT_JSON = Path("logs/CodeRED_Terrainboundres_Validation_Report.json")
-REPORT_MD = Path("logs/CodeRED_Terrainboundres_Validation_Report.md")
-
-
-@dataclass
-class ValidationResult:
-    ok: bool
-    version: str
-    generated_utc: str
-    root: str
-    archive: str
-    entries: int
-    files: int
-    wtb_tiles: int
-    txt_sidecars: int
-    territories: int
-    decoded_samples: int
-    decoded_ok: int
-    decoded_failed: int
-    grid_extent_guess: dict[str, Any]
-    errors: list[str]
-    notes: list[str]
-
-
-def utc_now() -> str:
-    return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
-
-
-def candidate_archives(root: Path) -> list[Path]:
-    names = ["terrainboundres.rpf"]
-    bases = [root / "imports", root / "game", root, root / "research", root / "reports"]
-    candidates: list[Path] = []
-    for base in bases:
-        for name in names:
-            path = base / name
-            if path.exists() and path.is_file():
-                candidates.append(path)
-    # Also accept one-level nested extracted folders without recursing through the whole repo.
-    for base in (root / "imports", root / "game"):
-        if base.exists():
-            candidates.extend(path for path in base.glob("*/terrainboundres.rpf") if path.is_file())
-    seen: set[str] = set()
-    unique: list[Path] = []
-    for path in candidates:
-        key = str(path.resolve())
-        if key not in seen:
-            seen.add(key)
-            unique.append(path)
-    return unique
-
-
-def resolve_archive(root: Path, archive_arg: str | None) -> Path | None:
-    if archive_arg:
-        path = Path(archive_arg)
-        if not path.is_absolute():
-            path = root / path
-        return path if path.exists() else None
-    candidates = candidate_archives(root)
-    return candidates[0] if candidates else None
-
-
-def render_report(result: ValidationResult, inventory_md: str | None = None) -> str:
-    lines = [
-        "# Code RED Terrainboundres Validation Report",
-        "",
-        f"Generated: `{result.generated_utc}`",
-        f"Result: **{'PASS' if result.ok else 'FAIL'}**",
-        f"Archive: `{result.archive or 'not found'}`",
-        "",
-        "## Counts",
-        "",
-        f"- Entries: {result.entries}",
-        f"- Files: {result.files}",
-        f"- WTB tiles: {result.wtb_tiles}",
-        f"- TXT sidecars: {result.txt_sidecars}",
-        f"- Territories: {result.territories}",
-        f"- Decoded samples: {result.decoded_samples}",
-        f"- Decoded OK: {result.decoded_ok}",
-        f"- Decoded failed: {result.decoded_failed}",
-        "",
-        "## Grid extent guess",
-        "",
-    ]
-    for key, value in result.grid_extent_guess.items():
-        lines.append(f"- {key}: {value}")
-    lines.extend(["", "## Errors", ""])
-    lines.extend([f"- {error}" for error in result.errors] or ["- none"])
-    lines.extend(["", "## Notes", ""])
-    lines.extend([f"- {note}" for note in result.notes] or ["- none"])
-    if inventory_md:
-        lines.extend(["", "## Inventory summary", "", inventory_md])
-    return "\n".join(lines) + "\n"
-
-
-def validate(root: Path, archive_arg: str | None, decode_samples: int, write_inventory: bool) -> tuple[ValidationResult, str | None]:
-    errors: list[str] = []
-    notes: list[str] = []
-    if IMPORT_ERROR is not None or build_inventory is None:
-        errors.append(f"Could not import codered_terrainboundres_tool.py: {IMPORT_ERROR}")
-        result = ValidationResult(False, VERSION, utc_now(), str(root), "", 0, 0, 0, 0, 0, 0, 0, 0, {}, errors, notes)
-        return result, None
-
-    archive = resolve_archive(root, archive_arg)
-    if archive is None:
-        errors.append("No terrainboundres.rpf was found. Place it in imports/ or pass --archive.")
-        result = ValidationResult(False, VERSION, utc_now(), str(root), "", 0, 0, 0, 0, 0, 0, 0, 0, {}, errors, notes)
-        return result, None
-
-    inventory = build_inventory(archive, decode_samples=max(1, decode_samples))
-    counts = inventory.get("counts", {})
-    decoded = inventory.get("decoded_samples", []) or []
-    decoded_ok = sum(1 for sample in decoded if sample.get("decode_ok"))
-    decoded_failed = sum(1 for sample in decoded if not sample.get("decode_ok"))
-
-    entries = int(counts.get("entries") or 0)
-    files = int(counts.get("files") or 0)
-    wtb_tiles = int(counts.get("wtb_tiles") or 0)
-    txt_sidecars = int(counts.get("txt_sidecars") or 0)
-    territories = int(counts.get("territories") or 0)
-
-    if entries <= 0:
-        errors.append("Archive parsed with zero entries.")
-    if files <= 0:
-        errors.append("Archive parsed with zero files.")
-    if wtb_tiles <= 0:
-        errors.append("Archive parsed with zero WTB terrain-bound tiles.")
-    if territories <= 0:
-        errors.append("Archive parsed with zero territory buckets.")
-    if decoded and decoded_failed:
-        errors.append(f"{decoded_failed} decoded WTB sample(s) failed.")
-    if not decoded:
-        errors.append("No WTB samples were decoded.")
-
-    notes.append("Validation is read-only and does not patch source archives.")
-    notes.append("Copied-archive patching remains available through codered_terrainboundres_tool.py patch-folder and patch-wtb-bytes.")
-    notes.append("Semantic WTB editing is still conservative; this proof validates inventory/decode readiness, not arbitrary terrain mutation.")
-
-    inventory_md = render_inventory_md(inventory) if render_inventory_md else None
-
-    if write_inventory and write_csv:
-        outdir = root / "logs" / "terrainboundres_validation_inventory"
-        outdir.mkdir(parents=True, exist_ok=True)
-        entries_rows = inventory.get("entries", []) or []
-        write_csv(outdir / "terrainboundres_entries.csv", entries_rows)
-        write_csv(outdir / "terrainboundres_wtb_tiles.csv", [row for row in entries_rows if row.get("extension") == ".wtb"])
-        (outdir / "terrainboundres_inventory.json").write_text(json.dumps(inventory, indent=2), encoding="utf-8")
-        if inventory_md:
-            (outdir / "terrainboundres_inventory.md").write_text(inventory_md, encoding="utf-8")
-        notes.append(f"Optional full inventory written to {outdir}")
-
-    result = ValidationResult(
-        ok=not errors,
-        version=VERSION,
-        generated_utc=utc_now(),
-        root=str(root),
-        archive=str(archive),
-        entries=entries,
-        files=files,
-        wtb_tiles=wtb_tiles,
-        txt_sidecars=txt_sidecars,
-        territories=territories,
-        decoded_samples=len(decoded),
-        decoded_ok=decoded_ok,
-        decoded_failed=decoded_failed,
-        grid_extent_guess=inventory.get("grid_extent_guess", {}) or {},
-        errors=errors,
-        notes=notes,
-    )
-    return result, inventory_md
-
-
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Validate the Code RED terrainboundres one-app lane.")
-    parser.add_argument("--root", type=Path, default=ROOT)
-    parser.add_argument("--archive", default=None, help="Optional terrainboundres.rpf path. Defaults to imports/game/root search.")
-    parser.add_argument("--decode-samples", type=int, default=5)
-    parser.add_argument("--write-inventory", action="store_true", help="Also write full inventory CSV/JSON outputs under logs/terrainboundres_validation_inventory.")
-    parser.add_argument("--json", action="store_true", help="Print JSON instead of markdown.")
-    return parser
-
-
-def main() -> int:
-    args = build_parser().parse_args()
-    root = args.root.resolve()
-    result, inventory_md = validate(root, args.archive, args.decode_samples, args.write_inventory)
-    report_json = root / REPORT_JSON
-    report_md = root / REPORT_MD
-    report_json.parent.mkdir(parents=True, exist_ok=True)
-    report_json.write_text(json.dumps(asdict(result), indent=2), encoding="utf-8")
-    report_md.write_text(render_report(result, inventory_md), encoding="utf-8")
-    if args.json:
-        print(json.dumps(asdict(result), indent=2))
-    else:
-        print(report_md.read_text(encoding="utf-8"))
-    return 0 if result.ok else 2
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+#!/usr/bin/env python3
+"""Validate the Code RED terrainboundres lane.
+
+This proof gate keeps the terrain-bound workflow honest:
+- finds a staged terrainboundres.rpf or accepts --archive
+- inventories the archive through codered_terrainboundres_tool.py
+- decodes a small sample of WTB tiles
+- writes compact proof reports for the one-app dashboard
+
+The validator is read-only. It never patches source archives.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT / "tools") not in sys.path:
+    sys.path.insert(0, str(ROOT / "tools"))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+try:
+    from codered_terrainboundres_tool import build_inventory, render_inventory_md, write_csv
+except Exception as exc:  # pragma: no cover - report handled in main
+    build_inventory = None  # type: ignore[assignment]
+    render_inventory_md = None  # type: ignore[assignment]
+    write_csv = None  # type: ignore[assignment]
+    IMPORT_ERROR = exc
+else:
+    IMPORT_ERROR = None
+
+VERSION = "1.0.0-one-app-terrainboundres-proof"
+REPORT_JSON = Path("logs/CodeRED_Terrainboundres_Validation_Report.json")
+REPORT_MD = Path("logs/CodeRED_Terrainboundres_Validation_Report.md")
+
+
+@dataclass
+class ValidationResult:
+    ok: bool
+    version: str
+    generated_utc: str
+    root: str
+    archive: str
+    entries: int
+    files: int
+    wtb_tiles: int
+    txt_sidecars: int
+    territories: int
+    decoded_samples: int
+    decoded_ok: int
+    decoded_failed: int
+    grid_extent_guess: dict[str, Any]
+    errors: list[str]
+    notes: list[str]
+
+
+def utc_now() -> str:
+    return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def candidate_archives(root: Path) -> list[Path]:
+    names = ["terrainboundres.rpf"]
+    bases = [root / "imports", root / "game", root, root / "research", root / "reports"]
+    candidates: list[Path] = []
+    for base in bases:
+        for name in names:
+            path = base / name
+            if path.exists() and path.is_file():
+                candidates.append(path)
+    # Also accept one-level nested extracted folders without recursing through the whole repo.
+    for base in (root / "imports", root / "game"):
+        if base.exists():
+            candidates.extend(path for path in base.glob("*/terrainboundres.rpf") if path.is_file())
+    seen: set[str] = set()
+    unique: list[Path] = []
+    for path in candidates:
+        key = str(path.resolve())
+        if key not in seen:
+            seen.add(key)
+            unique.append(path)
+    return unique
+
+
+def resolve_archive(root: Path, archive_arg: str | None) -> Path | None:
+    if archive_arg:
+        path = Path(archive_arg)
+        if not path.is_absolute():
+            path = root / path
+        return path if path.exists() else None
+    candidates = candidate_archives(root)
+    return candidates[0] if candidates else None
+
+
+def render_report(result: ValidationResult, inventory_md: str | None = None) -> str:
+    lines = [
+        "# Code RED Terrainboundres Validation Report",
+        "",
+        f"Generated: `{result.generated_utc}`",
+        f"Result: **{'PASS' if result.ok else 'FAIL'}**",
+        f"Archive: `{result.archive or 'not found'}`",
+        "",
+        "## Counts",
+        "",
+        f"- Entries: {result.entries}",
+        f"- Files: {result.files}",
+        f"- WTB tiles: {result.wtb_tiles}",
+        f"- TXT sidecars: {result.txt_sidecars}",
+        f"- Territories: {result.territories}",
+        f"- Decoded samples: {result.decoded_samples}",
+        f"- Decoded OK: {result.decoded_ok}",
+        f"- Decoded failed: {result.decoded_failed}",
+        "",
+        "## Grid extent guess",
+        "",
+    ]
+    for key, value in result.grid_extent_guess.items():
+        lines.append(f"- {key}: {value}")
+    lines.extend(["", "## Errors", ""])
+    lines.extend([f"- {error}" for error in result.errors] or ["- none"])
+    lines.extend(["", "## Notes", ""])
+    lines.extend([f"- {note}" for note in result.notes] or ["- none"])
+    if inventory_md:
+        lines.extend(["", "## Inventory summary", "", inventory_md])
+    return "\n".join(lines) + "\n"
+
+
+def validate(root: Path, archive_arg: str | None, decode_samples: int, write_inventory: bool) -> tuple[ValidationResult, str | None]:
+    errors: list[str] = []
+    notes: list[str] = []
+    if IMPORT_ERROR is not None or build_inventory is None:
+        errors.append(f"Could not import codered_terrainboundres_tool.py: {IMPORT_ERROR}")
+        result = ValidationResult(False, VERSION, utc_now(), str(root), "", 0, 0, 0, 0, 0, 0, 0, 0, {}, errors, notes)
+        return result, None
+
+    archive = resolve_archive(root, archive_arg)
+    if archive is None:
+        errors.append("No terrainboundres.rpf was found. Place it in imports/ or pass --archive.")
+        result = ValidationResult(False, VERSION, utc_now(), str(root), "", 0, 0, 0, 0, 0, 0, 0, 0, {}, errors, notes)
+        return result, None
+
+    inventory = build_inventory(archive, decode_samples=max(1, decode_samples))
+    counts = inventory.get("counts", {})
+    decoded = inventory.get("decoded_samples", []) or []
+    decoded_ok = sum(1 for sample in decoded if sample.get("decode_ok"))
+    decoded_failed = sum(1 for sample in decoded if not sample.get("decode_ok"))
+
+    entries = int(counts.get("entries") or 0)
+    files = int(counts.get("files") or 0)
+    wtb_tiles = int(counts.get("wtb_tiles") or 0)
+    txt_sidecars = int(counts.get("txt_sidecars") or 0)
+    territories = int(counts.get("territories") or 0)
+
+    if entries <= 0:
+        errors.append("Archive parsed with zero entries.")
+    if files <= 0:
+        errors.append("Archive parsed with zero files.")
+    if wtb_tiles <= 0:
+        errors.append("Archive parsed with zero WTB terrain-bound tiles.")
+    if territories <= 0:
+        errors.append("Archive parsed with zero territory buckets.")
+    if decoded and decoded_failed:
+        errors.append(f"{decoded_failed} decoded WTB sample(s) failed.")
+    if not decoded:
+        errors.append("No WTB samples were decoded.")
+
+    notes.append("Validation is read-only and does not patch source archives.")
+    notes.append("Copied-archive patching remains available through codered_terrainboundres_tool.py patch-folder and patch-wtb-bytes.")
+    notes.append("Semantic WTB editing is still conservative; this proof validates inventory/decode readiness, not arbitrary terrain mutation.")
+
+    inventory_md = render_inventory_md(inventory) if render_inventory_md else None
+
+    if write_inventory and write_csv:
+        outdir = root / "logs" / "terrainboundres_validation_inventory"
+        outdir.mkdir(parents=True, exist_ok=True)
+        entries_rows = inventory.get("entries", []) or []
+        write_csv(outdir / "terrainboundres_entries.csv", entries_rows)
+        write_csv(outdir / "terrainboundres_wtb_tiles.csv", [row for row in entries_rows if row.get("extension") == ".wtb"])
+        (outdir / "terrainboundres_inventory.json").write_text(json.dumps(inventory, indent=2), encoding="utf-8")
+        if inventory_md:
+            (outdir / "terrainboundres_inventory.md").write_text(inventory_md, encoding="utf-8")
+        notes.append(f"Optional full inventory written to {outdir}")
+
+    result = ValidationResult(
+        ok=not errors,
+        version=VERSION,
+        generated_utc=utc_now(),
+        root=str(root),
+        archive=str(archive),
+        entries=entries,
+        files=files,
+        wtb_tiles=wtb_tiles,
+        txt_sidecars=txt_sidecars,
+        territories=territories,
+        decoded_samples=len(decoded),
+        decoded_ok=decoded_ok,
+        decoded_failed=decoded_failed,
+        grid_extent_guess=inventory.get("grid_extent_guess", {}) or {},
+        errors=errors,
+        notes=notes,
+    )
+    return result, inventory_md
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Validate the Code RED terrainboundres one-app lane.")
+    parser.add_argument("--root", type=Path, default=ROOT)
+    parser.add_argument("--archive", default=None, help="Optional terrainboundres.rpf path. Defaults to imports/game/root search.")
+    parser.add_argument("--decode-samples", type=int, default=5)
+    parser.add_argument("--write-inventory", action="store_true", help="Also write full inventory CSV/JSON outputs under logs/terrainboundres_validation_inventory.")
+    parser.add_argument("--json", action="store_true", help="Print JSON instead of markdown.")
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    root = args.root.resolve()
+    result, inventory_md = validate(root, args.archive, args.decode_samples, args.write_inventory)
+    report_json = root / REPORT_JSON
+    report_md = root / REPORT_MD
+    report_json.parent.mkdir(parents=True, exist_ok=True)
+    report_json.write_text(json.dumps(asdict(result), indent=2), encoding="utf-8")
+    report_md.write_text(render_report(result, inventory_md), encoding="utf-8")
+    if args.json:
+        print(json.dumps(asdict(result), indent=2))
+    else:
+        print(report_md.read_text(encoding="utf-8"))
+    return 0 if result.ok else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

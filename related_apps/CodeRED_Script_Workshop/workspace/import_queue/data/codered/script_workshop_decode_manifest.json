@@ -5386,8 +5386,8 @@
   {
     "path": "data/codered/script_workshop_decode_manifest.json",
     "suffix": ".json",
-    "size": 2414990,
-    "sha1": "e1b4ffad4fd4ca2c1513bc65fc3523c0916159aa",
+    "size": 2630410,
+    "sha1": "efe24cf8f99184100c74d71bd6ab4ea35191586e",
     "kind": "source_text",
     "state": "editable_source",
     "full_read_export": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__script_workshop_decode_manifest.json.fullread.txt",
@@ -6957,8 +6957,8 @@
   {
     "path": "data/codered/script_workshop_extension_manifest.csv",
     "suffix": ".csv",
-    "size": 1333969,
-    "sha1": "1d54e89463f7a0078f849fc95a1c98ffbc9c7377",
+    "size": 1486547,
+    "sha1": "7ef9ec63181f36ab57b95ae6af88f88777569274",
     "kind": "source_text",
     "state": "editable_source",
     "full_read_export": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__script_workshop_extension_manifest.csv.fullread.txt",
@@ -8528,8 +8528,8 @@
   {
     "path": "data/codered/script_workshop_extension_manifest.json",
     "suffix": ".json",
-    "size": 2414990,
-    "sha1": "e1b4ffad4fd4ca2c1513bc65fc3523c0916159aa",
+    "size": 2630410,
+    "sha1": "efe24cf8f99184100c74d71bd6ab4ea35191586e",
     "kind": "source_text",
     "state": "editable_source",
     "full_read_export": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__script_workshop_extension_manifest.json.fullread.txt",

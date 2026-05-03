@@ -1,0 +1,7 @@
+# Code RED source/decompiled export
+# Source: related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h
+# SHA1: 8a016bf73489695cfb060ceec9d8afdf18920410
+
+#pragma once
+
+/* Placeholder for SC-CL intrinsic compatibility. */

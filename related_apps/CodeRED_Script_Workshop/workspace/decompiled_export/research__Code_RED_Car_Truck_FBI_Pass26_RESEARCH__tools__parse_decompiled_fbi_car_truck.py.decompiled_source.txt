@@ -1,53 +1,53 @@
 # Code RED source/decompiled export
 # Source: research/Code_RED_Car_Truck_FBI_Pass26_RESEARCH/tools/parse_decompiled_fbi_car_truck.py
-# SHA1: d88c8baaf11da1d05d76d795930cc80ba4e3d9f2
+# SHA1: 8c89425d5f07f581ab5588d90f6389cfd216cbb7
 
-#!/usr/bin/env python3
-from __future__ import annotations
-from pathlib import Path
-import re, csv, json
-
-ROOT = Path(__file__).resolve().parents[1]
-IN_DIR = ROOT / 'DROP_DECOMPILED_FBI_HERE'
-OUT_DIR = ROOT / 'reports' / 'decompiled_car_truck_parse'
-OUT_DIR.mkdir(parents=True, exist_ok=True)
-
-case_re = re.compile(r'case\s+(0x[0-9A-Fa-f]+|\d+)\s*:\s*(?:\r?\n\s*)?(?:return\s+)?["\']?([A-Za-z0-9_ ./\\-]+)?["\']?', re.I)
-return_re = re.compile(r'return\s+["\']([^"\']+)["\']', re.I)
-terms = ['CAR','TRUCK','WAGON','COACH','STAGECOACH','CART','VEHICLE','TRAIN','PLAYER_CAR','PLAYERCAR']
-
-rows=[]
-term_hits=[]
-files=list(IN_DIR.glob('*.txt'))+list(IN_DIR.glob('*.c'))+list(IN_DIR.glob('*.cpp'))+list(IN_DIR.glob('*.wsc.txt'))
-for path in files:
-    text=path.read_text('utf-8',errors='replace')
-    lines=text.splitlines()
-    for i,line in enumerate(lines,1):
-        upper=line.upper()
-        if any(t in upper for t in terms):
-            term_hits.append({'file':path.name,'line':i,'text':line[:300]})
-    for m in case_re.finditer(text):
-        val_s=m.group(1)
-        try: val=int(val_s,0)
-        except Exception: continue
-        # find return/name in next 4 lines from case position
-        start_line=text[:m.start()].count('\n')+1
-        snippet='\n'.join(lines[start_line-1:start_line+5])
-        ret=''
-        mr=return_re.search(snippet)
-        if mr: ret=mr.group(1)
-        elif m.group(2): ret=m.group(2).strip()
-        if ret or any(t in snippet.upper() for t in terms):
-            rows.append({'file':path.name,'line':start_line,'case_value_dec':val,'case_value_hex':f'0x{val:08X}','return_or_label':ret,'snippet':snippet[:1000]})
-
-with (OUT_DIR/'vehicle_case_returns.csv').open('w',newline='',encoding='utf-8') as f:
-    fields=['file','line','case_value_dec','case_value_hex','return_or_label','snippet']
-    w=csv.DictWriter(f,fields); w.writeheader(); w.writerows(rows)
-with (OUT_DIR/'vehicle_term_hits.csv').open('w',newline='',encoding='utf-8') as f:
-    fields=['file','line','text']
-    w=csv.DictWriter(f,fields); w.writeheader(); w.writerows(term_hits)
-(OUT_DIR/'summary.json').write_text(json.dumps({'files_scanned':[p.name for p in files],'case_rows':len(rows),'term_hits':len(term_hits)},indent=2),encoding='utf-8')
-print('Scanned',len(files),'files')
-print('Case rows:',len(rows))
-print('Term hits:',len(term_hits))
-print('Output:',OUT_DIR)
+#!/usr/bin/env python3
+from __future__ import annotations
+from pathlib import Path
+import re, csv, json
+
+ROOT = Path(__file__).resolve().parents[1]
+IN_DIR = ROOT / 'DROP_DECOMPILED_FBI_HERE'
+OUT_DIR = ROOT / 'reports' / 'decompiled_car_truck_parse'
+OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+case_re = re.compile(r'case\s+(0x[0-9A-Fa-f]+|\d+)\s*:\s*(?:\r?\n\s*)?(?:return\s+)?["\']?([A-Za-z0-9_ ./\\-]+)?["\']?', re.I)
+return_re = re.compile(r'return\s+["\']([^"\']+)["\']', re.I)
+terms = ['CAR','TRUCK','WAGON','COACH','STAGECOACH','CART','VEHICLE','TRAIN','PLAYER_CAR','PLAYERCAR']
+
+rows=[]
+term_hits=[]
+files=list(IN_DIR.glob('*.txt'))+list(IN_DIR.glob('*.c'))+list(IN_DIR.glob('*.cpp'))+list(IN_DIR.glob('*.wsc.txt'))
+for path in files:
+    text=path.read_text('utf-8',errors='replace')
+    lines=text.splitlines()
+    for i,line in enumerate(lines,1):
+        upper=line.upper()
+        if any(t in upper for t in terms):
+            term_hits.append({'file':path.name,'line':i,'text':line[:300]})
+    for m in case_re.finditer(text):
+        val_s=m.group(1)
+        try: val=int(val_s,0)
+        except Exception: continue
+        # find return/name in next 4 lines from case position
+        start_line=text[:m.start()].count('\n')+1
+        snippet='\n'.join(lines[start_line-1:start_line+5])
+        ret=''
+        mr=return_re.search(snippet)
+        if mr: ret=mr.group(1)
+        elif m.group(2): ret=m.group(2).strip()
+        if ret or any(t in snippet.upper() for t in terms):
+            rows.append({'file':path.name,'line':start_line,'case_value_dec':val,'case_value_hex':f'0x{val:08X}','return_or_label':ret,'snippet':snippet[:1000]})
+
+with (OUT_DIR/'vehicle_case_returns.csv').open('w',newline='',encoding='utf-8') as f:
+    fields=['file','line','case_value_dec','case_value_hex','return_or_label','snippet']
+    w=csv.DictWriter(f,fields); w.writeheader(); w.writerows(rows)
+with (OUT_DIR/'vehicle_term_hits.csv').open('w',newline='',encoding='utf-8') as f:
+    fields=['file','line','text']
+    w=csv.DictWriter(f,fields); w.writeheader(); w.writerows(term_hits)
+(OUT_DIR/'summary.json').write_text(json.dumps({'files_scanned':[p.name for p in files],'case_rows':len(rows),'term_hits':len(term_hits)},indent=2),encoding='utf-8')
+print('Scanned',len(files),'files')
+print('Case rows:',len(rows))
+print('Term hits:',len(term_hits))
+print('Output:',OUT_DIR)

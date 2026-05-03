@@ -1,363 +1,363 @@
 # Code RED source/decompiled export
 # Source: tools/codered_script_compile_validation.py
-# SHA1: ca147c58107b29a9fb9a4c5386b3b6193abfd027
+# SHA1: d4aaf1444fab3f4774bf9f7aa59b25ef6dad33cd
 
-#!/usr/bin/env python3
-from __future__ import annotations
-
-import argparse
-import json
-import re
-import shutil
-import subprocess
-import sys
-from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
-from pathlib import Path
-
-VERSION = "1.0.0-script-compile-lab-proof"
-
-BUNDLE = Path("related_apps/code_red_sccl_attempt_bundle_v1")
-LAB = BUNDLE / "code_red_script_compile_lab_v1"
-KIT = BUNDLE / "code_red_sccl_windows_build_kit_v1"
-SRC = LAB / "src/main.c"
-VALIDATOR = LAB / "scripts/validate_vehicle_menu_probe.py"
-NATIVES = LAB / "include/RDR/natives32.h"
-CONSTS = LAB / "include/RDR/consts32.h"
-REPORT_JSON = Path("logs/CodeRED_Script_Compile_Validation_Report.json")
-REPORT_MD = Path("logs/CodeRED_Script_Compile_Validation_Report.md")
-PASS_LOG = Path("logs/CodeRED_Script_Compile_Lane_Pass_2026-05-03.md")
-BUILD_PLAN = Path("logs/CodeRED_Script_Compile_Windows_Build_Plan.txt")
-
-REQUIRED_LAB_FILES = [
-    SRC,
-    VALIDATOR,
-    LAB / "include/types.h",
-    LAB / "include/constants.h",
-    LAB / "include/intrinsics.h",
-    LAB / "include/natives.h",
-    NATIVES,
-    CONSTS,
-]
-
-REQUIRED_KIT_FILES = [
-    KIT / "build_sccl_windows.bat",
-    KIT / "build_sccl_windows.ps1",
-    KIT / "compile_vehicle_menu_probe_windows.bat",
-    KIT / "compile_vehicle_menu_probe_windows.ps1",
-    KIT / "run_build_then_compile_vehicle_menu_probe.bat",
-    KIT / "README_SCCL_DETECTION_V3.txt",
-]
-
-# These are the actual proof symbols used by the Code RED vehicle menu probe.
-# Keep this list source-driven and conservative; do not require unused symbols.
-REQUIRED_NATIVE_NAMES = [
-    "_CLEAR_PRINTS",
-    "_PRINT_SUBTITLE",
-    "_IS_KEY_PRESSED",
-    "GET_PLAYER_ACTOR",
-    "_IS_LAYOUT_VALID",
-    "CREATE_LAYOUT",
-    "FIND_ACTOR_IN_LAYOUT",
-    "DESTROY_ACTOR",
-    "STREAMING_REQUEST_ACTOR",
-    "CREATE_ACTOR_IN_LAYOUT",
-    "IS_ACTOR_VALID",
-    "IS_ACTOR_VEHICLE",
-    "ENABLE_VEHICLE_SEAT",
-    "SET_VEHICLE_ALLOWED_TO_DRIVE",
-    "SET_VEHICLE_ENGINE_RUNNING",
-    "VEHICLE_SET_HANDBRAKE",
-    "START_VEHICLE",
-    "SET_ACTOR_IN_VEHICLE",
-    "SET_ACTOR_MAX_SPEED",
-    "SET_ACTOR_MAX_SPEED_ABSOLUTE",
-    "SET_ACTOR_SPEED",
-    "ADD_PERSISTENT_SCRIPT",
-    "_GET_ID_OF_THIS_SCRIPT",
-    "WAIT",
-]
-
-REQUIRED_CONSTANTS = [
-    "ACTOR_VEHICLE_Car01",
-    "ACTOR_VEHICLE_Truck01",
-    "KEY_F5",
-]
-
-@dataclass
-class ToolchainProbe:
-    sccl_exe: str | None = None
-    cl_exe: str | None = None
-    gcc: str | None = None
-    python: str = sys.executable
-    windows_host: bool = sys.platform.startswith("win")
-
-@dataclass
-class ValidationReport:
-    version: str
-    generated_utc: str
-    root: str
-    ok: bool
-    lab_root: str
-    kit_root: str
-    missing_lab_files: list[str] = field(default_factory=list)
-    missing_kit_files: list[str] = field(default_factory=list)
-    validator_exit_code: int | None = None
-    validator_stdout: str = ""
-    validator_stderr: str = ""
-    source_checks: dict[str, object] = field(default_factory=dict)
-    missing_symbols: list[str] = field(default_factory=list)
-    missing_constants: list[str] = field(default_factory=list)
-    toolchain: dict[str, object] = field(default_factory=dict)
-    output_files: list[str] = field(default_factory=list)
-    notes: list[str] = field(default_factory=list)
-
-
-def utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-
-
-def read_text(path: Path) -> str:
-    return path.read_text(encoding="utf-8", errors="ignore")
-
-
-def find_sccl_exe(root: Path) -> Path | None:
-    candidates = [
-        root / "SC-CL.exe",
-        root / "resources/SC-CL-master/bin/SC-CL.exe",
-        root / "resources/SC-CL-master/llvm-14.0.0.src/MinSizeRel/bin/SC-CL.exe",
-        root / BUNDLE / "SC-CL.exe",
-        root / KIT / "SC-CL.exe",
-        root / LAB / "SC-CL.exe",
-    ]
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    return None
-
-
-def detect_toolchain(root: Path) -> ToolchainProbe:
-    sccl = find_sccl_exe(root)
-    return ToolchainProbe(
-        sccl_exe=str(sccl) if sccl else None,
-        cl_exe=shutil.which("cl"),
-        gcc=shutil.which("gcc") or shutil.which("clang"),
-    )
-
-
-def run_bundled_validator(root: Path) -> tuple[int | None, str, str]:
-    script = root / VALIDATOR
-    if not script.exists():
-        return None, "", f"validator missing: {script}"
-    try:
-        proc = subprocess.run(
-            [sys.executable, str(script)],
-            cwd=str(root / LAB),
-            capture_output=True,
-            text=True,
-            timeout=30,
-            check=False,
-        )
-        return proc.returncode, proc.stdout, proc.stderr
-    except Exception as exc:
-        return None, "", f"validator launch failed: {exc}"
-
-
-def source_static_checks(root: Path) -> tuple[dict[str, object], list[str], list[str]]:
-    src = root / SRC
-    natives = root / NATIVES
-    consts = root / CONSTS
-    if not src.exists():
-        return {"source_exists": False}, REQUIRED_NATIVE_NAMES[:], REQUIRED_CONSTANTS[:]
-    source_text = read_text(src)
-    native_text = read_text(natives) if natives.exists() else ""
-    const_text = read_text(consts) if consts.exists() else ""
-    missing_symbols = [name for name in REQUIRED_NATIVE_NAMES if name not in source_text and name not in native_text]
-    missing_constants = [name for name in REQUIRED_CONSTANTS if name not in source_text and name not in const_text]
-    checks: dict[str, object] = {
-        "source_exists": True,
-        "source_bytes": src.stat().st_size,
-        "brace_balance": source_text.count("{") == source_text.count("}"),
-        "paren_balance": source_text.count("(") == source_text.count(")"),
-        "has_main_loop": "while (true)" in source_text and "WAIT(0)" in source_text,
-        "has_visible_menu": "CODE RED VEH MENU" in source_text,
-        "has_vehicle_spawn": "CR_SpawnVehicle" in source_text and "ACTOR_VEHICLE_Car01" in source_text,
-        "has_live_tune": "CR_ApplyTune" in source_text and "SET_ACTOR_MAX_SPEED_ABSOLUTE" in source_text,
-        "has_script_registration": "ADD_PERSISTENT_SCRIPT" in source_text and "_GET_ID_OF_THIS_SCRIPT" in source_text,
-        "native_requirements": len(REQUIRED_NATIVE_NAMES),
-        "constant_requirements": len(REQUIRED_CONSTANTS),
-    }
-    return checks, missing_symbols, missing_constants
-
-
-def write_build_plan(root: Path, report: ValidationReport) -> Path:
-    out = root / BUILD_PLAN
-    out.parent.mkdir(parents=True, exist_ok=True)
-    lines = [
-        "Code RED Script Compile Lab - Windows Build Plan",
-        "================================================",
-        "",
-        "Purpose:",
-        "- Build or detect SC-CL.exe.",
-        "- Compile code_red_script_compile_lab_v1/src/main.c into the vehicle menu probe.",
-        "- Keep existing binary .wsc/.xsc/.sco roundtrip proof-gated until separately proven.",
-        "",
-        "Validated files:",
-    ]
-    for item in REQUIRED_LAB_FILES + REQUIRED_KIT_FILES:
-        lines.append(f"- {item} : {'present' if (root / item).exists() else 'missing'}")
-    lines.extend([
-        "",
-        "Windows commands:",
-        f"cd /d {root / KIT}",
-        "run_build_then_compile_vehicle_menu_probe.bat",
-        "",
-        "Already-built compiler option:",
-        "set SCCL_EXE=C:\\full\\path\\to\\SC-CL.exe",
-        "compile_vehicle_menu_probe_windows.bat",
-        "",
-        "Proof expectations:",
-        "- output/build_sccl_windows.log exists if the compiler was built.",
-        "- output/compile_vehicle_menu_probe.log exists after compile.",
-        "- output/vehicle_menu_probe_build contains the compiled result if SC-CL succeeds.",
-        "",
-        "Current local proof:",
-        f"- Static/validator proof: {'PASS' if report.ok else 'FAIL'}",
-        f"- SC-CL executable detected here: {report.toolchain.get('sccl_exe') or 'no'}",
-        f"- Windows host here: {report.toolchain.get('windows_host')}",
-    ])
-    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return out
-
-
-def report_markdown(report: ValidationReport) -> str:
-    lines = [
-        "# Code RED Script Compile Validation Report",
-        "",
-        f"Generated UTC: `{report.generated_utc}`",
-        f"Result: **{'PASS' if report.ok else 'FAIL'}**",
-        "",
-        "## Summary",
-        "",
-        f"- Lab root: `{report.lab_root}`",
-        f"- Build kit root: `{report.kit_root}`",
-        f"- Missing lab files: {len(report.missing_lab_files)}",
-        f"- Missing build-kit files: {len(report.missing_kit_files)}",
-        f"- Bundled validator exit: {report.validator_exit_code}",
-        f"- Missing native symbols: {len(report.missing_symbols)}",
-        f"- Missing constants: {len(report.missing_constants)}",
-        "",
-        "## Toolchain",
-        "",
-    ]
-    for key, value in report.toolchain.items():
-        lines.append(f"- {key}: `{value}`")
-    lines.extend(["", "## Source Checks", ""])
-    for key, value in report.source_checks.items():
-        lines.append(f"- {key}: `{value}`")
-    if report.missing_lab_files:
-        lines.extend(["", "## Missing Lab Files", ""])
-        lines.extend(f"- `{item}`" for item in report.missing_lab_files)
-    if report.missing_kit_files:
-        lines.extend(["", "## Missing Build Kit Files", ""])
-        lines.extend(f"- `{item}`" for item in report.missing_kit_files)
-    if report.missing_symbols:
-        lines.extend(["", "## Missing Native Symbols", ""])
-        lines.extend(f"- `{item}`" for item in report.missing_symbols)
-    if report.missing_constants:
-        lines.extend(["", "## Missing Constants", ""])
-        lines.extend(f"- `{item}`" for item in report.missing_constants)
-    lines.extend(["", "## Bundled Validator Output", "", "```text", (report.validator_stdout or "").strip(), (report.validator_stderr or "").strip(), "```", ""])
-    lines.extend(["## Notes", ""])
-    lines.extend(f"- {note}" for note in report.notes)
-    return "\n".join(lines)
-
-
-def validate(root: Path) -> ValidationReport:
-    root = root.resolve()
-    missing_lab = [str(path) for path in REQUIRED_LAB_FILES if not (root / path).exists()]
-    missing_kit = [str(path) for path in REQUIRED_KIT_FILES if not (root / path).exists()]
-    exit_code, stdout, stderr = run_bundled_validator(root)
-    checks, missing_symbols, missing_constants = source_static_checks(root)
-    toolchain = asdict(detect_toolchain(root))
-    source_ok = all(bool(value) for key, value in checks.items() if key not in {"source_bytes", "native_requirements", "constant_requirements"})
-    ok = (
-        not missing_lab
-        and not missing_kit
-        and exit_code == 0
-        and source_ok
-        and not missing_symbols
-        and not missing_constants
-    )
-    notes = [
-        "This validates the Code RED script compile lab assets and the vehicle-menu probe source.",
-        "It does not claim arbitrary existing .wsc/.xsc/.sco binary roundtrip is solved.",
-        "On non-Windows hosts, SC-CL execution is expected to remain unavailable unless a compatible executable/toolchain is staged.",
-        "Use the generated Windows build plan for the real compile step when Visual Studio/SC-CL are available.",
-    ]
-    return ValidationReport(
-        version=VERSION,
-        generated_utc=utc_now(),
-        root=str(root),
-        ok=ok,
-        lab_root=str(root / LAB),
-        kit_root=str(root / KIT),
-        missing_lab_files=missing_lab,
-        missing_kit_files=missing_kit,
-        validator_exit_code=exit_code,
-        validator_stdout=stdout,
-        validator_stderr=stderr,
-        source_checks=checks,
-        missing_symbols=missing_symbols,
-        missing_constants=missing_constants,
-        toolchain=toolchain,
-        notes=notes,
-    )
-
-
-def write_outputs(root: Path, report: ValidationReport) -> ValidationReport:
-    paths = []
-    json_path = root / REPORT_JSON
-    md_path = root / REPORT_MD
-    pass_log = root / PASS_LOG
-    json_path.parent.mkdir(parents=True, exist_ok=True)
-    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
-    md_path.write_text(report_markdown(report), encoding="utf-8")
-    build_plan = write_build_plan(root, report)
-    pass_log.write_text(
-        "# Code RED Script Compile Lane Pass - 2026-05-03\n\n"
-        f"Result: {'PASS' if report.ok else 'FAIL'}\n\n"
-        "Added proof-first validation for the Code RED script compile lab and vehicle menu probe.\n"
-        "This replaces manual compile-lab hunting with one app validation, while keeping WSC binary roundtrip proof-gated.\n\n"
-        f"Report: `{REPORT_MD}`\n"
-        f"Build plan: `{BUILD_PLAN}`\n",
-        encoding="utf-8",
-    )
-    paths.extend([str(REPORT_JSON), str(REPORT_MD), str(PASS_LOG), str(BUILD_PLAN)])
-    report.output_files = paths
-    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
-    return report
-
-
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Validate Code RED script compile lab readiness.")
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--no-write", action="store_true", help="Do not write logs/reports.")
-    parser.add_argument("--json", action="store_true", help="Print JSON report.")
-    return parser
-
-
-def main() -> int:
-    args = build_parser().parse_args()
-    report = validate(args.root)
-    if not args.no_write:
-        report = write_outputs(args.root.resolve(), report)
-    if args.json:
-        print(json.dumps(asdict(report), indent=2))
-    else:
-        print(report_markdown(report))
-    return 0 if report.ok else 2
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import shutil
+import subprocess
+import sys
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+
+VERSION = "1.0.0-script-compile-lab-proof"
+
+BUNDLE = Path("related_apps/code_red_sccl_attempt_bundle_v1")
+LAB = BUNDLE / "code_red_script_compile_lab_v1"
+KIT = BUNDLE / "code_red_sccl_windows_build_kit_v1"
+SRC = LAB / "src/main.c"
+VALIDATOR = LAB / "scripts/validate_vehicle_menu_probe.py"
+NATIVES = LAB / "include/RDR/natives32.h"
+CONSTS = LAB / "include/RDR/consts32.h"
+REPORT_JSON = Path("logs/CodeRED_Script_Compile_Validation_Report.json")
+REPORT_MD = Path("logs/CodeRED_Script_Compile_Validation_Report.md")
+PASS_LOG = Path("logs/CodeRED_Script_Compile_Lane_Pass_2026-05-03.md")
+BUILD_PLAN = Path("logs/CodeRED_Script_Compile_Windows_Build_Plan.txt")
+
+REQUIRED_LAB_FILES = [
+    SRC,
+    VALIDATOR,
+    LAB / "include/types.h",
+    LAB / "include/constants.h",
+    LAB / "include/intrinsics.h",
+    LAB / "include/natives.h",
+    NATIVES,
+    CONSTS,
+]
+
+REQUIRED_KIT_FILES = [
+    KIT / "build_sccl_windows.bat",
+    KIT / "build_sccl_windows.ps1",
+    KIT / "compile_vehicle_menu_probe_windows.bat",
+    KIT / "compile_vehicle_menu_probe_windows.ps1",
+    KIT / "run_build_then_compile_vehicle_menu_probe.bat",
+    KIT / "README_SCCL_DETECTION_V3.txt",
+]
+
+# These are the actual proof symbols used by the Code RED vehicle menu probe.
+# Keep this list source-driven and conservative; do not require unused symbols.
+REQUIRED_NATIVE_NAMES = [
+    "_CLEAR_PRINTS",
+    "_PRINT_SUBTITLE",
+    "_IS_KEY_PRESSED",
+    "GET_PLAYER_ACTOR",
+    "_IS_LAYOUT_VALID",
+    "CREATE_LAYOUT",
+    "FIND_ACTOR_IN_LAYOUT",
+    "DESTROY_ACTOR",
+    "STREAMING_REQUEST_ACTOR",
+    "CREATE_ACTOR_IN_LAYOUT",
+    "IS_ACTOR_VALID",
+    "IS_ACTOR_VEHICLE",
+    "ENABLE_VEHICLE_SEAT",
+    "SET_VEHICLE_ALLOWED_TO_DRIVE",
+    "SET_VEHICLE_ENGINE_RUNNING",
+    "VEHICLE_SET_HANDBRAKE",
+    "START_VEHICLE",
+    "SET_ACTOR_IN_VEHICLE",
+    "SET_ACTOR_MAX_SPEED",
+    "SET_ACTOR_MAX_SPEED_ABSOLUTE",
+    "SET_ACTOR_SPEED",
+    "ADD_PERSISTENT_SCRIPT",
+    "_GET_ID_OF_THIS_SCRIPT",
+    "WAIT",
+]
+
+REQUIRED_CONSTANTS = [
+    "ACTOR_VEHICLE_Car01",
+    "ACTOR_VEHICLE_Truck01",
+    "KEY_F5",
+]
+
+@dataclass
+class ToolchainProbe:
+    sccl_exe: str | None = None
+    cl_exe: str | None = None
+    gcc: str | None = None
+    python: str = sys.executable
+    windows_host: bool = sys.platform.startswith("win")
+
+@dataclass
+class ValidationReport:
+    version: str
+    generated_utc: str
+    root: str
+    ok: bool
+    lab_root: str
+    kit_root: str
+    missing_lab_files: list[str] = field(default_factory=list)
+    missing_kit_files: list[str] = field(default_factory=list)
+    validator_exit_code: int | None = None
+    validator_stdout: str = ""
+    validator_stderr: str = ""
+    source_checks: dict[str, object] = field(default_factory=dict)
+    missing_symbols: list[str] = field(default_factory=list)
+    missing_constants: list[str] = field(default_factory=list)
+    toolchain: dict[str, object] = field(default_factory=dict)
+    output_files: list[str] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8", errors="ignore")
+
+
+def find_sccl_exe(root: Path) -> Path | None:
+    candidates = [
+        root / "SC-CL.exe",
+        root / "resources/SC-CL-master/bin/SC-CL.exe",
+        root / "resources/SC-CL-master/llvm-14.0.0.src/MinSizeRel/bin/SC-CL.exe",
+        root / BUNDLE / "SC-CL.exe",
+        root / KIT / "SC-CL.exe",
+        root / LAB / "SC-CL.exe",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def detect_toolchain(root: Path) -> ToolchainProbe:
+    sccl = find_sccl_exe(root)
+    return ToolchainProbe(
+        sccl_exe=str(sccl) if sccl else None,
+        cl_exe=shutil.which("cl"),
+        gcc=shutil.which("gcc") or shutil.which("clang"),
+    )
+
+
+def run_bundled_validator(root: Path) -> tuple[int | None, str, str]:
+    script = root / VALIDATOR
+    if not script.exists():
+        return None, "", f"validator missing: {script}"
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(script)],
+            cwd=str(root / LAB),
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+        return proc.returncode, proc.stdout, proc.stderr
+    except Exception as exc:
+        return None, "", f"validator launch failed: {exc}"
+
+
+def source_static_checks(root: Path) -> tuple[dict[str, object], list[str], list[str]]:
+    src = root / SRC
+    natives = root / NATIVES
+    consts = root / CONSTS
+    if not src.exists():
+        return {"source_exists": False}, REQUIRED_NATIVE_NAMES[:], REQUIRED_CONSTANTS[:]
+    source_text = read_text(src)
+    native_text = read_text(natives) if natives.exists() else ""
+    const_text = read_text(consts) if consts.exists() else ""
+    missing_symbols = [name for name in REQUIRED_NATIVE_NAMES if name not in source_text and name not in native_text]
+    missing_constants = [name for name in REQUIRED_CONSTANTS if name not in source_text and name not in const_text]
+    checks: dict[str, object] = {
+        "source_exists": True,
+        "source_bytes": src.stat().st_size,
+        "brace_balance": source_text.count("{") == source_text.count("}"),
+        "paren_balance": source_text.count("(") == source_text.count(")"),
+        "has_main_loop": "while (true)" in source_text and "WAIT(0)" in source_text,
+        "has_visible_menu": "CODE RED VEH MENU" in source_text,
+        "has_vehicle_spawn": "CR_SpawnVehicle" in source_text and "ACTOR_VEHICLE_Car01" in source_text,
+        "has_live_tune": "CR_ApplyTune" in source_text and "SET_ACTOR_MAX_SPEED_ABSOLUTE" in source_text,
+        "has_script_registration": "ADD_PERSISTENT_SCRIPT" in source_text and "_GET_ID_OF_THIS_SCRIPT" in source_text,
+        "native_requirements": len(REQUIRED_NATIVE_NAMES),
+        "constant_requirements": len(REQUIRED_CONSTANTS),
+    }
+    return checks, missing_symbols, missing_constants
+
+
+def write_build_plan(root: Path, report: ValidationReport) -> Path:
+    out = root / BUILD_PLAN
+    out.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "Code RED Script Compile Lab - Windows Build Plan",
+        "================================================",
+        "",
+        "Purpose:",
+        "- Build or detect SC-CL.exe.",
+        "- Compile code_red_script_compile_lab_v1/src/main.c into the vehicle menu probe.",
+        "- Keep existing binary .wsc/.xsc/.sco roundtrip proof-gated until separately proven.",
+        "",
+        "Validated files:",
+    ]
+    for item in REQUIRED_LAB_FILES + REQUIRED_KIT_FILES:
+        lines.append(f"- {item} : {'present' if (root / item).exists() else 'missing'}")
+    lines.extend([
+        "",
+        "Windows commands:",
+        f"cd /d {root / KIT}",
+        "run_build_then_compile_vehicle_menu_probe.bat",
+        "",
+        "Already-built compiler option:",
+        "set SCCL_EXE=C:\\full\\path\\to\\SC-CL.exe",
+        "compile_vehicle_menu_probe_windows.bat",
+        "",
+        "Proof expectations:",
+        "- output/build_sccl_windows.log exists if the compiler was built.",
+        "- output/compile_vehicle_menu_probe.log exists after compile.",
+        "- output/vehicle_menu_probe_build contains the compiled result if SC-CL succeeds.",
+        "",
+        "Current local proof:",
+        f"- Static/validator proof: {'PASS' if report.ok else 'FAIL'}",
+        f"- SC-CL executable detected here: {report.toolchain.get('sccl_exe') or 'no'}",
+        f"- Windows host here: {report.toolchain.get('windows_host')}",
+    ])
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return out
+
+
+def report_markdown(report: ValidationReport) -> str:
+    lines = [
+        "# Code RED Script Compile Validation Report",
+        "",
+        f"Generated UTC: `{report.generated_utc}`",
+        f"Result: **{'PASS' if report.ok else 'FAIL'}**",
+        "",
+        "## Summary",
+        "",
+        f"- Lab root: `{report.lab_root}`",
+        f"- Build kit root: `{report.kit_root}`",
+        f"- Missing lab files: {len(report.missing_lab_files)}",
+        f"- Missing build-kit files: {len(report.missing_kit_files)}",
+        f"- Bundled validator exit: {report.validator_exit_code}",
+        f"- Missing native symbols: {len(report.missing_symbols)}",
+        f"- Missing constants: {len(report.missing_constants)}",
+        "",
+        "## Toolchain",
+        "",
+    ]
+    for key, value in report.toolchain.items():
+        lines.append(f"- {key}: `{value}`")
+    lines.extend(["", "## Source Checks", ""])
+    for key, value in report.source_checks.items():
+        lines.append(f"- {key}: `{value}`")
+    if report.missing_lab_files:
+        lines.extend(["", "## Missing Lab Files", ""])
+        lines.extend(f"- `{item}`" for item in report.missing_lab_files)
+    if report.missing_kit_files:
+        lines.extend(["", "## Missing Build Kit Files", ""])
+        lines.extend(f"- `{item}`" for item in report.missing_kit_files)
+    if report.missing_symbols:
+        lines.extend(["", "## Missing Native Symbols", ""])
+        lines.extend(f"- `{item}`" for item in report.missing_symbols)
+    if report.missing_constants:
+        lines.extend(["", "## Missing Constants", ""])
+        lines.extend(f"- `{item}`" for item in report.missing_constants)
+    lines.extend(["", "## Bundled Validator Output", "", "```text", (report.validator_stdout or "").strip(), (report.validator_stderr or "").strip(), "```", ""])
+    lines.extend(["## Notes", ""])
+    lines.extend(f"- {note}" for note in report.notes)
+    return "\n".join(lines)
+
+
+def validate(root: Path) -> ValidationReport:
+    root = root.resolve()
+    missing_lab = [str(path) for path in REQUIRED_LAB_FILES if not (root / path).exists()]
+    missing_kit = [str(path) for path in REQUIRED_KIT_FILES if not (root / path).exists()]
+    exit_code, stdout, stderr = run_bundled_validator(root)
+    checks, missing_symbols, missing_constants = source_static_checks(root)
+    toolchain = asdict(detect_toolchain(root))
+    source_ok = all(bool(value) for key, value in checks.items() if key not in {"source_bytes", "native_requirements", "constant_requirements"})
+    ok = (
+        not missing_lab
+        and not missing_kit
+        and exit_code == 0
+        and source_ok
+        and not missing_symbols
+        and not missing_constants
+    )
+    notes = [
+        "This validates the Code RED script compile lab assets and the vehicle-menu probe source.",
+        "It does not claim arbitrary existing .wsc/.xsc/.sco binary roundtrip is solved.",
+        "On non-Windows hosts, SC-CL execution is expected to remain unavailable unless a compatible executable/toolchain is staged.",
+        "Use the generated Windows build plan for the real compile step when Visual Studio/SC-CL are available.",
+    ]
+    return ValidationReport(
+        version=VERSION,
+        generated_utc=utc_now(),
+        root=str(root),
+        ok=ok,
+        lab_root=str(root / LAB),
+        kit_root=str(root / KIT),
+        missing_lab_files=missing_lab,
+        missing_kit_files=missing_kit,
+        validator_exit_code=exit_code,
+        validator_stdout=stdout,
+        validator_stderr=stderr,
+        source_checks=checks,
+        missing_symbols=missing_symbols,
+        missing_constants=missing_constants,
+        toolchain=toolchain,
+        notes=notes,
+    )
+
+
+def write_outputs(root: Path, report: ValidationReport) -> ValidationReport:
+    paths = []
+    json_path = root / REPORT_JSON
+    md_path = root / REPORT_MD
+    pass_log = root / PASS_LOG
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
+    md_path.write_text(report_markdown(report), encoding="utf-8")
+    build_plan = write_build_plan(root, report)
+    pass_log.write_text(
+        "# Code RED Script Compile Lane Pass - 2026-05-03\n\n"
+        f"Result: {'PASS' if report.ok else 'FAIL'}\n\n"
+        "Added proof-first validation for the Code RED script compile lab and vehicle menu probe.\n"
+        "This replaces manual compile-lab hunting with one app validation, while keeping WSC binary roundtrip proof-gated.\n\n"
+        f"Report: `{REPORT_MD}`\n"
+        f"Build plan: `{BUILD_PLAN}`\n",
+        encoding="utf-8",
+    )
+    paths.extend([str(REPORT_JSON), str(REPORT_MD), str(PASS_LOG), str(BUILD_PLAN)])
+    report.output_files = paths
+    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
+    return report
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Validate Code RED script compile lab readiness.")
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--no-write", action="store_true", help="Do not write logs/reports.")
+    parser.add_argument("--json", action="store_true", help="Print JSON report.")
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    report = validate(args.root)
+    if not args.no_write:
+        report = write_outputs(args.root.resolve(), report)
+    if args.json:
+        print(json.dumps(asdict(report), indent=2))
+    else:
+        print(report_markdown(report))
+    return 0 if report.ok else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
