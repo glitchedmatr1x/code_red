@@ -8,6 +8,53 @@ Code RED is a portable prototype lab for researching, viewing, tuning, and packa
 
 The goal of this pass is simple: keep the working tools, keep the current relative folder layout, remove stale clutter, remove old tuner-path references, and make the package easier for a new user to install and run.
 
+Script work source of truth
+---------------------------
+Use this section before adding, editing, or compiling script/menu features.
+
+Core rule:
+- Do not guess native names, hashes, function signatures, or argument counts.
+- A script/menu command is allowed only after it is verified from real headers, a known working wrapper/API, or a tiny compile/runtime proof.
+- Research notes are not production code until the native/wrapper proof is recorded.
+
+Keep script work separated into these lanes:
+
+1. Trainer / ScriptHook / RedHook lane
+   - Main menu path for live actor control, teleport, weather, spawn, animation, and debug commands.
+   - This is the correct lane for the Code RED actor travel menu.
+   - Start with selected actor + destination + log result before adding advanced pathing.
+
+2. SC-CL lane
+   - Tiny internal script experiments only.
+   - Do not rebuild the full Code RED menu through SC-CL.
+   - Use only real SC-CL headers and actual compiled output as proof.
+
+3. RPF/resource lane
+   - Archive inspection, tune edits, WSI/WGD correlation, resource exports, copied-archive patch tests.
+   - Never bulk patch live archives. Test one copied archive and one changed placement at a time.
+
+4. Research lane
+   - Silent Virtues/other trainer observations, string scans, native maps, menu feature comparisons, and behavior notes.
+   - Do not copy third-party trainer code/assets. Use clean-room feature mapping only.
+
+Recommended script proof order:
+
+    show player coordinates
+    save location slot
+    select nearest actor
+    teleport selected actor to saved location
+    command selected actor to follow/regroup
+    command selected actor to guard/travel to a coordinate
+
+Every script proof should record:
+- lane used
+- source/header/wrapper used
+- exact function signature if known
+- tiny proof file or runtime test
+- result
+- failure behavior
+- next safe step
+
 Key features
 ------------
 1. Code RED Resource Workbench
