@@ -1,6 +1,6 @@
 # Code RED SC-CL Safe Compile Probe Report
 
-Generated UTC: `2026-05-03T16:45:28Z`
+Generated UTC: `2026-05-03T16:58:39Z`
 Result: **NEEDS ATTENTION**
 SC-CL.exe: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe`
 Source: `related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c`
@@ -90,9 +90,9 @@ Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1
 ```
 
 ### compile attempt 1
-- exit: `None`
-- exit_hex: `None`
-- timed_out: `True`
+- exit: `1`
+- exit_hex: `0x00000001`
+- timed_out: `False`
 - command: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe -target=RDR_#SC -platform=X360 -out-dir D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\vehicle_menu_probe_build -name=vehicle_menu_probe D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c`
 
 stdout:
@@ -168,7 +168,6 @@ SC-CL.exe: for the -platform option: must be specified at least once!
 
 ## Warnings
 
-- Compile attempt 1 timed out after 90s; trying next target/options.
 - SC-CL did not produce a verified output file from the probe source.
 
 ## Next Steps

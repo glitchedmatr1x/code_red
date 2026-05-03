@@ -68,7 +68,7 @@ Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1
 
 
 ## compile attempt 1
-exit=None exit_hex=None timed_out=True
+exit=1 exit_hex=0x00000001 timed_out=False
 COMMAND: D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe -target=RDR_#SC -platform=X360 -out-dir D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\vehicle_menu_probe_build -name=vehicle_menu_probe D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c
 STDOUT:
 error: Function Prototype Implementation missing on referenced function: _CLEAR_PRINTS

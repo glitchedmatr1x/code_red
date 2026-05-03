@@ -1,7 +1,7 @@
 # Code RED Script Compile Validation Report
 
-Generated UTC: `2026-05-03T16:45:28Z`
-Result: **PASS**
+Generated UTC: `2026-05-03T16:58:39Z`
+Result: **FAIL**
 
 ## Summary
 
@@ -24,11 +24,11 @@ Result: **PASS**
 ## Source Checks
 
 - source_exists: `True`
-- source_bytes: `3138`
+- source_bytes: `9646`
 - brace_balance: `True`
 - paren_balance: `True`
 - has_main_loop: `True`
-- has_visible_menu: `True`
+- has_visible_menu: `False`
 - has_vehicle_spawn: `True`
 - has_live_tune: `True`
 - has_script_registration: `True`
@@ -43,8 +43,13 @@ brace_balance: True
 paren_balance: True
 has_main_loop: True
 has_visible_menu: True
+has_menu_sections: True
 has_vehicle_spawn: True
+has_vehicle_delete: True
 has_live_tune: True
+has_player_actions: True
+has_debug_actions: True
+has_edge_triggered_keys: True
 missing_symbols: []
 RESULT: PASS
 

@@ -1,6 +1,6 @@
 {
   "version": "1.1.0-safe-sccl-compile-probe-dll-guard",
-  "generated_utc": "2026-05-03T16:45:28Z",
+  "generated_utc": "2026-05-03T16:58:39Z",
   "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
   "ok": false,
   "sccl_exe": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
@@ -29,8 +29,8 @@
         "-name=vehicle_menu_probe",
         "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c"
       ],
-      "exit_code": null,
-      "timed_out": true,
+      "exit_code": 1,
+      "timed_out": false,
       "stdout_tail": "error: Function Prototype Implementation missing on referenced function: _CLEAR_PRINTS\n\nPress ENTER to exit...",
       "stderr_tail": "Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1\nError while trying to load a compilation database:\nCould not auto-detect compilation database for file \"D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c\"\nNo compilation database found in D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src or any parent directory\njson-compilation-database: Error while opening JSON database: no such file or directory\nRunning without flags.\nCompiling: D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c\n"
     },
@@ -83,7 +83,6 @@
   ],
   "output_files": [],
   "warnings": [
-    "Compile attempt 1 timed out after 90s; trying next target/options.",
     "SC-CL did not produce a verified output file from the probe source."
   ],
   "next_steps": [

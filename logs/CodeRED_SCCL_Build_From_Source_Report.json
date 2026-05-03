@@ -1,11 +1,11 @@
 {
   "version": "1.2.0-sccl-cmake-policy-fix",
-  "generated_utc": "2026-05-03T16:45:06Z",
+  "generated_utc": "2026-05-03T16:58:04Z",
   "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
-  "source": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master",
-  "ok": true,
-  "sccl_exe": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin\\SC-CL.exe",
-  "adopted_to": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+  "source": "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source",
+  "ok": false,
+  "sccl_exe": null,
+  "adopted_to": null,
   "source_exists": true,
   "rdr_ready_markers": [
     "Red Dead Redemption",
@@ -15,16 +15,37 @@
     "CSC format",
     "SCO format"
   ],
-  "sln_files": [],
-  "skipped_solutions": [],
-  "cmake_lists": null,
+  "sln_files": [
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\bin\\projects\\MenuBase\\MenuBase.sln",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\bin\\projects\\testing\\test.sln"
+  ],
+  "skipped_solutions": [
+    {
+      "solution": "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\bin\\projects\\MenuBase\\MenuBase.sln",
+      "reason": "example/test solution, not SC-CL.exe"
+    },
+    {
+      "solution": "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\bin\\projects\\testing\\test.sln",
+      "reason": "example/test solution, not SC-CL.exe"
+    }
+  ],
+  "cmake_lists": "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\CMakeLists.txt",
   "cmake_source_used": null,
-  "cmake_source_diagnostics": [],
+  "cmake_source_diagnostics": [
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\CMakeLists.txt: CMakeLists.txt uses Clang/LLVM tool macros and is not a standalone top-level CMake root",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\llvm-14.0.0.src\\CMakeLists.txt: missing. A Clang tool-style SC-CL source needs the full LLVM source root or a prebuilt exe."
+  ],
   "msbuild": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
   "cmake": "C:\\Program Files\\CMake\\bin\\cmake.EXE",
   "attempts": [],
-  "warnings": [],
+  "warnings": [
+    "Generated/example/Visual Studio extension solutions were skipped; they are not SC-CL.exe build targets.",
+    "No standalone top-level CMake source root was found. Need llvm-14.0.0.src/CMakeLists.txt or a prebuilt exe.",
+    "SC-CL.exe was not produced. Review the CMake build output and the target list."
+  ],
   "next_steps": [
-    "Run: py -3 tools\\codered_sccl_finalize_build.py --validate --compile-helper"
+    "Open logs\\CodeRED_SCCL_Build_From_Source_Output.txt and find the first CMake error after the policy fix.",
+    "If configure succeeds but target SC-CL is unknown, build ALL_BUILD in Visual Studio from codered_llvm_build and then run the finalizer.",
+    "After SC-CL.exe exists, run: py -3 tools\\codered_sccl_finalize_build.py --validate --compile-helper"
   ]
 }
