@@ -3,12 +3,12 @@ setlocal
 
 rem Code RED AI Menu setup launcher.
 rem Double-click this from the Code_RED repo root.
-rem It prepares full inline actor data and menu layout, then opens the Build Assistant.
+rem It prepares actor enum data and a safe inline roster, then opens the Build Assistant.
 
 pushd "%~dp0"
 
-if not exist "tools\codered_actor_enum_tool.py" (
-  echo [ERROR] Missing tools\codered_actor_enum_tool.py
+if not exist "tools\codered_rebuild_actor_enum_map.py" (
+  echo [ERROR] Missing tools\codered_rebuild_actor_enum_map.py
   pause
   exit /b 1
 )
@@ -23,15 +23,9 @@ echo ============================================================
 echo Code RED AI Menu Setup
 echo ============================================================
 
-if exist "enums.h" (
-  echo [1/4] Rebuilding actor enum map and unlocked inline roster from enums.h...
-  py -3 tools\codered_actor_enum_tool.py rebuild --source enums.h --write-inline-roster --replace
-  if errorlevel 1 goto :error
-) else (
-  echo [1/4] enums.h not found. Building full roster from existing actor_enum_map.csv...
-  py -3 tools\codered_actor_enum_tool.py full-roster --replace
-  if errorlevel 1 goto :error
-)
+echo [1/4] Rebuilding actor enum map and safe inline roster...
+py -3 tools\codered_rebuild_actor_enum_map.py --write-inline-roster --safe-roster-only --replace
+if errorlevel 1 goto :error
 
 echo [2/4] Validating roster against actor enum map...
 py -3 tools\codered_actor_enum_tool.py validate
@@ -58,7 +52,7 @@ exit /b 0
 
 :error
 echo.
-echo [ERROR] Setup stopped. Check the output above and logs\CodeRED_Actor_Enum_Validation_Report.json.
+echo [ERROR] Setup stopped. Check the output above and logs\CodeRED_Actor_Enum_Rebuild_Report.json.
 popd
 pause
 exit /b 1
