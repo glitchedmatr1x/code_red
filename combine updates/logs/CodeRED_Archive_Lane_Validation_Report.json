@@ -1,0 +1,432 @@
+{
+  "version": "1.0.0-archive-lane-validation",
+  "generated_utc": "2026-05-03T08:34:23Z",
+  "root": "/mnt/data/codered_work",
+  "status": "PASS",
+  "archive_count": 2,
+  "parsed_count": 2,
+  "total_entries": 3653,
+  "total_files": 3235,
+  "total_sample_attempts": 16,
+  "total_sample_ok": 16,
+  "total_sample_fail": 0,
+  "archives": [
+    {
+      "archive_path": "/mnt/data/content.rpf",
+      "exists": true,
+      "parsed": true,
+      "entry_count": 1636,
+      "file_count": 1320,
+      "dir_count": 316,
+      "resolved_count": 1558,
+      "storage_counts": {
+        "compressed": 219,
+        "plain": 215,
+        "resource": 886
+      },
+      "extension_counts": {
+        ".wsc": 886,
+        ".sco": 197,
+        ".xml": 177,
+        ".tr": 25,
+        ".strtbl": 14,
+        "": 11,
+        ".txt": 10
+      },
+      "module_counts": {
+        "Scripts": 1083,
+        "Strings": 201,
+        "Unknown": 36
+      },
+      "sample_attempts": 8,
+      "sample_extract_ok": 8,
+      "sample_extract_fail": 0,
+      "sample_text_like": 8,
+      "sample_resource": 0,
+      "largest_entries": [
+        {
+          "index": 1537,
+          "path": "root/content/dlc/0x22398628/zombiepack_ps3.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 883688,
+          "total_size": 883688
+        },
+        {
+          "index": 1530,
+          "path": "root/content/dlc/0x22398628/zombiepack.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 883572,
+          "total_size": 883572
+        },
+        {
+          "index": 1539,
+          "path": "root/content/dlc/0x22398628/zombiepack_mp_ps3.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 160544,
+          "total_size": 160544
+        },
+        {
+          "index": 1532,
+          "path": "root/content/dlc/0x22398628/zombiepack_mp.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 160426,
+          "total_size": 160426
+        },
+        {
+          "index": 1546,
+          "path": "root/content/dlc/0x22398628/zombiepack.txt",
+          "extension": ".txt",
+          "storage": "compressed",
+          "size_in_archive": 155457,
+          "total_size": 1626656
+        },
+        {
+          "index": 897,
+          "path": "root/content/release64/0x1230F707/rdr2init.sco",
+          "extension": ".sco",
+          "storage": "plain",
+          "size_in_archive": 103080,
+          "total_size": 103080
+        },
+        {
+          "index": 1129,
+          "path": "root/content/release64/north/0xDCF649E3/fbi04/fbi04.wsc",
+          "extension": ".wsc",
+          "storage": "resource",
+          "size_in_archive": 99608,
+          "total_size": 249856
+        },
+        {
+          "index": 1033,
+          "path": "root/content/release64/mexico/0xDCF649E3/rebel05/rebel05.wsc",
+          "extension": ".wsc",
+          "storage": "resource",
+          "size_in_archive": 94564,
+          "total_size": 266240
+        },
+        {
+          "index": 1034,
+          "path": "root/content/release64/mexico/0xDCF649E3/rebel06/rebel06.wsc",
+          "extension": ".wsc",
+          "storage": "resource",
+          "size_in_archive": 88077,
+          "total_size": 249856
+        },
+        {
+          "index": 156,
+          "path": "root/content/release64/main.sco",
+          "extension": ".sco",
+          "storage": "plain",
+          "size_in_archive": 84437,
+          "total_size": 84437
+        }
+      ],
+      "sample_entries": [
+        {
+          "index": 6,
+          "path": "root/content/rdr2_achievements.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 1293,
+          "extract_ok": true,
+          "extracted_size": 20499,
+          "text_like": true
+        },
+        {
+          "index": 9,
+          "path": "root/content/rdr2_challenges.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 604,
+          "extract_ok": true,
+          "extracted_size": 6915,
+          "text_like": true
+        },
+        {
+          "index": 20,
+          "path": "root/content/ai/movementtuning.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 584,
+          "extract_ok": true,
+          "extracted_size": 5432,
+          "text_like": true
+        },
+        {
+          "index": 23,
+          "path": "root/content/ai/motives.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 150,
+          "extract_ok": true,
+          "extracted_size": 955,
+          "text_like": true
+        },
+        {
+          "index": 39,
+          "path": "root/content/ai/unalertedai/default_howlmoon.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 323,
+          "extract_ok": true,
+          "extracted_size": 850,
+          "text_like": true
+        },
+        {
+          "index": 40,
+          "path": "root/content/ai/unalertedai/pen_eat.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 362,
+          "extract_ok": true,
+          "extracted_size": 925,
+          "text_like": true
+        },
+        {
+          "index": 41,
+          "path": "root/content/ai/unalertedai/default_sleep.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 222,
+          "extract_ok": true,
+          "extracted_size": 434,
+          "text_like": true
+        },
+        {
+          "index": 42,
+          "path": "root/content/ai/unalertedai/default_drink.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 369,
+          "extract_ok": true,
+          "extracted_size": 928,
+          "text_like": true
+        }
+      ],
+      "error": ""
+    },
+    {
+      "archive_path": "/mnt/data/tune_d11generic.rpf",
+      "exists": true,
+      "parsed": true,
+      "entry_count": 2017,
+      "file_count": 1915,
+      "dir_count": 102,
+      "resolved_count": 1719,
+      "storage_counts": {
+        "compressed": 1769,
+        "plain": 146
+      },
+      "extension_counts": {
+        ".refgroup": 585,
+        "": 295,
+        ".xml": 243,
+        ".mtl": 186,
+        ".rmptx": 113,
+        ".dds": 88,
+        ".txt": 80,
+        ".vehmodel": 42,
+        ".vehstuck": 42,
+        ".vehsim": 42,
+        ".vehgyro": 42,
+        ".vehinput": 42,
+        ".vehdraft": 21,
+        ".ppp": 20,
+        ".weap": 14,
+        ".tr": 5,
+        ".fxm": 5,
+        ".fx": 5,
+        ".tune": 4,
+        ".todlight": 4,
+        ".expl": 4,
+        ".vehboat": 4,
+        ".streaming": 3,
+        ".bk2": 2
+      },
+      "module_counts": {
+        "Audio": 1,
+        "Strings": 327,
+        "Textures": 88,
+        "Unknown": 1499
+      },
+      "sample_attempts": 8,
+      "sample_extract_ok": 8,
+      "sample_extract_fail": 0,
+      "sample_text_like": 8,
+      "sample_resource": 0,
+      "largest_entries": [
+        {
+          "index": 14,
+          "path": "root/tune/logo_lowres.bk2",
+          "extension": ".bk2",
+          "storage": "compressed",
+          "size_in_archive": 8228857,
+          "total_size": 8399344
+        },
+        {
+          "index": 17,
+          "path": "root/tune/logo_hires.bk2",
+          "extension": ".bk2",
+          "storage": "compressed",
+          "size_in_archive": 7734272,
+          "total_size": 8294972
+        },
+        {
+          "index": 1613,
+          "path": "root/tune/skyhat/noise16_p.dds",
+          "extension": ".dds",
+          "storage": "compressed",
+          "size_in_archive": 454851,
+          "total_size": 699192
+        },
+        {
+          "index": 1697,
+          "path": "root/tune/stringtable/global.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 200874,
+          "total_size": 200874
+        },
+        {
+          "index": 1601,
+          "path": "root/tune/skyhat/diffuse_01.dds",
+          "extension": ".dds",
+          "storage": "compressed",
+          "size_in_archive": 189968,
+          "total_size": 349672
+        },
+        {
+          "index": 101,
+          "path": "root/tune/decals/blood_bulletsquib_subgrid.dds",
+          "extension": ".dds",
+          "storage": "compressed",
+          "size_in_archive": 96319,
+          "total_size": 349680
+        },
+        {
+          "index": 283,
+          "path": "root/tune/glass/shotgun_cm.dds",
+          "extension": ".dds",
+          "storage": "compressed",
+          "size_in_archive": 66652,
+          "total_size": 87536
+        },
+        {
+          "index": 103,
+          "path": "root/tune/decals/blood_generic_n.dds",
+          "extension": ".dds",
+          "storage": "compressed",
+          "size_in_archive": 65353,
+          "total_size": 87168
+        },
+        {
+          "index": 246,
+          "path": "root/tune/fx/flames_03.dds",
+          "extension": ".dds",
+          "storage": "compressed",
+          "size_in_archive": 61124,
+          "total_size": 87168
+        },
+        {
+          "index": 108,
+          "path": "root/tune/decals/gravestonefont_n.dds",
+          "extension": ".dds",
+          "storage": "compressed",
+          "size_in_archive": 53199,
+          "total_size": 349680
+        }
+      ],
+      "sample_entries": [
+        {
+          "index": 30,
+          "path": "root/tune/ai/motives.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 147,
+          "extract_ok": true,
+          "extracted_size": 847,
+          "text_like": true
+        },
+        {
+          "index": 35,
+          "path": "root/tune/asd/pig.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 2427,
+          "extract_ok": true,
+          "extracted_size": 12369,
+          "text_like": true
+        },
+        {
+          "index": 36,
+          "path": "root/tune/asd/crow.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 2368,
+          "extract_ok": true,
+          "extracted_size": 12364,
+          "text_like": true
+        },
+        {
+          "index": 37,
+          "path": "root/tune/asd/raccoon.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 2368,
+          "extract_ok": true,
+          "extracted_size": 12366,
+          "text_like": true
+        },
+        {
+          "index": 38,
+          "path": "root/tune/asd/duck.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 2368,
+          "extract_ok": true,
+          "extracted_size": 12364,
+          "text_like": true
+        },
+        {
+          "index": 39,
+          "path": "root/tune/asd/fox.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 2373,
+          "extract_ok": true,
+          "extracted_size": 12369,
+          "text_like": true
+        },
+        {
+          "index": 40,
+          "path": "root/tune/asd/songbird.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 2372,
+          "extract_ok": true,
+          "extracted_size": 12365,
+          "text_like": true
+        },
+        {
+          "index": 41,
+          "path": "root/tune/asd/oldm.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 2401,
+          "extract_ok": true,
+          "extracted_size": 12367,
+          "text_like": true
+        }
+      ],
+      "error": ""
+    }
+  ],
+  "outputs": {
+    "markdown": "/mnt/data/codered_work/logs/CodeRED_Archive_Lane_Validation_Report.md",
+    "json": "/mnt/data/codered_work/logs/CodeRED_Archive_Lane_Validation_Report.json"
+  }
+}

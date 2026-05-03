@@ -1,0 +1,125 @@
+Code RED Research Browser Report
+================================
+
+Root: /mnt/data/codered_work
+Entries indexed: 88
+Missing referenced entries: 10
+
+Topic counts:
+- ai: 1
+- behavior: 1
+- content: 2
+- counts: 2
+- cutscenes: 4
+- docs: 3
+- extracted_root: 2
+- gringos: 3
+- important: 12
+- index: 1
+- install: 1
+- nav: 2
+- pass/report: 14
+- patches: 1
+- planning: 2
+- proof: 6
+- readme: 1
+- render: 7
+- research: 2
+- rpf: 1
+- source: 1
+- status: 1
+- strings: 2
+- synthesis: 1
+- terrain: 5
+- vehicle: 6
+- world: 4
+
+Indexed entries:
+- [OK] ai / IMPORTANT All-Root NPC AI Factions Slice -> research/IMPORTANT_readable_root_index_2026-05-02/categories/npc_ai_factions.csv
+- [OK] behavior / Behavior File Findings -> research/CodeRed_Behavior_File_Findings_Pass05_Research.txt
+- [OK] content / MP Content RPF Research Addendum -> research/CodeRED_MP_content_rpf_research_addendum.txt
+- [OK] counts / Extracted Root Category Counts -> research/extracted_root_research/category_counts.csv
+- [OK] counts / Extracted Root Extension Counts -> research/extracted_root_research/extension_counts.csv
+- [OK] cutscenes / Extracted Root Cutscene Findings -> research/extracted_root_research/cutscenes_findings.csv
+- [OK] cutscenes / IMPORTANT All-Root Cutscenes Cameras Slice -> research/IMPORTANT_readable_root_index_2026-05-02/categories/cutscenes_cameras.csv
+- [OK] docs / CodeRED ACTIVE FOLDER IMPORTANCE -> docs/CodeRED_ACTIVE_FOLDER_IMPORTANCE.md
+- [OK] docs / CodeRED Living World Station Prep -> docs/CodeRED_Living_World_Station_Prep.md
+- [OK] docs / CodeRED Tune Max Render And Spawns Research -> docs/CodeRED_Tune_Max_Render_And_Spawns_Research.md
+- [OK] extracted_root / Extracted Root Research Data -> research/extracted_root_research/extracted_root_research.json
+- [OK] extracted_root / Extracted Root Research Summary -> research/extracted_root_research/extracted_root_research.md
+- [OK] gringos / Extracted Root Gringo Findings -> research/extracted_root_research/gringos_findings.csv
+- [OK] gringos / Gringo Vehicle Research Pass -> research/CodeRED_Gringo_Vehicle_Research_Pass_2026-04-29.md
+- [OK] gringos / IMPORTANT All-Root Gringos Scripts Slice -> research/IMPORTANT_readable_root_index_2026-05-02/categories/gringos_scripts.csv
+- [OK] important / IMPORTANT Later RPF Changed Entries -> research/IMPORTANT_later_rpf_compare_2026-05-02/later_rpf_changed_between_versions.csv
+- [OK] important / IMPORTANT Later RPF Compare Summary -> research/IMPORTANT_later_rpf_compare_2026-05-02/later_rpf_compare.md
+- [OK] important / IMPORTANT Later RPF Extract Manifest -> research/IMPORTANT_later_rpf_compare_2026-05-02/later_rpf_extract_manifest.csv
+- [OK] important / IMPORTANT Later RPF Remap Candidates -> research/IMPORTANT_later_rpf_compare_2026-05-02/later_rpf_remap_candidates.csv
+- [OK] important / IMPORTANT Later RPF Version Diffs -> research/IMPORTANT_later_rpf_compare_2026-05-02/later_rpf_version_diffs.csv
+- [OK] important / IMPORTANT Psocache RPF Analysis Summary -> research/IMPORTANT_psocache_rpf_analysis_2026-05-02/psocache_analysis.md
+- [OK] important / IMPORTANT Psocache RPF Structured Data -> research/IMPORTANT_psocache_rpf_analysis_2026-05-02/psocache_analysis.json
+- [OK] important / IMPORTANT Readable Extracted RPF Root Index -> research/IMPORTANT_readable_root_index_2026-05-02/ai_readable_root_index.md
+- [OK] important / IMPORTANT Readable Root File Index -> research/IMPORTANT_readable_root_index_2026-05-02/file_index.csv
+- [OK] important / IMPORTANT Readable Root Full Data -> research/IMPORTANT_readable_root_index_2026-05-02/ai_readable_root_index.json
+- [OK] important / IMPORTANT Readable Root Important Files -> research/IMPORTANT_readable_root_index_2026-05-02/important_files.csv
+- [OK] important / IMPORTANT Readable Root Snippet Hits -> research/IMPORTANT_readable_root_index_2026-05-02/snippet_hits.csv
+- [OK] nav / Navres Psocache Findings -> research/CodeRed_Navres_Psocache_Findings_Pass12_Update.txt
+- [OK] nav / Navres Terrain Navigation Findings -> research/CodeRed_Navres_Terrain_Navigation_Findings_Pass12.txt
+- [OK] pass/report / CodeRED AI Trainer Validation Lane Pass 2026-05-03 -> logs/CodeRED_AI_Trainer_Validation_Lane_Pass_2026-05-03.md
+- [OK] pass/report / CodeRED AI Trainer Validation Report -> logs/CodeRED_AI_Trainer_Validation_Report.md
+- [OK] pass/report / CodeRED Main Launcher Unification Pass 2026-05-03 -> logs/CodeRED_Main_Launcher_Unification_Pass_2026-05-03.md
+- [OK] pass/report / CodeRED Native Database Lane Pass 2026-05-03 -> logs/CodeRED_Native_Database_Lane_Pass_2026-05-03.md
+- [OK] pass/report / CodeRED Native Database Report -> logs/CodeRED_Native_Database_Report.md
+- [OK] pass/report / CodeRED One App Cleanup Rule 2026-05-03 -> logs/CodeRED_One_App_Cleanup_Rule_2026-05-03.md
+- [OK] pass/report / CodeRED One App Dashboard Pass 2026-05-03 -> logs/CodeRED_One_App_Dashboard_Pass_2026-05-03.md
+- [OK] pass/report / CodeRED One App Registry Pass 2026-05-03 -> logs/CodeRED_One_App_Registry_Pass_2026-05-03.md
+- [OK] pass/report / CodeRED Research Browser Lane Pass 2026-05-03 -> logs/CodeRED_Research_Browser_Lane_Pass_2026-05-03.md
+- [OK] pass/report / CodeRED Research Browser Report -> logs/CodeRED_Research_Browser_Report.md
+- [OK] pass/report / CodeRED Script Compile Lane Pass 2026-05-03 -> logs/CodeRED_Script_Compile_Lane_Pass_2026-05-03.md
+- [OK] pass/report / CodeRED Script Compile Validation Report -> logs/CodeRED_Script_Compile_Validation_Report.md
+- [OK] pass/report / CodeRED Terrainboundres Validation Lane Pass 2026-05-03 -> logs/CodeRED_Terrainboundres_Validation_Lane_Pass_2026-05-03.md
+- [OK] pass/report / CodeRED Terrainboundres Validation Report -> logs/CodeRED_Terrainboundres_Validation_Report.md
+- [OK] patches / External Patch Status -> logs/external_patch_status.md
+- [OK] planning / One-App Upgrade Plan -> docs/CodeRED_One_App_Upgrade_Plan_2026-05-03.md
+- [OK] planning / Repository Structure -> docs/REPO_STRUCTURE.md
+- [OK] proof / CodeRED Actor Enum Validation Report -> logs/CodeRED_Actor_Enum_Validation_Report.json
+- [OK] proof / CodeRED AI Trainer Validation Report -> logs/CodeRED_AI_Trainer_Validation_Report.json
+- [OK] proof / CodeRED Native Database Report -> logs/CodeRED_Native_Database_Report.json
+- [OK] proof / CodeRED Research Browser Report -> logs/CodeRED_Research_Browser_Report.json
+- [OK] proof / CodeRED Script Compile Validation Report -> logs/CodeRED_Script_Compile_Validation_Report.json
+- [OK] proof / CodeRED Terrainboundres Validation Report -> logs/CodeRED_Terrainboundres_Validation_Report.json
+- [OK] readme / README -> README.md
+- [OK] render / Psocache Duplicate Payloads -> research/IMPORTANT_psocache_rpf_analysis_2026-05-02/psocache_duplicates.csv
+- [OK] render / Psocache Interesting Terms -> research/IMPORTANT_psocache_rpf_analysis_2026-05-02/psocache_interesting_terms.csv
+- [OK] render / Psocache Parsed Entries -> research/IMPORTANT_psocache_rpf_analysis_2026-05-02/psocache_entries.csv
+- [OK] render / Psocache Preload Hash List -> research/IMPORTANT_psocache_rpf_analysis_2026-05-02/psocache_preload_list.csv
+- [OK] render / Psocache Shader Programs -> research/IMPORTANT_psocache_rpf_analysis_2026-05-02/psocache_shader_programs.csv
+- [OK] render / Psocache State Hashes -> research/IMPORTANT_psocache_rpf_analysis_2026-05-02/psocache_state_hashes.csv
+- [OK] render / Psocache Techniques -> research/IMPORTANT_psocache_rpf_analysis_2026-05-02/psocache_techniques.csv
+- [OK] research / CodeRed USArmy Companion AI Research Pass12 -> research/CodeRed_USArmy_Companion_AI_Research_Pass12.txt
+- [OK] research / CodeRED VR Motion Controls Research Status 2026-04-30 -> research/CodeRED_VR_Motion_Controls_Research_Status_2026-04-30.md
+- [OK] source / Project Research Master Chat Source -> research/CodeRED_Project_Research_Master_Chat_Source_2026-04-29.md
+- [OK] status / Code RED Stage Report -> logs/code_red_stage_report_latest.md
+- [OK] strings / Extracted Root String Findings -> research/extracted_root_research/strings_findings.csv
+- [OK] strings / IMPORTANT All-Root Strings UI Text Slice -> research/IMPORTANT_readable_root_index_2026-05-02/categories/strings_ui_text.csv
+- [OK] synthesis / Vehicle Spawning Cutscenes Gringos Strings Synthesis -> research/CodeRED_RESEARCH_SYNTHESIS_2026-04-29.md
+- [OK] terrain / Terrainboundres Entries -> research/terrainboundres_inventory/terrainboundres_entries.csv
+- [OK] terrain / Terrainboundres Inventory Data -> research/terrainboundres_inventory/terrainboundres_inventory.json
+- [OK] terrain / Terrainboundres Inventory Summary -> research/terrainboundres_inventory/terrainboundres_inventory.md
+- [OK] terrain / Terrainboundres WTB Tiles -> research/terrainboundres_inventory/terrainboundres_wtb_tiles.csv
+- [OK] vehicle / Car Truck Inventory Data -> research/car_truck_inventory/car_truck_inventory.json
+- [OK] vehicle / Car Truck Live RPF Entries -> research/car_truck_inventory/live_rpf_entries.csv
+- [OK] vehicle / Car Truck Live RPF Inventory -> research/car_truck_inventory/car_truck_inventory.md
+- [OK] vehicle / Car Truck Reference Entries -> research/car_truck_inventory/reference_entries.csv
+- [OK] vehicle / Extracted Root Vehicle Spawning Findings -> research/extracted_root_research/vehicle_spawning_findings.csv
+- [OK] vehicle / IMPORTANT All-Root Vehicle Spawning Slice -> research/IMPORTANT_readable_root_index_2026-05-02/categories/vehicle_spawning.csv
+- [OK] world / Refgroup Parent File Findings -> research/CodeRed_Refgroup_Parent_File_Findings_Pass12.txt
+- [MISSING] content / MP Content RPF Inventory -> CodeRED_MP_content_rpf_inventory.json
+- [MISSING] cutscenes / Act Cutscene Research Pass -> CodeRed_Act_Cutscene_Research_Pass07.txt
+- [MISSING] cutscenes / MP Cutscene Territory Tooling -> CodeRED_MP_Cutscene_Territory_Tooling_Research_2026-04-29.md
+- [MISSING] index / Code RED Log Index -> CodeRED_LOG_INDEX.md
+- [MISSING] install / Install And Test Pass -> README_INSTALL_AND_TEST_PASS03.txt
+- [MISSING] rpf / Broad RPF Recon -> CodeRed_Broad_RPF_Recon_Pass12_Update.txt
+- [MISSING] terrain / Terrainboundres Tooling Changelog -> CodeRED_Terrainboundres_Tooling_Changelog_2026-04-30.md
+- [MISSING] world / WSI Array Walker Pass -> CodeRED_WSI_Array_Walker_Pass_2026-04-29.md
+- [MISSING] world / WSI Explorer Pass -> CodeRED_WSI_Explorer_Pass_2026-04-29.md
+- [MISSING] world / WSI Semantic Exporter Pass -> CodeRED_WSI_Semantic_Exporter_Pass_2026-04-29.md

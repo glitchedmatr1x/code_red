@@ -1,0 +1,146 @@
+{
+  "version": "1.0.0-ai-trainer-validation-lane",
+  "generated_utc": "2026-05-03T07:46:20Z",
+  "root": "/mnt/data/codered_work",
+  "ok": true,
+  "enum_map": "/mnt/data/codered_work/data/codered/actor_enum_map.csv",
+  "roster": "/mnt/data/codered_work/data/codered/npc_roster.txt",
+  "actions": "/mnt/data/codered_work/data/codered/ai_behavior_actions.csv",
+  "ai_menu_cpp": "/mnt/data/codered_work/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp",
+  "ai_menu_ini": "/mnt/data/codered_work/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.ini",
+  "enum_rows": 3624,
+  "enum_lookup_keys": 4832,
+  "roster_entries": 13,
+  "roster_resolved": 13,
+  "roster_unresolved": 0,
+  "action_rows": 14,
+  "enabled_actions": 14,
+  "missing_required_actions": [],
+  "disabled_required_actions": [],
+  "sanity_errors": [],
+  "native_hook_errors": [],
+  "ini_errors": [],
+  "roster_results": [
+    {
+      "line": "ACTOR_CAUCASIAN_ARMY_Easy01",
+      "label": "ACTOR_CAUCASIAN_ARMY_Easy01",
+      "resolved": true,
+      "actor_enum": 369,
+      "actor_enum_hex": "0x00000171",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "AE_CAUCASIAN_ARMY_EASY01",
+      "label": "AE_CAUCASIAN_ARMY_EASY01",
+      "resolved": true,
+      "actor_enum": 369,
+      "actor_enum_hex": "0x00000171",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_RIDEABLE_ANIMAL_Horse01",
+      "label": "ACTOR_RIDEABLE_ANIMAL_Horse01",
+      "resolved": true,
+      "actor_enum": 976,
+      "actor_enum_hex": "0x000003D0",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_RIDEABLE_ANIMAL_MEX_Mule01",
+      "label": "ACTOR_RIDEABLE_ANIMAL_MEX_Mule01",
+      "resolved": true,
+      "actor_enum": 1000,
+      "actor_enum_hex": "0x000003E8",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_RIDEABLE_ANIMAL_Buffalo",
+      "label": "ACTOR_RIDEABLE_ANIMAL_Buffalo",
+      "resolved": true,
+      "actor_enum": 1004,
+      "actor_enum_hex": "0x000003EC",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_VEHICLE_Car01",
+      "label": "ACTOR_VEHICLE_Car01",
+      "resolved": true,
+      "actor_enum": 1194,
+      "actor_enum_hex": "0x000004AA",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_VEHICLE_Truck01",
+      "label": "ACTOR_VEHICLE_Truck01",
+      "resolved": true,
+      "actor_enum": 1193,
+      "actor_enum_hex": "0x000004A9",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_VEHICLE_Stagecoach",
+      "label": "ACTOR_VEHICLE_Stagecoach",
+      "resolved": true,
+      "actor_enum": 1177,
+      "actor_enum_hex": "0x00000499",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_VEHICLE_Cart01",
+      "label": "ACTOR_VEHICLE_Cart01",
+      "resolved": true,
+      "actor_enum": 1183,
+      "actor_enum_hex": "0x0000049F",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_VEHICLE_Wagon02",
+      "label": "ACTOR_VEHICLE_Wagon02",
+      "resolved": true,
+      "actor_enum": 1199,
+      "actor_enum_hex": "0x000004AF",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_VEHICLE_Coach01",
+      "label": "ACTOR_VEHICLE_Coach01",
+      "resolved": true,
+      "actor_enum": 1202,
+      "actor_enum_hex": "0x000004B2",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_VEHICLE_Canoe01",
+      "label": "ACTOR_VEHICLE_Canoe01",
+      "resolved": true,
+      "actor_enum": 1189,
+      "actor_enum_hex": "0x000004A5",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    },
+    {
+      "line": "ACTOR_VEHICLE_Raft01",
+      "label": "ACTOR_VEHICLE_Raft01",
+      "resolved": true,
+      "actor_enum": 1192,
+      "actor_enum_hex": "0x000004A8",
+      "source": "INI-style [Enum] actor list",
+      "warning": ""
+    }
+  ],
+  "notes": [
+    "This is an offline data/source validation pass only; it does not install or run an ASI.",
+    "A ready report means the AI Trainer lane is safe enough to proceed to compile/install proof."
+  ]
+}

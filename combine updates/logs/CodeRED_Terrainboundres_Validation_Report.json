@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "version": "1.0.0-one-app-terrainboundres-proof",
+  "generated_utc": "2026-05-03T07:54:37Z",
+  "root": "/mnt/data/codered_work",
+  "archive": "/mnt/data/codered_work/imports/terrainboundres.rpf",
+  "entries": 5381,
+  "files": 5378,
+  "wtb_tiles": 5376,
+  "txt_sidecars": 2,
+  "territories": 1,
+  "decoded_samples": 5,
+  "decoded_ok": 5,
+  "decoded_failed": 0,
+  "grid_extent_guess": {
+    "min_x": 1024,
+    "max_x": 7616,
+    "min_y": 6656,
+    "max_y": 11712,
+    "cell_size": 64
+  },
+  "errors": [],
+  "notes": [
+    "Validation is read-only and does not patch source archives.",
+    "Copied-archive patching remains available through codered_terrainboundres_tool.py patch-folder and patch-wtb-bytes.",
+    "Semantic WTB editing is still conservative; this proof validates inventory/decode readiness, not arbitrary terrain mutation."
+  ]
+}

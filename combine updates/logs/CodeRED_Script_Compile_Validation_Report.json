@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0-script-compile-lab-proof",
+  "generated_utc": "2026-05-03T08:24:11Z",
+  "root": "/mnt/data/codered_work",
+  "ok": true,
+  "lab_root": "/mnt/data/codered_work/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1",
+  "kit_root": "/mnt/data/codered_work/related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1",
+  "missing_lab_files": [],
+  "missing_kit_files": [],
+  "validator_exit_code": 0,
+  "validator_stdout": "source_exists: True\nbrace_balance: True\nparen_balance: True\nhas_main_loop: True\nhas_visible_menu: True\nhas_vehicle_spawn: True\nhas_live_tune: True\nmissing_symbols: []\nRESULT: PASS\n",
+  "validator_stderr": "",
+  "source_checks": {
+    "source_exists": true,
+    "source_bytes": 7581,
+    "brace_balance": true,
+    "paren_balance": true,
+    "has_main_loop": true,
+    "has_visible_menu": true,
+    "has_vehicle_spawn": true,
+    "has_live_tune": true,
+    "has_script_registration": true,
+    "native_requirements": 24,
+    "constant_requirements": 3
+  },
+  "missing_symbols": [],
+  "missing_constants": [],
+  "toolchain": {
+    "sccl_exe": null,
+    "cl_exe": null,
+    "gcc": "/usr/bin/gcc",
+    "python": "/opt/pyvenv/bin/python3",
+    "windows_host": false
+  },
+  "output_files": [
+    "logs/CodeRED_Script_Compile_Validation_Report.json",
+    "logs/CodeRED_Script_Compile_Validation_Report.md",
+    "logs/CodeRED_Script_Compile_Lane_Pass_2026-05-03.md",
+    "logs/CodeRED_Script_Compile_Windows_Build_Plan.txt"
+  ],
+  "notes": [
+    "This validates the Code RED script compile lab assets and the vehicle-menu probe source.",
+    "It does not claim arbitrary existing .wsc/.xsc/.sco binary roundtrip is solved.",
+    "On non-Windows hosts, SC-CL execution is expected to remain unavailable unless a compatible executable/toolchain is staged.",
+    "Use the generated Windows build plan for the real compile step when Visual Studio/SC-CL are available."
+  ]
+}
