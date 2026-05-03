@@ -1,6 +1,6 @@
 # Code RED SC-CL Easy Setup Report
 
-Generated UTC: `2026-05-03T16:08:00Z`
+Generated UTC: `2026-05-03T16:12:26Z`
 Result: **READY**
 
 ## Detected Tools

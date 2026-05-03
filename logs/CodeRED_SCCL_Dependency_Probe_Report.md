@@ -1,6 +1,6 @@
 # Code RED SC-CL Dependency Probe Report
 
-Generated UTC: `2026-05-03T16:08:10Z`
+Generated UTC: `2026-05-03T16:10:06Z`
 Result: **NEEDS ATTENTION**
 SC-CL.exe: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe`
 Launch exit: `3221225781`
