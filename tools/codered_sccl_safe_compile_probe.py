@@ -19,7 +19,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
-VERSION = "1.0.0-safe-sccl-compile-probe"
+VERSION = "1.1.0-safe-sccl-compile-probe-dll-guard"
+STATUS_DLL_NOT_FOUND = 0xC0000135
 KIT = Path("related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1")
 LAB = Path("related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1")
 DROP = Path("resources/SC-CL_DROP_HERE")
@@ -70,6 +71,16 @@ def rel(path: Path, root: Path) -> str:
 
 def tail(text: str, limit: int = 8000) -> str:
     return text if len(text) <= limit else text[-limit:]
+
+
+def status_hex(code: int | None) -> str:
+    if code is None:
+        return "None"
+    return f"0x{code & 0xFFFFFFFF:08X}"
+
+
+def is_dll_launch_failure(code: int | None) -> bool:
+    return code is not None and (code & 0xFFFFFFFF) == STATUS_DLL_NOT_FOUND
 
 
 def write_text(path: Path, text: str) -> None:
@@ -160,8 +171,18 @@ def compile_probe(root: Path, sccl_arg: str | None, timeout: int) -> ProbeReport
     print(f"[CodeRED] Source: {src}", flush=True)
     print(f"[CodeRED] Output: {out_dir}", flush=True)
 
-    # Quick health check. SC-CL may return nonzero for help/version, so this is diagnostic only.
-    report.commands.append(run_command("SC-CL help", [str(sccl), "-help"], root, timeout=min(timeout, 20)))
+    help_result = run_command("SC-CL help", [str(sccl), "-help"], root, timeout=min(timeout, 20))
+    report.commands.append(help_result)
+    if is_dll_launch_failure(help_result.exit_code):
+        report.warnings.append(f"SC-CL.exe cannot launch: {status_hex(help_result.exit_code)} / STATUS_DLL_NOT_FOUND. A required DLL/runtime is missing.")
+        report.next_steps = [
+            "Run: py -3 tools\\codered_sccl_dependency_probe.py",
+            "Install/repair Microsoft Visual C++ Redistributable 2015-2022 x64 if runtime DLLs are missing.",
+            "If SC-CL.exe came from a build folder, copy SC-CL.exe together with its adjacent LLVM/Clang DLLs into the build kit folder.",
+            "After dependency probe passes, rerun: py -3 tools\\codered_sccl_safe_compile_probe.py --timeout 30",
+        ]
+        write_outputs(root, report)
+        return report
 
     compile_commands = [
         [str(sccl), "-target=RDR_#SC", "-platform=X360", "-out-dir", str(out_dir), "-name=vehicle_menu_probe", str(src)],
@@ -175,6 +196,11 @@ def compile_probe(root: Path, sccl_arg: str | None, timeout: int) -> ProbeReport
         result = run_command(f"compile attempt {index}", cmd, root, timeout=timeout)
         report.commands.append(result)
         report.output_files = list_outputs(out_dir, root)
+        if is_dll_launch_failure(result.exit_code):
+            report.warnings.append(f"Compile attempt {index} failed with {status_hex(result.exit_code)} / STATUS_DLL_NOT_FOUND. Stopping compile attempts.")
+            report.next_steps = ["Run: py -3 tools\\codered_sccl_dependency_probe.py"]
+            write_outputs(root, report)
+            return report
         if result.timed_out:
             report.warnings.append(f"Compile attempt {index} timed out after {timeout}s; trying next target/options.")
             continue
@@ -217,6 +243,7 @@ def markdown(report: ProbeReport) -> str:
         lines.extend([
             f"### {item.name}",
             f"- exit: `{item.exit_code}`",
+            f"- exit_hex: `{status_hex(item.exit_code)}`",
             f"- timed_out: `{item.timed_out}`",
             f"- command: `{' '.join(item.command)}`",
             "",
@@ -237,12 +264,11 @@ def write_outputs(root: Path, report: ProbeReport) -> None:
     write_json(root / REPORT_JSON, asdict(report))
     md = markdown(report)
     write_text(root / REPORT_MD, md)
-    # Compact command output log for quick inspection.
     chunks = []
     for item in report.commands:
         chunks.append("\n".join([
             f"## {item.name}",
-            f"exit={item.exit_code} timed_out={item.timed_out}",
+            f"exit={item.exit_code} exit_hex={status_hex(item.exit_code)} timed_out={item.timed_out}",
             "COMMAND: " + " ".join(item.command),
             "STDOUT:\n" + item.stdout_tail,
             "STDERR:\n" + item.stderr_tail,
