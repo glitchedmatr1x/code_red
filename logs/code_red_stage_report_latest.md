@@ -1,7 +1,7 @@
 Code RED Stage Report
 =====================
 
-Overall readiness snapshot: 50% of the currently tracked lanes are directly usable in this packaged fallback build.
+Overall readiness snapshot: 38% of the currently tracked lanes are directly usable in this packaged fallback build.
 
 Live branch
 - Python fallback runner: D:\Games\Red Dead Redemption\Code_RED\main.py
@@ -9,18 +9,18 @@ Live branch
 - Primary archive target: not staged yet
 - Bundled demo archive: not found
 - Latest archive proof: not run yet
-- MP Companion: D:\Games\Red Dead Redemption\Code_RED\related_apps\Code_RED_MP_Companion_v19\mp_companion.py
+- MP Companion: missing
 
 Workspace footprint
-- Files: 709
-- Folders: 212
-- Size: 126.3 MB
-- Archives: 0
-- Code-bearing files: 121
-- Compiled scripts: 17
-- Skipped generated/cache folders: 6
+- Files: 12,000
+- Folders: 1,519
+- Size: 427.1 MB
+- Archives: 1
+- Code-bearing files: 4,777
+- Compiled scripts: 7
+- Skipped generated/cache folders: 20
 - Skipped generated/cache files: 0
-- Scan capped: no
+- Scan capped: yes
 
 Lane status
 - [READY] Python fallback UI: WorkbenchApp boots and the main interface is live in this branch.
@@ -28,7 +28,7 @@ Lane status
 - [PARTIAL] Archive proof pass: A copied-archive proof pass has not been completed yet in this workspace.
 - [READY] Source file editing: Code-bearing text files can be reviewed and edited directly.
 - [PARTIAL] Source validation probes: Host-native C/C++/C# validation probes are available for at least part of the helper-source lane.
-- [READY] MP companion handoff: Bundled companion path: D:\Games\Red Dead Redemption\Code_RED\related_apps\Code_RED_MP_Companion_v19\mp_companion.py
+- [PARTIAL] MP companion handoff: Bundled companion path: D:\Games\Red Dead Redemption\Code_RED\related_apps\Code_RED_MP_Companion_v19\mp_companion.py
 - [PARTIAL] Script compile-back: Compiler-backed rebuild remains Windows-first and depends on SC-CL availability.
 - [PARTIAL] Rebuild-proven existing game scripts: Existing binary scripts are still not rebuild-proven end-to-end.
 
