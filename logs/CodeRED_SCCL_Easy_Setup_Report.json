@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0-sccl-easy-setup",
+  "generated_utc": "2026-05-03T11:46:24Z",
+  "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
+  "ok": false,
+  "windows_host": true,
+  "sccl_exe": null,
+  "cl_exe": null,
+  "msbuild_exe": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+  "vswhere_exe": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
+  "python_exe": "C:\\Users\\glitc\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+  "searched_paths": [
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL.exe",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL.exe",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL\\SC-CL.exe",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL-master\\bin\\SC-CL.exe",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL-master\\llvm-14.0.0.src\\MinSizeRel\\bin\\SC-CL.exe",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\SC-CL.exe",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\SC-CL.exe"
+  ],
+  "actions": [],
+  "warnings": [
+    "SC-CL.exe was not found. Drop SC-CL.exe into the build kit folder or run adopt with a full path."
+  ],
+  "next_steps": [
+    "Run: py -3 tools\\codered_sccl_easy_setup.py status",
+    "If SC-CL.exe is missing, run: py -3 tools\\codered_sccl_easy_setup.py adopt --sccl C:\\path\\to\\SC-CL.exe",
+    "Run: py -3 tools\\codered_script_compile_validation.py",
+    "Run: related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\run_build_then_compile_vehicle_menu_probe.bat"
+  ],
+  "outputs": {
+    "env_bat": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/CodeRED_SCCL_Env.bat",
+    "env_ps1": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/CodeRED_SCCL_Env.ps1"
+  }
+}
