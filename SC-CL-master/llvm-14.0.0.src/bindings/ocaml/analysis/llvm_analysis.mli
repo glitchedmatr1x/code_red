@@ -1,8 +1,9 @@
 (*===-- llvm_analysis.mli - LLVM OCaml Interface --------------*- OCaml -*-===*
  *
- * Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
- * See https://llvm.org/LICENSE.txt for license information.
- * SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+ *                     The LLVM Compiler Infrastructure
+ *
+ * This file is distributed under the University of Illinois Open Source
+ * License. See LICENSE.TXT for details.
  *
  *===----------------------------------------------------------------------===*)
 
@@ -16,8 +17,9 @@
     human-readable validation report. See [llvm::verifyModule]. *)
 external verify_module : Llvm.llmodule -> string option = "llvm_verify_module"
 
-(** [verify_function f] returns [true] if the function [f] is valid, and
-    [false] if it is invalid. See [llvm::verifyFunction]. *)
+(** [verify_function f] returns [None] if the function [f] is valid, and
+    [Some reason] if it is invalid. [reason] is a string containing a
+    human-readable validation report. See [llvm::verifyFunction]. *)
 external verify_function : Llvm.llvalue -> bool = "llvm_verify_function"
 
 (** [verify_module m] returns if the module [m] is valid, but prints a

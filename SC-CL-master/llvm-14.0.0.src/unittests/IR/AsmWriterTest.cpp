@@ -1,8 +1,9 @@
 //===- llvm/unittest/IR/AsmWriter.cpp - AsmWriter tests -------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 #include "llvm/BinaryFormat/Dwarf.h"
@@ -33,18 +34,6 @@ TEST(AsmWriterTest, DebugPrintDetachedInstruction) {
   Add->print(OS);
   std::size_t r = OS.str().find("<badref> = add i32 undef, undef, !<empty");
   EXPECT_TRUE(r != std::string::npos);
-}
-
-TEST(AsmWriterTest, DebugPrintDetachedArgument) {
-  LLVMContext Ctx;
-  auto Ty = Type::getInt32Ty(Ctx);
-  auto Arg = new Argument(Ty);
-
-  std::string S;
-  raw_string_ostream OS(S);
-  Arg->print(OS);
-  EXPECT_EQ(S, "i32 <badref>");
-  delete Arg;
 }
 
 TEST(AsmWriterTest, DumpDIExpression) {

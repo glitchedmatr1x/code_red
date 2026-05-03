@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 from __future__ import print_function
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--jobs',
         '-j',
-        default=None,
+        default=cpu_count(),
         type=int,
         help='Max job count (defaults to %(default)s, the current CPU count)')
     parser.add_argument(

@@ -1,17 +1,18 @@
 //===--- DatatCollection.h --------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 /// \file
-/// This file declares helper methods for collecting data from AST nodes.
+/// \brief This file declares helper methods for collecting data from AST nodes.
 ///
 /// To collect data from Stmt nodes, subclass ConstStmtVisitor and include
 /// StmtDataCollectors.inc after defining the macros that you need. This
 /// provides data collection implementations for most Stmt kinds. Note
-/// that the code requires some conditions to be met:
+/// that that code requires some conditions to be met:
 ///
 ///   - There must be a method addData(const T &Data) that accepts strings,
 ///     integral types as well as QualType. All data is forwarded using
@@ -50,9 +51,10 @@ template <class T> void addDataToConsumer(T &DataConsumer, const QualType &QT) {
 }
 
 template <class T, class Type>
-std::enable_if_t<std::is_integral<Type>::value || std::is_enum<Type>::value ||
-                 std::is_convertible<Type, size_t>::value // for llvm::hash_code
-                 >
+typename std::enable_if<
+    std::is_integral<Type>::value || std::is_enum<Type>::value ||
+    std::is_convertible<Type, size_t>::value // for llvm::hash_code
+    >::type
 addDataToConsumer(T &DataConsumer, Type Data) {
   DataConsumer.update(StringRef(reinterpret_cast<char *>(&Data), sizeof(Data)));
 }

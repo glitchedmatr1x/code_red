@@ -1,7 +1,5 @@
-; RUN: llc -verify-machineinstrs < %s -mtriple=powerpc-unknown-linux-gnu | FileCheck %s
+; RUN: llc -verify-machineinstrs < %s -mtriple=powerpc-apple-darwin
 
-; CHECK: @nonzero_bits1
-; CHECK: blr
 define fastcc i64 @nonzero_bits1() nounwind  {
 entry:
 	switch i32 0, label %bb1385 [

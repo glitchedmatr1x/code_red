@@ -1,23 +1,22 @@
 #!/usr/bin/env python
 
-from __future__ import absolute_import, division, print_function
 def pcall(f, N):
     if N == 0:
-        print('    f(0)', file=f)
+        print >>f, '    f(0)'
         return
 
-    print('    f(', file=f)
+    print >>f, '    f('
     pcall(f, N - 1)
-    print('     )', file=f)
+    print >>f, '     )'
 
 def main():
     f = open('t.c','w')
-    print('int f(int n) { return n; }', file=f)
-    print('int t() {', file=f)
-    print('  return', file=f)
+    print >>f, 'int f(int n) { return n; }'
+    print >>f, 'int t() {'
+    print >>f, '  return'
     pcall(f, 10000)
-    print('  ;', file=f)
-    print('}', file=f)
+    print >>f, '  ;'
+    print >>f, '}'
 
 if __name__ == "__main__":
     import sys

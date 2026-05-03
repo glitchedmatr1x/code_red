@@ -1,8 +1,9 @@
 //===- ScalarEvolutionAliasAnalysis.h - SCEV-based AA -----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 /// \file
@@ -27,14 +28,10 @@ class SCEVAAResult : public AAResultBase<SCEVAAResult> {
   ScalarEvolution &SE;
 
 public:
-  explicit SCEVAAResult(ScalarEvolution &SE) : SE(SE) {}
+  explicit SCEVAAResult(ScalarEvolution &SE) : AAResultBase(), SE(SE) {}
   SCEVAAResult(SCEVAAResult &&Arg) : AAResultBase(std::move(Arg)), SE(Arg.SE) {}
 
-  AliasResult alias(const MemoryLocation &LocA, const MemoryLocation &LocB,
-                    AAQueryInfo &AAQI);
-
-  bool invalidate(Function &F, const PreservedAnalyses &PA,
-                  FunctionAnalysisManager::Invalidator &Inv);
+  AliasResult alias(const MemoryLocation &LocA, const MemoryLocation &LocB);
 
 private:
   Value *GetBaseValue(const SCEV *S);

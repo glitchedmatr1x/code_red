@@ -1,10 +1,11 @@
-//===--- ModuleAssistant.cpp - Module map generation manager --*- C++ -*---===//
+//===--- ModuleAssistant.cpp - Module map generation manager -*- C++ -*---===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
 //
-//===----------------------------------------------------------------------===//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
+//
+//===---------------------------------------------------------------------===//
 //
 // This file defines the module generation entry point function,
 // createModuleMap, a Module class for representing a module,
@@ -26,7 +27,7 @@
 // map file using a stream obtained and managed by an
 // llvm::ToolOutputFile object.
 //
-//===----------------------------------------------------------------------===//
+//===---------------------------------------------------------------------===//
 
 #include "Modularize.h"
 #include "llvm/ADT/SmallString.h"
@@ -45,6 +46,7 @@ namespace {
 class Module {
 public:
   Module(llvm::StringRef Name, bool Problem);
+  Module();
   ~Module();
   bool output(llvm::raw_fd_ostream &OS, int Indent);
   Module *findSubModule(llvm::StringRef SubName);
@@ -63,6 +65,7 @@ public:
 // Constructors.
 Module::Module(llvm::StringRef Name, bool Problem)
   : Name(Name), IsProblem(Problem) {}
+Module::Module() : IsProblem(false) {}
 
 // Destructor.
 Module::~Module() {
@@ -139,7 +142,7 @@ static const char *const ReservedNames[] = {
 // Prepends a '_' to the name if and only if the name is a keyword.
 static std::string
 ensureNoCollisionWithReservedName(llvm::StringRef MightBeReservedName) {
-  std::string SafeName(MightBeReservedName);
+  std::string SafeName = MightBeReservedName;
   for (int Index = 0; ReservedNames[Index] != nullptr; ++Index) {
     if (MightBeReservedName == ReservedNames[Index]) {
       SafeName.insert(0, "_");
@@ -153,7 +156,7 @@ ensureNoCollisionWithReservedName(llvm::StringRef MightBeReservedName) {
 // Prepends a '_' to the name if and only if the name is a keyword.
 static std::string
 ensureVaidModuleName(llvm::StringRef MightBeInvalidName) {
-  std::string SafeName(MightBeInvalidName);
+  std::string SafeName = MightBeInvalidName;
   std::replace(SafeName.begin(), SafeName.end(), '-', '_');
   std::replace(SafeName.begin(), SafeName.end(), '.', '_');
   if (isdigit(SafeName[0]))
@@ -176,9 +179,9 @@ static bool addModuleDescription(Module *RootModule,
   llvm::sys::path::native(HeaderFilePath, NativePath);
   llvm::sys::path::native(HeaderPrefix, NativePrefix);
   if (NativePath.startswith(NativePrefix))
-    FilePath = std::string(NativePath.substr(NativePrefix.size() + 1));
+    FilePath = NativePath.substr(NativePrefix.size() + 1);
   else
-    FilePath = std::string(HeaderFilePath);
+    FilePath = HeaderFilePath;
   int Count = FileDependents.size();
   // Headers that go into modules must not depend on other files being
   // included first.  If there are any dependents, warn user and omit.
@@ -197,7 +200,7 @@ static bool addModuleDescription(Module *RootModule,
        I != E; ++I) {
     if ((*I)[0] == '.')
       continue;
-    std::string Stem(llvm::sys::path::stem(*I));
+    std::string Stem = llvm::sys::path::stem(*I);
     Stem = ensureNoCollisionWithReservedName(Stem);
     Stem = ensureVaidModuleName(Stem);
     Module *SubModule = CurrentModule->findSubModule(Stem);
@@ -268,7 +271,7 @@ static bool writeModuleMap(llvm::StringRef ModuleMapPath,
 
   // Set up module map output file.
   std::error_code EC;
-  llvm::ToolOutputFile Out(FilePath, EC, llvm::sys::fs::OF_TextWithCRLF);
+  llvm::ToolOutputFile Out(FilePath, EC, llvm::sys::fs::F_Text);
   if (EC) {
     llvm::errs() << Argv0 << ": error opening " << FilePath << ":"
                  << EC.message() << "\n";

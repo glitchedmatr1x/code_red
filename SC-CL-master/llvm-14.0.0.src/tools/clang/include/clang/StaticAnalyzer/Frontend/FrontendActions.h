@@ -1,8 +1,9 @@
 //===-- FrontendActions.h - Useful Frontend Actions -------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -16,6 +17,7 @@
 namespace clang {
 
 class Stmt;
+class AnalyzerOptions;
 
 namespace ento {
 
@@ -29,7 +31,7 @@ protected:
                                                  StringRef InFile) override;
 };
 
-/// Frontend action to parse model files.
+/// \brief Frontend action to parse model files.
 ///
 /// This frontend action is responsible for parsing model files. Model files can
 /// not be parsed on their own, they rely on type information that is available
@@ -50,7 +52,12 @@ private:
   llvm::StringMap<Stmt *> &Bodies;
 };
 
-} // namespace ento
+void printCheckerHelp(raw_ostream &OS, ArrayRef<std::string> plugins);
+void printEnabledCheckerList(raw_ostream &OS, ArrayRef<std::string> plugins,
+                             const AnalyzerOptions &opts);
+
+} // end GR namespace
+
 } // end namespace clang
 
 #endif

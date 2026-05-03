@@ -1,8 +1,9 @@
 //===-- CodeGen/RuntimeLibcalls.h - Runtime Library Calls -------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -15,7 +16,6 @@
 #define LLVM_CODEGEN_RUNTIMELIBCALLS_H
 
 #include "llvm/CodeGen/ValueTypes.h"
-#include "llvm/Support/AtomicOrdering.h"
 
 namespace llvm {
 namespace RTLIB {
@@ -29,18 +29,9 @@ namespace RTLIB {
   ///
   enum Libcall {
 #define HANDLE_LIBCALL(code, name) code,
-    #include "llvm/IR/RuntimeLibcalls.def"
+    #include "RuntimeLibcalls.def"
 #undef HANDLE_LIBCALL
   };
-
-  /// GetFPLibCall - Helper to return the right libcall for the given floating
-  /// point type, or UNKNOWN_LIBCALL if there is none.
-  Libcall getFPLibCall(EVT VT,
-                       Libcall Call_F32,
-                       Libcall Call_F64,
-                       Libcall Call_F80,
-                       Libcall Call_F128,
-                       Libcall Call_PPCF128);
 
   /// getFPEXT - Return the FPEXT_*_* value for the given types, or
   /// UNKNOWN_LIBCALL if there is none.
@@ -66,17 +57,9 @@ namespace RTLIB {
   /// UNKNOWN_LIBCALL if there is none.
   Libcall getUINTTOFP(EVT OpVT, EVT RetVT);
 
-  /// getPOWI - Return the POWI_* value for the given types, or
-  /// UNKNOWN_LIBCALL if there is none.
-  Libcall getPOWI(EVT RetVT);
-
   /// Return the SYNC_FETCH_AND_* value for the given opcode and type, or
   /// UNKNOWN_LIBCALL if there is none.
   Libcall getSYNC(unsigned Opc, MVT VT);
-
-  /// Return the outline atomics value for the given opcode, atomic ordering
-  /// and type, or UNKNOWN_LIBCALL if there is none.
-  Libcall getOUTLINE_ATOMIC(unsigned Opc, AtomicOrdering Order, MVT VT);
 
   /// getMEMCPY_ELEMENT_UNORDERED_ATOMIC - Return
   /// MEMCPY_ELEMENT_UNORDERED_ATOMIC_* value for the given element size or

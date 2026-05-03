@@ -1,5 +1,5 @@
 ; RUN: llc -mtriple=x86_64-windows-msvc < %s | FileCheck %s --check-prefix=ASM
-; RUN: llc -mtriple=x86_64-windows-msvc < %s -filetype=obj | llvm-readobj --codeview - | FileCheck %s --check-prefix=OBJ
+; RUN: llc -mtriple=x86_64-windows-msvc < %s -filetype=obj | llvm-readobj -codeview - | FileCheck %s --check-prefix=OBJ
 
 ; This test attempts to exercise gaps in local variables. The local variable 'p'
 ; will end up in some CSR (esi), which will be used in both the BB scheduled
@@ -33,13 +33,13 @@
 ; ASM:         callq   vardef
 ; ASM:         movl    %eax, %esi
 ; ASM: [[p_b1:\.Ltmp[0-9]+]]:
-; ASM:         #DEBUG_VALUE: p <- $esi
+; ASM:         #DEBUG_VALUE: p <- %esi
 ; ASM:         callq   barrier
 ; ASM:         movl    %esi, %ecx
 ; ASM:         testl   %eax, %eax
 ; ASM:         jne     .LBB0_5
 ; ASM: # %bb.2:                                 # %if.end
-; ASM:         #DEBUG_VALUE: p <- $esi
+; ASM:         #DEBUG_VALUE: p <- %esi
 ; ASM:         callq   use
 ; ASM:         jmp     .LBB0_4
 ; ASM: [[p_e1:\.Ltmp[0-9]+]]:
@@ -52,9 +52,9 @@
 ; ASM:         retq
 ; ASM: .LBB0_5:                                # %if.then4
 ; ASM: [[p_b2:\.Ltmp[0-9]+]]:
-; ASM:         #DEBUG_VALUE: p <- $esi
+; ASM:         #DEBUG_VALUE: p <- %esi
 ; ASM:         callq   call_noreturn
-; ASM:         int3
+; ASM:         ud2
 ; ASM: .Lfunc_end0:
 
 ; ASM:         .short  {{.*}}         # Record length
@@ -62,7 +62,7 @@
 ; ASM:         .long   116                     # TypeIndex
 ; ASM:         .short  0                       # Flags
 ; ASM:         .asciz  "p"
-; ASM:         .cv_def_range    [[p_b1]] [[p_e1]] [[p_b2]] .Lfunc_end0, reg, 23
+; ASM:         .cv_def_range    [[p_b1]] [[p_e1]] [[p_b2]] .Lfunc_end0, "A\021\027\000\000\000"
 ; ASM:         .short  2                       # Record length
 ; ASM:         .short  4431                    # Record kind: S_PROC_ID_END
 
@@ -133,9 +133,9 @@ declare void @use(i32) local_unnamed_addr #1
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #3
 
-attributes #0 = { nounwind uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #2 = { noreturn "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { noreturn "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #3 = { nounwind readnone }
 attributes #4 = { nounwind }
 attributes #5 = { noreturn nounwind }
@@ -151,7 +151,7 @@ attributes #5 = { noreturn nounwind }
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{i32 1, !"PIC Level", i32 2}
 !6 = !{!"clang version 4.0.0 "}
-!7 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 19, type: !8, isLocal: false, isDefinition: true, scopeLine: 19, isOptimized: true, unit: !0, retainedNodes: !11)
+!7 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 19, type: !8, isLocal: false, isDefinition: true, scopeLine: 19, isOptimized: true, unit: !0, variables: !11)
 !8 = !DISubroutineType(types: !9)
 !9 = !{!10}
 !10 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)

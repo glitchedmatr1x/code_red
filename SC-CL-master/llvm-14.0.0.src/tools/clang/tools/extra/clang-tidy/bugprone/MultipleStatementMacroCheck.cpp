@@ -1,8 +1,9 @@
 //===--- MultipleStatementMacroCheck.cpp - clang-tidy----------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,9 +19,9 @@ namespace bugprone {
 
 namespace {
 
-AST_MATCHER(Expr, isInMacro) { return Node.getBeginLoc().isMacroID(); }
+AST_MATCHER(Expr, isInMacro) { return Node.getLocStart().isMacroID(); }
 
-/// Find the next statement after `S`.
+/// \brief Find the next statement after `S`.
 const Stmt *nextStmt(const MatchFinder::MatchResult &Result, const Stmt *S) {
   auto Parents = Result.Context->getParents(*S);
   if (Parents.empty())
@@ -37,18 +38,17 @@ const Stmt *nextStmt(const MatchFinder::MatchResult &Result, const Stmt *S) {
   return nextStmt(Result, Parent);
 }
 
-using ExpansionRanges = std::vector<SourceRange>;
+using ExpansionRanges = std::vector<std::pair<SourceLocation, SourceLocation>>;
 
-/// \brief Get all the macro expansion ranges related to `Loc`.
+/// \bried Get all the macro expansion ranges related to `Loc`.
 ///
 /// The result is ordered from most inner to most outer.
 ExpansionRanges getExpansionRanges(SourceLocation Loc,
                                    const MatchFinder::MatchResult &Result) {
   ExpansionRanges Locs;
   while (Loc.isMacroID()) {
-    Locs.push_back(
-        Result.SourceManager->getImmediateExpansionRange(Loc).getAsRange());
-    Loc = Locs.back().getBegin();
+    Locs.push_back(Result.SourceManager->getImmediateExpansionRange(Loc));
+    Loc = Locs.back().first;
   }
   return Locs;
 }
@@ -72,13 +72,13 @@ void MultipleStatementMacroCheck::check(
   if (!Next)
     return;
 
-  SourceLocation OuterLoc = Outer->getBeginLoc();
+  SourceLocation OuterLoc = Outer->getLocStart();
   if (Result.Nodes.getNodeAs<Stmt>("else"))
     OuterLoc = cast<IfStmt>(Outer)->getElseLoc();
 
-  auto InnerRanges = getExpansionRanges(Inner->getBeginLoc(), Result);
+  auto InnerRanges = getExpansionRanges(Inner->getLocStart(), Result);
   auto OuterRanges = getExpansionRanges(OuterLoc, Result);
-  auto NextRanges = getExpansionRanges(Next->getBeginLoc(), Result);
+  auto NextRanges = getExpansionRanges(Next->getLocStart(), Result);
 
   // Remove all the common ranges, starting from the top (the last ones in the
   // list).
@@ -96,9 +96,9 @@ void MultipleStatementMacroCheck::check(
       InnerRanges.back() != NextRanges.back())
     return;
 
-  diag(InnerRanges.back().getBegin(), "multiple statement macro used without "
-                                      "braces; some statements will be "
-                                      "unconditionally executed");
+  diag(InnerRanges.back().first, "multiple statement macro used without "
+                                 "braces; some statements will be "
+                                 "unconditionally executed");
 }
 
 } // namespace bugprone

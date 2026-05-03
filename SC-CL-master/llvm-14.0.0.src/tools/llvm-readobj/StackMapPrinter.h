@@ -1,8 +1,9 @@
 //===-------- StackMapPrinter.h - Pretty-print stackmaps --------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -10,51 +11,49 @@
 #define LLVM_TOOLS_LLVM_READOBJ_STACKMAPPRINTER_H
 
 #include "llvm/Object/StackMapParser.h"
-#include "llvm/Support/ScopedPrinter.h"
 
 namespace llvm {
 
 // Pretty print a stackmap to the given ostream.
-template <typename StackMapParserT>
-void prettyPrintStackMap(ScopedPrinter &W, const StackMapParserT &SMP) {
+template <typename OStreamT, typename StackMapParserT>
+void prettyPrintStackMap(OStreamT &OS, const StackMapParserT &SMP) {
 
-  W.printNumber("LLVM StackMap Version",  SMP.getVersion());
-  W.printNumber("Num Functions", SMP.getNumFunctions());
+  OS << "LLVM StackMap Version: " << SMP.getVersion()
+     << "\nNum Functions: " << SMP.getNumFunctions();
 
   // Functions:
   for (const auto &F : SMP.functions())
-    W.startLine() << "  Function address: " << F.getFunctionAddress()
+    OS << "\n  Function address: " << F.getFunctionAddress()
        << ", stack size: " << F.getStackSize()
-       << ", callsite record count: " << F.getRecordCount() << "\n";
+       << ", callsite record count: " << F.getRecordCount();
 
   // Constants:
-  W.printNumber("Num Constants", SMP.getNumConstants());
+  OS << "\nNum Constants: " << SMP.getNumConstants();
   unsigned ConstantIndex = 0;
   for (const auto &C : SMP.constants())
-    W.startLine() << "  #" << ++ConstantIndex << ": " << C.getValue() << "\n";
+    OS << "\n  #" << ++ConstantIndex << ": " << C.getValue();
 
   // Records:
-  W.printNumber("Num Records", SMP.getNumRecords());
+  OS << "\nNum Records: " << SMP.getNumRecords();
   for (const auto &R : SMP.records()) {
-    W.startLine() << "  Record ID: " << R.getID()
-                  << ", instruction offset: " << R.getInstructionOffset()
-                  << "\n";
-    W.startLine() << "    " << R.getNumLocations() << " locations:\n";
+    OS << "\n  Record ID: " << R.getID()
+       << ", instruction offset: " << R.getInstructionOffset()
+       << "\n    " << R.getNumLocations() << " locations:";
 
     unsigned LocationIndex = 0;
     for (const auto &Loc : R.locations()) {
-      raw_ostream &OS = W.startLine();
-      OS << "      #" << ++LocationIndex << ": ";
+      OS << "\n      #" << ++LocationIndex << ": ";
       switch (Loc.getKind()) {
       case StackMapParserT::LocationKind::Register:
         OS << "Register R#" << Loc.getDwarfRegNum();
         break;
       case StackMapParserT::LocationKind::Direct:
-        OS << "Direct R#" << Loc.getDwarfRegNum() << " + " << Loc.getOffset();
+        OS << "Direct R#" << Loc.getDwarfRegNum() << " + "
+           << Loc.getOffset();
         break;
       case StackMapParserT::LocationKind::Indirect:
-        OS << "Indirect [R#" << Loc.getDwarfRegNum() << " + " << Loc.getOffset()
-           << "]";
+        OS << "Indirect [R#" << Loc.getDwarfRegNum() << " + "
+           << Loc.getOffset() << "]";
         break;
       case StackMapParserT::LocationKind::Constant:
         OS << "Constant " << Loc.getSmallConstant();
@@ -64,16 +63,17 @@ void prettyPrintStackMap(ScopedPrinter &W, const StackMapParserT &SMP) {
            << SMP.getConstant(Loc.getConstantIndex()).getValue() << ")";
         break;
       }
-      OS << ", size: " << Loc.getSizeInBytes() << "\n";
     }
 
-    raw_ostream &OS = W.startLine();
-    OS << "    " << R.getNumLiveOuts() << " live-outs: [ ";
+    OS << "\n    " << R.getNumLiveOuts() << " live-outs: [ ";
     for (const auto &LO : R.liveouts())
       OS << "R#" << LO.getDwarfRegNum() << " ("
          << LO.getSizeInBytes() << "-bytes) ";
     OS << "]\n";
   }
+
+ OS << "\n";
+
 }
 
 }

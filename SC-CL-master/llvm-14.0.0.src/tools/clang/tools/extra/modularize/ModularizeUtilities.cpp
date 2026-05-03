@@ -1,8 +1,9 @@
 //===--- extra/modularize/ModularizeUtilities.cpp -------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -196,7 +197,7 @@ std::error_code ModularizeUtilities::loadSingleHeaderListsAndDependencies(
     // Get canonical form.
     HeaderFileName = getCanonicalPath(HeaderFileName);
     // Save the resulting header file path and dependencies.
-    HeaderFileNames.push_back(std::string(HeaderFileName.str()));
+    HeaderFileNames.push_back(HeaderFileName.str());
     Dependencies[HeaderFileName.str()] = Dependents;
   }
   return std::error_code();
@@ -249,7 +250,7 @@ std::error_code ModularizeUtilities::loadProblemHeaderList(
     // Get canonical form.
     HeaderFileName = getCanonicalPath(HeaderFileName);
     // Save the resulting header file path.
-    ProblemFileNames.push_back(std::string(HeaderFileName.str()));
+    ProblemFileNames.push_back(HeaderFileName.str());
   }
   return std::error_code();
 }
@@ -258,15 +259,14 @@ std::error_code ModularizeUtilities::loadProblemHeaderList(
 std::error_code ModularizeUtilities::loadModuleMap(
     llvm::StringRef InputPath) {
   // Get file entry for module.modulemap file.
-  auto ModuleMapEntryOrErr =
+  const FileEntry *ModuleMapEntry =
     SourceMgr->getFileManager().getFile(InputPath);
 
   // return error if not found.
-  if (!ModuleMapEntryOrErr) {
+  if (!ModuleMapEntry) {
     llvm::errs() << "error: File \"" << InputPath << "\" not found.\n";
-    return ModuleMapEntryOrErr.getError();
+    return std::error_code(1, std::generic_category());
   }
-  const FileEntry *ModuleMapEntry = *ModuleMapEntryOrErr;
 
   // Because the module map parser uses a ForwardingDiagnosticConsumer,
   // which doesn't forward the BeginSourceFile call, we do it explicitly here.
@@ -277,12 +277,8 @@ std::error_code ModularizeUtilities::loadModuleMap(
   StringRef DirName(Dir->getName());
   if (llvm::sys::path::filename(DirName) == "Modules") {
     DirName = llvm::sys::path::parent_path(DirName);
-    if (DirName.endswith(".framework")) {
-      if (auto DirEntry = FileMgr->getDirectory(DirName))
-        Dir = *DirEntry;
-      else
-        Dir = nullptr;
-    }
+    if (DirName.endswith(".framework"))
+      Dir = FileMgr->getDirectory(DirName);
     // FIXME: This assert can fail if there's a race between the above check
     // and the removal of the directory.
     assert(Dir && "parent must exist");
@@ -457,7 +453,7 @@ std::string ModularizeUtilities::getCanonicalPath(StringRef FilePath) {
   std::replace(Tmp.begin(), Tmp.end(), '\\', '/');
   StringRef Tmp2(Tmp);
   if (Tmp2.startswith("./"))
-    Tmp = std::string(Tmp2.substr(2));
+    Tmp = Tmp2.substr(2);
   return Tmp;
 }
 
@@ -470,9 +466,9 @@ bool ModularizeUtilities::isHeader(StringRef FileName) {
   StringRef Extension = llvm::sys::path::extension(FileName);
   if (Extension.size() == 0)
     return true;
-  if (Extension.equals_insensitive(".h"))
+  if (Extension.equals_lower(".h"))
     return true;
-  if (Extension.equals_insensitive(".inc"))
+  if (Extension.equals_lower(".inc"))
     return true;
   return false;
 }
@@ -487,7 +483,7 @@ std::string ModularizeUtilities::getDirectoryFromPath(StringRef Path) {
   sys::path::remove_filename(Directory);
   if (Directory.size() == 0)
     return ".";
-  return std::string(Directory.str());
+  return Directory.str();
 }
 
 // Add unique problem file.

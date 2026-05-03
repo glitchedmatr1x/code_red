@@ -1,8 +1,9 @@
 //===--- ObjCMethodList.h - A singly linked list of methods -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -20,13 +21,13 @@ namespace clang {
 
 class ObjCMethodDecl;
 
-/// a linked list of methods with the same selector name but different
+/// \brief a linked list of methods with the same selector name but different
 /// signatures.
 struct ObjCMethodList {
   // NOTE: If you add any members to this struct, make sure to serialize them.
-  /// If there is more than one decl with this signature.
+  /// \brief If there is more than one decl with this signature.
   llvm::PointerIntPair<ObjCMethodDecl *, 1> MethodAndHasMoreThanOneDecl;
-  /// The next list object and 2 bits for extra info.
+  /// \brief The next list object and 2 bits for extra info.
   llvm::PointerIntPair<ObjCMethodList *, 2> NextAndExtraBits;
 
   ObjCMethodList() { }
@@ -35,12 +36,6 @@ struct ObjCMethodList {
   ObjCMethodList(const ObjCMethodList &L)
       : MethodAndHasMoreThanOneDecl(L.MethodAndHasMoreThanOneDecl),
         NextAndExtraBits(L.NextAndExtraBits) {}
-
-  ObjCMethodList &operator=(const ObjCMethodList &L) {
-    MethodAndHasMoreThanOneDecl = L.MethodAndHasMoreThanOneDecl;
-    NextAndExtraBits = L.NextAndExtraBits;
-    return *this;
-  }
 
   ObjCMethodList *getNext() const { return NextAndExtraBits.getPointer(); }
   unsigned getBits() const { return NextAndExtraBits.getInt(); }

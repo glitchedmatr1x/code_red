@@ -1,8 +1,9 @@
 //===-- llvm/Analysis/DependenceAnalysis.h -------------------- -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -40,13 +41,12 @@
 #define LLVM_ANALYSIS_DEPENDENCEANALYSIS_H
 
 #include "llvm/ADT/SmallBitVector.h"
+#include "llvm/Analysis/AliasAnalysis.h"
 #include "llvm/IR/Instructions.h"
-#include "llvm/IR/PassManager.h"
 #include "llvm/Pass.h"
 
 namespace llvm {
-  class AAResults;
-  template <typename T> class ArrayRef;
+template <typename T> class ArrayRef;
   class Loop;
   class LoopInfo;
   class ScalarEvolution;
@@ -74,9 +74,13 @@ namespace llvm {
     Dependence &operator=(Dependence &&) = default;
 
   public:
-    Dependence(Instruction *Source, Instruction *Destination)
-        : Src(Source), Dst(Destination) {}
-    virtual ~Dependence() = default;
+    Dependence(Instruction *Source,
+               Instruction *Destination) :
+      Src(Source),
+      Dst(Destination),
+      NextPredecessor(nullptr),
+      NextSuccessor(nullptr) {}
+    virtual ~Dependence() {}
 
     /// Dependence::DVEntry - Each level in the distance/direction vector
     /// has a direction (or perhaps a union of several directions), and
@@ -95,10 +99,9 @@ namespace llvm {
       bool PeelFirst : 1; // Peeling the first iteration will break dependence.
       bool PeelLast  : 1; // Peeling the last iteration will break the dependence.
       bool Splitable : 1; // Splitting the loop will break dependence.
-      const SCEV *Distance = nullptr; // NULL implies no distance available.
-      DVEntry()
-          : Direction(ALL), Scalar(true), PeelFirst(false), PeelLast(false),
-            Splitable(false) {}
+      const SCEV *Distance; // NULL implies no distance available.
+      DVEntry() : Direction(ALL), Scalar(true), PeelFirst(false),
+                  PeelLast(false), Splitable(false), Distance(nullptr) { }
     };
 
     /// getSrc - Returns the source instruction for this dependence.
@@ -197,7 +200,7 @@ namespace llvm {
 
   private:
     Instruction *Src, *Dst;
-    const Dependence *NextPredecessor = nullptr, *NextSuccessor = nullptr;
+    const Dependence *NextPredecessor, *NextSuccessor;
     friend class DependenceInfo;
   };
 
@@ -268,13 +271,9 @@ namespace llvm {
   ///
   class DependenceInfo {
   public:
-    DependenceInfo(Function *F, AAResults *AA, ScalarEvolution *SE,
+    DependenceInfo(Function *F, AliasAnalysis *AA, ScalarEvolution *SE,
                    LoopInfo *LI)
         : AA(AA), SE(SE), LI(LI), F(F) {}
-
-    /// Handle transitive invalidation when the cached analysis results go away.
-    bool invalidate(Function &F, const PreservedAnalyses &PA,
-                    FunctionAnalysisManager::Invalidator &Inv);
 
     /// depends - Tests for a dependence between the Src and Dst instructions.
     /// Returns NULL if no dependence; otherwise, returns a Dependence (or a
@@ -331,7 +330,7 @@ namespace llvm {
     Function *getFunction() const { return F; }
 
   private:
-    AAResults *AA;
+    AliasAnalysis *AA;
     ScalarEvolution *SE;
     LoopInfo *LI;
     Function *F;
@@ -557,17 +556,6 @@ namespace llvm {
     bool isKnownPredicate(ICmpInst::Predicate Pred,
                           const SCEV *X,
                           const SCEV *Y) const;
-
-    /// isKnownLessThan - Compare to see if S is less than Size
-    /// Another wrapper for isKnownNegative(S - max(Size, 1)) with some extra
-    /// checking if S is an AddRec and we can prove lessthan using the loop
-    /// bounds.
-    bool isKnownLessThan(const SCEV *S, const SCEV *Size) const;
-
-    /// isKnownNonNegative - Compare to see if S is known not to be negative
-    /// Uses the fact that S comes from Ptr, which may be an inbound GEP,
-    /// Proving there is no wrapping going on.
-    bool isKnownNonNegative(const SCEV *S, const Value *Ptr) const;
 
     /// collectUpperBound - All subscripts are the same type (on my machine,
     /// an i64). The loop bound may be a smaller type. collectUpperBound
@@ -922,35 +910,11 @@ namespace llvm {
     void updateDirection(Dependence::DVEntry &Level,
                          const Constraint &CurConstraint) const;
 
-    /// Given a linear access function, tries to recover subscripts
-    /// for each dimension of the array element access.
     bool tryDelinearize(Instruction *Src, Instruction *Dst,
                         SmallVectorImpl<Subscript> &Pair);
-
-    /// Tries to delinearize access function for a fixed size multi-dimensional
-    /// array, by deriving subscripts from GEP instructions. Returns true upon
-    /// success and false otherwise.
-    bool tryDelinearizeFixedSize(Instruction *Src, Instruction *Dst,
-                                 const SCEV *SrcAccessFn,
-                                 const SCEV *DstAccessFn,
-                                 SmallVectorImpl<const SCEV *> &SrcSubscripts,
-                                 SmallVectorImpl<const SCEV *> &DstSubscripts);
-
-    /// Tries to delinearize access function for a multi-dimensional array with
-    /// symbolic runtime sizes.
-    /// Returns true upon success and false otherwise.
-    bool tryDelinearizeParametricSize(
-        Instruction *Src, Instruction *Dst, const SCEV *SrcAccessFn,
-        const SCEV *DstAccessFn, SmallVectorImpl<const SCEV *> &SrcSubscripts,
-        SmallVectorImpl<const SCEV *> &DstSubscripts);
-
-    /// checkSubscript - Helper function for checkSrcSubscript and
-    /// checkDstSubscript to avoid duplicate code
-    bool checkSubscript(const SCEV *Expr, const Loop *LoopNest,
-                        SmallBitVector &Loops, bool IsSrc);
   }; // class DependenceInfo
 
-  /// AnalysisPass to compute dependence information in a function
+  /// \brief AnalysisPass to compute dependence information in a function
   class DependenceAnalysis : public AnalysisInfoMixin<DependenceAnalysis> {
   public:
     typedef DependenceInfo Result;
@@ -961,22 +925,14 @@ namespace llvm {
     friend struct AnalysisInfoMixin<DependenceAnalysis>;
   }; // class DependenceAnalysis
 
-  /// Printer pass to dump DA results.
-  struct DependenceAnalysisPrinterPass
-      : public PassInfoMixin<DependenceAnalysisPrinterPass> {
-    DependenceAnalysisPrinterPass(raw_ostream &OS) : OS(OS) {}
-
-    PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM);
-
-  private:
-    raw_ostream &OS;
-  }; // class DependenceAnalysisPrinterPass
-
-  /// Legacy pass manager pass to access dependence information
+  /// \brief Legacy pass manager pass to access dependence information
   class DependenceAnalysisWrapperPass : public FunctionPass {
   public:
     static char ID; // Class identification, replacement for typeinfo
-    DependenceAnalysisWrapperPass();
+    DependenceAnalysisWrapperPass() : FunctionPass(ID) {
+      initializeDependenceAnalysisWrapperPassPass(
+          *PassRegistry::getPassRegistry());
+    }
 
     bool runOnFunction(Function &F) override;
     void releaseMemory() override;

@@ -1,17 +1,17 @@
 //===- DWARFDebugArangeSet.h ------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_DEBUGINFO_DWARF_DWARFDEBUGARANGESET_H
-#define LLVM_DEBUGINFO_DWARF_DWARFDEBUGARANGESET_H
+#ifndef LLVM_DEBUGINFO_DWARFDEBUGARANGESET_H
+#define LLVM_DEBUGINFO_DWARFDEBUGARANGESET_H
 
 #include "llvm/ADT/iterator_range.h"
-#include "llvm/DebugInfo/DWARF/DWARFDataExtractor.h"
-#include "llvm/Support/Error.h"
+#include "llvm/Support/DataExtractor.h"
 #include <cstdint>
 #include <vector>
 
@@ -24,12 +24,10 @@ public:
   struct Header {
     /// The total length of the entries for that set, not including the length
     /// field itself.
-    uint64_t Length;
-    /// The DWARF format of the set.
-    dwarf::DwarfFormat Format;
+    uint32_t Length;
     /// The offset from the beginning of the .debug_info section of the
     /// compilation unit entry referenced by the table.
-    uint64_t CuOffset;
+    uint32_t CuOffset;
     /// The DWARF version number.
     uint16_t Version;
     /// The size in bytes of an address on the target architecture. For segmented
@@ -45,14 +43,13 @@ public:
     uint64_t Length;
 
     uint64_t getEndAddress() const { return Address + Length; }
-    void dump(raw_ostream &OS, uint32_t AddressSize) const;
   };
 
 private:
   using DescriptorColl = std::vector<Descriptor>;
   using desc_iterator_range = iterator_range<DescriptorColl::const_iterator>;
 
-  uint64_t Offset;
+  uint32_t Offset;
   Header HeaderData;
   DescriptorColl ArangeDescriptors;
 
@@ -60,11 +57,10 @@ public:
   DWARFDebugArangeSet() { clear(); }
 
   void clear();
-  Error extract(DWARFDataExtractor data, uint64_t *offset_ptr,
-                function_ref<void(Error)> WarningHandler);
+  bool extract(DataExtractor data, uint32_t *offset_ptr);
   void dump(raw_ostream &OS) const;
 
-  uint64_t getCompileUnitDIEOffset() const { return HeaderData.CuOffset; }
+  uint32_t getCompileUnitDIEOffset() const { return HeaderData.CuOffset; }
 
   const Header &getHeader() const { return HeaderData; }
 
@@ -76,4 +72,4 @@ public:
 
 } // end namespace llvm
 
-#endif // LLVM_DEBUGINFO_DWARF_DWARFDEBUGARANGESET_H
+#endif // LLVM_DEBUGINFO_DWARFDEBUGARANGESET_H

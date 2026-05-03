@@ -1,8 +1,9 @@
 //===- DWARFGdbIndex.h ------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -23,7 +24,6 @@ class DWARFGdbIndex {
   uint32_t Version;
 
   uint32_t CuListOffset;
-  uint32_t TuListOffset;
   uint32_t AddressAreaOffset;
   uint32_t SymbolTableOffset;
   uint32_t ConstantPoolOffset;
@@ -33,13 +33,6 @@ class DWARFGdbIndex {
     uint64_t Length; /// Length of that CU.
   };
   SmallVector<CompUnitEntry, 0> CuList;
-
-  struct TypeUnitEntry {
-    uint64_t Offset;
-    uint64_t TypeOffset;
-    uint64_t TypeSignature;
-  };
-  SmallVector<TypeUnitEntry, 0> TuList;
 
   struct AddressEntry {
     uint64_t LowAddress;  /// The low address.
@@ -62,7 +55,6 @@ class DWARFGdbIndex {
   uint32_t StringPoolOffset;
 
   void dumpCUList(raw_ostream &OS) const;
-  void dumpTUList(raw_ostream &OS) const;
   void dumpAddressArea(raw_ostream &OS) const;
   void dumpSymbolTable(raw_ostream &OS) const;
   void dumpConstantPool(raw_ostream &OS) const;

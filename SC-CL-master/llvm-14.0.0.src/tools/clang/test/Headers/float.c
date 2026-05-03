@@ -1,9 +1,6 @@
 // RUN: %clang_cc1 -fsyntax-only -verify -std=c89 -ffreestanding %s
 // RUN: %clang_cc1 -fsyntax-only -verify -std=c99 -ffreestanding %s
 // RUN: %clang_cc1 -fsyntax-only -verify -std=c11 -ffreestanding %s
-// RUN: %clang_cc1 -fsyntax-only -verify -xc++ -std=c++11 -ffreestanding %s
-// RUN: %clang_cc1 -fsyntax-only -verify -xc++ -std=c++14 -ffreestanding %s
-// RUN: %clang_cc1 -fsyntax-only -verify -xc++ -std=c++17 -ffreestanding %s
 // expected-no-diagnostics
 
 /* Basic floating point conformance checks against:
@@ -14,7 +11,7 @@
 /*
     C11,    5.2.4.2.2p11,   pp. 30
     C99,    5.2.4.2.2p9,    pp. 25
-    C89,    2.2.4.2
+    C89,    2.2.4.2 
 */
 #include <float.h>
 
@@ -45,7 +42,7 @@
 #endif
 
 
-#if __STDC_VERSION__ >= 201112L || !defined(__STRICT_ANSI__) || __cplusplus >= 201703L
+#if __STDC_VERSION__ >= 201112L || !defined(__STRICT_ANSI__)
     #ifndef FLT_DECIMAL_DIG
         #error "Mandatory macro FLT_DECIMAL_DIG is missing."
     #elif   FLT_DECIMAL_DIG < 6
@@ -64,21 +61,6 @@
     #if ((FLT_DECIMAL_DIG > DBL_DECIMAL_DIG) || (DBL_DECIMAL_DIG > LDBL_DECIMAL_DIG))
         #error "Mandatory macros {FLT,DBL,LDBL}_DECIMAL_DIG are invalid."
     #endif
-    #ifndef FLT_HAS_SUBNORM
-        #error "Mandatory macro FLT_HAS_SUBNORM is missing."
-    #elif FLT_HAS_SUBNORM != __FLT_HAS_DENORM__
-        #error "Mandatory macro FLT_HAS_SUBNORM is invalid."
-    #endif
-    #ifndef LDBL_HAS_SUBNORM
-        #error "Mandatory macro LDBL_HAS_SUBNORM is missing."
-    #elif LDBL_HAS_SUBNORM != __LDBL_HAS_DENORM__
-        #error "Mandatory macro LDBL_HAS_SUBNORM is invalid."
-    #endif
-    #ifndef DBL_HAS_SUBNORM
-        #error "Mandatory macro DBL_HAS_SUBNORM is missing."
-    #elif DBL_HAS_SUBNORM != __DBL_HAS_DENORM__
-        #error "Mandatory macro DBL_HAS_SUBNORM is invalid."
-    #endif
 #else
     #ifdef FLT_DECIMAL_DIG
         #error "Macro FLT_DECIMAL_DIG should not be defined."
@@ -89,19 +71,10 @@
     #ifdef LDBL_DECIMAL_DIG
         #error "Macro LDBL_DECIMAL_DIG should not be defined."
     #endif
-    #ifdef FLT_HAS_SUBNORM
-        #error "Macro FLT_HAS_SUBNORM should not be defined."
-    #endif
-    #ifdef DBL_HAS_SUBNORM
-        #error "Macro DBL_HAS_SUBNORM should not be defined."
-    #endif
-    #ifdef LDBL_HAS_SUBNORM
-        #error "Macro LDBL_HAS_SUBNORM should not be defined."
-    #endif
 #endif
 
 
-#if __STDC_VERSION__ >= 199901L || !defined(__STRICT_ANSI__) || __cplusplus >= 201103L
+#if __STDC_VERSION__ >= 199901L || !defined(__STRICT_ANSI__)
     #ifndef DECIMAL_DIG
         #error "Mandatory macro DECIMAL_DIG is missing."
     #elif   DECIMAL_DIG < 10
@@ -215,13 +188,13 @@ _Static_assert(FLT_MANT_DIG == __FLT_MANT_DIG__, "");
 _Static_assert(DBL_MANT_DIG == __DBL_MANT_DIG__, "");
 _Static_assert(LDBL_MANT_DIG == __LDBL_MANT_DIG__, "");
 
-#if __STDC_VERSION__ >= 201112L || !defined(__STRICT_ANSI__) || __cplusplus >= 201703L
+#if __STDC_VERSION__ >= 201112L || !defined(__STRICT_ANSI__)
 _Static_assert(FLT_DECIMAL_DIG == __FLT_DECIMAL_DIG__, "");
 _Static_assert(DBL_DECIMAL_DIG == __DBL_DECIMAL_DIG__, "");
 _Static_assert(LDBL_DECIMAL_DIG == __LDBL_DECIMAL_DIG__, "");
 #endif
 
-#if __STDC_VERSION__ >= 199901L || !defined(__STRICT_ANSI__) || __cplusplus >= 201103L
+#if __STDC_VERSION__ >= 199901L || !defined(__STRICT_ANSI__)
 _Static_assert(DECIMAL_DIG == __DECIMAL_DIG__, "");
 #endif
 

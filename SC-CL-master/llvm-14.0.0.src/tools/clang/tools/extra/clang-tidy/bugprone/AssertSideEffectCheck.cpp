@@ -1,14 +1,13 @@
 //===--- AssertSideEffectCheck.cpp - clang-tidy ---------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #include "AssertSideEffectCheck.h"
-#include "../utils/Matchers.h"
-#include "../utils/OptionsUtils.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/Frontend/CompilerInstance.h"
@@ -27,9 +26,7 @@ namespace bugprone {
 
 namespace {
 
-AST_MATCHER_P2(Expr, hasSideEffect, bool, CheckFunctionCalls,
-               clang::ast_matchers::internal::Matcher<NamedDecl>,
-               IgnoredFunctionsMatcher) {
+AST_MATCHER_P(Expr, hasSideEffect, bool, CheckFunctionCalls) {
   const Expr *E = &Node;
 
   if (const auto *Op = dyn_cast<UnaryOperator>(E)) {
@@ -59,8 +56,7 @@ AST_MATCHER_P2(Expr, hasSideEffect, bool, CheckFunctionCalls,
     bool Result = CheckFunctionCalls;
     if (const auto *FuncDecl = CExpr->getDirectCallee()) {
       if (FuncDecl->getDeclName().isIdentifier() &&
-          IgnoredFunctionsMatcher.matches(*FuncDecl, Finder,
-                                          Builder)) // exceptions come here
+          FuncDecl->getName() == "__builtin_expect") // exceptions come here
         Result = false;
       else if (const auto *MethodDecl = dyn_cast<CXXMethodDecl>(FuncDecl))
         Result &= !MethodDecl->isConst();
@@ -77,9 +73,7 @@ AssertSideEffectCheck::AssertSideEffectCheck(StringRef Name,
                                              ClangTidyContext *Context)
     : ClangTidyCheck(Name, Context),
       CheckFunctionCalls(Options.get("CheckFunctionCalls", false)),
-      RawAssertList(Options.get("AssertMacros", "assert,NSAssert,NSCAssert")),
-      IgnoredFunctions(utils::options::parseStringList(
-          "__builtin_expect;" + Options.get("IgnoredFunctions", ""))) {
+      RawAssertList(Options.get("AssertMacros", "assert")) {
   StringRef(RawAssertList).split(AssertMacros, ",", -1, false);
 }
 
@@ -87,17 +81,11 @@ AssertSideEffectCheck::AssertSideEffectCheck(StringRef Name,
 void AssertSideEffectCheck::storeOptions(ClangTidyOptions::OptionMap &Opts) {
   Options.store(Opts, "CheckFunctionCalls", CheckFunctionCalls);
   Options.store(Opts, "AssertMacros", RawAssertList);
-  Options.store(Opts, "IgnoredFunctions",
-                utils::options::serializeStringList(IgnoredFunctions));
 }
 
 void AssertSideEffectCheck::registerMatchers(MatchFinder *Finder) {
-  auto IgnoredFunctionsMatcher =
-      matchers::matchesAnyListedName(IgnoredFunctions);
-
   auto DescendantWithSideEffect =
-      traverse(TK_AsIs, hasDescendant(expr(hasSideEffect(
-                            CheckFunctionCalls, IgnoredFunctionsMatcher))));
+      hasDescendant(expr(hasSideEffect(CheckFunctionCalls)));
   auto ConditionWithSideEffect = hasCondition(DescendantWithSideEffect);
   Finder->addMatcher(
       stmt(
@@ -114,14 +102,15 @@ void AssertSideEffectCheck::registerMatchers(MatchFinder *Finder) {
 void AssertSideEffectCheck::check(const MatchFinder::MatchResult &Result) {
   const SourceManager &SM = *Result.SourceManager;
   const LangOptions LangOpts = getLangOpts();
-  SourceLocation Loc = Result.Nodes.getNodeAs<Stmt>("condStmt")->getBeginLoc();
+  SourceLocation Loc = Result.Nodes.getNodeAs<Stmt>("condStmt")->getLocStart();
 
   StringRef AssertMacroName;
   while (Loc.isValid() && Loc.isMacroID()) {
     StringRef MacroName = Lexer::getImmediateMacroName(Loc, SM, LangOpts);
 
     // Check if this macro is an assert.
-    if (llvm::is_contained(AssertMacros, MacroName)) {
+    if (std::find(AssertMacros.begin(), AssertMacros.end(), MacroName) !=
+        AssertMacros.end()) {
       AssertMacroName = MacroName;
       break;
     }
@@ -130,8 +119,7 @@ void AssertSideEffectCheck::check(const MatchFinder::MatchResult &Result) {
   if (AssertMacroName.empty())
     return;
 
-  diag(Loc, "side effect in %0() condition discarded in release builds")
-      << AssertMacroName;
+  diag(Loc, "found %0() with side effect") << AssertMacroName;
 }
 
 } // namespace bugprone

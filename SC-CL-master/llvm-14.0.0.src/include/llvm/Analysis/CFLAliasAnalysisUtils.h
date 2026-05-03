@@ -1,8 +1,9 @@
 //=- CFLAliasAnalysisUtils.h - Utilities for CFL Alias Analysis ----*- C++-*-=//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 // \file
@@ -50,8 +51,8 @@ static inline const Function *parentFunctionOfValue(const Value *Val) {
   if (auto *Arg = dyn_cast<Argument>(Val))
     return Arg->getParent();
   return nullptr;
-}
 } // namespace cflaa
 } // namespace llvm
+}
 
 #endif // LLVM_ANALYSIS_CFLALIASANALYSISUTILS_H

@@ -1,13 +1,14 @@
 //===--- MultipleIncludeOpt.h - Header Multiple-Include Optzn ---*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Defines the MultipleIncludeOpt interface.
+/// \brief Defines the MultipleIncludeOpt interface.
 //
 //===----------------------------------------------------------------------===//
 
@@ -19,7 +20,7 @@
 namespace clang {
 class IdentifierInfo;
 
-/// Implements the simple state machine that the Lexer class uses to
+/// \brief Implements the simple state machine that the Lexer class uses to
 /// detect files subject to the 'multiple-include' optimization.
 ///
 /// The public methods in this class are triggered by various
@@ -112,13 +113,13 @@ public:
   /// buffer, this method is called to disable the MIOpt if needed.
   void ExpandedMacro() { DidMacroExpansion = true; }
 
-  /// Called when entering a top-level \#ifndef directive (or the
+  /// \brief Called when entering a top-level \#ifndef directive (or the
   /// "\#if !defined" equivalent) without any preceding tokens.
   ///
   /// Note, we don't care about the input value of 'ReadAnyTokens'.  The caller
   /// ensures that this is only called if there are no tokens read before the
   /// \#ifndef.  The caller is required to do this, because reading the \#if
-  /// line obviously reads in tokens.
+  /// line obviously reads in in tokens.
   void EnterTopLevelIfndef(const IdentifierInfo *M, SourceLocation Loc) {
     // If the macro is already set, this is after the top-level #endif.
     if (TheMacro)
@@ -138,14 +139,14 @@ public:
     MacroLoc = Loc;
   }
 
-  /// Invoked when a top level conditional (except \#ifndef) is found.
+  /// \brief Invoked when a top level conditional (except \#ifndef) is found.
   void EnterTopLevelConditional() {
     // If a conditional directive (except #ifndef) is found at the top level,
     // there is a chunk of the file not guarded by the controlling macro.
     Invalidate();
   }
 
-  /// Called when the lexer exits the top-level conditional.
+  /// \brief Called when the lexer exits the top-level conditional.
   void ExitTopLevelConditional() {
     // If we have a macro, that means the top of the file was ok.  Set our state
     // back to "not having read any tokens" so we can detect anything after the
@@ -158,7 +159,7 @@ public:
     ImmediatelyAfterTopLevelIfndef = false;
   }
 
-  /// Once the entire file has been lexed, if there is a controlling
+  /// \brief Once the entire file has been lexed, if there is a controlling
   /// macro, return it.
   const IdentifierInfo *GetControllingMacroAtEndOfFile() const {
     // If we haven't read any tokens after the #endif, return the controlling
@@ -168,7 +169,7 @@ public:
     return nullptr;
   }
 
-  /// If the ControllingMacro is followed by a macro definition, return
+  /// \brief If the ControllingMacro is followed by a macro definition, return
   /// the macro that was defined.
   const IdentifierInfo *GetDefinedMacro() const {
     return DefinedMacro;

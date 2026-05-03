@@ -1,7 +1,6 @@
 // RUN: %clang_cc1 -std=c++14 -verify -fsyntax-only -Wshadow -D AVOID %s
 // RUN: %clang_cc1 -std=c++14 -verify -fsyntax-only -Wshadow -Wshadow-uncaptured-local %s
 // RUN: %clang_cc1 -std=c++14 -verify -fsyntax-only -Wshadow-all %s
-// RUN: %clang_cc1 -std=c++17 -verify -fsyntax-only -Wshadow-all %s
 
 void foo(int param) { // expected-note 1+ {{previous declaration is here}}
   int var = 0; // expected-note 1+ {{previous declaration is here}}
@@ -80,7 +79,7 @@ void foo(int param) { // expected-note 1+ {{previous declaration is here}}
       int var = 1; // expected-warning {{declaration shadows a local variable}}
     };
     auto f2 = [param]   // expected-note {{variable 'param' is explicitly captured here}}
-     (int param) { ; }; // expected-error {{a lambda parameter cannot shadow an explicitly captured entity}}
+     (int param) { ; }; // expected-warning {{declaration shadows a local variable}}
   }
 
   // Warn for variables defined in the capture list.
@@ -136,7 +135,7 @@ void foo(int param) { // expected-note 1+ {{previous declaration is here}}
   auto g2 = [=](auto param) { ; }; // expected-warning {{declaration shadows a local variable}}
 #endif
   auto g3 = [param] // expected-note {{variable 'param' is explicitly captured here}}
-   (auto param) { ; }; // expected-error {{a lambda parameter cannot shadow an explicitly captured entity}}
+   (auto param) { ; }; // expected-warning {{declaration shadows a local variable}}
 }
 
 void avoidWarningWhenRedefining() {

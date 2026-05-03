@@ -1,4 +1,6 @@
-; RUN: %llc_dwarf -filetype=obj -O0 < %s | llvm-dwarfdump -debug-info - | FileCheck %s
+; REQUIRES: object-emission
+
+; RUN: %llc_dwarf -filetype=obj -O0 < %s | llvm-dwarfdump -v -debug-info - | FileCheck %s
 
 ; This isn't a very pretty test case - I imagine there might be other ways to
 ; tickle the optimizers into producing the desired code, but I haven't found
@@ -38,20 +40,20 @@
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK: [[M_FN2_DECL:.*]]: DW_TAG_subprogram
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_name ("m_fn2")
+; CHECK:     DW_AT_name {{.*}} "m_fn2"
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:     DW_TAG_formal_parameter
 
 ; The abstract definition of C::m_fn2
 ; CHECK: [[M_FN2_ABS_DEF:.*]]: DW_TAG_subprogram
 ; CHECK-NOT: DW_TAG
-; CHECK:   DW_AT_specification {{.*}}[[M_FN2_DECL]]
+; CHECK:   DW_AT_specification {{.*}} {[[M_FN2_DECL]]}
 ; CHECK-NOT: DW_TAG
 ; CHECK:   DW_AT_inline
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK: [[M_FN2_THIS_ABS_DEF:.*]]:   DW_TAG_formal_parameter
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_name ("this")
+; CHECK:     DW_AT_name {{.*}} "this"
 
 ; Skip some other functions
 ; CHECK: DW_TAG_subprogram
@@ -61,11 +63,11 @@
 ; The concrete definition of C::m_fn2
 ; CHECK: DW_TAG_subprogram
 ; CHECK-NOT: DW_TAG
-; CHECK:   DW_AT_abstract_origin {{.*}}[[M_FN2_ABS_DEF]]
+; CHECK:   DW_AT_abstract_origin {{.*}} {[[M_FN2_ABS_DEF]]}
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:   DW_TAG_formal_parameter
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_abstract_origin {{.*}}[[M_FN2_THIS_ABS_DEF]]
+; CHECK:     DW_AT_abstract_origin {{.*}} {[[M_FN2_THIS_ABS_DEF]]}
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; Inlined fn3:
 ; CHECK:     DW_TAG_inlined_subroutine
@@ -76,11 +78,11 @@
 ; Inlined C::m_fn2:
 ; CHECK:         DW_TAG_inlined_subroutine
 ; CHECK-NOT: DW_TAG
-; CHECK:           DW_AT_abstract_origin {{.*}}[[M_FN2_ABS_DEF]]
+; CHECK:           DW_AT_abstract_origin {{.*}} {[[M_FN2_ABS_DEF]]}
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:           DW_TAG_formal_parameter
 ; CHECK-NOT: DW_TAG
-; CHECK:              DW_AT_abstract_origin {{.*}}[[M_FN2_THIS_ABS_DEF]]
+; CHECK:              DW_AT_abstract_origin {{.*}} {[[M_FN2_THIS_ABS_DEF]]}
 
 source_filename = "test/DebugInfo/Generic/recursive_inlining.ll"
 
@@ -190,8 +192,8 @@ declare void @_Z3fn2iiii(i32, i32, i32, i32) #1
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #2
 
-attributes #0 = { nounwind "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind readnone }
 attributes #3 = { nounwind }
 
@@ -219,7 +221,7 @@ attributes #3 = { nounwind }
 !17 = !{i32 2, !"Dwarf Version", i32 4}
 !18 = !{i32 2, !"Debug Info Version", i32 3}
 !19 = !{!"clang version 3.6.0 "}
-!20 = distinct !DISubprogram(name: "fn6", linkageName: "_Z3fn6v", scope: !2, file: !2, line: 15, type: !21, isLocal: false, isDefinition: true, scopeLine: 15, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, retainedNodes: !14)
+!20 = distinct !DISubprogram(name: "fn6", linkageName: "_Z3fn6v", scope: !2, file: !2, line: 15, type: !21, isLocal: false, isDefinition: true, scopeLine: 15, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, variables: !14)
 !21 = !DISubroutineType(types: !22)
 !22 = !{null}
 !23 = !DILocation(line: 16, scope: !20)
@@ -229,7 +231,7 @@ attributes #3 = { nounwind }
 !27 = !{!"omnipotent char", !28, i64 0}
 !28 = !{!"Simple C/C++ TBAA"}
 !29 = !DILocalVariable(name: "this", arg: 1, scope: !30, type: !3, flags: DIFlagArtificial | DIFlagObjectPointer)
-!30 = distinct !DISubprogram(name: "m_fn2", linkageName: "_ZN1C5m_fn2Ev", scope: !4, file: !2, line: 7, type: !9, isLocal: false, isDefinition: true, scopeLine: 7, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, declaration: !8, retainedNodes: !31)
+!30 = distinct !DISubprogram(name: "m_fn2", linkageName: "_ZN1C5m_fn2Ev", scope: !4, file: !2, line: 7, type: !9, isLocal: false, isDefinition: true, scopeLine: 7, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, declaration: !8, variables: !31)
 !31 = !{!29}
 !32 = !DIExpression()
 !33 = !DILocation(line: 0, scope: !30, inlinedAt: !24)
@@ -249,7 +251,7 @@ attributes #3 = { nounwind }
 !47 = !DILocation(line: 9, scope: !41)
 !48 = !DILocation(line: 16, scope: !20, inlinedAt: !49)
 !49 = !DILocation(line: 20, scope: !50, inlinedAt: !51)
-!50 = distinct !DISubprogram(name: "fn3", linkageName: "_Z3fn3v", scope: !2, file: !2, line: 20, type: !21, isLocal: false, isDefinition: true, scopeLine: 20, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, retainedNodes: !14)
+!50 = distinct !DISubprogram(name: "fn3", linkageName: "_Z3fn3v", scope: !2, file: !2, line: 20, type: !21, isLocal: false, isDefinition: true, scopeLine: 20, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, variables: !14)
 !51 = !DILocation(line: 10, scope: !30)
 !52 = !DILocation(line: 17, scope: !20, inlinedAt: !49)
 !53 = !DILocation(line: 0, scope: !30, inlinedAt: !52)
@@ -265,8 +267,8 @@ attributes #3 = { nounwind }
 !63 = !DILocation(line: 8, scope: !30, inlinedAt: !61)
 !64 = !DILocation(line: 9, scope: !36, inlinedAt: !61)
 !65 = !DILocation(line: 9, scope: !41, inlinedAt: !61)
-!66 = distinct !DISubprogram(name: "fn4", linkageName: "_Z3fn4v", scope: !2, file: !2, line: 21, type: !21, isLocal: false, isDefinition: true, scopeLine: 21, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, retainedNodes: !14)
+!66 = distinct !DISubprogram(name: "fn4", linkageName: "_Z3fn4v", scope: !2, file: !2, line: 21, type: !21, isLocal: false, isDefinition: true, scopeLine: 21, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, variables: !14)
 !67 = !DILocation(line: 21, scope: !66)
-!68 = distinct !DISubprogram(name: "fn5", linkageName: "_Z3fn5v", scope: !2, file: !2, line: 22, type: !21, isLocal: false, isDefinition: true, scopeLine: 22, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, retainedNodes: !14)
+!68 = distinct !DISubprogram(name: "fn5", linkageName: "_Z3fn5v", scope: !2, file: !2, line: 22, type: !21, isLocal: false, isDefinition: true, scopeLine: 22, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !12, variables: !14)
 !69 = !DILocation(line: 22, scope: !68)
 

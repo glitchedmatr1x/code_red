@@ -9,6 +9,6 @@ define void @f() !dbg !3 { ret void }
 !0 = distinct !DICompileUnit(language: 12, file: !1, subprograms: !{!3})
 !1 = !DIFile(filename: "path/to/file", directory: "/path/to/dir")
 
-; CHECK: = distinct !DISubprogram({{.*}} DISPFlagDefinition
+; CHECK: = distinct !DISubprogram({{.*}}, isDefinition: true
 !3 = !DISubprogram(name: "foo", isDefinition: true)
 !4 = !{i32 2, !"Debug Info Version", i32 3}

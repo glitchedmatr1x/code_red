@@ -1,8 +1,9 @@
 //===- SymbolRecord.h -------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -13,7 +14,6 @@
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/ADT/iterator.h"
 #include "llvm/ADT/iterator_range.h"
 #include "llvm/DebugInfo/CodeView/CVRecord.h"
 #include "llvm/DebugInfo/CodeView/CodeView.h"
@@ -73,17 +73,17 @@ public:
   Thunk32Sym(SymbolRecordKind Kind, uint32_t RecordOffset)
       : SymbolRecord(Kind), RecordOffset(RecordOffset) {}
 
-  uint32_t Parent = 0;
-  uint32_t End = 0;
-  uint32_t Next = 0;
-  uint32_t Offset = 0;
-  uint16_t Segment = 0;
-  uint16_t Length = 0;
-  ThunkOrdinal Thunk = ThunkOrdinal::Standard;
+  uint32_t Parent;
+  uint32_t End;
+  uint32_t Next;
+  uint32_t Offset;
+  uint16_t Segment;
+  uint16_t Length;
+  ThunkOrdinal Thunk;
   StringRef Name;
   ArrayRef<uint8_t> VariantData;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_TRAMPOLINE
@@ -94,13 +94,13 @@ public:
       : SymbolRecord(Kind), RecordOffset(RecordOffset) {}
 
   TrampolineType Type;
-  uint16_t Size = 0;
-  uint32_t ThunkOffset = 0;
-  uint32_t TargetOffset = 0;
-  uint16_t ThunkSection = 0;
-  uint16_t TargetSection = 0;
+  uint16_t Size;
+  uint32_t ThunkOffset;
+  uint32_t TargetOffset;
+  uint16_t ThunkSection;
+  uint16_t TargetSection;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_SECTION
@@ -110,14 +110,14 @@ public:
   SectionSym(SymbolRecordKind Kind, uint32_t RecordOffset)
       : SymbolRecord(Kind), RecordOffset(RecordOffset) {}
 
-  uint16_t SectionNumber = 0;
-  uint8_t Alignment = 0;
-  uint32_t Rva = 0;
-  uint32_t Length = 0;
-  uint32_t Characteristics = 0;
+  uint16_t SectionNumber;
+  uint8_t Alignment;
+  uint32_t Rva;
+  uint32_t Length;
+  uint32_t Characteristics;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_COFFGROUP
@@ -127,13 +127,13 @@ public:
   CoffGroupSym(SymbolRecordKind Kind, uint32_t RecordOffset)
       : SymbolRecord(Kind), RecordOffset(RecordOffset) {}
 
-  uint32_t Size = 0;
-  uint32_t Characteristics = 0;
-  uint32_t Offset = 0;
-  uint16_t Segment = 0;
+  uint32_t Size;
+  uint32_t Characteristics;
+  uint32_t Offset;
+  uint16_t Segment;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 class ScopeEndSym : public SymbolRecord {
@@ -142,7 +142,7 @@ public:
   ScopeEndSym(SymbolRecordKind Kind, uint32_t RecordOffset)
       : SymbolRecord(Kind), RecordOffset(RecordOffset) {}
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 class CallerSym : public SymbolRecord {
@@ -153,22 +153,18 @@ public:
 
   std::vector<TypeIndex> Indices;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
-struct DecodedAnnotation {
-  StringRef Name;
-  ArrayRef<uint8_t> Bytes;
-  BinaryAnnotationsOpCode OpCode = BinaryAnnotationsOpCode::Invalid;
-  uint32_t U1 = 0;
-  uint32_t U2 = 0;
-  int32_t S1 = 0;
-};
+struct BinaryAnnotationIterator {
+  struct AnnotationData {
+    BinaryAnnotationsOpCode OpCode;
+    StringRef Name;
+    uint32_t U1;
+    uint32_t U2;
+    int32_t S1;
+  };
 
-struct BinaryAnnotationIterator
-    : public iterator_facade_base<BinaryAnnotationIterator,
-                                  std::forward_iterator_tag,
-                                  DecodedAnnotation> {
   BinaryAnnotationIterator() = default;
   BinaryAnnotationIterator(ArrayRef<uint8_t> Annotations) : Data(Annotations) {}
   BinaryAnnotationIterator(const BinaryAnnotationIterator &Other)
@@ -176,6 +172,10 @@ struct BinaryAnnotationIterator
 
   bool operator==(BinaryAnnotationIterator Other) const {
     return Data == Other.Data;
+  }
+
+  bool operator!=(const BinaryAnnotationIterator &Other) const {
+    return !(*this == Other);
   }
 
   BinaryAnnotationIterator &operator=(const BinaryAnnotationIterator Other) {
@@ -194,7 +194,13 @@ struct BinaryAnnotationIterator
     return *this;
   }
 
-  const DecodedAnnotation &operator*() {
+  BinaryAnnotationIterator operator++(int) {
+    BinaryAnnotationIterator Orig(*this);
+    ++(*this);
+    return Orig;
+  }
+
+  const AnnotationData &operator*() {
     ParseCurrentAnnotation();
     return Current.getValue();
   }
@@ -236,17 +242,17 @@ private:
              (ThirdByte << 8) | FourthByte;
 
     return -1;
-  }
+  };
 
   static int32_t DecodeSignedOperand(uint32_t Operand) {
     if (Operand & 1)
       return -(Operand >> 1);
     return Operand >> 1;
-  }
+  };
 
   static int32_t DecodeSignedOperand(ArrayRef<uint8_t> &Annotations) {
     return DecodeSignedOperand(GetCompressedAnnotation(Annotations));
-  }
+  };
 
   bool ParseCurrentAnnotation() {
     if (Current.hasValue())
@@ -254,7 +260,7 @@ private:
 
     Next = Data;
     uint32_t Op = GetCompressedAnnotation(Next);
-    DecodedAnnotation Result;
+    AnnotationData Result;
     Result.OpCode = static_cast<BinaryAnnotationsOpCode>(Op);
     switch (Result.OpCode) {
     case BinaryAnnotationsOpCode::Invalid:
@@ -319,12 +325,11 @@ private:
       break;
     }
     }
-    Result.Bytes = Data.take_front(Data.size() - Next.size());
     Current = Result;
     return true;
   }
 
-  Optional<DecodedAnnotation> Current;
+  Optional<AnnotationData> Current;
   ArrayRef<uint8_t> Data;
   ArrayRef<uint8_t> Next;
 };
@@ -333,7 +338,7 @@ private:
 class InlineSiteSym : public SymbolRecord {
 public:
   explicit InlineSiteSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit InlineSiteSym(uint32_t RecordOffset)
+  InlineSiteSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::InlineSiteSym),
         RecordOffset(RecordOffset) {}
 
@@ -342,25 +347,17 @@ public:
                       BinaryAnnotationIterator());
   }
 
-  uint32_t Parent = 0;
-  uint32_t End = 0;
+  uint32_t Parent;
+  uint32_t End;
   TypeIndex Inlinee;
   std::vector<uint8_t> AnnotationData;
 
-  uint32_t RecordOffset = 0;
-};
-
-struct PublicSym32Header {
-  ulittle32_t Flags;
-  ulittle32_t Offset;
-  ulittle16_t Segment;
-  // char Name[];
+  uint32_t RecordOffset;
 };
 
 // S_PUB32
 class PublicSym32 : public SymbolRecord {
 public:
-  PublicSym32() : SymbolRecord(SymbolRecordKind::PublicSym32) {}
   explicit PublicSym32(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
   explicit PublicSym32(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::PublicSym32),
@@ -378,7 +375,7 @@ public:
 class RegisterSym : public SymbolRecord {
 public:
   explicit RegisterSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit RegisterSym(uint32_t RecordOffset)
+  RegisterSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::RegisterSym),
         RecordOffset(RecordOffset) {}
 
@@ -386,7 +383,7 @@ public:
   RegisterId Register;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_PROCREF, S_LPROCREF
@@ -397,13 +394,12 @@ public:
       : SymbolRecord(SymbolRecordKind::ProcRefSym), RecordOffset(RecordOffset) {
   }
 
-  uint32_t SumName = 0;
-  uint32_t SymOffset = 0;
-  uint16_t Module = 0;
+  uint32_t SumName;
+  uint32_t SymOffset;
+  uint16_t Module;
   StringRef Name;
 
-  uint16_t modi() const { return Module - 1; }
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_LOCAL
@@ -414,21 +410,21 @@ public:
       : SymbolRecord(SymbolRecordKind::LocalSym), RecordOffset(RecordOffset) {}
 
   TypeIndex Type;
-  LocalSymFlags Flags = LocalSymFlags::None;
+  LocalSymFlags Flags;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 struct LocalVariableAddrRange {
-  uint32_t OffsetStart = 0;
-  uint16_t ISectStart = 0;
-  uint16_t Range = 0;
+  uint32_t OffsetStart;
+  uint16_t ISectStart;
+  uint16_t Range;
 };
 
 struct LocalVariableAddrGap {
-  uint16_t GapStartOffset = 0;
-  uint16_t Range = 0;
+  uint16_t GapStartOffset;
+  uint16_t Range;
 };
 
 enum : uint16_t { MaxDefRange = 0xf000 };
@@ -447,11 +443,11 @@ public:
     return RecordOffset + RelocationOffset;
   }
 
-  uint32_t Program = 0;
+  uint32_t Program;
   LocalVariableAddrRange Range;
   std::vector<LocalVariableAddrGap> Gaps;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_DEFRANGE_SUBFIELD
@@ -460,7 +456,7 @@ class DefRangeSubfieldSym : public SymbolRecord {
 
 public:
   explicit DefRangeSubfieldSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit DefRangeSubfieldSym(uint32_t RecordOffset)
+  DefRangeSubfieldSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::DefRangeSubfieldSym),
         RecordOffset(RecordOffset) {}
 
@@ -468,62 +464,58 @@ public:
     return RecordOffset + RelocationOffset;
   }
 
-  uint32_t Program = 0;
-  uint16_t OffsetInParent = 0;
+  uint32_t Program;
+  uint16_t OffsetInParent;
   LocalVariableAddrRange Range;
   std::vector<LocalVariableAddrGap> Gaps;
 
-  uint32_t RecordOffset = 0;
-};
-
-struct DefRangeRegisterHeader {
-  ulittle16_t Register;
-  ulittle16_t MayHaveNoName;
+  uint32_t RecordOffset;
 };
 
 // S_DEFRANGE_REGISTER
 class DefRangeRegisterSym : public SymbolRecord {
 public:
+  struct Header {
+    ulittle16_t Register;
+    ulittle16_t MayHaveNoName;
+  };
+
   explicit DefRangeRegisterSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit DefRangeRegisterSym(uint32_t RecordOffset)
+  DefRangeRegisterSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::DefRangeRegisterSym),
         RecordOffset(RecordOffset) {}
 
-  uint32_t getRelocationOffset() const { return RecordOffset + sizeof(DefRangeRegisterHeader); }
+  uint32_t getRelocationOffset() const { return RecordOffset + sizeof(Header); }
 
-  DefRangeRegisterHeader Hdr;
+  Header Hdr;
   LocalVariableAddrRange Range;
   std::vector<LocalVariableAddrGap> Gaps;
 
-  uint32_t RecordOffset = 0;
-};
-
-struct DefRangeSubfieldRegisterHeader {
-  ulittle16_t Register;
-  ulittle16_t MayHaveNoName;
-  ulittle32_t OffsetInParent;
+  uint32_t RecordOffset;
 };
 
 // S_DEFRANGE_SUBFIELD_REGISTER
 class DefRangeSubfieldRegisterSym : public SymbolRecord {
 public:
+  struct Header {
+    ulittle16_t Register;
+    ulittle16_t MayHaveNoName;
+    ulittle32_t OffsetInParent;
+  };
+
   explicit DefRangeSubfieldRegisterSym(SymbolRecordKind Kind)
       : SymbolRecord(Kind) {}
-  explicit DefRangeSubfieldRegisterSym(uint32_t RecordOffset)
+  DefRangeSubfieldRegisterSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::DefRangeSubfieldRegisterSym),
         RecordOffset(RecordOffset) {}
 
-  uint32_t getRelocationOffset() const { return RecordOffset + sizeof(DefRangeSubfieldRegisterHeader); }
+  uint32_t getRelocationOffset() const { return RecordOffset + sizeof(Header); }
 
-  DefRangeSubfieldRegisterHeader Hdr;
+  Header Hdr;
   LocalVariableAddrRange Range;
   std::vector<LocalVariableAddrGap> Gaps;
 
-  uint32_t RecordOffset = 0;
-};
-
-struct DefRangeFramePointerRelHeader {
-  little32_t Offset;
+  uint32_t RecordOffset;
 };
 
 // S_DEFRANGE_FRAMEPOINTER_REL
@@ -533,7 +525,7 @@ class DefRangeFramePointerRelSym : public SymbolRecord {
 public:
   explicit DefRangeFramePointerRelSym(SymbolRecordKind Kind)
       : SymbolRecord(Kind) {}
-  explicit DefRangeFramePointerRelSym(uint32_t RecordOffset)
+  DefRangeFramePointerRelSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::DefRangeFramePointerRelSym),
         RecordOffset(RecordOffset) {}
 
@@ -541,22 +533,22 @@ public:
     return RecordOffset + RelocationOffset;
   }
 
-  DefRangeFramePointerRelHeader Hdr;
+  int32_t Offset;
   LocalVariableAddrRange Range;
   std::vector<LocalVariableAddrGap> Gaps;
 
-  uint32_t RecordOffset = 0;
-};
-
-struct DefRangeRegisterRelHeader {
-  ulittle16_t Register;
-  ulittle16_t Flags;
-  little32_t BasePointerOffset;
+  uint32_t RecordOffset;
 };
 
 // S_DEFRANGE_REGISTER_REL
 class DefRangeRegisterRelSym : public SymbolRecord {
 public:
+  struct Header {
+    ulittle16_t Register;
+    ulittle16_t Flags;
+    little32_t BasePointerOffset;
+  };
+
   explicit DefRangeRegisterRelSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
   explicit DefRangeRegisterRelSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::DefRangeRegisterRelSym),
@@ -574,13 +566,13 @@ public:
   bool hasSpilledUDTMember() const { return Hdr.Flags & IsSubfieldFlag; }
   uint16_t offsetInParent() const { return Hdr.Flags >> OffsetInParentShift; }
 
-  uint32_t getRelocationOffset() const { return RecordOffset + sizeof(DefRangeRegisterRelHeader); }
+  uint32_t getRelocationOffset() const { return RecordOffset + sizeof(Header); }
 
-  DefRangeRegisterRelHeader Hdr;
+  Header Hdr;
   LocalVariableAddrRange Range;
   std::vector<LocalVariableAddrGap> Gaps;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_DEFRANGE_FRAMEPOINTER_REL_FULL_SCOPE
@@ -592,9 +584,9 @@ public:
       : SymbolRecord(SymbolRecordKind::DefRangeFramePointerRelFullScopeSym),
         RecordOffset(RecordOffset) {}
 
-  int32_t Offset = 0;
+  int32_t Offset;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_BLOCK32
@@ -610,14 +602,14 @@ public:
     return RecordOffset + RelocationOffset;
   }
 
-  uint32_t Parent = 0;
-  uint32_t End = 0;
-  uint32_t CodeSize = 0;
-  uint32_t CodeOffset = 0;
-  uint16_t Segment = 0;
+  uint32_t Parent;
+  uint32_t End;
+  uint32_t CodeSize;
+  uint32_t CodeOffset;
+  uint16_t Segment;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_LABEL32
@@ -633,135 +625,124 @@ public:
     return RecordOffset + RelocationOffset;
   }
 
-  uint32_t CodeOffset = 0;
-  uint16_t Segment = 0;
-  ProcSymFlags Flags = ProcSymFlags::None;
+  uint32_t CodeOffset;
+  uint16_t Segment;
+  ProcSymFlags Flags;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_OBJNAME
 class ObjNameSym : public SymbolRecord {
 public:
-  explicit ObjNameSym() : SymbolRecord(SymbolRecordKind::ObjNameSym) {}
   explicit ObjNameSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit ObjNameSym(uint32_t RecordOffset)
+  ObjNameSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::ObjNameSym), RecordOffset(RecordOffset) {
   }
 
-  uint32_t Signature = 0;
+  uint32_t Signature;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_ENVBLOCK
 class EnvBlockSym : public SymbolRecord {
 public:
   explicit EnvBlockSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit EnvBlockSym(uint32_t RecordOffset)
+  EnvBlockSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::EnvBlockSym),
         RecordOffset(RecordOffset) {}
 
   std::vector<StringRef> Fields;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_EXPORT
 class ExportSym : public SymbolRecord {
 public:
   explicit ExportSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit ExportSym(uint32_t RecordOffset)
+  ExportSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::ExportSym), RecordOffset(RecordOffset) {}
 
-  uint16_t Ordinal = 0;
-  ExportFlags Flags = ExportFlags::None;
+  uint16_t Ordinal;
+  ExportFlags Flags;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_FILESTATIC
 class FileStaticSym : public SymbolRecord {
 public:
   explicit FileStaticSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit FileStaticSym(uint32_t RecordOffset)
+  FileStaticSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::FileStaticSym),
         RecordOffset(RecordOffset) {}
 
   TypeIndex Index;
-  uint32_t ModFilenameOffset = 0;
-  LocalSymFlags Flags = LocalSymFlags::None;
+  uint32_t ModFilenameOffset;
+  LocalSymFlags Flags;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_COMPILE2
 class Compile2Sym : public SymbolRecord {
 public:
   explicit Compile2Sym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit Compile2Sym(uint32_t RecordOffset)
+  Compile2Sym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::Compile2Sym),
         RecordOffset(RecordOffset) {}
 
-  CompileSym2Flags Flags = CompileSym2Flags::None;
+  CompileSym2Flags Flags;
   CPUType Machine;
-  uint16_t VersionFrontendMajor = 0;
-  uint16_t VersionFrontendMinor = 0;
-  uint16_t VersionFrontendBuild = 0;
-  uint16_t VersionBackendMajor = 0;
-  uint16_t VersionBackendMinor = 0;
-  uint16_t VersionBackendBuild = 0;
+  uint16_t VersionFrontendMajor;
+  uint16_t VersionFrontendMinor;
+  uint16_t VersionFrontendBuild;
+  uint16_t VersionBackendMajor;
+  uint16_t VersionBackendMinor;
+  uint16_t VersionBackendBuild;
   StringRef Version;
   std::vector<StringRef> ExtraStrings;
 
   uint8_t getLanguage() const { return static_cast<uint32_t>(Flags) & 0xFF; }
   uint32_t getFlags() const { return static_cast<uint32_t>(Flags) & ~0xFF; }
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_COMPILE3
 class Compile3Sym : public SymbolRecord {
 public:
-  Compile3Sym() : SymbolRecord(SymbolRecordKind::Compile3Sym) {}
   explicit Compile3Sym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit Compile3Sym(uint32_t RecordOffset)
+  Compile3Sym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::Compile3Sym),
         RecordOffset(RecordOffset) {}
 
-  CompileSym3Flags Flags = CompileSym3Flags::None;
+  CompileSym3Flags Flags;
   CPUType Machine;
-  uint16_t VersionFrontendMajor = 0;
-  uint16_t VersionFrontendMinor = 0;
-  uint16_t VersionFrontendBuild = 0;
-  uint16_t VersionFrontendQFE = 0;
-  uint16_t VersionBackendMajor = 0;
-  uint16_t VersionBackendMinor = 0;
-  uint16_t VersionBackendBuild = 0;
-  uint16_t VersionBackendQFE = 0;
+  uint16_t VersionFrontendMajor;
+  uint16_t VersionFrontendMinor;
+  uint16_t VersionFrontendBuild;
+  uint16_t VersionFrontendQFE;
+  uint16_t VersionBackendMajor;
+  uint16_t VersionBackendMinor;
+  uint16_t VersionBackendBuild;
+  uint16_t VersionBackendQFE;
   StringRef Version;
 
   void setLanguage(SourceLanguage Lang) {
     Flags = CompileSym3Flags((uint32_t(Flags) & 0xFFFFFF00) | uint32_t(Lang));
   }
 
-  SourceLanguage getLanguage() const {
-    return static_cast<SourceLanguage>(static_cast<uint32_t>(Flags) & 0xFF);
-  }
-  CompileSym3Flags getFlags() const {
-    return static_cast<CompileSym3Flags>(static_cast<uint32_t>(Flags) & ~0xFF);
-  }
+  uint8_t getLanguage() const { return static_cast<uint32_t>(Flags) & 0xFF; }
+  uint32_t getFlags() const { return static_cast<uint32_t>(Flags) & ~0xFF; }
 
-  bool hasOptimizations() const {
-    return CompileSym3Flags::None !=
-           (getFlags() & (CompileSym3Flags::PGO | CompileSym3Flags::LTCG));
-  }
-
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_FRAMEPROC
@@ -772,29 +753,15 @@ public:
       : SymbolRecord(SymbolRecordKind::FrameProcSym),
         RecordOffset(RecordOffset) {}
 
-  uint32_t TotalFrameBytes = 0;
-  uint32_t PaddingFrameBytes = 0;
-  uint32_t OffsetToPadding = 0;
-  uint32_t BytesOfCalleeSavedRegisters = 0;
-  uint32_t OffsetOfExceptionHandler = 0;
-  uint16_t SectionIdOfExceptionHandler = 0;
-  FrameProcedureOptions Flags = FrameProcedureOptions::None;
+  uint32_t TotalFrameBytes;
+  uint32_t PaddingFrameBytes;
+  uint32_t OffsetToPadding;
+  uint32_t BytesOfCalleeSavedRegisters;
+  uint32_t OffsetOfExceptionHandler;
+  uint16_t SectionIdOfExceptionHandler;
+  FrameProcedureOptions Flags;
 
-  /// Extract the register this frame uses to refer to local variables.
-  RegisterId getLocalFramePtrReg(CPUType CPU) const {
-    return decodeFramePtrReg(
-        EncodedFramePtrReg((uint32_t(Flags) >> 14U) & 0x3U), CPU);
-  }
-
-  /// Extract the register this frame uses to refer to parameters.
-  RegisterId getParamFramePtrReg(CPUType CPU) const {
-    return decodeFramePtrReg(
-        EncodedFramePtrReg((uint32_t(Flags) >> 16U) & 0x3U), CPU);
-  }
-
-  uint32_t RecordOffset = 0;
-
-private:
+  uint32_t RecordOffset;
 };
 
 // S_CALLSITEINFO
@@ -810,11 +777,11 @@ public:
     return RecordOffset + RelocationOffset;
   }
 
-  uint32_t CodeOffset = 0;
-  uint16_t Segment = 0;
+  uint32_t CodeOffset;
+  uint16_t Segment;
   TypeIndex Type;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_HEAPALLOCSITE
@@ -831,12 +798,12 @@ public:
     return RecordOffset + RelocationOffset;
   }
 
-  uint32_t CodeOffset = 0;
-  uint16_t Segment = 0;
-  uint16_t CallInstructionSize = 0;
+  uint32_t CodeOffset;
+  uint16_t Segment;
+  uint16_t CallInstructionSize;
   TypeIndex Type;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_FRAMECOOKIE
@@ -852,12 +819,12 @@ public:
     return RecordOffset + RelocationOffset;
   }
 
-  uint32_t CodeOffset = 0;
-  uint16_t Register = 0;
+  uint32_t CodeOffset;
+  uint16_t Register;
   FrameCookieKind CookieKind;
-  uint8_t Flags = 0;
+  uint8_t Flags;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_UDT, S_COBOLUDT
@@ -870,20 +837,20 @@ public:
   TypeIndex Type;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_BUILDINFO
 class BuildInfoSym : public SymbolRecord {
 public:
   explicit BuildInfoSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit BuildInfoSym(uint32_t RecordOffset)
+  BuildInfoSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::BuildInfoSym),
         RecordOffset(RecordOffset) {}
 
   TypeIndex BuildId;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_BPREL32
@@ -894,11 +861,11 @@ public:
       : SymbolRecord(SymbolRecordKind::BPRelativeSym),
         RecordOffset(RecordOffset) {}
 
-  int32_t Offset = 0;
+  int32_t Offset;
   TypeIndex Type;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_REGREL32
@@ -909,19 +876,19 @@ public:
       : SymbolRecord(SymbolRecordKind::RegRelativeSym),
         RecordOffset(RecordOffset) {}
 
-  uint32_t Offset = 0;
+  uint32_t Offset;
   TypeIndex Type;
   RegisterId Register;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_CONSTANT, S_MANCONSTANT
 class ConstantSym : public SymbolRecord {
 public:
   explicit ConstantSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit ConstantSym(uint32_t RecordOffset)
+  ConstantSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::ConstantSym),
         RecordOffset(RecordOffset) {}
 
@@ -929,7 +896,7 @@ public:
   APSInt Value;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_LDATA32, S_GDATA32, S_LMANDATA, S_GMANDATA
@@ -938,7 +905,7 @@ class DataSym : public SymbolRecord {
 
 public:
   explicit DataSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit DataSym(uint32_t RecordOffset)
+  DataSym(uint32_t RecordOffset)
       : SymbolRecord(SymbolRecordKind::DataSym), RecordOffset(RecordOffset) {}
 
   uint32_t getRelocationOffset() const {
@@ -946,11 +913,11 @@ public:
   }
 
   TypeIndex Type;
-  uint32_t DataOffset = 0;
-  uint16_t Segment = 0;
+  uint32_t DataOffset;
+  uint16_t Segment;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_LTHREAD32, S_GTHREAD32
@@ -968,40 +935,17 @@ public:
   }
 
   TypeIndex Type;
-  uint32_t DataOffset = 0;
-  uint16_t Segment = 0;
+  uint32_t DataOffset;
+  uint16_t Segment;
   StringRef Name;
 
-  uint32_t RecordOffset = 0;
-};
-
-// S_UNAMESPACE
-class UsingNamespaceSym : public SymbolRecord {
-public:
-  explicit UsingNamespaceSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit UsingNamespaceSym(uint32_t RecordOffset)
-      : SymbolRecord(SymbolRecordKind::UsingNamespaceSym),
-        RecordOffset(RecordOffset) {}
-
-  StringRef Name;
-
-  uint32_t RecordOffset = 0;
+  uint32_t RecordOffset;
 };
 
 // S_ANNOTATION
-class AnnotationSym : public SymbolRecord {
-public:
-  explicit AnnotationSym(SymbolRecordKind Kind) : SymbolRecord(Kind) {}
-  explicit AnnotationSym(uint32_t RecordOffset)
-      : SymbolRecord(SymbolRecordKind::AnnotationSym),
-        RecordOffset(RecordOffset) {}
 
-  uint32_t CodeOffset = 0;
-  uint16_t Segment = 0;
-  std::vector<StringRef> Strings;
-
-  uint32_t RecordOffset = 0;
-};
+using CVSymbol = CVRecord<SymbolKind>;
+using CVSymbolArray = VarStreamArray<CVSymbol>;
 
 Expected<CVSymbol> readSymbolFromStream(BinaryStreamRef Stream,
                                         uint32_t Offset);

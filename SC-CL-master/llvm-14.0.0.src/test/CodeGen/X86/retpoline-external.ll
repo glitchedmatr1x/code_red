@@ -1,10 +1,10 @@
-; RUN: llc -verify-machineinstrs -mtriple=x86_64-unknown < %s | FileCheck %s --implicit-check-not="jmp.*\*" --implicit-check-not="call.*\*" --check-prefix=X64
-; RUN: llc -verify-machineinstrs -mtriple=x86_64-unknown -O0 < %s | FileCheck %s --implicit-check-not="jmp.*\*" --implicit-check-not="call.*\*" --check-prefix=X64FAST
+; RUN: llc -mtriple=x86_64-unknown < %s | FileCheck %s --implicit-check-not="jmp.*\*" --implicit-check-not="call.*\*" --check-prefix=X64
+; RUN: llc -mtriple=x86_64-unknown -O0 < %s | FileCheck %s --implicit-check-not="jmp.*\*" --implicit-check-not="call.*\*" --check-prefix=X64FAST
 
-; RUN: llc -verify-machineinstrs -mtriple=i686-unknown < %s | FileCheck %s --implicit-check-not="jmp.*\*" --implicit-check-not="call.*\*" --check-prefix=X86
-; RUN: llc -verify-machineinstrs -mtriple=i686-unknown -O0 < %s | FileCheck %s --implicit-check-not="jmp.*\*" --implicit-check-not="call.*\*" --check-prefix=X86FAST
+; RUN: llc -mtriple=i686-unknown < %s | FileCheck %s --implicit-check-not="jmp.*\*" --implicit-check-not="call.*\*" --check-prefix=X86
+; RUN: llc -mtriple=i686-unknown -O0 < %s | FileCheck %s --implicit-check-not="jmp.*\*" --implicit-check-not="call.*\*" --check-prefix=X86FAST
 
-declare dso_local void @bar(i32)
+declare void @bar(i32)
 
 ; Test a simple indirect call and tail call.
 define void @icall_reg(void (i32)* %fp, i32 %x) #0 {
@@ -19,7 +19,7 @@ entry:
 ; X64-LABEL: icall_reg:
 ; X64-DAG:   movq %rdi, %[[fp:[^ ]*]]
 ; X64-DAG:   movl %esi, %[[x:[^ ]*]]
-; X64:       movl %esi, %edi
+; X64:       movl %[[x]], %edi
 ; X64:       callq bar
 ; X64-DAG:   movl %[[x]], %edi
 ; X64-DAG:   movq %[[fp]], %r11
@@ -58,7 +58,7 @@ entry:
 ; X86FAST:       calll __x86_indirect_thunk_eax
 
 
-@global_fp = external dso_local global void (i32)*
+@global_fp = external global void (i32)*
 
 ; Test an indirect call through a global variable.
 define void @icall_global_fp(i32 %x, void (i32)** %fpp) #0 {
@@ -111,7 +111,7 @@ define void @vcall(%struct.Foo* %obj) #0 {
 
 ; X64-LABEL: vcall:
 ; X64:       movq %rdi, %[[obj:[^ ]*]]
-; X64:       movq (%rdi), %[[vptr:[^ ]*]]
+; X64:       movq (%[[obj]]), %[[vptr:[^ ]*]]
 ; X64:       movq 8(%[[vptr]]), %[[fp:[^ ]*]]
 ; X64:       movq %[[fp]], %r11
 ; X64:       callq __x86_indirect_thunk_r11
@@ -139,7 +139,7 @@ define void @vcall(%struct.Foo* %obj) #0 {
 ; X86FAST:       jmp __x86_indirect_thunk_eax # TAILCALL
 
 
-declare dso_local void @direct_callee()
+declare void @direct_callee()
 
 define void @direct_tail() #0 {
   tail call void @direct_callee()
@@ -163,4 +163,4 @@ define void @direct_tail() #0 {
 ; X86FAST-NOT: __{{.*}}_retpoline_{{.*}}:
 
 
-attributes #0 = { "target-features"="+retpoline-indirect-calls,+retpoline-external-thunk" }
+attributes #0 = { "target-features"="+retpoline-external-thunk" }

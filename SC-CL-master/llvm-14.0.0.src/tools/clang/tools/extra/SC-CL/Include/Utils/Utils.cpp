@@ -9,7 +9,6 @@
 #include "Utils/Utils.h"
 #include <windows.h>
 #include "ConsoleColor.h"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental\filesystem>
 
 using namespace std;
@@ -250,7 +249,7 @@ namespace Utils {
 		}
 
 	}
-	#if 0
+
 	namespace Compression
 	{
 
@@ -534,8 +533,6 @@ namespace Utils {
         #undef CHUNK
 
 	}
-
-	#endif
 
 	namespace Crypt
 	{

@@ -1,15 +1,15 @@
 //===--- StaticAccessedThroughInstanceCheck.cpp - clang-tidy---------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #include "StaticAccessedThroughInstanceCheck.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
-#include "llvm/ADT/StringRef.h"
 
 using namespace clang::ast_matchers;
 
@@ -40,7 +40,8 @@ void StaticAccessedThroughInstanceCheck::storeOptions(
 void StaticAccessedThroughInstanceCheck::registerMatchers(MatchFinder *Finder) {
   Finder->addMatcher(
       memberExpr(hasDeclaration(anyOf(cxxMethodDecl(isStaticStorageClass()),
-                                      varDecl(hasStaticStorageDuration()))))
+                                      varDecl(hasStaticStorageDuration()))),
+                 unless(isInTemplateInstantiation()))
           .bind("memberExpression"),
       this);
 }
@@ -50,12 +51,12 @@ void StaticAccessedThroughInstanceCheck::check(
   const auto *MemberExpression =
       Result.Nodes.getNodeAs<MemberExpr>("memberExpression");
 
-  if (MemberExpression->getBeginLoc().isMacroID())
+  if (MemberExpression->getLocStart().isMacroID())
     return;
 
   const Expr *BaseExpr = MemberExpression->getBase();
 
-  // Do not warn for overloaded -> operators.
+  // Do not warn for overlaoded -> operators.
   if (isa<CXXOperatorCallExpr>(BaseExpr))
     return;
 
@@ -67,15 +68,10 @@ void StaticAccessedThroughInstanceCheck::check(
   const ASTContext *AstContext = Result.Context;
   PrintingPolicy PrintingPolicyWithSupressedTag(AstContext->getLangOpts());
   PrintingPolicyWithSupressedTag.SuppressTagKeyword = true;
-  PrintingPolicyWithSupressedTag.SuppressUnwrittenScope = true;
   std::string BaseTypeName =
       BaseType.getAsString(PrintingPolicyWithSupressedTag);
 
-  // Do not warn for CUDA built-in variables.
-  if (StringRef(BaseTypeName).startswith("__cuda_builtin_"))
-    return;
-
-  SourceLocation MemberExprStartLoc = MemberExpression->getBeginLoc();
+  SourceLocation MemberExprStartLoc = MemberExpression->getLocStart();
   auto Diag =
       diag(MemberExprStartLoc, "static member accessed through instance");
 

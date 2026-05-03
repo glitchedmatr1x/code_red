@@ -1,8 +1,9 @@
 //===- TypeStreamMerger.h ---------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -11,7 +12,7 @@
 
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SmallVector.h"
-#include "llvm/DebugInfo/CodeView/CVRecord.h"
+#include "llvm/DebugInfo/CodeView/TypeRecord.h"
 #include "llvm/Support/Error.h"
 
 namespace llvm {
@@ -22,7 +23,7 @@ struct GloballyHashedType;
 class GlobalTypeTableBuilder;
 class MergingTypeTableBuilder;
 
-/// Merge one set of type records into another.  This method assumes
+/// \brief Merge one set of type records into another.  This method assumes
 /// that all records are type records, and there are no Id records present.
 ///
 /// \param Dest The table to store the re-written type records into.
@@ -39,7 +40,7 @@ Error mergeTypeRecords(MergingTypeTableBuilder &Dest,
                        SmallVectorImpl<TypeIndex> &SourceToDest,
                        const CVTypeArray &Types);
 
-/// Merge one set of id records into another.  This method assumes
+/// \brief Merge one set of id records into another.  This method assumes
 /// that all records are id records, and there are no Type records present.
 /// However, since Id records can refer back to Type records, this method
 /// assumes that the referenced type records have also been merged into
@@ -64,7 +65,7 @@ Error mergeIdRecords(MergingTypeTableBuilder &Dest, ArrayRef<TypeIndex> Types,
                      SmallVectorImpl<TypeIndex> &SourceToDest,
                      const CVTypeArray &Ids);
 
-/// Merge a unified set of type and id records, splitting them into
+/// \brief Merge a unified set of type and id records, splitting them into
 /// separate output streams.
 ///
 /// \param DestIds The table to store the re-written id records into.
@@ -82,21 +83,18 @@ Error mergeIdRecords(MergingTypeTableBuilder &Dest, ArrayRef<TypeIndex> Types,
 Error mergeTypeAndIdRecords(MergingTypeTableBuilder &DestIds,
                             MergingTypeTableBuilder &DestTypes,
                             SmallVectorImpl<TypeIndex> &SourceToDest,
-                            const CVTypeArray &IdsAndTypes,
-                            Optional<uint32_t> &PCHSignature);
+                            const CVTypeArray &IdsAndTypes);
 
 Error mergeTypeAndIdRecords(GlobalTypeTableBuilder &DestIds,
                             GlobalTypeTableBuilder &DestTypes,
                             SmallVectorImpl<TypeIndex> &SourceToDest,
                             const CVTypeArray &IdsAndTypes,
-                            ArrayRef<GloballyHashedType> Hashes,
-                            Optional<uint32_t> &PCHSignature);
+                            ArrayRef<GloballyHashedType> Hashes);
 
 Error mergeTypeRecords(GlobalTypeTableBuilder &Dest,
                        SmallVectorImpl<TypeIndex> &SourceToDest,
                        const CVTypeArray &Types,
-                       ArrayRef<GloballyHashedType> Hashes,
-                       Optional<uint32_t> &PCHSignature);
+                       ArrayRef<GloballyHashedType> Hashes);
 
 Error mergeIdRecords(GlobalTypeTableBuilder &Dest, ArrayRef<TypeIndex> Types,
                      SmallVectorImpl<TypeIndex> &SourceToDest,

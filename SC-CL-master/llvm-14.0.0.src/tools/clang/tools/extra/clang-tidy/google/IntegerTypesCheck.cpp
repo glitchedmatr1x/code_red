@@ -1,8 +1,9 @@
 //===--- IntegerTypesCheck.cpp - clang-tidy -------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -10,7 +11,6 @@
 #include "clang/AST/ASTContext.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/ASTMatchers/ASTMatchers.h"
-#include "clang/Basic/AttrKinds.h"
 #include "clang/Basic/CharInfo.h"
 #include "clang/Basic/IdentifierTable.h"
 #include "clang/Basic/TargetInfo.h"
@@ -53,22 +53,16 @@ void IntegerTypesCheck::storeOptions(ClangTidyOptions::OptionMap &Opts) {
 }
 
 void IntegerTypesCheck::registerMatchers(MatchFinder *Finder) {
-  // Match any integer types, unless they are passed to a printf-based API:
-  //
-  // http://google.github.io/styleguide/cppguide.html#64-bit_Portability
-  // "Where possible, avoid passing arguments of types specified by
-  // bitwidth typedefs to printf-based APIs."
-  Finder->addMatcher(typeLoc(loc(isInteger()),
-                             unless(hasAncestor(callExpr(
-                                 callee(functionDecl(hasAttr(attr::Format)))))))
-                         .bind("tl"),
-                     this);
-  IdentTable = std::make_unique<IdentifierTable>(getLangOpts());
+  // Find all TypeLocs. The relevant Style Guide rule only applies to C++.
+  if (!getLangOpts().CPlusPlus)
+    return;
+  Finder->addMatcher(typeLoc(loc(isInteger())).bind("tl"), this);
+  IdentTable = llvm::make_unique<IdentifierTable>(getLangOpts());
 }
 
 void IntegerTypesCheck::check(const MatchFinder::MatchResult &Result) {
   auto TL = *Result.Nodes.getNodeAs<TypeLoc>("tl");
-  SourceLocation Loc = TL.getBeginLoc();
+  SourceLocation Loc = TL.getLocStart();
 
   if (Loc.isInvalid() || Loc.isMacroID())
     return;
@@ -129,7 +123,7 @@ void IntegerTypesCheck::check(const MatchFinder::MatchResult &Result) {
   const StringRef Port = "unsigned short port";
   const char *Data = Result.SourceManager->getCharacterData(Loc);
   if (!std::strncmp(Data, Port.data(), Port.size()) &&
-      !isAsciiIdentifierContinue(Data[Port.size()]))
+      !isIdentifierBody(Data[Port.size()]))
     return;
 
   std::string Replacement =

@@ -3,24 +3,21 @@ set(LLVM_LINK_COMPONENTS
   Support
   )
 
-add_clang_tool(clang-rename
-  ClangRename.cpp
-  )
+add_clang_tool(clang-rename ClangRename.cpp)
 
-clang_target_link_libraries(clang-rename
+target_link_libraries(clang-rename
   PRIVATE
   clangBasic
   clangFrontend
   clangRewrite
-  clangSerialization
   clangTooling
   clangToolingCore
-  clangToolingRefactoring
+  clangToolingRefactor
   )
 
 install(PROGRAMS clang-rename.py
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/clang"
+  DESTINATION share/clang
   COMPONENT clang-rename)
 install(PROGRAMS clang-rename.el
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/clang"
+  DESTINATION share/clang
   COMPONENT clang-rename)

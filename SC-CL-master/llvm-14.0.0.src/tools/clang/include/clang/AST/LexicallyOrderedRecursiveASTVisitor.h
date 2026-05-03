@@ -1,8 +1,9 @@
 //===--- LexicallyOrderedRecursiveASTVisitor.h - ----------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -11,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_AST_LEXICALLYORDEREDRECURSIVEASTVISITOR_H
-#define LLVM_CLANG_AST_LEXICALLYORDEREDRECURSIVEASTVISITOR_H
+#ifndef LLVM_CLANG_AST_LEXICALLY_ORDERED_RECURSIVEASTVISITOR_H
+#define LLVM_CLANG_AST_LEXICALLY_ORDERED_RECURSIVEASTVISITOR_H
 
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Basic/LLVM.h"
@@ -98,8 +99,8 @@ public:
       LexicallyNestedDeclarations.clear();
       for (++I; I != E; ++I) {
         Decl *Sibling = *I;
-        if (!SM.isBeforeInTranslationUnit(Sibling->getBeginLoc(),
-                                          Child->getEndLoc()))
+        if (!SM.isBeforeInTranslationUnit(Sibling->getLocStart(),
+                                          Child->getLocEnd()))
           break;
         if (!BaseType::canIgnoreChildDeclWhileTraversingDeclContext(Sibling))
           LexicallyNestedDeclarations.push_back(Sibling);
@@ -160,4 +161,4 @@ private:
 
 } // end namespace clang
 
-#endif // LLVM_CLANG_AST_LEXICALLYORDEREDRECURSIVEASTVISITOR_H
+#endif // LLVM_CLANG_AST_LEXICALLY_ORDERED_RECURSIVEASTVISITOR_H

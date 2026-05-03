@@ -1,3 +1,5 @@
+REQUIRES: shell
+
 RUN: rm -rf %t
 RUN: mkdir %t
 RUN: cd %t
@@ -8,7 +10,8 @@ RUN: cp %p/../Inputs/dwos_list_from_exec/d.dwo d.dwo
 RUN: cp %p/../Inputs/dwos_list_from_exec/e.dwo e.dwo
 RUN: cp %p/../Inputs/dwos_list_from_exec/main main
 RUN: cp %p/../Inputs/dwos_list_from_exec/libd.so libd.so
-RUN: llvm-dwp c.dwo e.dwo -e main -e libd.so -o - | llvm-dwarfdump -v - | FileCheck %s
+RUN: llvm-dwp c.dwo e.dwo -e main -e libd.so -o pkg.dwp
+RUN: llvm-dwarfdump -v pkg.dwp | FileCheck %s
 
 Build commands for the test binaries:
 
@@ -61,25 +64,25 @@ CHECK: DW_TAG_subprogram
 CHECK: .debug_info.dwo contents:
 CHECK: [[AOFF:0x[0-9a-f]*]]:
 
-CHECK-LABEL: Compile Unit: length = {{.*}}, version = 0x0004
+CHECK-LABEL: Compile Unit: length = {{.*}} version = 0x0004
 CHECK: DW_TAG_compile_unit
 CHECK:   DW_AT_name {{.*}} "c.cpp"
 CHECK:   DW_TAG_subprogram
 CHECK:     DW_AT_name {{.*}} "c"
 
-CHECK-LABEL: Compile Unit: length = {{.*}}, version = 0x0004
+CHECK-LABEL: Compile Unit: length = {{.*}} version = 0x0004
 CHECK: DW_TAG_compile_unit
 CHECK:   DW_AT_name {{.*}} "e.cpp"
 CHECK:   DW_TAG_subprogram
 CHECK:     DW_AT_name {{.*}} "e"
 
-CHECK-LABEL: Compile Unit: length = {{.*}}, version = 0x0004
+CHECK-LABEL: Compile Unit: length = {{.*}} version = 0x0004
 CHECK: DW_TAG_compile_unit
 CHECK:   DW_AT_name {{.*}} "a.cpp"
 CHECK:   DW_TAG_subprogram
 CHECK:     DW_AT_name {{.*}} "a"
 
-CHECK-LABEL: Compile Unit: length = {{.*}}, version = 0x0004
+CHECK-LABEL: Compile Unit: length = {{.*}} version = 0x0004
 CHECK: DW_TAG_compile_unit
 CHECK:   DW_AT_name {{.*}} "b.cpp"
 CHECK:   DW_TAG_subprogram
@@ -87,7 +90,7 @@ CHECK:     DW_AT_name {{.*}} "b"
 CHECK:   DW_TAG_subprogram
 CHECK:     DW_AT_name {{.*}} "main"
 
-CHECK-LABEL: Compile Unit: length = {{.*}}, version = 0x0004
+CHECK-LABEL: Compile Unit: length = {{.*}} version = 0x0004
 CHECK: DW_TAG_compile_unit
 CHECK:   DW_AT_name {{.*}} "d.cpp"
 CHECK:   DW_TAG_subprogram

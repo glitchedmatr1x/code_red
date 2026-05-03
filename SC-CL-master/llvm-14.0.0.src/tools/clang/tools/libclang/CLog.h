@@ -1,8 +1,9 @@
 //===- CLog.h - Logging Interface -------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -30,7 +31,7 @@ namespace cxindex {
 class Logger;
 typedef IntrusiveRefCntPtr<Logger> LogRef;
 
-/// Collects logging output and writes it to stderr when it's destructed.
+/// \brief Collects logging output and writes it to stderr when it's destructed.
 /// Common use case:
 /// \code
 ///   if (LogRef Log = Logger::make(__func__)) {
@@ -61,7 +62,7 @@ public:
   }
 
   explicit Logger(llvm::StringRef name, bool trace)
-      : Name(std::string(name)), Trace(trace), LogOS(Msg) {}
+    : Name(name), Trace(trace), LogOS(Msg) { }
   ~Logger();
 
   Logger &operator<<(CXTranslationUnit);
@@ -89,7 +90,7 @@ public:
 }
 }
 
-/// Macros to automate common uses of Logger. Like this:
+/// \brief Macros to automate common uses of Logger. Like this:
 /// \code
 ///   LOG_FUNC_SECTION {
 ///     *Log << "blah";

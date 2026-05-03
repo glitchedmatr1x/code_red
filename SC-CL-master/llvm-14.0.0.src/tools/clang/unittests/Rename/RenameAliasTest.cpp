@@ -1,8 +1,9 @@
 //===-- RenameAliasTest.cpp - unit tests for renaming alias ---------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -45,7 +46,7 @@ public:
   }
 };
 
-INSTANTIATE_TEST_SUITE_P(
+INSTANTIATE_TEST_CASE_P(
     RenameAliasTests, RenameAliasTest,
     testing::ValuesIn(std::vector<Case>({
         // basic functions
@@ -190,7 +191,7 @@ INSTANTIATE_TEST_SUITE_P(
          "NewTPtr"},
         {"void f(::TPtr<int> p) {}", "void f(::NewTPtr<int> p) {}", "TPtr",
          "NewTPtr"},
-    })));
+    })), );
 
 TEST_P(RenameAliasTest, RenameAlias) {
   auto Param = GetParam();

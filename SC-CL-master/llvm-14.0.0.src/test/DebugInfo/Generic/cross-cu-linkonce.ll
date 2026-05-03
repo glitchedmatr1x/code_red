@@ -1,4 +1,6 @@
-; RUN: %llc_dwarf -O0 -filetype=obj < %s | llvm-dwarfdump -debug-info - | FileCheck %s
+; REQUIRES: object-emission
+
+; RUN: %llc_dwarf -O0 -filetype=obj < %s | llvm-dwarfdump -v -debug-info - | FileCheck %s
 
 ; Built from source:
 ; $ clang++ a.cpp b.cpp -g -c -emit-llvm
@@ -19,7 +21,7 @@
 ; CHECK: DW_TAG_compile_unit
 ; CHECK:   DW_TAG_subprogram
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_name ("func")
+; CHECK:     DW_AT_name {{.*}} "func"
 ; CHECK: DW_TAG_compile_unit
 ; CHECK-NOT: DW_TAG_subprogram
 
@@ -41,7 +43,7 @@ define linkonce_odr i32 @_Z4funci(i32 %i) #0 !dbg !19 {
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 
-attributes #0 = { inlinehint nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { inlinehint nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!9, !13}
@@ -67,7 +69,7 @@ attributes #1 = { nounwind readnone }
 !16 = !{i32 2, !"Dwarf Version", i32 4}
 !17 = !{i32 1, !"Debug Info Version", i32 3}
 !18 = !{!"clang version 3.5.0 "}
-!19 = distinct !DISubprogram(name: "func", linkageName: "_Z4funci", scope: !2, file: !2, line: 1, type: !4, isLocal: false, isDefinition: true, scopeLine: 1, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !9, retainedNodes: !11)
+!19 = distinct !DISubprogram(name: "func", linkageName: "_Z4funci", scope: !2, file: !2, line: 1, type: !4, isLocal: false, isDefinition: true, scopeLine: 1, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !9, variables: !11)
 !20 = !DILocalVariable(name: "i", arg: 1, scope: !19, file: !2, line: 1, type: !6)
 !21 = !DIExpression()
 !22 = !DILocation(line: 1, scope: !19)

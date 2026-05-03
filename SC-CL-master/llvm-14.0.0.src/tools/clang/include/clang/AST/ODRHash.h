@@ -1,8 +1,9 @@
 //===-- ODRHash.h - Hashing to diagnose ODR failures ------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
@@ -11,9 +12,6 @@
 /// a hash based on AST nodes, which is stable across different runs.
 ///
 //===----------------------------------------------------------------------===//
-
-#ifndef LLVM_CLANG_AST_ODRHASH_H
-#define LLVM_CLANG_AST_ODRHASH_H
 
 #include "clang/AST/DeclarationName.h"
 #include "clang/AST/Type.h"
@@ -39,9 +37,9 @@ class TemplateParameterList;
 // Typically, only one Add* call is needed.  clear can be called to reuse the
 // object.
 class ODRHash {
-  // Use DenseMaps to convert from DeclarationName and Type pointers
-  // to an index value.
-  llvm::DenseMap<DeclarationName, unsigned> DeclNameMap;
+  // Use DenseMaps to convert between Decl and Type pointers and an index value.
+  llvm::DenseMap<const Decl*, unsigned> DeclMap;
+  llvm::DenseMap<const Type*, unsigned> TypeMap;
 
   // Save space by processing bools at the end.
   llvm::SmallVector<bool, 128> Bools;
@@ -56,13 +54,8 @@ public:
   void AddCXXRecordDecl(const CXXRecordDecl *Record);
 
   // Use this for ODR checking functions between modules.  This method compares
-  // more information than the AddDecl class.  SkipBody will process the
-  // hash as if the function has no body.
-  void AddFunctionDecl(const FunctionDecl *Function, bool SkipBody = false);
-
-  // Use this for ODR checking enums between modules.  This method compares
   // more information than the AddDecl class.
-  void AddEnumDecl(const EnumDecl *Enum);
+  void AddFunctionDecl(const FunctionDecl *Function);
 
   // Process SubDecls of the main Decl.  This method calls the DeclVisitor
   // while AddDecl does not.
@@ -82,19 +75,14 @@ public:
   void AddIdentifierInfo(const IdentifierInfo *II);
   void AddNestedNameSpecifier(const NestedNameSpecifier *NNS);
   void AddTemplateName(TemplateName Name);
-  void AddDeclarationName(DeclarationName Name, bool TreatAsDecl = false);
+  void AddDeclarationName(DeclarationName Name);
   void AddTemplateArgument(TemplateArgument TA);
   void AddTemplateParameterList(const TemplateParameterList *TPL);
 
   // Save booleans until the end to lower the size of data to process.
   void AddBoolean(bool value);
 
-  static bool isDeclToBeProcessed(const Decl* D, const DeclContext *Parent);
-
-private:
-  void AddDeclarationNameImpl(DeclarationName Name);
+  static bool isWhitelistedDecl(const Decl* D, const CXXRecordDecl *Record);
 };
 
 }  // end namespace clang
-
-#endif

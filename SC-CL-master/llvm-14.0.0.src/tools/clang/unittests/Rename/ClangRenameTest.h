@@ -1,18 +1,17 @@
 //===-- ClangRenameTests.cpp - clang-rename unit tests --------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-
-#ifndef LLVM_CLANG_UNITTESTS_RENAME_CLANGRENAMETEST_H
-#define LLVM_CLANG_UNITTESTS_RENAME_CLANGRENAMETEST_H
 
 #include "unittests/Tooling/RewriterTestContext.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/Basic/FileManager.h"
 #include "clang/Basic/FileSystemOptions.h"
+#include "clang/Basic/VirtualFileSystem.h"
 #include "clang/Format/Format.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/PCHContainerOperations.h"
@@ -24,7 +23,6 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/Format.h"
 #include "llvm/Support/MemoryBuffer.h"
-#include "llvm/Support/VirtualFileSystem.h"
 #include "gtest/gtest.h"
 #include <memory>
 #include <string>
@@ -58,7 +56,7 @@ protected:
     Context.createInMemoryFile(HeaderName, HeaderContent);
     clang::FileID InputFileID = Context.createInMemoryFile(CCName, NewCode);
 
-    tooling::USRFindingAction FindingAction({}, {std::string(OldName)}, false);
+    tooling::USRFindingAction FindingAction({}, {OldName}, false);
     std::unique_ptr<tooling::FrontendActionFactory> USRFindingActionFactory =
         tooling::newFrontendActionFactory(&FindingAction);
 
@@ -70,7 +68,7 @@ protected:
 
     const std::vector<std::vector<std::string>> &USRList =
         FindingAction.getUSRList();
-    std::vector<std::string> NewNames = {std::string(NewName)};
+    std::vector<std::string> NewNames = {NewName};
     std::map<std::string, tooling::Replacements> FileToReplacements;
     tooling::QualifiedRenamingAction RenameAction(NewNames, USRList,
                                                   FileToReplacements);
@@ -112,5 +110,3 @@ protected:
 } // namespace test
 } // namespace clang_rename
 } // namesdpace clang
-
-#endif

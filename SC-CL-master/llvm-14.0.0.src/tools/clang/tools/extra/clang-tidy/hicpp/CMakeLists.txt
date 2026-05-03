@@ -1,16 +1,16 @@
-set(LLVM_LINK_COMPONENTS
-  FrontendOpenMP
-  Support
-  )
+set(LLVM_LINK_COMPONENTS support)
 
 add_clang_library(clangTidyHICPPModule
   ExceptionBaseclassCheck.cpp
-  HICPPTidyModule.cpp
-  MultiwayPathsCoveredCheck.cpp
   NoAssemblerCheck.cpp
+  HICPPTidyModule.cpp
   SignedBitwiseCheck.cpp
 
   LINK_LIBS
+  clangAST
+  clangASTMatchers
+  clangBasic
+  clangLex
   clangTidy
   clangTidyBugproneModule
   clangTidyCppCoreGuidelinesModule
@@ -20,16 +20,4 @@ add_clang_library(clangTidyHICPPModule
   clangTidyPerformanceModule
   clangTidyReadabilityModule
   clangTidyUtils
-
-  DEPENDS
-  omp_gen
-  )
-
-clang_target_link_libraries(clangTidyHICPPModule
-  PRIVATE
-  clangAST
-  clangASTMatchers
-  clangBasic
-  clangLex
-  clangSerialization
   )

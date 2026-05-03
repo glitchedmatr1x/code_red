@@ -1,5 +1,5 @@
 ; Test that BDCE doesn't destroy llvm.dbg.value's argument.
-; RUN: opt -passes=bdce %s -S | FileCheck %s
+; RUN: opt -bdce %s -S | FileCheck %s
 
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
@@ -34,7 +34,7 @@ declare void @llvm.dbg.value(metadata, metadata, metadata)
 !3 = !{i32 2, !"Dwarf Version", i32 4}
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{!"clang version 4.0.0 (trunk 288665) (llvm/trunk 288725)"}
-!6 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 3, type: !7, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: false, unit: !0, retainedNodes: !2)
+!6 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 3, type: !7, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: false, unit: !0, variables: !2)
 !7 = !DISubroutineType(types: !8)
 !8 = !{null}
 !9 = !DILocation(line: 4, column: 3, scope: !6)

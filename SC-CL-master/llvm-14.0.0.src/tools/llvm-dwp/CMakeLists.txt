@@ -1,16 +1,16 @@
 set(LLVM_LINK_COMPONENTS
-  AllTargetsCodeGens
-  AllTargetsDescs
-  AllTargetsInfos
+  ${LLVM_TARGETS_TO_BUILD}
+  AsmPrinter
   DebugInfoDWARF
-  DWP
   MC
   Object
   Support
+  Target
   )
 
 add_llvm_tool(llvm-dwp
   llvm-dwp.cpp
+  DWPError.cpp
 
   DEPENDS
   intrinsics_gen

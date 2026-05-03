@@ -1,5 +1,5 @@
-; RUN: llc < %s -experimental-debug-variable-locations=true | FileCheck %s
-; RUN: llc < %s -filetype=obj -experimental-debug-variable-locations=true | llvm-dwarfdump - | FileCheck %s --check-prefix=DWARF
+; RUN: llc < %s | FileCheck %s
+; RUN: llc < %s -filetype=obj | llvm-dwarfdump - | FileCheck %s --check-prefix=DWARF
 
 ; This test creates two UserValues in LiveDebugVariables with one location
 ; each. x must be spilled, but y will be allocated to a CSR. x's location
@@ -24,32 +24,31 @@
 ; CHECK-LABEL: f: # @f
 ; CHECK: callq   g
 ; CHECK: movl    %eax, [[X_OFFS:[0-9]+]](%rsp)          # 4-byte Spill
-; CHECK: #DEBUG_VALUE: f:x <- [DW_OP_plus_uconst [[X_OFFS]]] [$rsp+0]
+; CHECK: #DEBUG_VALUE: f:x <- [DW_OP_plus_uconst [[X_OFFS]]] [%rsp+0]
 ; CHECK: #APP
 ; CHECK: #NO_APP
 ; CHECK: callq   g
 ; CHECK: movl    %eax, %[[CSR:[^ ]*]]
-; CHECK: #DEBUG_VALUE: f:y <- $esi
-; CHECK: movl    %eax, %ecx
+; CHECK: #DEBUG_VALUE: f:y <- %esi
+; CHECK: movl    %[[CSR]], %ecx
 ; CHECK: callq   g
 ; CHECK: movl    %[[CSR]], %ecx
 ; CHECK: callq   g
 ; CHECK: movl    %[[CSR]], %ecx
 ; CHECK: callq   g
 ; CHECK: movl    [[X_OFFS]](%rsp), %eax          # 4-byte Reload
-; CHECK: #DEBUG_VALUE: f:x <- $eax
+; CHECK: #DEBUG_VALUE: f:x <- %eax
 ; CHECK: addl    %[[CSR]], %eax
 
 ; DWARF:      DW_TAG_variable
 ; DWARF-NEXT:   DW_AT_location        (
-; DWARF-NEXT:      [{{.*}}, {{.*}}): DW_OP_breg7 RSP+36
-; DWARF-NEXT:      [{{.*}}, {{.*}}): DW_OP_reg0 RAX
-; DWARF-NEXT:      [{{.*}}, {{.*}}): DW_OP_breg7 RSP+36)
+; DWARF-NEXT:      {{.*}} - {{.*}}: DW_OP_breg7 RSP+36
+; DWARF-NEXT:      {{.*}} - {{.*}}: DW_OP_reg0 RAX)
 ; DWARF-NEXT:   DW_AT_name    ("x")
 
 ; DWARF:      DW_TAG_variable
 ; DWARF-NEXT:   DW_AT_location        (
-; DWARF-NEXT:      [{{.*}},  {{.*}}): DW_OP_reg4 RSI)
+; DWARF-NEXT:      {{.*}} - {{.*}}: DW_OP_reg4 RSI)
 ; DWARF-NEXT:   DW_AT_name    ("y")
 
 ; ModuleID = 'spill-nospill.c'
@@ -77,8 +76,8 @@ declare i32 @g(i32) local_unnamed_addr #1
 ; Function Attrs: nounwind readnone speculatable
 declare void @llvm.dbg.value(metadata, metadata, metadata) #2
 
-attributes #0 = { nounwind uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind readnone speculatable }
 attributes #3 = { nounwind }
 
@@ -94,7 +93,7 @@ attributes #3 = { nounwind }
 !5 = !{i32 1, !"wchar_size", i32 2}
 !6 = !{i32 7, !"PIC Level", i32 2}
 !7 = !{!"clang version 6.0.0 "}
-!8 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 8, type: !9, isLocal: false, isDefinition: true, scopeLine: 8, isOptimized: true, unit: !0, retainedNodes: !12)
+!8 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 8, type: !9, isLocal: false, isDefinition: true, scopeLine: 8, isOptimized: true, unit: !0, variables: !12)
 !9 = !DISubroutineType(types: !10)
 !10 = !{!11}
 !11 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)

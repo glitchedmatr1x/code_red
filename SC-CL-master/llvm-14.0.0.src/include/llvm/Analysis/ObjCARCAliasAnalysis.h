@@ -1,8 +1,9 @@
 //===- ObjCARCAliasAnalysis.h - ObjC ARC Alias Analysis ---------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 /// \file
@@ -28,7 +29,7 @@
 namespace llvm {
 namespace objcarc {
 
-/// This is a simple alias analysis implementation that uses knowledge
+/// \brief This is a simple alias analysis implementation that uses knowledge
 /// of ARC constructs to answer queries.
 ///
 /// TODO: This class could be generalized to know about other ObjC-specific
@@ -40,7 +41,7 @@ class ObjCARCAAResult : public AAResultBase<ObjCARCAAResult> {
   const DataLayout &DL;
 
 public:
-  explicit ObjCARCAAResult(const DataLayout &DL) : DL(DL) {}
+  explicit ObjCARCAAResult(const DataLayout &DL) : AAResultBase(), DL(DL) {}
   ObjCARCAAResult(ObjCARCAAResult &&Arg)
       : AAResultBase(std::move(Arg)), DL(Arg.DL) {}
 
@@ -52,17 +53,14 @@ public:
     return false;
   }
 
-  AliasResult alias(const MemoryLocation &LocA, const MemoryLocation &LocB,
-                    AAQueryInfo &AAQI);
-  bool pointsToConstantMemory(const MemoryLocation &Loc, AAQueryInfo &AAQI,
-                              bool OrLocal);
+  AliasResult alias(const MemoryLocation &LocA, const MemoryLocation &LocB);
+  bool pointsToConstantMemory(const MemoryLocation &Loc, bool OrLocal);
 
   using AAResultBase::getModRefBehavior;
   FunctionModRefBehavior getModRefBehavior(const Function *F);
 
   using AAResultBase::getModRefInfo;
-  ModRefInfo getModRefInfo(const CallBase *Call, const MemoryLocation &Loc,
-                           AAQueryInfo &AAQI);
+  ModRefInfo getModRefInfo(ImmutableCallSite CS, const MemoryLocation &Loc);
 };
 
 /// Analysis pass providing a never-invalidated alias analysis result.

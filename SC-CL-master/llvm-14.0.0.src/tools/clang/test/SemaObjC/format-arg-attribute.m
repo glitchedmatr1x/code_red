@@ -1,18 +1,6 @@
 // RUN: %clang_cc1 -verify -fsyntax-only %s
 
-@interface NSString
-+(instancetype)stringWithCString:(const char *)cstr __attribute__((format_arg(1)));
--(instancetype)initWithString:(NSString *)str __attribute__((format_arg(1)));
-
-+(instancetype _Nonnull)nonNullableString:(NSString *)str __attribute__((format_arg(1)));
-+(instancetype _Nullable)nullableString:(NSString *)str __attribute__((format_arg(1)));
-@end
-
-@protocol MaybeString
--(instancetype)maybeString:(const char *)cstr __attribute__((format_arg(1))); // expected-error {{function does not return string type}}
-@end
-
-@class NSAttributedString;
+@class NSString;
 
 extern NSString *fa2 (const NSString *) __attribute__((format_arg(1)));
 extern NSString *fa3 (NSString *) __attribute__((format_arg(1)));
@@ -37,5 +25,3 @@ extern NSString *fi2 (NSString *) __attribute__((format_arg(1)));
 extern int fi3 (const NSString *) __attribute__((format_arg(1)));  // expected-error {{function does not return NSString}}
 extern NSString *fi4 (const NSString *) __attribute__((format_arg(1))); 
 extern NSString *fi5 (const NSString *) __attribute__((format_arg(1))); 
-
-extern NSAttributedString *fattrs (const NSString *) __attribute__((format_arg(1)));

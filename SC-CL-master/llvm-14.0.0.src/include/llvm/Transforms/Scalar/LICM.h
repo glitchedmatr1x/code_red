@@ -1,8 +1,9 @@
 //===- LICM.h - Loop Invariant Code Motion Pass -------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -34,51 +35,14 @@
 
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/IR/PassManager.h"
-#include "llvm/Support/CommandLine.h"
 #include "llvm/Transforms/Scalar/LoopPassManager.h"
 
 namespace llvm {
 
-extern cl::opt<unsigned> SetLicmMssaOptCap;
-extern cl::opt<unsigned> SetLicmMssaNoAccForPromotionCap;
-
 /// Performs Loop Invariant Code Motion Pass.
 class LICMPass : public PassInfoMixin<LICMPass> {
-  unsigned LicmMssaOptCap;
-  unsigned LicmMssaNoAccForPromotionCap;
-  bool LicmAllowSpeculation;
-
 public:
-  LICMPass()
-      : LicmMssaOptCap(SetLicmMssaOptCap),
-        LicmMssaNoAccForPromotionCap(SetLicmMssaNoAccForPromotionCap),
-        LicmAllowSpeculation(true) {}
-  LICMPass(unsigned LicmMssaOptCap, unsigned LicmMssaNoAccForPromotionCap,
-           bool LicmAllowSpeculation)
-      : LicmMssaOptCap(LicmMssaOptCap),
-        LicmMssaNoAccForPromotionCap(LicmMssaNoAccForPromotionCap),
-        LicmAllowSpeculation(LicmAllowSpeculation) {}
   PreservedAnalyses run(Loop &L, LoopAnalysisManager &AM,
-                        LoopStandardAnalysisResults &AR, LPMUpdater &U);
-};
-
-/// Performs LoopNest Invariant Code Motion Pass.
-class LNICMPass : public PassInfoMixin<LNICMPass> {
-  unsigned LicmMssaOptCap;
-  unsigned LicmMssaNoAccForPromotionCap;
-  bool LicmAllowSpeculation;
-
-public:
-  LNICMPass()
-      : LicmMssaOptCap(SetLicmMssaOptCap),
-        LicmMssaNoAccForPromotionCap(SetLicmMssaNoAccForPromotionCap),
-        LicmAllowSpeculation(true) {}
-  LNICMPass(unsigned LicmMssaOptCap, unsigned LicmMssaNoAccForPromotionCap,
-            bool LicmAllowSpeculation)
-      : LicmMssaOptCap(LicmMssaOptCap),
-        LicmMssaNoAccForPromotionCap(LicmMssaNoAccForPromotionCap),
-        LicmAllowSpeculation(LicmAllowSpeculation) {}
-  PreservedAnalyses run(LoopNest &L, LoopAnalysisManager &AM,
                         LoopStandardAnalysisResults &AR, LPMUpdater &U);
 };
 } // end namespace llvm

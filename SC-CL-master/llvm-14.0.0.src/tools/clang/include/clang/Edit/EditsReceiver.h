@@ -1,8 +1,9 @@
-//===- EditedSource.h - Collection of source edits --------------*- C++ -*-===//
+//===----- EditedSource.h - Collection of source edits ----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -10,24 +11,25 @@
 #define LLVM_CLANG_EDIT_EDITSRECEIVER_H
 
 #include "clang/Basic/LLVM.h"
-#include "clang/Basic/SourceLocation.h"
-#include "llvm/ADT/StringRef.h"
 
 namespace clang {
+  class SourceLocation;
+  class CharSourceRange;
+
 namespace edit {
 
 class EditsReceiver {
 public:
-  virtual ~EditsReceiver() = default;
+  virtual ~EditsReceiver() { }
 
   virtual void insert(SourceLocation loc, StringRef text) = 0;
   virtual void replace(CharSourceRange range, StringRef text) = 0;
-
-  /// By default it calls replace with an empty string.
+  /// \brief By default it calls replace with an empty string.
   virtual void remove(CharSourceRange range);
 };
 
-} // namespace edit
-} // namespace clang
+}
 
-#endif // LLVM_CLANG_EDIT_EDITSRECEIVER_H
+} // end namespace clang
+
+#endif

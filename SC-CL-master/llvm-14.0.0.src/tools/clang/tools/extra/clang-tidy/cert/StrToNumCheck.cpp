@@ -1,15 +1,16 @@
-//===-- StrToNumCheck.cpp - clang-tidy ------------------------------------===//
+//===--- Err34CCheck.cpp - clang-tidy--------------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #include "StrToNumCheck.h"
 #include "clang/AST/ASTContext.h"
-#include "clang/AST/FormatString.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
+#include "clang/Analysis/Analyses/FormatString.h"
 #include "llvm/ADT/StringSwitch.h"
 #include <cassert>
 
@@ -48,7 +49,7 @@ enum class ConversionKind {
   ToLongDouble
 };
 
-ConversionKind classifyConversionFunc(const FunctionDecl *FD) {
+ConversionKind ClassifyConversionFunc(const FunctionDecl *FD) {
   return llvm::StringSwitch<ConversionKind>(FD->getName())
       .Cases("atoi", "atol", ConversionKind::ToInt)
       .Case("atoll", ConversionKind::ToLongInt)
@@ -56,7 +57,7 @@ ConversionKind classifyConversionFunc(const FunctionDecl *FD) {
       .Default(ConversionKind::None);
 }
 
-ConversionKind classifyFormatString(StringRef Fmt, const LangOptions &LO,
+ConversionKind ClassifyFormatString(StringRef Fmt, const LangOptions &LO,
                                     const TargetInfo &TI) {
   // Scan the format string for the first problematic format specifier, then
   // report that as the conversion type. This will miss additional conversion
@@ -66,8 +67,8 @@ ConversionKind classifyFormatString(StringRef Fmt, const LangOptions &LO,
     ConversionKind CK;
 
     bool HandleScanfSpecifier(const analyze_scanf::ScanfSpecifier &FS,
-                              const char *StartSpecifier,
-                              unsigned SpecifierLen) override {
+                              const char *startSpecifier,
+                              unsigned specifierLen) override {
       // If we just consume the argument without assignment, we don't care
       // about it having conversion errors.
       if (!FS.consumesDataArgument())
@@ -130,10 +131,10 @@ ConversionKind classifyFormatString(StringRef Fmt, const LangOptions &LO,
   return H.get();
 }
 
-StringRef classifyConversionType(ConversionKind K) {
+StringRef ClassifyConversionType(ConversionKind K) {
   switch (K) {
   case ConversionKind::None:
-    llvm_unreachable("Unexpected conversion kind");
+    assert(false && "Unexpected conversion kind");
   case ConversionKind::ToInt:
   case ConversionKind::ToLongInt:
   case ConversionKind::ToIntMax:
@@ -150,10 +151,10 @@ StringRef classifyConversionType(ConversionKind K) {
   llvm_unreachable("Unknown conversion kind");
 }
 
-StringRef classifyReplacement(ConversionKind K) {
+StringRef ClassifyReplacement(ConversionKind K) {
   switch (K) {
   case ConversionKind::None:
-    llvm_unreachable("Unexpected conversion kind");
+    assert(false && "Unexpected conversion kind");
   case ConversionKind::ToInt:
     return "strtol";
   case ConversionKind::ToUInt:
@@ -186,7 +187,7 @@ void StrToNumCheck::check(const MatchFinder::MatchResult &Result) {
           Result.Nodes.getNodeAs<FunctionDecl>("converter")) {
     // Converter functions are always incorrect to use.
     FuncDecl = ConverterFunc;
-    Conversion = classifyConversionFunc(ConverterFunc);
+    Conversion = ClassifyConversionFunc(ConverterFunc);
   } else if (const auto *FFD =
                  Result.Nodes.getNodeAs<FunctionDecl>("formatted")) {
     StringRef FmtStr;
@@ -213,7 +214,7 @@ void StrToNumCheck::check(const MatchFinder::MatchResult &Result) {
 
     // Formatted input functions need further checking of the format string to
     // determine whether a problematic conversion may be happening.
-    Conversion = classifyFormatString(FmtStr, getLangOpts(),
+    Conversion = ClassifyFormatString(FmtStr, getLangOpts(),
                                       Result.Context->getTargetInfo());
     if (Conversion != ConversionKind::None)
       FuncDecl = FFD;
@@ -225,8 +226,8 @@ void StrToNumCheck::check(const MatchFinder::MatchResult &Result) {
   diag(Call->getExprLoc(),
        "%0 used to convert a string to %1, but function will not report "
        "conversion errors; consider using '%2' instead")
-      << FuncDecl << classifyConversionType(Conversion)
-      << classifyReplacement(Conversion);
+      << FuncDecl << ClassifyConversionType(Conversion)
+      << ClassifyReplacement(Conversion);
 }
 
 } // namespace cert

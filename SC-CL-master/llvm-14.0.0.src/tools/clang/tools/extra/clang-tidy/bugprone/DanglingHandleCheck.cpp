@@ -1,8 +1,9 @@
 //===--- DanglingHandleCheck.cpp - clang-tidy------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -24,12 +25,8 @@ namespace {
 ast_matchers::internal::BindableMatcher<Stmt>
 handleFrom(const ast_matchers::internal::Matcher<RecordDecl> &IsAHandle,
            const ast_matchers::internal::Matcher<Expr> &Arg) {
-  return expr(
-      anyOf(cxxConstructExpr(hasDeclaration(cxxMethodDecl(ofClass(IsAHandle))),
-                             hasArgument(0, Arg)),
-            cxxMemberCallExpr(hasType(cxxRecordDecl(IsAHandle)),
-                              callee(memberExpr(member(cxxConversionDecl()))),
-                              on(Arg))));
+  return cxxConstructExpr(hasDeclaration(cxxMethodDecl(ofClass(IsAHandle))),
+                          hasArgument(0, Arg));
 }
 
 ast_matchers::internal::Matcher<Stmt> handleFromTemporaryValue(
@@ -117,63 +114,56 @@ void DanglingHandleCheck::registerMatchersForVariables(MatchFinder *Finder) {
 
   // Find 'Handle foo = ReturnsAValue();'
   Finder->addMatcher(
-      traverse(TK_AsIs,
-               varDecl(hasType(hasUnqualifiedDesugaredType(recordType(
-                           hasDeclaration(cxxRecordDecl(IsAHandle))))),
-                       unless(parmVarDecl()),
-                       hasInitializer(exprWithCleanups(
-                                          has(ignoringParenImpCasts(handleFrom(
+      varDecl(
+          hasType(hasUnqualifiedDesugaredType(
+              recordType(hasDeclaration(cxxRecordDecl(IsAHandle))))),
+          unless(parmVarDecl()),
+          hasInitializer(exprWithCleanups(has(ignoringParenImpCasts(handleFrom(
                                               IsAHandle, ConvertedHandle))))
-                                          .bind("bad_stmt")))),
+                             .bind("bad_stmt"))),
       this);
   // Find 'foo = ReturnsAValue();  // foo is Handle'
   Finder->addMatcher(
-      traverse(TK_AsIs,
-               cxxOperatorCallExpr(callee(cxxMethodDecl(ofClass(IsAHandle))),
-                                   hasOverloadedOperatorName("="),
-                                   hasArgument(1, ConvertedHandle))
-                   .bind("bad_stmt")),
+      cxxOperatorCallExpr(callee(cxxMethodDecl(ofClass(IsAHandle))),
+                          hasOverloadedOperatorName("="),
+                          hasArgument(1, ConvertedHandle))
+          .bind("bad_stmt"),
       this);
 
   // Container insertions that will dangle.
-  Finder->addMatcher(
-      traverse(TK_AsIs, makeContainerMatcher(IsAHandle).bind("bad_stmt")),
-      this);
+  Finder->addMatcher(makeContainerMatcher(IsAHandle).bind("bad_stmt"), this);
 }
 
 void DanglingHandleCheck::registerMatchersForReturn(MatchFinder *Finder) {
   // Return a local.
   Finder->addMatcher(
-      traverse(
-          TK_AsIs,
-          returnStmt(
-              // The AST contains two constructor calls:
-              //   1. Value to Handle conversion.
-              //   2. Handle copy construction.
-              // We have to match both.
-              has(ignoringImplicit(handleFrom(
-                  IsAHandle,
-                  handleFrom(IsAHandle,
-                             declRefExpr(to(varDecl(
-                                 // Is function scope ...
-                                 hasAutomaticStorageDuration(),
-                                 // ... and it is a local array or Value.
-                                 anyOf(hasType(arrayType()),
-                                       hasType(hasUnqualifiedDesugaredType(
-                                           recordType(hasDeclaration(recordDecl(
-                                               unless(IsAHandle)))))))))))))),
-              // Temporary fix for false positives inside lambdas.
-              unless(hasAncestor(lambdaExpr())))
-              .bind("bad_stmt")),
+      returnStmt(
+          // The AST contains two constructor calls:
+          //   1. Value to Handle conversion.
+          //   2. Handle copy construction.
+          // We have to match both.
+          has(ignoringImplicit(handleFrom(
+              IsAHandle,
+              handleFrom(IsAHandle,
+                         declRefExpr(to(varDecl(
+                             // Is function scope ...
+                             hasAutomaticStorageDuration(),
+                             // ... and it is a local array or Value.
+                             anyOf(hasType(arrayType()),
+                                   hasType(hasUnqualifiedDesugaredType(
+                                       recordType(hasDeclaration(recordDecl(
+                                           unless(IsAHandle)))))))))))))),
+          // Temporary fix for false positives inside lambdas.
+          unless(hasAncestor(lambdaExpr())))
+          .bind("bad_stmt"),
       this);
 
   // Return a temporary.
   Finder->addMatcher(
-      traverse(
-          TK_AsIs,
-          returnStmt(has(exprWithCleanups(has(ignoringParenImpCasts(handleFrom(
-                         IsAHandle, handleFromTemporaryValue(IsAHandle)))))))
-              .bind("bad_stmt")),
+      returnStmt(
+          has(ignoringParenImpCasts(exprWithCleanups(has(ignoringParenImpCasts(
+              handleFrom(IsAHandle, handleFromTemporaryValue(IsAHandle))))))))
+          .bind("bad_stmt"),
       this);
 }
 
@@ -184,7 +174,7 @@ void DanglingHandleCheck::registerMatchers(MatchFinder *Finder) {
 
 void DanglingHandleCheck::check(const MatchFinder::MatchResult &Result) {
   auto *Handle = Result.Nodes.getNodeAs<CXXRecordDecl>("handle");
-  diag(Result.Nodes.getNodeAs<Stmt>("bad_stmt")->getBeginLoc(),
+  diag(Result.Nodes.getNodeAs<Stmt>("bad_stmt")->getLocStart(),
        "%0 outlives its value")
       << Handle->getQualifiedNameAsString();
 }

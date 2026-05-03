@@ -4,8 +4,4 @@
 void openmp_parallel_crash_test() {
 #pragma omp parallel
   ;
-#pragma omp parallel for
-  for (int i = 0; i < 8; ++i)
-    for (int j = 0, k = 0; j < 8; ++j)
-      ;
 }

@@ -1,12 +1,11 @@
 //===- llvm/unittest/Support/ManagedStatic.cpp - ManagedStatic tests ------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-
-#include "llvm/Support/Allocator.h"
 #include "llvm/Support/ManagedStatic.h"
 #include "llvm/Config/config.h"
 #ifdef HAVE_PTHREAD_H
@@ -31,7 +30,7 @@ namespace test1 {
   // Valgrind's leak checker complains glibc's stack allocation.
   // To appease valgrind, we provide our own stack for each thread.
   void *allocate_stack(pthread_attr_t &a, size_t n = 65536) {
-    void *stack = safe_malloc(n);
+    void *stack = malloc(n);
     pthread_attr_init(&a);
 #if defined(__linux__)
     pthread_attr_setstack(&a, stack, n);
@@ -84,7 +83,7 @@ TEST(ManagedStaticTest, NestedStatics) {
 namespace CustomCreatorDeletor {
 struct CustomCreate {
   static void *call() {
-    void *Mem = safe_malloc(sizeof(int));
+    void *Mem = std::malloc(sizeof(int));
     *((int *)Mem) = 42;
     return Mem;
   }

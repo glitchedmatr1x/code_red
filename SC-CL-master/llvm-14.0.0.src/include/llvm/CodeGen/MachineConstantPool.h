@@ -1,8 +1,9 @@
 //===- CodeGen/MachineConstantPool.h - Abstract Constant Pool ---*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -17,7 +18,6 @@
 
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/MC/SectionKind.h"
-#include "llvm/Support/Alignment.h"
 #include <climits>
 #include <vector>
 
@@ -41,12 +41,12 @@ public:
   explicit MachineConstantPoolValue(Type *ty) : Ty(ty) {}
   virtual ~MachineConstantPoolValue() = default;
 
+  /// getType - get type of this MachineConstantPoolValue.
+  ///
   Type *getType() const { return Ty; }
 
-  virtual unsigned getSizeInBytes(const DataLayout &DL) const;
-
   virtual int getExistingMachineCPValue(MachineConstantPool *CP,
-                                        Align Alignment) = 0;
+                                        unsigned Alignment) = 0;
 
   virtual void addSelectionDAGCSEId(FoldingSetNodeID &ID) = 0;
 
@@ -63,7 +63,7 @@ inline raw_ostream &operator<<(raw_ostream &OS,
 /// This class is a data container for one entry in a MachineConstantPool.
 /// It contains a pointer to the value and an offset from the start of
 /// the constant pool.
-/// An entry in a MachineConstantPool
+/// @brief An entry in a MachineConstantPool
 class MachineConstantPoolEntry {
 public:
   /// The constant itself.
@@ -72,29 +72,33 @@ public:
     MachineConstantPoolValue *MachineCPVal;
   } Val;
 
-  /// The required alignment for this entry.
-  Align Alignment;
+  /// The required alignment for this entry. The top bit is set when Val is
+  /// a target specific MachineConstantPoolValue.
+  unsigned Alignment;
 
-  bool IsMachineConstantPoolEntry;
-
-  MachineConstantPoolEntry(const Constant *V, Align A)
-      : Alignment(A), IsMachineConstantPoolEntry(false) {
+  MachineConstantPoolEntry(const Constant *V, unsigned A)
+    : Alignment(A) {
     Val.ConstVal = V;
   }
 
-  MachineConstantPoolEntry(MachineConstantPoolValue *V, Align A)
-      : Alignment(A), IsMachineConstantPoolEntry(true) {
+  MachineConstantPoolEntry(MachineConstantPoolValue *V, unsigned A)
+      : Alignment(A) {
     Val.MachineCPVal = V;
+    Alignment |= 1U << (sizeof(unsigned) * CHAR_BIT - 1);
   }
 
   /// isMachineConstantPoolEntry - Return true if the MachineConstantPoolEntry
   /// is indeed a target specific constantpool entry, not a wrapper over a
   /// Constant.
-  bool isMachineConstantPoolEntry() const { return IsMachineConstantPoolEntry; }
+  bool isMachineConstantPoolEntry() const {
+    return (int)Alignment < 0;
+  }
 
-  Align getAlign() const { return Alignment; }
+  int getAlignment() const {
+    return Alignment & ~(1 << (sizeof(unsigned) * CHAR_BIT - 1));
+  }
 
-  unsigned getSizeInBytes(const DataLayout &DL) const;
+  Type *getType() const;
 
   /// This method classifies the entry according to whether or not it may
   /// generate a relocation entry.  This must be conservative, so if it might
@@ -113,9 +117,9 @@ public:
 /// the use of MO_ConstantPoolIndex values.  When emitting assembly or machine
 /// code, these virtual address references are converted to refer to the
 /// address of the function constant pool values.
-/// The machine constant pool.
+/// @brief The machine constant pool.
 class MachineConstantPool {
-  Align PoolAlignment; ///< The alignment for the pool.
+  unsigned PoolAlignment;       ///< The alignment for the pool.
   std::vector<MachineConstantPoolEntry> Constants; ///< The pool of constants.
   /// MachineConstantPoolValues that use an existing MachineConstantPoolEntry.
   DenseSet<MachineConstantPoolValue*> MachineCPVsSharingEntries;
@@ -124,20 +128,21 @@ class MachineConstantPool {
   const DataLayout &getDataLayout() const { return DL; }
 
 public:
-  /// The only constructor.
+  /// @brief The only constructor.
   explicit MachineConstantPool(const DataLayout &DL)
       : PoolAlignment(1), DL(DL) {}
   ~MachineConstantPool();
 
-  /// Return the alignment required by the whole constant pool, of which the
-  /// first element must be aligned.
-  Align getConstantPoolAlign() const { return PoolAlignment; }
+  /// getConstantPoolAlignment - Return the alignment required by
+  /// the whole constant pool, of which the first element must be aligned.
+  unsigned getConstantPoolAlignment() const { return PoolAlignment; }
 
   /// getConstantPoolIndex - Create a new entry in the constant pool or return
   /// an existing one.  User must specify the minimum required alignment for
   /// the object.
-  unsigned getConstantPoolIndex(const Constant *C, Align Alignment);
-  unsigned getConstantPoolIndex(MachineConstantPoolValue *V, Align Alignment);
+  unsigned getConstantPoolIndex(const Constant *C, unsigned Alignment);
+  unsigned getConstantPoolIndex(MachineConstantPoolValue *V,
+                                unsigned Alignment);
 
   /// isEmpty - Return true if this constant pool contains no constants.
   bool isEmpty() const { return Constants.empty(); }

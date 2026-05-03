@@ -1,8 +1,9 @@
 //===- SROA.h - Scalar Replacement Of Aggregates ----------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 /// \file
@@ -18,7 +19,7 @@
 #include "llvm/ADT/SetVector.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/IR/PassManager.h"
-#include "llvm/IR/ValueHandle.h"
+#include "llvm/Support/Compiler.h"
 #include <vector>
 
 namespace llvm {
@@ -27,6 +28,7 @@ class AllocaInst;
 class AssumptionCache;
 class DominatorTree;
 class Function;
+class Instruction;
 class LLVMContext;
 class PHINode;
 class SelectInst;
@@ -43,7 +45,7 @@ class SROALegacyPass;
 
 } // end namespace sroa
 
-/// An optimization pass providing Scalar Replacement of Aggregates.
+/// \brief An optimization pass providing Scalar Replacement of Aggregates.
 ///
 /// This pass takes allocations which can be completely analyzed (that is, they
 /// don't escape) and tries to turn them into scalar SSA values. There are
@@ -61,12 +63,12 @@ class SROALegacyPass;
 ///    onto insert and extract operations on a vector value, and convert them to
 ///    this form. By doing so, it will enable promotion of vector aggregates to
 ///    SSA vector values.
-class SROAPass : public PassInfoMixin<SROAPass> {
+class SROA : public PassInfoMixin<SROA> {
   LLVMContext *C = nullptr;
   DominatorTree *DT = nullptr;
   AssumptionCache *AC = nullptr;
 
-  /// Worklist of alloca instructions to simplify.
+  /// \brief Worklist of alloca instructions to simplify.
   ///
   /// Each alloca in the function is added to this. Each new alloca formed gets
   /// added to it as well to recursively simplify unless that alloca can be
@@ -75,12 +77,12 @@ class SROAPass : public PassInfoMixin<SROAPass> {
   /// already present to ensure it is re-visited.
   SetVector<AllocaInst *, SmallVector<AllocaInst *, 16>> Worklist;
 
-  /// A collection of instructions to delete.
+  /// \brief A collection of instructions to delete.
   /// We try to batch deletions to simplify code and make things a bit more
-  /// efficient. We also make sure there is no dangling pointers.
-  SmallVector<WeakVH, 8> DeadInsts;
+  /// efficient.
+  SetVector<Instruction *, SmallVector<Instruction *, 8>> DeadInsts;
 
-  /// Post-promotion worklist.
+  /// \brief Post-promotion worklist.
   ///
   /// Sometimes we discover an alloca which has a high probability of becoming
   /// viable for SROA after a round of promotion takes place. In those cases,
@@ -90,17 +92,17 @@ class SROAPass : public PassInfoMixin<SROAPass> {
   /// the event they are deleted.
   SetVector<AllocaInst *, SmallVector<AllocaInst *, 16>> PostPromotionWorklist;
 
-  /// A collection of alloca instructions we can directly promote.
+  /// \brief A collection of alloca instructions we can directly promote.
   std::vector<AllocaInst *> PromotableAllocas;
 
-  /// A worklist of PHIs to speculate prior to promoting allocas.
+  /// \brief A worklist of PHIs to speculate prior to promoting allocas.
   ///
   /// All of these PHIs have been checked for the safety of speculation and by
   /// being speculated will allow promoting allocas currently in the promotable
   /// queue.
   SetVector<PHINode *, SmallVector<PHINode *, 2>> SpeculatablePHIs;
 
-  /// A worklist of select instructions to speculate prior to promoting
+  /// \brief A worklist of select instructions to speculate prior to promoting
   /// allocas.
   ///
   /// All of these select instructions have been checked for the safety of
@@ -109,9 +111,9 @@ class SROAPass : public PassInfoMixin<SROAPass> {
   SetVector<SelectInst *, SmallVector<SelectInst *, 2>> SpeculatableSelects;
 
 public:
-  SROAPass() = default;
+  SROA() = default;
 
-  /// Run the pass over the function.
+  /// \brief Run the pass over the function.
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
 
 private:

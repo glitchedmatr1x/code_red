@@ -1,4 +1,5 @@
-; RUN: opt < %s -passes="function(instcombine),sample-profile" -sample-profile-file=%S/Inputs/calls.prof | opt -passes='print<branch-prob>' -disable-output 2>&1 | FileCheck %s
+; RUN: opt < %s -instcombine -sample-profile -sample-profile-file=%S/Inputs/calls.prof | opt -analyze -branch-prob | FileCheck %s
+; RUN: opt < %s -passes="function(instcombine),sample-profile" -sample-profile-file=%S/Inputs/calls.prof | opt -analyze -branch-prob | FileCheck %s
 
 ; Original C++ test case
 ;
@@ -19,7 +20,7 @@
 @.str = private unnamed_addr constant [11 x i8] c"sum is %d\0A\00", align 1
 
 ; Function Attrs: nounwind uwtable
-define i32 @_Z3sumii(i32 %x, i32 %y) #0 !dbg !4 {
+define i32 @_Z3sumii(i32 %x, i32 %y) !dbg !4 {
 entry:
   %x.addr = alloca i32, align 4
   %y.addr = alloca i32, align 4
@@ -32,7 +33,7 @@ entry:
 }
 
 ; Function Attrs: uwtable
-define i32 @main() #0 !dbg !7 {
+define i32 @main() !dbg !7 {
 entry:
   %retval = alloca i32, align 4
   %s = alloca i32, align 4
@@ -84,8 +85,6 @@ while.end:                                        ; preds = %while.cond
 
 declare i32 @printf(i8*, ...) #2
 
-attributes #0 = {"use-sample-profile"}
-
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!8, !9}
 !llvm.ident = !{!10}
@@ -93,10 +92,10 @@ attributes #0 = {"use-sample-profile"}
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, producer: "clang version 3.5 ", isOptimized: false, emissionKind: NoDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "calls.cc", directory: ".")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "sum", line: 3, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 3, file: !1, scope: !5, type: !6, retainedNodes: !2)
+!4 = distinct !DISubprogram(name: "sum", line: 3, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 3, file: !1, scope: !5, type: !6, variables: !2)
 !5 = !DIFile(filename: "calls.cc", directory: ".")
 !6 = !DISubroutineType(types: !2)
-!7 = distinct !DISubprogram(name: "main", line: 7, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 7, file: !1, scope: !5, type: !6, retainedNodes: !2)
+!7 = distinct !DISubprogram(name: "main", line: 7, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 7, file: !1, scope: !5, type: !6, variables: !2)
 !8 = !{i32 2, !"Dwarf Version", i32 4}
 !9 = !{i32 1, !"Debug Info Version", i32 3}
 !10 = !{!"clang version 3.5 "}

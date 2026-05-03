@@ -1,13 +1,14 @@
 //===--- RefactoringResultConsumer.h - Clang refactoring library ----------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_TOOLING_REFACTORING_REFACTORINGRESULTCONSUMER_H
-#define LLVM_CLANG_TOOLING_REFACTORING_REFACTORINGRESULTCONSUMER_H
+#ifndef LLVM_CLANG_TOOLING_REFACTOR_REFACTORING_RESULT_CONSUMER_H
+#define LLVM_CLANG_TOOLING_REFACTOR_REFACTORING_RESULT_CONSUMER_H
 
 #include "clang/Basic/LLVM.h"
 #include "clang/Tooling/Refactoring/AtomicChange.h"
@@ -25,8 +26,8 @@ class RefactoringResultConsumer {
 public:
   virtual ~RefactoringResultConsumer() {}
 
-  /// Handles an initiation or an invication error. An initiation error typically
-  /// has a \c DiagnosticError payload that describes why initiation failed.
+  /// Handles an initation or an invication error. An initiation error typically
+  /// has a \c DiagnosticError payload that describes why initation failed.
   virtual void handleError(llvm::Error Err) = 0;
 
   /// Handles the source replacements that are produced by a refactoring action.
@@ -48,4 +49,4 @@ private:
 } // end namespace tooling
 } // end namespace clang
 
-#endif // LLVM_CLANG_TOOLING_REFACTORING_REFACTORINGRESULTCONSUMER_H
+#endif // LLVM_CLANG_TOOLING_REFACTOR_REFACTORING_RESULT_CONSUMER_H

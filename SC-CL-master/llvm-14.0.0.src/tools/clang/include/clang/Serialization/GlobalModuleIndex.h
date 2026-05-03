@@ -1,8 +1,9 @@
 //===--- GlobalModuleIndex.h - Global Module Index --------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -20,7 +21,6 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringMap.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/Support/Error.h"
 #include <memory>
 #include <utility>
 
@@ -31,6 +31,8 @@ class MemoryBuffer;
 
 namespace clang {
 
+class DirectoryEntry;
+class FileEntry;
 class FileManager;
 class IdentifierIterator;
 class PCHContainerOperations;
@@ -40,7 +42,12 @@ namespace serialization {
   class ModuleFile;
 }
 
-/// A global index for a set of module files, providing information about
+using llvm::SmallVector;
+using llvm::SmallVectorImpl;
+using llvm::StringRef;
+using serialization::ModuleFile;
+
+/// \brief A global index for a set of module files, providing information about
 /// the identifiers within those module files.
 ///
 /// The global index is an aid for name lookup into modules, offering a central
@@ -52,66 +59,64 @@ namespace serialization {
 /// imported, and can be queried to determine which modules the current
 /// translation could or should load to fix a problem.
 class GlobalModuleIndex {
-  using ModuleFile = serialization::ModuleFile;
-
-  /// Buffer containing the index file, which is lazily accessed so long
+  /// \brief Buffer containing the index file, which is lazily accessed so long
   /// as the global module index is live.
   std::unique_ptr<llvm::MemoryBuffer> Buffer;
 
-  /// The hash table.
+  /// \brief The hash table.
   ///
   /// This pointer actually points to a IdentifierIndexTable object,
   /// but that type is only accessible within the implementation of
   /// GlobalModuleIndex.
   void *IdentifierIndex;
 
-  /// Information about a given module file.
+  /// \brief Information about a given module file.
   struct ModuleInfo {
     ModuleInfo() : File(), Size(), ModTime() { }
 
-    /// The module file, once it has been resolved.
+    /// \brief The module file, once it has been resolved.
     ModuleFile *File;
 
-    /// The module file name.
+    /// \brief The module file name.
     std::string FileName;
 
-    /// Size of the module file at the time the global index was built.
+    /// \brief Size of the module file at the time the global index was built.
     off_t Size;
 
-    /// Modification time of the module file at the time the global
+    /// \brief Modification time of the module file at the time the global
     /// index was built.
     time_t ModTime;
 
-    /// The module IDs on which this module directly depends.
+    /// \brief The module IDs on which this module directly depends.
     /// FIXME: We don't really need a vector here.
     llvm::SmallVector<unsigned, 4> Dependencies;
   };
 
-  /// A mapping from module IDs to information about each module.
+  /// \brief A mapping from module IDs to information about each module.
   ///
   /// This vector may have gaps, if module files have been removed or have
   /// been updated since the index was built. A gap is indicated by an empty
   /// file name.
   llvm::SmallVector<ModuleInfo, 16> Modules;
 
-  /// Lazily-populated mapping from module files to their
+  /// \brief Lazily-populated mapping from module files to their
   /// corresponding index into the \c Modules vector.
   llvm::DenseMap<ModuleFile *, unsigned> ModulesByFile;
 
-  /// The set of modules that have not yet been resolved.
+  /// \brief The set of modules that have not yet been resolved.
   ///
   /// The string is just the name of the module itself, which maps to the
   /// module ID.
   llvm::StringMap<unsigned> UnresolvedModules;
 
-  /// The number of identifier lookups we performed.
+  /// \brief The number of identifier lookups we performed.
   unsigned NumIdentifierLookups;
 
-  /// The number of identifier lookup hits, where we recognize the
+  /// \brief The number of identifier lookup hits, where we recognize the
   /// identifier.
   unsigned NumIdentifierLookupHits;
-
-  /// Internal constructor. Use \c readIndex() to read an index.
+  
+  /// \brief Internal constructor. Use \c readIndex() to read an index.
   explicit GlobalModuleIndex(std::unique_ptr<llvm::MemoryBuffer> Buffer,
                              llvm::BitstreamCursor Cursor);
 
@@ -121,36 +126,49 @@ class GlobalModuleIndex {
 public:
   ~GlobalModuleIndex();
 
-  /// Read a global index file for the given directory.
+  /// \brief An error code returned when trying to read an index.
+  enum ErrorCode {
+    /// \brief No error occurred.
+    EC_None,
+    /// \brief No index was found.
+    EC_NotFound,
+    /// \brief Some other process is currently building the index; it is not
+    /// available yet.
+    EC_Building,
+    /// \brief There was an unspecified I/O error reading or writing the index.
+    EC_IOError
+  };
+
+  /// \brief Read a global index file for the given directory.
   ///
   /// \param Path The path to the specific module cache where the module files
   /// for the intended configuration reside.
   ///
   /// \returns A pair containing the global module index (if it exists) and
-  /// the error.
-  static std::pair<GlobalModuleIndex *, llvm::Error>
-  readIndex(llvm::StringRef Path);
+  /// the error code.
+  static std::pair<GlobalModuleIndex *, ErrorCode>
+  readIndex(StringRef Path);
 
-  /// Returns an iterator for identifiers stored in the index table.
+  /// \brief Returns an iterator for identifiers stored in the index table.
   ///
   /// The caller accepts ownership of the returned object.
   IdentifierIterator *createIdentifierIterator() const;
 
-  /// Retrieve the set of modules that have up-to-date indexes.
+  /// \brief Retrieve the set of modules that have up-to-date indexes.
   ///
   /// \param ModuleFiles Will be populated with the set of module files that
   /// have been indexed.
-  void getKnownModules(llvm::SmallVectorImpl<ModuleFile *> &ModuleFiles);
+  void getKnownModules(SmallVectorImpl<ModuleFile *> &ModuleFiles);
 
-  /// Retrieve the set of module files on which the given module file
+  /// \brief Retrieve the set of module files on which the given module file
   /// directly depends.
   void getModuleDependencies(ModuleFile *File,
-                             llvm::SmallVectorImpl<ModuleFile *> &Dependencies);
+                             SmallVectorImpl<ModuleFile *> &Dependencies);
 
-  /// A set of module files in which we found a result.
+  /// \brief A set of module files in which we found a result.
   typedef llvm::SmallPtrSet<ModuleFile *, 4> HitSet;
-
-  /// Look for all of the module files with information about the given
+  
+  /// \brief Look for all of the module files with information about the given
   /// identifier, e.g., a global function, variable, or type with that name.
   ///
   /// \param Name The identifier to look for.
@@ -159,30 +177,30 @@ public:
   /// information about this name.
   ///
   /// \returns true if the identifier is known to the index, false otherwise.
-  bool lookupIdentifier(llvm::StringRef Name, HitSet &Hits);
+  bool lookupIdentifier(StringRef Name, HitSet &Hits);
 
-  /// Note that the given module file has been loaded.
+  /// \brief Note that the given module file has been loaded.
   ///
   /// \returns false if the global module index has information about this
   /// module file, and true otherwise.
   bool loadedModuleFile(ModuleFile *File);
 
-  /// Print statistics to standard error.
+  /// \brief Print statistics to standard error.
   void printStats();
 
-  /// Print debugging view to standard error.
+  /// \brief Print debugging view to standard error.
   void dump();
 
-  /// Write a global index into the given
+  /// \brief Write a global index into the given
   ///
   /// \param FileMgr The file manager to use to load module files.
   /// \param PCHContainerRdr - The PCHContainerOperations to use for loading and
   /// creating modules.
   /// \param Path The path to the directory containing module files, into
   /// which the global index will be written.
-  static llvm::Error writeIndex(FileManager &FileMgr,
-                                const PCHContainerReader &PCHContainerRdr,
-                                llvm::StringRef Path);
+  static ErrorCode writeIndex(FileManager &FileMgr,
+                              const PCHContainerReader &PCHContainerRdr,
+                              StringRef Path);
 };
 }
 

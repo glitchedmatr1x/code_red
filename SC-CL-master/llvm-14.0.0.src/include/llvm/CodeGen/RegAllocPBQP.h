@@ -1,8 +1,9 @@
 //===- RegAllocPBQP.h -------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -22,8 +23,6 @@
 #include "llvm/CodeGen/PBQP/Math.h"
 #include "llvm/CodeGen/PBQP/ReductionRules.h"
 #include "llvm/CodeGen/PBQP/Solution.h"
-#include "llvm/CodeGen/Register.h"
-#include "llvm/MC/MCRegister.h"
 #include "llvm/Support/ErrorHandling.h"
 #include <algorithm>
 #include <cassert>
@@ -44,10 +43,10 @@ class raw_ostream;
 namespace PBQP {
 namespace RegAlloc {
 
-/// Spill option index.
+/// @brief Spill option index.
 inline unsigned getSpillOptionIdx() { return 0; }
 
-/// Metadata to speed allocatability test.
+/// \brief Metadata to speed allocatability test.
 ///
 /// Keeps track of the number of infinities in each row and column.
 class MatrixMetadata {
@@ -90,7 +89,7 @@ private:
   std::unique_ptr<bool[]> UnsafeCols;
 };
 
-/// Holds a vector of the allowed physical regs for a vreg.
+/// \brief Holds a vector of the allowed physical regs for a vreg.
 class AllowedRegVector {
   friend hash_code hash_value(const AllowedRegVector &);
 
@@ -98,13 +97,13 @@ public:
   AllowedRegVector() = default;
   AllowedRegVector(AllowedRegVector &&) = default;
 
-  AllowedRegVector(const std::vector<MCRegister> &OptVec)
-      : NumOpts(OptVec.size()), Opts(new MCRegister[NumOpts]) {
+  AllowedRegVector(const std::vector<unsigned> &OptVec)
+    : NumOpts(OptVec.size()), Opts(new unsigned[NumOpts]) {
     std::copy(OptVec.begin(), OptVec.end(), Opts.get());
   }
 
   unsigned size() const { return NumOpts; }
-  MCRegister operator[](size_t I) const { return Opts[I]; }
+  unsigned operator[](size_t I) const { return Opts[I]; }
 
   bool operator==(const AllowedRegVector &Other) const {
     if (NumOpts != Other.NumOpts)
@@ -118,17 +117,17 @@ public:
 
 private:
   unsigned NumOpts = 0;
-  std::unique_ptr<MCRegister[]> Opts;
+  std::unique_ptr<unsigned[]> Opts;
 };
 
 inline hash_code hash_value(const AllowedRegVector &OptRegs) {
-  MCRegister *OStart = OptRegs.Opts.get();
-  MCRegister *OEnd = OptRegs.Opts.get() + OptRegs.NumOpts;
+  unsigned *OStart = OptRegs.Opts.get();
+  unsigned *OEnd = OptRegs.Opts.get() + OptRegs.NumOpts;
   return hash_combine(OptRegs.NumOpts,
                       hash_combine_range(OStart, OEnd));
 }
 
-/// Holds graph-level metadata relevant to PBQP RA problems.
+/// \brief Holds graph-level metadata relevant to PBQP RA problems.
 class GraphMetadata {
 private:
   using AllowedRegVecPool = ValuePool<AllowedRegVector>;
@@ -145,11 +144,11 @@ public:
   LiveIntervals &LIS;
   MachineBlockFrequencyInfo &MBFI;
 
-  void setNodeIdForVReg(Register VReg, GraphBase::NodeId NId) {
-    VRegToNodeId[VReg.id()] = NId;
+  void setNodeIdForVReg(unsigned VReg, GraphBase::NodeId NId) {
+    VRegToNodeId[VReg] = NId;
   }
 
-  GraphBase::NodeId getNodeIdForVReg(Register VReg) const {
+  GraphBase::NodeId getNodeIdForVReg(unsigned VReg) const {
     auto VRegItr = VRegToNodeId.find(VReg);
     if (VRegItr == VRegToNodeId.end())
       return GraphBase::invalidNodeId();
@@ -161,11 +160,11 @@ public:
   }
 
 private:
-  DenseMap<Register, GraphBase::NodeId> VRegToNodeId;
+  DenseMap<unsigned, GraphBase::NodeId> VRegToNodeId;
   AllowedRegVecPool AllowedRegVecs;
 };
 
-/// Holds solver state and other metadata relevant to each PBQP RA node.
+/// \brief Holds solver state and other metadata relevant to each PBQP RA node.
 class NodeMetadata {
 public:
   using AllowedRegVector = RegAlloc::AllowedRegVector;
@@ -199,8 +198,8 @@ public:
   NodeMetadata(NodeMetadata &&) = default;
   NodeMetadata& operator=(NodeMetadata &&) = default;
 
-  void setVReg(Register VReg) { this->VReg = VReg; }
-  Register getVReg() const { return VReg; }
+  void setVReg(unsigned VReg) { this->VReg = VReg; }
+  unsigned getVReg() const { return VReg; }
 
   void setAllowedRegs(GraphMetadata::AllowedRegVecRef AllowedRegs) {
     this->AllowedRegs = std::move(AllowedRegs);
@@ -258,7 +257,7 @@ private:
   unsigned NumOpts = 0;
   unsigned DeniedOpts = 0;
   std::unique_ptr<unsigned[]> OptUnsafeEdges;
-  Register VReg;
+  unsigned VReg = 0;
   GraphMetadata::AllowedRegVecRef AllowedRegs;
 
 #ifndef NDEBUG
@@ -506,14 +505,14 @@ private:
 public:
   PBQPRAGraph(GraphMetadata Metadata) : BaseT(std::move(Metadata)) {}
 
-  /// Dump this graph to dbgs().
+  /// @brief Dump this graph to dbgs().
   void dump() const;
 
-  /// Dump this graph to an output stream.
+  /// @brief Dump this graph to an output stream.
   /// @param OS Output stream to print on.
   void dump(raw_ostream &OS) const;
 
-  /// Print a representation of this graph in DOT format.
+  /// @brief Print a representation of this graph in DOT format.
   /// @param OS Output stream to print on.
   void printDot(raw_ostream &OS) const;
 };
@@ -528,7 +527,7 @@ inline Solution solve(PBQPRAGraph& G) {
 } // end namespace RegAlloc
 } // end namespace PBQP
 
-/// Create a PBQP register allocator instance.
+/// @brief Create a PBQP register allocator instance.
 FunctionPass *
 createPBQPRegisterAllocator(char *customPassID = nullptr);
 

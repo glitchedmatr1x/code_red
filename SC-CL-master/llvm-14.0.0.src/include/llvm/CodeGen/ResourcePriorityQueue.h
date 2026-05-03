@@ -1,8 +1,9 @@
 //===----- ResourcePriorityQueue.h - A DFA-oriented priority queue -------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -16,22 +17,22 @@
 #ifndef LLVM_CODEGEN_RESOURCEPRIORITYQUEUE_H
 #define LLVM_CODEGEN_RESOURCEPRIORITYQUEUE_H
 
+#include "llvm/CodeGen/DFAPacketizer.h"
 #include "llvm/CodeGen/ScheduleDAG.h"
+#include "llvm/CodeGen/SelectionDAGISel.h"
+#include "llvm/CodeGen/TargetInstrInfo.h"
+#include "llvm/CodeGen/TargetRegisterInfo.h"
+#include "llvm/MC/MCInstrItineraries.h"
 
 namespace llvm {
-  class DFAPacketizer;
-  class InstrItineraryData;
   class ResourcePriorityQueue;
-  class SelectionDAGISel;
-  class TargetInstrInfo;
-  class TargetRegisterInfo;
 
   /// Sorting functions for the Available queue.
   struct resource_sort {
     ResourcePriorityQueue *PQ;
     explicit resource_sort(ResourcePriorityQueue *pq) : PQ(pq) {}
 
-    bool operator()(const SUnit* LHS, const SUnit* RHS) const;
+    bool operator()(const SUnit* left, const SUnit* right) const;
   };
 
   class ResourcePriorityQueue : public SchedulingPriorityQueue {
@@ -107,6 +108,7 @@ namespace llvm {
     /// InitNumRegDefsLeft - Determine the # of regs defined by this node.
     ///
     void initNumRegDefsLeft(SUnit *SU);
+    void updateNumRegDefsLeft(SUnit *SU);
     int regPressureDelta(SUnit *SU, bool RawPressure = false);
     int rawRegPressureDelta (SUnit *SU, unsigned RCId);
 
@@ -119,7 +121,7 @@ namespace llvm {
     void remove(SUnit *SU) override;
 
     /// scheduledNode - Main resource tracking point.
-    void scheduledNode(SUnit *SU) override;
+    void scheduledNode(SUnit *Node) override;
     bool isResourceAvailable(SUnit *SU);
     void reserveResources(SUnit *SU);
 

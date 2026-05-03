@@ -3,6 +3,9 @@
 readability-redundant-smartptr-get
 ==================================
 
+`google-readability-redundant-smartptr-get` redirects here as an alias for this
+check.
+
 Find and remove redundant calls to smart pointer's ``.get()`` method.
 
 Examples:
@@ -12,10 +15,4 @@ Examples:
   ptr.get()->Foo()  ==>  ptr->Foo()
   *ptr.get()  ==>  *ptr
   *ptr->get()  ==>  **ptr
-  if (ptr.get() == nullptr) ... => if (ptr == nullptr) ...
 
-
-.. option:: IgnoreMacros
-
-   If this option is set to `true` (default is `true`), the check will not warn
-   about calls inside macros.

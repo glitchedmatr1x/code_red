@@ -1,9 +1,10 @@
 
 //===--- CommandLineSourceLoc.h - Parsing for source locations-*- C++ -*---===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -20,7 +21,7 @@
 
 namespace clang {
 
-/// A source location that has been parsed on the command line.
+/// \brief A source location that has been parsed on the command line.
 struct ParsedSourceLocation {
   std::string FileName;
   unsigned Line;
@@ -38,7 +39,7 @@ public:
     // If both tail splits were valid integers, return success.
     if (!ColSplit.second.getAsInteger(10, PSL.Column) &&
         !LineSplit.second.getAsInteger(10, PSL.Line)) {
-      PSL.FileName = std::string(LineSplit.first);
+      PSL.FileName = LineSplit.first;
 
       // On the command-line, stdin may be specified via "-". Inside the
       // compiler, stdin is called "<stdin>".
@@ -47,13 +48,6 @@ public:
     }
 
     return PSL;
-  }
-
-  /// Serialize ParsedSourceLocation back to a string.
-  std::string ToString() const {
-    return (llvm::Twine(FileName == "<stdin>" ? "-" : FileName) + ":" +
-            Twine(Line) + ":" + Twine(Column))
-        .str();
   }
 };
 
@@ -107,7 +101,7 @@ struct ParsedSourceRange {
 
 namespace llvm {
   namespace cl {
-    /// Command-line option parser that parses source locations.
+    /// \brief Command-line option parser that parses source locations.
     ///
     /// Source locations are of the form filename:line:column.
     template<>

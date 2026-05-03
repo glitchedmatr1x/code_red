@@ -1,4 +1,4 @@
-; RUN: llc -mtriple=mipsel -mcpu=mips32 -relocation-model=static < %s | FileCheck %s
+; RUN: llc -march=mipsel -mcpu=mips32 -relocation-model=static < %s | FileCheck %s
 
 @a = external thread_local global i32
 

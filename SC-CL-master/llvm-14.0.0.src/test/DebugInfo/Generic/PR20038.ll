@@ -1,7 +1,9 @@
+; REQUIRES: object-emission
+
 ; For some reason, the output when targetting sparc is not quite as expected.
 ; XFAIL: sparc
 
-; RUN: %llc_dwarf -O0 -filetype=obj -dwarf-linkage-names=All < %s | llvm-dwarfdump -debug-info - | FileCheck %s --implicit-check-not=DW_TAG
+; RUN: %llc_dwarf -O0 -filetype=obj -dwarf-linkage-names=All < %s | llvm-dwarfdump -v -debug-info - | FileCheck %s
 
 ; IR generated from clang -O0 with:
 ; struct C {
@@ -11,38 +13,42 @@
 ; void fun4() { b && (C(), 1); }
 ; __attribute__((always_inline)) C::~C() { }
 
-; CHECK: DW_TAG_compile_unit
-
-; CHECK:   DW_TAG_structure_type
-; CHECK:     DW_AT_name ("C")
-; CHECK:     DW_TAG_subprogram
-; CHECK:       DW_AT_name ("~C")
-; CHECK:       DW_TAG_formal_parameter
-; CHECK:   DW_TAG_pointer_type
-
+; CHECK: DW_TAG_structure_type
+; CHECK-NOT: DW_TAG
+; CHECK:   DW_AT_name {{.*}} "C"
+; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:   DW_TAG_subprogram
-; CHECK:     DW_AT_linkage_name ("_ZN1CD1Ev")
-; CHECK:     DW_TAG_formal_parameter
-; CHECK:       DW_AT_name ("this")
-; CHECK:   DW_TAG_pointer_type
+; CHECK-NOT: DW_TAG
+; CHECK:     DW_AT_name {{.*}} "~C"
 
-; CHECK:   DW_TAG_subprogram
-; CHECK:     DW_AT_name ("fun4")
-; CHECK:     DW_TAG_inlined_subroutine
-; CHECK:       DW_AT_abstract_origin {{.*}} "_ZN1CD1Ev"
-; CHECK:       DW_TAG_formal_parameter
-; CHECK:         DW_AT_abstract_origin {{.*}} "this"
+; CHECK:  DW_TAG_subprogram
+; CHECK-NOT: DW_TAG
+; CHECK:   DW_AT_linkage_name {{.*}} "_ZN1CD1Ev"
+; CHECK-NOT: {{DW_TAG|NULL}}
+; CHECK:  DW_TAG_formal_parameter
+; CHECK-NOT: DW_TAG
+; CHECK:     DW_AT_name {{.*}} "this"
 
-; CHECK:   DW_TAG_subprogram
+; CHECK: DW_TAG_subprogram
+; CHECK-NOT: DW_TAG
+; CHECK:   DW_AT_name {{.*}} "fun4"
+; CHECK-NOT: {{DW_TAG|NULL}}
+; CHECK:   DW_TAG_inlined_subroutine
+; CHECK-NOT: DW_TAG
 ; CHECK:     DW_AT_abstract_origin {{.*}} "_ZN1CD1Ev"
+; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:     DW_TAG_formal_parameter
+; CHECK-NOT: DW_TAG
 ; CHECK:       DW_AT_abstract_origin {{.*}} "this"
 
-; CHECK:   DW_TAG_subprogram
-; CHECK:     DW_AT_linkage_name  ("_ZN1CD2Ev")
-; CHECK:     DW_AT_specification {{.*}} "~C"
-; CHECK:     DW_TAG_formal_parameter
-; CHECK:       DW_AT_name  ("this")
+; FIXME: D2 is actually inlined into D1 but doesn't show up here, possibly due
+; to there being no work in D2 (calling another member function from the dtor
+; causes D2 to show up, calling a free function doesn't).
+
+; CHECK-NOT: DW_TAG
+; CHECK:     NULL
+; CHECK-NOT: DW_TAG
+; CHECK:   NULL
 
 %struct.C = type { i8 }
 
@@ -109,8 +115,8 @@ entry:
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.declare(metadata, metadata, metadata) #2
 
-attributes #0 = { nounwind "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { alwaysinline nounwind "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { alwaysinline nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -128,12 +134,12 @@ attributes #2 = { nounwind readnone }
 !8 = !DISubroutineType(types: !9)
 !9 = !{null, !10}
 !10 = !DIDerivedType(tag: DW_TAG_pointer_type, size: 64, align: 64, flags: DIFlagArtificial | DIFlagObjectPointer, baseType: !4)
-!12 = distinct !DISubprogram(name: "fun4", linkageName: "_Z4fun4v", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 5, file: !5, scope: !13, type: !14, retainedNodes: !2)
+!12 = distinct !DISubprogram(name: "fun4", linkageName: "_Z4fun4v", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 5, file: !5, scope: !13, type: !14, variables: !2)
 !13 = !DIFile(filename: "PR20038.cpp", directory: "/tmp/dbginfo")
 !14 = !DISubroutineType(types: !15)
 !15 = !{null}
-!16 = distinct !DISubprogram(name: "~C", linkageName: "_ZN1CD2Ev", line: 6, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 6, file: !5, scope: !4, type: !8, declaration: !7, retainedNodes: !2)
-!17 = distinct !DISubprogram(name: "~C", linkageName: "_ZN1CD1Ev", line: 6, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 6, file: !5, scope: !4, type: !8, declaration: !7, retainedNodes: !2)
+!16 = distinct !DISubprogram(name: "~C", linkageName: "_ZN1CD2Ev", line: 6, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 6, file: !5, scope: !4, type: !8, declaration: !7, variables: !2)
+!17 = distinct !DISubprogram(name: "~C", linkageName: "_ZN1CD1Ev", line: 6, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 6, file: !5, scope: !4, type: !8, declaration: !7, variables: !2)
 !18 = !{i32 2, !"Dwarf Version", i32 4}
 !19 = !{i32 2, !"Debug Info Version", i32 3}
 !20 = !{!"clang version 3.5.0 "}

@@ -1,8 +1,9 @@
 //===- BoundsChecking.h - Bounds checking instrumentation -------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -10,7 +11,6 @@
 #define LLVM_TRANSFORMS_INSTRUMENTATION_BOUNDSCHECKING_H
 
 #include "llvm/IR/PassManager.h"
-#include "llvm/Pass.h"
 
 namespace llvm {
 
@@ -18,7 +18,6 @@ namespace llvm {
 /// stores, and other memory intrinsics.
 struct BoundsCheckingPass : PassInfoMixin<BoundsCheckingPass> {
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
-  static bool isRequired() { return true; }
 };
 
 

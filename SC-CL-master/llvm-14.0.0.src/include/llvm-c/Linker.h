@@ -1,9 +1,9 @@
 /*===-- llvm-c/Linker.h - Module Linker C Interface -------------*- C++ -*-===*\
 |*                                                                            *|
-|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
-|* Exceptions.                                                                *|
-|* See https://llvm.org/LICENSE.txt for license information.                  *|
-|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
+|*                     The LLVM Compiler Infrastructure                       *|
+|*                                                                            *|
+|* This file is distributed under the University of Illinois Open Source      *|
+|* License. See LICENSE.TXT for details.                                      *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -14,17 +14,11 @@
 #ifndef LLVM_C_LINKER_H
 #define LLVM_C_LINKER_H
 
-#include "llvm-c/ExternC.h"
 #include "llvm-c/Types.h"
 
-LLVM_C_EXTERN_C_BEGIN
-
-/**
- * @defgroup LLVMCCoreLinker Linker
- * @ingroup LLVMCCore
- *
- * @{
- */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* This enum is provided for backwards-compatibility only. It has no effect. */
 typedef enum {
@@ -40,10 +34,8 @@ typedef enum {
 */
 LLVMBool LLVMLinkModules2(LLVMModuleRef Dest, LLVMModuleRef Src);
 
-LLVM_C_EXTERN_C_END
-
-/**
- * @}
- */
+#ifdef __cplusplus
+}
+#endif
 
 #endif

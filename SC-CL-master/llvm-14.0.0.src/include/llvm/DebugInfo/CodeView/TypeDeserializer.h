@@ -1,8 +1,9 @@
 //===- TypeDeserializer.h ---------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -58,7 +59,7 @@ public:
     TypeRecordKind K =
         static_cast<TypeRecordKind>(uint16_t(Prefix->RecordKind));
     T Record(K);
-    CVType CVT(Data);
+    CVType CVT(static_cast<TypeLeafKind>(K), Data);
     if (auto EC = deserializeAs<T>(CVT, Record))
       return std::move(EC);
     return Record;
@@ -66,7 +67,7 @@ public:
 
   Error visitTypeBegin(CVType &Record) override {
     assert(!Mapping && "Already in a type mapping!");
-    Mapping = std::make_unique<MappingInfo>(Record.content());
+    Mapping = llvm::make_unique<MappingInfo>(Record.content());
     return Mapping->Mapping.visitTypeBegin(Record);
   }
 
@@ -111,14 +112,14 @@ class FieldListDeserializer : public TypeVisitorCallbacks {
 
 public:
   explicit FieldListDeserializer(BinaryStreamReader &Reader) : Mapping(Reader) {
-    RecordPrefix Pre(static_cast<uint16_t>(TypeLeafKind::LF_FIELDLIST));
-    CVType FieldList(&Pre, sizeof(Pre));
+    CVType FieldList;
+    FieldList.Type = TypeLeafKind::LF_FIELDLIST;
     consumeError(Mapping.Mapping.visitTypeBegin(FieldList));
   }
 
   ~FieldListDeserializer() override {
-    RecordPrefix Pre(static_cast<uint16_t>(TypeLeafKind::LF_FIELDLIST));
-    CVType FieldList(&Pre, sizeof(Pre));
+    CVType FieldList;
+    FieldList.Type = TypeLeafKind::LF_FIELDLIST;
     consumeError(Mapping.Mapping.visitTypeEnd(FieldList));
   }
 

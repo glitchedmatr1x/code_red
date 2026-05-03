@@ -1,5 +1,4 @@
-; RUN: llc --mtriple=wasm32-unknown-unknown -filetype=obj %s -o - | obj2yaml | FileCheck --check-prefixes CHECK,CHK32 %s
-; RUN: llc --mtriple=wasm64-unknown-unknown -filetype=obj %s -o - | obj2yaml | FileCheck --check-prefixes CHECK,CHK64 %s
+; RUN: llc -mtriple wasm32-unknown-unknown-wasm -filetype=obj %s -o - | obj2yaml | FileCheck %s
 
 ; Function that uses explict stack, and should generate a reference to
 ; __stack_pointer, along with the corresponding reloction entry.
@@ -14,10 +13,9 @@ entry:
 ; CHECK:       - Module:          env
 ; CHECK:         Field:           __stack_pointer
 ; CHECK:         Kind:            GLOBAL
-; CHK32:         GlobalType:      I32
-; CHK64:         GlobalType:      I64
+; CHECK:         GlobalType:      I32
 ; CHECK:         GlobalMutable:   true
 ; CHECK:   - Type:            CODE
 ; CHECK:     Relocations:
-; CHECK:       - Type:            R_WASM_GLOBAL_INDEX_LEB
+; CHECK:       - Type:            R_WEBASSEMBLY_GLOBAL_INDEX_LEB
 ; CHECK:         Index:           0

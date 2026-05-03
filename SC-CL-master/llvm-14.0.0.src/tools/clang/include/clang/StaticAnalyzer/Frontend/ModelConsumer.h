@@ -1,19 +1,20 @@
 //===-- ModelConsumer.h -----------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file implements clang::ento::ModelConsumer which is an
+/// \brief This file implements clang::ento::ModelConsumer which is an
 /// ASTConsumer for model files.
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_STATICANALYZER_FRONTEND_MODELCONSUMER_H
-#define LLVM_CLANG_STATICANALYZER_FRONTEND_MODELCONSUMER_H
+#ifndef LLVM_CLANG_GR_MODELCONSUMER_H
+#define LLVM_CLANG_GR_MODELCONSUMER_H
 
 #include "clang/AST/ASTConsumer.h"
 #include "llvm/ADT/StringMap.h"
@@ -24,7 +25,7 @@ class Stmt;
 
 namespace ento {
 
-/// ASTConsumer to consume model files' AST.
+/// \brief ASTConsumer to consume model files' AST.
 ///
 /// This consumer collects the bodies of function definitions into a StringMap
 /// from a model file.

@@ -1,6 +1,6 @@
-; RUN: llc -mtriple=arm-netbsd-eabi -o - -filetype=asm -simplifycfg-require-and-preserve-domtree=1 %s | \
+; RUN: llc -mtriple=arm-netbsd-eabi -o - -filetype=asm %s | \
 ; RUN: FileCheck %s
-; RUN: llc -mtriple=arm-netbsd-eabi -o - -filetype=asm -simplifycfg-require-and-preserve-domtree=1 %s \
+; RUN: llc -mtriple=arm-netbsd-eabi -o - -filetype=asm %s \
 ; RUN: -relocation-model=pic | FileCheck -check-prefix=CHECK-PIC %s
 
 ; ModuleID = 'test.cc'
@@ -64,8 +64,8 @@ declare void @__cxa_end_catch()
 ; CHECK: .cfi_personality 0,
 ; CHECK: .cfi_lsda 0,
 ; CHECK: @TType Encoding = absptr
-; CHECK: @ Call site Encoding = uleb128
+; CHECK: @ Call site Encoding = udata4
 ; CHECK-PIC: .cfi_personality 155,
 ; CHECK-PIC: .cfi_lsda 27,
 ; CHECK-PIC: @TType Encoding = indirect pcrel sdata4
-; CHECK-PIC: @ Call site Encoding = uleb128
+; CHECK-PIC: @ Call site Encoding = udata4

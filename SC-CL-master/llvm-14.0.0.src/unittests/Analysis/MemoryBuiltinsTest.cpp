@@ -1,8 +1,9 @@
 //===- MemoryBuiltinsTest.cpp - Tests for utilities in MemoryBuiltins.h ---===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -36,10 +37,14 @@ TEST(AllocSize, AllocationBuiltinsTest) {
       CallInst::Create(AllocSizeFn, {ConstantInt::get(ArgTy, 100)}));
 
   const TargetLibraryInfo *TLI = nullptr;
+  EXPECT_FALSE(isNoAliasFn(Caller.get(), TLI));
+  EXPECT_FALSE(isMallocLikeFn(Caller.get(), TLI));
+  EXPECT_FALSE(isCallocLikeFn(Caller.get(), TLI));
   EXPECT_FALSE(isAllocLikeFn(Caller.get(), TLI));
 
   // FIXME: We might be able to treat allocsize functions as general allocation
-  // functions.
+  // functions. For the moment, being conservative seems better (and we'd have
+  // to plumb stuff around `isNoAliasFn`).
   EXPECT_FALSE(isAllocationFn(Caller.get(), TLI));
 }
 }

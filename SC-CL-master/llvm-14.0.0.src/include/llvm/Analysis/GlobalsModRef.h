@@ -1,8 +1,9 @@
 //===- GlobalsModRef.h - Simple Mod/Ref AA for Globals ----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 /// \file
@@ -14,6 +15,7 @@
 #define LLVM_ANALYSIS_GLOBALSMODREF_H
 
 #include "llvm/Analysis/AliasAnalysis.h"
+#include "llvm/Analysis/CallGraph.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/Module.h"
@@ -22,7 +24,6 @@
 #include <list>
 
 namespace llvm {
-class CallGraph;
 
 /// An alias analysis result set for globals.
 ///
@@ -34,13 +35,10 @@ class GlobalsAAResult : public AAResultBase<GlobalsAAResult> {
   class FunctionInfo;
 
   const DataLayout &DL;
-  std::function<const TargetLibraryInfo &(Function &F)> GetTLI;
+  const TargetLibraryInfo &TLI;
 
   /// The globals that do not have their addresses taken.
   SmallPtrSet<const GlobalValue *, 8> NonAddressTakenGlobals;
-
-  /// Are there functions with local linkage that may modify globals.
-  bool UnknownFunctionsWithLocalLinkage = false;
 
   /// IndirectGlobals - The memory pointed to by this global is known to be
   /// 'owned' by the global.
@@ -75,31 +73,22 @@ class GlobalsAAResult : public AAResultBase<GlobalsAAResult> {
   /// could perform to the memory utilization here if this becomes a problem.
   std::list<DeletionCallbackHandle> Handles;
 
-  explicit GlobalsAAResult(
-      const DataLayout &DL,
-      std::function<const TargetLibraryInfo &(Function &F)> GetTLI);
+  explicit GlobalsAAResult(const DataLayout &DL, const TargetLibraryInfo &TLI);
 
 public:
   GlobalsAAResult(GlobalsAAResult &&Arg);
   ~GlobalsAAResult();
 
-  bool invalidate(Module &M, const PreservedAnalyses &PA,
-                  ModuleAnalysisManager::Invalidator &);
-
-  static GlobalsAAResult
-  analyzeModule(Module &M,
-                std::function<const TargetLibraryInfo &(Function &F)> GetTLI,
-                CallGraph &CG);
+  static GlobalsAAResult analyzeModule(Module &M, const TargetLibraryInfo &TLI,
+                                       CallGraph &CG);
 
   //------------------------------------------------
   // Implement the AliasAnalysis API
   //
-  AliasResult alias(const MemoryLocation &LocA, const MemoryLocation &LocB,
-                    AAQueryInfo &AAQI);
+  AliasResult alias(const MemoryLocation &LocA, const MemoryLocation &LocB);
 
   using AAResultBase::getModRefInfo;
-  ModRefInfo getModRefInfo(const CallBase *Call, const MemoryLocation &Loc,
-                           AAQueryInfo &AAQI);
+  ModRefInfo getModRefInfo(ImmutableCallSite CS, const MemoryLocation &Loc);
 
   /// getModRefBehavior - Return the behavior of the specified function if
   /// called from the specified call site.  The call site may be null in which
@@ -109,7 +98,7 @@ public:
   /// getModRefBehavior - Return the behavior of the specified function if
   /// called from the specified call site.  The call site may be null in which
   /// case the most generic behavior of this function should be returned.
-  FunctionModRefBehavior getModRefBehavior(const CallBase *Call);
+  FunctionModRefBehavior getModRefBehavior(ImmutableCallSite CS);
 
 private:
   FunctionInfo *getFunctionInfo(const Function *F);
@@ -124,8 +113,8 @@ private:
   void CollectSCCMembership(CallGraph &CG);
 
   bool isNonEscapingGlobalNoAlias(const GlobalValue *GV, const Value *V);
-  ModRefInfo getModRefInfoForArgument(const CallBase *Call,
-                                      const GlobalValue *GV, AAQueryInfo &AAQI);
+  ModRefInfo getModRefInfoForArgument(ImmutableCallSite CS,
+                                      const GlobalValue *GV);
 };
 
 /// Analysis pass providing a never-invalidated alias analysis result.

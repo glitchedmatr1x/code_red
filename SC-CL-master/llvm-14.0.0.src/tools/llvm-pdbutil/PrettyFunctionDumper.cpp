@@ -1,8 +1,9 @@
 //===- PrettyFunctionDumper.cpp --------------------------------- *- C++ *-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -52,10 +53,7 @@ FunctionDumper::FunctionDumper(LinePrinter &P)
 void FunctionDumper::start(const PDBSymbolTypeFunctionSig &Symbol,
                            const char *Name, PointerType Pointer) {
   auto ReturnType = Symbol.getReturnType();
-  if (!ReturnType)
-    Printer << "<unknown-type>";
-  else
-    ReturnType->dump(*this);
+  ReturnType->dump(*this);
   Printer << " ";
   uint32_t ClassParentId = Symbol.getClassParentId();
   auto ClassParent =
@@ -138,8 +136,7 @@ void FunctionDumper::start(const PDBSymbolFunc &Symbol, PointerType Pointer) {
 
   if (Symbol.hasFramePointer()) {
     WithColor(Printer, PDB_ColorItem::Register).get()
-        << CPURegister{Symbol.getRawSymbol().getPlatform(),
-                       Symbol.getLocalBasePointerRegisterId()};
+        << Symbol.getLocalBasePointerRegisterId();
   } else {
     WithColor(Printer, PDB_ColorItem::Register).get() << "FPO";
   }
@@ -192,8 +189,6 @@ void FunctionDumper::start(const PDBSymbolFunc &Symbol, PointerType Pointer) {
       if (++Index < Arguments->getChildCount())
         Printer << ", ";
     }
-    if (Signature->isCVarArgs())
-      Printer << ", ...";
   }
   Printer << ")";
   if (Symbol.isConstType())
@@ -228,10 +223,9 @@ void FunctionDumper::dump(const PDBSymbolTypeFunctionArg &Symbol) {
   // through to the real thing and dump it.
   uint32_t TypeId = Symbol.getTypeId();
   auto Type = Symbol.getSession().getSymbolById(TypeId);
-  if (Type)
-    Type->dump(*this);
-  else
-    Printer << "<unknown-type>";
+  if (!Type)
+    return;
+  Type->dump(*this);
 }
 
 void FunctionDumper::dump(const PDBSymbolTypeTypedef &Symbol) {
@@ -256,9 +250,6 @@ void FunctionDumper::dump(const PDBSymbolTypePointer &Symbol) {
       WithColor(Printer, PDB_ColorItem::Keyword).get() << "volatile ";
     PointeeType->dump(*this);
     Printer << (Symbol.isReference() ? "&" : "*");
-
-    if (Symbol.getRawSymbol().isRestrictedType())
-      WithColor(Printer, PDB_ColorItem::Keyword).get() << " __restrict";
   }
 }
 

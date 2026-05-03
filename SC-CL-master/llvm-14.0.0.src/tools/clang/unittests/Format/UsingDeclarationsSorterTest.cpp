@@ -1,8 +1,9 @@
 //===- UsingDeclarationsSorterTest.cpp - Formatting unit tests ------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -22,13 +23,13 @@ protected:
   std::string sortUsingDeclarations(llvm::StringRef Code,
                                     const std::vector<tooling::Range> &Ranges,
                                     const FormatStyle &Style = getLLVMStyle()) {
-    LLVM_DEBUG(llvm::errs() << "---\n");
-    LLVM_DEBUG(llvm::errs() << Code << "\n\n");
+    DEBUG(llvm::errs() << "---\n");
+    DEBUG(llvm::errs() << Code << "\n\n");
     tooling::Replacements Replaces =
         clang::format::sortUsingDeclarations(Style, Code, Ranges, "<stdin>");
     auto Result = applyAllReplacements(Code, Replaces);
     EXPECT_TRUE(static_cast<bool>(Result));
-    LLVM_DEBUG(llvm::errs() << "\n" << *Result << "\n\n");
+    DEBUG(llvm::errs() << "\n" << *Result << "\n\n");
     return *Result;
   }
 
@@ -343,8 +344,7 @@ TEST_F(UsingDeclarationsSorterTest, SortsPartialRangeOfUsingDeclarations) {
                                   {tooling::Range(19, 1)}));
 }
 
-TEST_F(UsingDeclarationsSorterTest,
-       SortsUsingDeclarationsWithLeadingkComments) {
+TEST_F(UsingDeclarationsSorterTest, SortsUsingDeclarationsWithLeadingkComments) {
   EXPECT_EQ("/* comment */ using a;\n"
             "/* comment */ using b;",
             sortUsingDeclarations("/* comment */ using b;\n"
@@ -367,6 +367,7 @@ TEST_F(UsingDeclarationsSorterTest, DeduplicatesUsingDeclarations) {
                                   "using e;\n"
                                   "using a;\n"
                                   "using e;"));
+
 }
 
 } // end namespace

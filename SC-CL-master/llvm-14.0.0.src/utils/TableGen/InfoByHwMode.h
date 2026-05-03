@@ -1,8 +1,9 @@
 //===--- InfoByHwMode.h -----------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 // Classes that implement data parameterized by HW modes for instruction
@@ -15,14 +16,16 @@
 #define LLVM_UTILS_TABLEGEN_INFOBYHWMODE_H
 
 #include "CodeGenHwModes.h"
-#include "llvm/ADT/SmallSet.h"
-#include "llvm/Support/MachineValueType.h"
+#include "llvm/CodeGen/MachineValueType.h"
 
 #include <map>
+#include <set>
 #include <string>
+#include <vector>
 
 namespace llvm {
 
+struct CodeGenHwModes;
 class Record;
 class raw_ostream;
 
@@ -35,23 +38,22 @@ enum : unsigned {
 };
 
 template <typename InfoT>
-void union_modes(const InfoByHwMode<InfoT> &A,
-                 const InfoByHwMode<InfoT> &B,
-                 SmallVectorImpl<unsigned> &Modes) {
-  SmallSet<unsigned, 4> U;
+std::vector<unsigned> union_modes(const InfoByHwMode<InfoT> &A,
+                                  const InfoByHwMode<InfoT> &B) {
+  std::vector<unsigned> V;
+  std::set<unsigned> U;
   for (const auto &P : A)
     U.insert(P.first);
   for (const auto &P : B)
     U.insert(P.first);
   // Make sure that the default mode is last on the list.
-  bool HasDefault = false;
+  bool HasDefault = U.count(DefaultMode);
   for (unsigned M : U)
     if (M != DefaultMode)
-      Modes.push_back(M);
-    else
-      HasDefault = true;
+      V.push_back(M);
   if (HasDefault)
-    Modes.push_back(DefaultMode);
+    V.push_back(DefaultMode);
+  return V;
 }
 
 template <typename InfoT>
@@ -111,13 +113,11 @@ struct InfoByHwMode {
     Map.insert(std::make_pair(DefaultMode, I));
   }
 
-protected:
   MapType Map;
 };
 
 struct ValueTypeByHwMode : public InfoByHwMode<MVT> {
   ValueTypeByHwMode(Record *R, const CodeGenHwModes &CGH);
-  ValueTypeByHwMode(Record *R, MVT T);
   ValueTypeByHwMode(MVT T) { Map.insert({DefaultMode,T}); }
   ValueTypeByHwMode() = default;
 
@@ -133,11 +133,6 @@ struct ValueTypeByHwMode : public InfoByHwMode<MVT> {
   static StringRef getMVTName(MVT T);
   void writeToStream(raw_ostream &OS) const;
   void dump() const;
-
-  unsigned PtrAddrSpace = std::numeric_limits<unsigned>::max();
-  bool isPointer() const {
-    return PtrAddrSpace != std::numeric_limits<unsigned>::max();
-  }
 };
 
 ValueTypeByHwMode getValueTypeByHwMode(Record *Rec,
@@ -176,20 +171,11 @@ struct RegSizeInfoByHwMode : public InfoByHwMode<RegSizeInfo> {
   bool hasStricterSpillThan(const RegSizeInfoByHwMode &I) const;
 
   void writeToStream(raw_ostream &OS) const;
-
-  void insertRegSizeForMode(unsigned Mode, RegSizeInfo Info) {
-    Map.insert(std::make_pair(Mode, Info));
-  }
 };
 
 raw_ostream &operator<<(raw_ostream &OS, const ValueTypeByHwMode &T);
 raw_ostream &operator<<(raw_ostream &OS, const RegSizeInfo &T);
 raw_ostream &operator<<(raw_ostream &OS, const RegSizeInfoByHwMode &T);
-
-struct EncodingInfoByHwMode : public InfoByHwMode<Record*> {
-  EncodingInfoByHwMode(Record *R, const CodeGenHwModes &CGH);
-  EncodingInfoByHwMode() = default;
-};
 
 } // namespace llvm
 

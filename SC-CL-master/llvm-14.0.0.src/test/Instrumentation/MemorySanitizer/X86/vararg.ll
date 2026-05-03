@@ -1,4 +1,3 @@
-; RUN: opt < %s -msan-check-access-address=0 -S -passes=msan 2>&1
 ; RUN: opt < %s -msan -msan-check-access-address=0 -S
 ; Test that code using va_start can be compiled on i386.
 

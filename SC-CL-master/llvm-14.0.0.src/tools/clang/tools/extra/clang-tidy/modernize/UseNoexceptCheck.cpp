@@ -1,8 +1,9 @@
 //===--- UseNoexceptCheck.cpp - clang-tidy---------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -16,10 +17,6 @@ namespace clang {
 namespace tidy {
 namespace modernize {
 
-namespace {
-AST_MATCHER(NamedDecl, isValid) { return !Node.isInvalidDecl(); }
-} // namespace
-
 UseNoexceptCheck::UseNoexceptCheck(StringRef Name, ClangTidyContext *Context)
     : ClangTidyCheck(Name, Context),
       NoexceptMacro(Options.get("ReplacementString", "")),
@@ -31,14 +28,25 @@ void UseNoexceptCheck::storeOptions(ClangTidyOptions::OptionMap &Opts) {
 }
 
 void UseNoexceptCheck::registerMatchers(MatchFinder *Finder) {
+  if (!getLangOpts().CPlusPlus11)
+    return;
+
   Finder->addMatcher(
       functionDecl(
-          isValid(),
+          cxxMethodDecl(
+              hasTypeLoc(loc(functionProtoType(hasDynamicExceptionSpec()))),
+              anyOf(hasOverloadedOperatorName("delete[]"),
+                    hasOverloadedOperatorName("delete"), cxxDestructorDecl()))
+              .bind("del-dtor"))
+          .bind("funcDecl"),
+      this);
+
+  Finder->addMatcher(
+      functionDecl(
           hasTypeLoc(loc(functionProtoType(hasDynamicExceptionSpec()))),
-          optionally(cxxMethodDecl(anyOf(hasAnyOverloadedOperatorName(
-                                             "delete[]", "delete"),
-                                         cxxDestructorDecl()))
-                         .bind("del-dtor")))
+          unless(anyOf(hasOverloadedOperatorName("delete[]"),
+                       hasOverloadedOperatorName("delete"),
+                       cxxDestructorDecl())))
           .bind("funcDecl"),
       this);
 
@@ -76,18 +84,12 @@ void UseNoexceptCheck::check(const MatchFinder::MatchResult &Result) {
                   .castAs<FunctionProtoTypeLoc>()
                   .getExceptionSpecRange();
   }
-
-  assert(FnTy && "FunctionProtoType is null.");
-  if (isUnresolvedExceptionSpec(FnTy->getExceptionSpecType()))
-    return;
-
-  assert(Range.isValid() && "Exception Source Range is invalid.");
-
   CharSourceRange CRange = Lexer::makeFileCharRange(
       CharSourceRange::getTokenRange(Range), *Result.SourceManager,
       Result.Context->getLangOpts());
 
-  bool IsNoThrow = FnTy->isNothrow();
+  assert(FnTy && "FunctionProtoType is null.");
+  bool IsNoThrow = FnTy->isNothrow(*Result.Context);
   StringRef ReplacementStr =
       IsNoThrow
           ? NoexceptMacro.empty() ? "noexcept" : NoexceptMacro.c_str()

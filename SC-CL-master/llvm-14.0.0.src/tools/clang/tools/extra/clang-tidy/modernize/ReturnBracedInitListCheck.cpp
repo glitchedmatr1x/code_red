@@ -1,8 +1,9 @@
 //===--- ReturnBracedInitListCheck.cpp - clang-tidy------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -19,18 +20,27 @@ namespace tidy {
 namespace modernize {
 
 void ReturnBracedInitListCheck::registerMatchers(MatchFinder *Finder) {
+  // Only register the matchers for C++.
+  if (!getLangOpts().CPlusPlus11)
+    return;
+
   // Skip list initialization and constructors with an initializer list.
   auto ConstructExpr =
       cxxConstructExpr(
           unless(anyOf(hasDeclaration(cxxConstructorDecl(isExplicit())),
-                       isListInitialization(), hasDescendant(initListExpr()))))
+                       isListInitialization(), hasDescendant(initListExpr()),
+                       isInTemplateInstantiation())))
           .bind("ctor");
 
+  auto CtorAsArgument = materializeTemporaryExpr(anyOf(
+      has(ConstructExpr), has(cxxFunctionalCastExpr(has(ConstructExpr)))));
+
   Finder->addMatcher(
-      returnStmt(hasReturnValue(ConstructExpr),
-                 forFunction(functionDecl(returns(unless(anyOf(builtinType(),
-                                                               autoType()))))
-                                 .bind("fn"))),
+      functionDecl(isDefinition(), // Declarations don't have return statements.
+                   returns(unless(anyOf(builtinType(), autoType()))),
+                   hasDescendant(returnStmt(hasReturnValue(
+                       has(cxxConstructExpr(has(CtorAsArgument)))))))
+          .bind("fn"),
       this);
 }
 

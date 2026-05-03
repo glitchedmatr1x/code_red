@@ -1,8 +1,9 @@
 //===- string.go - Stringer implementation for Type -----------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -40,12 +41,10 @@ func (t TypeKind) String() string {
 		return "ArrayTypeKind"
 	case PointerTypeKind:
 		return "PointerTypeKind"
-	case MetadataTypeKind:
-		return "MetadataTypeKind"
 	case VectorTypeKind:
 		return "VectorTypeKind"
-	case ScalableVectorTypeKind:
-		return "ScalableVectorTypeKind"
+	case MetadataTypeKind:
+		return "MetadataTypeKind"
 	}
 	panic("unreachable")
 }

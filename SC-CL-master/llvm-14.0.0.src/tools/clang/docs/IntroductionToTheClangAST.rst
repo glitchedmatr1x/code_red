@@ -9,9 +9,9 @@ matchers.
 
 .. raw:: html
 
-  <center><iframe width="560" height="315" src="https://www.youtube.com/embed/VqCkCDFLSsc?vq=hd720" frameborder="0" allowfullscreen></iframe></center>
+  <center><iframe width="560" height="315" src="http://www.youtube.com/embed/VqCkCDFLSsc?vq=hd720" frameborder="0" allowfullscreen></iframe></center>
 
-`Slides <https://llvm.org/devmtg/2013-04/klimek-slides.pdf>`_
+`Slides <http://llvm.org/devmtg/2013-04/klimek-slides.pdf>`_
 
 Introduction
 ============
@@ -23,7 +23,7 @@ constants are available in an unreduced form in the AST. This makes
 Clang's AST a good fit for refactoring tools.
 
 Documentation for all Clang AST nodes is available via the generated
-`Doxygen <https://clang.llvm.org/doxygen>`_. The doxygen online
+`Doxygen <http://clang.llvm.org/doxygen>`_. The doxygen online
 documentation is also indexed by your favorite search engine, which will
 make a search for clang and the AST node's class name usually turn up
 the doxygen of the class you're looking for (for example, search for:
@@ -32,7 +32,7 @@ clang ParenExpr).
 Examining the AST
 =================
 
-A good way to familiarize yourself with the Clang AST is to actually look
+A good way to familarize yourself with the Clang AST is to actually look
 at it on some simple example code. Clang has a builtin AST-dump mode,
 which can be enabled with the flag ``-ast-dump``.
 
@@ -67,26 +67,26 @@ Let's look at a simple example AST:
 
 The toplevel declaration in
 a translation unit is always the `translation unit
-declaration <https://clang.llvm.org/doxygen/classclang_1_1TranslationUnitDecl.html>`_.
+declaration <http://clang.llvm.org/doxygen/classclang_1_1TranslationUnitDecl.html>`_.
 In this example, our first user written declaration is the `function
-declaration <https://clang.llvm.org/doxygen/classclang_1_1FunctionDecl.html>`_
+declaration <http://clang.llvm.org/doxygen/classclang_1_1FunctionDecl.html>`_
 of "``f``". The body of "``f``" is a `compound
-statement <https://clang.llvm.org/doxygen/classclang_1_1CompoundStmt.html>`_,
+statement <http://clang.llvm.org/doxygen/classclang_1_1CompoundStmt.html>`_,
 whose child nodes are a `declaration
-statement <https://clang.llvm.org/doxygen/classclang_1_1DeclStmt.html>`_
+statement <http://clang.llvm.org/doxygen/classclang_1_1DeclStmt.html>`_
 that declares our result variable, and the `return
-statement <https://clang.llvm.org/doxygen/classclang_1_1ReturnStmt.html>`_.
+statement <http://clang.llvm.org/doxygen/classclang_1_1ReturnStmt.html>`_.
 
 AST Context
 ===========
 
 All information about the AST for a translation unit is bundled up in
 the class
-`ASTContext <https://clang.llvm.org/doxygen/classclang_1_1ASTContext.html>`_.
+`ASTContext <http://clang.llvm.org/doxygen/classclang_1_1ASTContext.html>`_.
 It allows traversal of the whole translation unit starting from
-`getTranslationUnitDecl <https://clang.llvm.org/doxygen/classclang_1_1ASTContext.html#abd909fb01ef10cfd0244832a67b1dd64>`_,
+`getTranslationUnitDecl <http://clang.llvm.org/doxygen/classclang_1_1ASTContext.html#abd909fb01ef10cfd0244832a67b1dd64>`_,
 or to access Clang's `table of
-identifiers <https://clang.llvm.org/doxygen/classclang_1_1ASTContext.html#a4f95adb9958e22fbe55212ae6482feb4>`_
+identifiers <http://clang.llvm.org/doxygen/classclang_1_1ASTContext.html#a4f95adb9958e22fbe55212ae6482feb4>`_
 for the parsed translation unit.
 
 AST Nodes
@@ -95,32 +95,32 @@ AST Nodes
 Clang's AST nodes are modeled on a class hierarchy that does not have a
 common ancestor. Instead, there are multiple larger hierarchies for
 basic node types like
-`Decl <https://clang.llvm.org/doxygen/classclang_1_1Decl.html>`_ and
-`Stmt <https://clang.llvm.org/doxygen/classclang_1_1Stmt.html>`_. Many
+`Decl <http://clang.llvm.org/doxygen/classclang_1_1Decl.html>`_ and
+`Stmt <http://clang.llvm.org/doxygen/classclang_1_1Stmt.html>`_. Many
 important AST nodes derive from
-`Type <https://clang.llvm.org/doxygen/classclang_1_1Type.html>`_,
-`Decl <https://clang.llvm.org/doxygen/classclang_1_1Decl.html>`_,
-`DeclContext <https://clang.llvm.org/doxygen/classclang_1_1DeclContext.html>`_
-or `Stmt <https://clang.llvm.org/doxygen/classclang_1_1Stmt.html>`_, with
+`Type <http://clang.llvm.org/doxygen/classclang_1_1Type.html>`_,
+`Decl <http://clang.llvm.org/doxygen/classclang_1_1Decl.html>`_,
+`DeclContext <http://clang.llvm.org/doxygen/classclang_1_1DeclContext.html>`_
+or `Stmt <http://clang.llvm.org/doxygen/classclang_1_1Stmt.html>`_, with
 some classes deriving from both Decl and DeclContext.
 
 There are also a multitude of nodes in the AST that are not part of a
 larger hierarchy, and are only reachable from specific other nodes, like
-`CXXBaseSpecifier <https://clang.llvm.org/doxygen/classclang_1_1CXXBaseSpecifier.html>`_.
+`CXXBaseSpecifier <http://clang.llvm.org/doxygen/classclang_1_1CXXBaseSpecifier.html>`_.
 
 Thus, to traverse the full AST, one starts from the
-`TranslationUnitDecl <https://clang.llvm.org/doxygen/classclang_1_1TranslationUnitDecl.html>`_
+`TranslationUnitDecl <http://clang.llvm.org/doxygen/classclang_1_1TranslationUnitDecl.html>`_
 and then recursively traverses everything that can be reached from that
 node - this information has to be encoded for each specific node type.
 This algorithm is encoded in the
-`RecursiveASTVisitor <https://clang.llvm.org/doxygen/classclang_1_1RecursiveASTVisitor.html>`_.
+`RecursiveASTVisitor <http://clang.llvm.org/doxygen/classclang_1_1RecursiveASTVisitor.html>`_.
 See the `RecursiveASTVisitor
-tutorial <https://clang.llvm.org/docs/RAVFrontendAction.html>`_.
+tutorial <http://clang.llvm.org/docs/RAVFrontendAction.html>`_.
 
 The two most basic nodes in the Clang AST are statements
-(`Stmt <https://clang.llvm.org/doxygen/classclang_1_1Stmt.html>`_) and
+(`Stmt <http://clang.llvm.org/doxygen/classclang_1_1Stmt.html>`_) and
 declarations
-(`Decl <https://clang.llvm.org/doxygen/classclang_1_1Decl.html>`_). Note
+(`Decl <http://clang.llvm.org/doxygen/classclang_1_1Decl.html>`_). Note
 that expressions
-(`Expr <https://clang.llvm.org/doxygen/classclang_1_1Expr.html>`_) are
+(`Expr <http://clang.llvm.org/doxygen/classclang_1_1Expr.html>`_) are
 also statements in Clang's AST.

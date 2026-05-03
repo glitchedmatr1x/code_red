@@ -1,8 +1,9 @@
 //===- InstrumentationMap.h - XRay Instrumentation Map ----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -11,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_XRAY_INSTRUMENTATIONMAP_H
-#define LLVM_XRAY_INSTRUMENTATIONMAP_H
+#ifndef LLVM_XRAY_INSTRUMENTATION_MAP_H
+#define LLVM_XRAY_INSTRUMENTATION_MAP_H
 
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/StringRef.h"
@@ -50,8 +51,6 @@ struct SledEntry {
 
   /// Whether the sled was annotated to always be instrumented.
   bool AlwaysInstrument;
-
-  unsigned char Version;
 };
 
 struct YAMLXRaySledEntry {
@@ -61,7 +60,6 @@ struct YAMLXRaySledEntry {
   SledEntry::FunctionKinds Kind;
   bool AlwaysInstrument;
   std::string FunctionName;
-  unsigned char Version;
 };
 
 /// The InstrumentationMap represents the computed function id's and indicated
@@ -123,7 +121,6 @@ template <> struct MappingTraits<xray::YAMLXRaySledEntry> {
     IO.mapRequired("kind", Entry.Kind);
     IO.mapRequired("always-instrument", Entry.AlwaysInstrument);
     IO.mapOptional("function-name", Entry.FunctionName);
-    IO.mapOptional("version", Entry.Version, 0);
   }
 
   static constexpr bool flow = true;
@@ -135,4 +132,4 @@ template <> struct MappingTraits<xray::YAMLXRaySledEntry> {
 
 LLVM_YAML_IS_SEQUENCE_VECTOR(xray::YAMLXRaySledEntry)
 
-#endif // LLVM_XRAY_INSTRUMENTATIONMAP_H
+#endif // LLVM_XRAY_INSTRUMENTATION_MAP_H

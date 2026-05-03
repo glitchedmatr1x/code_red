@@ -14,7 +14,7 @@ define void @test() {
 ; CHECK-NEXT:    br label [[BB283:%.*]]
 ; CHECK:       bb283:
 ; CHECK-NEXT:    [[TMP0:%.*]] = phi <2 x float> [ undef, [[BB279:%.*]] ], [ [[TMP11:%.*]], [[EXIT:%.*]] ]
-; CHECK-NEXT:    [[TMP1:%.*]] = phi <2 x float> [ undef, [[BB279]] ], [ undef, [[EXIT]] ]
+; CHECK-NEXT:    [[TMP1:%.*]] = phi <2 x float> [ undef, [[BB279]] ], [ [[TMP13:%.*]], [[EXIT]] ]
 ; CHECK-NEXT:    br label [[BB284:%.*]]
 ; CHECK:       bb284:
 ; CHECK-NEXT:    [[TMP2:%.*]] = fpext <2 x float> [[TMP0]] to <2 x double>
@@ -31,10 +31,14 @@ define void @test() {
 ; CHECK-NEXT:    br i1 undef, label [[BB32_I]], label [[BB21_I]]
 ; CHECK:       exit:
 ; CHECK-NEXT:    [[TMP7:%.*]] = fpext <2 x float> [[TMP1]] to <2 x double>
-; CHECK-NEXT:    [[TMP8:%.*]] = fmul <2 x double> [[TMP7]], <double undef, double 0.000000e+00>
+; CHECK-NEXT:    [[TMP8:%.*]] = fmul <2 x double> <double undef, double 0.000000e+00>, [[TMP7]]
 ; CHECK-NEXT:    [[TMP9:%.*]] = fadd <2 x double> undef, [[TMP8]]
-; CHECK-NEXT:    [[TMP10:%.*]] = fadd <2 x double> [[TMP9]], undef
+; CHECK-NEXT:    [[TMP10:%.*]] = fadd <2 x double> undef, [[TMP9]]
 ; CHECK-NEXT:    [[TMP11]] = fptrunc <2 x double> [[TMP10]] to <2 x float>
+; CHECK-NEXT:    [[TMP317:%.*]] = fptrunc double undef to float
+; CHECK-NEXT:    [[TMP319:%.*]] = fptrunc double undef to float
+; CHECK-NEXT:    [[TMP12:%.*]] = insertelement <2 x float> undef, float [[TMP317]], i32 0
+; CHECK-NEXT:    [[TMP13]] = insertelement <2 x float> [[TMP12]], float [[TMP319]], i32 1
 ; CHECK-NEXT:    br label [[BB283]]
 ;
 bb279:
@@ -91,7 +95,9 @@ exit:
 define <4 x double> @constant_folding() {
 ; CHECK-LABEL: @constant_folding(
 ; CHECK-NEXT:  entry:
-; CHECK-NEXT:    ret <4 x double> <double 2.000000e+00, double 1.000000e+00, double undef, double undef>
+; CHECK-NEXT:    [[I1:%.*]] = insertelement <4 x double> undef, double 1.000000e+00, i32 1
+; CHECK-NEXT:    [[I2:%.*]] = insertelement <4 x double> [[I1]], double 2.000000e+00, i32 0
+; CHECK-NEXT:    ret <4 x double> [[I2]]
 ;
 entry:
   %t0 = fadd double 1.000000e+00 , 0.000000e+00

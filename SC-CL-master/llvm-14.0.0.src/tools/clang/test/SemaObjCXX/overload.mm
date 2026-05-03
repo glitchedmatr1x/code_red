@@ -111,11 +111,11 @@ namespace test5 {
 
 // rdar://problem/8592139
 namespace test6 {
-  void foo(id);
-  void foo(A*) __attribute__((unavailable)); // expected-note {{marked unavailable here}}
+  void foo(id); // expected-note{{candidate function}}
+  void foo(A*) __attribute__((unavailable)); // expected-note {{explicitly made unavailable}}
 
   void test(B *b) {
-    foo(b); // expected-error {{'foo' is unavailable}}
+    foo(b); // expected-error {{call to unavailable function 'foo'}}
   }
 }
 
@@ -201,17 +201,3 @@ void test(NSDictionary *d1, NSDictionary<A *, A *> *d2, NSMutableDictionary<A *,
 }
 
 }
-
-namespace StringLiterals {
-void f(const char(&&)[5]);
-void f(const wchar_t(&&)[5]);
-void f(const char16_t(&&)[5]);
-void f(const char32_t(&&)[5]);
-void g() {
-  f({"abc"});
-  f({(((@encode(int))))});
-  f({L"abc"});
-  f({uR"(abc)"});
-  f({(UR"(abc)")});
-}
-} // namespace StringLiterals

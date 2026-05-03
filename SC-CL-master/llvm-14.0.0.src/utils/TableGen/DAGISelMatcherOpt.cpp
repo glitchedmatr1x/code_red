@@ -1,8 +1,9 @@
 //===- DAGISelMatcherOpt.cpp - Optimize a DAG Matcher ---------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -55,13 +56,9 @@ static void ContractNodes(std::unique_ptr<Matcher> &MatcherPtr,
       if (MC->getChildNo() < 4)  // Only have CheckChildSame0...3
         New = new CheckChildSameMatcher(MC->getChildNo(), CS->getMatchNumber());
 
-    if (CheckIntegerMatcher *CI = dyn_cast<CheckIntegerMatcher>(MC->getNext()))
+    if (CheckIntegerMatcher *CS = dyn_cast<CheckIntegerMatcher>(MC->getNext()))
       if (MC->getChildNo() < 5)  // Only have CheckChildInteger0...4
-        New = new CheckChildIntegerMatcher(MC->getChildNo(), CI->getValue());
-
-    if (auto *CCC = dyn_cast<CheckCondCodeMatcher>(MC->getNext()))
-      if (MC->getChildNo() == 2)  // Only have CheckChild2CondCode
-        New = new CheckChild2CondCodeMatcher(CCC->getCondCodeName());
+        New = new CheckChildIntegerMatcher(MC->getChildNo(), CS->getValue());
 
     if (New) {
       // Insert the new node.
@@ -250,7 +247,7 @@ static void FactorNodes(std::unique_ptr<Matcher> &InputMatcherPtr) {
     // current sets of nodes and this node don't matter.  Look past it to see if
     // we can merge anything else into this matching group.
     unsigned Scan = OptionIdx;
-    while (true) {
+    while (1) {
       // If we ran out of stuff to scan, we're done.
       if (Scan == e) break;
       
@@ -296,12 +293,15 @@ static void FactorNodes(std::unique_ptr<Matcher> &InputMatcherPtr) {
     if (Scan != e &&
         // Don't print it's obvious nothing extra could be merged anyway.
         Scan+1 != e) {
-      LLVM_DEBUG(errs() << "Couldn't merge this:\n"; Optn->print(errs(), 4);
-                 errs() << "into this:\n";
-                 OptionsToMatch[Scan]->print(errs(), 4);
-                 if (Scan + 1 != e) OptionsToMatch[Scan + 1]->printOne(errs());
-                 if (Scan + 2 < e) OptionsToMatch[Scan + 2]->printOne(errs());
-                 errs() << "\n");
+      DEBUG(errs() << "Couldn't merge this:\n";
+            Optn->print(errs(), 4);
+            errs() << "into this:\n";
+            OptionsToMatch[Scan]->print(errs(), 4);
+            if (Scan+1 != e)
+              OptionsToMatch[Scan+1]->printOne(errs());
+            if (Scan+2 < e)
+              OptionsToMatch[Scan+2]->printOne(errs());
+            errs() << "\n");
     }
     
     // If we only found one option starting with this matcher, no factoring is
@@ -409,14 +409,13 @@ static void FactorNodes(std::unique_ptr<Matcher> &InputMatcherPtr) {
     DenseMap<unsigned, unsigned> TypeEntry;
     SmallVector<std::pair<MVT::SimpleValueType, Matcher*>, 8> Cases;
     for (unsigned i = 0, e = NewOptionsToMatch.size(); i != e; ++i) {
-      Matcher* M = FindNodeWithKind(NewOptionsToMatch[i], Matcher::CheckType);
-      assert(M && isa<CheckTypeMatcher>(M) && "Unknown Matcher type");
-
-      auto *CTM = cast<CheckTypeMatcher>(M);
+      CheckTypeMatcher *CTM =
+        cast_or_null<CheckTypeMatcher>(FindNodeWithKind(NewOptionsToMatch[i],
+                                                        Matcher::CheckType));
       Matcher *MatcherWithoutCTM = NewOptionsToMatch[i]->unlinkNode(CTM);
       MVT::SimpleValueType CTMTy = CTM->getType();
       delete CTM;
-
+      
       unsigned &Entry = TypeEntry[CTMTy];
       if (Entry != 0) {
         // If we have unfactored duplicate types, then we should factor them.

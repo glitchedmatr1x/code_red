@@ -66,8 +66,8 @@ function.
 This is inspired and adapted from code by: Naveen Neelakantam, Francesco
 Spadini, and Wojciech Stryjewski.
 
-``-basic-aa``: Basic Alias Analysis (stateless AA impl)
--------------------------------------------------------
+``-basicaa``: Basic Alias Analysis (stateless AA impl)
+------------------------------------------------------
 
 A basic alias analysis pass that implements identities (two different globals
 cannot alias, etc), but does no stateful analysis.
@@ -82,8 +82,6 @@ Yet to be written.
 
 A pass which can be used to count how many alias queries are being made and how
 the alias analysis implementation being used responds.
-
-.. _passes-da:
 
 ``-da``: Dependence Analysis
 ----------------------------
@@ -127,9 +125,6 @@ postscript or some other suitable format.
 This pass, only available in ``opt``, prints the control flow graph into a
 ``.dot`` graph.  This graph can then be processed with the :program:`dot` tool
 to convert it to postscript or some other suitable format.
-Additionally the ``-cfg-func-name=<substring>`` option can be used to filter the
-functions that are printed. All functions that contain the specified substring
-will be printed.
 
 ``-dot-cfg-only``: Print CFG of function to "dot" file (with no function bodies)
 --------------------------------------------------------------------------------
@@ -138,9 +133,6 @@ This pass, only available in ``opt``, prints the control flow graph into a
 ``.dot`` graph, omitting the function bodies.  This graph can then be processed
 with the :program:`dot` tool to convert it to postscript or some other suitable
 format.
-Additionally the ``-cfg-func-name=<substring>`` option can be used to filter the
-functions that are printed. All functions that contain the specified substring
-will be printed.
 
 ``-dot-dom``: Print dominance tree of function to "dot" file
 ------------------------------------------------------------
@@ -335,14 +327,12 @@ table.
 
 The ``RegionInfo`` pass detects single entry single exit regions in a function,
 where a region is defined as any subgraph that is connected to the remaining
-graph at only two spots.  Furthermore, a hierarchical region tree is built.
-
-.. _passes-scalar-evolution:
+graph at only two spots.  Furthermore, an hierarchical region tree is built.
 
 ``-scalar-evolution``: Scalar Evolution Analysis
 ------------------------------------------------
 
-The ``ScalarEvolution`` analysis can be used to analyze and categorize scalar
+The ``ScalarEvolution`` analysis can be used to analyze and catagorize scalar
 expressions in loops.  It specializes in recognizing general induction
 variables, representing them with the abstract and opaque ``SCEV`` class.
 Given this analysis, trip counts of loops and other important properties can be
@@ -362,15 +352,6 @@ between different iterations.
 
 ``ScalarEvolution`` has a more complete understanding of pointer arithmetic
 than ``BasicAliasAnalysis``' collection of ad-hoc analyses.
-
-``-stack-safety``: Stack Safety Analysis
-------------------------------------------------
-
-The ``StackSafety`` analysis can be used to determine if stack allocated
-variables can be considered safe from memory access bugs.
-
-This analysis' primary purpose is to be used by sanitizers to avoid unnecessary
-instrumentation of safe variables.
 
 ``-targetdata``: Target Data Layout
 -----------------------------------
@@ -466,6 +447,27 @@ shared.  This is useful because some passes (i.e., TraceValues) insert a lot of
 string constants into the program, regardless of whether or not an existing
 string is available.
 
+``-constprop``: Simple constant propagation
+-------------------------------------------
+
+This pass implements constant propagation and merging.  It looks for
+instructions involving only constant operands and replaces them with a constant
+value instead of an instruction.  For example:
+
+.. code-block:: llvm
+
+  add i32 1, 2
+
+becomes
+
+.. code-block:: llvm
+
+  i32 3
+
+NOTE: this pass has a habit of making definitions be dead.  It is a good idea
+to run a :ref:`Dead Instruction Elimination <passes-die>` pass sometime after
+running this pass.
+
 .. _passes-dce:
 
 ``-dce``: Dead Code Elimination
@@ -507,10 +509,10 @@ instructions that are obviously dead.
 A trivial dead store elimination that only considers basic-block local
 redundant stores.
 
-.. _passes-function-attrs:
+.. _passes-functionattrs:
 
-``-function-attrs``: Deduce function attributes
------------------------------------------------
+``-functionattrs``: Deduce function attributes
+----------------------------------------------
 
 A simple interprocedural pass which walks the call-graph, looking for functions
 which do not access or only read non-local memory, and marking them
@@ -636,23 +638,8 @@ This pass can also simplify calls to specific well-known function calls (e.g.
 runtime library functions).  For example, a call ``exit(3)`` that occurs within
 the ``main()`` function can be transformed into simply ``return 3``. Whether or
 not library calls are simplified is controlled by the
-:ref:`-function-attrs <passes-function-attrs>` pass and LLVM's knowledge of
+:ref:`-functionattrs <passes-functionattrs>` pass and LLVM's knowledge of
 library calls on different targets.
-
-.. _passes-aggressive-instcombine:
-
-``-aggressive-instcombine``: Combine expression patterns
---------------------------------------------------------
-
-Combine expression patterns to form expressions with fewer, simple instructions.
-This pass does not modify the CFG.
-
-For example, this pass reduce width of expressions post-dominated by TruncInst
-into smaller width when applicable.
-
-It differs from instcombine pass in that it contains pattern optimization that
-requires higher complexity than the O(1), thus, it should run fewer times than
-instcombine pass.
 
 ``-internalize``: Internalize Global Symbols
 --------------------------------------------
@@ -660,6 +647,15 @@ instcombine pass.
 This pass loops over all of the functions in the input module, looking for a
 main function.  If a main function is found, all other functions and all global
 variables with initializers are marked as internal.
+
+``-ipconstprop``: Interprocedural constant propagation
+------------------------------------------------------
+
+This pass implements an *extremely* simple interprocedural constant propagation
+pass.  It could certainly be improved in many different ways, like using a
+worklist.  This pass makes arguments dead, but does not remove them.  The
+existing dead argument elimination pass should be run after this to clean up
+the mess.
 
 ``-ipsccp``: Interprocedural Sparse Conditional Constant Propagation
 --------------------------------------------------------------------
@@ -689,8 +685,6 @@ An example of when this can occur is code like this:
 In this case, the unconditional branch at the end of the first if can be
 revectored to the false side of the second if.
 
-.. _passes-lcssa:
-
 ``-lcssa``: Loop-Closed SSA Form Pass
 -------------------------------------
 
@@ -712,8 +706,7 @@ into the right code:
 This is still valid LLVM; the extra phi nodes are purely redundant, and will be
 trivially eliminated by ``InstCombine``.  The major benefit of this
 transformation is that it makes many other loop optimizations, such as
-``LoopUnswitch``\ ing, simpler. You can read more in the
-:ref:`loop terminology section for the LCSSA form <loop-terminology-lcssa>`.
+``LoopUnswitch``\ ing, simpler.
 
 .. _passes-licm:
 
@@ -725,12 +718,6 @@ code from the body of a loop as possible.  It does this by either hoisting code
 into the preheader block, or by sinking code to the exit blocks if it is safe.
 This pass also promotes must-aliased memory locations in the loop to live in
 registers, thus hoisting and sinking "invariant" loads and stores.
-
-Hoisting operations out of loops is a canonicalization transform. It enables
-and simplifies subsequent optimizations in the middle-end. Rematerialization
-of hoisted instructions to reduce register pressure is the responsibility of
-the back-end, which has more accurate information about register pressure and
-also handles other optimizations than LICM that increase live-ranges.
 
 This pass uses alias analysis for two purposes:
 
@@ -785,24 +772,17 @@ accomplished by creating a new value to hold the initial value of the array
 access for the first iteration, and then creating a new GEP instruction in the
 loop to increment the value by the appropriate amount.
 
-.. _passes-loop-rotate:
-
 ``-loop-rotate``: Rotate Loops
 ------------------------------
 
-A simple loop rotation transformation.  A summary of it can be found in
-:ref:`Loop Terminology for Rotated Loops <loop-terminology-loop-rotate>`.
-
-
-.. _passes-loop-simplify:
+A simple loop rotation transformation.
 
 ``-loop-simplify``: Canonicalize natural loops
 ----------------------------------------------
 
 This pass performs several transformations to transform natural loops into a
 simpler form, which makes subsequent analyses and transformations simpler and
-more effective. A summary of it can be found in
-:ref:`Loop Terminology, Loop Simplify Form <loop-terminology-loop-simplify>`.
+more effective.
 
 Loop pre-header insertion guarantees that there is a single, non-critical entry
 edge from outside of the loop to the loop header.  This simplifies a number of
@@ -829,29 +809,6 @@ dominator information.
 This pass implements a simple loop unroller.  It works best when loops have
 been canonicalized by the :ref:`indvars <passes-indvars>` pass, allowing it to
 determine the trip counts of loops easily.
-
-``-loop-unroll-and-jam``: Unroll and Jam loops
-----------------------------------------------
-
-This pass implements a simple unroll and jam classical loop optimisation pass.
-It transforms loop from:
-
-.. code-block:: c++
-
-  for i.. i+= 1              for i.. i+= 4
-    for j..                    for j..
-      code(i, j)                 code(i, j)
-                                 code(i+1, j)
-                                 code(i+2, j)
-                                 code(i+3, j)
-                             remainder loop
-
-Which can be seen as unrolling the outer loop and "jamming" (fusing) the inner
-loops into one. When variables or loads can be shared in the new inner loop, this
-can lead to significant performance improvements. It uses
-:ref:`Dependence Analysis <passes-da>` for proving the transformations are safe.
-
-.. _passes-loop-unswitch:
 
 ``-loop-unswitch``: Unswitch loops
 ----------------------------------
@@ -924,7 +881,7 @@ calls, or transforming sets of stores into ``memset``\ s.
 ``-mergefunc``: Merge Functions
 -------------------------------
 
-This pass looks for equivalent functions that are mergeable and folds them.
+This pass looks for equivalent functions that are mergable and folds them.
 
 Total-ordering is introduced among the functions set: we define comparison
 that answers for every two functions which of them is greater. It allows to
@@ -978,11 +935,6 @@ function arguments are rank = 1, and other values are assigned ranks
 corresponding to the reverse post order traversal of current function (starting
 at 2), which effectively gives values in deep loops higher rank than values not
 in loops.
-
-``-rel-lookup-table-converter``: Relative lookup table converter
-----------------------------------------------------------------
-
-This pass converts lookup tables to PIC-friendly relative lookup tables.
 
 ``-reg2mem``: Demote all values to stack slots
 ----------------------------------------------
@@ -1125,7 +1077,7 @@ algorithm:
    return returns something else (like constant 0), and can still be TRE'd.  It
    can be TRE'd if *all other* return instructions in the function return the
    exact same value.
-#. If it can prove that callees do not access their caller stack frame, they
+#. If it can prove that callees do not access theier caller stack frame, they
    are marked as eligible for tail call elimination (by the code generator).
 
 Utility Passes
@@ -1192,24 +1144,16 @@ performing optimizing transformations.
 Note that this does not provide full security verification (like Java), but
 instead just tries to ensure that code is well-formed.
 
-.. _passes-view-cfg:
-
 ``-view-cfg``: View CFG of function
 -----------------------------------
 
 Displays the control flow graph using the GraphViz tool.
-Additionally the ``-cfg-func-name=<substring>`` option can be used to filter the
-functions that are displayed. All functions that contain the specified substring
-will be displayed.
 
 ``-view-cfg-only``: View CFG of function (with no function bodies)
 ------------------------------------------------------------------
 
 Displays the control flow graph using the GraphViz tool, but omitting function
 bodies.
-Additionally the ``-cfg-func-name=<substring>`` option can be used to filter the
-functions that are displayed. All functions that contain the specified substring
-will be displayed.
 
 ``-view-dom``: View dominance tree of function
 ----------------------------------------------
@@ -1233,8 +1177,3 @@ Displays the post dominator tree using the GraphViz tool.
 Displays the post dominator tree using the GraphViz tool, but omitting function
 bodies.
 
-``-transform-warning``: Report missed forced transformations
-------------------------------------------------------------
-
-Emits warnings about not yet applied forced transformations (e.g. from
-``#pragma omp simd``).

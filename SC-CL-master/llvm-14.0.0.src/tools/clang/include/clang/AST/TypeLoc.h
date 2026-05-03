@@ -1,20 +1,21 @@
 //===- TypeLoc.h - Type Source Info Wrapper ---------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
 /// \file
-/// Defines the clang::TypeLoc interface and its subclasses.
+/// \brief Defines the clang::TypeLoc interface and its subclasses.
 //
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_CLANG_AST_TYPELOC_H
 #define LLVM_CLANG_AST_TYPELOC_H
 
-#include "clang/AST/DeclarationName.h"
+#include "clang/AST/Decl.h"
 #include "clang/AST/NestedNameSpecifier.h"
 #include "clang/AST/TemplateBase.h"
 #include "clang/AST/Type.h"
@@ -32,15 +33,12 @@
 
 namespace clang {
 
-class Attr;
 class ASTContext;
 class CXXRecordDecl;
-class ConceptDecl;
 class Expr;
 class ObjCInterfaceDecl;
 class ObjCProtocolDecl;
 class ObjCTypeParamDecl;
-class ParmVarDecl;
 class TemplateTypeParmDecl;
 class UnqualTypeLoc;
 class UnresolvedUsingTypenameDecl;
@@ -51,7 +49,7 @@ class UnresolvedUsingTypenameDecl;
   class Class##TypeLoc;
 #include "clang/AST/TypeLocNodes.def"
 
-/// Base wrapper for a particular "section" of type source info.
+/// \brief Base wrapper for a particular "section" of type source info.
 ///
 /// A client should use the TypeLoc subclasses through castAs()/getAs()
 /// in order to get at the actual information.
@@ -69,7 +67,7 @@ public:
   TypeLoc(const Type *ty, void *opaqueData)
       : Ty(ty), Data(opaqueData) {}
 
-  /// Convert to the specified TypeLoc type, asserting that this TypeLoc
+  /// \brief Convert to the specified TypeLoc type, asserting that this TypeLoc
   /// is of the desired type.
   ///
   /// \pre T::isKind(*this)
@@ -82,21 +80,21 @@ public:
     return t;
   }
 
-  /// Convert to the specified TypeLoc type, returning a null TypeLoc if
+  /// \brief Convert to the specified TypeLoc type, returning a null TypeLoc if
   /// this TypeLoc is not of the desired type.
   template<typename T>
   T getAs() const {
     if (!T::isKind(*this))
-      return {};
+      return T();
     T t;
     TypeLoc& tl = t;
     tl = *this;
     return t;
   }
 
-  /// Convert to the specified TypeLoc type, returning a null TypeLoc if
-  /// this TypeLoc is not of the desired type. It will consider type
-  /// adjustments from a type that was written as a T to another type that is
+  /// \brief Convert to the specified TypeLoc type, returning a null TypeLoc if
+  /// this TypeLock is not of the desired type. It will consider type
+  /// adjustments from a type that wad written as a T to another type that is
   /// still canonically a T (ignores parens, attributes, elaborated types, etc).
   template <typename T>
   T getAsAdjusted() const;
@@ -108,7 +106,7 @@ public:
 #define ABSTRACT_TYPE(Class, Base)
 #define TYPE(Class, Base) \
     Class = Type::Class,
-#include "clang/AST/TypeNodes.inc"
+#include "clang/AST/TypeNodes.def"
     Qualified
   };
 
@@ -120,14 +118,14 @@ public:
   bool isNull() const { return !Ty; }
   explicit operator bool() const { return Ty; }
 
-  /// Returns the size of type source info data block for the given type.
+  /// \brief Returns the size of type source info data block for the given type.
   static unsigned getFullDataSizeForType(QualType Ty);
 
-  /// Returns the alignment of type source info data block for
+  /// \brief Returns the alignment of type source info data block for
   /// the given type.
   static unsigned getLocalAlignmentForType(QualType Ty);
 
-  /// Get the type for which this source info wrapper provides
+  /// \brief Get the type for which this source info wrapper provides
   /// information.
   QualType getType() const {
     return QualType::getFromOpaquePtr(Ty);
@@ -137,45 +135,47 @@ public:
     return QualType::getFromOpaquePtr(Ty).getTypePtr();
   }
 
-  /// Get the pointer where source information is stored.
+  /// \brief Get the pointer where source information is stored.
   void *getOpaqueData() const {
     return Data;
   }
 
-  /// Get the begin source location.
+  /// \brief Get the begin source location.
   SourceLocation getBeginLoc() const;
 
-  /// Get the end source location.
+  /// \brief Get the end source location.
   SourceLocation getEndLoc() const;
 
-  /// Get the full source range.
+  /// \brief Get the full source range.
   SourceRange getSourceRange() const LLVM_READONLY {
     return SourceRange(getBeginLoc(), getEndLoc());
   }
 
+  SourceLocation getLocStart() const LLVM_READONLY { return getBeginLoc(); }
+  SourceLocation getLocEnd() const LLVM_READONLY { return getEndLoc(); }
 
-  /// Get the local source range.
+  /// \brief Get the local source range.
   SourceRange getLocalSourceRange() const {
     return getLocalSourceRangeImpl(*this);
   }
 
-  /// Returns the size of the type source info data block.
+  /// \brief Returns the size of the type source info data block.
   unsigned getFullDataSize() const {
     return getFullDataSizeForType(getType());
   }
 
-  /// Get the next TypeLoc pointed by this TypeLoc, e.g for "int*" the
+  /// \brief Get the next TypeLoc pointed by this TypeLoc, e.g for "int*" the
   /// TypeLoc is a PointerLoc and next TypeLoc is for "int".
   TypeLoc getNextTypeLoc() const {
     return getNextTypeLocImpl(*this);
   }
 
-  /// Skips past any qualifiers, if this is qualified.
+  /// \brief Skips past any qualifiers, if this is qualified.
   UnqualTypeLoc getUnqualifiedLoc() const; // implemented in this header
 
   TypeLoc IgnoreParens() const;
 
-  /// Find a type with the location of an explicit type qualifier.
+  /// \brief Find a type with the location of an explicit type qualifier.
   ///
   /// The result, if non-null, will be one of:
   ///   QualifiedTypeLoc
@@ -183,12 +183,7 @@ public:
   ///   AttributedTypeLoc, for those type attributes that behave as qualifiers
   TypeLoc findExplicitQualifierLoc() const;
 
-  /// Get the typeloc of an AutoType whose type will be deduced for a variable
-  /// with an initializer of this type. This looks through declarators like
-  /// pointer types, but not through decltype or typedefs.
-  AutoTypeLoc getContainedAutoTypeLoc() const;
-
-  /// Initializes this to state that every location in this
+  /// \brief Initializes this to state that every location in this
   /// type is the given location.
   ///
   /// This method exists to provide a simple transition for code that
@@ -197,14 +192,14 @@ public:
     initializeImpl(Context, *this, Loc);
   }
 
-  /// Initializes this by copying its information from another
+  /// \brief Initializes this by copying its information from another
   /// TypeLoc of the same type.
   void initializeFullCopy(TypeLoc Other) {
     assert(getType() == Other.getType());
     copy(Other);
   }
 
-  /// Initializes this by copying its information from another
+  /// \brief Initializes this by copying its information from another
   /// TypeLoc of the same type.  The given size must be the full data
   /// size.
   void initializeFullCopy(TypeLoc Other, unsigned Size) {
@@ -240,13 +235,13 @@ private:
   static SourceRange getLocalSourceRangeImpl(TypeLoc TL);
 };
 
-/// Return the TypeLoc for a type source info.
+/// \brief Return the TypeLoc for a type source info.
 inline TypeLoc TypeSourceInfo::getTypeLoc() const {
   // TODO: is this alignment already sufficient?
   return TypeLoc(Ty, const_cast<void*>(static_cast<const void*>(this + 1)));
 }
 
-/// Wrapper of type source information for a type with
+/// \brief Wrapper of type source information for a type with
 /// no direct qualifiers.
 class UnqualTypeLoc : public TypeLoc {
 public:
@@ -269,7 +264,7 @@ private:
   }
 };
 
-/// Wrapper of type source information for a type with
+/// \brief Wrapper of type source information for a type with
 /// non-trivial direct qualifiers.
 ///
 /// Currently, we intentionally do not provide source location for
@@ -281,7 +276,7 @@ public:
   UnqualTypeLoc getUnqualifiedLoc() const {
     unsigned align =
         TypeLoc::getLocalAlignmentForType(QualType(getTypePtr(), 0));
-    auto dataInt = reinterpret_cast<uintptr_t>(Data);
+    uintptr_t dataInt = reinterpret_cast<uintptr_t>(Data);
     dataInt = llvm::alignTo(dataInt, align);
     return UnqualTypeLoc(getTypePtr(), reinterpret_cast<void*>(dataInt));
   }
@@ -300,7 +295,7 @@ public:
     return getUnqualifiedLoc();
   }
 
-  /// Returns the size of the type source info data block that is
+  /// \brief Returns the size of the type source info data block that is
   /// specific to this type.
   unsigned getLocalDataSize() const {
     // In fact, we don't currently preserve any location information
@@ -308,7 +303,7 @@ public:
     return 0;
   }
 
-  /// Returns the alignment of the type source info data block that is
+  /// \brief Returns the alignment of the type source info data block that is
   /// specific to this type.
   unsigned getLocalDataAlignment() const {
     // We don't preserve any location information.
@@ -434,7 +429,7 @@ protected:
   }
 
   void *getNonLocalData() const {
-    auto data = reinterpret_cast<uintptr_t>(Base::Data);
+    uintptr_t data = reinterpret_cast<uintptr_t>(Base::Data);
     data += asDerived()->getLocalDataSize();
     data = llvm::alignTo(data, getNextTypeAlign());
     return reinterpret_cast<void*>(data);
@@ -508,7 +503,7 @@ struct TypeSpecLocInfo {
   SourceLocation NameLoc;
 };
 
-/// A reasonable base class for TypeLocs that correspond to
+/// \brief A reasonable base class for TypeLocs that correspond to
 /// types that are written as a type-specifier.
 class TypeSpecTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
                                                TypeSpecTypeLoc,
@@ -546,7 +541,7 @@ struct BuiltinLocInfo {
   SourceRange BuiltinRange;
 };
 
-/// Wrapper for source info for builtin types.
+/// \brief Wrapper for source info for builtin types.
 class BuiltinTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
                                               BuiltinTypeLoc,
                                               BuiltinType,
@@ -581,9 +576,10 @@ public:
 
   bool needsExtraLocalData() const {
     BuiltinType::Kind bk = getTypePtr()->getKind();
-    return (bk >= BuiltinType::UShort && bk <= BuiltinType::UInt128) ||
-           (bk >= BuiltinType::Short && bk <= BuiltinType::Ibm128) ||
-           bk == BuiltinType::UChar || bk == BuiltinType::SChar;
+    return (bk >= BuiltinType::UShort && bk <= BuiltinType::UInt128)
+      || (bk >= BuiltinType::Short && bk <= BuiltinType::Float128)
+      || bk == BuiltinType::UChar
+      || bk == BuiltinType::SChar;
   }
 
   unsigned getExtraLocalDataSize() const {
@@ -602,32 +598,32 @@ public:
     if (needsExtraLocalData())
       return static_cast<TypeSpecifierSign>(getWrittenBuiltinSpecs().Sign);
     else
-      return TypeSpecifierSign::Unspecified;
+      return TSS_unspecified;
   }
 
   bool hasWrittenSignSpec() const {
-    return getWrittenSignSpec() != TypeSpecifierSign::Unspecified;
+    return getWrittenSignSpec() != TSS_unspecified;
   }
 
   void setWrittenSignSpec(TypeSpecifierSign written) {
     if (needsExtraLocalData())
-      getWrittenBuiltinSpecs().Sign = static_cast<unsigned>(written);
+      getWrittenBuiltinSpecs().Sign = written;
   }
 
   TypeSpecifierWidth getWrittenWidthSpec() const {
     if (needsExtraLocalData())
       return static_cast<TypeSpecifierWidth>(getWrittenBuiltinSpecs().Width);
     else
-      return TypeSpecifierWidth::Unspecified;
+      return TSW_unspecified;
   }
 
   bool hasWrittenWidthSpec() const {
-    return getWrittenWidthSpec() != TypeSpecifierWidth::Unspecified;
+    return getWrittenWidthSpec() != TSW_unspecified;
   }
 
   void setWrittenWidthSpec(TypeSpecifierWidth written) {
     if (needsExtraLocalData())
-      getWrittenBuiltinSpecs().Width = static_cast<unsigned>(written);
+      getWrittenBuiltinSpecs().Width = written;
   }
 
   TypeSpecifierType getWrittenTypeSpec() const;
@@ -657,25 +653,15 @@ public:
     setBuiltinLoc(Loc);
     if (needsExtraLocalData()) {
       WrittenBuiltinSpecs &wbs = getWrittenBuiltinSpecs();
-      wbs.Sign = static_cast<unsigned>(TypeSpecifierSign::Unspecified);
-      wbs.Width = static_cast<unsigned>(TypeSpecifierWidth::Unspecified);
+      wbs.Sign = TSS_unspecified;
+      wbs.Width = TSW_unspecified;
       wbs.Type = TST_unspecified;
       wbs.ModeAttr = false;
     }
   }
 };
 
-/// Wrapper for source info for types used via transparent aliases.
-class UsingTypeLoc : public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
-                                                      UsingTypeLoc, UsingType> {
-public:
-  QualType getUnderlyingType() const {
-    return getTypePtr()->getUnderlyingType();
-  }
-  UsingShadowDecl *getFoundDecl() const { return getTypePtr()->getFoundDecl(); }
-};
-
-/// Wrapper for source info for typedefs.
+/// \brief Wrapper for source info for typedefs.
 class TypedefTypeLoc : public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
                                                         TypedefTypeLoc,
                                                         TypedefType> {
@@ -685,7 +671,7 @@ public:
   }
 };
 
-/// Wrapper for source info for injected class names of class
+/// \brief Wrapper for source info for injected class names of class
 /// templates.
 class InjectedClassNameTypeLoc :
     public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
@@ -697,7 +683,7 @@ public:
   }
 };
 
-/// Wrapper for source info for unresolved typename using decls.
+/// \brief Wrapper for source info for unresolved typename using decls.
 class UnresolvedUsingTypeLoc :
     public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
                                      UnresolvedUsingTypeLoc,
@@ -708,7 +694,7 @@ public:
   }
 };
 
-/// Wrapper for source info for tag types.  Note that this only
+/// \brief Wrapper for source info for tag types.  Note that this only
 /// records source info for the name itself; a type written 'struct foo'
 /// should be represented as an ElaboratedTypeLoc.  We currently
 /// only do that when C++ is enabled because of the expense of
@@ -719,11 +705,15 @@ class TagTypeLoc : public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
 public:
   TagDecl *getDecl() const { return getTypePtr()->getDecl(); }
 
-  /// True if the tag was defined in this type specifier.
-  bool isDefinition() const;
+  /// \brief True if the tag was defined in this type specifier.
+  bool isDefinition() const {
+    TagDecl *D = getDecl();
+    return D->isCompleteDefinition() &&
+           (D->getIdentifier() == nullptr || D->getLocation() == getNameLoc());
+  }
 };
 
-/// Wrapper for source info for record types.
+/// \brief Wrapper for source info for record types.
 class RecordTypeLoc : public InheritingConcreteTypeLoc<TagTypeLoc,
                                                        RecordTypeLoc,
                                                        RecordType> {
@@ -731,7 +721,7 @@ public:
   RecordDecl *getDecl() const { return getTypePtr()->getDecl(); }
 };
 
-/// Wrapper for source info for enum types.
+/// \brief Wrapper for source info for enum types.
 class EnumTypeLoc : public InheritingConcreteTypeLoc<TagTypeLoc,
                                                      EnumTypeLoc,
                                                      EnumType> {
@@ -739,7 +729,7 @@ public:
   EnumDecl *getDecl() const { return getTypePtr()->getDecl(); }
 };
 
-/// Wrapper for template type parameters.
+/// \brief Wrapper for template type parameters.
 class TemplateTypeParmTypeLoc :
     public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
                                      TemplateTypeParmTypeLoc,
@@ -838,14 +828,14 @@ public:
   }
 };
 
-/// Wrapper for substituted template type parameters.
+/// \brief Wrapper for substituted template type parameters.
 class SubstTemplateTypeParmTypeLoc :
     public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
                                      SubstTemplateTypeParmTypeLoc,
                                      SubstTemplateTypeParmType> {
 };
 
-  /// Wrapper for substituted template type parameters.
+  /// \brief Wrapper for substituted template type parameters.
 class SubstTemplateTypeParmPackTypeLoc :
     public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
                                      SubstTemplateTypeParmPackTypeLoc,
@@ -853,17 +843,40 @@ class SubstTemplateTypeParmPackTypeLoc :
 };
 
 struct AttributedLocInfo {
-  const Attr *TypeAttr;
+  union {
+    Expr *ExprOperand;
+
+    /// A raw SourceLocation.
+    unsigned EnumOperandLoc;
+  };
+
+  SourceRange OperandParens;
+
+  SourceLocation AttrLoc;
 };
 
-/// Type source information for an attributed type.
+/// \brief Type source information for an attributed type.
 class AttributedTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
                                                  AttributedTypeLoc,
                                                  AttributedType,
                                                  AttributedLocInfo> {
 public:
-  attr::Kind getAttrKind() const {
+  AttributedType::Kind getAttrKind() const {
     return getTypePtr()->getAttrKind();
+  }
+
+  bool hasAttrExprOperand() const {
+    return (getAttrKind() >= AttributedType::FirstExprOperandKind &&
+            getAttrKind() <= AttributedType::LastExprOperandKind);
+  }
+
+  bool hasAttrEnumOperand() const {
+    return (getAttrKind() >= AttributedType::FirstEnumOperandKind &&
+            getAttrKind() <= AttributedType::LastEnumOperandKind);
+  }
+
+  bool hasAttrOperand() const {
+    return hasAttrExprOperand() || hasAttrEnumOperand();
   }
 
   bool isQualifier() const {
@@ -878,22 +891,78 @@ public:
     return getInnerTypeLoc();
   }
 
-  /// The type attribute.
-  const Attr *getAttr() const {
-    return getLocalData()->TypeAttr;
+  /// The location of the attribute name, i.e.
+  ///    __attribute__((regparm(1000)))
+  ///                   ^~~~~~~
+  SourceLocation getAttrNameLoc() const {
+    return getLocalData()->AttrLoc;
   }
-  void setAttr(const Attr *A) {
-    getLocalData()->TypeAttr = A;
-  }
-
-  template<typename T> const T *getAttrAs() {
-    return dyn_cast_or_null<T>(getAttr());
+  void setAttrNameLoc(SourceLocation loc) {
+    getLocalData()->AttrLoc = loc;
   }
 
-  SourceRange getLocalSourceRange() const;
+  /// The attribute's expression operand, if it has one.
+  ///    void *cur_thread __attribute__((address_space(21)))
+  ///                                                  ^~
+  Expr *getAttrExprOperand() const {
+    assert(hasAttrExprOperand());
+    return getLocalData()->ExprOperand;
+  }
+  void setAttrExprOperand(Expr *e) {
+    assert(hasAttrExprOperand());
+    getLocalData()->ExprOperand = e;
+  }
+
+  /// The location of the attribute's enumerated operand, if it has one.
+  ///    void * __attribute__((objc_gc(weak)))
+  ///                                  ^~~~
+  SourceLocation getAttrEnumOperandLoc() const {
+    assert(hasAttrEnumOperand());
+    return SourceLocation::getFromRawEncoding(getLocalData()->EnumOperandLoc);
+  }
+  void setAttrEnumOperandLoc(SourceLocation loc) {
+    assert(hasAttrEnumOperand());
+    getLocalData()->EnumOperandLoc = loc.getRawEncoding();
+  }
+
+  /// The location of the parentheses around the operand, if there is
+  /// an operand.
+  ///    void * __attribute__((objc_gc(weak)))
+  ///                                 ^    ^
+  SourceRange getAttrOperandParensRange() const {
+    assert(hasAttrOperand());
+    return getLocalData()->OperandParens;
+  }
+  void setAttrOperandParensRange(SourceRange range) {
+    assert(hasAttrOperand());
+    getLocalData()->OperandParens = range;
+  }
+
+  SourceRange getLocalSourceRange() const {
+    // Note that this does *not* include the range of the attribute
+    // enclosure, e.g.:
+    //    __attribute__((foo(bar)))
+    //    ^~~~~~~~~~~~~~~        ~~
+    // or
+    //    [[foo(bar)]]
+    //    ^~        ~~
+    // That enclosure doesn't necessarily belong to a single attribute
+    // anyway.
+    SourceRange range(getAttrNameLoc());
+    if (hasAttrOperand())
+      range.setEnd(getAttrOperandParensRange().getEnd());
+    return range;
+  }
 
   void initializeLocal(ASTContext &Context, SourceLocation loc) {
-    setAttr(nullptr);
+    setAttrNameLoc(loc);
+    if (hasAttrExprOperand()) {
+      setAttrOperandParensRange(SourceRange(loc));
+      setAttrExprOperand(nullptr);
+    } else if (hasAttrEnumOperand()) {
+      setAttrOperandParensRange(SourceRange(loc));
+      setAttrEnumOperandLoc(loc);
+    }
   }
 
   QualType getInnerType() const {
@@ -923,7 +992,7 @@ class ObjCObjectTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
     return (TypeSourceInfo**)this->getExtraLocalData();
   }
 
-  // SourceLocations are stored after the type argument information, one for
+  // SourceLocations are stored after the type argument information, one for 
   // each Protocol.
   SourceLocation *getProtocolLocArray() const {
     return (SourceLocation*)(getTypeArgLocArray() + getNumTypeArgs());
@@ -1045,7 +1114,7 @@ struct ObjCInterfaceLocInfo {
   SourceLocation NameEndLoc;
 };
 
-/// Wrapper for source info for ObjC interfaces.
+/// \brief Wrapper for source info for ObjC interfaces.
 class ObjCInterfaceTypeLoc : public ConcreteTypeLoc<ObjCObjectTypeLoc,
                                                     ObjCInterfaceTypeLoc,
                                                     ObjCInterfaceType,
@@ -1062,11 +1131,11 @@ public:
   void setNameLoc(SourceLocation Loc) {
     getLocalData()->NameLoc = Loc;
   }
-
+                                                    
   SourceRange getLocalSourceRange() const {
     return SourceRange(getNameLoc(), getNameEndLoc());
   }
-
+  
   SourceLocation getNameEndLoc() const {
     return getLocalData()->NameEndLoc;
   }
@@ -1078,39 +1147,6 @@ public:
   void initializeLocal(ASTContext &Context, SourceLocation Loc) {
     setNameLoc(Loc);
     setNameEndLoc(Loc);
-  }
-};
-
-struct MacroQualifiedLocInfo {
-  SourceLocation ExpansionLoc;
-};
-
-class MacroQualifiedTypeLoc
-    : public ConcreteTypeLoc<UnqualTypeLoc, MacroQualifiedTypeLoc,
-                             MacroQualifiedType, MacroQualifiedLocInfo> {
-public:
-  void initializeLocal(ASTContext &Context, SourceLocation Loc) {
-    setExpansionLoc(Loc);
-  }
-
-  TypeLoc getInnerLoc() const { return getInnerTypeLoc(); }
-
-  const IdentifierInfo *getMacroIdentifier() const {
-    return getTypePtr()->getMacroIdentifier();
-  }
-
-  SourceLocation getExpansionLoc() const {
-    return this->getLocalData()->ExpansionLoc;
-  }
-
-  void setExpansionLoc(SourceLocation Loc) {
-    this->getLocalData()->ExpansionLoc = Loc;
-  }
-
-  QualType getInnerType() const { return getTypePtr()->getUnderlyingType(); }
-
-  SourceRange getLocalSourceRange() const {
-    return getInnerLoc().getLocalSourceRange();
   }
 };
 
@@ -1191,7 +1227,7 @@ public:
   }
 };
 
-/// Wrapper for source info for pointers decayed from arrays and
+/// \brief Wrapper for source info for pointers decayed from arrays and
 /// functions.
 class DecayedTypeLoc : public InheritingConcreteTypeLoc<
                            AdjustedTypeLoc, DecayedTypeLoc, DecayedType> {
@@ -1231,7 +1267,7 @@ public:
   }
 };
 
-/// Wrapper for source info for pointers.
+/// \brief Wrapper for source info for pointers.
 class PointerTypeLoc : public PointerLikeTypeLoc<PointerTypeLoc,
                                                  PointerType> {
 public:
@@ -1244,7 +1280,7 @@ public:
   }
 };
 
-/// Wrapper for source info for block pointers.
+/// \brief Wrapper for source info for block pointers.
 class BlockPointerTypeLoc : public PointerLikeTypeLoc<BlockPointerTypeLoc,
                                                       BlockPointerType> {
 public:
@@ -1261,7 +1297,7 @@ struct MemberPointerLocInfo : public PointerLikeLocInfo {
   TypeSourceInfo *ClassTInfo;
 };
 
-/// Wrapper for source info for member pointers.
+/// \brief Wrapper for source info for member pointers.
 class MemberPointerTypeLoc : public PointerLikeTypeLoc<MemberPointerTypeLoc,
                                                        MemberPointerType,
                                                        MemberPointerLocInfo> {
@@ -1356,7 +1392,7 @@ struct FunctionLocInfo {
   SourceLocation LocalRangeEnd;
 };
 
-/// Wrapper for source info for functions.
+/// \brief Wrapper for source info for functions.
 class FunctionTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
                                                FunctionTypeLoc,
                                                FunctionType,
@@ -1460,7 +1496,7 @@ public:
       setExceptionSpecRange(Loc);
   }
 
-  /// Returns the size of the type source info data block that is
+  /// \brief Returns the size of the type source info data block that is
   /// specific to this type.
   unsigned getExtraLocalDataSize() const {
     unsigned ExceptSpecSize = hasExceptionSpec() ? sizeof(SourceRange) : 0;
@@ -1489,7 +1525,7 @@ struct ArrayLocInfo {
   Expr *Size;
 };
 
-/// Wrapper for source info for arrays.
+/// \brief Wrapper for source info for arrays.
 class ArrayTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc,
                                             ArrayTypeLoc,
                                             ArrayType,
@@ -1634,7 +1670,7 @@ public:
     getLocalData()->NameLoc = Loc;
   }
 
-  /// - Copy the location information from the given info.
+  /// \brief - Copy the location information from the given info.
   void copy(TemplateSpecializationTypeLoc Loc) {
     unsigned size = getFullDataSize();
     assert(size == Loc.getFullDataSize());
@@ -1730,10 +1766,10 @@ public:
     return range;
   }
 
-  ///  Returns the type before the address space attribute application
-  ///  area.
+  ///  Returns the type before the address space attribute application 
+  ///  area.   
   ///    int * __attribute__((address_space(11))) *
-  ///    ^   ^
+  ///    ^   ^          
   QualType getInnerType() const {
     return this->getTypePtr()->getPointeeType();
   }
@@ -1744,7 +1780,6 @@ public:
 
   void initializeLocal(ASTContext &Context, SourceLocation loc) {
     setAttrNameLoc(loc);
-    setAttrOperandParensRange(loc);
     setAttrOperandParensRange(SourceRange(loc));
     setAttrExprOperand(getTypePtr()->getAddrSpaceExpr());
   }
@@ -1758,142 +1793,24 @@ public:
 
 // FIXME: size expression and attribute locations (or keyword if we
 // ever fully support altivec syntax).
-struct VectorTypeLocInfo {
-  SourceLocation NameLoc;
-};
-
-class VectorTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc, VectorTypeLoc,
-                                             VectorType, VectorTypeLocInfo> {
-public:
-  SourceLocation getNameLoc() const { return this->getLocalData()->NameLoc; }
-
-  void setNameLoc(SourceLocation Loc) { this->getLocalData()->NameLoc = Loc; }
-
-  SourceRange getLocalSourceRange() const {
-    return SourceRange(getNameLoc(), getNameLoc());
-  }
-
-  void initializeLocal(ASTContext &Context, SourceLocation Loc) {
-    setNameLoc(Loc);
-  }
-
-  TypeLoc getElementLoc() const { return getInnerTypeLoc(); }
-
-  QualType getInnerType() const { return this->getTypePtr()->getElementType(); }
-};
-
-// FIXME: size expression and attribute locations (or keyword if we
-// ever fully support altivec syntax).
-class DependentVectorTypeLoc
-    : public ConcreteTypeLoc<UnqualTypeLoc, DependentVectorTypeLoc,
-                             DependentVectorType, VectorTypeLocInfo> {
-public:
-  SourceLocation getNameLoc() const { return this->getLocalData()->NameLoc; }
-
-  void setNameLoc(SourceLocation Loc) { this->getLocalData()->NameLoc = Loc; }
-
-  SourceRange getLocalSourceRange() const {
-    return SourceRange(getNameLoc(), getNameLoc());
-  }
-
-  void initializeLocal(ASTContext &Context, SourceLocation Loc) {
-    setNameLoc(Loc);
-  }
-
-  TypeLoc getElementLoc() const { return getInnerTypeLoc(); }
-
-  QualType getInnerType() const { return this->getTypePtr()->getElementType(); }
+class VectorTypeLoc : public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
+                                                       VectorTypeLoc,
+                                                       VectorType> {
 };
 
 // FIXME: size expression and attribute locations.
-class ExtVectorTypeLoc
-    : public InheritingConcreteTypeLoc<VectorTypeLoc, ExtVectorTypeLoc,
-                                       ExtVectorType> {};
+class ExtVectorTypeLoc : public InheritingConcreteTypeLoc<VectorTypeLoc,
+                                                          ExtVectorTypeLoc,
+                                                          ExtVectorType> {
+};
 
 // FIXME: attribute locations.
 // For some reason, this isn't a subtype of VectorType.
-class DependentSizedExtVectorTypeLoc
-    : public ConcreteTypeLoc<UnqualTypeLoc, DependentSizedExtVectorTypeLoc,
-                             DependentSizedExtVectorType, VectorTypeLocInfo> {
-public:
-  SourceLocation getNameLoc() const { return this->getLocalData()->NameLoc; }
-
-  void setNameLoc(SourceLocation Loc) { this->getLocalData()->NameLoc = Loc; }
-
-  SourceRange getLocalSourceRange() const {
-    return SourceRange(getNameLoc(), getNameLoc());
-  }
-
-  void initializeLocal(ASTContext &Context, SourceLocation Loc) {
-    setNameLoc(Loc);
-  }
-
-  TypeLoc getElementLoc() const { return getInnerTypeLoc(); }
-
-  QualType getInnerType() const { return this->getTypePtr()->getElementType(); }
+class DependentSizedExtVectorTypeLoc :
+    public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
+                                     DependentSizedExtVectorTypeLoc,
+                                     DependentSizedExtVectorType> {
 };
-
-struct MatrixTypeLocInfo {
-  SourceLocation AttrLoc;
-  SourceRange OperandParens;
-  Expr *RowOperand;
-  Expr *ColumnOperand;
-};
-
-class MatrixTypeLoc : public ConcreteTypeLoc<UnqualTypeLoc, MatrixTypeLoc,
-                                             MatrixType, MatrixTypeLocInfo> {
-public:
-  /// The location of the attribute name, i.e.
-  ///    float __attribute__((matrix_type(4, 2)))
-  ///                         ^~~~~~~~~~~~~~~~~
-  SourceLocation getAttrNameLoc() const { return getLocalData()->AttrLoc; }
-  void setAttrNameLoc(SourceLocation loc) { getLocalData()->AttrLoc = loc; }
-
-  /// The attribute's row operand, if it has one.
-  ///    float __attribute__((matrix_type(4, 2)))
-  ///                                     ^
-  Expr *getAttrRowOperand() const { return getLocalData()->RowOperand; }
-  void setAttrRowOperand(Expr *e) { getLocalData()->RowOperand = e; }
-
-  /// The attribute's column operand, if it has one.
-  ///    float __attribute__((matrix_type(4, 2)))
-  ///                                        ^
-  Expr *getAttrColumnOperand() const { return getLocalData()->ColumnOperand; }
-  void setAttrColumnOperand(Expr *e) { getLocalData()->ColumnOperand = e; }
-
-  /// The location of the parentheses around the operand, if there is
-  /// an operand.
-  ///    float __attribute__((matrix_type(4, 2)))
-  ///                                    ^    ^
-  SourceRange getAttrOperandParensRange() const {
-    return getLocalData()->OperandParens;
-  }
-  void setAttrOperandParensRange(SourceRange range) {
-    getLocalData()->OperandParens = range;
-  }
-
-  SourceRange getLocalSourceRange() const {
-    SourceRange range(getAttrNameLoc());
-    range.setEnd(getAttrOperandParensRange().getEnd());
-    return range;
-  }
-
-  void initializeLocal(ASTContext &Context, SourceLocation loc) {
-    setAttrNameLoc(loc);
-    setAttrOperandParensRange(loc);
-    setAttrRowOperand(nullptr);
-    setAttrColumnOperand(nullptr);
-  }
-};
-
-class ConstantMatrixTypeLoc
-    : public InheritingConcreteTypeLoc<MatrixTypeLoc, ConstantMatrixTypeLoc,
-                                       ConstantMatrixType> {};
-
-class DependentSizedMatrixTypeLoc
-    : public InheritingConcreteTypeLoc<MatrixTypeLoc,
-                                       DependentSizedMatrixTypeLoc,
-                                       DependentSizedMatrixType> {};
 
 // FIXME: location of the '_Complex' keyword.
 class ComplexTypeLoc : public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
@@ -1994,35 +1911,12 @@ public:
   void initializeLocal(ASTContext &Context, SourceLocation Loc);
 };
 
-// decltype(expression) abc;
-// ~~~~~~~~                  DecltypeLoc
-//                    ~      RParenLoc
-// FIXME: add LParenLoc, it is tricky to support due to the limitation of
-// annotated-decltype token.
-struct DecltypeTypeLocInfo {
-  SourceLocation DecltypeLoc;
-  SourceLocation RParenLoc;
-};
-class DecltypeTypeLoc
-    : public ConcreteTypeLoc<UnqualTypeLoc, DecltypeTypeLoc, DecltypeType,
-                             DecltypeTypeLocInfo> {
+// FIXME: location of the 'decltype' and parens.
+class DecltypeTypeLoc : public InheritingConcreteTypeLoc<TypeSpecTypeLoc,
+                                                         DecltypeTypeLoc,
+                                                         DecltypeType> {
 public:
   Expr *getUnderlyingExpr() const { return getTypePtr()->getUnderlyingExpr(); }
-
-  SourceLocation getDecltypeLoc() const { return getLocalData()->DecltypeLoc; }
-  void setDecltypeLoc(SourceLocation Loc) { getLocalData()->DecltypeLoc = Loc; }
-
-  SourceLocation getRParenLoc() const { return getLocalData()->RParenLoc; }
-  void setRParenLoc(SourceLocation Loc) { getLocalData()->RParenLoc = Loc; }
-
-  SourceRange getLocalSourceRange() const {
-    return SourceRange(getDecltypeLoc(), getRParenLoc());
-  }
-
-  void initializeLocal(ASTContext &Context, SourceLocation Loc) {
-    setDecltypeLoc(Loc);
-    setRParenLoc(Loc);
-  }
 };
 
 struct UnaryTransformTypeLocInfo {
@@ -2074,143 +1968,8 @@ class DeducedTypeLoc
     : public InheritingConcreteTypeLoc<TypeSpecTypeLoc, DeducedTypeLoc,
                                        DeducedType> {};
 
-struct AutoTypeLocInfo : TypeSpecLocInfo {
-  NestedNameSpecifierLoc NestedNameSpec;
-  SourceLocation TemplateKWLoc;
-  SourceLocation ConceptNameLoc;
-  NamedDecl *FoundDecl;
-  SourceLocation LAngleLoc;
-  SourceLocation RAngleLoc;
-
-  // For decltype(auto).
-  SourceLocation RParenLoc;
-
-  // Followed by a TemplateArgumentLocInfo[]
-};
-
 class AutoTypeLoc
-    : public ConcreteTypeLoc<DeducedTypeLoc,
-                             AutoTypeLoc,
-                             AutoType,
-                             AutoTypeLocInfo> {
-public:
-  AutoTypeKeyword getAutoKeyword() const {
-    return getTypePtr()->getKeyword();
-  }
-
-  bool isDecltypeAuto() const { return getTypePtr()->isDecltypeAuto(); }
-  SourceLocation getRParenLoc() const { return getLocalData()->RParenLoc; }
-  void setRParenLoc(SourceLocation Loc) { getLocalData()->RParenLoc = Loc; }
-
-  bool isConstrained() const {
-    return getTypePtr()->isConstrained();
-  }
-
-  const NestedNameSpecifierLoc &getNestedNameSpecifierLoc() const {
-    return getLocalData()->NestedNameSpec;
-  }
-
-  void setNestedNameSpecifierLoc(NestedNameSpecifierLoc NNS) {
-    getLocalData()->NestedNameSpec = NNS;
-  }
-
-  SourceLocation getTemplateKWLoc() const {
-    return getLocalData()->TemplateKWLoc;
-  }
-
-  void setTemplateKWLoc(SourceLocation Loc) {
-    getLocalData()->TemplateKWLoc = Loc;
-  }
-
-  SourceLocation getConceptNameLoc() const {
-    return getLocalData()->ConceptNameLoc;
-  }
-
-  void setConceptNameLoc(SourceLocation Loc) {
-    getLocalData()->ConceptNameLoc = Loc;
-  }
-
-  NamedDecl *getFoundDecl() const {
-    return getLocalData()->FoundDecl;
-  }
-
-  void setFoundDecl(NamedDecl *D) {
-    getLocalData()->FoundDecl = D;
-  }
-
-  ConceptDecl *getNamedConcept() const {
-    return getTypePtr()->getTypeConstraintConcept();
-  }
-
-  DeclarationNameInfo getConceptNameInfo() const;
-
-  bool hasExplicitTemplateArgs() const {
-    return getLocalData()->LAngleLoc.isValid();
-  }
-
-  SourceLocation getLAngleLoc() const {
-    return this->getLocalData()->LAngleLoc;
-  }
-
-  void setLAngleLoc(SourceLocation Loc) {
-    this->getLocalData()->LAngleLoc = Loc;
-  }
-
-  SourceLocation getRAngleLoc() const {
-    return this->getLocalData()->RAngleLoc;
-  }
-
-  void setRAngleLoc(SourceLocation Loc) {
-    this->getLocalData()->RAngleLoc = Loc;
-  }
-
-  unsigned getNumArgs() const {
-    return getTypePtr()->getNumArgs();
-  }
-
-  void setArgLocInfo(unsigned i, TemplateArgumentLocInfo AI) {
-    getArgInfos()[i] = AI;
-  }
-
-  TemplateArgumentLocInfo getArgLocInfo(unsigned i) const {
-    return getArgInfos()[i];
-  }
-
-  TemplateArgumentLoc getArgLoc(unsigned i) const {
-    return TemplateArgumentLoc(getTypePtr()->getTypeConstraintArguments()[i],
-                               getArgLocInfo(i));
-  }
-
-  SourceRange getLocalSourceRange() const {
-    return {isConstrained()
-                ? (getNestedNameSpecifierLoc()
-                       ? getNestedNameSpecifierLoc().getBeginLoc()
-                       : (getTemplateKWLoc().isValid() ? getTemplateKWLoc()
-                                                       : getConceptNameLoc()))
-                : getNameLoc(),
-            isDecltypeAuto() ? getRParenLoc() : getNameLoc()};
-  }
-
-  void copy(AutoTypeLoc Loc) {
-    unsigned size = getFullDataSize();
-    assert(size == Loc.getFullDataSize());
-    memcpy(Data, Loc.Data, size);
-  }
-
-  void initializeLocal(ASTContext &Context, SourceLocation Loc);
-
-  unsigned getExtraLocalDataSize() const {
-    return getNumArgs() * sizeof(TemplateArgumentLocInfo);
-  }
-
-  unsigned getExtraLocalDataAlignment() const {
-    return alignof(TemplateArgumentLocInfo);
-  }
-
-private:
-  TemplateArgumentLocInfo *getArgInfos() const {
-    return static_cast<TemplateArgumentLocInfo*>(getExtraLocalData());
-  }
+    : public InheritingConcreteTypeLoc<DeducedTypeLoc, AutoTypeLoc, AutoType> {
 };
 
 class DeducedTemplateSpecializationTypeLoc
@@ -2230,7 +1989,7 @@ public:
 struct ElaboratedLocInfo {
   SourceLocation ElaboratedKWLoc;
 
-  /// Data associated with the nested-name-specifier location.
+  /// \brief Data associated with the nested-name-specifier location.
   void *QualifierData;
 };
 
@@ -2593,19 +2352,11 @@ inline T TypeLoc::getAsAdjusted() const {
       Cur = ETL.getNamedTypeLoc();
     else if (auto ATL = Cur.getAs<AdjustedTypeLoc>())
       Cur = ATL.getOriginalLoc();
-    else if (auto MQL = Cur.getAs<MacroQualifiedTypeLoc>())
-      Cur = MQL.getInnerLoc();
     else
       break;
   }
   return Cur.getAs<T>();
 }
-class BitIntTypeLoc final
-    : public InheritingConcreteTypeLoc<TypeSpecTypeLoc, BitIntTypeLoc,
-                                       BitIntType> {};
-class DependentBitIntTypeLoc final
-    : public InheritingConcreteTypeLoc<TypeSpecTypeLoc, DependentBitIntTypeLoc,
-                                       DependentBitIntType> {};
 
 } // namespace clang
 

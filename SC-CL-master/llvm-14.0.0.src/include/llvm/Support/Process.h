@@ -1,8 +1,9 @@
 //===- llvm/Support/Process.h -----------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 /// \file
@@ -25,11 +26,10 @@
 #define LLVM_SUPPORT_PROCESS_H
 
 #include "llvm/ADT/Optional.h"
-#include "llvm/Support/AllocatorBase.h"
+#include "llvm/Config/llvm-config.h"
+#include "llvm/Support/Allocator.h"
 #include "llvm/Support/Chrono.h"
 #include "llvm/Support/DataTypes.h"
-#include "llvm/Support/Error.h"
-#include "llvm/Support/Program.h"
 #include <system_error>
 
 namespace llvm {
@@ -39,36 +39,13 @@ class StringRef;
 namespace sys {
 
 
-/// A collection of legacy interfaces for querying information about the
+/// \brief A collection of legacy interfaces for querying information about the
 /// current executing process.
 class Process {
 public:
-  using Pid = int32_t;
+  static unsigned getPageSize();
 
-  /// Get the process's identifier.
-  static Pid getProcessId();
-
-  /// Get the process's page size.
-  /// This may fail if the underlying syscall returns an error. In most cases,
-  /// page size information is used for optimization, and this error can be
-  /// safely discarded by calling consumeError, and an estimated page size
-  /// substituted instead.
-  static Expected<unsigned> getPageSize();
-
-  /// Get the process's estimated page size.
-  /// This function always succeeds, but if the underlying syscall to determine
-  /// the page size fails then this will silently return an estimated page size.
-  /// The estimated page size is guaranteed to be a power of 2.
-  static unsigned getPageSizeEstimate() {
-    if (auto PageSize = getPageSize())
-      return *PageSize;
-    else {
-      consumeError(PageSize.takeError());
-      return 4096;
-    }
-  }
-
-  /// Return process memory usage.
+  /// \brief Return process memory usage.
   /// This static function will return the total amount of memory allocated
   /// by the process. This only counts the memory allocated via the malloc,
   /// calloc and realloc functions and includes any "free" holes in the
@@ -90,10 +67,10 @@ public:
   /// This function makes the necessary calls to the operating system to
   /// prevent core files or any other kind of large memory dumps that can
   /// occur when a program fails.
-  /// Prevent core file generation.
+  /// @brief Prevent core file generation.
   static void PreventCoreFiles();
 
-  /// true if PreventCoreFiles has been called, false otherwise.
+  /// \brief true if PreventCoreFiles has been called, false otherwise.
   static bool AreCoreFilesPrevented();
 
   // This function returns the environment variable \arg name's value as a UTF-8
@@ -108,12 +85,18 @@ public:
   /// considered.
   static Optional<std::string> FindInEnvPath(StringRef EnvName,
                                              StringRef FileName,
-                                             ArrayRef<std::string> IgnoreList,
-                                             char Separator = EnvPathSeparator);
+                                             ArrayRef<std::string> IgnoreList);
 
   static Optional<std::string> FindInEnvPath(StringRef EnvName,
-                                             StringRef FileName,
-                                             char Separator = EnvPathSeparator);
+                                             StringRef FileName);
+
+  /// This function returns a SmallVector containing the arguments passed from
+  /// the operating system to the program.  This function expects to be handed
+  /// the vector passed in from main.
+  static std::error_code
+  GetArgumentVector(SmallVectorImpl<const char *> &Args,
+                    ArrayRef<const char *> ArgsFromMain,
+                    SpecificBumpPtrAllocator<char> &ArgAllocator);
 
   // This functions ensures that the standard file descriptors (input, output,
   // and error) are properly mapped to a file descriptor before we use any of
@@ -209,15 +192,6 @@ public:
   /// Get the result of a process wide random number generator. The
   /// generator will be automatically seeded in non-deterministic fashion.
   static unsigned GetRandomNumber();
-
-  /// Equivalent to ::exit(), except when running inside a CrashRecoveryContext.
-  /// In that case, the control flow will resume after RunSafely(), like for a
-  /// crash, rather than exiting the current process.
-  /// Use \arg NoCleanup for calling _exit() instead of exit().
-  [[noreturn]] static void Exit(int RetCode, bool NoCleanup = false);
-
-private:
-  [[noreturn]] static void ExitNoCleanup(int RetCode);
 };
 
 }

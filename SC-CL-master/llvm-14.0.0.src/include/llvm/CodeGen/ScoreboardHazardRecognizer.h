@@ -1,8 +1,9 @@
 //=- llvm/CodeGen/ScoreboardHazardRecognizer.h - Schedule Support -*- C++ -*-=//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -16,13 +17,13 @@
 #define LLVM_CODEGEN_SCOREBOARDHAZARDRECOGNIZER_H
 
 #include "llvm/CodeGen/ScheduleHazardRecognizer.h"
-#include "llvm/MC/MCInstrItineraries.h"
 #include <cassert>
 #include <cstddef>
 #include <cstring>
 
 namespace llvm {
 
+class InstrItineraryData;
 class ScheduleDAG;
 class SUnit;
 
@@ -37,7 +38,7 @@ class ScoreboardHazardRecognizer : public ScheduleHazardRecognizer {
   // bottom-up scheduler, then the scoreboard cycles are the inverse of the
   // scheduler's cycles.
   class Scoreboard {
-    InstrStage::FuncUnits *Data = nullptr;
+    unsigned *Data = nullptr;
 
     // The maximum number of cycles monitored by the Scoreboard. This
     // value is determined based on the target itineraries to ensure
@@ -56,7 +57,7 @@ class ScoreboardHazardRecognizer : public ScheduleHazardRecognizer {
 
     size_t getDepth() const { return Depth; }
 
-    InstrStage::FuncUnits& operator[](size_t idx) const {
+    unsigned& operator[](size_t idx) const {
       // Depth is expected to be a power-of-2.
       assert(Depth && !(Depth & (Depth - 1)) &&
              "Scoreboard was not initialized properly!");
@@ -67,7 +68,7 @@ class ScoreboardHazardRecognizer : public ScheduleHazardRecognizer {
     void reset(size_t d = 1) {
       if (!Data) {
         Depth = d;
-        Data = new InstrStage::FuncUnits[Depth];
+        Data = new unsigned[Depth];
       }
 
       memset(Data, 0, Depth * sizeof(Data[0]));
@@ -105,7 +106,7 @@ class ScoreboardHazardRecognizer : public ScheduleHazardRecognizer {
   Scoreboard RequiredScoreboard;
 
 public:
-  ScoreboardHazardRecognizer(const InstrItineraryData *II,
+  ScoreboardHazardRecognizer(const InstrItineraryData *ItinData,
                              const ScheduleDAG *DAG,
                              const char *ParentDebugType = "");
 

@@ -10,7 +10,7 @@
     ret i32 %c
   }
 
-  attributes #0 = { "frame-pointer"="none" }
+  attributes #0 = { "no-frame-pointer-elim"="false" }
 
 ...
 ---
@@ -18,7 +18,7 @@ name:            foo
 body: |
   ; CHECK: bb.0.body:
   bb.0.body:
-    ; CHECK: $eax = IMUL32rri8 $edi, 11, implicit-def dead $eflags
-    $eax = IMUL32rri8 $edi, 11, implicit-def dead $eflags
-    RET64 $eax
+    ; CHECK: %eax = IMUL32rri8 %edi, 11, implicit-def dead %eflags
+    %eax = IMUL32rri8 %edi, 11, implicit-def dead %eflags
+    RETQ %eax
 ...

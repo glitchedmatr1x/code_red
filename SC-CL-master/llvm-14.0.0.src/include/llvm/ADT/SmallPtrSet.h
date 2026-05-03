@@ -1,14 +1,14 @@
 //===- llvm/ADT/SmallPtrSet.h - 'Normally small' pointer set ----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file defines the SmallPtrSet class.  See the doxygen comment for
-/// SmallPtrSetImplBase for more details on the algorithm used.
+//
+// This file defines the SmallPtrSet class.  See the doxygen comment for
+// SmallPtrSetImplBase for more details on the algorithm used.
 //
 //===----------------------------------------------------------------------===//
 
@@ -279,7 +279,7 @@ public:
                                const DebugEpochBase &Epoch)
       : SmallPtrSetIteratorImpl(BP, E), DebugEpochBase::HandleBase(&Epoch) {}
 
-  // Most methods are provided by the base class.
+  // Most methods provided by baseclass.
 
   const PtrTy operator*() const {
     assert(isHandleInSync() && "invalid iterator access!");
@@ -335,7 +335,7 @@ struct RoundUpToPowerOfTwo {
   enum { Val = RoundUpToPowerOfTwoH<N, (N&(N-1)) == 0>::Val };
 };
 
-/// A templated base class for \c SmallPtrSet which provides the
+/// \brief A templated base class for \c SmallPtrSet which provides the
 /// typesafe interface that is common across all small sizes.
 ///
 /// This is particularly useful for passing around between interface boundaries
@@ -347,8 +347,14 @@ class SmallPtrSetImpl : public SmallPtrSetImplBase {
   using ConstPtrTraits = PointerLikeTypeTraits<ConstPtrType>;
 
 protected:
-  // Forward constructors to the base.
-  using SmallPtrSetImplBase::SmallPtrSetImplBase;
+  // Constructors that forward to the base.
+  SmallPtrSetImpl(const void **SmallStorage, const SmallPtrSetImpl &that)
+      : SmallPtrSetImplBase(SmallStorage, that) {}
+  SmallPtrSetImpl(const void **SmallStorage, unsigned SmallSize,
+                  SmallPtrSetImpl &&that)
+      : SmallPtrSetImplBase(SmallStorage, SmallSize, std::move(that)) {}
+  explicit SmallPtrSetImpl(const void **SmallStorage, unsigned SmallSize)
+      : SmallPtrSetImplBase(SmallStorage, SmallSize) {}
 
 public:
   using iterator = SmallPtrSetIterator<PtrType>;
@@ -367,27 +373,15 @@ public:
     return std::make_pair(makeIterator(p.first), p.second);
   }
 
-  /// Insert the given pointer with an iterator hint that is ignored. This is
-  /// identical to calling insert(Ptr), but allows SmallPtrSet to be used by
-  /// std::insert_iterator and std::inserter().
-  iterator insert(iterator, PtrType Ptr) {
-    return insert(Ptr).first;
-  }
-
   /// erase - If the set contains the specified pointer, remove it and return
   /// true, otherwise return false.
   bool erase(PtrType Ptr) {
     return erase_imp(PtrTraits::getAsVoidPointer(Ptr));
   }
   /// count - Return 1 if the specified pointer is in the set, 0 otherwise.
-  size_type count(ConstPtrType Ptr) const {
-    return find_imp(ConstPtrTraits::getAsVoidPointer(Ptr)) != EndPointer();
-  }
+  size_type count(ConstPtrType Ptr) const { return find(Ptr) != end() ? 1 : 0; }
   iterator find(ConstPtrType Ptr) const {
     return makeIterator(find_imp(ConstPtrTraits::getAsVoidPointer(Ptr)));
-  }
-  bool contains(ConstPtrType Ptr) const {
-    return find_imp(ConstPtrTraits::getAsVoidPointer(Ptr)) != EndPointer();
   }
 
   template <typename IterT>
@@ -415,32 +409,6 @@ private:
     return iterator(P, EndPointer(), *this);
   }
 };
-
-/// Equality comparison for SmallPtrSet.
-///
-/// Iterates over elements of LHS confirming that each value from LHS is also in
-/// RHS, and that no additional values are in RHS.
-template <typename PtrType>
-bool operator==(const SmallPtrSetImpl<PtrType> &LHS,
-                const SmallPtrSetImpl<PtrType> &RHS) {
-  if (LHS.size() != RHS.size())
-    return false;
-
-  for (const auto *KV : LHS)
-    if (!RHS.count(KV))
-      return false;
-
-  return true;
-}
-
-/// Inequality comparison for SmallPtrSet.
-///
-/// Equivalent to !(LHS == RHS).
-template <typename PtrType>
-bool operator!=(const SmallPtrSetImpl<PtrType> &LHS,
-                const SmallPtrSetImpl<PtrType> &RHS) {
-  return !(LHS == RHS);
-}
 
 /// SmallPtrSet - This class implements a set which is optimized for holding
 /// SmallSize or less elements.  This internally rounds up SmallSize to the next

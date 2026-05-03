@@ -1,12 +1,16 @@
 set(LLVM_LINK_COMPONENTS
-  Core
-  Support
-  )
+  core
+  support
+)
 
-add_clang_executable(clang-import-test
+if(NOT CLANG_BUILT_STANDALONE)
+  set(tablegen_deps intrinsics_gen)
+endif()
+
+add_clang_tool(clang-import-test
   clang-import-test.cpp
   DEPENDS
-  intrinsics_gen
+  ${tablegen_deps}
   )
 
 set(CLANG_IMPORT_TEST_LIB_DEPS
@@ -17,10 +21,9 @@ set(CLANG_IMPORT_TEST_LIB_DEPS
   clangFrontend
   clangLex
   clangParse
-  clangSerialization
   )
 
-clang_target_link_libraries(clang-import-test
+target_link_libraries(clang-import-test
   PRIVATE
   ${CLANG_IMPORT_TEST_LIB_DEPS}
   )

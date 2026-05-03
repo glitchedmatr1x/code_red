@@ -1,8 +1,9 @@
 //===- ScopedHashTable.h - A simple scoped hash table -----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -32,7 +33,7 @@
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/DenseMapInfo.h"
-#include "llvm/Support/AllocatorBase.h"
+#include "llvm/Support/Allocator.h"
 #include <cassert>
 #include <new>
 
@@ -197,7 +198,7 @@ public:
 
   using iterator = ScopedHashTableIterator<K, V, KInfo>;
 
-  iterator end() { return iterator(nullptr); }
+  iterator end() { return iterator(0); }
 
   iterator begin(const K &Key) {
     typename DenseMap<K, ValTy*, KInfo>::iterator I =

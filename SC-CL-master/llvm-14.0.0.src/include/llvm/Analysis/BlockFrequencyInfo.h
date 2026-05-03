@@ -1,8 +1,9 @@
 //===- BlockFrequencyInfo.h - Block Frequency Analysis ----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -55,7 +56,7 @@ public:
 
   const Function *getFunction() const;
   const BranchProbabilityInfo *getBPI() const;
-  void view(StringRef = "BlockFrequencyDAGs") const;
+  void view() const;
 
   /// getblockFreq - Return block frequency. Return 0 if we don't have the
   /// information. Please note that initial frequency is equal to ENTRY_FREQ. It
@@ -64,18 +65,17 @@ public:
   /// floating points.
   BlockFrequency getBlockFreq(const BasicBlock *BB) const;
 
-  /// Returns the estimated profile count of \p BB.
+  /// \brief Returns the estimated profile count of \p BB.
   /// This computes the relative block frequency of \p BB and multiplies it by
   /// the enclosing function's count (if available) and returns the value.
-  Optional<uint64_t> getBlockProfileCount(const BasicBlock *BB,
-                                          bool AllowSynthetic = false) const;
+  Optional<uint64_t> getBlockProfileCount(const BasicBlock *BB) const;
 
-  /// Returns the estimated profile count of \p Freq.
+  /// \brief Returns the estimated profile count of \p Freq.
   /// This uses the frequency \p Freq and multiplies it by
   /// the enclosing function's count (if available) and returns the value.
   Optional<uint64_t> getProfileCountFromFreq(uint64_t Freq) const;
 
-  /// Returns true if \p BB is an irreducible loop header
+  /// \brief Returns true if \p BB is an irreducible loop header
   /// block. Otherwise false.
   bool isIrrLoopHeader(const BasicBlock *BB);
 
@@ -103,12 +103,9 @@ public:
   uint64_t getEntryFreq() const;
   void releaseMemory();
   void print(raw_ostream &OS) const;
-
-  // Compare to the other BFI and verify they match.
-  void verifyMatch(BlockFrequencyInfo &Other) const;
 };
 
-/// Analysis pass which computes \c BlockFrequencyInfo.
+/// \brief Analysis pass which computes \c BlockFrequencyInfo.
 class BlockFrequencyAnalysis
     : public AnalysisInfoMixin<BlockFrequencyAnalysis> {
   friend AnalysisInfoMixin<BlockFrequencyAnalysis>;
@@ -116,14 +113,14 @@ class BlockFrequencyAnalysis
   static AnalysisKey Key;
 
 public:
-  /// Provide the result type for this analysis pass.
+  /// \brief Provide the result type for this analysis pass.
   using Result = BlockFrequencyInfo;
 
-  /// Run the analysis pass over a function and produce BFI.
+  /// \brief Run the analysis pass over a function and produce BFI.
   Result run(Function &F, FunctionAnalysisManager &AM);
 };
 
-/// Printer pass for the \c BlockFrequencyInfo results.
+/// \brief Printer pass for the \c BlockFrequencyInfo results.
 class BlockFrequencyPrinterPass
     : public PassInfoMixin<BlockFrequencyPrinterPass> {
   raw_ostream &OS;
@@ -134,7 +131,7 @@ public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
 };
 
-/// Legacy analysis pass which computes \c BlockFrequencyInfo.
+/// \brief Legacy analysis pass which computes \c BlockFrequencyInfo.
 class BlockFrequencyInfoWrapperPass : public FunctionPass {
   BlockFrequencyInfo BFI;
 

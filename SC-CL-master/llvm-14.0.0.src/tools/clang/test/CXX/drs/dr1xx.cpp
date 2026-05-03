@@ -4,25 +4,10 @@
 // RUN: %clang_cc1 -std=c++17 -triple x86_64-unknown-unknown %s -verify -fexceptions -fcxx-exceptions -pedantic-errors
 
 namespace dr100 { // dr100: yes
-  template<const char (*)[4]> struct A {}; // expected-note 0-1{{declared here}}
+  template<const char *> struct A {}; // expected-note 0-1{{declared here}}
   template<const char (&)[4]> struct B {}; // expected-note 0-1{{declared here}}
-  template<const char *> struct C {}; // expected-note 0-1{{declared here}}
-  template<const char &> struct D {}; // expected-note 0-1{{declared here}}
-  A<&"foo"> a; // #100a
-  B<"bar"> b; // #100b
-  C<"baz"> c; // #100c
-  D<*"quux"> d; // #100d
-#if __cplusplus < 201703L
-  // expected-error@#100a {{does not refer to any declaration}}
-  // expected-error@#100b {{does not refer to any declaration}}
-  // expected-error@#100c {{does not refer to any declaration}}
-  // expected-error@#100d {{does not refer to any declaration}}
-#else
-  // expected-error@#100a {{pointer to string literal is not allowed in a template argument}}
-  // expected-error@#100b {{reference to string literal is not allowed in a template argument}}
-  // expected-error@#100c {{pointer to subobject of string literal is not allowed in a template argument}}
-  // expected-error@#100d {{reference to subobject of string literal is not allowed in a template argument}}
-#endif
+  A<"foo"> a; // expected-error {{does not refer to any declaration}}
+  B<"bar"> b; // expected-error {{does not refer to any declaration}}
 }
 
 namespace dr101 { // dr101: 3.5
@@ -82,11 +67,8 @@ namespace dr108 { // dr108: yes
 namespace dr109 { // dr109: yes
   struct A { template<typename T> void f(T); };
   template<typename T> struct B : T {
-    using T::template f; // expected-error {{'template' keyword not permitted here}}
-    using T::template f<int>; // expected-error {{'template' keyword not permitted here}} expected-error {{using declaration cannot refer to a template specialization}}
-    // FIXME: We shouldn't suggest using the 'template' keyword in a location where it's not valid.
-    using T::f<int>; // expected-error {{use 'template' keyword}} expected-error {{using declaration cannot refer to a template specialization}}
-    void g() { this->f<int>(123); } // expected-error {{use 'template' keyword}}
+    using T::template f; // expected-error {{using declaration cannot refer to a template}}
+    void g() { this->f<int>(123); } // expected-error {{use 'template'}}
   };
 }
 
@@ -256,20 +238,7 @@ namespace dr125 {
   };
 }
 
-namespace dr126 { // dr126: partial
-  // FIXME: We do not yet generate correct code for this change:
-  // eg:
-  //   catch (void*&) should catch void* but not int*
-  //   catch (void*) and catch (void*const&) should catch both
-  // Likewise:
-  //   catch (Base *&) should catch Base* but not Derived*
-  //   catch (Base *) should catch both
-  // In each case, we emit the same code for both catches.
-  //
-  // The ABI does not let us represent the language rule in the unwind tables.
-  // So, when catching by non-const (or volatile) reference to pointer, we
-  // should compare the exception type to the caught type and only accept an
-  // exact match.
+namespace dr126 { // dr126: no
 #if __cplusplus <= 201402L
   struct C {};
   struct D : C {};
@@ -293,13 +262,12 @@ namespace dr126 { // dr126: partial
     virtual void gr() throw(C&);
     virtual void hr() throw(C&); // expected-note {{overridden}}
 
-    virtual void pv() throw(void*);
+    virtual void pv() throw(void*); // expected-note {{overridden}}
 
 #if __cplusplus >= 201103L
-    virtual void np() throw(C*);
-    virtual void npm() throw(int C::*);
-    virtual void nr() throw(C*&); // expected-note {{overridden}}
-    virtual void ncr() throw(C*const&);
+    virtual void np() throw(C*); // expected-note {{overridden}}
+    virtual void npm() throw(int C::*); // expected-note {{overridden}}
+    virtual void nr() throw(C&); // expected-note {{overridden}}
 #endif
 
     virtual void ref1() throw(C *const&);
@@ -307,7 +275,7 @@ namespace dr126 { // dr126: partial
 
     virtual void v() throw(int);
     virtual void w() throw(const int);
-    virtual void x() throw(int*); // expected-note {{overridden}}
+    virtual void x() throw(int*);
     virtual void y() throw(const int*);
     virtual void z() throw(int); // expected-note {{overridden}}
   };
@@ -326,14 +294,13 @@ namespace dr126 { // dr126: partial
     virtual void gr() throw(G&);
     virtual void hr() throw(H&); // expected-error {{more lax}}
 
-    virtual void pv() throw(C*);
+    virtual void pv() throw(C*); // expected-error {{more lax}} FIXME: This is valid.
 
 #if __cplusplus >= 201103L
     using nullptr_t = decltype(nullptr);
-    virtual void np() throw(nullptr_t);
-    virtual void npm() throw(nullptr_t&);
-    virtual void nr() throw(nullptr_t); // expected-error {{more lax}}
-    virtual void ncr() throw(nullptr_t);
+    virtual void np() throw(nullptr_t*); // expected-error {{more lax}} FIXME: This is valid.
+    virtual void npm() throw(nullptr_t*); // expected-error {{more lax}} FIXME: This is valid.
+    virtual void nr() throw(nullptr_t&); // expected-error {{more lax}} This is not.
 #endif
 
     virtual void ref1() throw(D *const &);
@@ -341,7 +308,7 @@ namespace dr126 { // dr126: partial
 
     virtual void v() throw(const int);
     virtual void w() throw(int);
-    virtual void x() throw(const int*); // expected-error {{more lax}}
+    virtual void x() throw(const int*); // FIXME: 'const int*' is not allowed by A::h.
     virtual void y() throw(int*); // ok
     virtual void z() throw(long); // expected-error {{more lax}}
   };
@@ -370,10 +337,13 @@ namespace dr128 { // dr128: yes
 // dr129: dup 616
 // dr130: na
 
-namespace dr131 { // dr131: sup P1949
+namespace dr131 { // dr131: yes
   const char *a_with_\u0e8c = "\u0e8c";
   const char *b_with_\u0e8d = "\u0e8d";
   const char *c_with_\u0e8e = "\u0e8e";
+#if __cplusplus < 201103L
+  // expected-error@-4 {{expected ';'}} expected-error@-2 {{expected ';'}}
+#endif
 }
 
 namespace dr132 { // dr132: no
@@ -410,15 +380,16 @@ namespace dr136 { // dr136: 3.4
   void q() {
     j(A(), A()); // ok, has default argument
   }
-  extern "C" void k(int, int, int, int); // expected-note 2{{previous declaration is here}}
+  extern "C" void k(int, int, int, int); // expected-note {{previous declaration is here}}
   namespace NSA {
   struct A {
-    friend void dr136::k(int, int, int, int = 0); // expected-error {{friend declaration specifying a default argument must be the only declaration}}
+    friend void dr136::k(int, int, int, int = 0); // expected-error {{friend declaration specifying a default argument must be the only declaration}} \
+                                                  // expected-note {{previous declaration is here}}
   };
   }
   namespace NSB {
   struct A {
-    friend void dr136::k(int, int, int = 0, int); // expected-error {{missing default argument on parameter}} expected-error {{must be the only declaration}}
+    friend void dr136::k(int, int, int = 0, int); // expected-error {{friend declaration specifying a default argument must be the only declaration}}
   };
   }
   struct B {
@@ -477,7 +448,7 @@ namespace dr140 { // dr140: yes
 
 namespace dr141 { // dr141: yes
   template<typename T> void f();
-  template<typename T> struct S { int n; }; // expected-note {{'::dr141::S<int>::n' declared here}}
+  template<typename T> struct S { int n; };
   struct A : S<int> {
     template<typename T> void f();
     template<typename T> struct S {};
@@ -485,7 +456,7 @@ namespace dr141 { // dr141: yes
   struct B : S<int> {} b;
   void g() {
     a.f<int>();
-    (void)a.S<int>::n; // expected-error {{no member named 'n' in 'dr141::A::S<int>'; did you mean '::dr141::S<int>::n'?}}
+    (void)a.S<int>::n; // expected-error {{no member named 'n'}}
 #if __cplusplus < 201103L
     // expected-error@-2 {{ambiguous}}
     // expected-note@-11 {{lookup from the current scope}}
@@ -525,7 +496,7 @@ namespace dr142 { // dr142: yes
     void f();
   };
   void DD::f() {
-    mi = 3; // expected-error {{private member}}
+    mi = 3; // expected-error {{private base class}} expected-error {{private member}}
     si = 3; // expected-error {{private member}}
     B b_old; // expected-error {{private member}}
     dr142::B b;
@@ -612,7 +583,7 @@ namespace dr151 { // dr151: yes
 namespace dr152 { // dr152: yes
   struct A {
     A(); // expected-note 0-2{{not viable}}
-    explicit A(const A&); // expected-note 1-2{{not a candidate}}
+    explicit A(const A&);
   };
   A a1 = A();
 #if __cplusplus <= 201402L
@@ -865,7 +836,7 @@ namespace dr176 { // dr176: yes
 namespace dr177 { // dr177: yes
   struct B {};
   struct A {
-    A(A &); // expected-note 0-1{{not viable: expects an lvalue}}
+    A(A &); // expected-note 0-1{{not viable: expects an l-value}}
     A(const B &); // expected-note 0-1{{not viable: no known conversion from 'dr177::A' to}}
   };
   B b;
@@ -874,7 +845,7 @@ namespace dr177 { // dr177: yes
   // expected-error@-2 {{no viable constructor copying variable}}
 #endif
 
-  struct C { C(C&); }; // expected-note {{not viable: expects an lvalue for 1st argument}}
+  struct C { C(C&); }; // expected-note {{not viable: no known conversion from 'dr177::D' to 'dr177::C &'}}
   struct D : C {};
   struct E { operator D(); };
   E e;
@@ -931,12 +902,12 @@ namespace dr182 { // dr182: yes
   template <class T> void C<T>::g() {}
 
   class A {
-    class B {};
+    class B {}; // expected-note {{here}}
     void f();
   };
 
   template void C<A::B>::f();
-  template <> void C<A::B>::g();
+  template <> void C<A::B>::g(); // expected-error {{private}}
 
   void A::f() {
     C<B> cb;

@@ -1,4 +1,4 @@
-; RUN: opt -disable-output "-passes=print<scalar-evolution>" < %s 2>&1 | FileCheck %s
+; RUN: opt -analyze -scalar-evolution < %s | FileCheck %s
 
 define i1 @main(i16 %a) {
 ; CHECK-LABEL: Classifying expressions for: @main

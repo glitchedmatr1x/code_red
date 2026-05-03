@@ -1,5 +1,4 @@
-; RUN: llc < %s -filetype=obj | llvm-readobj - --codeview | FileCheck %s
-; RUN: llc < %s | llvm-mc -filetype=obj --triple=x86_64-windows | llvm-readobj - --codeview | FileCheck %s
+; RUN: llc < %s -filetype=obj | llvm-readobj - -codeview | FileCheck %s
 
 ; C++ source to regenerate:
 ; $ cat t.cpp
@@ -28,6 +27,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: int (0x74)
+; CHECK:     PointerAttributes: 0x804C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToDataMember (0x2)
 ; CHECK:     IsFlat: 0
@@ -41,6 +41,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: int (0x74)
+; CHECK:     PointerAttributes: 0x804C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToDataMember (0x2)
 ; CHECK:     IsFlat: 0
@@ -54,6 +55,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: int (0x74)
+; CHECK:     PointerAttributes: 0x1004C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToDataMember (0x2)
 ; CHECK:     IsFlat: 0
@@ -67,6 +69,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: int (0x74)
+; CHECK:     PointerAttributes: 0x1804C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToDataMember (0x2)
 ; CHECK:     IsFlat: 0
@@ -83,6 +86,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: void A::()
+; CHECK:     PointerAttributes: 0x1006C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToMemberFunction (0x3)
 ; CHECK:     IsFlat: 0
@@ -96,6 +100,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: void C::()
+; CHECK:     PointerAttributes: 0x2006C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToMemberFunction (0x3)
 ; CHECK:     IsFlat: 0
@@ -109,6 +114,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: void D::()
+; CHECK:     PointerAttributes: 0x2006C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToMemberFunction (0x3)
 ; CHECK:     IsFlat: 0
@@ -122,6 +128,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: void E::()
+; CHECK:     PointerAttributes: 0x3006C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToMemberFunction (0x3)
 ; CHECK:     IsFlat: 0
@@ -137,6 +144,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: int
+; CHECK:     PointerAttributes: 0x4C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToDataMember (0x2)
 ; CHECK:     IsFlat: 0
@@ -152,6 +160,7 @@
 ; CHECK:   Pointer ({{.*}}) {
 ; CHECK:     TypeLeafKind: LF_POINTER (0x1002)
 ; CHECK:     PointeeType: void Incomplete::()
+; CHECK:     PointerAttributes: 0x6C
 ; CHECK:     PtrType: Near64 (0xC)
 ; CHECK:     PtrMode: PointerToMemberFunction (0x3)
 ; CHECK:     IsFlat: 0

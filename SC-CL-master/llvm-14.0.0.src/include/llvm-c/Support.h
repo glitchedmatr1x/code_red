@@ -1,9 +1,9 @@
 /*===-- llvm-c/Support.h - Support C Interface --------------------*- C -*-===*\
 |*                                                                            *|
-|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
-|* Exceptions.                                                                *|
-|* See https://llvm.org/LICENSE.txt for license information.                  *|
-|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
+|*                     The LLVM Compiler Infrastructure                       *|
+|*                                                                            *|
+|* This file is distributed under the University of Illinois Open Source      *|
+|* License. See LICENSE.TXT for details.                                      *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -14,17 +14,12 @@
 #ifndef LLVM_C_SUPPORT_H
 #define LLVM_C_SUPPORT_H
 
-#include "llvm-c/DataTypes.h"
-#include "llvm-c/ExternC.h"
 #include "llvm-c/Types.h"
+#include "llvm/Support/DataTypes.h"
 
-LLVM_C_EXTERN_C_BEGIN
-
-/**
- * @addtogroup LLVMCCore
- *
- * @{
- */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * This function permanently loads the dynamic library at the given path.
@@ -63,10 +58,8 @@ void *LLVMSearchForAddressOfSymbol(const char *symbolName);
  */
 void LLVMAddSymbol(const char *symbolName, void *symbolValue);
 
-/**
- * @}
- */
-
-LLVM_C_EXTERN_C_END
+#ifdef __cplusplus
+}
+#endif
 
 #endif

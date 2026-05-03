@@ -1,8 +1,9 @@
 //===- PrettyEnumDumper.cpp -------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -22,18 +23,6 @@ using namespace llvm::pdb;
 EnumDumper::EnumDumper(LinePrinter &P) : PDBSymDumper(true), Printer(P) {}
 
 void EnumDumper::start(const PDBSymbolTypeEnum &Symbol) {
-  if (Symbol.getUnmodifiedTypeId() != 0) {
-    if (Symbol.isConstType())
-      WithColor(Printer, PDB_ColorItem::Keyword).get() << "const ";
-    if (Symbol.isVolatileType())
-      WithColor(Printer, PDB_ColorItem::Keyword).get() << "volatile ";
-    if (Symbol.isUnalignedType())
-      WithColor(Printer, PDB_ColorItem::Keyword).get() << "unaligned ";
-    WithColor(Printer, PDB_ColorItem::Keyword).get() << "enum ";
-    WithColor(Printer, PDB_ColorItem::Type).get() << Symbol.getName();
-    return;
-  }
-
   WithColor(Printer, PDB_ColorItem::Keyword).get() << "enum ";
   WithColor(Printer, PDB_ColorItem::Type).get() << Symbol.getName();
   if (!opts::pretty::NoEnumDefs) {

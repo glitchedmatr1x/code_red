@@ -1,11 +1,11 @@
-; RUN: llc -mtriple=aarch64-none-linux-gnu -frame-pointer=all < %s | FileCheck %s
+; RUN: llc -mtriple=aarch64-none-linux-gnu -disable-fp-elim < %s | FileCheck %s
 @var = global i32 0
 
 declare void @bar()
 
 define void @test_w29_reserved() {
 ; CHECK-LABEL: test_w29_reserved:
-; CHECK: mov x29, sp
+; CHECK: add x29, sp, #{{[0-9]+}}
 
   %val1 = load volatile i32, i32* @var
   %val2 = load volatile i32, i32* @var

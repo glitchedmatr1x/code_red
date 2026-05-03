@@ -1,15 +1,15 @@
 //===- llvm/ADT/EquivalenceClasses.h - Generic Equiv. Classes ---*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// Generic implementation of equivalence classes through the use Tarjan's
-/// efficient union-find algorithm.
-///
+//
+// Generic implementation of equivalence classes through the use Tarjan's
+// efficient union-find algorithm.
+//
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_EQUIVALENCECLASSES_H
@@ -31,8 +31,7 @@ namespace llvm {
 ///
 /// This implementation is an efficient implementation that only stores one copy
 /// of the element being indexed per entry in the set, and allows any arbitrary
-/// type to be indexed (as long as it can be ordered with operator< or a
-/// comparator is provided).
+/// type to be indexed (as long as it can be ordered with operator<).
 ///
 /// Here is a simple example using integers:
 ///
@@ -56,7 +55,7 @@ namespace llvm {
 ///   4
 ///   5 1 2
 ///
-template <class ElemTy, class Compare = std::less<ElemTy>>
+template <class ElemTy>
 class EquivalenceClasses {
   /// ECValue - The EquivalenceClasses data structure is just a set of these.
   /// Each of these represents a relation for a value.  First it stores the
@@ -103,40 +102,22 @@ class EquivalenceClasses {
       assert(RHS.isLeader() && RHS.getNext() == nullptr && "Not a singleton!");
     }
 
+    bool operator<(const ECValue &UFN) const { return Data < UFN.Data; }
+
     bool isLeader() const { return (intptr_t)Next & 1; }
     const ElemTy &getData() const { return Data; }
 
     const ECValue *getNext() const {
       return (ECValue*)((intptr_t)Next & ~(intptr_t)1);
     }
-  };
 
-  /// A wrapper of the comparator, to be passed to the set.
-  struct ECValueComparator {
-    using is_transparent = void;
-
-    ECValueComparator() : compare(Compare()) {}
-
-    bool operator()(const ECValue &lhs, const ECValue &rhs) const {
-      return compare(lhs.Data, rhs.Data);
-    }
-
-    template <typename T>
-    bool operator()(const T &lhs, const ECValue &rhs) const {
-      return compare(lhs, rhs.Data);
-    }
-
-    template <typename T>
-    bool operator()(const ECValue &lhs, const T &rhs) const {
-      return compare(lhs.Data, rhs);
-    }
-
-    const Compare compare;
+    template<typename T>
+    bool operator<(const T &Val) const { return Data < Val; }
   };
 
   /// TheMapping - This implicitly provides a mapping from ElemTy values to the
   /// ECValues, it just keeps the key as part of the value.
-  std::set<ECValue, ECValueComparator> TheMapping;
+  std::set<ECValue> TheMapping;
 
 public:
   EquivalenceClasses() = default;
@@ -268,18 +249,19 @@ public:
     return It != member_end() && It == findLeader(V2);
   }
 
-  class member_iterator {
+  class member_iterator : public std::iterator<std::forward_iterator_tag,
+                                               const ElemTy, ptrdiff_t> {
     friend class EquivalenceClasses;
+
+    using super = std::iterator<std::forward_iterator_tag,
+                                const ElemTy, ptrdiff_t>;
 
     const ECValue *Node;
 
   public:
-    using iterator_category = std::forward_iterator_tag;
-    using value_type = const ElemTy;
-    using size_type = std::size_t;
-    using difference_type = std::ptrdiff_t;
-    using pointer = value_type *;
-    using reference = value_type &;
+    using size_type = size_t;
+    using pointer = typename super::pointer;
+    using reference = typename super::reference;
 
     explicit member_iterator() = default;
     explicit member_iterator(const ECValue *N) : Node(N) {}

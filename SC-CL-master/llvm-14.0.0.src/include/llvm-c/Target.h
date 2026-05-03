@@ -1,9 +1,9 @@
 /*===-- llvm-c/Target.h - Target Lib C Iface --------------------*- C++ -*-===*/
 /*                                                                            */
-/* Part of the LLVM Project, under the Apache License v2.0 with LLVM          */
-/* Exceptions.                                                                */
-/* See https://llvm.org/LICENSE.txt for license information.                  */
-/* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    */
+/*                     The LLVM Compiler Infrastructure                       */
+/*                                                                            */
+/* This file is distributed under the University of Illinois Open Source      */
+/* License. See LICENSE.TXT for details.                                      */
 /*                                                                            */
 /*===----------------------------------------------------------------------===*/
 /*                                                                            */
@@ -19,11 +19,16 @@
 #ifndef LLVM_C_TARGET_H
 #define LLVM_C_TARGET_H
 
-#include "llvm-c/ExternC.h"
 #include "llvm-c/Types.h"
 #include "llvm/Config/llvm-config.h"
 
-LLVM_C_EXTERN_C_BEGIN
+#if defined(_MSC_VER) && !defined(inline)
+#define inline __inline
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup LLVMCTarget Target information
@@ -287,6 +292,8 @@ unsigned long long LLVMOffsetOfElement(LLVMTargetDataRef TD,
  * @}
  */
 
-LLVM_C_EXTERN_C_END
+#ifdef __cplusplus
+}
+#endif /* defined(__cplusplus) */
 
 #endif

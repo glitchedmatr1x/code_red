@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 """The clang static analyzer results viewer.
 """
 
@@ -9,12 +7,9 @@ import sys
 import imp
 import os
 import posixpath
-import threading
+import thread
 import time
-try:
-    from urllib.request import urlopen
-except ImportError:
-    from urllib2 import urlopen
+import urllib
 import webbrowser
 
 # How long to wait for server to start.
@@ -32,7 +27,7 @@ kMaxPortsToTry = 100
 
 def url_is_up(url):
     try:
-        o = urlopen(url)
+        o = urllib.urlopen(url)
     except IOError:
         return False
     o.close()
@@ -40,6 +35,7 @@ def url_is_up(url):
 
 
 def start_browser(port, options):
+    import urllib
     import webbrowser
 
     url = 'http://%s:%d' % (options.host, port)
@@ -56,10 +52,10 @@ def start_browser(port, options):
             sys.stderr.flush()
         time.sleep(kSleepTimeout)
     else:
-        print('WARNING: Unable to detect that server started.', file=sys.stderr) 
+        print >> sys.stderr, 'WARNING: Unable to detect that server started.'
 
     if options.debug:
-        print('%s: Starting webbrowser...' % sys.argv[0], file=sys.stderr)
+        print >> sys.stderr, '%s: Starting webbrowser...' % sys.argv[0]
     webbrowser.open(url)
 
 
@@ -73,9 +69,9 @@ def run(port, options, root):
 
     import ScanView
     try:
-        print('Starting scan-view at: http://%s:%d' % (options.host,
-                                                       port))
-        print('  Use Ctrl-C to exit.')
+        print 'Starting scan-view at: http://%s:%d' % (options.host,
+                                                       port)
+        print '  Use Ctrl-C to exit.'
         httpd = ScanView.create_server((options.host, port),
                                        options, root)
         httpd.serve_forever()
@@ -84,12 +80,9 @@ def run(port, options, root):
 
 
 def port_is_open(port):
+    import SocketServer
     try:
-        import socketserver
-    except ImportError:
-        import SocketServer as socketserver
-    try:
-        t = socketserver.TCPServer((kDefaultHost, port), None)
+        t = SocketServer.TCPServer((kDefaultHost, port), None)
     except:
         return False
     t.server_close()
@@ -142,7 +135,7 @@ def main():
     # Kick off thread to wait for server and start web browser, if
     # requested.
     if args.startBrowser:
-        threading.Thread(target=start_browser, args=(port, args)).start()
+        t = thread.start_new_thread(start_browser, (port, args))
 
     run(port, args, args.root)
 

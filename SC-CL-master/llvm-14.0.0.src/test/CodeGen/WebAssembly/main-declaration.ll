@@ -1,18 +1,19 @@
-; RUN: llc < %s -asm-verbose=false | FileCheck %s
-; RUN: llc < %s -asm-verbose=false -opaque-pointers | FileCheck %s
+; RUN: llc < %s -asm-verbose=false -wasm-temporary-workarounds=false | FileCheck %s
 
 ; Test main functions with alternate signatures.
 
-target triple = "wasm32-unknown-unknown"
+target datalayout = "e-m:e-p:32:32-i64:64-n32:64-S128"
+target triple = "wasm32-unknown-unknown-wasm"
 
-declare i32 @main()
+declare void @main()
 
-define i32 @foo() {
-  %t = call i32 @main()
-  ret i32 %t
+define void @foo() {
+  call void @main()
+  ret void
 }
 
+; CHECK-NOT:   __original_main
 ; CHECK-LABEL: foo:
-; CHECK-NEXT:    .functype foo () -> (i32)
-; CHECK-NEXT:    call __original_main
+; CHECK-NEXT:    call main@FUNCTION
 ; CHECK-NEXT:    end_function
+; CHECK-NOT:   __original_main

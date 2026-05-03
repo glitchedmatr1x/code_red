@@ -1,62 +1,29 @@
-//===- SemaTemplate.h - C++ Templates ---------------------------*- C++ -*-===//
+//===------- SemaTemplate.h - C++ Templates ---------------------*- C++ -*-===/
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//===----------------------------------------------------------------------===//
+//                     The LLVM Compiler Infrastructure
 //
-// This file provides types used in the semantic analysis of C++ templates.
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
+//===----------------------------------------------------------------------===/
 //
-//===----------------------------------------------------------------------===//
-
+//  This file provides types used in the semantic analysis of C++ templates.
+//
+//===----------------------------------------------------------------------===/
 #ifndef LLVM_CLANG_SEMA_TEMPLATE_H
 #define LLVM_CLANG_SEMA_TEMPLATE_H
 
 #include "clang/AST/DeclTemplate.h"
 #include "clang/AST/DeclVisitor.h"
-#include "clang/AST/TemplateBase.h"
-#include "clang/AST/Type.h"
-#include "clang/Basic/LLVM.h"
 #include "clang/Sema/Sema.h"
-#include "llvm/ADT/ArrayRef.h"
-#include "llvm/ADT/DenseMap.h"
-#include "llvm/ADT/PointerUnion.h"
 #include "llvm/ADT/SmallVector.h"
 #include <cassert>
 #include <utility>
 
 namespace clang {
-
-class ASTContext;
-class BindingDecl;
-class CXXMethodDecl;
-class Decl;
-class DeclaratorDecl;
-class DeclContext;
-class EnumDecl;
-class FunctionDecl;
-class NamedDecl;
-class ParmVarDecl;
-class TagDecl;
-class TypedefNameDecl;
-class TypeSourceInfo;
-class VarDecl;
-
-/// The kind of template substitution being performed.
-enum class TemplateSubstitutionKind : char {
-  /// We are substituting template parameters for template arguments in order
-  /// to form a template specialization.
-  Specialization,
-  /// We are substituting template parameters for (typically) other template
-  /// parameters in order to rewrite a declaration as a different declaration
-  /// (for example, when forming a deduction guide from a constructor).
-  Rewrite,
-};
-
-  /// Data structure that captures multiple levels of template argument
+  /// \brief Data structure that captures multiple levels of template argument
   /// lists for use in template instantiation.
   ///
-  /// Multiple levels of template arguments occur when instantiating the
+  /// Multiple levels of template arguments occur when instantiating the 
   /// definitions of member templates. For example:
   ///
   /// \code
@@ -73,76 +40,47 @@ enum class TemplateSubstitutionKind : char {
   /// list will contain a template argument list (int) at depth 0 and a
   /// template argument list (17) at depth 1.
   class MultiLevelTemplateArgumentList {
-    /// The template argument list at a certain template depth
-    using ArgList = ArrayRef<TemplateArgument>;
+    /// \brief The template argument list at a certain template depth 
+    typedef ArrayRef<TemplateArgument> ArgList;
 
-    /// The template argument lists, stored from the innermost template
+    /// \brief The template argument lists, stored from the innermost template
     /// argument list (first) to the outermost template argument list (last).
     SmallVector<ArgList, 4> TemplateArgumentLists;
 
-    /// The number of outer levels of template arguments that are not
+    /// \brief The number of outer levels of template arguments that are not
     /// being substituted.
     unsigned NumRetainedOuterLevels = 0;
-
-    /// The kind of substitution described by this argument list.
-    TemplateSubstitutionKind Kind = TemplateSubstitutionKind::Specialization;
-
+    
   public:
-    /// Construct an empty set of template argument lists.
-    MultiLevelTemplateArgumentList() = default;
-
-    /// Construct a single-level template argument list.
-    explicit
+    /// \brief Construct an empty set of template argument lists.
+    MultiLevelTemplateArgumentList() { }
+    
+    /// \brief Construct a single-level template argument list.
+    explicit 
     MultiLevelTemplateArgumentList(const TemplateArgumentList &TemplateArgs) {
       addOuterTemplateArguments(&TemplateArgs);
     }
-
-    void setKind(TemplateSubstitutionKind K) { Kind = K; }
-
-    /// Determine the kind of template substitution being performed.
-    TemplateSubstitutionKind getKind() const { return Kind; }
-
-    /// Determine whether we are rewriting template parameters rather than
-    /// substituting for them. If so, we should not leave references to the
-    /// original template parameters behind.
-    bool isRewrite() const {
-      return Kind == TemplateSubstitutionKind::Rewrite;
-    }
-
-    /// Determine the number of levels in this template argument
+    
+    /// \brief Determine the number of levels in this template argument
     /// list.
     unsigned getNumLevels() const {
       return TemplateArgumentLists.size() + NumRetainedOuterLevels;
     }
 
-    /// Determine the number of substituted levels in this template
+    /// \brief Determine the number of substituted levels in this template
     /// argument list.
     unsigned getNumSubstitutedLevels() const {
       return TemplateArgumentLists.size();
     }
 
-    unsigned getNumRetainedOuterLevels() const {
-      return NumRetainedOuterLevels;
-    }
-
-    /// Determine how many of the \p OldDepth outermost template parameter
-    /// lists would be removed by substituting these arguments.
-    unsigned getNewDepth(unsigned OldDepth) const {
-      if (OldDepth < NumRetainedOuterLevels)
-        return OldDepth;
-      if (OldDepth < getNumLevels())
-        return NumRetainedOuterLevels;
-      return OldDepth - TemplateArgumentLists.size();
-    }
-
-    /// Retrieve the template argument at a given depth and index.
+    /// \brief Retrieve the template argument at a given depth and index.
     const TemplateArgument &operator()(unsigned Depth, unsigned Index) const {
       assert(NumRetainedOuterLevels <= Depth && Depth < getNumLevels());
       assert(Index < TemplateArgumentLists[getNumLevels() - Depth - 1].size());
       return TemplateArgumentLists[getNumLevels() - Depth - 1][Index];
     }
-
-    /// Determine whether there is a non-NULL template argument at the
+    
+    /// \brief Determine whether there is a non-NULL template argument at the
     /// given depth and index.
     ///
     /// There must exist a template argument list at the given depth.
@@ -151,14 +89,14 @@ enum class TemplateSubstitutionKind : char {
 
       if (Depth < NumRetainedOuterLevels)
         return false;
-
+      
       if (Index >= TemplateArgumentLists[getNumLevels() - Depth - 1].size())
         return false;
-
+      
       return !(*this)(Depth, Index).isNull();
     }
-
-    /// Clear out a specific template argument.
+    
+    /// \brief Clear out a specific template argument.
     void setArgument(unsigned Depth, unsigned Index,
                      TemplateArgument Arg) {
       assert(NumRetainedOuterLevels <= Depth && Depth < getNumLevels());
@@ -167,15 +105,15 @@ enum class TemplateSubstitutionKind : char {
                 TemplateArgumentLists[getNumLevels() - Depth - 1][Index])
         = Arg;
     }
-
-    /// Add a new outermost level to the multi-level template argument
+    
+    /// \brief Add a new outermost level to the multi-level template argument 
     /// list.
     void addOuterTemplateArguments(const TemplateArgumentList *TemplateArgs) {
       addOuterTemplateArguments(ArgList(TemplateArgs->data(),
                                         TemplateArgs->size()));
     }
 
-    /// Add a new outmost level to the multi-level template argument
+    /// \brief Add a new outmost level to the multi-level template argument
     /// list.
     void addOuterTemplateArguments(ArgList Args) {
       assert(!NumRetainedOuterLevels &&
@@ -183,33 +121,28 @@ enum class TemplateSubstitutionKind : char {
       TemplateArgumentLists.push_back(Args);
     }
 
-    /// Add an outermost level that we are not substituting. We have no
+    /// \brief Add an outermost level that we are not substituting. We have no
     /// arguments at this level, and do not remove it from the depth of inner
     /// template parameters that we instantiate.
     void addOuterRetainedLevel() {
       ++NumRetainedOuterLevels;
     }
-    void addOuterRetainedLevels(unsigned Num) {
-      NumRetainedOuterLevels += Num;
-    }
 
-    /// Retrieve the innermost template argument list.
-    const ArgList &getInnermost() const {
-      return TemplateArgumentLists.front();
+    /// \brief Retrieve the innermost template argument list.
+    const ArgList &getInnermost() const { 
+      return TemplateArgumentLists.front(); 
     }
   };
-
-  /// The context in which partial ordering of function templates occurs.
+  
+  /// \brief The context in which partial ordering of function templates occurs.
   enum TPOC {
-    /// Partial ordering of function templates for a function call.
+    /// \brief Partial ordering of function templates for a function call.
     TPOC_Call,
-
-    /// Partial ordering of function templates for a call to a
+    /// \brief Partial ordering of function templates for a call to a 
     /// conversion function.
     TPOC_Conversion,
-
-    /// Partial ordering of function templates in other contexts, e.g.,
-    /// taking the address of a function template or matching a function
+    /// \brief Partial ordering of function templates in other contexts, e.g.,
+    /// taking the address of a function template or matching a function 
     /// template specialization to a function template.
     TPOC_Other
   };
@@ -220,48 +153,47 @@ enum class TemplateSubstitutionKind : char {
   // making Sema.h declare things as enums).
   class TemplatePartialOrderingContext {
     TPOC Value;
-
   public:
     TemplatePartialOrderingContext(TPOC Value) : Value(Value) {}
-
     operator TPOC() const { return Value; }
   };
 
-  /// Captures a template argument whose value has been deduced
+  /// \brief Captures a template argument whose value has been deduced
   /// via c++ template argument deduction.
   class DeducedTemplateArgument : public TemplateArgument {
-    /// For a non-type template argument, whether the value was
+    /// \brief For a non-type template argument, whether the value was
     /// deduced from an array bound.
-    bool DeducedFromArrayBound = false;
+    bool DeducedFromArrayBound;
 
   public:
-    DeducedTemplateArgument() = default;
+    DeducedTemplateArgument()
+      : TemplateArgument(), DeducedFromArrayBound(false) { }
 
     DeducedTemplateArgument(const TemplateArgument &Arg,
                             bool DeducedFromArrayBound = false)
-        : TemplateArgument(Arg), DeducedFromArrayBound(DeducedFromArrayBound) {}
+      : TemplateArgument(Arg), DeducedFromArrayBound(DeducedFromArrayBound) { }
 
-    /// Construct an integral non-type template argument that
+    /// \brief Construct an integral non-type template argument that
     /// has been deduced, possibly from an array bound.
     DeducedTemplateArgument(ASTContext &Ctx,
                             const llvm::APSInt &Value,
                             QualType ValueType,
                             bool DeducedFromArrayBound)
-        : TemplateArgument(Ctx, Value, ValueType),
-          DeducedFromArrayBound(DeducedFromArrayBound) {}
+      : TemplateArgument(Ctx, Value, ValueType),
+        DeducedFromArrayBound(DeducedFromArrayBound) { }
 
-    /// For a non-type template argument, determine whether the
+    /// \brief For a non-type template argument, determine whether the
     /// template argument was deduced from an array bound.
     bool wasDeducedFromArrayBound() const { return DeducedFromArrayBound; }
 
-    /// Specify whether the given non-type template argument
+    /// \brief Specify whether the given non-type template argument
     /// was deduced from an array bound.
     void setDeducedFromArrayBound(bool Deduced) {
       DeducedFromArrayBound = Deduced;
     }
   };
 
-  /// A stack-allocated class that identifies which local
+  /// \brief A stack-allocated class that identifies which local
   /// variable declaration instantiations are present in this scope.
   ///
   /// A new instance of this class type will be created whenever we
@@ -269,19 +201,19 @@ enum class TemplateSubstitutionKind : char {
   /// set of parameter declarations.
   class LocalInstantiationScope {
   public:
-    /// A set of declarations.
-    using DeclArgumentPack = SmallVector<VarDecl *, 4>;
+    /// \brief A set of declarations.
+    typedef SmallVector<ParmVarDecl *, 4> DeclArgumentPack;
 
   private:
-    /// Reference to the semantic analysis that is performing
+    /// \brief Reference to the semantic analysis that is performing
     /// this template instantiation.
     Sema &SemaRef;
 
-    using LocalDeclsMap =
-        llvm::SmallDenseMap<const Decl *,
-                            llvm::PointerUnion<Decl *, DeclArgumentPack *>, 4>;
+    typedef llvm::SmallDenseMap<
+        const Decl *, llvm::PointerUnion<Decl *, DeclArgumentPack *>, 4>
+    LocalDeclsMap;
 
-    /// A mapping from local declarations that occur
+    /// \brief A mapping from local declarations that occur
     /// within a template to their instantiations.
     ///
     /// This mapping is used during instantiation to keep track of,
@@ -301,64 +233,67 @@ enum class TemplateSubstitutionKind : char {
     /// pointer.
     LocalDeclsMap LocalDecls;
 
-    /// The set of argument packs we've allocated.
+    /// \brief The set of argument packs we've allocated.
     SmallVector<DeclArgumentPack *, 1> ArgumentPacks;
-
-    /// The outer scope, which contains local variable
+    
+    /// \brief The outer scope, which contains local variable
     /// definitions from some other instantiation (that may not be
     /// relevant to this particular scope).
     LocalInstantiationScope *Outer;
 
-    /// Whether we have already exited this scope.
-    bool Exited = false;
+    /// \brief Whether we have already exited this scope.
+    bool Exited;
 
-    /// Whether to combine this scope with the outer scope, such that
+    /// \brief Whether to combine this scope with the outer scope, such that
     /// lookup will search our outer scope.
     bool CombineWithOuterScope;
-
-    /// If non-NULL, the template parameter pack that has been
+    
+    /// \brief If non-NULL, the template parameter pack that has been
     /// partially substituted per C++0x [temp.arg.explicit]p9.
-    NamedDecl *PartiallySubstitutedPack = nullptr;
-
-    /// If \c PartiallySubstitutedPack is non-null, the set of
+    NamedDecl *PartiallySubstitutedPack;
+    
+    /// \brief If \c PartiallySubstitutedPack is non-null, the set of
     /// explicitly-specified template arguments in that pack.
-    const TemplateArgument *ArgsInPartiallySubstitutedPack;
-
-    /// If \c PartiallySubstitutedPack, the number of
-    /// explicitly-specified template arguments in
+    const TemplateArgument *ArgsInPartiallySubstitutedPack;    
+    
+    /// \brief If \c PartiallySubstitutedPack, the number of 
+    /// explicitly-specified template arguments in 
     /// ArgsInPartiallySubstitutedPack.
     unsigned NumArgsInPartiallySubstitutedPack;
 
+    // This class is non-copyable
+    LocalInstantiationScope(
+      const LocalInstantiationScope &) = delete;
+    void operator=(const LocalInstantiationScope &) = delete;
+
   public:
     LocalInstantiationScope(Sema &SemaRef, bool CombineWithOuterScope = false)
-        : SemaRef(SemaRef), Outer(SemaRef.CurrentInstantiationScope),
-          CombineWithOuterScope(CombineWithOuterScope) {
+      : SemaRef(SemaRef), Outer(SemaRef.CurrentInstantiationScope),
+        Exited(false), CombineWithOuterScope(CombineWithOuterScope),
+        PartiallySubstitutedPack(nullptr)
+    {
       SemaRef.CurrentInstantiationScope = this;
     }
-
-    LocalInstantiationScope(const LocalInstantiationScope &) = delete;
-    LocalInstantiationScope &
-    operator=(const LocalInstantiationScope &) = delete;
 
     ~LocalInstantiationScope() {
       Exit();
     }
-
+    
     const Sema &getSema() const { return SemaRef; }
 
-    /// Exit this local instantiation scope early.
+    /// \brief Exit this local instantiation scope early.
     void Exit() {
       if (Exited)
         return;
-
+      
       for (unsigned I = 0, N = ArgumentPacks.size(); I != N; ++I)
         delete ArgumentPacks[I];
-
+        
       SemaRef.CurrentInstantiationScope = Outer;
       Exited = true;
     }
 
-    /// Clone this scope, and all outer scopes, down to the given
+    /// \brief Clone this scope, and all outer scopes, down to the given
     /// outermost scope.
     LocalInstantiationScope *cloneScopes(LocalInstantiationScope *Outermost) {
       if (this == Outermost) return this;
@@ -398,7 +333,7 @@ enum class TemplateSubstitutionKind : char {
       return newScope;
     }
 
-    /// deletes the given scope, and all otuer scopes, down to the
+    /// \brief deletes the given scope, and all otuer scopes, down to the
     /// given outermost scope.
     static void deleteScopes(LocalInstantiationScope *Scope,
                              LocalInstantiationScope *Outermost) {
@@ -409,7 +344,7 @@ enum class TemplateSubstitutionKind : char {
       }
     }
 
-    /// Find the instantiation of the declaration D within the current
+    /// \brief Find the instantiation of the declaration D within the current
     /// instantiation scope.
     ///
     /// \param D The declaration whose instantiation we are searching for.
@@ -421,11 +356,11 @@ enum class TemplateSubstitutionKind : char {
     findInstantiationOf(const Decl *D);
 
     void InstantiatedLocal(const Decl *D, Decl *Inst);
-    void InstantiatedLocalPackArg(const Decl *D, VarDecl *Inst);
+    void InstantiatedLocalPackArg(const Decl *D, ParmVarDecl *Inst);
     void MakeInstantiatedLocalArgPack(const Decl *D);
-
-    /// Note that the given parameter pack has been partially substituted
-    /// via explicit specification of template arguments
+    
+    /// \brief Note that the given parameter pack has been partially substituted
+    /// via explicit specification of template arguments 
     /// (C++0x [temp.arg.explicit]p9).
     ///
     /// \param Pack The parameter pack, which will always be a template
@@ -436,11 +371,11 @@ enum class TemplateSubstitutionKind : char {
     ///
     /// \param NumExplicitArgs The number of explicitly-specified template
     /// arguments provided for this parameter pack.
-    void SetPartiallySubstitutedPack(NamedDecl *Pack,
+    void SetPartiallySubstitutedPack(NamedDecl *Pack, 
                                      const TemplateArgument *ExplicitArgs,
                                      unsigned NumExplicitArgs);
 
-    /// Reset the partially-substituted pack when it is no longer of
+    /// \brief Reset the partially-substituted pack when it is no longer of
     /// interest.
     void ResetPartiallySubstitutedPack() {
       assert(PartiallySubstitutedPack && "No partially-substituted pack");
@@ -449,35 +384,32 @@ enum class TemplateSubstitutionKind : char {
       NumArgsInPartiallySubstitutedPack = 0;
     }
 
-    /// Retrieve the partially-substitued template parameter pack.
+    /// \brief Retrieve the partially-substitued template parameter pack.
     ///
     /// If there is no partially-substituted parameter pack, returns NULL.
     NamedDecl *
     getPartiallySubstitutedPack(const TemplateArgument **ExplicitArgs = nullptr,
                                 unsigned *NumExplicitArgs = nullptr) const;
-
-    /// Determine whether D is a pack expansion created in this scope.
-    bool isLocalPackExpansion(const Decl *D);
   };
 
   class TemplateDeclInstantiator
-    : public DeclVisitor<TemplateDeclInstantiator, Decl *>
+    : public DeclVisitor<TemplateDeclInstantiator, Decl *> 
   {
     Sema &SemaRef;
     Sema::ArgumentPackSubstitutionIndexRAII SubstIndex;
     DeclContext *Owner;
     const MultiLevelTemplateArgumentList &TemplateArgs;
-    Sema::LateInstantiatedAttrVec* LateAttrs = nullptr;
-    LocalInstantiationScope *StartingScope = nullptr;
+    Sema::LateInstantiatedAttrVec* LateAttrs;
+    LocalInstantiationScope *StartingScope;
 
-    /// A list of out-of-line class template partial
+    /// \brief A list of out-of-line class template partial
     /// specializations that will need to be instantiated after the
     /// enclosing class's instantiation is complete.
     SmallVector<std::pair<ClassTemplateDecl *,
                                 ClassTemplatePartialSpecializationDecl *>, 4>
       OutOfLinePartialSpecs;
 
-    /// A list of out-of-line variable template partial
+    /// \brief A list of out-of-line variable template partial
     /// specializations that will need to be instantiated after the
     /// enclosing variable's instantiation is complete.
     /// FIXME: Verify that this is needed.
@@ -488,9 +420,10 @@ enum class TemplateSubstitutionKind : char {
   public:
     TemplateDeclInstantiator(Sema &SemaRef, DeclContext *Owner,
                              const MultiLevelTemplateArgumentList &TemplateArgs)
-        : SemaRef(SemaRef),
-          SubstIndex(SemaRef, SemaRef.ArgumentPackSubstitutionIndex),
-          Owner(Owner), TemplateArgs(TemplateArgs) {}
+      : SemaRef(SemaRef),
+        SubstIndex(SemaRef, SemaRef.ArgumentPackSubstitutionIndex),
+        Owner(Owner), TemplateArgs(TemplateArgs), LateAttrs(nullptr),
+        StartingScope(nullptr) {}
 
 // Define all the decl visitors using DeclNodes.inc
 #define DECL(DERIVED, BASE) \
@@ -510,35 +443,23 @@ enum class TemplateSubstitutionKind : char {
 #define OBJCPROPERTY(DERIVED, BASE)
 #define OBJCPROPERTYIMPL(DERIVED, BASE)
 #define EMPTY(DERIVED, BASE)
-#define LIFETIMEEXTENDEDTEMPORARY(DERIVED, BASE)
 
-    // Decls which use special-case instantiation code.
+// Decls which use special-case instantiation code.
 #define BLOCK(DERIVED, BASE)
 #define CAPTURED(DERIVED, BASE)
 #define IMPLICITPARAM(DERIVED, BASE)
 
 #include "clang/AST/DeclNodes.inc"
 
-    enum class RewriteKind { None, RewriteSpaceshipAsEqualEqual };
-
-    void adjustForRewrite(RewriteKind RK, FunctionDecl *Orig, QualType &T,
-                          TypeSourceInfo *&TInfo,
-                          DeclarationNameInfo &NameInfo);
-
     // A few supplemental visitor functions.
     Decl *VisitCXXMethodDecl(CXXMethodDecl *D,
                              TemplateParameterList *TemplateParams,
-                             Optional<const ASTTemplateArgumentListInfo *>
-                                 ClassScopeSpecializationArgs = llvm::None,
-                             RewriteKind RK = RewriteKind::None);
+                             bool IsClassScopeSpecialization = false);
     Decl *VisitFunctionDecl(FunctionDecl *D,
-                            TemplateParameterList *TemplateParams,
-                            RewriteKind RK = RewriteKind::None);
+                            TemplateParameterList *TemplateParams);
     Decl *VisitDecl(Decl *D);
     Decl *VisitVarDecl(VarDecl *D, bool InstantiatingVarTemplate,
                        ArrayRef<BindingDecl *> *Bindings = nullptr);
-    Decl *VisitBaseUsingDecls(BaseUsingDecl *D, BaseUsingDecl *Inst,
-                              LookupResult *Lookup);
 
     // Enable late instantiation of attributes.  Late instantiated attributes
     // will be stored in LA.
@@ -555,13 +476,17 @@ enum class TemplateSubstitutionKind : char {
 
     LocalInstantiationScope *getStartingScope() const { return StartingScope; }
 
-    using delayed_partial_spec_iterator = SmallVectorImpl<std::pair<
-      ClassTemplateDecl *, ClassTemplatePartialSpecializationDecl *>>::iterator;
+    typedef 
+      SmallVectorImpl<std::pair<ClassTemplateDecl *,
+                                     ClassTemplatePartialSpecializationDecl *> >
+        ::iterator
+      delayed_partial_spec_iterator;
 
-    using delayed_var_partial_spec_iterator = SmallVectorImpl<std::pair<
-        VarTemplateDecl *, VarTemplatePartialSpecializationDecl *>>::iterator;
+    typedef SmallVectorImpl<std::pair<
+        VarTemplateDecl *, VarTemplatePartialSpecializationDecl *> >::iterator
+    delayed_var_partial_spec_iterator;
 
-    /// Return an iterator to the beginning of the set of
+    /// \brief Return an iterator to the beginning of the set of
     /// "delayed" partial specializations, which must be passed to
     /// InstantiateClassTemplatePartialSpecialization once the class
     /// definition has been completed.
@@ -573,7 +498,7 @@ enum class TemplateSubstitutionKind : char {
       return OutOfLineVarPartialSpecs.begin();
     }
 
-    /// Return an iterator to the end of the set of
+    /// \brief Return an iterator to the end of the set of
     /// "delayed" partial specializations, which must be passed to
     /// InstantiateClassTemplatePartialSpecialization once the class
     /// definition has been completed.
@@ -591,8 +516,6 @@ enum class TemplateSubstitutionKind : char {
     bool InitFunctionInstantiation(FunctionDecl *New, FunctionDecl *Tmpl);
     bool InitMethodInstantiation(CXXMethodDecl *New, CXXMethodDecl *Tmpl);
 
-    bool SubstDefaultedFunction(FunctionDecl *New, FunctionDecl *Tmpl);
-
     TemplateParameterList *
       SubstTemplateParams(TemplateParameterList *List);
 
@@ -602,10 +525,9 @@ enum class TemplateSubstitutionKind : char {
                         TagDecl *NewDecl);
 
     Decl *VisitVarTemplateSpecializationDecl(
-        VarTemplateDecl *VarTemplate, VarDecl *FromVar,
+        VarTemplateDecl *VarTemplate, VarDecl *FromVar, void *InsertPos,
         const TemplateArgumentListInfo &TemplateArgsInfo,
-        ArrayRef<TemplateArgument> Converted,
-        VarTemplateSpecializationDecl *PrevDecl = nullptr);
+        ArrayRef<TemplateArgument> Converted);
 
     Decl *InstantiateTypedefNameDecl(TypedefNameDecl *D, bool IsTypeAlias);
     ClassTemplatePartialSpecializationDecl *
@@ -622,8 +544,7 @@ enum class TemplateSubstitutionKind : char {
     template<typename T>
     Decl *instantiateUnresolvedUsingDecl(T *D,
                                          bool InstantiatingPackElement = false);
-  };
-
-} // namespace clang
+  };  
+}
 
 #endif // LLVM_CLANG_SEMA_TEMPLATE_H

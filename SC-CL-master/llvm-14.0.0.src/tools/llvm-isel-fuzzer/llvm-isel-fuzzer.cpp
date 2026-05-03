@@ -1,8 +1,9 @@
 //===--- llvm-isel-fuzzer.cpp - Fuzzer for instruction selection ----------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,7 +15,7 @@
 #include "llvm/Analysis/TargetLibraryInfo.h"
 #include "llvm/Bitcode/BitcodeReader.h"
 #include "llvm/Bitcode/BitcodeWriter.h"
-#include "llvm/CodeGen/CommandFlags.h"
+#include "llvm/CodeGen/CommandFlags.def"
 #include "llvm/FuzzMutate/FuzzerCLI.h"
 #include "llvm/FuzzMutate/IRMutator.h"
 #include "llvm/FuzzMutate/Operations.h"
@@ -24,19 +25,16 @@
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm/IRReader/IRReader.h"
-#include "llvm/MC/TargetRegistry.h"
-#include "llvm/Support/CommandLine.h"
 #include "llvm/Support/DataTypes.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/SourceMgr.h"
+#include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Target/TargetMachine.h"
 
 #define DEBUG_TYPE "isel-fuzzer"
 
 using namespace llvm;
-
-static codegen::RegisterCodeGenFlags CGF;
 
 static cl::opt<char>
 OptLevel("O",
@@ -62,7 +60,7 @@ std::unique_ptr<IRMutator> createISelMutator() {
       new InjectorIRStrategy(InjectorIRStrategy::getDefaultOps()));
   Strategies.emplace_back(new InstDeleterIRStrategy());
 
-  return std::make_unique<IRMutator>(std::move(Types), std::move(Strategies));
+  return llvm::make_unique<IRMutator>(std::move(Types), std::move(Strategies));
 }
 
 extern "C" LLVM_ATTRIBUTE_USED size_t LLVMFuzzerCustomMutator(
@@ -86,8 +84,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
     return 0;
 
   LLVMContext Context;
-  auto M = parseAndVerify(Data, Size, Context);
-  if (!M) {
+  auto M = parseModule(Data, Size, Context);
+  if (!M || verifyModule(*M, &errs())) {
     errs() << "error: input module is broken!\n";
     return 0;
   }
@@ -101,13 +99,13 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   TargetLibraryInfoImpl TLII(TM->getTargetTriple());
   PM.add(new TargetLibraryInfoWrapperPass(TLII));
   raw_null_ostream OS;
-  TM->addPassesToEmitFile(PM, OS, nullptr, CGFT_Null);
+  TM->addPassesToEmitFile(PM, OS, TargetMachine::CGFT_Null);
   PM.run(*M);
 
   return 0;
 }
 
-static void handleLLVMFatalError(void *, const char *Message, bool) {
+static void handleLLVMFatalError(void *, const std::string &Message, bool) {
   // TODO: Would it be better to call into the fuzzer internals directly?
   dbgs() << "LLVM ERROR: " << Message << "\n"
          << "Aborting to trigger fuzzer exit handling.\n";
@@ -136,15 +134,14 @@ extern "C" LLVM_ATTRIBUTE_USED int LLVMFuzzerInitialize(int *argc,
   // Get the target specific parser.
   std::string Error;
   const Target *TheTarget =
-      TargetRegistry::lookupTarget(codegen::getMArch(), TheTriple, Error);
+      TargetRegistry::lookupTarget(MArch, TheTriple, Error);
   if (!TheTarget) {
     errs() << argv[0] << ": " << Error;
     return 1;
   }
 
   // Set up the pipeline like llc does.
-  std::string CPUStr = codegen::getCPUStr(),
-              FeaturesStr = codegen::getFeaturesStr();
+  std::string CPUStr = getCPUStr(), FeaturesStr = getFeaturesStr();
 
   CodeGenOpt::Level OLvl = CodeGenOpt::Default;
   switch (OptLevel) {
@@ -158,10 +155,10 @@ extern "C" LLVM_ATTRIBUTE_USED int LLVMFuzzerInitialize(int *argc,
   case '3': OLvl = CodeGenOpt::Aggressive; break;
   }
 
-  TargetOptions Options = codegen::InitTargetOptionsFromCodeGenFlags(TheTriple);
-  TM.reset(TheTarget->createTargetMachine(
-      TheTriple.getTriple(), CPUStr, FeaturesStr, Options,
-      codegen::getExplicitRelocModel(), codegen::getExplicitCodeModel(), OLvl));
+  TargetOptions Options = InitTargetOptionsFromCodeGenFlags();
+  TM.reset(TheTarget->createTargetMachine(TheTriple.getTriple(), CPUStr,
+                                          FeaturesStr, Options, getRelocModel(),
+                                          getCodeModel(), OLvl));
   assert(TM && "Could not allocate target machine!");
 
   // Make sure we print the summary and the current unit when LLVM errors out.

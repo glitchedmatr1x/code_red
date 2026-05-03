@@ -1,8 +1,9 @@
 //===- llvm-cat.cpp - LLVM module concatenation utility -------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -32,23 +33,17 @@
 
 using namespace llvm;
 
-cl::OptionCategory CatCategory("llvm-cat Options");
-
 static cl::opt<bool>
-    BinaryCat("b", cl::desc("Whether to perform binary concatenation"),
-              cl::cat(CatCategory));
+    BinaryCat("b", cl::desc("Whether to perform binary concatenation"));
 
 static cl::opt<std::string> OutputFilename("o", cl::Required,
                                            cl::desc("Output filename"),
-                                           cl::value_desc("filename"),
-                                           cl::cat(CatCategory));
+                                           cl::value_desc("filename"));
 
 static cl::list<std::string> InputFilenames(cl::Positional, cl::ZeroOrMore,
-                                            cl::desc("<input  files>"),
-                                            cl::cat(CatCategory));
+                                            cl::desc("<input  files>"));
 
 int main(int argc, char **argv) {
-  cl::HideUnrelatedOptions(CatCategory);
   cl::ParseCommandLineOptions(argc, argv, "Module concatenation");
 
   ExitOnError ExitOnErr("llvm-cat: ");
@@ -62,7 +57,8 @@ int main(int argc, char **argv) {
           errorOrToExpected(MemoryBuffer::getFileOrSTDIN(InputFilename)));
       std::vector<BitcodeModule> Mods = ExitOnErr(getBitcodeModuleList(*MB));
       for (auto &BitcodeMod : Mods) {
-        llvm::append_range(Buffer, BitcodeMod.getBuffer());
+        Buffer.insert(Buffer.end(), BitcodeMod.getBuffer().begin(),
+                      BitcodeMod.getBuffer().end());
         Writer.copyStrtab(BitcodeMod.getStrtab());
       }
     }
@@ -77,14 +73,14 @@ int main(int argc, char **argv) {
         Err.print(argv[0], errs());
         return 1;
       }
-      Writer.writeModule(*M);
+      Writer.writeModule(M.get());
       OwnedMods.push_back(std::move(M));
     }
     Writer.writeStrtab();
   }
 
   std::error_code EC;
-  raw_fd_ostream OS(OutputFilename, EC, sys::fs::OpenFlags::OF_None);
+  raw_fd_ostream OS(OutputFilename, EC, sys::fs::OpenFlags::F_None);
   if (EC) {
     errs() << argv[0] << ": cannot open " << OutputFilename << " for writing: "
            << EC.message();

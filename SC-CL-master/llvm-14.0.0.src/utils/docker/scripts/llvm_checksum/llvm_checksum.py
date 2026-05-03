@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 """ A small program to compute checksums of LLVM checkout.
 """
 from __future__ import absolute_import
@@ -183,7 +183,7 @@ def ValidateChecksums(reference_checksums,
     if len(new_checksums) != len(reference_checksums):
       return False
 
-  for proj, checksum in new_checksums.items():
+  for proj, checksum in new_checksums.iteritems():
     # We never computed a checksum for this project.
     if proj not in reference_checksums:
       return False

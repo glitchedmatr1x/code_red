@@ -6,16 +6,15 @@
 
 declare void @foo()
 
-; Addition provides enough for comparisons with zero if we know no
-; signed overflow happens, which is when the "nsw" flag is set.
-; First test the EQ case.
+; Addition provides enough for equality comparisons with zero.  First teest
+; the EQ case.
 define i32 @f1(i32 %a, i32 %b, i32 *%dest) {
 ; CHECK-LABEL: f1:
 ; CHECK: afi %r2, 1000000
 ; CHECK-NEXT: ber %r14
 ; CHECK: br %r14
 entry:
-  %res = add nsw i32 %a, 1000000
+  %res = add i32 %a, 1000000
   %cmp = icmp eq i32 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -31,10 +30,10 @@ exit:
 define i32 @f2(i32 %a, i32 %b, i32 *%dest) {
 ; CHECK-LABEL: f2:
 ; CHECK: afi %r2, 1000000
-; CHECK-NEXT: blhr %r14
+; CHECK-NEXT: bner %r14
 ; CHECK: br %r14
 entry:
-  %res = add nsw i32 %a, 1000000
+  %res = add i32 %a, 1000000
   %cmp = icmp ne i32 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -46,13 +45,14 @@ exit:
   ret i32 %res
 }
 
-; ...and again with SLT.
+; SLT requires a comparison.
 define i32 @f3(i32 %a, i32 %b, i32 *%dest) {
 ; CHECK-LABEL: f3:
 ; CHECK: afi %r2, 1000000
-; CHECK-NEXT: blr %r14
+; CHECK-NEXT: cibl %r2, 0, 0(%r14)
+; CHECK: br %r14
 entry:
-  %res = add nsw i32 %a, 1000000
+  %res = add i32 %a, 1000000
   %cmp = icmp slt i32 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -64,13 +64,14 @@ exit:
   ret i32 %res
 }
 
-; ...and again with SLE.
+; ...SLE too.
 define i32 @f4(i32 %a, i32 %b, i32 *%dest) {
 ; CHECK-LABEL: f4:
 ; CHECK: afi %r2, 1000000
-; CHECK-NEXT: bler %r14
+; CHECK-NEXT: cible %r2, 0, 0(%r14)
+; CHECK: br %r14
 entry:
-  %res = add nsw i32 %a, 1000000
+  %res = add i32 %a, 1000000
   %cmp = icmp sle i32 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -82,13 +83,14 @@ exit:
   ret i32 %res
 }
 
-; ...and again with SGT.
+; ...SGT too.
 define i32 @f5(i32 %a, i32 %b, i32 *%dest) {
 ; CHECK-LABEL: f5:
 ; CHECK: afi %r2, 1000000
-; CHECK-NEXT: bhr %r14
+; CHECK-NEXT: cibh %r2, 0, 0(%r14)
+; CHECK: br %r14
 entry:
-  %res = add nsw i32 %a, 1000000
+  %res = add i32 %a, 1000000
   %cmp = icmp sgt i32 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -100,13 +102,14 @@ exit:
   ret i32 %res
 }
 
-; ...and again with SGE.
+; ...SGE too.
 define i32 @f6(i32 %a, i32 %b, i32 *%dest) {
 ; CHECK-LABEL: f6:
 ; CHECK: afi %r2, 1000000
-; CHECK-NEXT: bher %r14
+; CHECK-NEXT: cibhe %r2, 0, 0(%r14)
+; CHECK: br %r14
 entry:
-  %res = add nsw i32 %a, 1000000
+  %res = add i32 %a, 1000000
   %cmp = icmp sge i32 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -118,15 +121,14 @@ exit:
   ret i32 %res
 }
 
-; Subtraction provides in addition also enough for equality comparisons with
-; zero even without "nsw".
+; Subtraction also provides enough for equality comparisons with zero.
 define i32 @f7(i32 %a, i32 %b, i32 *%dest) {
 ; CHECK-LABEL: f7:
 ; CHECK: s %r2, 0(%r4)
 ; CHECK-NEXT: bner %r14
 ; CHECK: br %r14
 entry:
-  %cur = load i32, i32 *%dest
+  %cur = load i32 , i32 *%dest
   %res = sub i32 %a, %cur
   %cmp = icmp ne i32 %res, 0
   br i1 %cmp, label %exit, label %store
@@ -139,14 +141,15 @@ exit:
   ret i32 %res
 }
 
-; ...and again with SLT.
+; ...but not for ordered comparisons.
 define i32 @f8(i32 %a, i32 %b, i32 *%dest) {
 ; CHECK-LABEL: f8:
 ; CHECK: s %r2, 0(%r4)
-; CHECK-NEXT: blr %r14
+; CHECK-NEXT: cibl %r2, 0, 0(%r14)
+; CHECK: br %r14
 entry:
-  %cur = load i32, i32 *%dest
-  %res = sub nsw i32 %a, %cur
+  %cur = load i32 , i32 *%dest
+  %res = sub i32 %a, %cur
   %cmp = icmp slt i32 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -442,10 +445,10 @@ define i32 @f23(i32 %a, i32 %b, i32 *%dest1, i32 *%dest2) {
 ; CHECK-LABEL: f23:
 ; CHECK: afi %r2, 1000000
 ; CHECK-NEXT: st %r2, 0(%r4)
-; CHECK-NEXT: blhr %r14
+; CHECK-NEXT: bner %r14
 ; CHECK: br %r14
 entry:
-  %res = add nsw i32 %a, 1000000
+  %res = add i32 %a, 1000000
   store i32 %res, i32 *%dest1
   %cmp = icmp ne i32 %res, 0
   br i1 %cmp, label %exit, label %store
@@ -466,7 +469,7 @@ define void @f24(i32 *%ptr) {
 ; CHECK-NEXT: cijlh [[REG]], 0, .L{{.*}}
 ; CHECK: br %r14
 entry:
-  %val = load i32, i32 *%ptr
+  %val = load i32 , i32 *%ptr
   %xor = xor i32 %val, 1
   %add = add i32 %xor, 1000000
   call void @foo()
@@ -488,10 +491,10 @@ define void @f25(i32 %a, i32 *%ptr) {
 ; CHECK-NEXT: #APP
 ; CHECK-NEXT: blah
 ; CHECK-NEXT: #NO_APP
-; CHECK-NEXT: blhr %r14
+; CHECK-NEXT: bner %r14
 ; CHECK: br %r14
 entry:
-  %add = add nsw i32 %a, 1000000
+  %add = add i32 %a, 1000000
   call void asm sideeffect "blah", "r"(i32 %add)
   %cmp = icmp ne i32 %add, 0
   br i1 %cmp, label %exit, label %store
@@ -537,7 +540,7 @@ define i32 @f27(i32 %a, i32 %b, i32 *%dest1, i32 *%dest2) {
 ; CHECK-NEXT: cibe %r2, 0, 0(%r14)
 ; CHECK: br %r14
 entry:
-  %add = add nsw i32 %a, 1000000
+  %add = add i32 %a, 1000000
   %sub = sub i32 %b, %add
   store i32 %sub, i32 *%dest1
   %cmp = icmp eq i32 %add, 0
@@ -559,7 +562,7 @@ define void @f28(i64 %a, i64 *%dest) {
 ; CHECK: br %r14
 entry:
   %ptr = inttoptr i64 %a to i8 *
-  %val = load i8, i8 *%ptr
+  %val = load i8 , i8 *%ptr
   %xor = xor i8 %val, 15
   store i8 %xor, i8 *%ptr
   %cmp = icmp eq i64 %a, 0
@@ -582,7 +585,7 @@ define i32 @f29(i64 %base, i64 %index, i32 *%dest) {
 entry:
   %add = add i64 %base, %index
   %ptr = inttoptr i64 %add to i32 *
-  %res = load i32, i32 *%ptr
+  %res = load i32 , i32 *%ptr
   %cmp = icmp sle i32 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -604,7 +607,7 @@ entry:
   %add1 = add i64 %base, %index
   %add2 = add i64 %add1, 100000
   %ptr = inttoptr i64 %add2 to i32 *
-  %res = load i32, i32 *%ptr
+  %res = load i32 , i32 *%ptr
   %cmp = icmp sle i32 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -625,7 +628,7 @@ define i64 @f31(i64 %base, i64 %index, i64 *%dest) {
 entry:
   %add = add i64 %base, %index
   %ptr = inttoptr i64 %add to i64 *
-  %res = load i64, i64 *%ptr
+  %res = load i64 , i64 *%ptr
   %cmp = icmp sge i64 %res, 0
   br i1 %cmp, label %exit, label %store
 
@@ -646,7 +649,7 @@ define i64 @f32(i64 %base, i64 %index, i64 *%dest) {
 entry:
   %add = add i64 %base, %index
   %ptr = inttoptr i64 %add to i32 *
-  %val = load i32, i32 *%ptr
+  %val = load i32 , i32 *%ptr
   %res = sext i32 %val to i64
   %cmp = icmp sgt i64 %res, 0
   br i1 %cmp, label %exit, label %store
@@ -851,7 +854,7 @@ define i32 @f41(i32 %a, i32 %b, i32 *%dest) {
 ; CHECK-NEXT: bner %r14
 ; CHECK: br %r14
 entry:
-  %cur = load i32, i32 *%dest
+  %cur = load i32 , i32 *%dest
   %res = sub i32 %a, %cur
   %cmp = icmp ne i32 %a, %cur
   br i1 %cmp, label %exit, label %store
@@ -873,7 +876,7 @@ define i64 @f42(i64 %base, i64 %index, i64 *%dest) {
 entry:
   %add = add i64 %base, %index
   %ptr = inttoptr i64 %add to i32 *
-  %val = load i32, i32 *%ptr
+  %val = load i32 , i32 *%ptr
   %res = sext i32 %val to i64
   %cmp = icmp sgt i32 %val, 0
   br i1 %cmp, label %exit, label %store

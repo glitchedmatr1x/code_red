@@ -1,17 +1,18 @@
 //===- llvm/unittests/IR/DominatorTreeBatchUpdatesTest.cpp ----------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
+#include <random>
 #include "CFGBuilder.h"
+#include "gtest/gtest.h"
 #include "llvm/Analysis/PostDominators.h"
 #include "llvm/IR/Dominators.h"
 #include "llvm/Support/GenericDomTreeConstruction.h"
-#include "gtest/gtest.h"
-#include <random>
 
 #define DEBUG_TYPE "batch-update-tests"
 
@@ -21,9 +22,13 @@ namespace {
 const auto CFGInsert = CFGBuilder::ActionKind::Insert;
 const auto CFGDelete = CFGBuilder::ActionKind::Delete;
 
+struct PostDomTree : PostDomTreeBase<BasicBlock> {
+  PostDomTree(Function &F) { recalculate(F); }
+};
+
 using DomUpdate = DominatorTree::UpdateType;
 static_assert(
-    std::is_same<DomUpdate, PostDominatorTree::UpdateType>::value,
+    std::is_same<DomUpdate, PostDomTree::UpdateType>::value,
     "Trees differing only in IsPostDom should have the same update types");
 using DomSNCA = DomTreeBuilder::SemiNCAInfo<DomTreeBuilder::BBDomTree>;
 using PostDomSNCA = DomTreeBuilder::SemiNCAInfo<DomTreeBuilder::BBPostDomTree>;
@@ -56,14 +61,14 @@ TEST(DominatorTreeBatchUpdates, LegalizeDomUpdates) {
       {Insert, B, C}, {Insert, C, D}, {Delete, B, C}, {Insert, B, C},
       {Insert, B, D}, {Delete, C, D}, {Delete, A, B}};
   SmallVector<DomUpdate, 4> Legalized;
-  cfg::LegalizeUpdates<BasicBlock *>(Updates, Legalized, false);
-  LLVM_DEBUG(dbgs() << "Legalized updates:\t");
-  LLVM_DEBUG(for (auto &U : Legalized) { U.dump(); dbgs() << ", "; });
-  LLVM_DEBUG(dbgs() << "\n");
+  DomSNCA::LegalizeUpdates(Updates, Legalized);
+  DEBUG(dbgs() << "Legalized updates:\t");
+  DEBUG(for (auto &U : Legalized) dbgs() << U << ", ");
+  DEBUG(dbgs() << "\n");
   EXPECT_EQ(Legalized.size(), 3UL);
-  EXPECT_TRUE(llvm::is_contained(Legalized, DomUpdate{Insert, B, C}));
-  EXPECT_TRUE(llvm::is_contained(Legalized, DomUpdate{Insert, B, D}));
-  EXPECT_TRUE(llvm::is_contained(Legalized, DomUpdate{Delete, A, B}));
+  EXPECT_NE(llvm::find(Legalized, DomUpdate{Insert, B, C}), Legalized.end());
+  EXPECT_NE(llvm::find(Legalized, DomUpdate{Insert, B, D}), Legalized.end());
+  EXPECT_NE(llvm::find(Legalized, DomUpdate{Delete, A, B}), Legalized.end());
 }
 
 TEST(DominatorTreeBatchUpdates, LegalizePostDomUpdates) {
@@ -79,14 +84,14 @@ TEST(DominatorTreeBatchUpdates, LegalizePostDomUpdates) {
       {Insert, B, C}, {Insert, C, D}, {Delete, B, C}, {Insert, B, C},
       {Insert, B, D}, {Delete, C, D}, {Delete, A, B}};
   SmallVector<DomUpdate, 4> Legalized;
-  cfg::LegalizeUpdates<BasicBlock *>(Updates, Legalized, true);
-  LLVM_DEBUG(dbgs() << "Legalized postdom updates:\t");
-  LLVM_DEBUG(for (auto &U : Legalized) { U.dump(); dbgs() << ", "; });
-  LLVM_DEBUG(dbgs() << "\n");
+  PostDomSNCA::LegalizeUpdates(Updates, Legalized);
+  DEBUG(dbgs() << "Legalized postdom updates:\t");
+  DEBUG(for (auto &U : Legalized) dbgs() << U << ", ");
+  DEBUG(dbgs() << "\n");
   EXPECT_EQ(Legalized.size(), 3UL);
-  EXPECT_TRUE(llvm::is_contained(Legalized, DomUpdate{Insert, C, B}));
-  EXPECT_TRUE(llvm::is_contained(Legalized, DomUpdate{Insert, D, B}));
-  EXPECT_TRUE(llvm::is_contained(Legalized, DomUpdate{Delete, B, A}));
+  EXPECT_NE(llvm::find(Legalized, DomUpdate{Insert, C, B}), Legalized.end());
+  EXPECT_NE(llvm::find(Legalized, DomUpdate{Insert, D, B}), Legalized.end());
+  EXPECT_NE(llvm::find(Legalized, DomUpdate{Delete, B, A}), Legalized.end());
 }
 
 TEST(DominatorTreeBatchUpdates, SingleInsertion) {
@@ -95,8 +100,8 @@ TEST(DominatorTreeBatchUpdates, SingleInsertion) {
 
   DominatorTree DT(*Holder.F);
   EXPECT_TRUE(DT.verify());
-  PostDominatorTree PDT(*Holder.F);
-  EXPECT_TRUE(PDT.verify());
+  PostDomTree PDT(*Holder.F);
+  EXPECT_TRUE(DT.verify());
 
   BasicBlock *B = Builder.getOrAddBlock("B");
   BasicBlock *C = Builder.getOrAddBlock("C");
@@ -117,8 +122,8 @@ TEST(DominatorTreeBatchUpdates, SingleDeletion) {
 
   DominatorTree DT(*Holder.F);
   EXPECT_TRUE(DT.verify());
-  PostDominatorTree PDT(*Holder.F);
-  EXPECT_TRUE(PDT.verify());
+  PostDomTree PDT(*Holder.F);
+  EXPECT_TRUE(DT.verify());
 
   BasicBlock *B = Builder.getOrAddBlock("B");
   BasicBlock *C = Builder.getOrAddBlock("C");
@@ -143,7 +148,7 @@ TEST(DominatorTreeBatchUpdates, FewInsertion) {
 
   DominatorTree DT(*Holder.F);
   EXPECT_TRUE(DT.verify());
-  PostDominatorTree PDT(*Holder.F);
+  PostDomTree PDT(*Holder.F);
   EXPECT_TRUE(PDT.verify());
 
   BasicBlock *B = Builder.getOrAddBlock("B");
@@ -176,7 +181,7 @@ TEST(DominatorTreeBatchUpdates, FewDeletions) {
 
   DominatorTree DT(*Holder.F);
   EXPECT_TRUE(DT.verify());
-  PostDominatorTree PDT(*Holder.F);
+  PostDomTree PDT(*Holder.F);
   EXPECT_TRUE(PDT.verify());
 
   auto Updates = ToDomUpdates(Builder, CFGUpdates);
@@ -207,7 +212,7 @@ TEST(DominatorTreeBatchUpdates, InsertDelete) {
   CFGBuilder B(Holder.F, Arcs, Updates);
   DominatorTree DT(*Holder.F);
   EXPECT_TRUE(DT.verify());
-  PostDominatorTree PDT(*Holder.F);
+  PostDomTree PDT(*Holder.F);
   EXPECT_TRUE(PDT.verify());
 
   while (B.applyUpdate())
@@ -240,7 +245,7 @@ TEST(DominatorTreeBatchUpdates, InsertDeleteExhaustive) {
     CFGBuilder B(Holder.F, Arcs, Updates);
     DominatorTree DT(*Holder.F);
     EXPECT_TRUE(DT.verify());
-    PostDominatorTree PDT(*Holder.F);
+    PostDomTree PDT(*Holder.F);
     EXPECT_TRUE(PDT.verify());
 
     while (B.applyUpdate())
@@ -273,7 +278,7 @@ TEST(DominatorTreeBatchUpdates, InfiniteLoop) {
   CFGBuilder B(Holder.F, Arcs, Updates);
   DominatorTree DT(*Holder.F);
   EXPECT_TRUE(DT.verify());
-  PostDominatorTree PDT(*Holder.F);
+  PostDomTree PDT(*Holder.F);
   EXPECT_TRUE(PDT.verify());
 
   while (B.applyUpdate())
@@ -306,7 +311,7 @@ TEST(DominatorTreeBatchUpdates, DeadBlocks) {
   CFGBuilder B(Holder.F, Arcs, Updates);
   DominatorTree DT(*Holder.F);
   EXPECT_TRUE(DT.verify());
-  PostDominatorTree PDT(*Holder.F);
+  PostDomTree PDT(*Holder.F);
   EXPECT_TRUE(PDT.verify());
 
   while (B.applyUpdate())
@@ -336,7 +341,7 @@ TEST(DominatorTreeBatchUpdates, InfiniteLoop2) {
   CFGBuilder B(Holder.F, Arcs, Updates);
   DominatorTree DT(*Holder.F);
   EXPECT_TRUE(DT.verify());
-  PostDominatorTree PDT(*Holder.F);
+  PostDomTree PDT(*Holder.F);
   EXPECT_TRUE(PDT.verify());
 
   while (B.applyUpdate())

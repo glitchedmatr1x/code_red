@@ -1,9 +1,9 @@
 /*===-- llvm-c/BitReader.h - BitReader Library C Interface ------*- C++ -*-===*\
 |*                                                                            *|
-|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
-|* Exceptions.                                                                *|
-|* See https://llvm.org/LICENSE.txt for license information.                  *|
-|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
+|*                     The LLVM Compiler Infrastructure                       *|
+|*                                                                            *|
+|* This file is distributed under the University of Illinois Open Source      *|
+|* License. See LICENSE.TXT for details.                                      *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -19,10 +19,11 @@
 #ifndef LLVM_C_BITREADER_H
 #define LLVM_C_BITREADER_H
 
-#include "llvm-c/ExternC.h"
 #include "llvm-c/Types.h"
 
-LLVM_C_EXTERN_C_BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup LLVMCBitReader Bit Reader
@@ -77,6 +78,8 @@ LLVMBool LLVMGetBitcodeModule2(LLVMMemoryBufferRef MemBuf, LLVMModuleRef *OutM);
  * @}
  */
 
-LLVM_C_EXTERN_C_END
+#ifdef __cplusplus
+}
+#endif
 
 #endif

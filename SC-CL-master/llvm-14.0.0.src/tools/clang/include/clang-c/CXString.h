@@ -1,9 +1,9 @@
 /*===-- clang-c/CXString.h - C Index strings  --------------------*- C -*-===*\
 |*                                                                            *|
-|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
-|* Exceptions.                                                                *|
-|* See https://llvm.org/LICENSE.txt for license information.                  *|
-|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
+|*                     The LLVM Compiler Infrastructure                       *|
+|*                                                                            *|
+|* This file is distributed under the University of Illinois Open Source      *|
+|* License. See LICENSE.TXT for details.                                      *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -14,10 +14,11 @@
 #ifndef LLVM_CLANG_C_CXSTRING_H
 #define LLVM_CLANG_C_CXSTRING_H
 
-#include "clang-c/ExternC.h"
 #include "clang-c/Platform.h"
 
-LLVM_CLANG_C_EXTERN_C_BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * \defgroup CINDEX_STRING String manipulation routines
@@ -27,7 +28,7 @@ LLVM_CLANG_C_EXTERN_C_BEGIN
  */
 
 /**
- * A character string.
+ * \brief A character string.
  *
  * The \c CXString type is used to return strings from the interface when
  * the ownership of that string might differ from one call to the next.
@@ -45,17 +46,17 @@ typedef struct {
 } CXStringSet;
 
 /**
- * Retrieve the character data associated with the given string.
+ * \brief Retrieve the character data associated with the given string.
  */
 CINDEX_LINKAGE const char *clang_getCString(CXString string);
 
 /**
- * Free the given string.
+ * \brief Free the given string.
  */
 CINDEX_LINKAGE void clang_disposeString(CXString string);
 
 /**
- * Free the given string set.
+ * \brief Free the given string set.
  */
 CINDEX_LINKAGE void clang_disposeStringSet(CXStringSet *set);
 
@@ -63,7 +64,8 @@ CINDEX_LINKAGE void clang_disposeStringSet(CXStringSet *set);
  * @}
  */
 
-LLVM_CLANG_C_EXTERN_C_END
-
+#ifdef __cplusplus
+}
+#endif
 #endif
 

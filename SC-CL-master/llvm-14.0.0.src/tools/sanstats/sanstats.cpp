@@ -1,8 +1,9 @@
 //===- sanstats.cpp - Sanitizer statistics dumper -------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,9 +15,7 @@
 #include "llvm/DebugInfo/Symbolize/Symbolize.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/ErrorOr.h"
-#include "llvm/Support/FileSystem.h"
 #include "llvm/Support/MemoryBuffer.h"
-#include "llvm/Support/Path.h"
 #include "llvm/Transforms/Utils/SanitizerStats.h"
 #include <stdint.h>
 
@@ -36,7 +35,7 @@ inline uint64_t CountFromData(uint64_t Data, char SizeofPtr) {
   return Data & ((1ull << (SizeofPtr * 8 - kSanitizerStatKindBits)) - 1);
 }
 
-static uint64_t ReadLE(char Size, const char *Begin, const char *End) {
+uint64_t ReadLE(char Size, const char *Begin, const char *End) {
   uint64_t Result = 0;
   char Pos = 0;
   while (Begin < End && Pos != Size) {
@@ -47,18 +46,13 @@ static uint64_t ReadLE(char Size, const char *Begin, const char *End) {
   return Result;
 }
 
-static const char *ReadModule(char SizeofPtr, const char *Begin,
-                              const char *End) {
+const char *ReadModule(char SizeofPtr, const char *Begin, const char *End) {
   const char *FilenameBegin = Begin;
   while (Begin != End && *Begin)
     ++Begin;
   if (Begin == End)
     return nullptr;
-  std::string Filename(FilenameBegin, Begin - FilenameBegin);
-
-  if (!llvm::sys::fs::exists(Filename))
-    Filename = std::string(llvm::sys::path::parent_path(ClInputFile)) +
-               std::string(llvm::sys::path::filename(Filename));
+  StringRef Filename(FilenameBegin, Begin - FilenameBegin);
 
   ++Begin;
   if (Begin == End)
@@ -69,7 +63,7 @@ static const char *ReadModule(char SizeofPtr, const char *Begin,
   SymbolizerOptions.UseSymbolTable = true;
   symbolize::LLVMSymbolizer Symbolizer(SymbolizerOptions);
 
-  while (true) {
+  while (1) {
     uint64_t Addr = ReadLE(SizeofPtr, Begin, End);
     Begin += SizeofPtr;
     uint64_t Data = ReadLE(SizeofPtr, Begin, End);
@@ -85,13 +79,10 @@ static const char *ReadModule(char SizeofPtr, const char *Begin,
     // As the instrumentation tracks the return address and not
     // the address of the call to `__sanitizer_stat_report` we
     // remove one from the address to get the correct DI.
-    // TODO: it would be neccessary to set proper section index here.
-    // object::SectionedAddress::UndefSection works for only absolute addresses.
-    if (Expected<DILineInfo> LineInfo = Symbolizer.symbolizeCode(
-            Filename, {Addr - 1, object::SectionedAddress::UndefSection})) {
-      llvm::outs() << format_hex(Addr - 1, 18) << ' ' << LineInfo->FileName
-                   << ':' << LineInfo->Line << ' ' << LineInfo->FunctionName
-                   << ' ';
+    if (Expected<DILineInfo> LineInfo =
+            Symbolizer.symbolizeCode(Filename, Addr - 1)) {
+      llvm::outs() << LineInfo->FileName << ':' << LineInfo->Line << ' '
+                   << LineInfo->FunctionName << ' ';
     } else {
       logAllUnhandledErrors(LineInfo.takeError(), llvm::outs(), "<error> ");
     }
@@ -125,8 +116,8 @@ int main(int argc, char **argv) {
   cl::ParseCommandLineOptions(argc, argv,
                               "Sanitizer Statistics Processing Tool");
 
-  ErrorOr<std::unique_ptr<MemoryBuffer>> MBOrErr = MemoryBuffer::getFile(
-      ClInputFile, /*IsText=*/false, /*RequiresNullTerminator=*/false);
+  ErrorOr<std::unique_ptr<MemoryBuffer>> MBOrErr =
+      MemoryBuffer::getFile(ClInputFile, -1, false);
   if (!MBOrErr) {
     errs() << argv[0] << ": " << ClInputFile << ": "
            << MBOrErr.getError().message() << '\n';

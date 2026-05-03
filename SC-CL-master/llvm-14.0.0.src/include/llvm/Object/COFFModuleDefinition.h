@@ -1,8 +1,9 @@
 //===--- COFFModuleDefinition.h ---------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -15,8 +16,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_OBJECT_COFFMODULEDEFINITION_H
-#define LLVM_OBJECT_COFFMODULEDEFINITION_H
+#ifndef LLVM_OBJECT_COFF_MODULE_DEFINITION_H
+#define LLVM_OBJECT_COFF_MODULE_DEFINITION_H
 
 #include "llvm/Object/COFF.h"
 #include "llvm/Object/COFFImportFile.h"

@@ -11,7 +11,7 @@ if( LLVM_ENABLE_PIC AND LLVM_BINUTILS_INCDIR )
      IPO
      )
 
-  add_llvm_library(LLVMgold MODULE
+  add_llvm_loadable_module(LLVMgold
     gold-plugin.cpp
     )
 

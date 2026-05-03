@@ -135,9 +135,7 @@ namespace PR19305 {
   template<typename T> int m = 0;
   template<typename T> int m<T*> = 0;
 
-  // This has external linkage, so could be referenced by a declaration in a
-  // different translation unit.
-  template<> const int m<void> = 0; // no warning
+  template<> const int m<void> = 0; // expected-warning {{unused variable}}
 }
 
 namespace ctor_with_cleanups {
@@ -236,20 +234,6 @@ struct a {
 template <typename b>
 void c() {
   a d(b::e ? "" : "");
-}
-}
-
-// Ensure we don't warn on dependent constructor calls.
-namespace dependent_ctor {
-struct S {
-  S() = default;
-  S(const S &) = default;
-  S(int);
-};
-
-template <typename T>
-void foo(T &t) {
-  S s{t};
 }
 }
 #endif

@@ -1,8 +1,9 @@
 //===--- Refactoring.h - Framework for clang refactoring tools --*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -29,7 +30,7 @@ class Rewriter;
 
 namespace tooling {
 
-/// A tool to run refactorings.
+/// \brief A tool to run refactorings.
 ///
 /// This is a refactoring specific version of \see ClangTool. FrontendActions
 /// passed to run() and runAndSave() should add replacements to
@@ -42,17 +43,17 @@ public:
                   std::shared_ptr<PCHContainerOperations> PCHContainerOps =
                       std::make_shared<PCHContainerOperations>());
 
-  /// Returns the file path to replacements map to which replacements
+  /// \brief Returns the file path to replacements map to which replacements
   /// should be added during the run of the tool.
   std::map<std::string, Replacements> &getReplacements();
 
-  /// Call run(), apply all generated replacements, and immediately save
+  /// \brief Call run(), apply all generated replacements, and immediately save
   /// the results to disk.
   ///
   /// \returns 0 upon success. Non-zero upon failure.
   int runAndSave(FrontendActionFactory *ActionFactory);
 
-  /// Apply all stored replacements to the given Rewriter.
+  /// \brief Apply all stored replacements to the given Rewriter.
   ///
   /// FileToReplaces will be deduplicated with `groupReplacementsByFile` before
   /// application.
@@ -64,14 +65,14 @@ public:
   bool applyAllReplacements(Rewriter &Rewrite);
 
 private:
-  /// Write all refactored files to disk.
+  /// \brief Write all refactored files to disk.
   int saveRewrittenFiles(Rewriter &Rewrite);
 
 private:
   std::map<std::string, Replacements> FileToReplaces;
 };
 
-/// Groups \p Replaces by the file path and applies each group of
+/// \brief Groups \p Replaces by the file path and applies each group of
 /// Replacements on the related file in \p Rewriter. In addition to applying
 /// given Replacements, this function also formats the changed code.
 ///

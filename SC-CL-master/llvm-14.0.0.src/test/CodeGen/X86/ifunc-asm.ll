@@ -2,13 +2,14 @@
 
 target triple = "x86_64-unknown-linux-gnu"
 
-define internal i32 (i32)* @foo_ifunc() {
+define internal i64 @foo_ifunc() {
 entry:
-  ret i32 (i32)* null
+  ret i64 0
 }
 ; CHECK: .type foo_ifunc,@function
 ; CHECK-NEXT: foo_ifunc:
 
-@foo = ifunc i32 (i32), i32 (i32)* ()* @foo_ifunc
-; CHECK:      .type foo,@gnu_indirect_function
-; CHECK-NEXT: .set foo, foo_ifunc
+@foo = ifunc i32 (i32), i64 ()* @foo_ifunc
+; CHECK: .type foo,@function
+; CHECK-NEXT: .type foo,@gnu_indirect_function
+; CHECK-NEXT: foo = foo_ifunc

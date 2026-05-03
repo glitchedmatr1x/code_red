@@ -5,11 +5,10 @@ FileHeader:
 Sections:
   - Type:            TABLE
     Tables:         
-      - Index:             0
-        ElemType:          FUNCREF
+      - ElemType:          ANYFUNC
         Limits:
           Flags:           [ HAS_MAX ]
-          Minimum:         0x00000010
+          Initial:         0x00000010
           Maximum:         0x00000011
   - Type:            ELEM
     Segments:
@@ -19,14 +18,14 @@ Sections:
         Functions:
           - 1
       - Offset:
-          Opcode:        GLOBAL_GET
+          Opcode:        GET_GLOBAL
           Index:         1
         Functions:
           - 4
 ...
 # CHECK: --- !WASM
 # CHECK: FileHeader:
-# CHECK:   Version:           0x1
+# CHECK:   Version:           0x00000001
 # CHECK: Sections:
 # CHECK:   - Type:            ELEM
 # CHECK:     Segments:
@@ -35,7 +34,7 @@ Sections:
 # CHECK:           Value:            3
 # CHECK:         Functions: [ 1 ]
 # CHECK:       - Offset:
-# CHECK:           Opcode:           GLOBAL_GET
+# CHECK:           Opcode:           GET_GLOBAL
 # CHECK:           Index:            1
 # CHECK:         Functions: [ 4 ]
 # CHECK: ...

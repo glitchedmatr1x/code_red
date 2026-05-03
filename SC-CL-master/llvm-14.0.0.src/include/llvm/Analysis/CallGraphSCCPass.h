@@ -1,8 +1,9 @@
 //===- CallGraphSCCPass.h - Pass that operates BU on call graph -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -102,10 +103,6 @@ public:
   /// ReplaceNode - This informs the SCC and the pass manager that the specified
   /// Old node has been deleted, and New is to be used in its place.
   void ReplaceNode(CallGraphNode *Old, CallGraphNode *New);
-
-  /// DeleteNode - This informs the SCC and the pass manager that the specified
-  /// Old node has been deleted.
-  void DeleteNode(CallGraphNode *Old);
 
   using iterator = std::vector<CallGraphNode *>::const_iterator;
 

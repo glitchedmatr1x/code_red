@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
-from __future__ import absolute_import, division, print_function
+from __future__ import print_function
 
 import argparse
 import difflib
@@ -25,7 +25,7 @@ def disassemble(objfile):
     if p.returncode or err:
         print("Disassemble failed: {}".format(objfile))
         sys.exit(1)
-    return [line for line in out.split(os.linesep) if keep_line(line)]
+    return filter(keep_line, out.split(os.linesep))
 
 def dump_debug(objfile):
     """Dump all of the debug info from a file."""
@@ -34,7 +34,7 @@ def dump_debug(objfile):
     if p.returncode or err:
         print("Dump debug failed: {}".format(objfile))
         sys.exit(1)
-    return [line for line in out.split(os.linesep) if keep_line(line)]
+    return filter(keep_line, out.split(os.linesep))
 
 def first_diff(a, b, fromfile, tofile):
     """Returns the first few lines of a difference, if there is one.  Python

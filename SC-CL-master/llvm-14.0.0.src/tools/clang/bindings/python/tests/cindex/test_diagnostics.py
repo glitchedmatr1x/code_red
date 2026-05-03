@@ -1,8 +1,3 @@
-import os
-from clang.cindex import Config
-if 'CLANG_LIBRARY_PATH' in os.environ:
-    Config.set_library_path(os.environ['CLANG_LIBRARY_PATH'])
-
 from clang.cindex import *
 from .util import get_tu
 
@@ -20,7 +15,7 @@ class TestDiagnostics(unittest.TestCase):
         self.assertEqual(tu.diagnostics[0].location.line, 1)
         self.assertEqual(tu.diagnostics[0].location.column, 11)
         self.assertEqual(tu.diagnostics[0].spelling,
-                'non-void function does not return a value')
+                'control reaches end of non-void function')
 
     def test_diagnostic_note(self):
         # FIXME: We aren't getting notes here for some reason.
@@ -41,7 +36,7 @@ class TestDiagnostics(unittest.TestCase):
         self.assertEqual(tu.diagnostics[0].severity, Diagnostic.Warning)
         self.assertEqual(tu.diagnostics[0].location.line, 1)
         self.assertEqual(tu.diagnostics[0].location.column, 26)
-        self.assertRegex(tu.diagnostics[0].spelling,
+        self.assertRegexpMatches(tu.diagnostics[0].spelling,
             'use of GNU old-style.*')
         self.assertEqual(len(tu.diagnostics[0].fixits), 1)
         self.assertEqual(tu.diagnostics[0].fixits[0].range.start.line, 1)
@@ -51,19 +46,19 @@ class TestDiagnostics(unittest.TestCase):
         self.assertEqual(tu.diagnostics[0].fixits[0].value, '.f0 = ')
 
     def test_diagnostic_range(self):
-        tu = get_tu('void f() { int i = "a"; }')
+        tu = get_tu('void f() { int i = "a" + 1; }')
         self.assertEqual(len(tu.diagnostics), 1)
         self.assertEqual(tu.diagnostics[0].severity, Diagnostic.Warning)
         self.assertEqual(tu.diagnostics[0].location.line, 1)
         self.assertEqual(tu.diagnostics[0].location.column, 16)
-        self.assertRegex(tu.diagnostics[0].spelling,
+        self.assertRegexpMatches(tu.diagnostics[0].spelling,
             'incompatible pointer to.*')
         self.assertEqual(len(tu.diagnostics[0].fixits), 0)
         self.assertEqual(len(tu.diagnostics[0].ranges), 1)
         self.assertEqual(tu.diagnostics[0].ranges[0].start.line, 1)
         self.assertEqual(tu.diagnostics[0].ranges[0].start.column, 20)
         self.assertEqual(tu.diagnostics[0].ranges[0].end.line, 1)
-        self.assertEqual(tu.diagnostics[0].ranges[0].end.column, 23)
+        self.assertEqual(tu.diagnostics[0].ranges[0].end.column, 27)
         with self.assertRaises(IndexError):
             tu.diagnostics[0].ranges[1].start.line
 
@@ -97,10 +92,10 @@ class TestDiagnostics(unittest.TestCase):
         children = d.children
         self.assertEqual(len(children), 1)
         self.assertEqual(children[0].severity, Diagnostic.Note)
-        self.assertRegex(children[0].spelling,
+        self.assertRegexpMatches(children[0].spelling,
                 '.*declared here')
         self.assertEqual(children[0].location.line, 1)
-        self.assertEqual(children[0].location.column, 6)
+        self.assertEqual(children[0].location.column, 1)
 
     def test_diagnostic_string_repr(self):
         tu = get_tu('struct MissingSemicolon{}')

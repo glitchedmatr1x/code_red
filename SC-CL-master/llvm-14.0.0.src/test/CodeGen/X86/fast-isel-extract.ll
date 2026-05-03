@@ -12,8 +12,7 @@ define void @test1(i64*) nounwind ssp {
   ret void
 ; CHECK-LABEL: test1:
 ; CHECK: callq _f
-; CHECK-NOT: %rax
-; CHECK: addq $10, %rax
+; CHECK-NEXT: addq	$10, %rax
 }
 
 define void @test2(i64*) nounwind ssp {
@@ -24,8 +23,7 @@ define void @test2(i64*) nounwind ssp {
   ret void
 ; CHECK-LABEL: test2:
 ; CHECK: callq _f
-; CHECK-NOT: %rdx
-; CHECK: addq $10, %rdx
+; CHECK-NEXT: addq	$10, %rdx
 }
 
 declare %addovf @llvm.sadd.with.overflow.i32(i32, i32) nounwind readnone

@@ -1,5 +1,4 @@
-; RUN: opt < %s -function-attrs -S | FileCheck %s
-; RUN: opt < %s -passes=function-attrs -S | FileCheck %s
+; RUN: opt < %s -functionattrs -S | FileCheck %s
 
 @x = global i32 0
 
@@ -20,6 +19,6 @@ declare i8 @strlen(i8*) noinline optnone
 ; CHECK: (i8*) #1
 
 ; CHECK-LABEL: attributes #0
-; CHECK: = { mustprogress nofree norecurse nosync nounwind readnone willreturn }
+; CHECK: = { norecurse readnone }
 ; CHECK-LABEL: attributes #1
 ; CHECK: = { noinline optnone }

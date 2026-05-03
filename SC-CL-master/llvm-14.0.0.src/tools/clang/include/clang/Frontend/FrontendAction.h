@@ -1,13 +1,14 @@
 //===-- FrontendAction.h - Generic Frontend Action Interface ----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Defines the clang::FrontendAction interface and various convenience
+/// \brief Defines the clang::FrontendAction interface and various convenience
 /// abstract classes (clang::ASTFrontendAction, clang::PluginASTAction,
 /// clang::PreprocessorFrontendAction, and clang::WrapperFrontendAction)
 /// derived from it.
@@ -23,7 +24,6 @@
 #include "clang/Frontend/ASTUnit.h"
 #include "clang/Frontend/FrontendOptions.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/Support/Error.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -48,13 +48,7 @@ protected:
   /// @name Implementation Action Interface
   /// @{
 
-  /// Prepare to execute the action on the given CompilerInstance.
-  ///
-  /// This is called before executing the action on any inputs, and can modify
-  /// the configuration as needed (including adjusting the input list).
-  virtual bool PrepareToExecuteAction(CompilerInstance &CI) { return true; }
-
-  /// Create the AST consumer object for this action, if supported.
+  /// \brief Create the AST consumer object for this action, if supported.
   ///
   /// This routine is called as part of BeginSourceFile(), which will
   /// fail if the AST consumer cannot be created. This will not be called if the
@@ -70,7 +64,7 @@ protected:
   virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                          StringRef InFile) = 0;
 
-  /// Callback before starting processing a single input, giving the
+  /// \brief Callback before starting processing a single input, giving the
   /// opportunity to modify the CompilerInvocation or do some other action
   /// before BeginSourceFileAction is called.
   ///
@@ -78,7 +72,7 @@ protected:
   /// ExecuteAction() and EndSourceFileAction() will not be called.
   virtual bool BeginInvocation(CompilerInstance &CI) { return true; }
 
-  /// Callback at the start of processing a single input.
+  /// \brief Callback at the start of processing a single input.
   ///
   /// \return True on success; on failure ExecutionAction() and
   /// EndSourceFileAction() will not be called.
@@ -86,20 +80,20 @@ protected:
     return true;
   }
 
-  /// Callback to run the program action, using the initialized
+  /// \brief Callback to run the program action, using the initialized
   /// compiler instance.
   ///
   /// This is guaranteed to only be called between BeginSourceFileAction()
   /// and EndSourceFileAction().
   virtual void ExecuteAction() = 0;
 
-  /// Callback at the end of processing a single input.
+  /// \brief Callback at the end of processing a single input.
   ///
   /// This is guaranteed to only be called following a successful call to
   /// BeginSourceFileAction (and BeginSourceFile).
   virtual void EndSourceFileAction() {}
 
-  /// Callback at the end of processing a single input, to determine
+  /// \brief Callback at the end of processing a single input, to determine
   /// if the output files should be erased or not.
   ///
   /// By default it returns true if a compiler error occurred.
@@ -136,16 +130,9 @@ public:
     return CurrentInput;
   }
 
-  StringRef getCurrentFile() const {
+  const StringRef getCurrentFile() const {
     assert(!CurrentInput.isEmpty() && "No current file!");
     return CurrentInput.getFile();
-  }
-
-  StringRef getCurrentFileOrBufferName() const {
-    assert(!CurrentInput.isEmpty() && "No current file!");
-    return CurrentInput.isFile()
-               ? CurrentInput.getFile()
-               : CurrentInput.getBuffer().getBufferIdentifier();
   }
 
   InputKind getCurrentFileKind() const {
@@ -171,44 +158,39 @@ public:
   /// @name Supported Modes
   /// @{
 
-  /// Is this action invoked on a model file?
+  /// \brief Is this action invoked on a model file?
   ///
   /// Model files are incomplete translation units that relies on type
   /// information from another translation unit. Check ParseModelFileAction for
   /// details.
   virtual bool isModelParsingAction() const { return false; }
 
-  /// Does this action only use the preprocessor?
+  /// \brief Does this action only use the preprocessor?
   ///
   /// If so no AST context will be created and this action will be invalid
   /// with AST file inputs.
   virtual bool usesPreprocessorOnly() const = 0;
 
-  /// For AST-based actions, the kind of translation unit we're handling.
+  /// \brief For AST-based actions, the kind of translation unit we're handling.
   virtual TranslationUnitKind getTranslationUnitKind() { return TU_Complete; }
 
-  /// Does this action support use with PCH?
+  /// \brief Does this action support use with PCH?
   virtual bool hasPCHSupport() const { return true; }
 
-  /// Does this action support use with AST files?
+  /// \brief Does this action support use with AST files?
   virtual bool hasASTFileSupport() const { return true; }
 
-  /// Does this action support use with IR files?
+  /// \brief Does this action support use with IR files?
   virtual bool hasIRSupport() const { return false; }
 
-  /// Does this action support use with code completion?
+  /// \brief Does this action support use with code completion?
   virtual bool hasCodeCompletionSupport() const { return false; }
 
   /// @}
   /// @name Public Action Interface
   /// @{
 
-  /// Prepare the action to execute on the given compiler instance.
-  bool PrepareToExecute(CompilerInstance &CI) {
-    return PrepareToExecuteAction(CI);
-  }
-
-  /// Prepare the action for processing the input file \p Input.
+  /// \brief Prepare the action for processing the input file \p Input.
   ///
   /// This is run after the options and frontend have been initialized,
   /// but prior to executing any per-file processing.
@@ -229,20 +211,20 @@ public:
   /// be aborted and neither Execute() nor EndSourceFile() should be called.
   bool BeginSourceFile(CompilerInstance &CI, const FrontendInputFile &Input);
 
-  /// Set the source manager's main input file, and run the action.
-  llvm::Error Execute();
+  /// \brief Set the source manager's main input file, and run the action.
+  bool Execute();
 
-  /// Perform any per-file post processing, deallocate per-file
+  /// \brief Perform any per-file post processing, deallocate per-file
   /// objects, and run statistics and output file cleanup code.
-  virtual void EndSourceFile();
+  void EndSourceFile();
 
   /// @}
 };
 
-/// Abstract base class to use for AST consumer-based frontend actions.
+/// \brief Abstract base class to use for AST consumer-based frontend actions.
 class ASTFrontendAction : public FrontendAction {
 protected:
-  /// Implement the ExecuteAction interface by running Sema on
+  /// \brief Implement the ExecuteAction interface by running Sema on
   /// the already-initialized AST consumer.
   ///
   /// This will also take care of instantiating a code completion consumer if
@@ -260,7 +242,7 @@ public:
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                  StringRef InFile) override = 0;
 
-  /// Parse the given plugin command line arguments.
+  /// \brief Parse the given plugin command line arguments.
   ///
   /// \param CI - The compiler instance, for use in reporting diagnostics.
   /// \return True if the parsing succeeded; otherwise the plugin will be
@@ -270,24 +252,23 @@ public:
                          const std::vector<std::string> &arg) = 0;
 
   enum ActionType {
-    CmdlineBeforeMainAction, ///< Execute the action before the main action if
-                             ///< on the command line
-    CmdlineAfterMainAction,  ///< Execute the action after the main action if on
-                             ///< the command line
-    ReplaceAction,           ///< Replace the main action
-    AddBeforeMainAction,     ///< Execute the action before the main action
-    AddAfterMainAction       ///< Execute the action after the main action
+    Cmdline,             ///< Action is determined by the cc1 command-line
+    ReplaceAction,       ///< Replace the main action
+    AddBeforeMainAction, ///< Execute the action before the main action
+    AddAfterMainAction   ///< Execute the action after the main action
   };
-  /// Get the action type for this plugin
+  /// \brief Get the action type for this plugin
   ///
-  /// \return The action type. By default we use CmdlineAfterMainAction.
-  virtual ActionType getActionType() { return CmdlineAfterMainAction; }
+  /// \return The action type. If the type is Cmdline then by default the
+  /// plugin does nothing and what it does is determined by the cc1
+  /// command-line.
+  virtual ActionType getActionType() { return Cmdline; }
 };
 
-/// Abstract base class to use for preprocessor-based frontend actions.
+/// \brief Abstract base class to use for preprocessor-based frontend actions.
 class PreprocessorFrontendAction : public FrontendAction {
 protected:
-  /// Provide a default implementation which returns aborts;
+  /// \brief Provide a default implementation which returns aborts;
   /// this method should never be called by FrontendAction clients.
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                  StringRef InFile) override;
@@ -296,25 +277,22 @@ public:
   bool usesPreprocessorOnly() const override { return true; }
 };
 
-/// A frontend action which simply wraps some other runtime-specified
+/// \brief A frontend action which simply wraps some other runtime-specified
 /// frontend action.
 ///
 /// Deriving from this class allows an action to inject custom logic around
 /// some existing action's behavior. It implements every virtual method in
 /// the FrontendAction interface by forwarding to the wrapped action.
 class WrapperFrontendAction : public FrontendAction {
-protected:
   std::unique_ptr<FrontendAction> WrappedAction;
 
-  bool PrepareToExecuteAction(CompilerInstance &CI) override;
+protected:
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                  StringRef InFile) override;
   bool BeginInvocation(CompilerInstance &CI) override;
   bool BeginSourceFileAction(CompilerInstance &CI) override;
   void ExecuteAction() override;
-  void EndSourceFile() override;
   void EndSourceFileAction() override;
-  bool shouldEraseOutputFiles() override;
 
 public:
   /// Construct a WrapperFrontendAction from an existing action, taking

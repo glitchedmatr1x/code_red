@@ -8,8 +8,7 @@
 ; RUN:     --plugin-opt=cache-dir=%t.cache \
 ; RUN:     -o %t3.o %t2.o %t.o
 
-; Since nothing was added to the cache, there shouldn't be a timestamp file yet.
-; RUN: not ls %t.cache
+; RUN: ls %t.cache | count 0
 
 
 ; Verify that enabling caching is working with module with hash.
@@ -23,8 +22,7 @@
 ; RUN:     --plugin-opt=cache-dir=%t.cache \
 ; RUN:     -o %t3.o %t2.o %t.o
 
-; Two cached objects, plus a timestamp file
-; RUN: ls %t.cache | count 3
+; RUN: ls %t.cache | count 2
 
 
 ; Create two files that would be removed by cache pruning due to age.
@@ -53,21 +51,13 @@
 ; RUN: ls %t.cache | count 5
 
 
-; Increase the age of llvmcache-foo
-; RUN: touch -r %t.cache/llvmcache-foo -d '-2 minutes' %t.cache/llvmcache-foo
-
 ; This should remove it.
 ; RUN: %gold -m elf_x86_64 -plugin %llvmshlibdir/LLVMgold%shlibext \
 ; RUN:     --plugin-opt=thinlto \
-; RUN:     --plugin-opt=save-temps \
 ; RUN:     --plugin-opt=cache-dir=%t.cache \
 ; RUN:     --plugin-opt=cache-policy=cache_size_bytes=32k:prune_interval=0s \
-; RUN:     -o %t4.o %t2.o %t.o
+; RUN:     -o %t3.o %t2.o %t.o
 ; RUN: ls %t.cache | count 4
-; With save-temps we can confirm that the cached files were copied into temp
-; files to avoid a race condition with the cached files being pruned, since the
-; gold plugin-api only accepts native objects passed back as files.
-; RUN: ls %t4.o.lto.o1 %t4.o.lto.o2
 
 
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"

@@ -18,7 +18,7 @@ define void @test_laziness() {
 
 ; CHECK-NORMAL-LABEL: test_laziness:
 ; CHECK-NORMAL: bl _local
-; CHECK-NORMAL: bl _nonlocal
+; CHEKC-NORMAL: bl _nonlocal
 
   call void @local()
   call void @nonlocal()

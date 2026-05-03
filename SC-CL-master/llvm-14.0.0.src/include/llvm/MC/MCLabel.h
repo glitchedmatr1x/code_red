@@ -1,8 +1,9 @@
 //===- MCLabel.h - Machine Code Directional Local Labels --------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -17,11 +18,11 @@ namespace llvm {
 
 class raw_ostream;
 
-/// Instances of this class represent a label name in the MC file,
+/// \brief Instances of this class represent a label name in the MC file,
 /// and MCLabel are created and uniqued by the MCContext class.  MCLabel
 /// should only be constructed for valid instances in the object file.
 class MCLabel {
-  // The instance number of this Directional Local Label.
+  // \brief The instance number of this Directional Local Label.
   unsigned Instance;
 
 private: // MCContext creates and uniques these.
@@ -33,16 +34,16 @@ public:
   MCLabel(const MCLabel &) = delete;
   MCLabel &operator=(const MCLabel &) = delete;
 
-  /// Get the current instance of this Directional Local Label.
+  /// \brief Get the current instance of this Directional Local Label.
   unsigned getInstance() const { return Instance; }
 
-  /// Increment the current instance of this Directional Local Label.
+  /// \brief Increment the current instance of this Directional Local Label.
   unsigned incInstance() { return ++Instance; }
 
-  /// Print the value to the stream \p OS.
+  /// \brief Print the value to the stream \p OS.
   void print(raw_ostream &OS) const;
 
-  /// Print the value to stderr.
+  /// \brief Print the value to stderr.
   void dump() const;
 };
 

@@ -1,8 +1,9 @@
 //===- CTagsEmitter.cpp - Generate ctags-compatible index ------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -72,7 +73,7 @@ void CTagsEmitter::run(raw_ostream &OS) {
   for (const auto &D : Defs)
     Tags.push_back(Tag(D.first, locate(D.second.get())));
   // Emit tags.
-  llvm::sort(Tags);
+  std::sort(Tags.begin(), Tags.end());
   OS << "!_TAG_FILE_FORMAT\t1\t/original ctags format/\n";
   OS << "!_TAG_FILE_SORTED\t1\t/0=unsorted, 1=sorted, 2=foldcase/\n";
   for (const Tag &T : Tags)

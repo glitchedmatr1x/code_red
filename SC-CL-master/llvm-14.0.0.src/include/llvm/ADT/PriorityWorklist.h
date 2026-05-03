@@ -1,8 +1,9 @@
 //===- PriorityWorklist.h - Worklist with insertion priority ----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
@@ -19,6 +20,7 @@
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/Support/Compiler.h"
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <iterator>
@@ -109,7 +111,7 @@ public:
 
   /// Insert a sequence of new elements into the PriorityWorklist.
   template <typename SequenceT>
-  std::enable_if_t<!std::is_convertible<SequenceT, T>::value>
+  typename std::enable_if<!std::is_convertible<SequenceT, T>::value>::type
   insert(SequenceT &&Input) {
     if (std::begin(Input) == std::end(Input))
       // Nothing to do for an empty input sequence.

@@ -1,8 +1,9 @@
 //===- unittests/Support/EndianStreamTest.cpp - EndianStream.h tests ------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -20,7 +21,7 @@ TEST(EndianStream, WriteInt32LE) {
 
   {
     raw_svector_ostream OS(data);
-    endian::Writer LE(OS, little);
+    endian::Writer<little> LE(OS);
     LE.write(static_cast<int32_t>(-1362446643));
   }
 
@@ -35,7 +36,7 @@ TEST(EndianStream, WriteInt32BE) {
 
   {
     raw_svector_ostream OS(data);
-    endian::Writer BE(OS, big);
+    endian::Writer<big> BE(OS);
     BE.write(static_cast<int32_t>(-1362446643));
   }
 
@@ -51,7 +52,7 @@ TEST(EndianStream, WriteFloatLE) {
 
   {
     raw_svector_ostream OS(data);
-    endian::Writer LE(OS, little);
+    endian::Writer<little> LE(OS);
     LE.write(12345.0f);
   }
 
@@ -66,7 +67,7 @@ TEST(EndianStream, WriteFloatBE) {
 
   {
     raw_svector_ostream OS(data);
-    endian::Writer BE(OS, big);
+    endian::Writer<big> BE(OS);
     BE.write(12345.0f);
   }
 
@@ -81,7 +82,7 @@ TEST(EndianStream, WriteInt64LE) {
 
   {
     raw_svector_ostream OS(data);
-    endian::Writer LE(OS, little);
+    endian::Writer<little> LE(OS);
     LE.write(static_cast<int64_t>(-136244664332342323));
   }
 
@@ -100,7 +101,7 @@ TEST(EndianStream, WriteInt64BE) {
 
   {
     raw_svector_ostream OS(data);
-    endian::Writer BE(OS, big);
+    endian::Writer<big> BE(OS);
     BE.write(static_cast<int64_t>(-136244664332342323));
   }
 
@@ -119,7 +120,7 @@ TEST(EndianStream, WriteDoubleLE) {
 
   {
     raw_svector_ostream OS(data);
-    endian::Writer LE(OS, little);
+    endian::Writer<little> LE(OS);
     LE.write(-2349214918.58107);
   }
 
@@ -138,7 +139,7 @@ TEST(EndianStream, WriteDoubleBE) {
 
   {
     raw_svector_ostream OS(data);
-    endian::Writer BE(OS, big);
+    endian::Writer<big> BE(OS);
     BE.write(-2349214918.58107);
   }
 
@@ -157,7 +158,7 @@ TEST(EndianStream, WriteArrayLE) {
 
   {
     raw_svector_ostream OS(Data);
-    endian::Writer LE(OS, little);
+    endian::Writer<little> LE(OS);
     LE.write<uint16_t>({0x1234, 0x5678});
   }
 
@@ -172,7 +173,7 @@ TEST(EndianStream, WriteVectorLE) {
 
   {
     raw_svector_ostream OS(Data);
-    endian::Writer LE(OS, little);
+    endian::Writer<little> LE(OS);
     std::vector<uint16_t> Vec{0x1234, 0x5678};
     LE.write<uint16_t>(Vec);
   }
@@ -188,7 +189,7 @@ TEST(EndianStream, WriteFloatArrayLE) {
 
   {
     raw_svector_ostream OS(Data);
-    endian::Writer LE(OS, little);
+    endian::Writer<little> LE(OS);
     LE.write<float>({12345.0f, 12346.0f});
   }
 

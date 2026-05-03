@@ -1,8 +1,9 @@
-//===-- clang-import-test.cpp - ASTImporter/ExternalASTSource testbed -----===//
+//===-- import-test.cpp - ASTImporter/ExternalASTSource testbed -----------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -11,7 +12,6 @@
 #include "clang/AST/DeclObjC.h"
 #include "clang/AST/ExternalASTMerger.h"
 #include "clang/Basic/Builtins.h"
-#include "clang/Basic/FileManager.h"
 #include "clang/Basic/IdentifierTable.h"
 #include "clang/Basic/SourceLocation.h"
 #include "clang/Basic/TargetInfo.h"
@@ -50,10 +50,9 @@ static llvm::cl::opt<bool>
     Direct("direct", llvm::cl::Optional,
            llvm::cl::desc("Use the parsed declarations without indirection"));
 
-static llvm::cl::opt<bool> UseOrigins(
-    "use-origins", llvm::cl::Optional,
-    llvm::cl::desc(
-        "Use DeclContext origin information for more accurate lookups"));
+static llvm::cl::opt<bool>
+    UseOrigins("use-origins", llvm::cl::Optional,
+           llvm::cl::desc("Use DeclContext origin information for more accurate lookups"));  
 
 static llvm::cl::list<std::string>
     ClangArgs("Xcc", llvm::cl::ZeroOrMore,
@@ -64,9 +63,6 @@ static llvm::cl::opt<std::string>
     Input("x", llvm::cl::Optional,
           llvm::cl::desc("The language to parse (default: c++)"),
           llvm::cl::init("c++"));
-
-static llvm::cl::opt<bool> ObjCARC("objc-arc", llvm::cl::init(false),
-                                   llvm::cl::desc("Emable ObjC ARC"));
 
 static llvm::cl::opt<bool> DumpAST("dump-ast", llvm::cl::init(false),
                                    llvm::cl::desc("Dump combined AST"));
@@ -82,7 +78,7 @@ private:
 
 public:
   TestDiagnosticConsumer()
-      : Passthrough(std::make_unique<TextDiagnosticBuffer>()) {}
+      : Passthrough(llvm::make_unique<TextDiagnosticBuffer>()) {}
 
   virtual void BeginSourceFile(const LangOptions &LangOpts,
                                const Preprocessor *PP = nullptr) override {
@@ -106,19 +102,19 @@ private:
     unsigned LocColumn =
         SM.getSpellingColumnNumber(Loc, /*Invalid=*/nullptr) - 1;
     FileID FID = SM.getFileID(Loc);
-    llvm::MemoryBufferRef Buffer = SM.getBufferOrFake(FID, Loc);
+    llvm::MemoryBuffer *Buffer = SM.getBuffer(FID, Loc, /*Invalid=*/nullptr);
 
-    assert(LocData >= Buffer.getBufferStart() &&
-           LocData < Buffer.getBufferEnd());
+    assert(LocData >= Buffer->getBufferStart() &&
+           LocData < Buffer->getBufferEnd());
 
     const char *LineBegin = LocData - LocColumn;
 
-    assert(LineBegin >= Buffer.getBufferStart());
+    assert(LineBegin >= Buffer->getBufferStart());
 
     const char *LineEnd = nullptr;
 
     for (LineEnd = LineBegin; *LineEnd != '\n' && *LineEnd != '\r' &&
-                              LineEnd < Buffer.getBufferEnd();
+                              LineEnd < Buffer->getBufferEnd();
          ++LineEnd)
       ;
 
@@ -161,17 +157,19 @@ private:
 };
 
 std::unique_ptr<CompilerInstance> BuildCompilerInstance() {
-  auto Ins = std::make_unique<CompilerInstance>();
-  auto DC = std::make_unique<TestDiagnosticConsumer>();
+  auto Ins = llvm::make_unique<CompilerInstance>();
+  auto DC = llvm::make_unique<TestDiagnosticConsumer>();
   const bool ShouldOwnClient = true;
   Ins->createDiagnostics(DC.release(), ShouldOwnClient);
 
-  auto Inv = std::make_unique<CompilerInvocation>();
+  auto Inv = llvm::make_unique<CompilerInvocation>();
 
   std::vector<const char *> ClangArgv(ClangArgs.size());
   std::transform(ClangArgs.begin(), ClangArgs.end(), ClangArgv.begin(),
                  [](const std::string &s) -> const char * { return s.data(); });
-  CompilerInvocation::CreateFromArgs(*Inv, ClangArgv, Ins->getDiagnostics());
+  CompilerInvocation::CreateFromArgs(*Inv, ClangArgv.data(),
+                                     &ClangArgv.data()[ClangArgv.size()],
+                                     Ins->getDiagnostics());
 
   {
     using namespace driver::types;
@@ -183,11 +181,10 @@ std::unique_ptr<CompilerInstance> BuildCompilerInstance() {
       Inv->getHeaderSearchOpts().UseLibcxx = true;
     }
     if (isObjC(Id)) {
-      Inv->getLangOpts()->ObjC = 1;
+      Inv->getLangOpts()->ObjC1 = 1;
+      Inv->getLangOpts()->ObjC2 = 1;
     }
   }
-  Inv->getLangOpts()->ObjCAutoRefCount = ObjCARC;
-
   Inv->getLangOpts()->Bool = true;
   Inv->getLangOpts()->WChar = true;
   Inv->getLangOpts()->Blocks = true;
@@ -196,10 +193,6 @@ std::unique_ptr<CompilerInstance> BuildCompilerInstance() {
   Inv->getLangOpts()->ThreadsafeStatics = false;
   Inv->getLangOpts()->AccessControl = false;
   Inv->getLangOpts()->DollarIdents = true;
-  Inv->getLangOpts()->Exceptions = true;
-  Inv->getLangOpts()->CXXExceptions = true;
-  // Needed for testing dynamic_cast.
-  Inv->getLangOpts()->RTTI = true;
   Inv->getCodeGenOpts().setDebugInfo(codegenoptions::FullDebugInfo);
   Inv->getTargetOpts().Triple = llvm::sys::getDefaultTargetTriple();
 
@@ -208,7 +201,7 @@ std::unique_ptr<CompilerInstance> BuildCompilerInstance() {
   TargetInfo *TI = TargetInfo::CreateTargetInfo(
       Ins->getDiagnostics(), Ins->getInvocation().TargetOpts);
   Ins->setTarget(TI);
-  Ins->getTarget().adjust(Ins->getDiagnostics(), Ins->getLangOpts());
+  Ins->getTarget().adjust(Ins->getLangOpts());
   Ins->createFileManager();
   Ins->createSourceManager(Ins->getFileManager());
   Ins->createPreprocessor(TU_Complete);
@@ -218,10 +211,9 @@ std::unique_ptr<CompilerInstance> BuildCompilerInstance() {
 
 std::unique_ptr<ASTContext>
 BuildASTContext(CompilerInstance &CI, SelectorTable &ST, Builtin::Context &BC) {
-  auto &PP = CI.getPreprocessor();
-  auto AST = std::make_unique<ASTContext>(
+  auto AST = llvm::make_unique<ASTContext>(
       CI.getLangOpts(), CI.getSourceManager(),
-      PP.getIdentifierTable(), ST, BC, PP.TUKind);
+      CI.getPreprocessor().getIdentifierTable(), ST, BC);
   AST->InitBuiltinTypes(CI.getTarget());
   return AST;
 }
@@ -233,7 +225,7 @@ std::unique_ptr<CodeGenerator> BuildCodeGen(CompilerInstance &CI,
       CI.getDiagnostics(), ModuleName, CI.getHeaderSearchOpts(),
       CI.getPreprocessorOpts(), CI.getCodeGenOpts(), LLVMCtx));
 }
-} // namespace init_convenience
+} // end namespace
 
 namespace {
 
@@ -252,7 +244,7 @@ struct CIAndOrigins {
   ASTContext &getASTContext() { return CI->getASTContext(); }
   FileManager &getFileManager() { return CI->getFileManager(); }
   const OriginMap &getOriginMap() {
-    static const OriginMap EmptyOriginMap{};
+    static const OriginMap EmptyOriginMap;
     if (ExternalASTSource *Source = CI->getASTContext().getExternalSource())
       return static_cast<ExternalASTMerger *>(Source)->GetOrigins();
     return EmptyOriginMap;
@@ -269,17 +261,17 @@ void AddExternalSource(CIAndOrigins &CI,
       {CI.getASTContext(), CI.getFileManager()});
   llvm::SmallVector<ExternalASTMerger::ImporterSource, 3> Sources;
   for (CIAndOrigins &Import : Imports)
-    Sources.emplace_back(Import.getASTContext(), Import.getFileManager(),
-                         Import.getOriginMap());
-  auto ES = std::make_unique<ExternalASTMerger>(Target, Sources);
+    Sources.push_back(
+        {Import.getASTContext(), Import.getFileManager(), Import.getOriginMap()});
+  auto ES = llvm::make_unique<ExternalASTMerger>(Target, Sources);
   CI.getASTContext().setExternalSource(ES.release());
   CI.getASTContext().getTranslationUnitDecl()->setHasExternalVisibleStorage();
 }
 
 CIAndOrigins BuildIndirect(CIAndOrigins &CI) {
   CIAndOrigins IndirectCI{init_convenience::BuildCompilerInstance()};
-  auto ST = std::make_unique<SelectorTable>();
-  auto BC = std::make_unique<Builtin::Context>();
+  auto ST = llvm::make_unique<SelectorTable>();
+  auto BC = llvm::make_unique<Builtin::Context>();
   std::unique_ptr<ASTContext> AST = init_convenience::BuildASTContext(
       IndirectCI.getCompilerInstance(), *ST, *BC);
   IndirectCI.getCompilerInstance().setASTContext(AST.release());
@@ -290,13 +282,12 @@ CIAndOrigins BuildIndirect(CIAndOrigins &CI) {
 llvm::Error ParseSource(const std::string &Path, CompilerInstance &CI,
                         ASTConsumer &Consumer) {
   SourceManager &SM = CI.getSourceManager();
-  auto FE = CI.getFileManager().getFileRef(Path);
+  const FileEntry *FE = CI.getFileManager().getFile(Path);
   if (!FE) {
-    llvm::consumeError(FE.takeError());
     return llvm::make_error<llvm::StringError>(
-        llvm::Twine("No such file or directory: ", Path), std::error_code());
+        llvm::Twine("Couldn't open ", Path), std::error_code());
   }
-  SM.setMainFileID(SM.createFileID(*FE, SourceLocation(), SrcMgr::C_User));
+  SM.setMainFileID(SM.createFileID(FE, SourceLocation(), SrcMgr::C_User));
   ParseAST(CI.getPreprocessor(), &Consumer, CI.getASTContext());
   return llvm::Error::success();
 }
@@ -305,8 +296,8 @@ llvm::Expected<CIAndOrigins> Parse(const std::string &Path,
                                    llvm::MutableArrayRef<CIAndOrigins> Imports,
                                    bool ShouldDumpAST, bool ShouldDumpIR) {
   CIAndOrigins CI{init_convenience::BuildCompilerInstance()};
-  auto ST = std::make_unique<SelectorTable>();
-  auto BC = std::make_unique<Builtin::Context>();
+  auto ST = llvm::make_unique<SelectorTable>();
+  auto BC = llvm::make_unique<Builtin::Context>();
   std::unique_ptr<ASTContext> AST =
       init_convenience::BuildASTContext(CI.getCompilerInstance(), *ST, *BC);
   CI.getCompilerInstance().setASTContext(AST.release());
@@ -315,15 +306,13 @@ llvm::Expected<CIAndOrigins> Parse(const std::string &Path,
 
   std::vector<std::unique_ptr<ASTConsumer>> ASTConsumers;
 
-  auto LLVMCtx = std::make_unique<llvm::LLVMContext>();
+  auto LLVMCtx = llvm::make_unique<llvm::LLVMContext>();
   ASTConsumers.push_back(
       init_convenience::BuildCodeGen(CI.getCompilerInstance(), *LLVMCtx));
   auto &CG = *static_cast<CodeGenerator *>(ASTConsumers.back().get());
 
   if (ShouldDumpAST)
-    ASTConsumers.push_back(CreateASTDumper(nullptr /*Dump to stdout.*/, "",
-                                           true, false, false, false,
-                                           clang::ADOF_Default));
+    ASTConsumers.push_back(CreateASTDumper("", true, false, false));
 
   CI.getDiagnosticClient().BeginSourceFile(
       CI.getCompilerInstance().getLangOpts(),
@@ -338,15 +327,15 @@ llvm::Expected<CIAndOrigins> Parse(const std::string &Path,
     CG.GetModule()->print(llvm::outs(), nullptr);
   if (CI.getDiagnosticClient().getNumErrors())
     return llvm::make_error<llvm::StringError>(
-        "Errors occurred while parsing the expression.", std::error_code());
+        "Errors occured while parsing the expression.", std::error_code());
   return std::move(CI);
 }
 
 void Forget(CIAndOrigins &CI, llvm::MutableArrayRef<CIAndOrigins> Imports) {
   llvm::SmallVector<ExternalASTMerger::ImporterSource, 3> Sources;
   for (CIAndOrigins &Import : Imports)
-    Sources.push_back({Import.getASTContext(), Import.getFileManager(),
-                       Import.getOriginMap()});
+    Sources.push_back(
+        {Import.getASTContext(), Import.getFileManager(), Import.getOriginMap()});
   ExternalASTSource *Source = CI.CI->getASTContext().getExternalSource();
   auto *Merger = static_cast<ExternalASTMerger *>(Source);
   Merger->RemoveSources(Sources);
@@ -362,7 +351,7 @@ int main(int argc, const char **argv) {
   for (auto I : Imports) {
     llvm::Expected<CIAndOrigins> ImportCI = Parse(I, {}, false, false);
     if (auto E = ImportCI.takeError()) {
-      llvm::errs() << "error: " << llvm::toString(std::move(E)) << "\n";
+      llvm::errs() << llvm::toString(std::move(E));
       exit(-1);
     }
     ImportCIs.push_back(std::move(*ImportCI));
@@ -381,7 +370,7 @@ int main(int argc, const char **argv) {
       Parse(Expression, (Direct && !UseOrigins) ? ImportCIs : IndirectCIs,
             DumpAST, DumpIR);
   if (auto E = ExpressionCI.takeError()) {
-    llvm::errs() << "error: " << llvm::toString(std::move(E)) << "\n";
+    llvm::errs() << llvm::toString(std::move(E));
     exit(-1);
   }
   Forget(*ExpressionCI, (Direct && !UseOrigins) ? ImportCIs : IndirectCIs);

@@ -1,8 +1,9 @@
 //===- InputFile.cpp ------------------------------------------ *- C++ --*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -40,10 +41,6 @@ getModuleDebugStream(PDBFile &File, StringRef &ModuleName, uint32_t Index) {
 
   auto &Dbi = Err(File.getPDBDbiStream());
   const auto &Modules = Dbi.modules();
-  if (Index >= Modules.getModuleCount())
-    return make_error<RawError>(raw_error_code::index_out_of_bounds,
-                                "Invalid module index");
-
   auto Modi = Modules.getModuleDescriptor(Index);
 
   ModuleName = Modi.getModuleName();
@@ -66,21 +63,17 @@ getModuleDebugStream(PDBFile &File, StringRef &ModuleName, uint32_t Index) {
 static inline bool isCodeViewDebugSubsection(object::SectionRef Section,
                                              StringRef Name,
                                              BinaryStreamReader &Reader) {
-  if (Expected<StringRef> NameOrErr = Section.getName()) {
-    if (*NameOrErr != Name)
-      return false;
-  } else {
-    consumeError(NameOrErr.takeError());
+  StringRef SectionName, Contents;
+  if (Section.getName(SectionName))
     return false;
-  }
 
-  Expected<StringRef> ContentsOrErr = Section.getContents();
-  if (!ContentsOrErr) {
-    consumeError(ContentsOrErr.takeError());
+  if (SectionName != Name)
     return false;
-  }
 
-  Reader = BinaryStreamReader(*ContentsOrErr, support::little);
+  if (Section.getContents(Contents))
+    return false;
+
+  Reader = BinaryStreamReader(Contents, support::little);
   uint32_t Magic;
   if (Reader.bytesRemaining() < sizeof(uint32_t))
     return false;
@@ -102,8 +95,7 @@ static inline bool isDebugSSection(object::SectionRef Section,
 
 static bool isDebugTSection(SectionRef Section, CVTypeArray &Types) {
   BinaryStreamReader Reader;
-  if (!isCodeViewDebugSubsection(Section, ".debug$T", Reader) &&
-      !isCodeViewDebugSubsection(Section, ".debug$P", Reader))
+  if (!isCodeViewDebugSubsection(Section, ".debug$T", Reader))
     return false;
   cantFail(Reader.readArray(Types, Reader.bytesRemaining()));
   return true;
@@ -117,6 +109,10 @@ static std::string formatChecksumKind(FileChecksumKind Kind) {
     RETURN_CASE(FileChecksumKind, SHA256, "SHA-256");
   }
   return formatUnknownEnum(Kind);
+}
+
+static const DebugStringTableSubsectionRef &extractStringTable(PDBFile &File) {
+  return cantFail(File.getStringTable()).getStringTable();
 }
 
 template <typename... Args>
@@ -167,13 +163,8 @@ void SymbolGroup::initializeForPdb(uint32_t Modi) {
 
   // PDB always uses the same string table, but each module has its own
   // checksums.  So we only set the strings if they're not already set.
-  if (!SC.hasStrings()) {
-    auto StringTable = File->pdb().getStringTable();
-    if (StringTable)
-      SC.setStrings(StringTable->getStringTable());
-    else
-      consumeError(StringTable.takeError());
-  }
+  if (!SC.hasStrings())
+    SC.setStrings(extractStringTable(File->pdb()));
 
   SC.resetChecksums();
   auto MDS = getModuleDebugStream(File->pdb(), Name, Modi);
@@ -251,7 +242,7 @@ void SymbolGroup::formatFromChecksumsOffset(LinePrinter &Printer,
   }
 }
 
-Expected<InputFile> InputFile::open(StringRef Path, bool AllowUnknownFile) {
+Expected<InputFile> InputFile::open(StringRef Path) {
   InputFile IF;
   if (!llvm::sys::fs::exists(Path))
     return make_error<StringError>(formatv("File {0} not found", Path),
@@ -272,7 +263,7 @@ Expected<InputFile> InputFile::open(StringRef Path, bool AllowUnknownFile) {
     return std::move(IF);
   }
 
-  if (Magic == file_magic::pdb) {
+  if (Magic == file_magic::unknown) {
     std::unique_ptr<IPDBSession> Session;
     if (auto Err = loadDataForPDB(PDB_ReaderType::Native, Path, Session))
       return std::move(Err);
@@ -283,20 +274,9 @@ Expected<InputFile> InputFile::open(StringRef Path, bool AllowUnknownFile) {
     return std::move(IF);
   }
 
-  if (!AllowUnknownFile)
-    return make_error<StringError>(
-        formatv("File {0} is not a supported file type", Path),
-        inconvertibleErrorCode());
-
-  auto Result = MemoryBuffer::getFile(Path, /*IsText=*/false,
-                                      /*RequiresNullTerminator=*/false);
-  if (!Result)
-    return make_error<StringError>(
-        formatv("File {0} could not be opened", Path), Result.getError());
-
-  IF.UnknownFile = std::move(*Result);
-  IF.PdbOrObj = IF.UnknownFile.get();
-  return std::move(IF);
+  return make_error<StringError>(
+      formatv("File {0} is not a supported file type", Path),
+      inconvertibleErrorCode());
 }
 
 PDBFile &InputFile::pdb() {
@@ -317,25 +297,6 @@ object::COFFObjectFile &InputFile::obj() {
 const object::COFFObjectFile &InputFile::obj() const {
   assert(isObj());
   return *PdbOrObj.get<object::COFFObjectFile *>();
-}
-
-MemoryBuffer &InputFile::unknown() {
-  assert(isUnknown());
-  return *PdbOrObj.get<MemoryBuffer *>();
-}
-
-const MemoryBuffer &InputFile::unknown() const {
-  assert(isUnknown());
-  return *PdbOrObj.get<MemoryBuffer *>();
-}
-
-StringRef InputFile::getFilePath() const {
-  if (isPdb())
-    return pdb().getFilePath();
-  if (isObj())
-    return obj().getFileName();
-  assert(isUnknown());
-  return unknown().getBufferIdentifier();
 }
 
 bool InputFile::hasTypes() const {
@@ -362,8 +323,6 @@ bool InputFile::isObj() const {
   return PdbOrObj.is<object::COFFObjectFile *>();
 }
 
-bool InputFile::isUnknown() const { return PdbOrObj.is<MemoryBuffer *>(); }
-
 codeview::LazyRandomTypeCollection &
 InputFile::getOrCreateTypeCollection(TypeCollectionKind Kind) {
   if (Types && Kind == kTypes)
@@ -386,7 +345,7 @@ InputFile::getOrCreateTypeCollection(TypeCollectionKind Kind) {
     uint32_t Count = Stream.getNumTypeRecords();
     auto Offsets = Stream.getTypeIndexOffsets();
     Collection =
-        std::make_unique<LazyRandomTypeCollection>(Array, Count, Offsets);
+        llvm::make_unique<LazyRandomTypeCollection>(Array, Count, Offsets);
     return *Collection;
   }
 
@@ -399,11 +358,11 @@ InputFile::getOrCreateTypeCollection(TypeCollectionKind Kind) {
     if (!isDebugTSection(Section, Records))
       continue;
 
-    Types = std::make_unique<LazyRandomTypeCollection>(Records, 100);
+    Types = llvm::make_unique<LazyRandomTypeCollection>(Records, 100);
     return *Types;
   }
 
-  Types = std::make_unique<LazyRandomTypeCollection>(100);
+  Types = llvm::make_unique<LazyRandomTypeCollection>(100);
   return *Types;
 }
 

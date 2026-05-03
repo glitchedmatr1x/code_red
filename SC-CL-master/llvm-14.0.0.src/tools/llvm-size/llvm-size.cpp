@@ -1,8 +1,9 @@
 //===-- llvm-size.cpp - Print the size of each object section ---*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -18,16 +19,14 @@
 #include "llvm/Object/MachO.h"
 #include "llvm/Object/MachOUniversal.h"
 #include "llvm/Object/ObjectFile.h"
-#include "llvm/Option/Arg.h"
-#include "llvm/Option/ArgList.h"
-#include "llvm/Option/Option.h"
 #include "llvm/Support/Casting.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/Format.h"
-#include "llvm/Support/InitLLVM.h"
+#include "llvm/Support/ManagedStatic.h"
 #include "llvm/Support/MemoryBuffer.h"
-#include "llvm/Support/WithColor.h"
+#include "llvm/Support/PrettyStackTrace.h"
+#include "llvm/Support/Signals.h"
 #include "llvm/Support/raw_ostream.h"
 #include <algorithm>
 #include <string>
@@ -36,56 +35,21 @@
 using namespace llvm;
 using namespace object;
 
-namespace {
-using namespace llvm::opt; // for HelpHidden in Opts.inc
-enum ID {
-  OPT_INVALID = 0, // This is not an option ID.
-#define OPTION(PREFIX, NAME, ID, KIND, GROUP, ALIAS, ALIASARGS, FLAGS, PARAM,  \
-               HELPTEXT, METAVAR, VALUES)                                      \
-  OPT_##ID,
-#include "Opts.inc"
-#undef OPTION
-};
-
-#define PREFIX(NAME, VALUE) const char *const NAME[] = VALUE;
-#include "Opts.inc"
-#undef PREFIX
-
-const opt::OptTable::Info InfoTable[] = {
-#define OPTION(PREFIX, NAME, ID, KIND, GROUP, ALIAS, ALIASARGS, FLAGS, PARAM,  \
-               HELPTEXT, METAVAR, VALUES)                                      \
-  {                                                                            \
-      PREFIX,      NAME,      HELPTEXT,                                        \
-      METAVAR,     OPT_##ID,  opt::Option::KIND##Class,                        \
-      PARAM,       FLAGS,     OPT_##GROUP,                                     \
-      OPT_##ALIAS, ALIASARGS, VALUES},
-#include "Opts.inc"
-#undef OPTION
-};
-
-class SizeOptTable : public opt::OptTable {
-public:
-  SizeOptTable() : OptTable(InfoTable) { setGroupedShortOptions(true); }
-};
-
 enum OutputFormatTy { berkeley, sysv, darwin };
-enum RadixTy { octal = 8, decimal = 10, hexadecimal = 16 };
-} // namespace
+static cl::opt<OutputFormatTy>
+OutputFormat("format", cl::desc("Specify output format"),
+             cl::values(clEnumVal(sysv, "System V format"),
+                        clEnumVal(berkeley, "Berkeley format"),
+                        clEnumVal(darwin, "Darwin -m format")),
+             cl::init(berkeley));
 
-static bool ArchAll = false;
-static std::vector<StringRef> ArchFlags;
-static bool ELFCommons;
-static OutputFormatTy OutputFormat;
-static bool DarwinLongFormat;
-static RadixTy Radix;
-static bool TotalSizes;
+static cl::opt<OutputFormatTy> OutputFormatShort(
+    cl::desc("Specify output format"),
+    cl::values(clEnumValN(sysv, "A", "System V format"),
+               clEnumValN(berkeley, "B", "Berkeley format"),
+               clEnumValN(darwin, "m", "Darwin -m format")),
+    cl::init(berkeley));
 
-static std::vector<std::string> InputFilenames;
-
-static std::string ToolName;
-
-// States
-static bool HadError = false;
 static bool BerkeleyHeaderPrinted = false;
 static bool MoreThanOneFile = false;
 static uint64_t TotalObjectText = 0;
@@ -93,13 +57,64 @@ static uint64_t TotalObjectData = 0;
 static uint64_t TotalObjectBss = 0;
 static uint64_t TotalObjectTotal = 0;
 
-static void error(const Twine &Message, StringRef File = "") {
+cl::opt<bool>
+DarwinLongFormat("l", cl::desc("When format is darwin, use long format "
+                               "to include addresses and offsets."));
+
+cl::opt<bool>
+    ELFCommons("common",
+               cl::desc("Print common symbols in the ELF file.  When using "
+                        "Berkely format, this is added to bss."),
+               cl::init(false));
+
+static cl::list<std::string>
+ArchFlags("arch", cl::desc("architecture(s) from a Mach-O file to dump"),
+          cl::ZeroOrMore);
+bool ArchAll = false;
+
+enum RadixTy { octal = 8, decimal = 10, hexadecimal = 16 };
+static cl::opt<unsigned int>
+Radix("radix", cl::desc("Print size in radix. Only 8, 10, and 16 are valid"),
+      cl::init(decimal));
+
+static cl::opt<RadixTy>
+RadixShort(cl::desc("Print size in radix:"),
+           cl::values(clEnumValN(octal, "o", "Print size in octal"),
+                      clEnumValN(decimal, "d", "Print size in decimal"),
+                      clEnumValN(hexadecimal, "x", "Print size in hexadecimal")),
+           cl::init(decimal));
+
+static cl::opt<bool>
+    TotalSizes("totals",
+               cl::desc("Print totals of all objects - Berkeley format only"),
+               cl::init(false));
+
+static cl::alias TotalSizesShort("t", cl::desc("Short for --totals"),
+                                 cl::aliasopt(TotalSizes));
+
+static cl::list<std::string>
+InputFilenames(cl::Positional, cl::desc("<input files>"), cl::ZeroOrMore);
+
+bool HadError = false;
+
+static std::string ToolName;
+
+/// If ec is not success, print the error and return true.
+static bool error(std::error_code ec) {
+  if (!ec)
+    return false;
+
   HadError = true;
-  if (File.empty())
-    WithColor::error(errs(), ToolName) << Message << '\n';
-  else
-    WithColor::error(errs(), ToolName)
-        << "'" << File << "': " << Message << '\n';
+  errs() << ToolName << ": error reading file: " << ec.message() << ".\n";
+  errs().flush();
+  return true;
+}
+
+static bool error(Twine Message) {
+  HadError = true;
+  errs() << ToolName << ": " << Message << ".\n";
+  errs().flush();
+  return true;
 }
 
 // This version of error() prints the archive name and member name, for example:
@@ -108,7 +123,7 @@ static void error(const Twine &Message, StringRef File = "") {
 static void error(llvm::Error E, StringRef FileName, const Archive::Child &C,
                   StringRef ArchitectureName = StringRef()) {
   HadError = true;
-  WithColor::error(errs(), ToolName) << "'" << FileName << "'";
+  errs() << ToolName << ": " << FileName;
 
   Expected<StringRef> NameOrErr = C.getName();
   // TODO: if we have a error getting the name then it would be nice to print
@@ -125,9 +140,9 @@ static void error(llvm::Error E, StringRef FileName, const Archive::Child &C,
 
   std::string Buf;
   raw_string_ostream OS(Buf);
-  logAllUnhandledErrors(std::move(E), OS);
+  logAllUnhandledErrors(std::move(E), OS, "");
   OS.flush();
-  errs() << ": " << Buf << "\n";
+  errs() << " " << Buf << "\n";
 }
 
 // This version of error() prints the file name and which architecture slice it // is from, for example: "foo.o (for architecture i386)" after the ToolName
@@ -136,16 +151,16 @@ static void error(llvm::Error E, StringRef FileName, const Archive::Child &C,
 static void error(llvm::Error E, StringRef FileName,
                   StringRef ArchitectureName = StringRef()) {
   HadError = true;
-  WithColor::error(errs(), ToolName) << "'" << FileName << "'";
+  errs() << ToolName << ": " << FileName;
 
   if (!ArchitectureName.empty())
     errs() << " (for architecture " << ArchitectureName << ") ";
 
   std::string Buf;
   raw_string_ostream OS(Buf);
-  logAllUnhandledErrors(std::move(E), OS);
+  logAllUnhandledErrors(std::move(E), OS, "");
   OS.flush();
-  errs() << ": " << Buf << "\n";
+  errs() << " " << Buf << "\n";
 }
 
 /// Get the length of the string that represents @p num in Radix including the
@@ -177,26 +192,20 @@ static bool considerForSize(ObjectFile *Obj, SectionRef Section) {
   switch (static_cast<ELFSectionRef>(Section).getType()) {
   case ELF::SHT_NULL:
   case ELF::SHT_SYMTAB:
-    return false;
   case ELF::SHT_STRTAB:
   case ELF::SHT_REL:
   case ELF::SHT_RELA:
-    return static_cast<ELFSectionRef>(Section).getFlags() & ELF::SHF_ALLOC;
+    return false;
   }
   return true;
 }
 
 /// Total size of all ELF common symbols
-static Expected<uint64_t> getCommonSize(ObjectFile *Obj) {
+static uint64_t getCommonSize(ObjectFile *Obj) {
   uint64_t TotalCommons = 0;
-  for (auto &Sym : Obj->symbols()) {
-    Expected<uint32_t> SymFlagsOrErr =
-        Obj->getSymbolFlags(Sym.getRawDataRefImpl());
-    if (!SymFlagsOrErr)
-      return SymFlagsOrErr.takeError();
-    if (*SymFlagsOrErr & SymbolRef::SF_Common)
+  for (auto &Sym : Obj->symbols())
+    if (Obj->getSymbolFlags(Sym.getRawDataRefImpl()) & SymbolRef::SF_Common)
       TotalCommons += Obj->getCommonSymbolSize(Sym.getRawDataRefImpl());
-  }
   return TotalCommons;
 }
 
@@ -381,14 +390,11 @@ static void printObjectSectionSizes(ObjectFile *Obj) {
       uint64_t size = Section.getSize();
       total += size;
 
-      Expected<StringRef> name_or_err = Section.getName();
-      if (!name_or_err) {
-        error(name_or_err.takeError(), Obj->getFileName());
+      StringRef name;
+      if (error(Section.getName(name)))
         return;
-      }
-
       uint64_t addr = Section.getAddress();
-      max_name_len = std::max(max_name_len, name_or_err->size());
+      max_name_len = std::max(max_name_len, name.size());
       max_size_len = std::max(max_size_len, getNumLengthAsString(size));
       max_addr_len = std::max(max_addr_len, getNumLengthAsString(addr));
     }
@@ -418,27 +424,21 @@ static void printObjectSectionSizes(ObjectFile *Obj) {
     for (const SectionRef &Section : Obj->sections()) {
       if (!considerForSize(Obj, Section))
         continue;
-
-      Expected<StringRef> name_or_err = Section.getName();
-      if (!name_or_err) {
-        error(name_or_err.takeError(), Obj->getFileName());
+      StringRef name;
+      if (error(Section.getName(name)))
         return;
-      }
-
       uint64_t size = Section.getSize();
       uint64_t addr = Section.getAddress();
-      outs() << format(fmt.str().c_str(), name_or_err->str().c_str(), size, addr);
+      std::string namestr = name;
+
+      outs() << format(fmt.str().c_str(), namestr.c_str(), size, addr);
     }
 
     if (ELFCommons) {
-      if (Expected<uint64_t> CommonSizeOrErr = getCommonSize(Obj)) {
-        total += *CommonSizeOrErr;
-        outs() << format(fmt.str().c_str(), std::string("*COM*").c_str(),
-                         *CommonSizeOrErr, static_cast<uint64_t>(0));
-      } else {
-        error(CommonSizeOrErr.takeError(), Obj->getFileName());
-        return;
-      }
+      uint64_t CommonSize = getCommonSize(Obj);
+      total += CommonSize;
+      outs() << format(fmt.str().c_str(), std::string("*COM*").c_str(),
+                       CommonSize, static_cast<uint64_t>(0));
     }
 
     // Print total.
@@ -446,8 +446,7 @@ static void printObjectSectionSizes(ObjectFile *Obj) {
     fmt << "%-" << max_name_len << "s "
         << "%#" << max_size_len << radix_fmt << "\n";
     outs() << format(fmt.str().c_str(), static_cast<const char *>("Total"),
-                     total)
-           << "\n\n";
+                     total);
   } else {
     // The Berkeley format does not display individual section sizes. It
     // displays the cumulative size for each section type.
@@ -458,8 +457,8 @@ static void printObjectSectionSizes(ObjectFile *Obj) {
     // Make one pass over the section table to calculate sizes.
     for (const SectionRef &Section : Obj->sections()) {
       uint64_t size = Section.getSize();
-      bool isText = Section.isBerkeleyText();
-      bool isData = Section.isBerkeleyData();
+      bool isText = Section.isText();
+      bool isData = Section.isData();
       bool isBSS = Section.isBSS();
       if (isText)
         total_text += size;
@@ -469,14 +468,8 @@ static void printObjectSectionSizes(ObjectFile *Obj) {
         total_bss += size;
     }
 
-    if (ELFCommons) {
-      if (Expected<uint64_t> CommonSizeOrErr = getCommonSize(Obj))
-        total_bss += *CommonSizeOrErr;
-      else {
-        error(CommonSizeOrErr.takeError(), Obj->getFileName());
-        return;
-      }
-    }
+    if (ELFCommons)
+      total_bss += getCommonSize(Obj);
 
     total = total_text + total_data + total_bss;
 
@@ -488,25 +481,19 @@ static void printObjectSectionSizes(ObjectFile *Obj) {
     }
 
     if (!BerkeleyHeaderPrinted) {
-      outs() << "   text\t"
-                "   data\t"
-                "    bss\t"
-                "    "
-             << (Radix == octal ? "oct" : "dec")
-             << "\t"
-                "    hex\t"
-                "filename\n";
+      outs() << "   text    data     bss     "
+             << (Radix == octal ? "oct" : "dec") << "     hex filename\n";
       BerkeleyHeaderPrinted = true;
     }
 
     // Print result.
-    fmt << "%#7" << radix_fmt << "\t"
-        << "%#7" << radix_fmt << "\t"
-        << "%#7" << radix_fmt << "\t";
+    fmt << "%#7" << radix_fmt << " "
+        << "%#7" << radix_fmt << " "
+        << "%#7" << radix_fmt << " ";
     outs() << format(fmt.str().c_str(), total_text, total_data, total_bss);
     fmtbuf.clear();
-    fmt << "%7" << (Radix == octal ? PRIo64 : PRIu64) << "\t"
-        << "%7" PRIx64 "\t";
+    fmt << "%7" << (Radix == octal ? PRIo64 : PRIu64) << " "
+        << "%7" PRIx64 " ";
     outs() << format(fmt.str().c_str(), total, total);
   }
 }
@@ -532,8 +519,10 @@ static bool checkMachOAndArchFlags(ObjectFile *O, StringRef Filename) {
     H = MachO->MachOObjectFile::getHeader();
     T = MachOObjectFile::getArchTriple(H.cputype, H.cpusubtype);
   }
-  if (!is_contained(ArchFlags, T.getArchName())) {
-    error("no architecture specified", Filename);
+  if (none_of(ArchFlags, [&](const std::string &Name) {
+        return Name == T.getArchName();
+      })) {
+    error(Filename + ": No architecture specified");
     return false;
   }
   return true;
@@ -583,7 +572,7 @@ static void printFileSectionSizes(StringRef file) {
   } else if (MachOUniversalBinary *UB =
                  dyn_cast<MachOUniversalBinary>(&Bin)) {
     // If we have a list of architecture flags specified dump only those.
-    if (!ArchAll && !ArchFlags.empty()) {
+    if (!ArchAll && ArchFlags.size() != 0) {
       // Look for a slice in the universal binary that matches each ArchFlag.
       bool ArchFound;
       for (unsigned i = 0; i < ArchFlags.size(); ++i) {
@@ -662,15 +651,15 @@ static void printFileSectionSizes(StringRef file) {
                 error(std::move(Err), UA->getFileName());
             } else {
               consumeError(AOrErr.takeError());
-              error("mach-o universal file for architecture " +
-                        StringRef(I->getArchFlagName()) +
-                        " is not a mach-o file or an archive file",
-                    file);
+              error("Mach-O universal file: " + file + " for architecture " +
+                    StringRef(I->getArchFlagName()) +
+                    " is not a Mach-O file or an archive file");
             }
           }
         }
         if (!ArchFound) {
-          error("file does not contain architecture " + ArchFlags[i], file);
+          errs() << ToolName << ": file: " << file
+                 << " does not contain architecture" << ArchFlags[i] << ".\n";
           return;
         }
       }
@@ -744,10 +733,9 @@ static void printFileSectionSizes(StringRef file) {
               error(std::move(Err), UA->getFileName());
           } else {
             consumeError(AOrErr.takeError());
-            error("mach-o universal file for architecture " +
-                      StringRef(I->getArchFlagName()) +
-                      " is not a mach-o file or an archive file",
-                  file);
+            error("Mach-O universal file: " + file + " for architecture " +
+                   StringRef(I->getArchFlagName()) +
+                   " is not a Mach-O file or an archive file");
           }
           return;
         }
@@ -821,10 +809,9 @@ static void printFileSectionSizes(StringRef file) {
           error(std::move(Err), UA->getFileName());
       } else {
         consumeError(AOrErr.takeError());
-        error("mach-o universal file for architecture " +
-                  StringRef(I->getArchFlagName()) +
-                  " is not a mach-o file or an archive file",
-              file);
+        error("Mach-O universal file: " + file + " for architecture " +
+               StringRef(I->getArchFlagName()) +
+               " is not a Mach-O file or an archive file");
       }
     }
   } else if (ObjectFile *o = dyn_cast<ObjectFile>(&Bin)) {
@@ -842,95 +829,63 @@ static void printFileSectionSizes(StringRef file) {
       outs() << "\n";
     }
   } else {
-    error("unsupported file type", file);
+    errs() << ToolName << ": " << file << ": "
+           << "Unrecognized file type.\n";
   }
+  // System V adds an extra newline at the end of each file.
+  if (OutputFormat == sysv)
+    outs() << "\n";
 }
 
-static void printBerkeleyTotals() {
+static void printBerkelyTotals() {
   std::string fmtbuf;
   raw_string_ostream fmt(fmtbuf);
   const char *radix_fmt = getRadixFmt();
-  fmt << "%#7" << radix_fmt << "\t"
-      << "%#7" << radix_fmt << "\t"
-      << "%#7" << radix_fmt << "\t";
+  fmt << "%#7" << radix_fmt << " "
+      << "%#7" << radix_fmt << " "
+      << "%#7" << radix_fmt << " ";
   outs() << format(fmt.str().c_str(), TotalObjectText, TotalObjectData,
                    TotalObjectBss);
   fmtbuf.clear();
-  fmt << "%7" << (Radix == octal ? PRIo64 : PRIu64) << "\t"
-      << "%7" PRIx64 "\t";
+  fmt << "%7" << (Radix == octal ? PRIo64 : PRIu64) << " "
+      << "%7" PRIx64 " ";
   outs() << format(fmt.str().c_str(), TotalObjectTotal, TotalObjectTotal)
          << "(TOTALS)\n";
 }
 
 int main(int argc, char **argv) {
-  InitLLVM X(argc, argv);
-  BumpPtrAllocator A;
-  StringSaver Saver(A);
-  SizeOptTable Tbl;
+  // Print a stack trace if we signal out.
+  sys::PrintStackTraceOnErrorSignal(argv[0]);
+  PrettyStackTraceProgram X(argc, argv);
+
+  llvm_shutdown_obj Y; // Call llvm_shutdown() on exit.
+  cl::ParseCommandLineOptions(argc, argv, "llvm object size dumper\n");
+
   ToolName = argv[0];
-  opt::InputArgList Args = Tbl.parseArgs(argc, argv, OPT_UNKNOWN, Saver,
-                                         [&](StringRef Msg) { error(Msg); });
-  if (Args.hasArg(OPT_help)) {
-    Tbl.printHelp(
-        outs(),
-        (Twine(ToolName) + " [options] <input object files>").str().c_str(),
-        "LLVM object size dumper");
-    // TODO Replace this with OptTable API once it adds extrahelp support.
-    outs() << "\nPass @FILE as argument to read options from FILE.\n";
-    return 0;
-  }
-  if (Args.hasArg(OPT_version)) {
-    outs() << ToolName << '\n';
-    cl::PrintVersionMessage();
-    return 0;
-  }
+  if (OutputFormatShort.getNumOccurrences())
+    OutputFormat = static_cast<OutputFormatTy>(OutputFormatShort);
+  if (RadixShort.getNumOccurrences())
+    Radix = RadixShort;
 
-  ELFCommons = Args.hasArg(OPT_common);
-  DarwinLongFormat = Args.hasArg(OPT_l);
-  TotalSizes = Args.hasArg(OPT_totals);
-  StringRef V = Args.getLastArgValue(OPT_format_EQ, "berkeley");
-  if (V == "berkeley")
-    OutputFormat = berkeley;
-  else if (V == "darwin")
-    OutputFormat = darwin;
-  else if (V == "sysv")
-    OutputFormat = sysv;
-  else
-    error("--format value should be one of: 'berkeley', 'darwin', 'sysv'");
-  V = Args.getLastArgValue(OPT_radix_EQ, "10");
-  if (V == "8")
-    Radix = RadixTy::octal;
-  else if (V == "10")
-    Radix = RadixTy::decimal;
-  else if (V == "16")
-    Radix = RadixTy::hexadecimal;
-  else
-    error("--radix value should be one of: 8, 10, 16 ");
-
-  for (const auto *A : Args.filtered(OPT_arch_EQ)) {
-    SmallVector<StringRef, 2> Values;
-    llvm::SplitString(A->getValue(), Values, ",");
-    for (StringRef V : Values) {
-      if (V == "all")
-        ArchAll = true;
-      else if (MachOObjectFile::isValidArch(V))
-        ArchFlags.push_back(V);
-      else {
+  for (unsigned i = 0; i < ArchFlags.size(); ++i) {
+    if (ArchFlags[i] == "all") {
+      ArchAll = true;
+    } else {
+      if (!MachOObjectFile::isValidArch(ArchFlags[i])) {
         outs() << ToolName << ": for the -arch option: Unknown architecture "
-               << "named '" << V << "'";
+               << "named '" << ArchFlags[i] << "'";
         return 1;
       }
     }
   }
 
-  InputFilenames = Args.getAllArgValues(OPT_INPUT);
-  if (InputFilenames.empty())
+  if (InputFilenames.size() == 0)
     InputFilenames.push_back("a.out");
 
   MoreThanOneFile = InputFilenames.size() > 1;
   llvm::for_each(InputFilenames, printFileSectionSizes);
   if (OutputFormat == berkeley && TotalSizes)
-    printBerkeleyTotals();
+    printBerkelyTotals();
 
   if (HadError)
     return 1;

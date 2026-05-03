@@ -1,8 +1,9 @@
 //===--- DataflowValues.h - Data structure for dataflow values --*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -19,14 +20,13 @@
 #include "clang/Analysis/ProgramPoint.h"
 #include "llvm/ADT/DenseMap.h"
 
-namespace clang {
-
 //===----------------------------------------------------------------------===//
 /// Dataflow Directional Tag Classes.  These are used for tag dispatching
 ///  within the dataflow solver/transfer functions to determine what direction
 ///  a dataflow analysis flows.
 //===----------------------------------------------------------------------===//
 
+namespace clang {
 namespace dataflow {
   struct forward_analysis_tag {};
   struct backward_analysis_tag {};
@@ -169,4 +169,4 @@ protected:
 };
 
 } // end namespace clang
-#endif // LLVM_CLANG_ANALYSES_DATAFLOW_VALUES
+#endif

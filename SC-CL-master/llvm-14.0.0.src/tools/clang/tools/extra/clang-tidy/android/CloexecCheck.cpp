@@ -1,8 +1,9 @@
 //===--- CloexecCheck.cpp - clang-tidy-------------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -24,7 +25,7 @@ namespace {
 // end of the string. Else, add <Mode>.
 std::string buildFixMsgForStringFlag(const Expr *Arg, const SourceManager &SM,
                                      const LangOptions &LangOpts, char Mode) {
-  if (Arg->getBeginLoc().isMacroID())
+  if (Arg->getLocStart().isMacroID())
     return (Lexer::getSourceText(
                 CharSourceRange::getTokenRange(Arg->getSourceRange()), SM,
                 LangOpts) +
@@ -63,7 +64,7 @@ void CloexecCheck::insertMacroFlag(const MatchFinder::MatchResult &Result,
     return;
 
   SourceLocation EndLoc =
-      Lexer::getLocForEndOfToken(SM.getFileLoc(FlagArg->getEndLoc()), 0, SM,
+      Lexer::getLocForEndOfToken(SM.getFileLoc(FlagArg->getLocEnd()), 0, SM,
                                  Result.Context->getLangOpts());
 
   diag(EndLoc, "%0 should use %1 where possible")
@@ -74,7 +75,7 @@ void CloexecCheck::insertMacroFlag(const MatchFinder::MatchResult &Result,
 void CloexecCheck::replaceFunc(const MatchFinder::MatchResult &Result,
                                StringRef WarningMsg, StringRef FixMsg) {
   const auto *MatchedCall = Result.Nodes.getNodeAs<CallExpr>(FuncBindingStr);
-  diag(MatchedCall->getBeginLoc(), WarningMsg)
+  diag(MatchedCall->getLocStart(), WarningMsg)
       << FixItHint::CreateReplacement(MatchedCall->getSourceRange(), FixMsg);
 }
 
@@ -87,13 +88,13 @@ void CloexecCheck::insertStringFlag(
 
   // Check if the <Mode> may be in the mode string.
   const auto *ModeStr = dyn_cast<StringLiteral>(ModeArg->IgnoreParenCasts());
-  if (!ModeStr || ModeStr->getString().contains(Mode))
+  if (!ModeStr || (ModeStr->getString().find(Mode) != StringRef::npos))
     return;
 
-  std::string ReplacementText = buildFixMsgForStringFlag(
+  const std::string &ReplacementText = buildFixMsgForStringFlag(
       ModeArg, *Result.SourceManager, Result.Context->getLangOpts(), Mode);
 
-  diag(ModeArg->getBeginLoc(), "use %0 mode '%1' to set O_CLOEXEC")
+  diag(ModeArg->getLocStart(), "use %0 mode '%1' to set O_CLOEXEC")
       << FD << std::string(1, Mode)
       << FixItHint::CreateReplacement(ModeArg->getSourceRange(),
                                       ReplacementText);

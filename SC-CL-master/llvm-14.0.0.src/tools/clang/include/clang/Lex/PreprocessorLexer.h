@@ -1,26 +1,25 @@
 //===- PreprocessorLexer.h - C Language Family Lexer ------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
 /// \file
-/// Defines the PreprocessorLexer interface.
+/// \brief Defines the PreprocessorLexer interface.
 //
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_CLANG_LEX_PREPROCESSORLEXER_H
 #define LLVM_CLANG_LEX_PREPROCESSORLEXER_H
 
-#include "clang/Basic/SourceLocation.h"
-#include "clang/Lex/HeaderSearch.h"
 #include "clang/Lex/MultipleIncludeOpt.h"
 #include "clang/Lex/Token.h"
+#include "clang/Basic/SourceLocation.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SmallVector.h"
-#include "llvm/ADT/StringMap.h"
 #include <cassert>
 
 namespace clang {
@@ -40,20 +39,21 @@ protected:
   /// The SourceManager FileID corresponding to the file being lexed.
   const FileID FID;
 
-  /// Number of SLocEntries before lexing the file.
+  /// \brief Number of SLocEntries before lexing the file.
   unsigned InitialNumSLocEntries = 0;
 
   //===--------------------------------------------------------------------===//
   // Context-specific lexing flags set by the preprocessor.
   //===--------------------------------------------------------------------===//
 
-  /// True when parsing \#XXX; turns '\\n' into a tok::eod token.
+  /// \brief True when parsing \#XXX; turns '\\n' into a tok::eod token.
   bool ParsingPreprocessorDirective = false;
 
-  /// True after \#include; turns \<xx> or "xxx" into a tok::header_name token.
+  /// \brief True after \#include; turns \<xx> into a tok::angle_string_literal
+  /// token.
   bool ParsingFilename = false;
 
-  /// True if in raw mode.
+  /// \brief True if in raw mode.
   ///
   /// Raw mode disables interpretation of tokens and is a far faster mode to
   /// lex in than non-raw-mode.  This flag:
@@ -68,20 +68,13 @@ protected:
   /// Note that in raw mode that the PP pointer may be null.
   bool LexingRawMode = false;
 
-  /// A state machine that detects the \#ifndef-wrapping a file
+  /// \brief A state machine that detects the \#ifndef-wrapping a file
   /// idiom for the multiple-include optimization.
   MultipleIncludeOpt MIOpt;
 
-  /// Information about the set of \#if/\#ifdef/\#ifndef blocks
+  /// \brief Information about the set of \#if/\#ifdef/\#ifndef blocks
   /// we are currently in.
   SmallVector<PPConditionalInfo, 4> ConditionalStack;
-
-  struct IncludeInfo {
-    const FileEntry *File;
-    SourceLocation Location;
-  };
-  // A complete history of all the files included by the current file.
-  llvm::StringMap<IncludeInfo> IncludeHistory;
 
   PreprocessorLexer() : FID() {}
   PreprocessorLexer(Preprocessor *pp, FileID fid);
@@ -89,7 +82,7 @@ protected:
 
   virtual void IndirectLex(Token& Result) = 0;
 
-  /// Return the source location for the next observable location.
+  /// \brief Return the source location for the next observable location.
   virtual SourceLocation getSourceLocation() = 0;
 
   //===--------------------------------------------------------------------===//
@@ -121,7 +114,7 @@ protected:
     return false;
   }
 
-  /// Return the top of the conditional stack.
+  /// \brief Return the top of the conditional stack.
   /// \pre This requires that there be a conditional active.
   PPConditionalInfo &peekConditionalLevel() {
     assert(!ConditionalStack.empty() && "No conditionals active!");
@@ -137,19 +130,23 @@ public:
   //===--------------------------------------------------------------------===//
   // Misc. lexing methods.
 
-  /// Lex a token, producing a header-name token if possible.
-  void LexIncludeFilename(Token &FilenameTok);
+  /// \brief After the preprocessor has parsed a \#include, lex and
+  /// (potentially) macro expand the filename.
+  ///
+  /// If the sequence parsed is not lexically legal, emit a diagnostic and
+  /// return a result EOD token.
+  void LexIncludeFilename(Token &Result);
 
-  /// Inform the lexer whether or not we are currently lexing a
+  /// \brief Inform the lexer whether or not we are currently lexing a
   /// preprocessor directive.
   void setParsingPreprocessorDirective(bool f) {
     ParsingPreprocessorDirective = f;
   }
 
-  /// Return true if this lexer is in raw mode or not.
+  /// \brief Return true if this lexer is in raw mode or not.
   bool isLexingRawMode() const { return LexingRawMode; }
 
-  /// Return the preprocessor object for this lexer.
+  /// \brief Return the preprocessor object for this lexer.
   Preprocessor *getPP() const { return PP; }
 
   FileID getFileID() const {
@@ -158,7 +155,7 @@ public:
     return FID;
   }
 
-  /// Number of SLocEntries before lexing the file.
+  /// \brief Number of SLocEntries before lexing the file.
   unsigned getInitialNumSLocEntries() const {
     return InitialNumSLocEntries;
   }
@@ -167,31 +164,22 @@ public:
   /// getFileID(), this only works for lexers with attached preprocessors.
   const FileEntry *getFileEntry() const;
 
-  /// Iterator that traverses the current stack of preprocessor
+  /// \brief Iterator that traverses the current stack of preprocessor
   /// conditional directives (\#if/\#ifdef/\#ifndef).
   using conditional_iterator =
       SmallVectorImpl<PPConditionalInfo>::const_iterator;
 
-  conditional_iterator conditional_begin() const {
-    return ConditionalStack.begin();
+  conditional_iterator conditional_begin() const { 
+    return ConditionalStack.begin(); 
   }
 
-  conditional_iterator conditional_end() const {
-    return ConditionalStack.end();
+  conditional_iterator conditional_end() const { 
+    return ConditionalStack.end(); 
   }
 
   void setConditionalLevels(ArrayRef<PPConditionalInfo> CL) {
     ConditionalStack.clear();
     ConditionalStack.append(CL.begin(), CL.end());
-  }
-
-  void addInclude(StringRef Filename, const FileEntry &File,
-                  SourceLocation Location) {
-    IncludeHistory.insert({Filename, {&File, Location}});
-  }
-
-  const llvm::StringMap<IncludeInfo> &getIncludeHistory() const {
-    return IncludeHistory;
   }
 };
 

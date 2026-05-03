@@ -1,8 +1,9 @@
 //===- llvm/unittest/XRay/GraphTest.cpp - XRay Graph unit tests -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -34,7 +35,7 @@ protected:
 private:
   static T getTestGraph() {
     using std::make_pair;
-    std::remove_const_t<T> G;
+    typename std::remove_const<T>::type G;
     G.insert(make_pair(1u, VAttr({3u})));
     G.insert(make_pair(2u, VAttr({5u})));
     G.insert(make_pair(3u, VAttr({7u})));
@@ -59,7 +60,7 @@ typedef ::testing::Types<GraphT, const GraphT> GraphTestTypes;
 using VVT = typename GraphT::VertexValueType;
 using EVT = typename GraphT::EdgeValueType;
 
-TYPED_TEST_SUITE(GraphTest, GraphTestTypes, );
+TYPED_TEST_CASE(GraphTest, GraphTestTypes);
 
 template <typename T> void graphVertexTester(T &G) {
   std::set<unsigned> V({1u, 2u, 3u, 4u, 5u, 6u});

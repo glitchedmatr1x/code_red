@@ -1,3 +1,5 @@
+; REQUIRES: object-emission
+
 ; RUN: %llc_dwarf -O0 -filetype=obj %s -o - | llvm-dwarfdump -v -debug-info - | FileCheck %s
 
 ; Ensure that pointer constants are emitted as unsigned data. Alternatively,
@@ -10,10 +12,10 @@
 
 ; CHECK: DW_TAG_subprogram
 ; CHECK:   DW_TAG_template_value_parameter
-; CHECK:     DW_AT_name {{.*}}"V"
+; CHECK:     DW_AT_name {{.*}} "V"
 ; CHECK:     DW_AT_const_value [DW_FORM_udata] (0)
 ; CHECK:   DW_TAG_template_value_parameter
-; CHECK:     DW_AT_name {{.*}}"F"
+; CHECK:     DW_AT_name {{.*}} "F"
 ; CHECK:     DW_AT_const_value [DW_FORM_udata] (0)
 
 ; Function Attrs: nounwind uwtable
@@ -22,7 +24,7 @@ entry:
   ret void, !dbg !18
 }
 
-attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!15, !16}
@@ -31,7 +33,7 @@ attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"=
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, producer: "clang version 3.5.0 ", isOptimized: false, emissionKind: FullDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "constant-pointers.cpp", directory: "/tmp/dbginfo")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "func<nullptr, nullptr, 42>", linkageName: "_Z4funcILPv0ELPFvvE0ELi42EEvv", line: 2, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 2, file: !1, scope: !5, type: !6, templateParams: !8, retainedNodes: !2)
+!4 = distinct !DISubprogram(name: "func<nullptr, nullptr, 42>", linkageName: "_Z4funcILPv0ELPFvvE0ELi42EEvv", line: 2, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 2, file: !1, scope: !5, type: !6, templateParams: !8, variables: !2)
 !5 = !DIFile(filename: "constant-pointers.cpp", directory: "/tmp/dbginfo")
 !6 = !DISubroutineType(types: !7)
 !7 = !{null}

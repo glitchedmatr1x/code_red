@@ -1,8 +1,9 @@
 //===- IPDBDataStream.h - base interface for child enumerator ---*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -31,6 +32,7 @@ public:
   virtual Optional<RecordType> getItemAtIndex(uint32_t Index) const = 0;
   virtual bool getNext(RecordType &Record) = 0;
   virtual void reset() = 0;
+  virtual IPDBDataStream *clone() const = 0;
 };
 
 } // end namespace pdb

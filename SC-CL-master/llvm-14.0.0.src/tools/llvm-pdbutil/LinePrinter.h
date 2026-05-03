@@ -1,8 +1,9 @@
 //===- LinePrinter.h ------------------------------------------ *- C++ --*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -20,6 +21,7 @@
 #include <list>
 
 namespace llvm {
+class BinaryStreamReader;
 namespace msf {
 class MSFStreamLayout;
 } // namespace msf
@@ -48,13 +50,13 @@ public:
   }
 
   void formatBinary(StringRef Label, ArrayRef<uint8_t> Data,
-                    uint64_t StartOffset);
+                    uint32_t StartOffset);
   void formatBinary(StringRef Label, ArrayRef<uint8_t> Data, uint64_t BaseAddr,
-                    uint64_t StartOffset);
+                    uint32_t StartOffset);
 
   void formatMsfStreamData(StringRef Label, PDBFile &File, uint32_t StreamIdx,
-                           StringRef StreamPurpose, uint64_t Offset,
-                           uint64_t Size);
+                           StringRef StreamPurpose, uint32_t Offset,
+                           uint32_t Size);
   void formatMsfStreamData(StringRef Label, PDBFile &File,
                            const msf::MSFStreamLayout &Stream,
                            BinarySubstreamRef Substream);
@@ -65,7 +67,7 @@ public:
   int getIndentLevel() const { return CurrentIndent; }
 
   bool IsClassExcluded(const ClassLayout &Class);
-  bool IsTypeExcluded(llvm::StringRef TypeName, uint64_t Size);
+  bool IsTypeExcluded(llvm::StringRef TypeName, uint32_t Size);
   bool IsSymbolExcluded(llvm::StringRef SymbolName);
   bool IsCompilandExcluded(llvm::StringRef CompilandName);
 
@@ -131,7 +133,8 @@ struct AutoIndent {
 
 template <class T>
 inline raw_ostream &operator<<(LinePrinter &Printer, const T &Item) {
-  return Printer.getStream() << Item;
+  Printer.getStream() << Item;
+  return Printer.getStream();
 }
 
 enum class PDB_ColorItem {

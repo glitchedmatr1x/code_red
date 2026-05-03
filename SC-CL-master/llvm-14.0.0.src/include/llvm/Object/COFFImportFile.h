@@ -1,8 +1,9 @@
 //===- COFFImportFile.h - COFF short import file implementation -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -13,8 +14,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_OBJECT_COFFIMPORTFILE_H
-#define LLVM_OBJECT_COFFIMPORTFILE_H
+#ifndef LLVM_OBJECT_COFF_IMPORT_FILE_H
+#define LLVM_OBJECT_COFF_IMPORT_FILE_H
 
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/Object/COFF.h"
@@ -36,14 +37,15 @@ public:
 
   void moveSymbolNext(DataRefImpl &Symb) const override { ++Symb.p; }
 
-  Error printSymbolName(raw_ostream &OS, DataRefImpl Symb) const override {
+  std::error_code printSymbolName(raw_ostream &OS,
+                                  DataRefImpl Symb) const override {
     if (Symb.p == 0)
       OS << "__imp_";
     OS << StringRef(Data.getBufferStart() + sizeof(coff_import_header));
-    return Error::success();
+    return std::error_code();
   }
 
-  Expected<uint32_t> getSymbolFlags(DataRefImpl Symb) const override {
+  uint32_t getSymbolFlags(DataRefImpl Symb) const override {
     return SymbolRef::SF_Global;
   }
 
@@ -69,28 +71,19 @@ private:
 };
 
 struct COFFShortExport {
-  /// The name of the export as specified in the .def file or on the command
-  /// line, i.e. "foo" in "/EXPORT:foo", and "bar" in "/EXPORT:foo=bar". This
-  /// may lack mangling, such as underscore prefixing and stdcall suffixing.
   std::string Name;
-
-  /// The external, exported name. Only non-empty when export renaming is in
-  /// effect, i.e. "foo" in "/EXPORT:foo=bar".
   std::string ExtName;
-
-  /// The real, mangled symbol name from the object file. Given
-  /// "/export:foo=bar", this could be "_bar@8" if bar is stdcall.
   std::string SymbolName;
-
-  /// Creates a weak alias. This is the name of the weak aliasee. In a .def
-  /// file, this is "baz" in "EXPORTS\nfoo = bar == baz".
-  std::string AliasTarget;
 
   uint16_t Ordinal = 0;
   bool Noname = false;
   bool Data = false;
   bool Private = false;
   bool Constant = false;
+
+  bool isWeak() {
+    return ExtName.size() && ExtName != Name;
+  }
 
   friend bool operator==(const COFFShortExport &L, const COFFShortExport &R) {
     return L.Name == R.Name && L.ExtName == R.ExtName &&
@@ -105,7 +98,7 @@ struct COFFShortExport {
 
 Error writeImportLibrary(StringRef ImportName, StringRef Path,
                          ArrayRef<COFFShortExport> Exports,
-                         COFF::MachineTypes Machine, bool MinGW);
+                         COFF::MachineTypes Machine, bool MakeWeakAliases);
 
 } // namespace object
 } // namespace llvm

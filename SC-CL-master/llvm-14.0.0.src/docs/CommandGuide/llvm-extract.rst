@@ -1,8 +1,6 @@
 llvm-extract - extract a function from an LLVM module
 =====================================================
 
-.. program:: llvm-extract
-
 SYNOPSIS
 --------
 
@@ -25,28 +23,6 @@ standard output, unless the **-o** option is specified (see below).
 
 OPTIONS
 -------
-
-**--alias** *alias-name*
-
- Extract the alias named *function-name* from the LLVM bitcode.  May be
- specified multiple times to extract multiple alias at once.
-
-**--ralias** *alias-regular-expr*
-
- Extract the alias matching *alias-regular-expr* from the LLVM bitcode.
- All alias matching the regular expression will be extracted.  May be
- specified multiple times.
-
-**--bb** *basic-block-specifier*
-
- Extract basic blocks(s) specified in *basic-block-specifier*. May be
- specified multiple times. Each <function:bb[;bb]> specifier pair will create
- a function. If multiple basic blocks are specified in one pair, the first
- block in the sequence should dominate the rest.
-
-**--delete**
-
- Delete specified Globals from Module.
 
 **-f**
 
@@ -77,14 +53,6 @@ OPTIONS
  bitcode.  All global variables matching the regular expression will be
  extracted.  May be specified multiple times.
 
-**--keep-const-init**
-
- Preserve the values of constant globals.
-
-**--recursive**
-
- Recursively extract all called functions
-
 **-help**
 
  Print a summary of command line options.
@@ -107,4 +75,5 @@ occurs, it will exit with a non-zero value.
 SEE ALSO
 --------
 
-:manpage:`bugpoint(1)`
+bugpoint
+

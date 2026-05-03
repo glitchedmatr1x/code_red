@@ -1,8 +1,9 @@
 //===- MinimalTypeDumper.cpp ---------------------------------- *- C++ --*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -10,9 +11,7 @@
 
 #include "FormatUtil.h"
 #include "LinePrinter.h"
-#include "TypeReferenceTracker.h"
 
-#include "llvm-pdbutil.h"
 #include "llvm/DebugInfo/CodeView/CVRecord.h"
 #include "llvm/DebugInfo/CodeView/CVTypeVisitor.h"
 #include "llvm/DebugInfo/CodeView/CodeView.h"
@@ -20,7 +19,6 @@
 #include "llvm/DebugInfo/CodeView/LazyRandomTypeCollection.h"
 #include "llvm/DebugInfo/CodeView/TypeRecord.h"
 #include "llvm/DebugInfo/PDB/Native/TpiHashing.h"
-#include "llvm/DebugInfo/PDB/Native/TpiStream.h"
 #include "llvm/Support/FormatVariadic.h"
 #include "llvm/Support/MathExtras.h"
 
@@ -29,37 +27,15 @@ using namespace llvm::codeview;
 using namespace llvm::pdb;
 
 static std::string formatClassOptions(uint32_t IndentLevel,
-                                      ClassOptions Options, TpiStream *Stream,
-                                      TypeIndex CurrentTypeIndex) {
+                                      ClassOptions Options) {
   std::vector<std::string> Opts;
-
-  if (Stream && Stream->supportsTypeLookup() &&
-      !opts::dump::DontResolveForwardRefs &&
-      ((Options & ClassOptions::ForwardReference) != ClassOptions::None)) {
-    // If we're able to resolve forward references, do that.
-    Expected<TypeIndex> ETI =
-        Stream->findFullDeclForForwardRef(CurrentTypeIndex);
-    if (!ETI) {
-      consumeError(ETI.takeError());
-      PUSH_FLAG(ClassOptions, ForwardReference, Options, "forward ref (??\?)");
-    } else {
-      const char *Direction = (*ETI == CurrentTypeIndex)
-                                  ? "="
-                                  : ((*ETI < CurrentTypeIndex) ? "<-" : "->");
-      std::string Formatted =
-          formatv("forward ref ({0} {1})", Direction, *ETI).str();
-      PUSH_FLAG(ClassOptions, ForwardReference, Options, std::move(Formatted));
-    }
-  } else {
-    PUSH_FLAG(ClassOptions, ForwardReference, Options, "forward ref");
-  }
-
   PUSH_FLAG(ClassOptions, HasConstructorOrDestructor, Options,
             "has ctor / dtor");
   PUSH_FLAG(ClassOptions, ContainsNestedClass, Options,
             "contains nested class");
   PUSH_FLAG(ClassOptions, HasConversionOperator, Options,
             "conversion operator");
+  PUSH_FLAG(ClassOptions, ForwardReference, Options, "forward ref");
   PUSH_FLAG(ClassOptions, HasUniqueName, Options, "has unique name");
   PUSH_FLAG(ClassOptions, Intrinsic, Options, "intrin");
   PUSH_FLAG(ClassOptions, Nested, Options, "is nested");
@@ -201,9 +177,8 @@ static std::string formatPointerAttrs(const PointerRecord &Record) {
   PointerMode Mode = Record.getMode();
   PointerOptions Opts = Record.getOptions();
   PointerKind Kind = Record.getPointerKind();
-  return std::string(formatv("mode = {0}, opts = {1}, kind = {2}",
-                             formatPointerMode(Mode), pointerOptions(Opts),
-                             pointerKind(Kind)));
+  return formatv("mode = {0}, opts = {1}, kind = {2}", formatPointerMode(Mode),
+                 pointerOptions(Opts), pointerKind(Kind));
 }
 
 static std::string formatFunctionOptions(FunctionOptions Options) {
@@ -219,14 +194,14 @@ static std::string formatFunctionOptions(FunctionOptions Options) {
 }
 
 Error MinimalTypeDumpVisitor::visitTypeBegin(CVType &Record, TypeIndex Index) {
-  CurrentTypeIndex = Index;
   // formatLine puts the newline at the beginning, so we use formatLine here
   // to start a new line, and then individual visit methods use format to
   // append to the existing line.
-  P.formatLine("{0} | {1} [size = {2}",
-               fmt_align(Index, AlignStyle::Right, Width),
-               formatTypeLeafKind(Record.kind()), Record.length());
-  if (Hashes) {
+  if (!Hashes) {
+    P.formatLine("{0} | {1} [size = {2}]",
+                 fmt_align(Index, AlignStyle::Right, Width),
+                 formatTypeLeafKind(Record.Type), Record.length());
+  } else {
     std::string H;
     if (Index.toArrayIndex() >= HashValues.size()) {
       H = "(not present)";
@@ -242,19 +217,13 @@ Error MinimalTypeDumpVisitor::visitTypeBegin(CVType &Record, TypeIndex Index) {
       else
         H = "0x" + utohexstr(Hash) + ", our hash = 0x" + utohexstr(OurHash);
     }
-    P.format(", hash = {0}", H);
+    P.formatLine("{0} | {1} [size = {2}, hash = {3}]",
+                 fmt_align(Index, AlignStyle::Right, Width),
+                 formatTypeLeafKind(Record.Type), Record.length(), H);
   }
-  if (RefTracker) {
-    if (RefTracker->isTypeReferenced(Index))
-      P.format(", referenced");
-    else
-      P.format(", unreferenced");
-  }
-  P.format("]");
   P.Indent(Width + 3);
   return Error::success();
 }
-
 Error MinimalTypeDumpVisitor::visitTypeEnd(CVType &Record) {
   P.Unindent(Width + 3);
   if (RecordBytes) {
@@ -334,10 +303,8 @@ Error MinimalTypeDumpVisitor::visitKnownRecord(CVType &CVR,
     P.formatLine("unique name: `{0}`", Class.UniqueName);
   P.formatLine("vtable: {0}, base list: {1}, field list: {2}",
                Class.VTableShape, Class.DerivationList, Class.FieldList);
-  P.formatLine("options: {0}, sizeof {1}",
-               formatClassOptions(P.getIndentLevel(), Class.Options, Stream,
-                                  CurrentTypeIndex),
-               Class.Size);
+  P.formatLine("options: {0}",
+               formatClassOptions(P.getIndentLevel(), Class.Options));
   return Error::success();
 }
 
@@ -347,10 +314,8 @@ Error MinimalTypeDumpVisitor::visitKnownRecord(CVType &CVR,
   if (Union.hasUniqueName())
     P.formatLine("unique name: `{0}`", Union.UniqueName);
   P.formatLine("field list: {0}", Union.FieldList);
-  P.formatLine("options: {0}, sizeof {1}",
-               formatClassOptions(P.getIndentLevel(), Union.Options, Stream,
-                                  CurrentTypeIndex),
-               Union.Size);
+  P.formatLine("options: {0}",
+               formatClassOptions(P.getIndentLevel(), Union.Options));
   return Error::success();
 }
 
@@ -361,8 +326,7 @@ Error MinimalTypeDumpVisitor::visitKnownRecord(CVType &CVR, EnumRecord &Enum) {
   P.formatLine("field list: {0}, underlying type: {1}", Enum.FieldList,
                Enum.UnderlyingType);
   P.formatLine("options: {0}",
-               formatClassOptions(P.getIndentLevel(), Enum.Options, Stream,
-                                  CurrentTypeIndex));
+               formatClassOptions(P.getIndentLevel(), Enum.Options));
   return Error::success();
 }
 
@@ -503,21 +467,6 @@ Error MinimalTypeDumpVisitor::visitKnownRecord(CVType &CVR, LabelRecord &R) {
   return Error::success();
 }
 
-Error MinimalTypeDumpVisitor::visitKnownRecord(CVType &CVR,
-                                               PrecompRecord &Precomp) {
-  P.format(" start index = {0:X+}, types count = {1:X+}, signature = {2:X+},"
-           " precomp path = {3}",
-           Precomp.StartTypeIndex, Precomp.TypesCount, Precomp.Signature,
-           Precomp.PrecompFilePath);
-  return Error::success();
-}
-
-Error MinimalTypeDumpVisitor::visitKnownRecord(CVType &CVR,
-                                               EndPrecompRecord &EP) {
-  P.format(" signature = {0:X+}", EP.Signature);
-  return Error::success();
-}
-
 Error MinimalTypeDumpVisitor::visitKnownMember(CVMemberRecord &CVR,
                                                NestedTypeRecord &Nested) {
   P.format(" [name = `{0}`, parent = {1}]", Nested.Name, Nested.Type);
@@ -557,7 +506,7 @@ Error MinimalTypeDumpVisitor::visitKnownMember(CVMemberRecord &CVR,
 Error MinimalTypeDumpVisitor::visitKnownMember(CVMemberRecord &CVR,
                                                EnumeratorRecord &Enum) {
   P.format(" [{0} = {1}]", Enum.Name,
-           toString(Enum.Value, 10, Enum.Value.isSigned()));
+           Enum.Value.toString(10, Enum.Value.isSigned()));
   return Error::success();
 }
 

@@ -1,8 +1,9 @@
 //===- Reassociate.h - Reassociate binary expressions -----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -25,9 +26,9 @@
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/PostOrderIterator.h"
 #include "llvm/ADT/SetVector.h"
+#include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/ValueHandle.h"
-#include <deque>
 
 namespace llvm {
 
@@ -36,7 +37,6 @@ class BasicBlock;
 class BinaryOperator;
 class Function;
 class Instruction;
-class IRBuilderBase;
 class Value;
 
 /// A private "module" namespace for types and utilities used by Reassociate.
@@ -54,7 +54,7 @@ inline bool operator<(const ValueEntry &LHS, const ValueEntry &RHS) {
   return LHS.Rank > RHS.Rank; // Sort so that highest rank goes to start.
 }
 
-/// Utility class representing a base and exponent pair which form one
+/// \brief Utility class representing a base and exponent pair which form one
 /// factor of some product.
 struct Factor {
   Value *Base;
@@ -69,27 +69,15 @@ class XorOpnd;
 
 /// Reassociate commutative expressions.
 class ReassociatePass : public PassInfoMixin<ReassociatePass> {
-public:
-  using OrderedSet =
-      SetVector<AssertingVH<Instruction>, std::deque<AssertingVH<Instruction>>>;
-
-protected:
   DenseMap<BasicBlock *, unsigned> RankMap;
   DenseMap<AssertingVH<Value>, unsigned> ValueRankMap;
-  OrderedSet RedoInsts;
+  SetVector<AssertingVH<Instruction>> RedoInsts;
 
   // Arbitrary, but prevents quadratic behavior.
   static const unsigned GlobalReassociateLimit = 10;
   static const unsigned NumBinaryOps =
       Instruction::BinaryOpsEnd - Instruction::BinaryOpsBegin;
-
-  struct PairMapValue {
-    WeakVH Value1;
-    WeakVH Value2;
-    unsigned Score;
-    bool isValid() const { return Value1 && Value2; }
-  };
-  DenseMap<std::pair<Value *, Value *>, PairMapValue> PairMap[NumBinaryOps];
+  DenseMap<std::pair<Value *, Value *>, unsigned> PairMap[NumBinaryOps];
 
   bool MadeChange;
 
@@ -114,17 +102,16 @@ private:
   bool CombineXorOpnd(Instruction *I, reassociate::XorOpnd *Opnd1,
                       reassociate::XorOpnd *Opnd2, APInt &ConstOpnd,
                       Value *&Res);
-  Value *buildMinimalMultiplyDAG(IRBuilderBase &Builder,
+  Value *buildMinimalMultiplyDAG(IRBuilder<> &Builder,
                                  SmallVectorImpl<reassociate::Factor> &Factors);
   Value *OptimizeMul(BinaryOperator *I,
                      SmallVectorImpl<reassociate::ValueEntry> &Ops);
   Value *RemoveFactorFromExpression(Value *V, Value *Factor);
   void EraseInst(Instruction *I);
-  void RecursivelyEraseDeadInsts(Instruction *I, OrderedSet &Insts);
+  void RecursivelyEraseDeadInsts(Instruction *I,
+                                 SetVector<AssertingVH<Instruction>> &Insts);
   void OptimizeInst(Instruction *I);
-  Instruction *canonicalizeNegFPConstantsForOp(Instruction *I, Instruction *Op,
-                                               Value *OtherOp);
-  Instruction *canonicalizeNegFPConstants(Instruction *I);
+  Instruction *canonicalizeNegConstExpr(Instruction *I);
   void BuildPairMap(ReversePostOrderTraversal<Function *> &RPOT);
 };
 

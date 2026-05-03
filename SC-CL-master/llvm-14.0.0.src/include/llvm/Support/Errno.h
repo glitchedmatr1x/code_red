@@ -1,8 +1,9 @@
 //===- llvm/Support/Errno.h - Portable+convenient errno handling -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -30,17 +31,16 @@ std::string StrError();
 std::string StrError(int errnum);
 
 template <typename FailT, typename Fun, typename... Args>
-inline decltype(auto) RetryAfterSignal(const FailT &Fail, const Fun &F,
-                                       const Args &... As) {
+inline auto RetryAfterSignal(const FailT &Fail, const Fun &F,
+                             const Args &... As) -> decltype(F(As...)) {
   decltype(F(As...)) Res;
-  do {
-    errno = 0;
+  do
     Res = F(As...);
-  } while (Res == Fail && errno == EINTR);
+  while (Res == Fail && errno == EINTR);
   return Res;
 }
 
 }  // namespace sys
 }  // namespace llvm
 
-#endif // LLVM_SUPPORT_ERRNO_H
+#endif  // LLVM_SYSTEM_ERRNO_H

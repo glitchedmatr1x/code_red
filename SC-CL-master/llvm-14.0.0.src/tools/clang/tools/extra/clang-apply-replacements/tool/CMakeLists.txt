@@ -2,18 +2,17 @@ set(LLVM_LINK_COMPONENTS
   Support
   )
 
-add_clang_tool(clang-apply-replacements
+add_clang_executable(clang-apply-replacements
   ClangApplyReplacementsMain.cpp
-  )
-clang_target_link_libraries(clang-apply-replacements
-  PRIVATE
-  clangBasic
-  clangFormat
-  clangRewrite
-  clangToolingCore
-  clangToolingRefactoring
   )
 target_link_libraries(clang-apply-replacements
   PRIVATE
   clangApplyReplacements
+  clangBasic
+  clangFormat
+  clangRewrite
+  clangToolingCore
   )
+
+install(TARGETS clang-apply-replacements
+  RUNTIME DESTINATION bin)

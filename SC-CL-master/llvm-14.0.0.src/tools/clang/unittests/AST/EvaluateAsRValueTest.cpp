@@ -1,8 +1,9 @@
 //===- unittests/AST/EvaluateAsRValueTest.cpp -----------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -11,6 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "clang/AST/ASTConsumer.h"
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -58,7 +60,7 @@ class EvaluateConstantInitializersAction : public clang::ASTFrontendAction {
    std::unique_ptr<clang::ASTConsumer>
    CreateASTConsumer(clang::CompilerInstance &Compiler,
                      llvm::StringRef FilePath) override {
-     return std::make_unique<Consumer>();
+     return llvm::make_unique<Consumer>();
   }
 
  private:
@@ -88,22 +90,22 @@ TEST(EvaluateAsRValue, FailsGracefullyForUnknownTypes) {
     std::vector<std::string> Args(1, Mode);
     Args.push_back("-fno-delayed-template-parsing");
     ASSERT_TRUE(runToolOnCodeWithArgs(
-        std::make_unique<EvaluateConstantInitializersAction>(),
-        "template <typename T>"
-        "struct vector {"
-        "  explicit vector(int size);"
-        "};"
-        "template <typename R>"
-        "struct S {"
-        "  vector<R> intervals() const {"
-        "    vector<R> Dependent(2);"
-        "    return Dependent;"
-        "  }"
-        "};"
-        "void doSomething() {"
-        "  int Constant = 2 + 2;"
-        "  (void) Constant;"
-        "}",
-        Args));
+      new EvaluateConstantInitializersAction(),
+      "template <typename T>"
+      "struct vector {"
+      "  explicit vector(int size);"
+      "};"
+      "template <typename R>"
+      "struct S {"
+      "  vector<R> intervals() const {"
+      "    vector<R> Dependent(2);"
+      "    return Dependent;"
+      "  }"
+      "};"
+      "void doSomething() {"
+      "  int Constant = 2 + 2;"
+      "  (void) Constant;"
+      "}",
+      Args));
   }
 }

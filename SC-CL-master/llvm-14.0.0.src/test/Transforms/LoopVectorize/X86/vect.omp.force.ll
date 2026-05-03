@@ -32,10 +32,10 @@ entry:
 for.body:
   %indvars.iv = phi i64 [ %indvars.iv.next, %for.body ], [ 0, %entry ]
   %arrayidx = getelementptr inbounds float, float* %B, i64 %indvars.iv
-  %0 = load float, float* %arrayidx, align 4, !llvm.access.group !11
+  %0 = load float, float* %arrayidx, align 4, !llvm.mem.parallel_loop_access !1
   %call = tail call float @llvm.sin.f32(float %0)
   %arrayidx2 = getelementptr inbounds float, float* %A, i64 %indvars.iv
-  store float %call, float* %arrayidx2, align 4, !llvm.access.group !11
+  store float %call, float* %arrayidx2, align 4, !llvm.mem.parallel_loop_access !1
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 2
   %lftr.wideiv = trunc i64 %indvars.iv.next to i32
   %exitcond = icmp eq i32 %lftr.wideiv, 1000
@@ -48,9 +48,8 @@ for.end:
   ret void
 }
 
-!1 = !{!1, !2, !{!"llvm.loop.parallel_accesses", !11}}
+!1 = !{!1, !2}
 !2 = !{!"llvm.loop.vectorize.enable", i1 true}
-!11 = distinct !{}
 
 ;
 ; This method will not be vectorized, as scalar cost is lower than any of vector costs.
@@ -63,10 +62,10 @@ entry:
 for.body:
   %indvars.iv = phi i64 [ %indvars.iv.next, %for.body ], [ 0, %entry ]
   %arrayidx = getelementptr inbounds float, float* %B, i64 %indvars.iv
-  %0 = load float, float* %arrayidx, align 4, !llvm.access.group !13
+  %0 = load float, float* %arrayidx, align 4, !llvm.mem.parallel_loop_access !3
   %call = tail call float @llvm.sin.f32(float %0)
   %arrayidx2 = getelementptr inbounds float, float* %A, i64 %indvars.iv
-  store float %call, float* %arrayidx2, align 4, !llvm.access.group !13
+  store float %call, float* %arrayidx2, align 4, !llvm.mem.parallel_loop_access !3
   %indvars.iv.next = add nuw nsw i64 %indvars.iv, 2
   %lftr.wideiv = trunc i64 %indvars.iv.next to i32
   %exitcond = icmp eq i32 %lftr.wideiv, 1000
@@ -82,6 +81,5 @@ for.end:
 declare float @llvm.sin.f32(float) nounwind readnone
 
 ; Dummy metadata
-!3 = !{!3, !{!"llvm.loop.parallel_accesses", !13}}
-!13 = distinct !{}
+!3 = !{!3}
 

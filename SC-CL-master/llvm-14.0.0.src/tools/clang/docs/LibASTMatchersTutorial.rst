@@ -8,7 +8,7 @@ explicitly aimed at people who are new to Clang, so all you should need
 is a working knowledge of C++ and the command line.
 
 In order to work on the compiler, you need some basic knowledge of the
-abstract syntax tree (AST). To this end, the reader is encouraged to
+abstract syntax tree (AST). To this end, the reader is incouraged to
 skim the :doc:`Introduction to the Clang
 AST <IntroductionToTheClangAST>`
 
@@ -16,16 +16,23 @@ Step 0: Obtaining Clang
 =======================
 
 As Clang is part of the LLVM project, you'll need to download LLVM's
-source code first. Both Clang and LLVM are in the same git repository,
-under different directories. For further information, see the `getting
-started guide <https://llvm.org/docs/GettingStarted.html>`_.
+source code first. Both Clang and LLVM are maintained as Subversion
+repositories, but we'll be accessing them through the git mirror. For
+further information, see the `getting started
+guide <http://llvm.org/docs/GettingStarted.html>`_.
 
 .. code-block:: console
 
-      cd ~/clang-llvm
-      git clone https://github.com/llvm/llvm-project.git
+      mkdir ~/clang-llvm && cd ~/clang-llvm
+      git clone http://llvm.org/git/llvm.git
+      cd llvm/tools
+      git clone http://llvm.org/git/clang.git
+      cd clang/tools
+      git clone http://llvm.org/git/clang-tools-extra.git extra
 
-Next you need to obtain the CMake build system and Ninja build tool.
+Next you need to obtain the CMake build system and Ninja build tool. You
+may already have CMake installed, but current binary versions of CMake
+aren't built with Ninja support.
 
 .. code-block:: console
 
@@ -50,7 +57,7 @@ Okay. Now we'll build Clang!
 
       cd ~/clang-llvm
       mkdir build && cd build
-      cmake -G Ninja ../llvm -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" -DLLVM_BUILD_TESTS=ON  # Enable tests; default is off.
+      cmake -G Ninja ../llvm -DLLVM_BUILD_TESTS=ON  # Enable tests; default is off.
       ninja
       ninja check       # Test LLVM only.
       ninja clang-test  # Test Clang only.
@@ -58,7 +65,9 @@ Okay. Now we'll build Clang!
 
 And we're live.
 
-All of the tests should pass.
+All of the tests should pass, though there is a (very) small chance that
+you can catch LLVM and Clang out of sync. Running ``'git svn rebase'``
+in both the llvm and clang directories should fix any problems.
 
 Finally, we want to set Clang as its own compiler.
 
@@ -85,14 +94,14 @@ going on.
 
 First, we'll need to create a new directory for our tool and tell CMake
 that it exists. As this is not going to be a core clang tool, it will
-live in the ``clang-tools-extra`` repository.
+live in the ``tools/extra`` repository.
 
 .. code-block:: console
 
-      cd ~/clang-llvm
-      mkdir clang-tools-extra/loop-convert
-      echo 'add_subdirectory(loop-convert)' >> clang-tools-extra/CMakeLists.txt
-      vim clang-tools-extra/loop-convert/CMakeLists.txt
+      cd ~/clang-llvm/llvm/tools/clang
+      mkdir tools/extra/loop-convert
+      echo 'add_subdirectory(loop-convert)' >> tools/extra/CMakeLists.txt
+      vim tools/extra/loop-convert/CMakeLists.txt
 
 CMakeLists.txt should have the following contents:
 
@@ -104,18 +113,14 @@ CMakeLists.txt should have the following contents:
         LoopConvert.cpp
         )
       target_link_libraries(loop-convert
-        PRIVATE
-        clangAST
-        clangASTMatchers
-        clangBasic
-        clangFrontend
-        clangSerialization
         clangTooling
+        clangBasic
+        clangASTMatchers
         )
 
 With that done, Ninja will be able to compile our tool. Let's give it
 something to compile! Put the following into
-``clang-tools-extra/loop-convert/LoopConvert.cpp``. A detailed explanation of
+``tools/extra/loop-convert/LoopConvert.cpp``. A detailed explanation of
 why the different parts are needed can be found in the `LibTooling
 documentation <LibTooling.html>`_.
 
@@ -141,16 +146,10 @@ documentation <LibTooling.html>`_.
       static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
 
       // A help message for this specific tool can be added afterwards.
-      static cl::extrahelp MoreHelp("\nMore help text...\n");
+      static cl::extrahelp MoreHelp("\nMore help text...");
 
       int main(int argc, const char **argv) {
-        auto ExpectedParser = CommonOptionsParser::create(argc, argv, MyToolCategory);
-        if (!ExpectedParser) {
-          // Fail gracefully for unsupported options.
-          llvm::errs() << ExpectedParser.takeError();
-          return 1;
-        }
-        CommonOptionsParser& OptionsParser = ExpectedParser.get();
+        CommonOptionsParser OptionsParser(argc, argv, MyToolCategory);
         ClangTool Tool(OptionsParser.getCompilations(),
                        OptionsParser.getSourcePathList());
         return Tool.run(newFrontendActionFactory<clang::SyntaxOnlyAction>().get());
@@ -291,13 +290,7 @@ And change ``main()`` to:
 .. code-block:: c++
 
       int main(int argc, const char **argv) {
-        auto ExpectedParser = CommonOptionsParser::create(argc, argv, MyToolCategory);
-        if (!ExpectedParser) {
-          // Fail gracefully for unsupported options.
-          llvm::errs() << ExpectedParser.takeError();
-          return 1;
-        }
-        CommonOptionsParser& OptionsParser = ExpectedParser.get();
+        CommonOptionsParser OptionsParser(argc, argv, MyToolCategory);
         ClangTool Tool(OptionsParser.getCompilations(),
                        OptionsParser.getSourcePathList());
 

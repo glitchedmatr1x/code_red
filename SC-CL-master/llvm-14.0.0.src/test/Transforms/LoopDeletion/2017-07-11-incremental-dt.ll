@@ -1,4 +1,6 @@
-; RUN: opt < %s -passes='loop(loop-deletion),print<domtree>' -verify-dom-info 2>&1 | FileCheck -check-prefix=DT %s
+; RUN: opt < %s -loop-deletion -S
+; RUN: opt < %s -loop-deletion -analyze -domtree 2>&1 | FileCheck -check-prefix=DT %s
+; RUN: opt < %s -loop-deletion -analyze -verify-dom-info
 
 ; CHECK: for.body
 ; CHECK-NOT: for.cond1

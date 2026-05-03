@@ -1,8 +1,9 @@
 //===- ELFTypes.h - Endian specific types for ELF ---------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -15,7 +16,6 @@
 #include "llvm/Object/Error.h"
 #include "llvm/Support/Endian.h"
 #include "llvm/Support/Error.h"
-#include "llvm/Support/MathExtras.h"
 #include <cassert>
 #include <cstdint>
 #include <cstring>
@@ -40,21 +40,17 @@ template <class ELFT> struct Elf_Versym_Impl;
 template <class ELFT> struct Elf_Hash_Impl;
 template <class ELFT> struct Elf_GnuHash_Impl;
 template <class ELFT> struct Elf_Chdr_Impl;
-template <class ELFT> struct Elf_Nhdr_Impl;
-template <class ELFT> class Elf_Note_Impl;
-template <class ELFT> class Elf_Note_Iterator_Impl;
-template <class ELFT> struct Elf_CGProfile_Impl;
 
 template <endianness E, bool Is64> struct ELFType {
 private:
   template <typename Ty>
-  using packed = support::detail::packed_endian_specific_integral<Ty, E, 1>;
+  using packed = support::detail::packed_endian_specific_integral<Ty, E, 2>;
 
 public:
   static const endianness TargetEndianness = E;
   static const bool Is64Bits = Is64;
 
-  using uint = std::conditional_t<Is64, uint64_t, uint32_t>;
+  using uint = typename std::conditional<Is64, uint64_t, uint32_t>::type;
   using Ehdr = Elf_Ehdr_Impl<ELFType<E, Is64>>;
   using Shdr = Elf_Shdr_Impl<ELFType<E, Is64>>;
   using Sym = Elf_Sym_Impl<ELFType<E, Is64>>;
@@ -62,7 +58,6 @@ public:
   using Phdr = Elf_Phdr_Impl<ELFType<E, Is64>>;
   using Rel = Elf_Rel_Impl<ELFType<E, Is64>, false>;
   using Rela = Elf_Rel_Impl<ELFType<E, Is64>, true>;
-  using Relr = packed<uint>;
   using Verdef = Elf_Verdef_Impl<ELFType<E, Is64>>;
   using Verdaux = Elf_Verdaux_Impl<ELFType<E, Is64>>;
   using Verneed = Elf_Verneed_Impl<ELFType<E, Is64>>;
@@ -71,16 +66,11 @@ public:
   using Hash = Elf_Hash_Impl<ELFType<E, Is64>>;
   using GnuHash = Elf_GnuHash_Impl<ELFType<E, Is64>>;
   using Chdr = Elf_Chdr_Impl<ELFType<E, Is64>>;
-  using Nhdr = Elf_Nhdr_Impl<ELFType<E, Is64>>;
-  using Note = Elf_Note_Impl<ELFType<E, Is64>>;
-  using NoteIterator = Elf_Note_Iterator_Impl<ELFType<E, Is64>>;
-  using CGProfile = Elf_CGProfile_Impl<ELFType<E, Is64>>;
   using DynRange = ArrayRef<Dyn>;
   using ShdrRange = ArrayRef<Shdr>;
   using SymRange = ArrayRef<Sym>;
   using RelRange = ArrayRef<Rel>;
   using RelaRange = ArrayRef<Rela>;
-  using RelrRange = ArrayRef<Relr>;
   using PhdrRange = ArrayRef<Phdr>;
 
   using Half = packed<uint16_t>;
@@ -100,7 +90,46 @@ using ELF64BE = ELFType<support::big, true>;
 // Use an alignment of 2 for the typedefs since that is the worst case for
 // ELF files in archives.
 
+// Templates to choose Elf_Addr and Elf_Off depending on is64Bits.
+template <endianness target_endianness> struct ELFDataTypeTypedefHelperCommon {
+  using Elf_Half = support::detail::packed_endian_specific_integral<
+      uint16_t, target_endianness, 2>;
+  using Elf_Word = support::detail::packed_endian_specific_integral<
+      uint32_t, target_endianness, 2>;
+  using Elf_Sword = support::detail::packed_endian_specific_integral<
+      int32_t, target_endianness, 2>;
+  using Elf_Xword = support::detail::packed_endian_specific_integral<
+      uint64_t, target_endianness, 2>;
+  using Elf_Sxword = support::detail::packed_endian_specific_integral<
+      int64_t, target_endianness, 2>;
+};
+
+template <class ELFT> struct ELFDataTypeTypedefHelper;
+
+/// ELF 32bit types.
+template <endianness TargetEndianness>
+struct ELFDataTypeTypedefHelper<ELFType<TargetEndianness, false>>
+    : ELFDataTypeTypedefHelperCommon<TargetEndianness> {
+  using value_type = uint32_t;
+  using Elf_Addr = support::detail::packed_endian_specific_integral<
+      value_type, TargetEndianness, 2>;
+  using Elf_Off = support::detail::packed_endian_specific_integral<
+      value_type, TargetEndianness, 2>;
+};
+
+/// ELF 64bit types.
+template <endianness TargetEndianness>
+struct ELFDataTypeTypedefHelper<ELFType<TargetEndianness, true>>
+    : ELFDataTypeTypedefHelperCommon<TargetEndianness> {
+  using value_type = uint64_t;
+  using Elf_Addr = support::detail::packed_endian_specific_integral<
+      value_type, TargetEndianness, 2>;
+  using Elf_Off = support::detail::packed_endian_specific_integral<
+      value_type, TargetEndianness, 2>;
+};
+
 // I really don't like doing this, but the alternative is copypasta.
+
 #define LLVM_ELF_IMPORT_TYPES_ELFT(ELFT)                                       \
   using Elf_Addr = typename ELFT::Addr;                                        \
   using Elf_Off = typename ELFT::Off;                                          \
@@ -108,38 +137,11 @@ using ELF64BE = ELFType<support::big, true>;
   using Elf_Word = typename ELFT::Word;                                        \
   using Elf_Sword = typename ELFT::Sword;                                      \
   using Elf_Xword = typename ELFT::Xword;                                      \
-  using Elf_Sxword = typename ELFT::Sxword;                                    \
-  using uintX_t = typename ELFT::uint;                                         \
-  using Elf_Ehdr = typename ELFT::Ehdr;                                        \
-  using Elf_Shdr = typename ELFT::Shdr;                                        \
-  using Elf_Sym = typename ELFT::Sym;                                          \
-  using Elf_Dyn = typename ELFT::Dyn;                                          \
-  using Elf_Phdr = typename ELFT::Phdr;                                        \
-  using Elf_Rel = typename ELFT::Rel;                                          \
-  using Elf_Rela = typename ELFT::Rela;                                        \
-  using Elf_Relr = typename ELFT::Relr;                                        \
-  using Elf_Verdef = typename ELFT::Verdef;                                    \
-  using Elf_Verdaux = typename ELFT::Verdaux;                                  \
-  using Elf_Verneed = typename ELFT::Verneed;                                  \
-  using Elf_Vernaux = typename ELFT::Vernaux;                                  \
-  using Elf_Versym = typename ELFT::Versym;                                    \
-  using Elf_Hash = typename ELFT::Hash;                                        \
-  using Elf_GnuHash = typename ELFT::GnuHash;                                  \
-  using Elf_Nhdr = typename ELFT::Nhdr;                                        \
-  using Elf_Note = typename ELFT::Note;                                        \
-  using Elf_Note_Iterator = typename ELFT::NoteIterator;                       \
-  using Elf_CGProfile = typename ELFT::CGProfile;                              \
-  using Elf_Dyn_Range = typename ELFT::DynRange;                               \
-  using Elf_Shdr_Range = typename ELFT::ShdrRange;                             \
-  using Elf_Sym_Range = typename ELFT::SymRange;                               \
-  using Elf_Rel_Range = typename ELFT::RelRange;                               \
-  using Elf_Rela_Range = typename ELFT::RelaRange;                             \
-  using Elf_Relr_Range = typename ELFT::RelrRange;                             \
-  using Elf_Phdr_Range = typename ELFT::PhdrRange;
+  using Elf_Sxword = typename ELFT::Sxword;
 
-#define LLVM_ELF_COMMA ,
+#define LLD_ELF_COMMA ,
 #define LLVM_ELF_IMPORT_TYPES(E, W)                                            \
-  LLVM_ELF_IMPORT_TYPES_ELFT(ELFType<E LLVM_ELF_COMMA W>)
+  LLVM_ELF_IMPORT_TYPES_ELFT(ELFType<E LLD_ELF_COMMA W>)
 
 // Section header.
 template <class ELFT> struct Elf_Shdr_Base;
@@ -179,7 +181,7 @@ struct Elf_Shdr_Impl : Elf_Shdr_Base<ELFT> {
   using Elf_Shdr_Base<ELFT>::sh_entsize;
   using Elf_Shdr_Base<ELFT>::sh_size;
 
-  /// Get the number of entities this section contains if it has any.
+  /// @brief Get the number of entities this section contains if it has any.
   unsigned getEntityCount() const {
     if (sh_entsize == 0)
       return 0;
@@ -276,11 +278,7 @@ template <class ELFT>
 Expected<StringRef> Elf_Sym_Impl<ELFT>::getName(StringRef StrTab) const {
   uint32_t Offset = this->st_name;
   if (Offset >= StrTab.size())
-    return createStringError(object_error::parse_failed,
-                             "st_name (0x%" PRIx32
-                             ") is past the end of the string table"
-                             " of size 0x%zx",
-                             Offset, StrTab.size());
+    return errorCodeToError(object_error::parse_failed);
   return StringRef(StrTab.data() + Offset);
 }
 
@@ -297,6 +295,7 @@ struct Elf_Versym_Impl {
 template <class ELFT>
 struct Elf_Verdef_Impl {
   LLVM_ELF_IMPORT_TYPES_ELFT(ELFT)
+  using Elf_Verdaux = Elf_Verdaux_Impl<ELFT>;
   Elf_Half vd_version; // Version of this structure (e.g. VER_DEF_CURRENT)
   Elf_Half vd_flags;   // Bitwise flags (VER_DEF_*)
   Elf_Half vd_ndx;     // Version index, used in .gnu.version entries
@@ -373,8 +372,10 @@ template <class ELFT>
 struct Elf_Dyn_Impl : Elf_Dyn_Base<ELFT> {
   using Elf_Dyn_Base<ELFT>::d_tag;
   using Elf_Dyn_Base<ELFT>::d_un;
-  using intX_t = std::conditional_t<ELFT::Is64Bits, int64_t, int32_t>;
-  using uintX_t = std::conditional_t<ELFT::Is64Bits, uint64_t, uint32_t>;
+  using intX_t = typename std::conditional<ELFT::Is64Bits,
+                                           int64_t, int32_t>::type;
+  using uintX_t = typename std::conditional<ELFT::Is64Bits,
+                                            uint64_t, uint32_t>::type;
   intX_t getTag() const { return d_tag; }
   uintX_t getVal() const { return d_un.d_val; }
   uintX_t getPtr() const { return d_un.d_ptr; }
@@ -566,7 +567,6 @@ struct Elf_GnuHash_Impl {
   }
 
   ArrayRef<Elf_Word> values(unsigned DynamicSymCount) const {
-    assert(DynamicSymCount >= symndx);
     return ArrayRef<Elf_Word>(buckets().end(), DynamicSymCount - symndx);
   }
 };
@@ -588,153 +588,6 @@ struct Elf_Chdr_Impl<ELFType<TargetEndianness, true>> {
   Elf_Word ch_reserved;
   Elf_Xword ch_size;
   Elf_Xword ch_addralign;
-};
-
-/// Note header
-template <class ELFT>
-struct Elf_Nhdr_Impl {
-  LLVM_ELF_IMPORT_TYPES_ELFT(ELFT)
-  Elf_Word n_namesz;
-  Elf_Word n_descsz;
-  Elf_Word n_type;
-
-  /// The alignment of the name and descriptor.
-  ///
-  /// Implementations differ from the specification here: in practice all
-  /// variants align both the name and descriptor to 4-bytes.
-  static const unsigned int Align = 4;
-
-  /// Get the size of the note, including name, descriptor, and padding.
-  size_t getSize() const {
-    return sizeof(*this) + alignTo<Align>(n_namesz) + alignTo<Align>(n_descsz);
-  }
-};
-
-/// An ELF note.
-///
-/// Wraps a note header, providing methods for accessing the name and
-/// descriptor safely.
-template <class ELFT>
-class Elf_Note_Impl {
-  LLVM_ELF_IMPORT_TYPES_ELFT(ELFT)
-
-  const Elf_Nhdr_Impl<ELFT> &Nhdr;
-
-  template <class NoteIteratorELFT> friend class Elf_Note_Iterator_Impl;
-
-public:
-  Elf_Note_Impl(const Elf_Nhdr_Impl<ELFT> &Nhdr) : Nhdr(Nhdr) {}
-
-  /// Get the note's name, excluding the terminating null byte.
-  StringRef getName() const {
-    if (!Nhdr.n_namesz)
-      return StringRef();
-    return StringRef(reinterpret_cast<const char *>(&Nhdr) + sizeof(Nhdr),
-                     Nhdr.n_namesz - 1);
-  }
-
-  /// Get the note's descriptor.
-  ArrayRef<uint8_t> getDesc() const {
-    if (!Nhdr.n_descsz)
-      return ArrayRef<uint8_t>();
-    return ArrayRef<uint8_t>(
-        reinterpret_cast<const uint8_t *>(&Nhdr) + sizeof(Nhdr) +
-          alignTo<Elf_Nhdr_Impl<ELFT>::Align>(Nhdr.n_namesz),
-        Nhdr.n_descsz);
-  }
-
-  /// Get the note's descriptor as StringRef
-  StringRef getDescAsStringRef() const {
-    ArrayRef<uint8_t> Desc = getDesc();
-    return StringRef(reinterpret_cast<const char *>(Desc.data()), Desc.size());
-  }
-
-  /// Get the note's type.
-  Elf_Word getType() const { return Nhdr.n_type; }
-};
-
-template <class ELFT> class Elf_Note_Iterator_Impl {
-public:
-  using iterator_category = std::forward_iterator_tag;
-  using value_type = Elf_Note_Impl<ELFT>;
-  using difference_type = std::ptrdiff_t;
-  using pointer = value_type *;
-  using reference = value_type &;
-
-private:
-  // Nhdr being a nullptr marks the end of iteration.
-  const Elf_Nhdr_Impl<ELFT> *Nhdr = nullptr;
-  size_t RemainingSize = 0u;
-  Error *Err = nullptr;
-
-  template <class ELFFileELFT> friend class ELFFile;
-
-  // Stop iteration and indicate an overflow.
-  void stopWithOverflowError() {
-    Nhdr = nullptr;
-    *Err = make_error<StringError>("ELF note overflows container",
-                                   object_error::parse_failed);
-  }
-
-  // Advance Nhdr by NoteSize bytes, starting from NhdrPos.
-  //
-  // Assumes NoteSize <= RemainingSize. Ensures Nhdr->getSize() <= RemainingSize
-  // upon returning. Handles stopping iteration when reaching the end of the
-  // container, either cleanly or with an overflow error.
-  void advanceNhdr(const uint8_t *NhdrPos, size_t NoteSize) {
-    RemainingSize -= NoteSize;
-    if (RemainingSize == 0u) {
-      // Ensure that if the iterator walks to the end, the error is checked
-      // afterwards.
-      *Err = Error::success();
-      Nhdr = nullptr;
-    } else if (sizeof(*Nhdr) > RemainingSize)
-      stopWithOverflowError();
-    else {
-      Nhdr = reinterpret_cast<const Elf_Nhdr_Impl<ELFT> *>(NhdrPos + NoteSize);
-      if (Nhdr->getSize() > RemainingSize)
-        stopWithOverflowError();
-      else
-        *Err = Error::success();
-    }
-  }
-
-  Elf_Note_Iterator_Impl() = default;
-  explicit Elf_Note_Iterator_Impl(Error &Err) : Err(&Err) {}
-  Elf_Note_Iterator_Impl(const uint8_t *Start, size_t Size, Error &Err)
-      : RemainingSize(Size), Err(&Err) {
-    consumeError(std::move(Err));
-    assert(Start && "ELF note iterator starting at NULL");
-    advanceNhdr(Start, 0u);
-  }
-
-public:
-  Elf_Note_Iterator_Impl &operator++() {
-    assert(Nhdr && "incremented ELF note end iterator");
-    const uint8_t *NhdrPos = reinterpret_cast<const uint8_t *>(Nhdr);
-    size_t NoteSize = Nhdr->getSize();
-    advanceNhdr(NhdrPos, NoteSize);
-    return *this;
-  }
-  bool operator==(Elf_Note_Iterator_Impl Other) const {
-    if (!Nhdr && Other.Err)
-      (void)(bool)(*Other.Err);
-    if (!Other.Nhdr && Err)
-      (void)(bool)(*Err);
-    return Nhdr == Other.Nhdr;
-  }
-  bool operator!=(Elf_Note_Iterator_Impl Other) const {
-    return !(*this == Other);
-  }
-  Elf_Note_Impl<ELFT> operator*() const {
-    assert(Nhdr && "dereferenced ELF note end iterator");
-    return Elf_Note_Impl<ELFT>(*Nhdr);
-  }
-};
-
-template <class ELFT> struct Elf_CGProfile_Impl {
-  LLVM_ELF_IMPORT_TYPES_ELFT(ELFT)
-  Elf_Xword cgp_weight;
 };
 
 // MIPS .reginfo section
@@ -791,29 +644,6 @@ template <class ELFT> struct Elf_Mips_ABIFlags {
   Elf_Word ases;     // ASEs flags
   Elf_Word flags1;   // General flags
   Elf_Word flags2;   // General flags
-};
-
-// Struct representing the BBAddrMap for one function.
-struct BBAddrMap {
-  uint64_t Addr; // Function address
-  // Struct representing the BBAddrMap information for one basic block.
-  struct BBEntry {
-    uint32_t Offset; // Offset of basic block relative to function start.
-    uint32_t Size;   // Size of the basic block.
-
-    // The following fields are decoded from the Metadata field. The encoding
-    // happens in AsmPrinter.cpp:getBBAddrMapMetadata.
-    bool HasReturn;      // If this block ends with a return (or tail call).
-    bool HasTailCall;    // If this block ends with a tail call.
-    bool IsEHPad;        // If this is an exception handling block.
-    bool CanFallThrough; // If this block can fall through to its next.
-
-    BBEntry(uint32_t Offset, uint32_t Size, uint32_t Metadata)
-        : Offset(Offset), Size(Size), HasReturn(Metadata & 1),
-          HasTailCall(Metadata & (1 << 1)), IsEHPad(Metadata & (1 << 2)),
-          CanFallThrough(Metadata & (1 << 3)){};
-  };
-  std::vector<BBEntry> BBEntries; // Basic block entries for this function.
 };
 
 } // end namespace object.

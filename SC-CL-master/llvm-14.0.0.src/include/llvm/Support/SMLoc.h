@@ -1,8 +1,9 @@
 //===- SMLoc.h - Source location for use with diagnostics -------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -43,8 +44,8 @@ public:
 /// Represents a range in source code.
 ///
 /// SMRange is implemented using a half-open range, as is the convention in C++.
-/// In the string "abc", the range [1,3) represents the substring "bc", and the
-/// range [2,2) represents an empty range between the characters "b" and "c".
+/// In the string "abc", the range (1,3] represents the substring "bc", and the
+/// range (2,2] represents an empty range between the characters "b" and "c".
 class SMRange {
 public:
   SMLoc Start, End;
@@ -53,7 +54,7 @@ public:
   SMRange(NoneType) {}
   SMRange(SMLoc St, SMLoc En) : Start(St), End(En) {
     assert(Start.isValid() == End.isValid() &&
-           "Start and End should either both be valid or both be invalid!");
+           "Start and end should either both be valid or both be invalid!");
   }
 
   bool isValid() const { return Start.isValid(); }

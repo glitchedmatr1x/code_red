@@ -1,4 +1,4 @@
-// RUN: %clang_analyze_cc1 -analyzer-checker=core,debug.ExprInspection -verify -analyzer-config eagerly-assume=false %s
+// RUN: %clang_analyze_cc1 -analyzer-checker=core,debug.ExprInspection -verify %s
 
 void clang_analyzer_eval(bool);
 
@@ -6,14 +6,6 @@ struct A {
   int x;
   void foo() const;
   void bar();
-
-  void testImplicitThisSyntax() {
-    x = 3;
-    foo();
-    clang_analyzer_eval(x == 3); // expected-warning{{TRUE}}
-    bar();
-    clang_analyzer_eval(x == 3); // expected-warning{{UNKNOWN}}
-  }
 };
 
 struct B {
@@ -114,22 +106,6 @@ void checkThatContainedConstMethodDoesNotInvalidateObjects() {
   t.in.bar();
   clang_analyzer_eval(t.x == 1); // expected-warning{{TRUE}}
   clang_analyzer_eval(t.in.x == 2); // expected-warning{{TRUE}}
-}
-
-void checkPointerTypedThisExpression(A *a) {
-  a->x = 3;
-  a->foo();
-  clang_analyzer_eval(a->x == 3); // expected-warning{{TRUE}}
-  a->bar();
-  clang_analyzer_eval(a->x == 3); // expected-warning{{UNKNOWN}}
-}
-
-void checkReferenceTypedThisExpression(A &a) {
-  a.x = 3;
-  a.foo();
-  clang_analyzer_eval(a.x == 3); // expected-warning{{TRUE}}
-  a.bar();
-  clang_analyzer_eval(a.x == 3); // expected-warning{{UNKNOWN}}
 }
 
 // --- Versions of the above tests where the const method is inherited --- //
@@ -235,7 +211,7 @@ public:
   void constMemberFunction() const;
 };
 
-HasConstMemberFunction hasNoReturn() { } // expected-warning {{non-void function does not return a value}}
+HasConstMemberFunction hasNoReturn() { } // expected-warning {{control reaches end of non-void function}}
 
 void testUnknownWithConstMemberFunction() {
   hasNoReturn().constMemberFunction();

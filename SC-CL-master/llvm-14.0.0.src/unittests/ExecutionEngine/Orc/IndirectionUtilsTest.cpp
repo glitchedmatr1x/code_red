@@ -1,8 +1,9 @@
 //===- LazyEmittingLayerTest.cpp - Unit tests for the lazy emitting layer -===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,17 +19,14 @@ namespace {
 TEST(IndirectionUtilsTest, MakeStub) {
   LLVMContext Context;
   ModuleBuilder MB(Context, "x86_64-apple-macosx10.10", "");
-  StructType *ArgTy = getDummyStructTy(Context);
-  Type *ArgPtrTy = PointerType::getUnqual(ArgTy);
-  FunctionType *FTy = FunctionType::get(
-      Type::getVoidTy(Context), {ArgPtrTy, ArgPtrTy}, false);
-  Function *F = MB.createFunctionDecl(FTy, "");
+  Function *F = MB.createFunctionDecl<void(DummyStruct, DummyStruct)>("");
   AttributeSet FnAttrs = AttributeSet::get(
-      Context, AttrBuilder(Context).addAttribute(Attribute::NoUnwind));
+      Context, AttrBuilder().addAttribute(Attribute::NoUnwind));
   AttributeSet RetAttrs; // None
   AttributeSet ArgAttrs[2] = {
-      AttributeSet::get(Context, AttrBuilder(Context).addStructRetAttr(ArgTy)),
-      AttributeSet::get(Context, AttrBuilder(Context).addByValAttr(ArgTy)),
+      AttributeSet::get(Context,
+                        AttrBuilder().addAttribute(Attribute::StructRet)),
+      AttributeSet::get(Context, AttrBuilder().addAttribute(Attribute::ByVal)),
   };
   F->setAttributes(AttributeList::get(Context, FnAttrs, RetAttrs, ArgAttrs));
 

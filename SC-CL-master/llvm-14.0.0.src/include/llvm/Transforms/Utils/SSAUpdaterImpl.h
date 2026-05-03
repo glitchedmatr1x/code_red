@@ -1,8 +1,9 @@
 //===- SSAUpdaterImpl.h - SSA Updater Implementation ------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -356,9 +357,10 @@ public:
       BBInfo *Info = *I;
 
       if (Info->DefBB != Info) {
-        // Record the available value to speed up subsequent uses of this
-        // SSAUpdater for the same value.
-        (*AvailableVals)[Info->BB] = Info->DefBB->AvailableVal;
+        // Record the available value at join nodes to speed up subsequent
+        // uses of this SSAUpdater for the same value.
+        if (Info->NumPreds > 1)
+          (*AvailableVals)[Info->BB] = Info->DefBB->AvailableVal;
         continue;
       }
 
@@ -377,7 +379,7 @@ public:
         Traits::AddPHIOperand(PHI, PredInfo->AvailableVal, Pred);
       }
 
-      LLVM_DEBUG(dbgs() << "  Inserted PHI: " << *PHI << "\n");
+      DEBUG(dbgs() << "  Inserted PHI: " << *PHI << "\n");
 
       // If the client wants to know about all new instructions, tell it.
       if (InsertedPHIs) InsertedPHIs->push_back(PHI);
@@ -387,8 +389,12 @@ public:
   /// FindExistingPHI - Look through the PHI nodes in a block to see if any of
   /// them match what is needed.
   void FindExistingPHI(BlkT *BB, BlockListTy *BlockList) {
-    for (auto &SomePHI : BB->phis()) {
-      if (CheckIfPHIMatches(&SomePHI)) {
+    for (typename BlkT::iterator BBI = BB->begin(), BBE = BB->end();
+         BBI != BBE; ++BBI) {
+      PhiT *SomePHI = Traits::InstrIsPHI(&*BBI);
+      if (!SomePHI)
+        break;
+      if (CheckIfPHIMatches(SomePHI)) {
         RecordMatchingPHIs(BlockList);
         break;
       }

@@ -1,13 +1,14 @@
 //===--- ClangRefactor.cpp - Clang-based refactoring tool -----------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file implements a clang-refactor tool that performs various
+/// \brief This file implements a clang-refactor tool that performs various
 /// source transformations.
 ///
 //===----------------------------------------------------------------------===//
@@ -38,11 +39,11 @@ namespace opts {
 static cl::OptionCategory CommonRefactorOptions("Refactoring options");
 
 static cl::opt<bool> Verbose("v", cl::desc("Use verbose output"),
-                             cl::cat(cl::getGeneralCategory()),
+                             cl::cat(cl::GeneralCategory),
                              cl::sub(*cl::AllSubCommands));
 
 static cl::opt<bool> Inplace("i", cl::desc("Inplace edit <file>s"),
-                             cl::cat(cl::getGeneralCategory()),
+                             cl::cat(cl::GeneralCategory),
                              cl::sub(*cl::AllSubCommands));
 
 } // end namespace opts
@@ -116,8 +117,8 @@ public:
 
   bool forAllRanges(const SourceManager &SM,
                     llvm::function_ref<void(SourceRange R)> Callback) override {
-    auto FE = SM.getFileManager().getFile(Range.FileName);
-    FileID FID = FE ? SM.translateFile(*FE) : FileID();
+    const FileEntry *FE = SM.getFileManager().getFile(Range.FileName);
+    FileID FID = FE ? SM.translateFile(FE) : FileID();
     if (!FE || FID.isInvalid()) {
       llvm::errs() << "error: -selection=" << Range.FileName
                    << ":... : given file is not in the target TU\n";
@@ -151,12 +152,12 @@ SourceSelectionArgument::fromString(StringRef Value) {
         findTestSelectionRanges(Filename);
     if (!ParsedTestSelection)
       return nullptr; // A parsing error was already reported.
-    return std::make_unique<TestSourceSelectionArgument>(
+    return llvm::make_unique<TestSourceSelectionArgument>(
         std::move(*ParsedTestSelection));
   }
   Optional<ParsedSourceRange> Range = ParsedSourceRange::fromString(Value);
   if (Range)
-    return std::make_unique<SourceRangeSelectionArgument>(std::move(*Range));
+    return llvm::make_unique<SourceRangeSelectionArgument>(std::move(*Range));
   llvm::errs() << "error: '-selection' option must be specified using "
                   "<file>:<line>:<column> or "
                   "<file>:<line>:<column>-<line>:<column> format\n";
@@ -237,7 +238,7 @@ private:
                                "specified for one refactoring action");
     // FIXME: cl::Required can be specified when this option is present
     // in all rules in an action.
-    return std::make_unique<cl::opt<T>>(
+    return llvm::make_unique<cl::opt<T>>(
         Opt.getName(), cl::desc(Opt.getDescription()), cl::Optional,
         cl::cat(Category), cl::sub(Subcommand));
   }
@@ -260,7 +261,7 @@ public:
     // Check if the selection option is supported.
     for (const auto &Rule : this->ActionRules) {
       if (Rule->hasSelectionRequirement()) {
-        Selection = std::make_unique<cl::opt<std::string>>(
+        Selection = llvm::make_unique<cl::opt<std::string>>(
             "selection",
             cl::desc(
                 "The selected source range in which the refactoring should "
@@ -361,7 +362,7 @@ public:
 
     // Create subcommands and command-line options.
     for (auto &Action : Actions) {
-      SubCommands.push_back(std::make_unique<RefactoringActionSubcommand>(
+      SubCommands.push_back(llvm::make_unique<RefactoringActionSubcommand>(
           std::move(Action), Action->createActiveActionRules(),
           opts::CommonRefactorOptions));
     }
@@ -461,15 +462,13 @@ public:
       ToolActionFactory(TUCallbackType Callback)
           : Callback(std::move(Callback)) {}
 
-      std::unique_ptr<FrontendAction> create() override {
-        return std::make_unique<ToolASTAction>(Callback);
-      }
+      FrontendAction *create() override { return new ToolASTAction(Callback); }
 
     private:
       TUCallbackType Callback;
     };
 
-    return std::make_unique<ToolActionFactory>(
+    return llvm::make_unique<ToolActionFactory>(
         [this](ASTContext &AST) { return callback(AST); });
   }
 
@@ -499,7 +498,7 @@ public:
 
       if (opts::Inplace) {
         std::error_code EC;
-        llvm::raw_fd_ostream OS(File, EC, llvm::sys::fs::OF_TextWithCRLF);
+        llvm::raw_fd_ostream OS(File, EC, llvm::sys::fs::F_Text);
         if (EC) {
           llvm::errs() << EC.message() << "\n";
           return true;
@@ -612,14 +611,9 @@ int main(int argc, const char **argv) {
 
   ClangRefactorTool RefactorTool;
 
-  auto ExpectedParser = CommonOptionsParser::create(
-      argc, argv, cl::getGeneralCategory(), cl::ZeroOrMore,
+  CommonOptionsParser Options(
+      argc, argv, cl::GeneralCategory, cl::ZeroOrMore,
       "Clang-based refactoring tool for C, C++ and Objective-C");
-  if (!ExpectedParser) {
-    llvm::errs() << ExpectedParser.takeError();
-    return 1;
-  }
-  CommonOptionsParser &Options = ExpectedParser.get();
 
   if (auto Err = RefactorTool.Init()) {
     llvm::errs() << llvm::toString(std::move(Err)) << "\n";

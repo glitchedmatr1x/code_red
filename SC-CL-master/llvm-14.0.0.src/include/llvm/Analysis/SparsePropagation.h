@@ -1,8 +1,9 @@
 //===- SparsePropagation.h - Sparse Conditional Property Propagation ------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,7 +15,6 @@
 #ifndef LLVM_ANALYSIS_SPARSEPROPAGATION_H
 #define LLVM_ANALYSIS_SPARSEPROPAGATION_H
 
-#include "llvm/ADT/SmallPtrSet.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/Support/Debug.h"
 #include <set>
@@ -189,12 +189,12 @@ private:
 
   /// getFeasibleSuccessors - Return a vector of booleans to indicate which
   /// successors are reachable from a given terminator instruction.
-  void getFeasibleSuccessors(Instruction &TI, SmallVectorImpl<bool> &Succs,
+  void getFeasibleSuccessors(TerminatorInst &TI, SmallVectorImpl<bool> &Succs,
                              bool AggressiveUndef);
 
   void visitInst(Instruction &I);
   void visitPHINode(PHINode &I);
-  void visitTerminator(Instruction &TI);
+  void visitTerminatorInst(TerminatorInst &TI);
 };
 
 //===----------------------------------------------------------------------===//
@@ -238,7 +238,7 @@ SparseSolver<LatticeKey, LatticeVal, KeyInfo>::getValueState(LatticeKey Key) {
   // If this value is untracked, don't add it to the map.
   if (LV == LatticeFunc->getUntrackedVal())
     return LV;
-  return ValueState[Key] = std::move(LV);
+  return ValueState[Key] = LV;
 }
 
 template <class LatticeKey, class LatticeVal, class KeyInfo>
@@ -250,7 +250,7 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::UpdateState(LatticeKey Key,
 
   // Update the state of the given LatticeKey and add its corresponding LLVM
   // value to the work list.
-  ValueState[Key] = std::move(LV);
+  ValueState[Key] = LV;
   if (Value *V = KeyInfo::getValueFromLatticeKey(Key))
     ValueWorkList.push_back(V);
 }
@@ -260,7 +260,7 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::MarkBlockExecutable(
     BasicBlock *BB) {
   if (!BBExecutable.insert(BB).second)
     return;
-  LLVM_DEBUG(dbgs() << "Marking Block Executable: " << BB->getName() << "\n");
+  DEBUG(dbgs() << "Marking Block Executable: " << BB->getName() << "\n");
   BBWorkList.push_back(BB); // Add the block to the work list!
 }
 
@@ -270,8 +270,8 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::markEdgeExecutable(
   if (!KnownFeasibleEdges.insert(Edge(Source, Dest)).second)
     return; // This edge is already known to be executable!
 
-  LLVM_DEBUG(dbgs() << "Marking Edge Executable: " << Source->getName()
-                    << " -> " << Dest->getName() << "\n");
+  DEBUG(dbgs() << "Marking Edge Executable: " << Source->getName() << " -> "
+               << Dest->getName() << "\n");
 
   if (BBExecutable.count(Dest)) {
     // The destination is already executable, but we just made an edge
@@ -286,7 +286,7 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::markEdgeExecutable(
 
 template <class LatticeKey, class LatticeVal, class KeyInfo>
 void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::getFeasibleSuccessors(
-    Instruction &TI, SmallVectorImpl<bool> &Succs, bool AggressiveUndef) {
+    TerminatorInst &TI, SmallVectorImpl<bool> &Succs, bool AggressiveUndef) {
   Succs.resize(TI.getNumSuccessors());
   if (TI.getNumSuccessors() == 0)
     return;
@@ -318,7 +318,7 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::getFeasibleSuccessors(
 
     Constant *C =
         dyn_cast_or_null<Constant>(LatticeFunc->GetValueFromLatticeVal(
-            std::move(BCValue), BI->getCondition()->getType()));
+            BCValue, BI->getCondition()->getType()));
     if (!C || !isa<ConstantInt>(C)) {
       // Non-constant values can go either way.
       Succs[0] = Succs[1] = true;
@@ -330,8 +330,12 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::getFeasibleSuccessors(
     return;
   }
 
-  if (TI.isExceptionalTerminator() ||
-      TI.isIndirectTerminator()) {
+  if (TI.isExceptional()) {
+    Succs.assign(Succs.size(), true);
+    return;
+  }
+
+  if (isa<IndirectBrInst>(TI)) {
     Succs.assign(Succs.size(), true);
     return;
   }
@@ -356,7 +360,7 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::getFeasibleSuccessors(
     return;
 
   Constant *C = dyn_cast_or_null<Constant>(LatticeFunc->GetValueFromLatticeVal(
-      std::move(SCValue), SI.getCondition()->getType()));
+      SCValue, SI.getCondition()->getType()));
   if (!C || !isa<ConstantInt>(C)) {
     // All destinations are executable!
     Succs.assign(TI.getNumSuccessors(), true);
@@ -370,7 +374,7 @@ template <class LatticeKey, class LatticeVal, class KeyInfo>
 bool SparseSolver<LatticeKey, LatticeVal, KeyInfo>::isEdgeFeasible(
     BasicBlock *From, BasicBlock *To, bool AggressiveUndef) {
   SmallVector<bool, 16> SuccFeasible;
-  Instruction *TI = From->getTerminator();
+  TerminatorInst *TI = From->getTerminator();
   getFeasibleSuccessors(*TI, SuccFeasible, AggressiveUndef);
 
   for (unsigned i = 0, e = TI->getNumSuccessors(); i != e; ++i)
@@ -381,8 +385,8 @@ bool SparseSolver<LatticeKey, LatticeVal, KeyInfo>::isEdgeFeasible(
 }
 
 template <class LatticeKey, class LatticeVal, class KeyInfo>
-void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::visitTerminator(
-    Instruction &TI) {
+void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::visitTerminatorInst(
+    TerminatorInst &TI) {
   SmallVector<bool, 16> SuccFeasible;
   getFeasibleSuccessors(TI, SuccFeasible, true);
 
@@ -404,8 +408,7 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::visitPHINode(PHINode &PN) {
     LatticeFunc->ComputeInstructionState(PN, ChangedValues, *this);
     for (auto &ChangedValue : ChangedValues)
       if (ChangedValue.second != LatticeFunc->getUntrackedVal())
-        UpdateState(std::move(ChangedValue.first),
-                    std::move(ChangedValue.second));
+        UpdateState(ChangedValue.first, ChangedValue.second);
     return;
   }
 
@@ -461,8 +464,8 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::visitInst(Instruction &I) {
     if (ChangedValue.second != LatticeFunc->getUntrackedVal())
       UpdateState(ChangedValue.first, ChangedValue.second);
 
-  if (I.isTerminator())
-    visitTerminator(I);
+  if (TerminatorInst *TI = dyn_cast<TerminatorInst>(&I))
+    visitTerminatorInst(*TI);
 }
 
 template <class LatticeKey, class LatticeVal, class KeyInfo>
@@ -471,9 +474,10 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::Solve() {
   while (!BBWorkList.empty() || !ValueWorkList.empty()) {
     // Process the value work list.
     while (!ValueWorkList.empty()) {
-      Value *V = ValueWorkList.pop_back_val();
+      Value *V = ValueWorkList.back();
+      ValueWorkList.pop_back();
 
-      LLVM_DEBUG(dbgs() << "\nPopped off V-WL: " << *V << "\n");
+      DEBUG(dbgs() << "\nPopped off V-WL: " << *V << "\n");
 
       // "V" got into the work list because it made a transition. See if any
       // users are both live and in need of updating.
@@ -485,9 +489,10 @@ void SparseSolver<LatticeKey, LatticeVal, KeyInfo>::Solve() {
 
     // Process the basic block work list.
     while (!BBWorkList.empty()) {
-      BasicBlock *BB = BBWorkList.pop_back_val();
+      BasicBlock *BB = BBWorkList.back();
+      BBWorkList.pop_back();
 
-      LLVM_DEBUG(dbgs() << "\nPopped off BBWL: " << *BB);
+      DEBUG(dbgs() << "\nPopped off BBWL: " << *BB);
 
       // Notify all instructions in this basic block that they are newly
       // executable.

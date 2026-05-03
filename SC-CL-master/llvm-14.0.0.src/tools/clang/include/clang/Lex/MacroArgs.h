@@ -1,8 +1,9 @@
 //===--- MacroArgs.h - Formal argument info for Macros ----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -26,7 +27,7 @@ namespace clang {
 
 /// MacroArgs - An instance of this class captures information about
 /// the formal arguments specified to a function-like macro invocation.
-class MacroArgs final
+class MacroArgs final 
     : private llvm::TrailingObjects<MacroArgs, Token> {
 
   friend TrailingObjects;
@@ -42,11 +43,15 @@ class MacroArgs final
   /// if in strict mode and the C99 varargs macro had only a ... argument, this
   /// is false.
   bool VarargsElided;
-
+  
   /// PreExpArgTokens - Pre-expanded tokens for arguments that need them.  Empty
   /// if not yet computed.  This includes the EOF marker at the end of the
   /// stream.
   std::vector<std::vector<Token> > PreExpArgTokens;
+
+  /// StringifiedArgs - This contains arguments in 'stringified' form.  If the
+  /// stringified form of an argument has not yet been computed, this is empty.
+  std::vector<Token> StringifiedArgs;
 
   /// ArgCache - This is a linked list of MacroArgs objects that the
   /// Preprocessor owns which we use to avoid thrashing malloc/free.
@@ -90,6 +95,12 @@ public:
   const std::vector<Token> &
     getPreExpArgument(unsigned Arg, Preprocessor &PP);
 
+  /// getStringifiedArgument - Compute, cache, and return the specified argument
+  /// that has been 'stringified' as required by the # operator.
+  const Token &getStringifiedArgument(unsigned ArgNo, Preprocessor &PP,
+                                      SourceLocation ExpansionLocStart,
+                                      SourceLocation ExpansionLocEnd);
+
   /// getNumMacroArguments - Return the number of arguments the invoked macro
   /// expects.
   unsigned getNumMacroArguments() const { return NumMacroArgs; }
@@ -102,19 +113,18 @@ public:
   bool isVarargsElidedUse() const { return VarargsElided; }
 
   /// Returns true if the macro was defined with a variadic (ellipsis) parameter
-  /// AND was invoked with at least one token supplied as a variadic argument
-  /// (after pre-expansion).
+  /// AND was invoked with at least one token supplied as a variadic argument.
   ///
-  /// \code
+  /// \code 
   ///   #define F(a)  a
   ///   #define V(a, ...) __VA_OPT__(a)
-  ///   F()     <-- returns false on this invocation.
-  ///   V(,a)   <-- returns true on this invocation.
-  ///   V(,)    <-- returns false on this invocation.
-  ///   V(,F()) <-- returns false on this invocation.
+  ///   F()    <-- returns false on this invocation.
+  ///   V(,a)  <-- returns true on this invocation.
+  ///   V(,)   <-- returns false on this invocation.
   /// \endcode
   ///
-  bool invokedWithVariadicArgument(const MacroInfo *const MI, Preprocessor &PP);
+ 
+  bool invokedWithVariadicArgument(const MacroInfo *const MI) const;
 
   /// StringifyArgument - Implement C99 6.10.3.2p2, converting a sequence of
   /// tokens into the literal string token that should be produced by the C #
@@ -125,8 +135,8 @@ public:
                                  Preprocessor &PP, bool Charify,
                                  SourceLocation ExpansionLocStart,
                                  SourceLocation ExpansionLocEnd);
-
-
+  
+  
   /// deallocate - This should only be called by the Preprocessor when managing
   /// its freelist.
   MacroArgs *deallocate();

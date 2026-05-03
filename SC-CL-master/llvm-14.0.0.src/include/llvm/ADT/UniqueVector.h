@@ -1,8 +1,9 @@
 //===- llvm/ADT/UniqueVector.h ----------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -71,16 +72,16 @@ public:
     return Vector[ID - 1];
   }
 
-  /// Return an iterator to the start of the vector.
+  /// \brief Return an iterator to the start of the vector.
   iterator begin() { return Vector.begin(); }
 
-  /// Return an iterator to the start of the vector.
+  /// \brief Return an iterator to the start of the vector.
   const_iterator begin() const { return Vector.begin(); }
 
-  /// Return an iterator to the end of the vector.
+  /// \brief Return an iterator to the end of the vector.
   iterator end() { return Vector.end(); }
 
-  /// Return an iterator to the end of the vector.
+  /// \brief Return an iterator to the end of the vector.
   const_iterator end() const { return Vector.end(); }
 
   /// size - Returns the number of entries in the vector.

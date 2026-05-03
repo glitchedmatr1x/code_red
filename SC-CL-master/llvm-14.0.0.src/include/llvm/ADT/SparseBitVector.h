@@ -1,15 +1,15 @@
 //===- llvm/ADT/SparseBitVector.h - Efficient Sparse BitVector --*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file defines the SparseBitVector class.  See the doxygen comment for
-/// SparseBitVector for more details on the algorithm used.
-///
+//
+// This file defines the SparseBitVector class.  See the doxygen comment for
+// SparseBitVector for more details on the algorithm used.
+//
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_SPARSEBITVECTOR_H
@@ -261,33 +261,21 @@ class SparseBitVector {
     BITWORD_SIZE = SparseBitVectorElement<ElementSize>::BITWORD_SIZE
   };
 
+  // Pointer to our current Element.
+  ElementListIter CurrElementIter;
   ElementList Elements;
-  // Pointer to our current Element. This has no visible effect on the external
-  // state of a SparseBitVector, it's just used to improve performance in the
-  // common case of testing/modifying bits with similar indices.
-  mutable ElementListIter CurrElementIter;
 
   // This is like std::lower_bound, except we do linear searching from the
   // current position.
-  ElementListIter FindLowerBoundImpl(unsigned ElementIndex) const {
-
-    // We cache a non-const iterator so we're forced to resort to const_cast to
-    // get the begin/end in the case where 'this' is const. To avoid duplication
-    // of code with the only difference being whether the const cast is present
-    // 'this' is always const in this particular function and we sort out the
-    // difference in FindLowerBound and FindLowerBoundConst.
-    ElementListIter Begin =
-        const_cast<SparseBitVector<ElementSize> *>(this)->Elements.begin();
-    ElementListIter End =
-        const_cast<SparseBitVector<ElementSize> *>(this)->Elements.end();
+  ElementListIter FindLowerBound(unsigned ElementIndex) {
 
     if (Elements.empty()) {
-      CurrElementIter = Begin;
-      return CurrElementIter;
+      CurrElementIter = Elements.begin();
+      return Elements.begin();
     }
 
     // Make sure our current iterator is valid.
-    if (CurrElementIter == End)
+    if (CurrElementIter == Elements.end())
       --CurrElementIter;
 
     // Search from our current iterator, either backwards or forwards,
@@ -296,22 +284,16 @@ class SparseBitVector {
     if (CurrElementIter->index() == ElementIndex) {
       return ElementIter;
     } else if (CurrElementIter->index() > ElementIndex) {
-      while (ElementIter != Begin
+      while (ElementIter != Elements.begin()
              && ElementIter->index() > ElementIndex)
         --ElementIter;
     } else {
-      while (ElementIter != End &&
+      while (ElementIter != Elements.end() &&
              ElementIter->index() < ElementIndex)
         ++ElementIter;
     }
     CurrElementIter = ElementIter;
     return ElementIter;
-  }
-  ElementListConstIter FindLowerBoundConst(unsigned ElementIndex) const {
-    return FindLowerBoundImpl(ElementIndex);
-  }
-  ElementListIter FindLowerBound(unsigned ElementIndex) {
-    return FindLowerBoundImpl(ElementIndex);
   }
 
   // Iterator to walk set bits in the bitmap.  This iterator is a lot uglier
@@ -441,12 +423,22 @@ class SparseBitVector {
 public:
   using iterator = SparseBitVectorIterator;
 
-  SparseBitVector() : Elements(), CurrElementIter(Elements.begin()) {}
+  SparseBitVector() {
+    CurrElementIter = Elements.begin();
+  }
 
-  SparseBitVector(const SparseBitVector &RHS)
-      : Elements(RHS.Elements), CurrElementIter(Elements.begin()) {}
-  SparseBitVector(SparseBitVector &&RHS)
-      : Elements(std::move(RHS.Elements)), CurrElementIter(Elements.begin()) {}
+  // SparseBitVector copy ctor.
+  SparseBitVector(const SparseBitVector &RHS) {
+    ElementListConstIter ElementIter = RHS.Elements.begin();
+    while (ElementIter != RHS.Elements.end()) {
+      Elements.push_back(SparseBitVectorElement<ElementSize>(*ElementIter));
+      ++ElementIter;
+    }
+
+    CurrElementIter = Elements.begin ();
+  }
+
+  ~SparseBitVector() = default;
 
   // Clear.
   void clear() {
@@ -458,23 +450,26 @@ public:
     if (this == &RHS)
       return *this;
 
-    Elements = RHS.Elements;
-    CurrElementIter = Elements.begin();
-    return *this;
-  }
-  SparseBitVector &operator=(SparseBitVector &&RHS) {
-    Elements = std::move(RHS.Elements);
-    CurrElementIter = Elements.begin();
+    Elements.clear();
+
+    ElementListConstIter ElementIter = RHS.Elements.begin();
+    while (ElementIter != RHS.Elements.end()) {
+      Elements.push_back(SparseBitVectorElement<ElementSize>(*ElementIter));
+      ++ElementIter;
+    }
+
+    CurrElementIter = Elements.begin ();
+
     return *this;
   }
 
   // Test, Reset, and Set a bit in the bitmap.
-  bool test(unsigned Idx) const {
+  bool test(unsigned Idx) {
     if (Elements.empty())
       return false;
 
     unsigned ElementIndex = Idx / ElementSize;
-    ElementListConstIter ElementIter = FindLowerBoundConst(ElementIndex);
+    ElementListIter ElementIter = FindLowerBound(ElementIndex);
 
     // If we can't find an element that is supposed to contain this bit, there
     // is nothing more to do.

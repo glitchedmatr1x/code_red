@@ -1,5 +1,5 @@
-// RUN: llvm-mc -triple amdgcn--amdhsa -mcpu=kaveri --amdhsa-code-object-version=2 -show-encoding %s | FileCheck %s --check-prefix=ASM
-// RUN: llvm-mc -filetype=obj -triple amdgcn--amdhsa -mcpu=kaveri --amdhsa-code-object-version=2 -show-encoding %s | llvm-readobj --symbols -S --sd - | FileCheck %s --check-prefix=ELF
+// RUN: llvm-mc -triple amdgcn--amdhsa -mcpu=kaveri -show-encoding %s | FileCheck %s --check-prefix=ASM
+// RUN: llvm-mc -filetype=obj -triple amdgcn--amdhsa -mcpu=kaveri -show-encoding %s | llvm-readobj -symbols -s -sd | FileCheck %s --check-prefix=ELF
 
 // ELF: Section {
 // ELF: Name: .text
@@ -18,12 +18,12 @@
 // Windows and Linux because of carriage return on Windows
 
 // ELF: Symbol {
-// ELF: Name: amd_kernel_code_t_test_all
+// ELF: Name: amd_kernel_code_t_minimal
 // ELF: Type: AMDGPU_HSA_KERNEL (0xA)
 // ELF: Section: .text
 // ELF: }
 // ELF: Symbol {
-// ELF: Name: amd_kernel_code_t_minimal
+// ELF: Name: amd_kernel_code_t_test_all
 // ELF: Type: AMDGPU_HSA_KERNEL (0xA)
 // ELF: Section: .text
 // ELF: }
@@ -120,7 +120,7 @@ amd_kernel_code_t_test_all:
     kernarg_segment_alignment = 5
     group_segment_alignment = 5
     private_segment_alignment = 5
-    wavefront_size = 6
+    wavefront_size = 5
     call_convention = 1
     runtime_loader_kernel_symbol = 1
 .end_amd_kernel_code_t
@@ -135,6 +135,7 @@ amd_kernel_code_t_test_all:
 // ASM: amd_machine_version_stepping = 5
 // ASM: kernel_code_entry_byte_offset = 512
 // ASM: kernel_code_prefetch_byte_size = 1
+// ASM: max_scratch_backing_memory_byte_size = 1
 // ASM: granulated_workitem_vgpr_count = 1
 // ASM: granulated_wavefront_sgpr_count = 1
 // ASM: priority = 1
@@ -185,7 +186,7 @@ amd_kernel_code_t_test_all:
 // ASM: kernarg_segment_alignment = 5
 // ASM: group_segment_alignment = 5
 // ASM: private_segment_alignment = 5
-// ASM: wavefront_size = 6
+// ASM: wavefront_size = 5
 // ASM: call_convention = 1
 // ASM: runtime_loader_kernel_symbol = 1
 // ASM: .end_amd_kernel_code_t
@@ -211,13 +212,14 @@ amd_kernel_code_t_minimal:
 // ASM-LABEL: {{^}}amd_kernel_code_t_minimal:
 // ASM: .amd_kernel_code_t
 // ASM:	amd_code_version_major = 1
-// ASM:	amd_code_version_minor = 2
+// ASM:	amd_code_version_minor = 1
 // ASM:	amd_machine_kind = 1
 // ASM:	amd_machine_version_major = 7
 // ASM:	amd_machine_version_minor = 0
 // ASM:	amd_machine_version_stepping = 0
 // ASM:	kernel_code_entry_byte_offset = 256
 // ASM:	kernel_code_prefetch_byte_size = 0
+// ASM:	max_scratch_backing_memory_byte_size = 0
 // ASM: granulated_workitem_vgpr_count = 1
 // ASM: granulated_wavefront_sgpr_count = 1
 // ASM: priority = 0

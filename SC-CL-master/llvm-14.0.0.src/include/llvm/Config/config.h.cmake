@@ -1,9 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-// Include this header only under the llvm source tree.
-// This is a private header.
-
 /* Exported configuration */
 #include "llvm/Config/llvm-config.h"
 
@@ -15,13 +12,6 @@
 
 /* Define to 1 to enable crash overrides, and to 0 otherwise. */
 #cmakedefine01 ENABLE_CRASH_OVERRIDES
-
-/* Define to 1 to enable crash memory dumps, and to 0 otherwise. */
-#cmakedefine01 LLVM_ENABLE_CRASH_DUMPS
-
-/* Define to 1 to prefer forward slashes on Windows, and to 0 prefer
-   backslashes. */
-#cmakedefine01 LLVM_WINDOWS_PREFER_FORWARD_SLASH
 
 /* Define to 1 if you have the `backtrace' function. */
 #cmakedefine HAVE_BACKTRACE ${HAVE_BACKTRACE}
@@ -53,6 +43,10 @@
 /* Define to 1 if you have the DIA SDK installed, and to 0 if you don't. */
 #cmakedefine01 LLVM_ENABLE_DIA_SDK
 
+/* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
+   */
+#cmakedefine HAVE_DIRENT_H ${HAVE_DIRENT_H}
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #cmakedefine HAVE_DLFCN_H ${HAVE_DLFCN_H}
 
@@ -61,15 +55,6 @@
 
 /* Define if dladdr() is available on this platform. */
 #cmakedefine HAVE_DLADDR ${HAVE_DLADDR}
-
-/* Define to 1 if we can register EH frames on this platform. */
-#cmakedefine HAVE_REGISTER_FRAME ${HAVE_REGISTER_FRAME}
-
-/* Define to 1 if we can deregister EH frames on this platform. */
-#cmakedefine HAVE_DEREGISTER_FRAME ${HAVE_DEREGISTER_FRAME}
-
-/* Define if __unw_add_dynamic_fde() is available on this platform. */
-#cmakedefine HAVE_UNW_ADD_DYNAMIC_FDE ${HAVE_UNW_ADD_DYNAMIC_FDE}
 
 /* Define to 1 if you have the <errno.h> header file. */
 #cmakedefine HAVE_ERRNO_H ${HAVE_ERRNO_H}
@@ -95,6 +80,9 @@
 /* Define to 1 if you have the `futimes' function. */
 #cmakedefine HAVE_FUTIMES ${HAVE_FUTIMES}
 
+/* Define to 1 if you have the `getcwd' function. */
+#cmakedefine HAVE_GETCWD ${HAVE_GETCWD}
+
 /* Define to 1 if you have the `getpagesize' function. */
 #cmakedefine HAVE_GETPAGESIZE ${HAVE_GETPAGESIZE}
 
@@ -104,17 +92,20 @@
 /* Define to 1 if you have the `getrusage' function. */
 #cmakedefine HAVE_GETRUSAGE ${HAVE_GETRUSAGE}
 
+/* Define to 1 if you have the `gettimeofday' function. */
+#cmakedefine HAVE_GETTIMEOFDAY ${HAVE_GETTIMEOFDAY}
+
+/* Define to 1 if the system has the type `int64_t'. */
+#cmakedefine HAVE_INT64_T ${HAVE_INT64_T}
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#cmakedefine HAVE_INTTYPES_H ${HAVE_INTTYPES_H}
+
 /* Define to 1 if you have the `isatty' function. */
 #cmakedefine HAVE_ISATTY 1
 
 /* Define to 1 if you have the `edit' library (-ledit). */
 #cmakedefine HAVE_LIBEDIT ${HAVE_LIBEDIT}
-
-/* Define to 1 if you have the `pfm' library (-lpfm). */
-#cmakedefine HAVE_LIBPFM ${HAVE_LIBPFM}
-
-/* Define to 1 if the `perf_branch_entry' struct has field cycles. */
-#cmakedefine LIBPFM_HAS_FIELD_CYCLES ${LIBPFM_HAS_FIELD_CYCLES}
 
 /* Define to 1 if you have the `psapi' library (-lpsapi). */
 #cmakedefine HAVE_LIBPSAPI ${HAVE_LIBPSAPI}
@@ -127,6 +118,12 @@
 
 /* Define to 1 if you have the `pthread_setname_np' function. */
 #cmakedefine HAVE_PTHREAD_SETNAME_NP ${HAVE_PTHREAD_SETNAME_NP}
+
+/* Define to 1 if you have the `shell32' library (-lshell32). */
+#cmakedefine HAVE_LIBSHELL32 ${HAVE_LIBSHELL32}
+
+/* Define to 1 if you have the `z' library (-lz). */
+#cmakedefine HAVE_LIBZ ${HAVE_LIBZ}
 
 /* Define to 1 if you have the <link.h> header file. */
 #cmakedefine HAVE_LINK_H ${HAVE_LINK_H}
@@ -143,14 +140,29 @@
 /* Define to 1 if you have the `mallinfo' function. */
 #cmakedefine HAVE_MALLINFO ${HAVE_MALLINFO}
 
-/* Define to 1 if you have the `mallinfo2' function. */
-#cmakedefine HAVE_MALLINFO2 ${HAVE_MALLINFO2}
+/* Define to 1 if you have the <malloc.h> header file. */
+#cmakedefine HAVE_MALLOC_H ${HAVE_MALLOC_H}
 
 /* Define to 1 if you have the <malloc/malloc.h> header file. */
 #cmakedefine HAVE_MALLOC_MALLOC_H ${HAVE_MALLOC_MALLOC_H}
 
 /* Define to 1 if you have the `malloc_zone_statistics' function. */
 #cmakedefine HAVE_MALLOC_ZONE_STATISTICS ${HAVE_MALLOC_ZONE_STATISTICS}
+
+/* Define to 1 if you have the `mkdtemp' function. */
+#cmakedefine HAVE_MKDTEMP ${HAVE_MKDTEMP}
+
+/* Define to 1 if you have the `mkstemp' function. */
+#cmakedefine HAVE_MKSTEMP ${HAVE_MKSTEMP}
+
+/* Define to 1 if you have the `mktemp' function. */
+#cmakedefine HAVE_MKTEMP ${HAVE_MKTEMP}
+
+/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
+#cmakedefine HAVE_NDIR_H ${HAVE_NDIR_H}
+
+/* Define to 1 if you have the `posix_fallocate' function. */
+#cmakedefine HAVE_POSIX_FALLOCATE ${HAVE_POSIX_FALLOCATE}
 
 /* Define to 1 if you have the `posix_spawn' function. */
 #cmakedefine HAVE_POSIX_SPAWN ${HAVE_POSIX_SPAWN}
@@ -170,11 +182,20 @@
 /* Have pthread_rwlock_init */
 #cmakedefine HAVE_PTHREAD_RWLOCK_INIT ${HAVE_PTHREAD_RWLOCK_INIT}
 
+/* Define to 1 if you have the `realpath' function. */
+#cmakedefine HAVE_REALPATH ${HAVE_REALPATH}
+
 /* Define to 1 if you have the `sbrk' function. */
 #cmakedefine HAVE_SBRK ${HAVE_SBRK}
 
 /* Define to 1 if you have the `setenv' function. */
 #cmakedefine HAVE_SETENV ${HAVE_SETENV}
+
+/* Define to 1 if you have the `sched_getaffinity' function. */
+#cmakedefine HAVE_SCHED_GETAFFINITY ${HAVE_SCHED_GETAFFINITY}
+
+/* Define to 1 if you have the `CPU_COUNT' macro. */
+#cmakedefine HAVE_CPU_COUNT ${HAVE_CPU_COUNT}
 
 /* Define to 1 if you have the `setrlimit' function. */
 #cmakedefine HAVE_SETRLIMIT ${HAVE_SETRLIMIT}
@@ -185,20 +206,34 @@
 /* Define to 1 if you have the <signal.h> header file. */
 #cmakedefine HAVE_SIGNAL_H ${HAVE_SIGNAL_H}
 
+/* Define to 1 if you have the <stdint.h> header file. */
+#cmakedefine HAVE_STDINT_H ${HAVE_STDINT_H}
+
 /* Define to 1 if you have the `strerror' function. */
 #cmakedefine HAVE_STRERROR ${HAVE_STRERROR}
 
 /* Define to 1 if you have the `strerror_r' function. */
 #cmakedefine HAVE_STRERROR_R ${HAVE_STRERROR_R}
 
+/* Define to 1 if you have the `strtoll' function. */
+#cmakedefine HAVE_STRTOLL ${HAVE_STRTOLL}
+
 /* Define to 1 if you have the `sysconf' function. */
 #cmakedefine HAVE_SYSCONF ${HAVE_SYSCONF}
+
+/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
+   */
+#cmakedefine HAVE_SYS_DIR_H ${HAVE_SYS_DIR_H}
 
 /* Define to 1 if you have the <sys/ioctl.h> header file. */
 #cmakedefine HAVE_SYS_IOCTL_H ${HAVE_SYS_IOCTL_H}
 
 /* Define to 1 if you have the <sys/mman.h> header file. */
 #cmakedefine HAVE_SYS_MMAN_H ${HAVE_SYS_MMAN_H}
+
+/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
+   */
+#cmakedefine HAVE_SYS_NDIR_H ${HAVE_SYS_NDIR_H}
 
 /* Define to 1 if you have the <sys/param.h> header file. */
 #cmakedefine HAVE_SYS_PARAM_H ${HAVE_SYS_PARAM_H}
@@ -212,26 +247,38 @@
 /* Define to 1 if you have the <sys/time.h> header file. */
 #cmakedefine HAVE_SYS_TIME_H ${HAVE_SYS_TIME_H}
 
-/* Define to 1 if stat struct has st_mtimespec member .*/
-#cmakedefine HAVE_STRUCT_STAT_ST_MTIMESPEC_TV_NSEC ${HAVE_STRUCT_STAT_ST_MTIMESPEC_TV_NSEC}
-
-/* Define to 1 if stat struct has st_mtim member. */
-#cmakedefine HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC ${HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC}
-
 /* Define to 1 if you have the <sys/types.h> header file. */
 #cmakedefine HAVE_SYS_TYPES_H ${HAVE_SYS_TYPES_H}
 
+/* Define to 1 if you have the <sys/uio.h> header file. */
+#cmakedefine HAVE_SYS_UIO_H ${HAVE_SYS_UIO_H}
+
 /* Define if the setupterm() function is supported this platform. */
-#cmakedefine LLVM_ENABLE_TERMINFO ${LLVM_ENABLE_TERMINFO}
+#cmakedefine HAVE_TERMINFO ${HAVE_TERMINFO}
+
+/* Define if the xar_open() function is supported this platform. */
+#cmakedefine HAVE_LIBXAR ${HAVE_LIBXAR}
 
 /* Define to 1 if you have the <termios.h> header file. */
 #cmakedefine HAVE_TERMIOS_H ${HAVE_TERMIOS_H}
 
+/* Define to 1 if the system has the type `uint64_t'. */
+#cmakedefine HAVE_UINT64_T ${HAVE_UINT64_T}
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #cmakedefine HAVE_UNISTD_H ${HAVE_UNISTD_H}
 
+/* Define to 1 if the system has the type `u_int64_t'. */
+#cmakedefine HAVE_U_INT64_T ${HAVE_U_INT64_T}
+
 /* Define to 1 if you have the <valgrind/valgrind.h> header file. */
 #cmakedefine HAVE_VALGRIND_VALGRIND_H ${HAVE_VALGRIND_VALGRIND_H}
+
+/* Define to 1 if you have the `writev' function. */
+#cmakedefine HAVE_WRITEV ${HAVE_WRITEV}
+
+/* Define to 1 if you have the <zlib.h> header file. */
+#cmakedefine HAVE_ZLIB_H ${HAVE_ZLIB_H}
 
 /* Have host's _alloca */
 #cmakedefine HAVE__ALLOCA ${HAVE__ALLOCA}
@@ -296,12 +343,39 @@
 /* Linker version detected at compile time. */
 #cmakedefine HOST_LINK_VERSION "${HOST_LINK_VERSION}"
 
+/* Define if we link Polly to the tools */
+#cmakedefine LINK_POLLY_INTO_TOOLS
+
 /* Target triple LLVM will generate code for by default */
 /* Doesn't use `cmakedefine` because it is allowed to be empty. */
 #define LLVM_DEFAULT_TARGET_TRIPLE "${LLVM_DEFAULT_TARGET_TRIPLE}"
 
+/* Define if threads enabled */
+#cmakedefine01 LLVM_ENABLE_THREADS
+
+/* Define if zlib compression is available */
+#cmakedefine01 LLVM_ENABLE_ZLIB
+
+/* Has gcc/MSVC atomic intrinsics */
+#cmakedefine01 LLVM_HAS_ATOMICS
+
+/* Host triple LLVM will be executed on */
+#cmakedefine LLVM_HOST_TRIPLE "${LLVM_HOST_TRIPLE}"
+
+/* Define if this is Unixish platform */
+#cmakedefine LLVM_ON_UNIX ${LLVM_ON_UNIX}
+
+/* Define if this is Win32ish platform */
+#cmakedefine LLVM_ON_WIN32 ${LLVM_ON_WIN32}
+
 /* Define if overriding target triple is enabled */
 #cmakedefine LLVM_TARGET_TRIPLE_ENV "${LLVM_TARGET_TRIPLE_ENV}"
+
+/* Define if we have the Intel JIT API runtime support library */
+#cmakedefine01 LLVM_USE_INTEL_JITEVENTS
+
+/* Define if we have the oprofile JIT-support library */
+#cmakedefine01 LLVM_USE_OPROFILE
 
 /* LLVM version information */
 #cmakedefine LLVM_VERSION_INFO "${LLVM_VERSION_INFO}"
@@ -309,14 +383,23 @@
 /* Whether tools show host and target info when invoked with --version */
 #cmakedefine01 LLVM_VERSION_PRINTER_SHOW_HOST_TARGET_INFO
 
+/* Major version of the LLVM API */
+#define LLVM_VERSION_MAJOR ${LLVM_VERSION_MAJOR}
+
+/* Minor version of the LLVM API */
+#define LLVM_VERSION_MINOR ${LLVM_VERSION_MINOR}
+
+/* Patch version of the LLVM API */
+#define LLVM_VERSION_PATCH ${LLVM_VERSION_PATCH}
+
+/* LLVM version string */
+#define LLVM_VERSION_STRING "${PACKAGE_VERSION}"
+
 /* Define if libxml2 is supported on this platform. */
-#cmakedefine LLVM_ENABLE_LIBXML2 ${LLVM_ENABLE_LIBXML2}
+#cmakedefine LLVM_LIBXML2_ENABLED ${LLVM_LIBXML2_ENABLED}
 
 /* Define to the extension used for shared libraries, say, ".so". */
 #cmakedefine LTDL_SHLIB_EXT "${LTDL_SHLIB_EXT}"
-
-/* Define to the extension used for plugin libraries, say, ".so". */
-#cmakedefine LLVM_PLUGIN_EXT "${LLVM_PLUGIN_EXT}"
 
 /* Define to the address where bug reports for this package should be sent. */
 #cmakedefine PACKAGE_BUGREPORT "${PACKAGE_BUGREPORT}"
@@ -327,6 +410,9 @@
 /* Define to the full name and version of this package. */
 #cmakedefine PACKAGE_STRING "${PACKAGE_STRING}"
 
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
 /* Define to the version of this package. */
 #cmakedefine PACKAGE_VERSION "${PACKAGE_VERSION}"
 
@@ -336,8 +422,11 @@
 /* Define as the return type of signal handlers (`int' or `void'). */
 #cmakedefine RETSIGTYPE ${RETSIGTYPE}
 
-/* Define if std::is_trivially_copyable is supported */
-#cmakedefine HAVE_STD_IS_TRIVIALLY_COPYABLE ${HAVE_STD_IS_TRIVIALLY_COPYABLE}
+/* Define to a function replacing strtoll */
+#cmakedefine strtoll ${strtoll}
+
+/* Define to a function implementing strtoull */
+#cmakedefine strtoull ${strtoull}
 
 /* Define to a function implementing stricmp */
 #cmakedefine stricmp ${stricmp}
@@ -350,10 +439,5 @@
 
 /* Define to the default GlobalISel coverage file prefix */
 #cmakedefine LLVM_GISEL_COV_PREFIX "${LLVM_GISEL_COV_PREFIX}"
-
-/* Whether Timers signpost passes in Xcode Instruments */
-#cmakedefine01 LLVM_SUPPORT_XCODE_SIGNPOSTS
-
-#cmakedefine HAVE_PROC_PID_RUSAGE 1
 
 #endif

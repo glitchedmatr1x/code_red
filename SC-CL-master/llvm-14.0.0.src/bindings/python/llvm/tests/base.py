@@ -1,7 +1,5 @@
 import os.path
-import sys
 import unittest
-
 
 POSSIBLE_TEST_BINARIES = [
     'libreadline.so.5',
@@ -17,9 +15,6 @@ POSSIBLE_TEST_BINARY_PATHS = [
 ]
 
 class TestBase(unittest.TestCase):
-    if sys.version_info.major == 2:
-        assertRaisesRegex = unittest.TestCase.assertRaisesRegexp
-
     def get_test_binary(self):
         """Helper to obtain a test binary for object file testing.
 

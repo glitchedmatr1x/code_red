@@ -3,7 +3,7 @@
 @g = global i16 0, align 2
 declare void @bar(i32)
 
-; Check that only one load is generated for an extending volatile load.
+; Check that only one load is generated. We fall back to
 define hidden void @foo() {
 ; CHECK-NOT: ldrh
 ; CHECK: ldrsh

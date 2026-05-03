@@ -1,8 +1,9 @@
 //===- ir_test.go - Tests for ir ------------------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -30,7 +31,7 @@ func testAttribute(t *testing.T, name string) {
 	fn.AddFunctionAttr(attr)
 	newattr := fn.GetEnumFunctionAttribute(kind)
 	if attr != newattr {
-		t.Errorf("got attribute %p, want %p", newattr.C, attr.C)
+		t.Errorf("got attribute mask %d, want %d", newattr, attr)
 	}
 
 	text := mod.String()
@@ -41,7 +42,7 @@ func testAttribute(t *testing.T, name string) {
 	fn.RemoveEnumFunctionAttribute(kind)
 	newattr = fn.GetEnumFunctionAttribute(kind)
 	if !newattr.IsNil() {
-		t.Errorf("got attribute %p, want 0", newattr.C)
+		t.Errorf("got attribute mask %d, want 0", newattr)
 	}
 }
 
@@ -51,7 +52,9 @@ func TestAttributes(t *testing.T) {
 		"sanitize_address",
 		"alwaysinline",
 		"builtin",
+		"byval",
 		"convergent",
+		"inalloca",
 		"inlinehint",
 		"inreg",
 		"jumptable",
@@ -69,7 +72,6 @@ func TestAttributes(t *testing.T) {
 		"noredzone",
 		"noreturn",
 		"nounwind",
-		"nosanitize_coverage",
 		"optnone",
 		"optsize",
 		"readnone",
@@ -81,12 +83,12 @@ func TestAttributes(t *testing.T) {
 		"ssp",
 		"sspreq",
 		"sspstrong",
+		"sret",
 		"sanitize_thread",
 		"sanitize_memory",
 		"uwtable",
 		"zeroext",
 		"cold",
-		"nocf_check",
 	}
 
 	for _, name := range attrTests {
@@ -109,11 +111,7 @@ func TestDebugLoc(t *testing.T) {
 	}()
 	file := d.CreateFile("dummy_file", "dummy_dir")
 	voidInfo := d.CreateBasicType(DIBasicType{Name: "void"})
-	typeInfo := d.CreateSubroutineType(DISubroutineType{
-		File:       file,
-		Parameters: []Metadata{voidInfo},
-		Flags:      0,
-	})
+	typeInfo := d.CreateSubroutineType(DISubroutineType{file, []Metadata{voidInfo}})
 	scope := d.CreateFunction(file, DIFunction{
 		Name:         "foo",
 		LinkageName:  "foo",

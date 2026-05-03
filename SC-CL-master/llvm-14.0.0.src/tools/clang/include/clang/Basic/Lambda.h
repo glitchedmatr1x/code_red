@@ -1,13 +1,14 @@
 //===--- Lambda.h - Types for C++ Lambdas -----------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Defines several types used to describe C++ lambda expressions
+/// \brief Defines several types used to describe C++ lambda expressions
 /// that are shared between the parser and AST.
 ///
 //===----------------------------------------------------------------------===//
@@ -18,14 +19,14 @@
 
 namespace clang {
 
-/// The default, if any, capture method for a lambda expression.
+/// \brief The default, if any, capture method for a lambda expression.
 enum LambdaCaptureDefault {
   LCD_None,
   LCD_ByCopy,
   LCD_ByRef
 };
 
-/// The different capture forms in a lambda introducer
+/// \brief The different capture forms in a lambda introducer
 ///
 /// C++11 allows capture of \c this, or of local variables by copy or
 /// by reference.  C++1y also allows "init-capture", where the initializer

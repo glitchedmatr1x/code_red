@@ -1,9 +1,9 @@
 /*===-- clang-c/Platform.h - C Index platform decls   -------------*- C -*-===*\
 |*                                                                            *|
-|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
-|* Exceptions.                                                                *|
-|* See https://llvm.org/LICENSE.txt for license information.                  *|
-|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
+|*                     The LLVM Compiler Infrastructure                       *|
+|*                                                                            *|
+|* This file is distributed under the University of Illinois Open Source      *|
+|* License. See LICENSE.TXT for details.                                      *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -14,27 +14,18 @@
 #ifndef LLVM_CLANG_C_PLATFORM_H
 #define LLVM_CLANG_C_PLATFORM_H
 
-#include "clang-c/ExternC.h"
-
-LLVM_CLANG_C_EXTERN_C_BEGIN
-
-/* Windows DLL import/export. */
-#ifndef CINDEX_NO_EXPORTS
-  #define CINDEX_EXPORTS
+#ifdef __cplusplus
+extern "C" {
 #endif
-#ifdef _WIN32
-  #ifdef CINDEX_EXPORTS
-    #ifdef _CINDEX_LIB_
-      #define CINDEX_LINKAGE __declspec(dllexport)
-    #else
-      #define CINDEX_LINKAGE __declspec(dllimport)
-    #endif
+
+/* MSVC DLL import/export. */
+#ifdef _MSC_VER
+  #ifdef _CINDEX_LIB_
+    #define CINDEX_LINKAGE __declspec(dllexport)
+  #else
+    #define CINDEX_LINKAGE __declspec(dllimport)
   #endif
-#elif defined(CINDEX_EXPORTS) && defined(__GNUC__)
-  #define CINDEX_LINKAGE __attribute__((visibility("default")))
-#endif
-
-#ifndef CINDEX_LINKAGE
+#else
   #define CINDEX_LINKAGE
 #endif
 
@@ -48,6 +39,7 @@ LLVM_CLANG_C_EXTERN_C_BEGIN
   #endif
 #endif
 
-LLVM_CLANG_C_EXTERN_C_END
-
+#ifdef __cplusplus
+}
+#endif
 #endif

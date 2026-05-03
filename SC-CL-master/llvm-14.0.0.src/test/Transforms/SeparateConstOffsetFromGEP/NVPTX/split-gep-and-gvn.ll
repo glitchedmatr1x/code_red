@@ -1,8 +1,5 @@
-; RUN: llc < %s -mtriple=nvptx64-nvidia-cuda -mcpu=sm_20 \
-; RUN:     | FileCheck %s --check-prefix=PTX
-; RUN: opt < %s -mtriple=nvptx64-nvidia-cuda -S -separate-const-offset-from-gep \
-; RUN:       -reassociate-geps-verify-no-dead-code -gvn \
-; RUN:     | FileCheck %s --check-prefix=IR
+; RUN: llc < %s -march=nvptx64 -mcpu=sm_20 | FileCheck %s --check-prefix=PTX
+; RUN: opt < %s -S -separate-const-offset-from-gep -reassociate-geps-verify-no-dead-code -gvn | FileCheck %s --check-prefix=IR
 
 ; Verifies the SeparateConstOffsetFromGEP pass.
 ; The following code computes
@@ -15,7 +12,10 @@
 ;
 ; so the backend can emit PTX that uses fewer virtual registers.
 
-@array = internal addrspace(3) global [32 x [32 x float]] zeroinitializer, align 4
+target datalayout = "e-i64:64-v16:16-v32:32-n16:32:64"
+target triple = "nvptx64-unknown-unknown"
+
+@array = internal addrspace(3) constant [32 x [32 x float]] zeroinitializer, align 4
 
 define void @sum_of_array(i32 %x, i32 %y, float* nocapture %output) {
 .preheader:

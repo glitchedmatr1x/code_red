@@ -11,20 +11,20 @@ For code:
 
 .. code-block:: objc
 
-   @property(nonatomic, assign) int LowerCamelCase;
+@property(nonatomic, assign) int LowerCamelCase;
 
 The fix will be:
 
 .. code-block:: objc
 
-   @property(nonatomic, assign) int lowerCamelCase;
+@property(nonatomic, assign) int lowerCamelCase;
 
 The check will only fix 'CamelCase' to 'camelCase'. In some other cases we will
 only provide warning messages since the property name could be complicated.
 Users will need to come up with a proper name by their own.
 
-This check also accepts special acronyms as prefixes or suffixes. Such prefixes or suffixes
-will suppress the Lower Camel Case check according to the guide:
+This check also accepts special acronyms as prefix. Such prefix will suppress
+the check of Lower Camel Case according to the guide:
 https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingBasics.html#//apple_ref/doc/uid/20001281-1002931-BBCFHEAB
 
 For a full list of well-known acronyms:
@@ -32,11 +32,12 @@ https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Codin
 
 The corresponding style rule: https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingIvarsAndTypes.html#//apple_ref/doc/uid/20001284-1001757
 
-The check will also accept property declared in category with a prefix of
-lowercase letters followed by a '_' to avoid naming conflict. For example:
+Options
+-------
 
-.. code-block:: objc
+.. option:: Acronyms
 
-   @property(nonatomic, assign) int abc_lowerCamelCase;
+   Semicolon-separated list of acronyms that can be used as prefix
+   of property names.
 
-The corresponding style rule: https://developer.apple.com/library/content/qa/qa1908/_index.html
+   Defaults to `ASCII;PDF;XML;HTML;URL;RTF;HTTP;TIFF;JPG;PNG;GIF;LZW;ROM;RGB;CMYK;MIDI;FTP`.

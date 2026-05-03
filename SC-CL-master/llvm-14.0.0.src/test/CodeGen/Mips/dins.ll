@@ -14,7 +14,7 @@
 ;   struct {
 ;     unsigned long long addr :37;
 ;     unsigned long long addr1 :15;
-;     unsigned int length:14;
+;     unsigned int lenght:14;
 ;     uint64_t total_bytes:16;
 ;     uint64_t segs : 6;
 ;   } s;
@@ -23,8 +23,8 @@
 ; unsigned long long foo(volatile struct cvmx_buf_ptr bufptr) {
 ;   bufptr.s.addr = 123;
 ;   bufptr.s.segs = 4;
-;   bufptr.s.length = 5;
-;   bufptr.s.total_bytes = bufptr.s.length;
+;   bufptr.s.lenght = 5;
+;   bufptr.s.total_bytes = bufptr.s.lenght;
 ;   return bufptr.s.addr;
 ; }
 

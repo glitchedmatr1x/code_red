@@ -8,11 +8,6 @@
 ; RUN:    -pass-remarks-with-hotness 2>&1 | FileCheck %s
 ; RUN: cat %t | FileCheck -check-prefix=YAML %s
 
-; RUN: opt < %s -S -passes=inliner-wrapper -pass-remarks-output=%t -pass-remarks=inline \
-; RUN:    -pass-remarks-missed=inline -pass-remarks-analysis=inline \
-; RUN:    -pass-remarks-with-hotness 2>&1 | FileCheck %s
-; RUN: cat %t | FileCheck -check-prefix=YAML %s
-
 ; Check the YAML file for inliner-generated passed and analysis remarks.  This
 ; is the input:
 
@@ -22,35 +17,25 @@
 ;  4       return foo();
 ;  5     }
 
-; CHECK: remark: /tmp/s.c:4:10: 'foo' inlined into 'bar' with (cost={{[0-9\-]+}}, threshold={{[0-9]+}}) at callsite bar:1:10; (hotness: 30)
+; CHECK: remark: /tmp/s.c:4:10: foo inlined into bar with cost={{[0-9\-]+}} (threshold={{[0-9]+}}) (hotness: 30)
 
 ; YAML:      --- !Passed
 ; YAML-NEXT: Pass:            inline
 ; YAML-NEXT: Name:            Inlined
-; YAML-NEXT: DebugLoc:        { File: '/tmp/s.c', Line: 4, Column: 10 }
+; YAML-NEXT: DebugLoc:        { File: /tmp/s.c, Line: 4, Column: 10 }
 ; YAML-NEXT: Function:        bar
 ; YAML-NEXT: Hotness:         30
 ; YAML-NEXT: Args:
-; YAML-NEXT:   - String: ''''
 ; YAML-NEXT:   - Callee: foo
-; YAML-NEXT:     DebugLoc:        { File: '/tmp/s.c', Line: 1, Column: 0 }
-; YAML-NEXT:   - String: ''' inlined into '''
+; YAML-NEXT:     DebugLoc:        { File: /tmp/s.c, Line: 1, Column: 0 }
+; YAML-NEXT:   - String: ' inlined into '
 ; YAML-NEXT:   - Caller: bar
-; YAML-NEXT:     DebugLoc:        { File: '/tmp/s.c', Line: 3, Column: 0 }
-; YAML-NEXT:   - String: ''''
-; YAML-NEXT:   - String: ' with '
-; YAML-NEXT:   - String: '(cost='
+; YAML-NEXT:     DebugLoc:        { File: /tmp/s.c, Line: 3, Column: 0 }
+; YAML-NEXT:   - String: ' with cost='
 ; YAML-NEXT:   - Cost: '{{[0-9\-]+}}'
-; YAML-NEXT:   - String: ', threshold='
+; YAML-NEXT:   - String: ' (threshold='
 ; YAML-NEXT:   - Threshold: '{{[0-9]+}}'
 ; YAML-NEXT:   - String: ')'
-; YAML-NEXT:   - String:          ' at callsite '
-; YAML-NEXT:   - String:          bar
-; YAML-NEXT:   - String:          ':'
-; YAML-NEXT:   - Line:            '1'
-; YAML-NEXT:   - String:          ':'
-; YAML-NEXT:   - Column:          '10'
-; YAML-NEXT:   - String:          ';'
 ; YAML-NEXT: ...
 
 ; ModuleID = '/tmp/s.c'
@@ -71,7 +56,7 @@ entry:
   ret i32 %call, !dbg !12
 }
 
-attributes #0 = { nounwind ssp uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="core2" "target-features"="+cx16,+fxsr,+mmx,+sse,+sse2,+sse3,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind ssp uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="core2" "target-features"="+cx16,+fxsr,+mmx,+sse,+sse2,+sse3,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!3, !4, !5}
@@ -84,10 +69,10 @@ attributes #0 = { nounwind ssp uwtable "correctly-rounded-divide-sqrt-fp-math"="
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{i32 1, !"PIC Level", i32 2}
 !6 = !{!"clang version 4.0.0 (trunk 282540) (llvm/trunk 282542)"}
-!7 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 1, type: !8, isLocal: false, isDefinition: true, scopeLine: 1, isOptimized: true, unit: !0, retainedNodes: !2)
+!7 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 1, type: !8, isLocal: false, isDefinition: true, scopeLine: 1, isOptimized: true, unit: !0, variables: !2)
 !8 = !DISubroutineType(types: !2)
 !9 = !DILocation(line: 1, column: 13, scope: !7)
-!10 = distinct !DISubprogram(name: "bar", scope: !1, file: !1, line: 3, type: !8, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: true, unit: !0, retainedNodes: !2)
+!10 = distinct !DISubprogram(name: "bar", scope: !1, file: !1, line: 3, type: !8, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: true, unit: !0, variables: !2)
 !11 = !DILocation(line: 4, column: 10, scope: !10)
 !12 = !DILocation(line: 4, column: 3, scope: !10)
 !13 = !{!"function_entry_count", i64 30}

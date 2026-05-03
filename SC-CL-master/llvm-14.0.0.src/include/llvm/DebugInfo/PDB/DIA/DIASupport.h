@@ -1,8 +1,9 @@
 //===- DIASupport.h - Common header includes for DIA ------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 // Common defines and header includes for all LLVMDebugInfoPDBDIA.  The
@@ -21,20 +22,23 @@
 #define NOMINMAX
 #endif
 
+// llvm/Support/Debug.h unconditionally #defines DEBUG as a macro.
+// DIA headers #define it if it is not already defined, so we have
+// an order of includes problem.  The real fix is to make LLVM use
+// something less generic than DEBUG, such as LLVM_DEBUG(), but it's
+// fairly prevalent.  So for now, we save the definition state and
+// restore it.
+#pragma push_macro("DEBUG")
+
 // atlbase.h has to come before windows.h
 #include <atlbase.h>
 #include <windows.h>
 
 // DIA headers must come after windows headers.
 #include <cvconst.h>
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnon-virtual-dtor"
-#endif
 #include <dia2.h>
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
 #include <diacreate.h>
+
+#pragma pop_macro("DEBUG")
 
 #endif // LLVM_DEBUGINFO_PDB_DIA_DIASUPPORT_H

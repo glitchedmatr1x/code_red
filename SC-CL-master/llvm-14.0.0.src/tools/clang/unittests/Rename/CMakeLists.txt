@@ -1,5 +1,4 @@
 set(LLVM_LINK_COMPONENTS
-  FrontendOpenMP
   support
   )
 
@@ -14,7 +13,7 @@ add_clang_unittest(ClangRenameTests
   RenameFunctionTest.cpp
   )
 
-clang_target_link_libraries(ClangRenameTests
+target_link_libraries(ClangRenameTests
   PRIVATE
   clangAST
   clangASTMatchers
@@ -22,8 +21,7 @@ clang_target_link_libraries(ClangRenameTests
   clangFormat
   clangFrontend
   clangRewrite
-  clangSerialization
   clangTooling
   clangToolingCore
-  clangToolingRefactoring
+  clangToolingRefactor
   )

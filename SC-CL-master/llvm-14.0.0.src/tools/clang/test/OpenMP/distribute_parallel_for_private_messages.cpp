@@ -1,8 +1,7 @@
-// RUN: %clang_cc1 -verify -fopenmp %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp %s
 
-// RUN: %clang_cc1 -verify -fopenmp-simd %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp-simd %s
 
-extern int omp_default_mem_alloc;
 void foo() {
 }
 
@@ -35,7 +34,7 @@ public:
   S4(int v) : a(v) {
 #pragma omp target
 #pragma omp teams
-#pragma omp distribute parallel for private(a) private(this->a) allocate , allocate(, allocate(omp_default , allocate(omp_default_mem_alloc, allocate(omp_default_mem_alloc:, allocate(omp_default_mem_alloc: a, allocate(omp_default_mem_alloc: a), allocate(a) // expected-error {{expected '(' after 'allocate'}} expected-error 2 {{expected expression}} expected-error 2 {{expected ')'}} expected-error {{use of undeclared identifier 'omp_default'}} expected-note 2 {{to match this '('}}
+#pragma omp distribute parallel for private(a) private(this->a)
     for (int k = 0; k < v; ++k)
       ++this->a;
   }
@@ -50,7 +49,7 @@ public:
 #pragma omp target
 #pragma omp teams
 #pragma omp distribute parallel for private(a) private(this->a) private(s.a) // expected-error {{expected variable name or data member of current class}}
-    for (int k = 0; k < s.a; ++k) // expected-warning {{Type 'S5' is not trivially copyable and not guaranteed to be mapped correctly}}
+    for (int k = 0; k < s.a; ++k)
       ++s.a;
     return *this;
   }
@@ -312,7 +311,7 @@ int main(int argc, char **argv) {
     m = k + 2;
 
   s6 = s6_0; // expected-note {{in instantiation of member function 'S6<float>::operator=' requested here}}
-  s7 = s7_0; // expected-note {{in instantiation of member function 'S7<S6<float>>::operator=' requested here}}
+  s7 = s7_0; // expected-note {{in instantiation of member function 'S7<S6<float> >::operator=' requested here}}
   return foomain(argc, argv); // expected-note {{in instantiation of function template specialization 'foomain<int, char>' requested here}}
 }
 

@@ -1,8 +1,9 @@
 //===- MCSectionCOFF.h - COFF Machine Code Sections -------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -24,6 +25,9 @@ class MCSymbol;
 
 /// This represents a section on Windows
 class MCSectionCOFF final : public MCSection {
+  // The memory for this string is stored in the same MCContext as *this.
+  StringRef SectionName;
+
   // FIXME: The following fields should not be mutable, but are for now so the
   // asm parser can honor the .linkonce directive.
 
@@ -48,21 +52,24 @@ class MCSectionCOFF final : public MCSection {
 
 private:
   friend class MCContext;
-  // The storage of Name is owned by MCContext's COFFUniquingMap.
-  MCSectionCOFF(StringRef Name, unsigned Characteristics,
+  MCSectionCOFF(StringRef Section, unsigned Characteristics,
                 MCSymbol *COMDATSymbol, int Selection, SectionKind K,
                 MCSymbol *Begin)
-      : MCSection(SV_COFF, Name, K, Begin), Characteristics(Characteristics),
-        COMDATSymbol(COMDATSymbol), Selection(Selection) {
+      : MCSection(SV_COFF, K, Begin), SectionName(Section),
+        Characteristics(Characteristics), COMDATSymbol(COMDATSymbol),
+        Selection(Selection) {
     assert((Characteristics & 0x00F00000) == 0 &&
            "alignment must not be set upon section creation");
   }
 
 public:
+  ~MCSectionCOFF();
+
   /// Decides whether a '.section' directive should be printed before the
   /// section name
   bool ShouldOmitSectionDirective(StringRef Name, const MCAsmInfo &MAI) const;
 
+  StringRef getSectionName() const { return SectionName; }
   unsigned getCharacteristics() const { return Characteristics; }
   MCSymbol *getCOMDATSymbol() const { return COMDATSymbol; }
   int getSelection() const { return Selection; }
@@ -74,7 +81,6 @@ public:
                             const MCExpr *Subsection) const override;
   bool UseCodeAlign() const override;
   bool isVirtualSection() const override;
-  StringRef getVirtualSectionKind() const override;
 
   unsigned getOrAssignWinCFISectionID(unsigned *NextID) const {
     if (WinCFISectionID == ~0U)

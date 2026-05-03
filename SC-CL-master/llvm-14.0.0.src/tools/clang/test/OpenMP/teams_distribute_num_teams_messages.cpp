@@ -1,6 +1,6 @@
-// RUN: %clang_cc1 -verify -fopenmp -std=c++11 -ferror-limit 100 -o - %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp -std=c++11 -ferror-limit 100 -o - %s
 
-// RUN: %clang_cc1 -verify -fopenmp-simd -std=c++11 -ferror-limit 100 -o - %s -Wuninitialized
+// RUN: %clang_cc1 -verify -fopenmp-simd -std=c++11 -ferror-limit 100 -o - %s
 
 void foo() {
 }
@@ -14,7 +14,6 @@ struct S1; // expected-note 2 {{declared here}}
 template <typename T, int C> // expected-note {{declared here}}
 T tmain(T argc) {
   char **a;
-  T z;
 #pragma omp target
 #pragma omp teams distribute num_teams(C)
   for (int i=0; i<100; i++) foo();
@@ -40,7 +39,7 @@ T tmain(T argc) {
 #pragma omp teams distribute num_teams(argc > 0 ? a[1] : a[2]) // expected-error {{expression must have integral or unscoped enumeration type, not 'char *'}}
   for (int i=0; i<100; i++) foo();
 #pragma omp target
-#pragma omp teams distribute num_teams(argc + argc + z)
+#pragma omp teams distribute num_teams(argc + argc)
   for (int i=0; i<100; i++) foo();
 #pragma omp target
 #pragma omp teams distribute num_teams(argc), num_teams (argc+1) // expected-error {{directive '#pragma omp teams distribute' cannot contain more than one 'num_teams' clause}}
@@ -62,7 +61,6 @@ T tmain(T argc) {
 }
 
 int main(int argc, char **argv) {
-  int z;
 #pragma omp target
 #pragma omp teams distribute num_teams // expected-error {{expected '(' after 'num_teams'}}
   for (int i=0; i<100; i++) foo();
@@ -88,7 +86,7 @@ int main(int argc, char **argv) {
   for (int i=0; i<100; i++) foo();
 
 #pragma omp target
-#pragma omp teams distribute num_teams (argc + argc + z)
+#pragma omp teams distribute num_teams (argc + argc)
   for (int i=0; i<100; i++) foo();
 
 #pragma omp target

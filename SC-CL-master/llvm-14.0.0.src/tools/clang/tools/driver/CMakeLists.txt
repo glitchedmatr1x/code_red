@@ -4,7 +4,6 @@ set( LLVM_LINK_COMPONENTS
   CodeGen
   Core
   IPO
-  AggressiveInstCombine
   InstCombine
   Instrumentation
   MC
@@ -17,30 +16,34 @@ set( LLVM_LINK_COMPONENTS
   Vectorize
   )
 
-# Support plugins.
+option(CLANG_PLUGIN_SUPPORT "Build clang with plugin support" ON)
+
+# Support plugins. This must be before add_clang_executable as it reads
+# LLVM_NO_DEAD_STRIP.
 if(CLANG_PLUGIN_SUPPORT)
-  set(support_plugins SUPPORT_PLUGINS)
+  set(LLVM_NO_DEAD_STRIP 1)
+endif()
+
+if(NOT CLANG_BUILT_STANDALONE)
+  set(tablegen_deps intrinsics_gen)
 endif()
 
 add_clang_tool(clang
   driver.cpp
   cc1_main.cpp
   cc1as_main.cpp
-  cc1gen_reproducer_main.cpp
 
   DEPENDS
-  intrinsics_gen
-  ${support_plugins}
+  ${tablegen_deps}
   )
 
-clang_target_link_libraries(clang
+target_link_libraries(clang
   PRIVATE
   clangBasic
   clangCodeGen
   clangDriver
   clangFrontend
   clangFrontendTool
-  clangSerialization
   )
 
 if(WIN32 AND NOT CYGWIN)
@@ -51,13 +54,17 @@ endif()
 
 # Support plugins.
 if(CLANG_PLUGIN_SUPPORT)
-  export_executable_symbols_for_plugins(clang)
+  export_executable_symbols(clang)
 endif()
 
-add_dependencies(clang clang-resource-headers)
+add_dependencies(clang clang-headers)
 
 if(NOT CLANG_LINKS_TO_CREATE)
   set(CLANG_LINKS_TO_CREATE clang++ clang-cl clang-cpp)
+
+  if (MSVC)
+    list(APPEND CLANG_LINKS_TO_CREATE ../msbuild-bin/cl)
+  endif()
 endif()
 
 foreach(link ${CLANG_LINKS_TO_CREATE})
@@ -80,7 +87,7 @@ if (APPLE)
   set(TOOL_INFO_PLIST_OUT "${CMAKE_CURRENT_BINARY_DIR}/${TOOL_INFO_PLIST}")
   target_link_libraries(clang
     PRIVATE
-    "-Wl,-sectcreate,__TEXT,__info_plist,\"${TOOL_INFO_PLIST_OUT}\"")
+    "-Wl,-sectcreate,__TEXT,__info_plist,${TOOL_INFO_PLIST_OUT}")
   configure_file("${TOOL_INFO_PLIST}.in" "${TOOL_INFO_PLIST_OUT}" @ONLY)
 
   set(TOOL_INFO_UTI)
@@ -89,20 +96,24 @@ if (APPLE)
   set(TOOL_INFO_BUILD_VERSION)
 endif()
 
-if(CLANG_ORDER_FILE AND
-    (LLVM_LINKER_IS_LD64 OR LLVM_LINKER_IS_GOLD OR LLVM_LINKER_IS_LLD))
-  include(LLVMCheckLinkerFlag)
+if(CLANG_ORDER_FILE AND (LD64_EXECUTABLE OR GOLD_EXECUTABLE))
+  include(CMakePushCheckState)
 
-  if (LLVM_LINKER_IS_LD64 OR (LLVM_LINKER_IS_LLD AND APPLE))
+  function(check_linker_flag flag out_var)
+    cmake_push_check_state()
+    set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} ${flag}")
+    check_cxx_compiler_flag("" ${out_var})
+    cmake_pop_check_state()
+  endfunction()
+
+  if (LD64_EXECUTABLE)
     set(LINKER_ORDER_FILE_OPTION "-Wl,-order_file,${CLANG_ORDER_FILE}")
-  elseif (LLVM_LINKER_IS_GOLD)
+  elseif (GOLD_EXECUTABLE)
     set(LINKER_ORDER_FILE_OPTION "-Wl,--section-ordering-file,${CLANG_ORDER_FILE}")
-  elseif (LLVM_LINKER_IS_LLD)
-    set(LINKER_ORDER_FILE_OPTION "-Wl,--symbol-ordering-file,${CLANG_ORDER_FILE}")
   endif()
 
   # This is a test to ensure the actual order file works with the linker.
-  llvm_check_linker_flag(CXX ${LINKER_ORDER_FILE_OPTION} LINKER_ORDER_FILE_WORKS)
+  check_linker_flag(${LINKER_ORDER_FILE_OPTION} LINKER_ORDER_FILE_WORKS)
 
   # Passing an empty order file disables some linker layout optimizations.
   # To work around this and enable workflows for re-linking when the order file
@@ -116,3 +127,7 @@ if(CLANG_ORDER_FILE AND
     set_target_properties(clang PROPERTIES LINK_DEPENDS ${CLANG_ORDER_FILE})
   endif()
 endif()
+
+if(WITH_POLLY AND LINK_POLLY_INTO_TOOLS)
+  target_link_libraries(clang PRIVATE Polly)
+endif(WITH_POLLY AND LINK_POLLY_INTO_TOOLS)

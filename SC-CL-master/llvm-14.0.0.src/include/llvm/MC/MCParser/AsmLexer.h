@@ -1,8 +1,9 @@
 //===- AsmLexer.h - Lexer for Assembly Files --------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -29,8 +30,8 @@ class AsmLexer : public MCAsmLexer {
   StringRef CurBuf;
   bool IsAtStartOfLine = true;
   bool IsAtStartOfStatement = true;
+  bool IsParsingMSInlineAsm = false;
   bool IsPeeking = false;
-  bool EndStatementAtEOF = true;
 
 protected:
   /// LexToken - Read the next token and return its code.
@@ -42,8 +43,8 @@ public:
   AsmLexer &operator=(const AsmLexer &) = delete;
   ~AsmLexer() override;
 
-  void setBuffer(StringRef Buf, const char *ptr = nullptr,
-                 bool EndStatementAtEOF = true);
+  void setBuffer(StringRef Buf, const char *ptr = nullptr);
+  void setParsingMSInlineAsm(bool V) { IsParsingMSInlineAsm = V; }
 
   StringRef LexUntilEndOfStatement() override;
 
@@ -56,7 +57,6 @@ private:
   bool isAtStartOfComment(const char *Ptr);
   bool isAtStatementSeparator(const char *Ptr);
   int getNextChar();
-  int peekNextChar();
   AsmToken ReturnError(const char *Loc, const std::string &Msg);
 
   AsmToken LexIdentifier();

@@ -1,5 +1,4 @@
 REQUIRES: can-execute
-REQUIRES: shell
 
 This tests that we abstract two peculiarities of unix in can_execute:
 
@@ -20,4 +19,3 @@ RUN: cp -f %S/Inputs/TestProg/TestProg %t/TestProg
 RUN: chmod 111 %t/TestProg
 RUN: export PATH=%S/Inputs:%t:%S/Inputs/TestProg:$PATH
 RUN: not TestProg
-RUN: rm -rf %t

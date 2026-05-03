@@ -1,6 +1,4 @@
-// FIXME -Wno-aix-compat added temporarily while the diagnostic is being
-// refined.
-// RUN: %clang_analyze_cc1 -std=c++14 -analyzer-checker=optin.performance -analyzer-config optin.performance.Padding:AllowedPad=2 -verify -Wno-aix-compat %s
+// RUN: %clang_analyze_cc1 -std=c++14 -analyzer-checker=optin.performance -analyzer-config optin.performance.Padding:AllowedPad=2 -verify %s
 
 // Make sure that the C cases still work fine, even when compiled as C++.
 #include "padding_c.c"
@@ -167,7 +165,7 @@ class Holder1 { // no-warning
   TemplateSandwich<void *> t3;
 };
 
-typedef struct TypedefSandwich2 { // expected-warning{{Excessive padding in 'struct TypedefSandwich2'}}
+typedef struct { // expected-warning{{Excessive padding in 'TypedefSandwich2'}}
   char c1;
   typedef struct { // expected-warning{{Excessive padding in 'TypedefSandwich2::NestedTypedef'}}
     char c1;

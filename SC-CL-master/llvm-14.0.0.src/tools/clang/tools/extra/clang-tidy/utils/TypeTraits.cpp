@@ -1,8 +1,9 @@
 //===--- TypeTraits.cpp - clang-tidy---------------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -44,8 +45,7 @@ llvm::Optional<bool> isExpensiveToCopy(QualType Type,
     return llvm::None;
   return !Type.isTriviallyCopyableType(Context) &&
          !classHasTrivialCopyAndDestroy(Type) &&
-         !hasDeletedCopyConstructor(Type) &&
-         !Type->isObjCLifetimeType();
+         !hasDeletedCopyConstructor(Type);
 }
 
 bool recordIsTriviallyDefaultConstructible(const RecordDecl &RecordDecl,
@@ -54,10 +54,6 @@ bool recordIsTriviallyDefaultConstructible(const RecordDecl &RecordDecl,
   // Non-C++ records are always trivially constructible.
   if (!ClassDecl)
     return true;
-  // It is impossible to determine whether an ill-formed decl is trivially
-  // constructible.
-  if (RecordDecl.isInvalidDecl())
-    return false;
   // A class with a user-provided default constructor is not trivially
   // constructible.
   if (ClassDecl->hasUserProvidedDefaultConstructor())
@@ -133,20 +129,6 @@ bool isTriviallyDefaultConstructible(QualType Type, const ASTContext &Context) {
 
   // No other types can match.
   return false;
-}
-
-// Based on QualType::isDestructedType.
-bool isTriviallyDestructible(QualType Type) {
-  if (Type.isNull())
-    return false;
-
-  if (Type->isIncompleteType())
-    return false;
-
-  if (Type.getCanonicalType()->isDependentType())
-    return false;
-
-  return Type.isDestructedType() == QualType::DK_none;
 }
 
 bool hasNonTrivialMoveConstructor(QualType Type) {

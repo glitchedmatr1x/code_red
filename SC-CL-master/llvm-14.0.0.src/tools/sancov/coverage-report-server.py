@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 #===- symcov-report-server.py - Coverage Reports HTTP Serve --*- python -*--===#
 #
-# Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-# See https://llvm.org/LICENSE.txt for license information.
-# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+#                     The LLVM Compiler Infrastructure
+#
+# This file is distributed under the University of Illinois Open Source
+# License. See LICENSE.TXT for details.
 #
 #===------------------------------------------------------------------------===#
 '''(EXPERIMENTAL) HTTP server to browse coverage reports from .symcov files.
@@ -21,8 +22,6 @@ Other options:
     --host host_name - host name to bind server to (127.0.0.1)
 '''
 
-from __future__ import print_function
-
 import argparse
 import http.server
 import json
@@ -32,7 +31,6 @@ import html
 import os
 import string
 import math
-import urllib
 
 INDEX_PAGE_TMPL = """
 <html>
@@ -129,7 +127,6 @@ class ServerHandler(http.server.BaseHTTPRequestHandler):
     src_path = None
 
     def do_GET(self):
-        norm_path = os.path.normpath(urllib.parse.unquote(self.path[1:]))
         if self.path == '/':
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
@@ -149,8 +146,8 @@ class ServerHandler(http.server.BaseHTTPRequestHandler):
             response = string.Template(INDEX_PAGE_TMPL).safe_substitute(
                 filenames='\n'.join(filelist))
             self.wfile.write(response.encode('UTF-8', 'replace'))
-        elif self.symcov_data.has_file(norm_path):
-            filename = norm_path
+        elif self.symcov_data.has_file(self.path[1:]):
+            filename = self.path[1:]
             filepath = os.path.join(self.src_path, filename) 
             if not os.path.exists(filepath):
                 self.send_response(404)

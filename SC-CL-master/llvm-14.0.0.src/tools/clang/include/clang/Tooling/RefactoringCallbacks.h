@@ -1,8 +1,9 @@
 //===--- RefactoringCallbacks.h - Structural query framework ----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -34,7 +35,7 @@
 namespace clang {
 namespace tooling {
 
-/// Base class for RefactoringCallbacks.
+/// \brief Base class for RefactoringCallbacks.
 ///
 /// Collects \c tooling::Replacements while running.
 class RefactoringCallback : public ast_matchers::MatchFinder::MatchCallback {
@@ -46,7 +47,7 @@ protected:
   Replacements Replace;
 };
 
-/// Adaptor between \c ast_matchers::MatchFinder and \c
+/// \brief Adaptor between \c ast_matchers::MatchFinder and \c
 /// tooling::RefactoringTool.
 ///
 /// Runs AST matchers and stores the \c tooling::Replacements in a map.
@@ -73,7 +74,7 @@ private:
   std::map<std::string, Replacements> &FileToReplaces;
 };
 
-/// Replace the text of the statement bound to \c FromId with the text in
+/// \brief Replace the text of the statement bound to \c FromId with the text in
 /// \c ToText.
 class ReplaceStmtWithText : public RefactoringCallback {
 public:
@@ -85,7 +86,7 @@ private:
   std::string ToText;
 };
 
-/// Replace the text of an AST node bound to \c FromId with the result of
+/// \brief Replace the text of an AST node bound to \c FromId with the result of
 /// evaluating the template in \c ToTemplate.
 ///
 /// Expressions of the form ${NodeName} in \c ToTemplate will be
@@ -108,7 +109,7 @@ private:
   std::vector<TemplateElement> Template;
 };
 
-/// Replace the text of the statement bound to \c FromId with the text of
+/// \brief Replace the text of the statement bound to \c FromId with the text of
 /// the statement bound to \c ToId.
 class ReplaceStmtWithStmt : public RefactoringCallback {
 public:
@@ -120,7 +121,7 @@ private:
   std::string ToId;
 };
 
-/// Replace an if-statement bound to \c Id with the outdented text of its
+/// \brief Replace an if-statement bound to \c Id with the outdented text of its
 /// body, choosing the consequent or the alternative based on whether
 /// \c PickTrueBranch is true.
 class ReplaceIfStmtWithItsBody : public RefactoringCallback {

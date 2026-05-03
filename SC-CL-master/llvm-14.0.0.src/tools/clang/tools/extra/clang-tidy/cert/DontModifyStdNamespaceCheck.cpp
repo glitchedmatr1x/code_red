@@ -1,8 +1,9 @@
 //===--- DontModifyStdNamespaceCheck.cpp - clang-tidy----------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -17,9 +18,12 @@ namespace tidy {
 namespace cert {
 
 void DontModifyStdNamespaceCheck::registerMatchers(MatchFinder *Finder) {
+  if (!getLangOpts().CPlusPlus)
+    return;
+
   Finder->addMatcher(
       namespaceDecl(unless(isExpansionInSystemHeader()),
-                    hasAnyName("std", "posix"),
+                    anyOf(hasName("std"), hasName("posix")),
                     has(decl(unless(anyOf(
                         functionDecl(isExplicitTemplateSpecialization()),
                         cxxRecordDecl(isExplicitTemplateSpecialization()))))))

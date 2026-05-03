@@ -1,4 +1,4 @@
-// RUN: llvm-mc -triple x86_64-unknown-unknown %s -masm-integers=1
+// RUN: llvm-mc -triple x86_64-unknown-unknown %s
 
 .intel_syntax
 add rbx, 0B0h

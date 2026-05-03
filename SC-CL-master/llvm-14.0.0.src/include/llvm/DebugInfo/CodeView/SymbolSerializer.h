@@ -1,8 +1,9 @@
 //===- SymbolSerializer.h ---------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -20,6 +21,7 @@
 #include "llvm/Support/BinaryStreamWriter.h"
 #include "llvm/Support/Error.h"
 #include <cstdint>
+#include <vector>
 
 namespace llvm {
 namespace codeview {
@@ -50,8 +52,8 @@ public:
   template <typename SymType>
   static CVSymbol writeOneSymbol(SymType &Sym, BumpPtrAllocator &Storage,
                                  CodeViewContainer Container) {
-    RecordPrefix Prefix{uint16_t(Sym.Kind)};
-    CVSymbol Result(&Prefix, sizeof(Prefix));
+    CVSymbol Result;
+    Result.Type = static_cast<SymbolKind>(Sym.Kind);
     SymbolSerializer Serializer(Storage, Container);
     consumeError(Serializer.visitSymbolBegin(Result));
     consumeError(Serializer.visitKnownRecord(Result, Sym));

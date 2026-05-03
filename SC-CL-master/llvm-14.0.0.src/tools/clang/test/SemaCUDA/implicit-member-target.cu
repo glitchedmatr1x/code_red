@@ -1,4 +1,4 @@
-// RUN: %clang_cc1 -std=gnu++11 -fsyntax-only -verify %s -Wno-defaulted-function-deleted
+// RUN: %clang_cc1 -std=gnu++11 -fsyntax-only -verify %s
 
 #include "Inputs/cuda.h"
 

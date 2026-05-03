@@ -1,6 +1,5 @@
 // RUN: %clang_cc1 -std=c++11 -debug-info-kind=limited -S -emit-llvm %s -o - | FileCheck %s
 // RUN: %clang_cc1 -std=c++11 -debug-info-kind=line-tables-only -S -emit-llvm %s -o - | FileCheck -check-prefix=CHECK-GMLT %s
-// RUN: %clang_cc1 -std=c++11 -debug-info-kind=line-directives-only -S -emit-llvm %s -o - | FileCheck -check-prefix=CHECK-GMLI %s
 // RUN: %clang_cc1 -std=c++11 -debug-info-kind=standalone -S -emit-llvm %s -o - | FileCheck -check-prefix=CHECK-NOLIMIT %s
 
 namespace A {
@@ -90,7 +89,7 @@ void C::c() {}
 // CHECK: [[LEX2]] = distinct !DILexicalBlock(scope: [[LEX1:![0-9]+]], file: [[FOOCPP]],
 // CHECK: [[LEX1]] = distinct !DILexicalBlock(scope: [[FUNC:![0-9]+]], file: [[FOOCPP]],
 
-// CHECK: [[FUNC:![0-9]+]] = distinct !DISubprogram(name: "func",{{.*}} DISPFlagDefinition
+// CHECK: [[FUNC:![0-9]+]] = distinct !DISubprogram(name: "func",{{.*}} isDefinition: true
 // CHECK: [[M5]] = !DIImportedEntity(tag: DW_TAG_imported_module, scope: [[FUNC]], entity: [[CTXT:![0-9]+]],
 // CHECK: [[M6]] = !DIImportedEntity(tag: DW_TAG_imported_declaration, scope: [[FUNC]], entity: [[FOO:![0-9]+]], file: [[FOOCPP]], line: 27)
 // CHECK: [[FOO]] = !DICompositeType(tag: DW_TAG_structure_type, name: "foo",
@@ -103,7 +102,7 @@ void C::c() {}
 
 // CHECK: [[M8]] = !DIImportedEntity(tag: DW_TAG_imported_declaration, scope: [[FUNC]], entity: [[F1:![0-9]+]]
 // CHECK: [[F1:![0-9]+]] = distinct !DISubprogram(name: "f1",{{.*}} line: 4
-// CHECK-SAME:                           DISPFlagDefinition
+// CHECK-SAME:                           isDefinition: true
 // CHECK: [[M9]] = !DIImportedEntity(tag: DW_TAG_imported_declaration, scope: [[FUNC]], entity: [[I]]
 // CHECK: [[M10]] = !DIImportedEntity(tag: DW_TAG_imported_declaration, scope: [[FUNC]], entity: [[BAZ:![0-9]+]]
 // CHECK: [[BAZ]] = !DIDerivedType(tag: DW_TAG_typedef, name: "baz", scope: [[NS]], file: [[FOOCPP]],
@@ -117,18 +116,14 @@ void C::c() {}
 // CHECK-SAME:                          scope: [[NS]], file: [[FOOCPP]], line: 9
 // CHECK: [[M15]] = !DIImportedEntity(tag: DW_TAG_imported_declaration, scope: [[FUNC]], entity: [[VAR_FWD:![0-9]+]]
 // CHECK: [[M16]] = !DIImportedEntity(tag: DW_TAG_imported_declaration, scope: [[FUNC]], entity: [[FUNC_FWD:![0-9]+]]
-// CHECK: [[FUNC_FWD]] = distinct !DISubprogram(name: "func_fwd",{{.*}} line: 53,{{.*}} DISPFlagDefinition
+// CHECK: [[FUNC_FWD]] = distinct !DISubprogram(name: "func_fwd",{{.*}} line: 53,{{.*}} isDefinition: true
 // CHECK: [[M17]] = !DIImportedEntity(tag: DW_TAG_imported_declaration, scope: [[CTXT]], entity: [[I]]
-// CHECK: distinct !DISubprogram(name: "c",{{.*}}, scope: ![[C:[0-9]+]],{{.*}}, line: 60,{{.*}} DISPFlagDefinition
+// CHECK: distinct !DISubprogram(name: "c",{{.*}}, scope: ![[C:[0-9]+]],{{.*}}, line: 60,{{.*}} isDefinition: true
 // CHECK: ![[C]] = !DINamespace(name: "C",
 
 // CHECK-GMLT: [[CU:![0-9]+]] = distinct !DICompileUnit(
 // CHECK-GMLT-SAME:                            emissionKind: LineTablesOnly,
 // CHECK-GMLT-NOT:                             imports:
-
-// CHECK-GMLI: [[CU:![0-9]+]] = distinct !DICompileUnit(
-// CHECK-GMLI-SAME:                            emissionKind: DebugDirectivesOnly,
-// CHECK-GMLI-NOT:                             imports:
 
 // CHECK-NOLIMIT: !DICompositeType(tag: DW_TAG_structure_type, name: "bar",{{.*}} line: 6,
 // CHECK-NOLIMIT-NOT:              DIFlagFwdDecl

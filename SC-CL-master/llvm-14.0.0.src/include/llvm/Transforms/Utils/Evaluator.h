@@ -1,8 +1,9 @@
 //===- Evaluator.h - LLVM IR evaluator --------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -18,7 +19,6 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/GlobalVariable.h"
-#include "llvm/IR/Instructions.h"
 #include "llvm/IR/Value.h"
 #include "llvm/Support/Casting.h"
 #include <cassert>
@@ -36,49 +36,6 @@ class TargetLibraryInfo;
 /// be iterated over after the evaluation is complete.  Once an evaluation call
 /// fails, the evaluation object should not be reused.
 class Evaluator {
-  struct MutableAggregate;
-
-  /// The evaluator represents values either as a Constant*, or as a
-  /// MutableAggregate, which allows changing individual aggregate elements
-  /// without creating a new interned Constant.
-  class MutableValue {
-    PointerUnion<Constant *, MutableAggregate *> Val;
-    void clear();
-    bool makeMutable();
-
-  public:
-    MutableValue(Constant *C) { Val = C; }
-    MutableValue(const MutableValue &) = delete;
-    MutableValue(MutableValue &&Other) {
-      Val = Other.Val;
-      Other.Val = nullptr;
-    }
-    ~MutableValue() { clear(); }
-
-    Type *getType() const {
-      if (auto *C = Val.dyn_cast<Constant *>())
-        return C->getType();
-      return Val.get<MutableAggregate *>()->Ty;
-    }
-
-    Constant *toConstant() const {
-      if (auto *C = Val.dyn_cast<Constant *>())
-        return C;
-      return Val.get<MutableAggregate *>()->toConstant();
-    }
-
-    Constant *read(Type *Ty, APInt Offset, const DataLayout &DL) const;
-    bool write(Constant *V, APInt Offset, const DataLayout &DL);
-  };
-
-  struct MutableAggregate {
-    Type *Ty;
-    SmallVector<MutableValue> Elements;
-
-    MutableAggregate(Type *Ty) : Ty(Ty) {}
-    Constant *toConstant() const;
-  };
-
 public:
   Evaluator(const DataLayout &DL, const TargetLibraryInfo *TLI)
       : DL(DL), TLI(TLI) {
@@ -100,20 +57,10 @@ public:
   bool EvaluateFunction(Function *F, Constant *&RetVal,
                         const SmallVectorImpl<Constant*> &ActualArgs);
 
-  DenseMap<GlobalVariable *, Constant *> getMutatedInitializers() const {
-    DenseMap<GlobalVariable *, Constant *> Result;
-    for (auto &Pair : MutatedMemory)
-      Result[Pair.first] = Pair.second.toConstant();
-    return Result;
-  }
-
-  const SmallPtrSetImpl<GlobalVariable *> &getInvariants() const {
-    return Invariants;
-  }
-
-private:
-  bool EvaluateBlock(BasicBlock::iterator CurInst, BasicBlock *&NextBB,
-                     bool &StrippedPointerCastsForAliasAnalysis);
+  /// Evaluate all instructions in block BB, returning true if successful, false
+  /// if we can't evaluate it.  NewBB returns the next BB that control flows
+  /// into, or null upon return.
+  bool EvaluateBlock(BasicBlock::iterator CurInst, BasicBlock *&NextBB);
 
   Constant *getVal(Value *V) {
     if (Constant *CV = dyn_cast<Constant>(V)) return CV;
@@ -126,19 +73,16 @@ private:
     ValueStack.back()[V] = C;
   }
 
-  /// Casts call result to a type of bitcast call expression
-  Constant *castCallResultIfNeeded(Type *ReturnType, Constant *RV);
+  const DenseMap<Constant*, Constant*> &getMutatedMemory() const {
+    return MutatedMemory;
+  }
 
-  /// Given call site return callee and list of its formal arguments
-  Function *getCalleeWithFormalArgs(CallBase &CB,
-                                    SmallVectorImpl<Constant *> &Formals);
+  const SmallPtrSetImpl<GlobalVariable*> &getInvariants() const {
+    return Invariants;
+  }
 
-  /// Given call site and callee returns list of callee formal argument
-  /// values converting them when necessary
-  bool getFormalParams(CallBase &CB, Function *F,
-                       SmallVectorImpl<Constant *> &Formals);
-
-  Constant *ComputeLoadResult(Constant *P, Type *Ty);
+private:
+  Constant *ComputeLoadResult(Constant *P);
 
   /// As we compute SSA register values, we store their contents here. The back
   /// of the deque contains the current function and the stack contains the
@@ -152,7 +96,7 @@ private:
   /// For each store we execute, we update this map.  Loads check this to get
   /// the most up-to-date value.  If evaluation is successful, this state is
   /// committed to the process.
-  DenseMap<GlobalVariable *, MutableValue> MutatedMemory;
+  DenseMap<Constant*, Constant*> MutatedMemory;
 
   /// To 'execute' an alloca, we create a temporary global variable to represent
   /// its body.  This vector is needed so we can delete the temporary globals

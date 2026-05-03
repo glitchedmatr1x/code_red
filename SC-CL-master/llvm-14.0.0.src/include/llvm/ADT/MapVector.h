@@ -1,17 +1,17 @@
 //===- llvm/ADT/MapVector.h - Map w/ deterministic value order --*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file implements a map that provides insertion order iteration. The
-/// interface is purposefully minimal. The key is assumed to be cheap to copy
-/// and 2 copies are kept, one for indexing in a DenseMap, one for iteration in
-/// a std::vector.
-///
+//
+// This file implements a map that provides insertion order iteration. The
+// interface is purposefully minimal. The key is assumed to be cheap to copy
+// and 2 copies are kept, one for indexing in a DenseMap, one for iteration in
+// a std::vector.
+//
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_MAPVECTOR_H
@@ -19,6 +19,7 @@
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/SmallVector.h"
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <iterator>
@@ -35,18 +36,13 @@ template<typename KeyT, typename ValueT,
          typename MapType = DenseMap<KeyT, unsigned>,
          typename VectorType = std::vector<std::pair<KeyT, ValueT>>>
 class MapVector {
-  MapType Map;
-  VectorType Vector;
-
-  static_assert(
-      std::is_integral<typename MapType::mapped_type>::value,
-      "The mapped_type of the specified Map must be an integral type");
-
-public:
-  using key_type = KeyT;
   using value_type = typename VectorType::value_type;
   using size_type = typename VectorType::size_type;
 
+  MapType Map;
+  VectorType Vector;
+
+public:
   using iterator = typename VectorType::iterator;
   using const_iterator = typename VectorType::const_iterator;
   using reverse_iterator = typename VectorType::reverse_iterator;
@@ -97,9 +93,9 @@ public:
   }
 
   ValueT &operator[](const KeyT &Key) {
-    std::pair<KeyT, typename MapType::mapped_type> Pair = std::make_pair(Key, 0);
+    std::pair<KeyT, unsigned> Pair = std::make_pair(Key, 0);
     std::pair<typename MapType::iterator, bool> Result = Map.insert(Pair);
-    auto &I = Result.first->second;
+    unsigned &I = Result.first->second;
     if (Result.second) {
       Vector.push_back(std::make_pair(Key, ValueT()));
       I = Vector.size() - 1;
@@ -116,9 +112,9 @@ public:
   }
 
   std::pair<iterator, bool> insert(const std::pair<KeyT, ValueT> &KV) {
-    std::pair<KeyT, typename MapType::mapped_type> Pair = std::make_pair(KV.first, 0);
+    std::pair<KeyT, unsigned> Pair = std::make_pair(KV.first, 0);
     std::pair<typename MapType::iterator, bool> Result = Map.insert(Pair);
-    auto &I = Result.first->second;
+    unsigned &I = Result.first->second;
     if (Result.second) {
       Vector.push_back(std::make_pair(KV.first, KV.second));
       I = Vector.size() - 1;
@@ -129,9 +125,9 @@ public:
 
   std::pair<iterator, bool> insert(std::pair<KeyT, ValueT> &&KV) {
     // Copy KV.first into the map, then move it into the vector.
-    std::pair<KeyT, typename MapType::mapped_type> Pair = std::make_pair(KV.first, 0);
+    std::pair<KeyT, unsigned> Pair = std::make_pair(KV.first, 0);
     std::pair<typename MapType::iterator, bool> Result = Map.insert(Pair);
-    auto &I = Result.first->second;
+    unsigned &I = Result.first->second;
     if (Result.second) {
       Vector.push_back(std::move(KV));
       I = Vector.size() - 1;
@@ -157,14 +153,14 @@ public:
                             (Vector.begin() + Pos->second);
   }
 
-  /// Remove the last element from the vector.
+  /// \brief Remove the last element from the vector.
   void pop_back() {
     typename MapType::iterator Pos = Map.find(Vector.back().first);
     Map.erase(Pos);
     Vector.pop_back();
   }
 
-  /// Remove the element given by Iterator.
+  /// \brief Remove the element given by Iterator.
   ///
   /// Returns an iterator to the element following the one which was removed,
   /// which may be end().
@@ -187,7 +183,7 @@ public:
     return Next;
   }
 
-  /// Remove all elements with the key value Key.
+  /// \brief Remove all elements with the key value Key.
   ///
   /// Returns the number of elements removed.
   size_type erase(const KeyT &Key) {
@@ -198,7 +194,7 @@ public:
     return 1;
   }
 
-  /// Remove the elements that match the predicate.
+  /// \brief Remove the elements that match the predicate.
   ///
   /// Erase all elements that match \c Pred in a single pass.  Takes linear
   /// time.
@@ -227,7 +223,7 @@ void MapVector<KeyT, ValueT, MapType, VectorType>::remove_if(Function Pred) {
   Vector.erase(O, Vector.end());
 }
 
-/// A MapVector that performs no allocations if smaller than a certain
+/// \brief A MapVector that performs no allocations if smaller than a certain
 /// size.
 template <typename KeyT, typename ValueT, unsigned N>
 struct SmallMapVector

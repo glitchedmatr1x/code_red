@@ -1,8 +1,9 @@
 //===- InstrumentationBindings.cpp - instrumentation bindings -------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -15,9 +16,6 @@
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/Module.h"
 #include "llvm/Transforms/Instrumentation.h"
-#include "llvm/Transforms/Instrumentation/AddressSanitizer.h"
-#include "llvm/Transforms/Instrumentation/MemorySanitizer.h"
-#include "llvm/Transforms/Instrumentation/ThreadSanitizer.h"
 
 using namespace llvm;
 
@@ -26,15 +24,15 @@ void LLVMAddAddressSanitizerFunctionPass(LLVMPassManagerRef PM) {
 }
 
 void LLVMAddAddressSanitizerModulePass(LLVMPassManagerRef PM) {
-  unwrap(PM)->add(createModuleAddressSanitizerLegacyPassPass());
+  unwrap(PM)->add(createAddressSanitizerModulePass());
 }
 
 void LLVMAddThreadSanitizerPass(LLVMPassManagerRef PM) {
-  unwrap(PM)->add(createThreadSanitizerLegacyPassPass());
+  unwrap(PM)->add(createThreadSanitizerPass());
 }
 
-void LLVMAddMemorySanitizerLegacyPassPass(LLVMPassManagerRef PM) {
-  unwrap(PM)->add(createMemorySanitizerLegacyPassPass());
+void LLVMAddMemorySanitizerPass(LLVMPassManagerRef PM) {
+  unwrap(PM)->add(createMemorySanitizerPass());
 }
 
 void LLVMAddDataFlowSanitizerPass(LLVMPassManagerRef PM,
@@ -44,5 +42,5 @@ void LLVMAddDataFlowSanitizerPass(LLVMPassManagerRef PM,
   for (int i = 0; i != ABIListFilesNum; ++i) {
     ABIListFilesVec.push_back(ABIListFiles[i]);
   }
-  unwrap(PM)->add(createDataFlowSanitizerLegacyPassPass(ABIListFilesVec));
+  unwrap(PM)->add(createDataFlowSanitizerPass(ABIListFilesVec));
 }

@@ -1,8 +1,9 @@
 //===--- LocInfoType.h - Parsed Type with Location Information---*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -10,8 +11,8 @@
 // source-location information.
 //
 //===----------------------------------------------------------------------===//
-#ifndef LLVM_CLANG_AST_LOCINFOTYPE_H
-#define LLVM_CLANG_AST_LOCINFOTYPE_H
+#ifndef LLVM_CLANG_SEMA_LOCINFOTYPE_H
+#define LLVM_CLANG_SEMA_LOCINFOTYPE_H
 
 #include "clang/AST/Type.h"
 
@@ -19,7 +20,7 @@ namespace clang {
 
 class TypeSourceInfo;
 
-/// Holds a QualType and a TypeSourceInfo* that came out of a declarator
+/// \brief Holds a QualType and a TypeSourceInfo* that came out of a declarator
 /// parsing.
 ///
 /// LocInfoType is a "transient" type, only needed for passing to/from Parser
@@ -35,7 +36,10 @@ class LocInfoType : public Type {
   TypeSourceInfo *DeclInfo;
 
   LocInfoType(QualType ty, TypeSourceInfo *TInfo)
-      : Type((TypeClass)LocInfo, ty, ty->getDependence()), DeclInfo(TInfo) {
+      : Type((TypeClass)LocInfo, ty, ty->isDependentType(),
+             ty->isInstantiationDependentType(), ty->isVariablyModifiedType(),
+             ty->containsUnexpandedParameterPack()),
+        DeclInfo(TInfo) {
     assert(getTypeClass() == (TypeClass)LocInfo && "LocInfo didn't fit in TC?");
   }
   friend class Sema;
@@ -54,4 +58,4 @@ public:
 
 } // end namespace clang
 
-#endif // LLVM_CLANG_AST_LOCINFOTYPE_H
+#endif // LLVM_CLANG_SEMA_LOCINFOTYPE_H

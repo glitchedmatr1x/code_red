@@ -1,34 +1,33 @@
 //===- llvm/ADT/DepthFirstIterator.h - Depth First iterator -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file builds on the ADT/GraphTraits.h file to build generic depth
-/// first graph iterator.  This file exposes the following functions/types:
-///
-/// df_begin/df_end/df_iterator
-///   * Normal depth-first iteration - visit a node and then all of its
-///     children.
-///
-/// idf_begin/idf_end/idf_iterator
-///   * Depth-first iteration on the 'inverse' graph.
-///
-/// df_ext_begin/df_ext_end/df_ext_iterator
-///   * Normal depth-first iteration - visit a node and then all of its
-///     children. This iterator stores the 'visited' set in an external set,
-///     which allows it to be more efficient, and allows external clients to
-///     use the set for other purposes.
-///
-/// idf_ext_begin/idf_ext_end/idf_ext_iterator
-///   * Depth-first iteration on the 'inverse' graph.
-///     This iterator stores the 'visited' set in an external set, which
-///     allows it to be more efficient, and allows external clients to use
-///     the set for other purposes.
-///
+//
+// This file builds on the ADT/GraphTraits.h file to build generic depth
+// first graph iterator.  This file exposes the following functions/types:
+//
+// df_begin/df_end/df_iterator
+//   * Normal depth-first iteration - visit a node and then all of its children.
+//
+// idf_begin/idf_end/idf_iterator
+//   * Depth-first iteration on the 'inverse' graph.
+//
+// df_ext_begin/df_ext_end/df_ext_iterator
+//   * Normal depth-first iteration - visit a node and then all of its children.
+//     This iterator stores the 'visited' set in an external set, which allows
+//     it to be more efficient, and allows external clients to use the set for
+//     other purposes.
+//
+// idf_ext_begin/idf_ext_end/idf_ext_iterator
+//   * Depth-first iteration on the 'inverse' graph.
+//     This iterator stores the 'visited' set in an external set, which allows
+//     it to be more efficient, and allows external clients to use the set for
+//     other purposes.
+//
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_DEPTHFIRSTITERATOR_H
@@ -40,6 +39,7 @@
 #include "llvm/ADT/SmallPtrSet.h"
 #include "llvm/ADT/iterator_range.h"
 #include <iterator>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -83,15 +83,10 @@ template <class GraphT,
           class SetType =
               df_iterator_default_set<typename GraphTraits<GraphT>::NodeRef>,
           bool ExtStorage = false, class GT = GraphTraits<GraphT>>
-class df_iterator : public df_iterator_storage<SetType, ExtStorage> {
-public:
-  using iterator_category = std::forward_iterator_tag;
-  using value_type = typename GT::NodeRef;
-  using difference_type = std::ptrdiff_t;
-  using pointer = value_type *;
-  using reference = value_type &;
-
-private:
+class df_iterator
+    : public std::iterator<std::forward_iterator_tag, typename GT::NodeRef>,
+      public df_iterator_storage<SetType, ExtStorage> {
+  using super = std::iterator<std::forward_iterator_tag, typename GT::NodeRef>;
   using NodeRef = typename GT::NodeRef;
   using ChildItTy = typename GT::ChildIteratorType;
 
@@ -103,6 +98,7 @@ private:
   // VisitStack - Used to maintain the ordering.  Top = current block
   std::vector<StackElement> VisitStack;
 
+private:
   inline df_iterator(NodeRef Node) {
     this->Visited.insert(Node);
     VisitStack.push_back(StackElement(Node, None));
@@ -149,6 +145,8 @@ private:
   }
 
 public:
+  using pointer = typename super::pointer;
+
   // Provide static begin and end methods as our public "constructors"
   static df_iterator begin(const GraphT &G) {
     return df_iterator(GT::getEntryNode(G));
@@ -179,7 +177,7 @@ public:
     return *this;
   }
 
-  /// Skips all children of the current node and traverses to next node
+  /// \brief Skips all children of the current node and traverses to next node
   ///
   /// Note: This function takes care of incrementing the iterator. If you
   /// always increment and call this function, you risk walking off the end.
@@ -201,7 +199,7 @@ public:
   // nodes that a depth first iteration did not find: ie unreachable nodes.
   //
   bool nodeVisited(NodeRef Node) const {
-    return this->Visited.contains(Node);
+    return this->Visited.count(Node) != 0;
   }
 
   /// getPathLength - Return the length of the path from the entry node to the
@@ -232,7 +230,7 @@ iterator_range<df_iterator<T>> depth_first(const T& G) {
 }
 
 // Provide global definitions of external depth first iterators...
-template <class T, class SetTy = df_iterator_default_set<typename GraphTraits<T>::NodeRef>>
+template <class T, class SetTy = std::set<typename GraphTraits<T>::NodeRef>>
 struct df_ext_iterator : public df_iterator<T, SetTy, true> {
   df_ext_iterator(const df_iterator<T, SetTy, true> &V)
     : df_iterator<T, SetTy, true>(V) {}
@@ -281,7 +279,7 @@ iterator_range<idf_iterator<T>> inverse_depth_first(const T& G) {
 }
 
 // Provide global definitions of external inverse depth first iterators...
-template <class T, class SetTy = df_iterator_default_set<typename GraphTraits<T>::NodeRef>>
+template <class T, class SetTy = std::set<typename GraphTraits<T>::NodeRef>>
 struct idf_ext_iterator : public idf_iterator<T, SetTy, true> {
   idf_ext_iterator(const idf_iterator<T, SetTy, true> &V)
     : idf_iterator<T, SetTy, true>(V) {}

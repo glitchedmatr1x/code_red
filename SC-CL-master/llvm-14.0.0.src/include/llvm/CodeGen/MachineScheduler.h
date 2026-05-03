@@ -1,8 +1,9 @@
 //===- MachineScheduler.h - MachineInstr Scheduling Pass --------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -74,13 +75,13 @@
 #ifndef LLVM_CODEGEN_MACHINESCHEDULER_H
 #define LLVM_CODEGEN_MACHINESCHEDULER_H
 
-#include "llvm/ADT/APInt.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/BitVector.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/Twine.h"
+#include "llvm/Analysis/AliasAnalysis.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachinePassRegistry.h"
 #include "llvm/CodeGen/RegisterPressure.h"
@@ -100,14 +101,7 @@ namespace llvm {
 
 extern cl::opt<bool> ForceTopDown;
 extern cl::opt<bool> ForceBottomUp;
-extern cl::opt<bool> VerifyScheduling;
-#ifndef NDEBUG
-extern cl::opt<bool> ViewMISchedDAGs;
-#else
-extern const bool ViewMISchedDAGs;
-#endif
 
-class AAResults;
 class LiveIntervals;
 class MachineDominatorTree;
 class MachineFunction;
@@ -127,7 +121,7 @@ struct MachineSchedContext {
   const MachineLoopInfo *MLI = nullptr;
   const MachineDominatorTree *MDT = nullptr;
   const TargetPassConfig *PassConfig = nullptr;
-  AAResults *AA = nullptr;
+  AliasAnalysis *AA = nullptr;
   LiveIntervals *LIS = nullptr;
 
   RegisterClassInfo *RegClassInfo;
@@ -138,19 +132,17 @@ struct MachineSchedContext {
 
 /// MachineSchedRegistry provides a selection of available machine instruction
 /// schedulers.
-class MachineSchedRegistry
-    : public MachinePassRegistryNode<
-          ScheduleDAGInstrs *(*)(MachineSchedContext *)> {
+class MachineSchedRegistry : public MachinePassRegistryNode {
 public:
   using ScheduleDAGCtor = ScheduleDAGInstrs *(*)(MachineSchedContext *);
 
   // RegisterPassParser requires a (misnamed) FunctionPassCtor type.
   using FunctionPassCtor = ScheduleDAGCtor;
 
-  static MachinePassRegistry<ScheduleDAGCtor> Registry;
+  static MachinePassRegistry Registry;
 
   MachineSchedRegistry(const char *N, const char *D, ScheduleDAGCtor C)
-      : MachinePassRegistryNode(N, D, C) {
+    : MachinePassRegistryNode(N, D, (MachinePassCtor)C) {
     Registry.Add(this);
   }
 
@@ -166,7 +158,7 @@ public:
     return (MachineSchedRegistry *)Registry.getList();
   }
 
-  static void setListener(MachinePassRegistryListener<FunctionPassCtor> *L) {
+  static void setListener(MachinePassRegistryListener *L) {
     Registry.setListener(L);
   }
 };
@@ -191,9 +183,6 @@ struct MachineSchedPolicy {
   // Disable heuristic that tries to fetch nodes from long dependency chains
   // first.
   bool DisableLatencyHeuristic = false;
-
-  // Compute DFSResult for use in scheduling heuristics.
-  bool ComputeDFSResult = false;
 
   MachineSchedPolicy() = default;
 };
@@ -248,7 +237,7 @@ public:
   /// be scheduled at the bottom.
   virtual SUnit *pickNode(bool &IsTopNode) = 0;
 
-  /// Scheduler callback to notify that a new subtree is scheduled.
+  /// \brief Scheduler callback to notify that a new subtree is scheduled.
   virtual void scheduleTree(unsigned SubtreeID) {}
 
   /// Notify MachineSchedStrategy that ScheduleDAGMI has scheduled an
@@ -270,9 +259,13 @@ public:
 /// PreRA and PostRA MachineScheduler.
 class ScheduleDAGMI : public ScheduleDAGInstrs {
 protected:
-  AAResults *AA;
+  AliasAnalysis *AA;
   LiveIntervals *LIS;
   std::unique_ptr<MachineSchedStrategy> SchedImpl;
+
+  /// Topo - A topological ordering for SUnits which permits fast IsReachable
+  /// and similar queries.
+  ScheduleDAGTopologicalSort Topo;
 
   /// Ordered list of DAG postprocessing steps.
   std::vector<std::unique_ptr<ScheduleDAGMutation>> Mutations;
@@ -297,7 +290,7 @@ public:
   ScheduleDAGMI(MachineSchedContext *C, std::unique_ptr<MachineSchedStrategy> S,
                 bool RemoveKillFlags)
       : ScheduleDAGInstrs(*C->MF, C->MLI, RemoveKillFlags), AA(C->AA),
-        LIS(C->LIS), SchedImpl(std::move(S)) {}
+        LIS(C->LIS), SchedImpl(std::move(S)), Topo(SUnits, &ExitSU) {}
 
   // Provide a vtable anchor
   ~ScheduleDAGMI() override;
@@ -324,6 +317,17 @@ public:
     if (Mutation)
       Mutations.push_back(std::move(Mutation));
   }
+
+  /// \brief True if an edge can be added from PredSU to SuccSU without creating
+  /// a cycle.
+  bool canAddEdge(SUnit *SuccSU, SUnit *PredSU);
+
+  /// \brief Add a DAG edge to the given SU with the given predecessor
+  /// dependence data.
+  ///
+  /// \returns true if the edge may be added without creating a cycle OR if an
+  /// equivalent edge already existed (false indicates failure).
+  bool addEdge(SUnit *SuccSU, const SDep &PredDep);
 
   MachineBasicBlock::iterator top() const { return CurrentTop; }
   MachineBasicBlock::iterator bottom() const { return CurrentBottom; }
@@ -370,7 +374,7 @@ protected:
   /// Reinsert debug_values recorded in ScheduleDAGInstrs::DbgValues.
   void placeDebugValues();
 
-  /// dump the scheduled Sequence.
+  /// \brief dump the scheduled Sequence.
   void dumpSchedule() const;
 
   // Lesser helpers...
@@ -425,6 +429,10 @@ protected:
   IntervalPressure BotPressure;
   RegPressureTracker BotRPTracker;
 
+  /// True if disconnected subregister components are already renamed.
+  /// The renaming is only done on demand if lane masks are tracked.
+  bool DisconnectedComponentsRenamed = false;
+
 public:
   ScheduleDAGMILive(MachineSchedContext *C,
                     std::unique_ptr<MachineSchedStrategy> S)
@@ -437,7 +445,7 @@ public:
   /// Return true if this DAG supports VReg liveness and RegPressure.
   bool hasVRegLiveness() const override { return true; }
 
-  /// Return true if register pressure tracking is enabled.
+  /// \brief Return true if register pressure tracking is enabled.
   bool isTrackingPressure() const { return ShouldTrackPressure; }
 
   /// Get current register pressure for the top scheduled instructions.
@@ -456,9 +464,6 @@ public:
   }
 
   PressureDiff &getPressureDiff(const SUnit *SU) {
-    return SUPressureDiffs[SU->NodeNum];
-  }
-  const PressureDiff &getPressureDiff(const SUnit *SU) const {
     return SUPressureDiffs[SU->NodeNum];
   }
 
@@ -485,8 +490,6 @@ public:
 
   /// Compute the cyclic critical path through the DAG.
   unsigned computeCyclicCriticalPath();
-
-  void dump() const override;
 
 protected:
   // Top-Level entry points for the schedule() driver...
@@ -672,13 +675,6 @@ private:
   // scheduled instruction.
   SmallVector<unsigned, 16> ReservedCycles;
 
-  // For each PIdx, stores first index into ReservedCycles that corresponds to
-  // it.
-  SmallVector<unsigned, 16> ReservedCyclesIndex;
-
-  // For each PIdx, stores the resource group IDs of its subunits
-  SmallVector<APInt, 16> ResourceGroupSubUnitMasks;
-
 #ifndef NDEBUG
   // Remember the greatest possible stall as an upper bound on the number of
   // times we should retry the pending queue because of a hazard.
@@ -753,17 +749,7 @@ public:
   /// cycle.
   unsigned getLatencyStallCycles(SUnit *SU);
 
-  unsigned getNextResourceCycleByInstance(unsigned InstanceIndex,
-                                          unsigned Cycles);
-
-  std::pair<unsigned, unsigned> getNextResourceCycle(const MCSchedClassDesc *SC,
-                                                     unsigned PIdx,
-                                                     unsigned Cycles);
-
-  bool isUnbufferedGroup(unsigned PIdx) const {
-    return SchedModel->getProcResource(PIdx)->SubUnitsIdxBegin &&
-           !SchedModel->getProcResource(PIdx)->BufferSize;
-  }
+  unsigned getNextResourceCycle(unsigned PIdx, unsigned Cycles);
 
   bool checkHazard(SUnit *SU);
 
@@ -771,23 +757,13 @@ public:
 
   unsigned getOtherResourceCount(unsigned &OtherCritIdx);
 
-  /// Release SU to make it ready. If it's not in hazard, remove it from
-  /// pending queue (if already in) and push into available queue.
-  /// Otherwise, push the SU into pending queue.
-  ///
-  /// @param SU The unit to be released.
-  /// @param ReadyCycle Until which cycle the unit is ready.
-  /// @param InPQueue Whether SU is already in pending queue.
-  /// @param Idx Position offset in pending queue (if in it).
-  void releaseNode(SUnit *SU, unsigned ReadyCycle, bool InPQueue,
-                   unsigned Idx = 0);
+  void releaseNode(SUnit *SU, unsigned ReadyCycle);
 
   void bumpCycle(unsigned NextCycle);
 
   void incExecutedResources(unsigned PIdx, unsigned Count);
 
-  unsigned countResource(const MCSchedClassDesc *SC, unsigned PIdx,
-                         unsigned Cycles, unsigned ReadyCycle);
+  unsigned countResource(unsigned PIdx, unsigned Cycles, unsigned ReadyCycle);
 
   void bumpNode(SUnit *SU);
 
@@ -811,7 +787,7 @@ public:
   /// Represent the type of SchedCandidate found within a single queue.
   /// pickNodeBidirectional depends on these listed by decreasing priority.
   enum CandReason : uint8_t {
-    NoCand, Only1, PhysReg, RegExcess, RegCritical, Stall, Cluster, Weak,
+    NoCand, Only1, PhysRegCopy, RegExcess, RegCritical, Stall, Cluster, Weak,
     RegMax, ResourceReduce, ResourceDemand, BotHeightReduce, BotPathReduce,
     TopDepthReduce, TopPathReduce, NextDefUse, NodeOrder};
 
@@ -919,33 +895,7 @@ protected:
 #ifndef NDEBUG
   void traceCandidate(const SchedCandidate &Cand);
 #endif
-
-private:
-  bool shouldReduceLatency(const CandPolicy &Policy, SchedBoundary &CurrZone,
-                           bool ComputeRemLatency, unsigned &RemLatency) const;
 };
-
-// Utility functions used by heuristics in tryCandidate().
-bool tryLess(int TryVal, int CandVal,
-             GenericSchedulerBase::SchedCandidate &TryCand,
-             GenericSchedulerBase::SchedCandidate &Cand,
-             GenericSchedulerBase::CandReason Reason);
-bool tryGreater(int TryVal, int CandVal,
-                GenericSchedulerBase::SchedCandidate &TryCand,
-                GenericSchedulerBase::SchedCandidate &Cand,
-                GenericSchedulerBase::CandReason Reason);
-bool tryLatency(GenericSchedulerBase::SchedCandidate &TryCand,
-                GenericSchedulerBase::SchedCandidate &Cand,
-                SchedBoundary &Zone);
-bool tryPressure(const PressureChange &TryP,
-                 const PressureChange &CandP,
-                 GenericSchedulerBase::SchedCandidate &TryCand,
-                 GenericSchedulerBase::SchedCandidate &Cand,
-                 GenericSchedulerBase::CandReason Reason,
-                 const TargetRegisterInfo *TRI,
-                 const MachineFunction &MF);
-unsigned getWeakLeft(const SUnit *SU, bool isTop);
-int biasPhysReg(const SUnit *SU, bool isTop);
 
 /// GenericScheduler shrinks the unscheduled zone using heuristics to balance
 /// the schedule.
@@ -979,7 +929,7 @@ public:
     if (SU->isScheduled)
       return;
 
-    Top.releaseNode(SU, SU->TopReadyCycle, false);
+    Top.releaseNode(SU, SU->TopReadyCycle);
     TopCand.SU = nullptr;
   }
 
@@ -987,7 +937,7 @@ public:
     if (SU->isScheduled)
       return;
 
-    Bot.releaseNode(SU, SU->BotReadyCycle, false);
+    Bot.releaseNode(SU, SU->BotReadyCycle);
     BotCand.SU = nullptr;
   }
 
@@ -1013,8 +963,9 @@ protected:
                      const RegPressureTracker &RPTracker,
                      RegPressureTracker &TempTracker);
 
-  virtual bool tryCandidate(SchedCandidate &Cand, SchedCandidate &TryCand,
-                            SchedBoundary *Zone) const;
+  void tryCandidate(SchedCandidate &Cand,
+                    SchedCandidate &TryCand,
+                    SchedBoundary *Zone);
 
   SUnit *pickNodeBidirectional(bool &IsTopNode);
 
@@ -1023,7 +974,7 @@ protected:
                          const RegPressureTracker &RPTracker,
                          SchedCandidate &Candidate);
 
-  void reschedulePhysReg(SUnit *SU, bool isTop);
+  void reschedulePhysRegCopies(SUnit *SU, bool isTop);
 };
 
 /// PostGenericScheduler - Interface to the scheduling algorithm used by
@@ -1032,8 +983,7 @@ protected:
 /// Callbacks from ScheduleDAGMI:
 ///   initPolicy -> initialize(DAG) -> registerRoots -> pickNode ...
 class PostGenericScheduler : public GenericSchedulerBase {
-protected:
-  ScheduleDAGMI *DAG = nullptr;
+  ScheduleDAGMI *DAG;
   SchedBoundary Top;
   SmallVector<SUnit*, 8> BotRoots;
 
@@ -1067,7 +1017,7 @@ public:
   void releaseTopNode(SUnit *SU) override {
     if (SU->isScheduled)
       return;
-    Top.releaseNode(SU, SU->TopReadyCycle, false);
+    Top.releaseNode(SU, SU->TopReadyCycle);
   }
 
   // Only called for roots.
@@ -1076,7 +1026,7 @@ public:
   }
 
 protected:
-  virtual bool tryCandidate(SchedCandidate &Cand, SchedCandidate &TryCand);
+  void tryCandidate(SchedCandidate &Cand, SchedCandidate &TryCand);
 
   void pickNodeFromQueue(SchedCandidate &Cand);
 };

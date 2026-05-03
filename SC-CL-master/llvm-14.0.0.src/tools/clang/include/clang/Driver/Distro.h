@@ -1,16 +1,16 @@
 //===--- Distro.h - Linux distribution detection support --------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_CLANG_DRIVER_DISTRO_H
 #define LLVM_CLANG_DRIVER_DISTRO_H
 
-#include "llvm/ADT/Triple.h"
-#include "llvm/Support/VirtualFileSystem.h"
+#include "clang/Basic/VirtualFileSystem.h"
 
 namespace clang {
 namespace driver {
@@ -23,8 +23,6 @@ namespace driver {
 class Distro {
 public:
   enum DistroType {
-    // Special value means that no detection was performed yet.
-    UninitializedDistro,
     // NB: Releases of a particular Linux distro should be kept together
     // in this enum, because some tests are done by integer comparison against
     // the first and last known member in the family, e.g. IsRedHat().
@@ -36,14 +34,11 @@ public:
     DebianJessie,
     DebianStretch,
     DebianBuster,
-    DebianBullseye,
-    DebianBookworm,
     Exherbo,
     RHEL5,
     RHEL6,
     RHEL7,
     Fedora,
-    Gentoo,
     OpenSUSE,
     UbuntuHardy,
     UbuntuIntrepid,
@@ -66,14 +61,6 @@ public:
     UbuntuZesty,
     UbuntuArtful,
     UbuntuBionic,
-    UbuntuCosmic,
-    UbuntuDisco,
-    UbuntuEoan,
-    UbuntuFocal,
-    UbuntuGroovy,
-    UbuntuHirsute,
-    UbuntuImpish,
-    UbuntuJammy,
     UnknownDistro
   };
 
@@ -92,7 +79,7 @@ public:
   Distro(DistroType D) : DistroVal(D) {}
 
   /// Detects the distribution using specified VFS.
-  explicit Distro(llvm::vfs::FileSystem &VFS, const llvm::Triple &TargetOrHost);
+  explicit Distro(clang::vfs::FileSystem& VFS);
 
   bool operator==(const Distro &Other) const {
     return DistroVal == Other.DistroVal;
@@ -118,19 +105,21 @@ public:
     return DistroVal == Fedora || (DistroVal >= RHEL5 && DistroVal <= RHEL7);
   }
 
-  bool IsOpenSUSE() const { return DistroVal == OpenSUSE; }
+  bool IsOpenSUSE() const {
+    return DistroVal == OpenSUSE;
+  }
 
   bool IsDebian() const {
-    return DistroVal >= DebianLenny && DistroVal <= DebianBookworm;
+    return DistroVal >= DebianLenny && DistroVal <= DebianBuster;
   }
 
   bool IsUbuntu() const {
-    return DistroVal >= UbuntuHardy && DistroVal <= UbuntuJammy;
+    return DistroVal >= UbuntuHardy && DistroVal <= UbuntuBionic;
   }
 
-  bool IsAlpineLinux() const { return DistroVal == AlpineLinux; }
-
-  bool IsGentoo() const { return DistroVal == Gentoo; }
+  bool IsAlpineLinux() const {
+    return DistroVal == AlpineLinux;
+  }
 
   /// @}
 };

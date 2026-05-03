@@ -1,13 +1,14 @@
 //===- RawConstants.h -------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_DEBUGINFO_PDB_NATIVE_RAWCONSTANTS_H
-#define LLVM_DEBUGINFO_PDB_NATIVE_RAWCONSTANTS_H
+#ifndef LLVM_DEBUGINFO_PDB_RAW_PDBRAWCONSTANTS_H
+#define LLVM_DEBUGINFO_PDB_RAW_PDBRAWCONSTANTS_H
 
 #include "llvm/ADT/BitmaskEnum.h"
 #include "llvm/DebugInfo/CodeView/CodeView.h"
@@ -30,8 +31,6 @@ enum PdbRaw_ImplVer : uint32_t {
   PdbImplVC110 = 20091201,
   PdbImplVC140 = 20140508,
 };
-
-enum class PdbRaw_SrcHeaderBlockVer : uint32_t { SrcVerOne = 19980827 };
 
 enum class PdbRaw_FeatureSig : uint32_t {
   VC110 = PdbImplVC110,
@@ -115,4 +114,4 @@ LLVM_ENABLE_BITMASK_ENUMS_IN_NAMESPACE();
 } // end namespace pdb
 } // end namespace llvm
 
-#endif // LLVM_DEBUGINFO_PDB_NATIVE_RAWCONSTANTS_H
+#endif // LLVM_DEBUGINFO_PDB_RAW_PDBRAWCONSTANTS_H

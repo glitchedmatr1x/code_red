@@ -1,8 +1,9 @@
 //===- SourceCoverageViewHTML.cpp - A html code coverage view -------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
@@ -24,35 +25,38 @@ namespace {
 
 // Return a string with the special characters in \p Str escaped.
 std::string escape(StringRef Str, const CoverageViewOptions &Opts) {
-  std::string TabExpandedResult;
+  std::string Result;
   unsigned ColNum = 0; // Record the column number.
   for (char C : Str) {
-    if (C == '\t') {
-      // Replace '\t' with up to TabSize spaces.
-      unsigned NumSpaces = Opts.TabSize - (ColNum % Opts.TabSize);
-      TabExpandedResult.append(NumSpaces, ' ');
+    ++ColNum;
+    if (C == '&')
+      Result += "&amp;";
+    else if (C == '<')
+      Result += "&lt;";
+    else if (C == '>')
+      Result += "&gt;";
+    else if (C == '\"')
+      Result += "&quot;";
+    else if (C == '\n' || C == '\r') {
+      Result += C;
+      ColNum = 0;
+    } else if (C == '\t') {
+      // Replace '\t' with TabSize spaces.
+      unsigned NumSpaces = Opts.TabSize - (--ColNum % Opts.TabSize);
+      for (unsigned I = 0; I < NumSpaces; ++I)
+        Result += "&nbsp;";
       ColNum += NumSpaces;
-    } else {
-      TabExpandedResult += C;
-      if (C == '\n' || C == '\r')
-        ColNum = 0;
-      else
-        ++ColNum;
-    }
+    } else
+      Result += C;
   }
-  std::string EscapedHTML;
-  {
-    raw_string_ostream OS{EscapedHTML};
-    printHTMLEscaped(TabExpandedResult, OS);
-  }
-  return EscapedHTML;
+  return Result;
 }
 
 // Create a \p Name tag around \p Str, and optionally set its \p ClassName.
 std::string tag(const std::string &Name, const std::string &Str,
                 const std::string &ClassName = "") {
   std::string Tag = "<" + Name;
-  if (!ClassName.empty())
+  if (ClassName != "")
     Tag += " class='" + ClassName + "'";
   return Tag + ">" + Str + "</" + Name + ">";
 }
@@ -112,38 +116,23 @@ table {
   background: #ffffff;
   border: 1px solid #dbdbdb;
 }
-.light-row-bold {
-  background: #ffffff;
-  border: 1px solid #dbdbdb;
-  font-weight: bold;
-}
 .column-entry {
-  text-align: left;
+  text-align: right;
 }
-.column-entry-bold {
-  font-weight: bold;
+.column-entry-left {
   text-align: left;
 }
 .column-entry-yellow {
-  text-align: left;
+  text-align: right;
   background-color: #ffffd0;
 }
-.column-entry-yellow:hover {
-  background-color: #fffff0;
-}
 .column-entry-red {
-  text-align: left;
+  text-align: right;
   background-color: #ffd0d0;
 }
-.column-entry-red:hover {
-  background-color: #fff0f0;
-}
 .column-entry-green {
-  text-align: left;
+  text-align: right;
   background-color: #d0ffd0;
-}
-.column-entry-green:hover {
-  background-color: #f0fff0;
 }
 .line-number {
   text-align: right;
@@ -195,23 +184,16 @@ table {
 }
 th, td {
   vertical-align: top;
-  padding: 2px 8px;
+  padding: 2px 5px;
   border-collapse: collapse;
   border-right: solid 1px #eee;
   border-left: solid 1px #eee;
-  text-align: left;
-}
-td pre {
-  display: inline-block;
 }
 td:first-child {
   border-left: none;
 }
 td:last-child {
   border-right: none;
-}
-tr:hover {
-  background-color: #f0f0f0;
 }
 )";
 
@@ -248,8 +230,8 @@ const char *ReportTitleTag = "h2";
 const char *CreatedTimeTag = "h4";
 
 std::string getPathToStyle(StringRef ViewPath) {
-  std::string PathToStyle;
-  std::string PathSep = std::string(sys::path::get_separator());
+  std::string PathToStyle = "";
+  std::string PathSep = sys::path::get_separator();
   unsigned NumSeps = ViewPath.count(PathSep);
   for (unsigned I = 0, E = NumSeps; I < E; ++I)
     PathToStyle += ".." + PathSep;
@@ -305,16 +287,13 @@ void CoveragePrinterHTML::closeViewFile(OwnedStream OS) {
 static void emitColumnLabelsForIndex(raw_ostream &OS,
                                      const CoverageViewOptions &Opts) {
   SmallVector<std::string, 4> Columns;
-  Columns.emplace_back(tag("td", "Filename", "column-entry-bold"));
-  Columns.emplace_back(tag("td", "Function Coverage", "column-entry-bold"));
+  Columns.emplace_back(tag("td", "Filename", "column-entry-left"));
+  Columns.emplace_back(tag("td", "Function Coverage", "column-entry"));
   if (Opts.ShowInstantiationSummary)
-    Columns.emplace_back(
-        tag("td", "Instantiation Coverage", "column-entry-bold"));
-  Columns.emplace_back(tag("td", "Line Coverage", "column-entry-bold"));
+    Columns.emplace_back(tag("td", "Instantiation Coverage", "column-entry"));
+  Columns.emplace_back(tag("td", "Line Coverage", "column-entry"));
   if (Opts.ShowRegionSummary)
-    Columns.emplace_back(tag("td", "Region Coverage", "column-entry-bold"));
-  if (Opts.ShowBranchSummary)
-    Columns.emplace_back(tag("td", "Branch Coverage", "column-entry-bold"));
+    Columns.emplace_back(tag("td", "Region Coverage", "column-entry"));
   OS << tag("tr", join(Columns.begin(), Columns.end(), ""));
 }
 
@@ -322,7 +301,7 @@ std::string
 CoveragePrinterHTML::buildLinkToFile(StringRef SF,
                                      const FileCoverageSummary &FCS) const {
   SmallString<128> LinkTextStr(sys::path::relative_path(FCS.Name));
-  sys::path::remove_dots(LinkTextStr, /*remove_dot_dot=*/true);
+  sys::path::remove_dots(LinkTextStr, /*remove_dot_dots=*/true);
   sys::path::native(LinkTextStr);
   std::string LinkText = escape(LinkTextStr, Opts);
   std::string LinkTarget =
@@ -360,7 +339,7 @@ void CoveragePrinterHTML::emitFileSummary(raw_ostream &OS, StringRef SF,
   // Simplify the display file path, and wrap it in a link if requested.
   std::string Filename;
   if (IsTotals) {
-    Filename = std::string(SF);
+    Filename = "TOTALS";
   } else {
     Filename = buildLinkToFile(SF, FCS);
   }
@@ -380,15 +359,8 @@ void CoveragePrinterHTML::emitFileSummary(raw_ostream &OS, StringRef SF,
     AddCoverageTripleToColumn(FCS.RegionCoverage.getCovered(),
                               FCS.RegionCoverage.getNumRegions(),
                               FCS.RegionCoverage.getPercentCovered());
-  if (Opts.ShowBranchSummary)
-    AddCoverageTripleToColumn(FCS.BranchCoverage.getCovered(),
-                              FCS.BranchCoverage.getNumBranches(),
-                              FCS.BranchCoverage.getPercentCovered());
 
-  if (IsTotals)
-    OS << tag("tr", join(Columns.begin(), Columns.end(), ""), "light-row-bold");
-  else
-    OS << tag("tr", join(Columns.begin(), Columns.end(), ""), "light-row");
+  OS << tag("tr", join(Columns.begin(), Columns.end(), ""), "light-row");
 }
 
 Error CoveragePrinterHTML::createIndexFile(
@@ -512,7 +484,7 @@ void SourceCoverageViewHTML::renderLine(raw_ostream &OS, LineRef L,
 
   unsigned LCol = 1;
   auto Snip = [&](unsigned Start, unsigned Len) {
-    Snippets.push_back(std::string(Line.substr(Start, Len)));
+    Snippets.push_back(Line.substr(Start, Len));
     LCol += Len;
   };
 
@@ -538,7 +510,7 @@ void SourceCoverageViewHTML::renderLine(raw_ostream &OS, LineRef L,
   auto Highlight = [&](const std::string &Snippet, unsigned LC, unsigned RC) {
     if (getOptions().Debug)
       HighlightedRanges.emplace_back(LC, RC);
-    return tag("span", Snippet, std::string(Color.getValue()));
+    return tag("span", Snippet, Color.getValue());
   };
 
   auto CheckIfUncovered = [&](const CoverageSegment *S) {
@@ -617,7 +589,7 @@ void SourceCoverageViewHTML::renderLine(raw_ostream &OS, LineRef L,
 
 void SourceCoverageViewHTML::renderLineCoverageColumn(
     raw_ostream &OS, const LineCoverageStats &Line) {
-  std::string Count;
+  std::string Count = "";
   if (Line.isMapped())
     Count = tag("pre", formatCount(Line.getExecutionCount()));
   std::string CoverageClass =
@@ -653,72 +625,6 @@ void SourceCoverageViewHTML::renderExpansionView(raw_ostream &OS,
   OS << BeginExpansionDiv;
   ESV.View->print(OS, /*WholeFile=*/false, /*ShowSourceName=*/false,
                   /*ShowTitle=*/false, ViewDepth + 1);
-  OS << EndExpansionDiv;
-}
-
-void SourceCoverageViewHTML::renderBranchView(raw_ostream &OS, BranchView &BRV,
-                                              unsigned ViewDepth) {
-  // Render the child subview.
-  if (getOptions().Debug)
-    errs() << "Branch at line " << BRV.getLine() << '\n';
-
-  OS << BeginExpansionDiv;
-  OS << BeginPre;
-  for (const auto &R : BRV.Regions) {
-    // Calculate TruePercent and False Percent.
-    double TruePercent = 0.0;
-    double FalsePercent = 0.0;
-    unsigned Total = R.ExecutionCount + R.FalseExecutionCount;
-
-    if (!getOptions().ShowBranchCounts && Total != 0) {
-      TruePercent = ((double)(R.ExecutionCount) / (double)Total) * 100.0;
-      FalsePercent = ((double)(R.FalseExecutionCount) / (double)Total) * 100.0;
-    }
-
-    // Display Line + Column.
-    std::string LineNoStr = utostr(uint64_t(R.LineStart));
-    std::string ColNoStr = utostr(uint64_t(R.ColumnStart));
-    std::string TargetName = "L" + LineNoStr;
-
-    OS << "  Branch (";
-    OS << tag("span",
-              a("#" + TargetName, tag("span", LineNoStr + ":" + ColNoStr),
-                TargetName),
-              "line-number") +
-              "): [";
-
-    if (R.Folded) {
-      OS << "Folded - Ignored]\n";
-      continue;
-    }
-
-    // Display TrueCount or TruePercent.
-    std::string TrueColor = R.ExecutionCount ? "None" : "red";
-    std::string TrueCovClass =
-        (R.ExecutionCount > 0) ? "covered-line" : "uncovered-line";
-
-    OS << tag("span", "True", TrueColor);
-    OS << ": ";
-    if (getOptions().ShowBranchCounts)
-      OS << tag("span", formatCount(R.ExecutionCount), TrueCovClass) << ", ";
-    else
-      OS << format("%0.2f", TruePercent) << "%, ";
-
-    // Display FalseCount or FalsePercent.
-    std::string FalseColor = R.FalseExecutionCount ? "None" : "red";
-    std::string FalseCovClass =
-        (R.FalseExecutionCount > 0) ? "covered-line" : "uncovered-line";
-
-    OS << tag("span", "False", FalseColor);
-    OS << ": ";
-    if (getOptions().ShowBranchCounts)
-      OS << tag("span", formatCount(R.FalseExecutionCount), FalseCovClass);
-    else
-      OS << format("%0.2f", FalsePercent) << "%";
-
-    OS << "]\n";
-  }
-  OS << EndPre;
   OS << EndExpansionDiv;
 }
 

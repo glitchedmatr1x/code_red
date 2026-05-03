@@ -4,13 +4,14 @@
 define void @foo() {
 ; CHECK-LABEL: foo:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    # implicit-def: $rax
+; CHECK-NEXT:    # implicit-def: %rax
 ; CHECK-NEXT:    jmpq *%rax
 ; CHECK-NEXT:  .LBB0_1:
+; CHECK-NEXT:    # implicit-def: %rax
 ; CHECK-NEXT:    xorps %xmm0, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
-; CHECK-NEXT:    # implicit-def: $rax
-; CHECK-NEXT:    movdqu %xmm0, (%rax)
+; CHECK-NEXT:    pcmpeqd %xmm1, %xmm1
+; CHECK-NEXT:    movdqu %xmm1, (%rax)
+; CHECK-NEXT:    movaps %xmm0, -{{[0-9]+}}(%rsp) # 16-byte Spill
 ; CHECK-NEXT:  .LBB0_2:
 ; CHECK-NEXT:    retq
   indirectbr i8* undef, [label %9, label %1]

@@ -1,9 +1,9 @@
 /*===-- object.c - tool for testing libLLVM and llvm-c API ----------------===*\
 |*                                                                            *|
-|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
-|* Exceptions.                                                                *|
-|* See https://llvm.org/LICENSE.txt for license information.                  *|
-|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
+|*                     The LLVM Compiler Infrastructure                       *|
+|*                                                                            *|
+|* This file is distributed under the University of Illinois Open Source      *|
+|* License. See LICENSE.TXT for details.                                      *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -19,26 +19,23 @@
 
 int llvm_object_list_sections(void) {
   LLVMMemoryBufferRef MB;
-  LLVMBinaryRef O;
+  LLVMObjectFileRef O;
   LLVMSectionIteratorRef sect;
+  char *msg = NULL;
 
-  char *outBufferErr = NULL;
-  if (LLVMCreateMemoryBufferWithSTDIN(&MB, &outBufferErr)) {
-    fprintf(stderr, "Error reading file: %s\n", outBufferErr);
-    free(outBufferErr);
+  if (LLVMCreateMemoryBufferWithSTDIN(&MB, &msg)) {
+    fprintf(stderr, "Error reading file: %s\n", msg);
     exit(1);
   }
 
-  char *outBinaryErr = NULL;
-  O = LLVMCreateBinary(MB, LLVMGetGlobalContext(), &outBinaryErr);
-  if (!O || outBinaryErr) {
-    fprintf(stderr, "Error reading object: %s\n", outBinaryErr);
-    free(outBinaryErr);
+  O = LLVMCreateObjectFile(MB);
+  if (!O) {
+    fprintf(stderr, "Error reading object\n");
     exit(1);
   }
 
-  sect = LLVMObjectFileCopySectionIterator(O);
-  while (sect && !LLVMObjectFileIsSectionIteratorAtEnd(O, sect)) {
+  sect = LLVMGetSections(O);
+  while (!LLVMIsSectionIteratorAtEnd(O, sect)) {
     printf("'%s': @0x%08" PRIx64 " +%" PRIu64 "\n", LLVMGetSectionName(sect),
            LLVMGetSectionAddress(sect), LLVMGetSectionSize(sect));
 
@@ -47,37 +44,32 @@ int llvm_object_list_sections(void) {
 
   LLVMDisposeSectionIterator(sect);
 
-  LLVMDisposeBinary(O);
-
-  LLVMDisposeMemoryBuffer(MB);
+  LLVMDisposeObjectFile(O);
 
   return 0;
 }
 
 int llvm_object_list_symbols(void) {
   LLVMMemoryBufferRef MB;
-  LLVMBinaryRef O;
+  LLVMObjectFileRef O;
   LLVMSectionIteratorRef sect;
   LLVMSymbolIteratorRef sym;
+  char *msg = NULL;
 
-  char *outBufferErr = NULL;
-  if (LLVMCreateMemoryBufferWithSTDIN(&MB, &outBufferErr)) {
-    fprintf(stderr, "Error reading file: %s\n", outBufferErr);
-    free(outBufferErr);
+  if (LLVMCreateMemoryBufferWithSTDIN(&MB, &msg)) {
+    fprintf(stderr, "Error reading file: %s\n", msg);
     exit(1);
   }
 
-  char *outBinaryErr = NULL;
-  O = LLVMCreateBinary(MB, LLVMGetGlobalContext(), &outBinaryErr);
-  if (!O || outBinaryErr) {
-    fprintf(stderr, "Error reading object: %s\n", outBinaryErr);
-    free(outBinaryErr);
+  O = LLVMCreateObjectFile(MB);
+  if (!O) {
+    fprintf(stderr, "Error reading object\n");
     exit(1);
   }
 
-  sect = LLVMObjectFileCopySectionIterator(O);
-  sym = LLVMObjectFileCopySymbolIterator(O);
-  while (sect && sym && !LLVMObjectFileIsSymbolIteratorAtEnd(O, sym)) {
+  sect = LLVMGetSections(O);
+  sym = LLVMGetSymbols(O);
+  while (!LLVMIsSymbolIteratorAtEnd(O, sym)) {
 
     LLVMMoveToContainingSection(sect, sym);
     printf("%s @0x%08" PRIx64 " +%" PRIu64 " (%s)\n", LLVMGetSymbolName(sym),
@@ -89,9 +81,7 @@ int llvm_object_list_symbols(void) {
 
   LLVMDisposeSymbolIterator(sym);
 
-  LLVMDisposeBinary(O);
-
-  LLVMDisposeMemoryBuffer(MB);
+  LLVMDisposeObjectFile(O);
 
   return 0;
 }

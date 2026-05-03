@@ -1,247 +1,266 @@
-//===--- RTDyldObjectLinkingLayerTest.cpp - RTDyld linking layer tests ---===//
+//===- RTDyldObjectLinkingLayerTest.cpp - RTDyld linking layer unit tests -===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
+#include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
 #include "OrcTestCommon.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/ExecutionEngine/Orc/CompileUtils.h"
-#include "llvm/ExecutionEngine/Orc/IRCompileLayer.h"
-#include "llvm/ExecutionEngine/Orc/RTDyldObjectLinkingLayer.h"
+#include "llvm/ExecutionEngine/Orc/LambdaResolver.h"
+#include "llvm/ExecutionEngine/Orc/NullResolver.h"
 #include "llvm/ExecutionEngine/SectionMemoryManager.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/LLVMContext.h"
 #include "gtest/gtest.h"
-#include <string>
 
 using namespace llvm;
 using namespace llvm::orc;
 
 namespace {
 
-// Returns whether a non-alloc section was passed to the memory manager.
-static bool testSetProcessAllSections(std::unique_ptr<MemoryBuffer> Obj,
-                                      bool ProcessAllSections) {
-  class MemoryManagerWrapper : public SectionMemoryManager {
-  public:
-    MemoryManagerWrapper(bool &NonAllocSeen) : NonAllocSeen(NonAllocSeen) {}
-    uint8_t *allocateDataSection(uintptr_t Size, unsigned Alignment,
-                                 unsigned SectionID, StringRef SectionName,
-                                 bool IsReadOnly) override {
-      // We check for ".note.GNU-stack" here because it is currently the only
-      // non-alloc section seen in the module. If this changes in future any
-      // other non-alloc section would do here.
-      if (SectionName == ".note.GNU-stack")
-        NonAllocSeen = true;
-      return SectionMemoryManager::allocateDataSection(
-          Size, Alignment, SectionID, SectionName, IsReadOnly);
-    }
+class RTDyldObjectLinkingLayerExecutionTest : public testing::Test,
+                                              public OrcExecutionTest {
 
-  private:
-    bool &NonAllocSeen;
-  };
+};
 
-  bool NonAllocSectionSeen = false;
+class SectionMemoryManagerWrapper : public SectionMemoryManager {
+public:
+  int FinalizationCount = 0;
+  int NeedsToReserveAllocationSpaceCount = 0;
 
-  ExecutionSession ES(std::make_unique<UnsupportedExecutorProcessControl>());
-  auto &JD = ES.createBareJITDylib("main");
-  auto Foo = ES.intern("foo");
+  bool needsToReserveAllocationSpace() override {
+    ++NeedsToReserveAllocationSpaceCount;
+    return SectionMemoryManager::needsToReserveAllocationSpace();
+  }
 
-  RTDyldObjectLinkingLayer ObjLayer(ES, [&NonAllocSectionSeen]() {
-    return std::make_unique<MemoryManagerWrapper>(NonAllocSectionSeen);
-  });
-
-  auto OnResolveDoNothing = [](Expected<SymbolMap> R) {
-    cantFail(std::move(R));
-  };
-
-  ObjLayer.setProcessAllSections(ProcessAllSections);
-  cantFail(ObjLayer.add(JD, std::move(Obj)));
-  ES.lookup(LookupKind::Static, makeJITDylibSearchOrder(&JD),
-            SymbolLookupSet(Foo), SymbolState::Resolved, OnResolveDoNothing,
-            NoDependenciesToRegister);
-
-  if (auto Err = ES.endSession())
-    ES.reportError(std::move(Err));
-
-  return NonAllocSectionSeen;
-}
+  bool finalizeMemory(std::string *ErrMsg = nullptr) override {
+    ++FinalizationCount;
+    return SectionMemoryManager::finalizeMemory(ErrMsg);
+  }
+};
 
 TEST(RTDyldObjectLinkingLayerTest, TestSetProcessAllSections) {
-  LLVMContext Context;
-  auto M = std::make_unique<Module>("", Context);
-  M->setTargetTriple("x86_64-unknown-linux-gnu");
+  class MemoryManagerWrapper : public SectionMemoryManager {
+  public:
+    MemoryManagerWrapper(bool &DebugSeen) : DebugSeen(DebugSeen) {}
+    uint8_t *allocateDataSection(uintptr_t Size, unsigned Alignment,
+                                 unsigned SectionID,
+                                 StringRef SectionName,
+                                 bool IsReadOnly) override {
+      if (SectionName == ".debug_str")
+        DebugSeen = true;
+      return SectionMemoryManager::allocateDataSection(Size, Alignment,
+                                                         SectionID,
+                                                         SectionName,
+                                                         IsReadOnly);
+    }
+  private:
+    bool &DebugSeen;
+  };
 
-  // These values are only here to ensure that the module is non-empty.
-  // They are no longer relevant to the test.
-  Constant *StrConstant = ConstantDataArray::getString(Context, "forty-two");
-  auto *GV =
-      new GlobalVariable(*M, StrConstant->getType(), true,
-                         GlobalValue::ExternalLinkage, StrConstant, "foo");
-  GV->setUnnamedAddr(GlobalValue::UnnamedAddr::Global);
-  GV->setAlignment(Align(1));
+  bool DebugSectionSeen = false;
+  auto MM = std::make_shared<MemoryManagerWrapper>(DebugSectionSeen);
+
+  RTDyldObjectLinkingLayer ObjLayer([&MM]() { return MM; });
+
+  LLVMContext Context;
+  auto M = llvm::make_unique<Module>("", Context);
+  M->setTargetTriple("x86_64-unknown-linux-gnu");
+  Type *Int32Ty = IntegerType::get(Context, 32);
+  GlobalVariable *GV =
+    new GlobalVariable(*M, Int32Ty, false, GlobalValue::ExternalLinkage,
+                         ConstantInt::get(Int32Ty, 42), "foo");
+
+  GV->setSection(".debug_str");
+
 
   // Initialize the native target in case this is the first unit test
   // to try to build a TM.
   OrcNativeTarget::initialize();
-  std::unique_ptr<TargetMachine> TM(EngineBuilder().selectTarget(
-      Triple(M->getTargetTriple()), "", "", SmallVector<std::string, 1>()));
-  if (!TM)
-    return;
-
-  auto Obj = cantFail(SimpleCompiler(*TM)(*M));
-
-  EXPECT_FALSE(testSetProcessAllSections(
-      MemoryBuffer::getMemBufferCopy(Obj->getBuffer()), false))
-      << "Non-alloc section seen despite ProcessAllSections being false";
-  EXPECT_TRUE(testSetProcessAllSections(std::move(Obj), true))
-      << "Expected to see non-alloc section when ProcessAllSections is true";
-}
-
-TEST(RTDyldObjectLinkingLayerTest, TestOverrideObjectFlags) {
-
-  OrcNativeTarget::initialize();
-
   std::unique_ptr<TargetMachine> TM(
-      EngineBuilder().selectTarget(Triple("x86_64-unknown-linux-gnu"), "", "",
-                                   SmallVector<std::string, 1>()));
-
+    EngineBuilder().selectTarget(Triple(M->getTargetTriple()), "", "",
+                                 SmallVector<std::string, 1>()));
   if (!TM)
     return;
 
-  // Our compiler is going to modify symbol visibility settings without telling
-  // ORC. This will test our ability to override the flags later.
-  class FunkySimpleCompiler : public SimpleCompiler {
-  public:
-    FunkySimpleCompiler(TargetMachine &TM) : SimpleCompiler(TM) {}
+  auto Obj =
+    std::make_shared<object::OwningBinary<object::ObjectFile>>(
+      SimpleCompiler(*TM)(*M));
 
-    Expected<CompileResult> operator()(Module &M) override {
-      auto *Foo = M.getFunction("foo");
-      assert(Foo && "Expected function Foo not found");
-      Foo->setVisibility(GlobalValue::HiddenVisibility);
-      return SimpleCompiler::operator()(M);
-    }
-  };
+  auto Resolver =
+    createLambdaResolver(
+      [](const std::string &Name) {
+        return JITSymbol(nullptr);
+      },
+      [](const std::string &Name) {
+        return JITSymbol(nullptr);
+      });
 
-  // Create a module with two void() functions: foo and bar.
-  ThreadSafeContext TSCtx(std::make_unique<LLVMContext>());
-  ThreadSafeModule M;
   {
-    ModuleBuilder MB(*TSCtx.getContext(), TM->getTargetTriple().str(), "dummy");
-    MB.getModule()->setDataLayout(TM->createDataLayout());
-
-    Function *FooImpl = MB.createFunctionDecl(
-        FunctionType::get(Type::getVoidTy(*TSCtx.getContext()), {}, false),
-        "foo");
-    BasicBlock *FooEntry =
-        BasicBlock::Create(*TSCtx.getContext(), "entry", FooImpl);
-    IRBuilder<> B1(FooEntry);
-    B1.CreateRetVoid();
-
-    Function *BarImpl = MB.createFunctionDecl(
-        FunctionType::get(Type::getVoidTy(*TSCtx.getContext()), {}, false),
-        "bar");
-    BasicBlock *BarEntry =
-        BasicBlock::Create(*TSCtx.getContext(), "entry", BarImpl);
-    IRBuilder<> B2(BarEntry);
-    B2.CreateRetVoid();
-
-    M = ThreadSafeModule(MB.takeModule(), std::move(TSCtx));
+    // Test with ProcessAllSections = false (the default).
+    auto H = cantFail(ObjLayer.addObject(Obj, Resolver));
+    cantFail(ObjLayer.emitAndFinalize(H));
+    EXPECT_EQ(DebugSectionSeen, false)
+      << "Unexpected debug info section";
+    cantFail(ObjLayer.removeObject(H));
   }
 
-  // Create a simple stack and set the override flags option.
-  ExecutionSession ES{std::make_unique<UnsupportedExecutorProcessControl>()};
-  auto &JD = ES.createBareJITDylib("main");
-  auto Foo = ES.intern("foo");
-  RTDyldObjectLinkingLayer ObjLayer(
-      ES, []() { return std::make_unique<SectionMemoryManager>(); });
-  IRCompileLayer CompileLayer(ES, ObjLayer,
-                              std::make_unique<FunkySimpleCompiler>(*TM));
-
-  ObjLayer.setOverrideObjectFlagsWithResponsibilityFlags(true);
-
-  cantFail(CompileLayer.add(JD, std::move(M)));
-  ES.lookup(
-      LookupKind::Static, makeJITDylibSearchOrder(&JD), SymbolLookupSet(Foo),
-      SymbolState::Resolved,
-      [](Expected<SymbolMap> R) { cantFail(std::move(R)); },
-      NoDependenciesToRegister);
-
-  if (auto Err = ES.endSession())
-    ES.reportError(std::move(Err));
+  {
+    // Test with ProcessAllSections = true.
+    ObjLayer.setProcessAllSections(true);
+    auto H = cantFail(ObjLayer.addObject(Obj, Resolver));
+    cantFail(ObjLayer.emitAndFinalize(H));
+    EXPECT_EQ(DebugSectionSeen, true)
+      << "Expected debug info section not seen";
+    cantFail(ObjLayer.removeObject(H));
+  }
 }
 
-TEST(RTDyldObjectLinkingLayerTest, TestAutoClaimResponsibilityForSymbols) {
-
-  OrcNativeTarget::initialize();
-
-  std::unique_ptr<TargetMachine> TM(
-      EngineBuilder().selectTarget(Triple("x86_64-unknown-linux-gnu"), "", "",
-                                   SmallVector<std::string, 1>()));
-
+TEST_F(RTDyldObjectLinkingLayerExecutionTest, NoDuplicateFinalization) {
   if (!TM)
     return;
 
-  // Our compiler is going to add a new symbol without telling ORC.
-  // This will test our ability to auto-claim responsibility later.
-  class FunkySimpleCompiler : public SimpleCompiler {
-  public:
-    FunkySimpleCompiler(TargetMachine &TM) : SimpleCompiler(TM) {}
+  auto MM = std::make_shared<SectionMemoryManagerWrapper>();
 
-    Expected<CompileResult> operator()(Module &M) override {
-      Function *BarImpl = Function::Create(
-          FunctionType::get(Type::getVoidTy(M.getContext()), {}, false),
-          GlobalValue::ExternalLinkage, "bar", &M);
-      BasicBlock *BarEntry =
-          BasicBlock::Create(M.getContext(), "entry", BarImpl);
-      IRBuilder<> B(BarEntry);
-      B.CreateRetVoid();
+  RTDyldObjectLinkingLayer ObjLayer([&MM]() { return MM; });
+  SimpleCompiler Compile(*TM);
 
-      return SimpleCompiler::operator()(M);
-    }
-  };
+  // Create a pair of modules that will trigger recursive finalization:
+  // Module 1:
+  //   int bar() { return 42; }
+  // Module 2:
+  //   int bar();
+  //   int foo() { return bar(); }
+  //
+  // Verify that the memory manager is only finalized once (for Module 2).
+  // Failure suggests that finalize is being called on the inner RTDyld
+  // instance (for Module 1) which is unsafe, as it will prevent relocation of
+  // Module 2.
 
-  // Create a module with two void() functions: foo and bar.
-  ThreadSafeContext TSCtx(std::make_unique<LLVMContext>());
-  ThreadSafeModule M;
+  ModuleBuilder MB1(Context, "", "dummy");
   {
-    ModuleBuilder MB(*TSCtx.getContext(), TM->getTargetTriple().str(), "dummy");
-    MB.getModule()->setDataLayout(TM->createDataLayout());
-
-    Function *FooImpl = MB.createFunctionDecl(
-        FunctionType::get(Type::getVoidTy(*TSCtx.getContext()), {}, false),
-        "foo");
-    BasicBlock *FooEntry =
-        BasicBlock::Create(*TSCtx.getContext(), "entry", FooImpl);
-    IRBuilder<> B(FooEntry);
-    B.CreateRetVoid();
-
-    M = ThreadSafeModule(MB.takeModule(), std::move(TSCtx));
+    MB1.getModule()->setDataLayout(TM->createDataLayout());
+    Function *BarImpl = MB1.createFunctionDecl<int32_t(void)>("bar");
+    BasicBlock *BarEntry = BasicBlock::Create(Context, "entry", BarImpl);
+    IRBuilder<> Builder(BarEntry);
+    IntegerType *Int32Ty = IntegerType::get(Context, 32);
+    Value *FourtyTwo = ConstantInt::getSigned(Int32Ty, 42);
+    Builder.CreateRet(FourtyTwo);
   }
 
-  // Create a simple stack and set the override flags option.
-  ExecutionSession ES{std::make_unique<UnsupportedExecutorProcessControl>()};
-  auto &JD = ES.createBareJITDylib("main");
-  auto Foo = ES.intern("foo");
+  auto Obj1 =
+    std::make_shared<object::OwningBinary<object::ObjectFile>>(
+      Compile(*MB1.getModule()));
+
+  ModuleBuilder MB2(Context, "", "dummy");
+  {
+    MB2.getModule()->setDataLayout(TM->createDataLayout());
+    Function *BarDecl = MB2.createFunctionDecl<int32_t(void)>("bar");
+    Function *FooImpl = MB2.createFunctionDecl<int32_t(void)>("foo");
+    BasicBlock *FooEntry = BasicBlock::Create(Context, "entry", FooImpl);
+    IRBuilder<> Builder(FooEntry);
+    Builder.CreateRet(Builder.CreateCall(BarDecl));
+  }
+  auto Obj2 =
+    std::make_shared<object::OwningBinary<object::ObjectFile>>(
+      Compile(*MB2.getModule()));
+
+  auto Resolver =
+    createLambdaResolver(
+      [&](const std::string &Name) {
+        if (auto Sym = ObjLayer.findSymbol(Name, true))
+          return Sym;
+        return JITSymbol(nullptr);
+      },
+      [](const std::string &Name) {
+        return JITSymbol(nullptr);
+      });
+
+  cantFail(ObjLayer.addObject(std::move(Obj1), Resolver));
+  auto H = cantFail(ObjLayer.addObject(std::move(Obj2), Resolver));
+  cantFail(ObjLayer.emitAndFinalize(H));
+  cantFail(ObjLayer.removeObject(H));
+
+  // Finalization of module 2 should trigger finalization of module 1.
+  // Verify that finalize on SMMW is only called once.
+  EXPECT_EQ(MM->FinalizationCount, 1)
+      << "Extra call to finalize";
+}
+
+TEST_F(RTDyldObjectLinkingLayerExecutionTest, NoPrematureAllocation) {
+  if (!TM)
+    return;
+
+  auto MM = std::make_shared<SectionMemoryManagerWrapper>();
+
+  RTDyldObjectLinkingLayer ObjLayer([&MM]() { return MM; });
+  SimpleCompiler Compile(*TM);
+
+  // Create a pair of unrelated modules:
+  //
+  // Module 1:
+  //   int foo() { return 42; }
+  // Module 2:
+  //   int bar() { return 7; }
+  //
+  // Both modules will share a memory manager. We want to verify that the
+  // second object is not loaded before the first one is finalized. To do this
+  // in a portable way, we abuse the
+  // RuntimeDyld::MemoryManager::needsToReserveAllocationSpace hook, which is
+  // called once per object before any sections are allocated.
+
+  ModuleBuilder MB1(Context, "", "dummy");
+  {
+    MB1.getModule()->setDataLayout(TM->createDataLayout());
+    Function *BarImpl = MB1.createFunctionDecl<int32_t(void)>("foo");
+    BasicBlock *BarEntry = BasicBlock::Create(Context, "entry", BarImpl);
+    IRBuilder<> Builder(BarEntry);
+    IntegerType *Int32Ty = IntegerType::get(Context, 32);
+    Value *FourtyTwo = ConstantInt::getSigned(Int32Ty, 42);
+    Builder.CreateRet(FourtyTwo);
+  }
+
+  auto Obj1 =
+    std::make_shared<object::OwningBinary<object::ObjectFile>>(
+      Compile(*MB1.getModule()));
+
+  ModuleBuilder MB2(Context, "", "dummy");
+  {
+    MB2.getModule()->setDataLayout(TM->createDataLayout());
+    Function *BarImpl = MB2.createFunctionDecl<int32_t(void)>("bar");
+    BasicBlock *BarEntry = BasicBlock::Create(Context, "entry", BarImpl);
+    IRBuilder<> Builder(BarEntry);
+    IntegerType *Int32Ty = IntegerType::get(Context, 32);
+    Value *Seven = ConstantInt::getSigned(Int32Ty, 7);
+    Builder.CreateRet(Seven);
+  }
+  auto Obj2 =
+    std::make_shared<object::OwningBinary<object::ObjectFile>>(
+      Compile(*MB2.getModule()));
+
+  auto NR = std::make_shared<NullResolver>();
+  auto H = cantFail(ObjLayer.addObject(std::move(Obj1), NR));
+  cantFail(ObjLayer.addObject(std::move(Obj2), NR));
+  cantFail(ObjLayer.emitAndFinalize(H));
+  cantFail(ObjLayer.removeObject(H));
+
+  // Only one call to needsToReserveAllocationSpace should have been made.
+  EXPECT_EQ(MM->NeedsToReserveAllocationSpaceCount, 1)
+      << "More than one call to needsToReserveAllocationSpace "
+         "(multiple unrelated objects loaded prior to finalization)";
+}
+
+TEST_F(RTDyldObjectLinkingLayerExecutionTest, TestNotifyLoadedSignature) {
   RTDyldObjectLinkingLayer ObjLayer(
-      ES, []() { return std::make_unique<SectionMemoryManager>(); });
-  IRCompileLayer CompileLayer(ES, ObjLayer,
-                              std::make_unique<FunkySimpleCompiler>(*TM));
-
-  ObjLayer.setAutoClaimResponsibilityForObjectSymbols(true);
-
-  cantFail(CompileLayer.add(JD, std::move(M)));
-  ES.lookup(
-      LookupKind::Static, makeJITDylibSearchOrder(&JD), SymbolLookupSet(Foo),
-      SymbolState::Resolved,
-      [](Expected<SymbolMap> R) { cantFail(std::move(R)); },
-      NoDependenciesToRegister);
-
-  if (auto Err = ES.endSession())
-    ES.reportError(std::move(Err));
+      []() { return nullptr; },
+      [](RTDyldObjectLinkingLayer::ObjHandleT,
+         const RTDyldObjectLinkingLayer::ObjectPtr &obj,
+         const RuntimeDyld::LoadedObjectInfo &info) {});
 }
 
 } // end anonymous namespace

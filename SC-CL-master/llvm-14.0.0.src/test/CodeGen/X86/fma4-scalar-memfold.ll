@@ -10,7 +10,7 @@ define void @fmadd_aab_ss(float* %a, float* %b) {
 ; CHECK-LABEL: fmadd_aab_ss:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; CHECK-NEXT:    vfmaddss {{.*#+}} xmm0 = (xmm0 * xmm0) + mem
+; CHECK-NEXT:    vfmaddss (%rsi), %xmm0, %xmm0, %xmm0
 ; CHECK-NEXT:    vmovss %xmm0, (%rdi)
 ; CHECK-NEXT:    retq
   %a.val = load float, float* %a
@@ -36,7 +36,7 @@ define void @fmadd_aba_ss(float* %a, float* %b) {
 ; CHECK-LABEL: fmadd_aba_ss:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; CHECK-NEXT:    vfmaddss {{.*#+}} xmm0 = (xmm0 * mem) + xmm0
+; CHECK-NEXT:    vfmaddss %xmm0, (%rsi), %xmm0, %xmm0
 ; CHECK-NEXT:    vmovss %xmm0, (%rdi)
 ; CHECK-NEXT:    retq
   %a.val = load float, float* %a
@@ -62,8 +62,8 @@ define void @fmadd_aab_sd(double* %a, double* %b) {
 ; CHECK-LABEL: fmadd_aab_sd:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
-; CHECK-NEXT:    vfmaddsd {{.*#+}} xmm0 = (xmm0 * xmm0) + mem
-; CHECK-NEXT:    vmovsd %xmm0, (%rdi)
+; CHECK-NEXT:    vfmaddsd (%rsi), %xmm0, %xmm0, %xmm0
+; CHECK-NEXT:    vmovlpd %xmm0, (%rdi)
 ; CHECK-NEXT:    retq
   %a.val = load double, double* %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0
@@ -84,8 +84,8 @@ define void @fmadd_aba_sd(double* %a, double* %b) {
 ; CHECK-LABEL: fmadd_aba_sd:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
-; CHECK-NEXT:    vfmaddsd {{.*#+}} xmm0 = (xmm0 * mem) + xmm0
-; CHECK-NEXT:    vmovsd %xmm0, (%rdi)
+; CHECK-NEXT:    vfmaddsd %xmm0, (%rsi), %xmm0, %xmm0
+; CHECK-NEXT:    vmovlpd %xmm0, (%rdi)
 ; CHECK-NEXT:    retq
   %a.val = load double, double* %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0

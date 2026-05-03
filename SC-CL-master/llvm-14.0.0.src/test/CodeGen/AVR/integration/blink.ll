@@ -34,8 +34,15 @@
 define void @setup_ddr() {
 entry:
 
-  ; This should set the 5th bit of DDRB.
-  ; CHECK:      sbi	4, 5
+  ; This should load the value of DDRB, OR it with the bit number and store
+  ; the result back to DDRB.
+
+  ; CHECK:      in      [[TMPREG:r[0-9]+]], 4
+  ; CHECK-NEXT: ori     [[TMPREG]], 32
+
+  ; CHECK-NOT: ori     {{r[0-9]+}}, 0
+
+  ; CHECK-NEXT: out     4, [[TMPREG]]
   ; CHECK-NEXT: ret
 
   %0 = load volatile i8, i8* inttoptr (i16 36 to i8*), align 1
@@ -51,8 +58,15 @@ entry:
 define void @turn_on() {
 entry:
 
-  ; This should set the 5th bit of PORTB
-  ; CHECK:      sbi	5, 5
+  ; This should load the value of PORTB, OR it with the bit number and store
+  ; the result back to DDRB.
+
+  ; CHECK:      in      [[TMPREG:r[0-9]+]], 5
+  ; CHECK-NEXT: ori     [[TMPREG]], 32
+
+  ; CHECK-NOT: ori     {{r[0-9]+}}, 0
+
+  ; CHECK-NEXT: out     5, [[TMPREG]]
   ; CHECK-NEXT: ret
 
   %0 = load volatile i8, i8* inttoptr (i16 37 to i8*), align 1
@@ -68,8 +82,14 @@ entry:
 define void @turn_off() {
 entry:
 
-  ; This should clear the 5th bit of PORTB
-  ; CHECK:      cbi     5, 5
+  ; This should load the value of PORTB, OR it with the bit number and store
+  ; the result back to DDRB.
+
+
+  ; CHECK:      in      [[TMPREG:r[0-9]+]], 5
+  ; CHECK-NEXT: andi    [[TMPREG]], 223
+  ; CHECK-NEXT: andi    {{r[0-9]+}}, 0
+  ; CHECK-NEXT: out     5, [[TMPREG]]
   ; CHECK-NEXT: ret
 
   %0 = load volatile i8, i8* inttoptr (i16 37 to i8*), align 1
@@ -89,7 +109,7 @@ entry:
 
   br label %while.body
 
-; CHECK-LABEL: .LBB3_1
+; CHECK-LABEL: LBB3_1
 while.body:
 
   ; CHECK: call turn_on
@@ -98,6 +118,6 @@ while.body:
   ; CHECK-NEXT: call turn_off
   call void @turn_off()
 
-  ; CHECK-NEXT: rjmp .LBB3_1
+  ; CHECK-NEXT: rjmp LBB3_1
   br label %while.body
 }

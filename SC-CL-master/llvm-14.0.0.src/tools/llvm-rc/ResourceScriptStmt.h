@@ -1,8 +1,9 @@
 //===-- ResourceScriptStmt.h ------------------------------------*- C++-*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===---------------------------------------------------------------------===//
 //
@@ -16,7 +17,6 @@
 #include "ResourceScriptToken.h"
 #include "ResourceVisitor.h"
 
-#include "llvm/ADT/BitVector.h"
 #include "llvm/ADT/StringSet.h"
 
 namespace llvm {
@@ -67,59 +67,6 @@ public:
   }
 };
 
-class IntWithNotMask {
-private:
-  RCInt Value;
-  int32_t NotMask;
-
-public:
-  IntWithNotMask() : IntWithNotMask(RCInt(0)) {}
-  IntWithNotMask(RCInt Value, int32_t NotMask = 0) : Value(Value), NotMask(NotMask) {}
-
-  RCInt getValue() const {
-    return Value;
-  }
-
-  uint32_t getNotMask() const {
-    return NotMask;
-  }
-
-  IntWithNotMask &operator+=(const IntWithNotMask &Rhs) {
-    Value &= ~Rhs.NotMask;
-    Value += Rhs.Value;
-    NotMask |= Rhs.NotMask;
-    return *this;
-  }
-
-  IntWithNotMask &operator-=(const IntWithNotMask &Rhs) {
-    Value &= ~Rhs.NotMask;
-    Value -= Rhs.Value;
-    NotMask |= Rhs.NotMask;
-    return *this;
-  }
-
-  IntWithNotMask &operator|=(const IntWithNotMask &Rhs) {
-    Value &= ~Rhs.NotMask;
-    Value |= Rhs.Value;
-    NotMask |= Rhs.NotMask;
-    return *this;
-  }
-
-  IntWithNotMask &operator&=(const IntWithNotMask &Rhs) {
-    Value &= ~Rhs.NotMask;
-    Value &= Rhs.Value;
-    NotMask |= Rhs.NotMask;
-    return *this;
-  }
-
-  IntWithNotMask operator-() const { return {-Value, NotMask}; }
-  IntWithNotMask operator~() const { return {~Value, 0}; }
-
-  friend raw_ostream &operator<<(raw_ostream &OS, const IntWithNotMask &Int) {
-    return OS << Int.Value;
-  }
-};
-
 // A class holding a name - either an integer or a reference to the string.
 class IntOrString {
 private:
@@ -139,14 +86,14 @@ private:
 
 public:
   IntOrString() : IntOrString(RCInt(0)) {}
-  IntOrString(uint32_t Value) : Data(Value), IsInt(true) {}
-  IntOrString(RCInt Value) : Data(Value), IsInt(true) {}
-  IntOrString(StringRef Value) : Data(Value), IsInt(false) {}
+  IntOrString(uint32_t Value) : Data(Value), IsInt(1) {}
+  IntOrString(RCInt Value) : Data(Value), IsInt(1) {}
+  IntOrString(StringRef Value) : Data(Value), IsInt(0) {}
   IntOrString(const RCToken &Token)
       : Data(Token), IsInt(Token.kind() == RCToken::Kind::Int) {}
 
   bool equalsLower(const char *Str) {
-    return !IsInt && Data.String.equals_insensitive(Str);
+    return !IsInt && Data.String.equals_lower(Str);
   }
 
   bool isInt() const { return IsInt; }
@@ -174,13 +121,11 @@ enum ResourceKind {
   // kind is equal to this type ID.
   RkNull = 0,
   RkSingleCursor = 1,
-  RkBitmap = 2,
   RkSingleIcon = 3,
   RkMenu = 4,
   RkDialog = 5,
   RkStringTableBundle = 6,
   RkAccelerators = 9,
-  RkRcData = 10,
   RkCursorGroup = 12,
   RkIconGroup = 14,
   RkVersionInfo = 16,
@@ -213,13 +158,10 @@ enum MemoryFlags {
 class RCResource {
 public:
   IntOrString ResName;
-  uint16_t MemoryFlags = getDefaultMemoryFlags();
   void setName(const IntOrString &Name) { ResName = Name; }
   virtual raw_ostream &log(raw_ostream &OS) const {
     return OS << "Base statement\n";
   };
-  RCResource() {}
-  RCResource(uint16_t Flags) : MemoryFlags(Flags) {}
   virtual ~RCResource() {}
 
   virtual Error visit(Visitor *) const {
@@ -231,10 +173,9 @@ public:
   virtual Error applyStmts(Visitor *) const { return Error::success(); }
 
   // By default, memory flags are DISCARDABLE | PURE | MOVEABLE.
-  static uint16_t getDefaultMemoryFlags() {
+  virtual uint16_t getMemoryFlags() const {
     return MfDiscardable | MfPure | MfMoveable;
   }
-
   virtual ResourceKind getKind() const { return RkBase; }
   static bool classof(const RCResource *Res) { return true; }
 
@@ -250,13 +191,13 @@ public:
 // characteristics are equal to 0.
 class NullResource : public RCResource {
 public:
-  NullResource() : RCResource(0) {}
   raw_ostream &log(raw_ostream &OS) const override {
     return OS << "Null resource\n";
   }
   Error visit(Visitor *V) const override { return V->visitNullResource(this); }
   IntOrString getResourceType() const override { return 0; }
   Twine getResourceTypeName() const override { return "(NULL)"; }
+  uint16_t getMemoryFlags() const override { return 0; }
 };
 
 // Optional statement base. All such statements should derive from this base.
@@ -285,14 +226,10 @@ class OptStatementsRCResource : public RCResource {
 public:
   std::unique_ptr<OptionalStmtList> OptStatements;
 
-  OptStatementsRCResource(OptionalStmtList &&Stmts,
-                          uint16_t Flags = RCResource::getDefaultMemoryFlags())
-      : RCResource(Flags),
-        OptStatements(std::make_unique<OptionalStmtList>(std::move(Stmts))) {}
+  OptStatementsRCResource(OptionalStmtList &&Stmts)
+      : OptStatements(llvm::make_unique<OptionalStmtList>(std::move(Stmts))) {}
 
-  Error applyStmts(Visitor *V) const override {
-    return OptStatements->visit(V);
-  }
+  virtual Error applyStmts(Visitor *V) const { return OptStatements->visit(V); }
 };
 
 // LANGUAGE statement. It can occur both as a top-level statement (in such
@@ -345,18 +282,18 @@ public:
     static uint32_t OptionsFlags[NumFlags];
   };
 
-  AcceleratorsResource(OptionalStmtList &&List, uint16_t Flags)
-      : OptStatementsRCResource(std::move(List), Flags) {}
-
   std::vector<Accelerator> Accelerators;
 
+  using OptStatementsRCResource::OptStatementsRCResource;
   void addAccelerator(IntOrString Event, uint32_t Id, uint16_t Flags) {
     Accelerators.push_back(Accelerator{Event, Id, Flags});
   }
   raw_ostream &log(raw_ostream &) const override;
 
   IntOrString getResourceType() const override { return RkAccelerators; }
-  static uint16_t getDefaultMemoryFlags() { return MfPure | MfMoveable; }
+  uint16_t getMemoryFlags() const override {
+    return MfPure | MfMoveable;
+  }
   Twine getResourceTypeName() const override { return "ACCELERATORS"; }
 
   Error visit(Visitor *V) const override {
@@ -368,30 +305,6 @@ public:
   }
 };
 
-// BITMAP resource. Represents a bitmap (".bmp") file.
-//
-// Ref: msdn.microsoft.com/en-us/library/windows/desktop/aa380680(v=vs.85).aspx
-class BitmapResource : public RCResource {
-public:
-  StringRef BitmapLoc;
-
-  BitmapResource(StringRef Location, uint16_t Flags)
-      : RCResource(Flags), BitmapLoc(Location) {}
-  raw_ostream &log(raw_ostream &) const override;
-
-  IntOrString getResourceType() const override { return RkBitmap; }
-  static uint16_t getDefaultMemoryFlags() { return MfPure | MfMoveable; }
-
-  Twine getResourceTypeName() const override { return "BITMAP"; }
-  Error visit(Visitor *V) const override {
-    return V->visitBitmapResource(this);
-  }
-  ResourceKind getKind() const override { return RkBitmap; }
-  static bool classof(const RCResource *Res) {
-    return Res->getKind() == RkBitmap;
-  }
-};
-
 // CURSOR resource. Represents a single cursor (".cur") file.
 //
 // Ref: msdn.microsoft.com/en-us/library/windows/desktop/aa380920(v=vs.85).aspx
@@ -399,12 +312,10 @@ class CursorResource : public RCResource {
 public:
   StringRef CursorLoc;
 
-  CursorResource(StringRef Location, uint16_t Flags)
-      : RCResource(Flags), CursorLoc(Location) {}
+  CursorResource(StringRef Location) : CursorLoc(Location) {}
   raw_ostream &log(raw_ostream &) const override;
 
   Twine getResourceTypeName() const override { return "CURSOR"; }
-  static uint16_t getDefaultMemoryFlags() { return MfDiscardable | MfMoveable; }
   Error visit(Visitor *V) const override {
     return V->visitCursorResource(this);
   }
@@ -421,12 +332,10 @@ class IconResource : public RCResource {
 public:
   StringRef IconLoc;
 
-  IconResource(StringRef Location, uint16_t Flags)
-      : RCResource(Flags), IconLoc(Location) {}
+  IconResource(StringRef Location) : IconLoc(Location) {}
   raw_ostream &log(raw_ostream &) const override;
 
   Twine getResourceTypeName() const override { return "ICON"; }
-  static uint16_t getDefaultMemoryFlags() { return MfDiscardable | MfMoveable; }
   Error visit(Visitor *V) const override { return V->visitIconResource(this); }
   ResourceKind getKind() const override { return RkIcon; }
   static bool classof(const RCResource *Res) {
@@ -443,14 +352,13 @@ class HTMLResource : public RCResource {
 public:
   StringRef HTMLLoc;
 
-  HTMLResource(StringRef Location, uint16_t Flags)
-      : RCResource(Flags), HTMLLoc(Location) {}
+  HTMLResource(StringRef Location) : HTMLLoc(Location) {}
   raw_ostream &log(raw_ostream &) const override;
 
   Error visit(Visitor *V) const override { return V->visitHTMLResource(this); }
 
   // Curiously, file resources don't have DISCARDABLE flag set.
-  static uint16_t getDefaultMemoryFlags() { return MfPure | MfMoveable; }
+  uint16_t getMemoryFlags() const override { return MfPure | MfMoveable; }
   IntOrString getResourceType() const override { return RkHTML; }
   Twine getResourceTypeName() const override { return "HTML"; }
   ResourceKind getKind() const override { return RkHTML; }
@@ -564,9 +472,8 @@ class MenuResource : public OptStatementsRCResource {
 public:
   MenuDefinitionList Elements;
 
-  MenuResource(OptionalStmtList &&OptStmts, MenuDefinitionList &&Items,
-               uint16_t Flags)
-      : OptStatementsRCResource(std::move(OptStmts), Flags),
+  MenuResource(OptionalStmtList &&OptStmts, MenuDefinitionList &&Items)
+      : OptStatementsRCResource(std::move(OptStmts)),
         Elements(std::move(Items)) {}
   raw_ostream &log(raw_ostream &) const override;
 
@@ -584,12 +491,11 @@ public:
 // Ref: msdn.microsoft.com/en-us/library/windows/desktop/aa381050(v=vs.85).aspx
 class StringTableResource : public OptStatementsRCResource {
 public:
-  std::vector<std::pair<uint32_t, std::vector<StringRef>>> Table;
+  std::vector<std::pair<uint32_t, StringRef>> Table;
 
-  StringTableResource(OptionalStmtList &&List, uint16_t Flags)
-      : OptStatementsRCResource(std::move(List), Flags) {}
-  void addStrings(uint32_t ID, std::vector<StringRef> &&Strings) {
-    Table.emplace_back(ID, Strings);
+  using OptStatementsRCResource::OptStatementsRCResource;
+  void addString(uint32_t ID, StringRef String) {
+    Table.emplace_back(ID, String);
   }
   raw_ostream &log(raw_ostream &) const override;
   Twine getResourceTypeName() const override { return "STRINGTABLE"; }
@@ -611,9 +517,7 @@ public:
   StringRef Type;
   IntOrString Title;
   uint32_t ID, X, Y, Width, Height;
-  Optional<IntWithNotMask> Style;
-  Optional<uint32_t> ExtStyle, HelpID;
-  IntOrString Class;
+  Optional<uint32_t> Style, ExtStyle, HelpID;
 
   // Control classes as described in DLGITEMTEMPLATEEX documentation.
   //
@@ -636,11 +540,11 @@ public:
 
   Control(StringRef CtlType, IntOrString CtlTitle, uint32_t CtlID,
           uint32_t PosX, uint32_t PosY, uint32_t ItemWidth, uint32_t ItemHeight,
-          Optional<IntWithNotMask> ItemStyle, Optional<uint32_t> ExtItemStyle,
-          Optional<uint32_t> CtlHelpID, IntOrString CtlClass)
+          Optional<uint32_t> ItemStyle, Optional<uint32_t> ExtItemStyle,
+          Optional<uint32_t> CtlHelpID)
       : Type(CtlType), Title(CtlTitle), ID(CtlID), X(PosX), Y(PosY),
         Width(ItemWidth), Height(ItemHeight), Style(ItemStyle),
-        ExtStyle(ExtItemStyle), HelpID(CtlHelpID), Class(CtlClass) {}
+        ExtStyle(ExtItemStyle), HelpID(CtlHelpID) {}
 
   static const StringMap<CtlInfo> SupportedCtls;
 
@@ -658,8 +562,8 @@ public:
 
   DialogResource(uint32_t PosX, uint32_t PosY, uint32_t DlgWidth,
                  uint32_t DlgHeight, uint32_t DlgHelpID,
-                 OptionalStmtList &&OptStmts, bool IsDialogEx, uint16_t Flags)
-      : OptStatementsRCResource(std::move(OptStmts), Flags), X(PosX), Y(PosY),
+                 OptionalStmtList &&OptStmts, bool IsDialogEx)
+      : OptStatementsRCResource(std::move(OptStmts)), X(PosX), Y(PosY),
         Width(DlgWidth), Height(DlgHeight), HelpID(DlgHelpID),
         IsExtended(IsDialogEx) {}
 
@@ -693,19 +597,15 @@ public:
   std::vector<IntOrString> Contents;
   bool IsFileResource;
 
-  UserDefinedResource(IntOrString ResourceType, StringRef FileLocation,
-                      uint16_t Flags)
-      : RCResource(Flags), Type(ResourceType), FileLoc(FileLocation),
-        IsFileResource(true) {}
-  UserDefinedResource(IntOrString ResourceType, std::vector<IntOrString> &&Data,
-                      uint16_t Flags)
-      : RCResource(Flags), Type(ResourceType), Contents(std::move(Data)),
-        IsFileResource(false) {}
+  UserDefinedResource(IntOrString ResourceType, StringRef FileLocation)
+      : Type(ResourceType), FileLoc(FileLocation), IsFileResource(true) {}
+  UserDefinedResource(IntOrString ResourceType, std::vector<IntOrString> &&Data)
+      : Type(ResourceType), Contents(std::move(Data)), IsFileResource(false) {}
 
   raw_ostream &log(raw_ostream &) const override;
   IntOrString getResourceType() const override { return Type; }
   Twine getResourceTypeName() const override { return Type; }
-  static uint16_t getDefaultMemoryFlags() { return MfPure | MfMoveable; }
+  uint16_t getMemoryFlags() const override { return MfPure | MfMoveable; }
 
   Error visit(Visitor *V) const override {
     return V->visitUserDefinedResource(this);
@@ -769,10 +669,10 @@ class VersionInfoValue : public VersionInfoStmt {
 public:
   StringRef Key;
   std::vector<IntOrString> Values;
-  BitVector HasPrecedingComma;
+  std::vector<bool> HasPrecedingComma;
 
   VersionInfoValue(StringRef InfoKey, std::vector<IntOrString> &&Vals,
-                   BitVector &&CommasBeforeVals)
+                   std::vector<bool> &&CommasBeforeVals)
       : Key(InfoKey), Values(std::move(Vals)),
         HasPrecedingComma(std::move(CommasBeforeVals)) {}
   raw_ostream &log(raw_ostream &) const override;
@@ -828,13 +728,12 @@ public:
   VersionInfoFixed FixedData;
 
   VersionInfoResource(VersionInfoBlock &&TopLevelBlock,
-                      VersionInfoFixed &&FixedInfo, uint16_t Flags)
-      : RCResource(Flags), MainBlock(std::move(TopLevelBlock)),
-        FixedData(std::move(FixedInfo)) {}
+                      VersionInfoFixed &&FixedInfo)
+      : MainBlock(std::move(TopLevelBlock)), FixedData(std::move(FixedInfo)) {}
 
   raw_ostream &log(raw_ostream &) const override;
   IntOrString getResourceType() const override { return RkVersionInfo; }
-  static uint16_t getDefaultMemoryFlags() { return MfMoveable | MfPure; }
+  uint16_t getMemoryFlags() const override { return MfMoveable | MfPure; }
   Twine getResourceTypeName() const override { return "VERSIONINFO"; }
   Error visit(Visitor *V) const override {
     return V->visitVersionInfoResource(this);
@@ -920,32 +819,6 @@ public:
   raw_ostream &log(raw_ostream &) const override;
   Twine getResourceTypeName() const override { return "STYLE"; }
   Error visit(Visitor *V) const override { return V->visitStyleStmt(this); }
-};
-
-// EXSTYLE optional statement.
-//
-// Ref: docs.microsoft.com/en-us/windows/desktop/menurc/exstyle-statement
-class ExStyleStmt : public OptionalStmt {
-public:
-  uint32_t Value;
-
-  ExStyleStmt(uint32_t ExStyle) : Value(ExStyle) {}
-  raw_ostream &log(raw_ostream &) const override;
-  Twine getResourceTypeName() const override { return "EXSTYLE"; }
-  Error visit(Visitor *V) const override { return V->visitExStyleStmt(this); }
-};
-
-// CLASS optional statement.
-//
-// Ref: msdn.microsoft.com/en-us/library/windows/desktop/aa380883(v=vs.85).aspx
-class ClassStmt : public OptionalStmt {
-public:
-  IntOrString Value;
-
-  ClassStmt(IntOrString Class) : Value(Class) {}
-  raw_ostream &log(raw_ostream &) const override;
-  Twine getResourceTypeName() const override { return "CLASS"; }
-  Error visit(Visitor *V) const override { return V->visitClassStmt(this); }
 };
 
 } // namespace rc

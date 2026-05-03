@@ -1,4 +1,4 @@
-; RUN: opt < %s -passes=newgvn | llvm-dis
+; RUN: opt < %s -newgvn | llvm-dis
 
 	%struct.s_segment_inf = type { float, i32, i16, i16, float, float, i32, float, float }
 

@@ -1,8 +1,9 @@
-//===- Multilib.h -----------------------------------------------*- C++ -*-===//
+//===--- Multilib.h ---------------------------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -10,14 +11,10 @@
 #define LLVM_CLANG_DRIVER_MULTILIB_H
 
 #include "clang/Basic/LLVM.h"
-#include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/STLExtras.h"
-#include "llvm/ADT/StringRef.h"
-#include "llvm/Support/Compiler.h"
-#include <cassert>
+#include "llvm/Option/Option.h"
 #include <functional>
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace clang {
@@ -27,60 +24,52 @@ namespace driver {
 /// by a command line flag
 class Multilib {
 public:
-  using flags_list = std::vector<std::string>;
+  typedef std::vector<std::string> flags_list;
 
 private:
   std::string GCCSuffix;
   std::string OSSuffix;
   std::string IncludeSuffix;
   flags_list Flags;
-  int Priority;
 
 public:
-  Multilib(StringRef GCCSuffix = {}, StringRef OSSuffix = {},
-           StringRef IncludeSuffix = {}, int Priority = 0);
+  Multilib(StringRef GCCSuffix = "", StringRef OSSuffix = "",
+           StringRef IncludeSuffix = "");
 
-  /// Get the detected GCC installation path suffix for the multi-arch
+  /// \brief Get the detected GCC installation path suffix for the multi-arch
   /// target variant. Always starts with a '/', unless empty
   const std::string &gccSuffix() const {
     assert(GCCSuffix.empty() ||
            (StringRef(GCCSuffix).front() == '/' && GCCSuffix.size() > 1));
     return GCCSuffix;
   }
-
   /// Set the GCC installation path suffix.
   Multilib &gccSuffix(StringRef S);
 
-  /// Get the detected os path suffix for the multi-arch
+  /// \brief Get the detected os path suffix for the multi-arch
   /// target variant. Always starts with a '/', unless empty
   const std::string &osSuffix() const {
     assert(OSSuffix.empty() ||
            (StringRef(OSSuffix).front() == '/' && OSSuffix.size() > 1));
     return OSSuffix;
   }
-
   /// Set the os path suffix.
   Multilib &osSuffix(StringRef S);
 
-  /// Get the include directory suffix. Always starts with a '/', unless
+  /// \brief Get the include directory suffix. Always starts with a '/', unless
   /// empty
   const std::string &includeSuffix() const {
     assert(IncludeSuffix.empty() ||
            (StringRef(IncludeSuffix).front() == '/' && IncludeSuffix.size() > 1));
     return IncludeSuffix;
   }
-
   /// Set the include directory suffix
   Multilib &includeSuffix(StringRef S);
 
-  /// Get the flags that indicate or contraindicate this multilib's use
+  /// \brief Get the flags that indicate or contraindicate this multilib's use
   /// All elements begin with either '+' or '-'
   const flags_list &flags() const { return Flags; }
   flags_list &flags() { return Flags; }
-
-  /// Returns the multilib priority. When more than one multilib matches flags,
-  /// the one with the highest priority is selected, with 0 being the default.
-  int priority() const { return Priority; }
 
   /// Add a flag to the flags list
   /// \p Flag must be a flag accepted by the driver with its leading '-' removed,
@@ -91,12 +80,12 @@ public:
   ///     otherwise '-print-multi-lib' will not emit them correctly.
   Multilib &flag(StringRef F) {
     assert(F.front() == '+' || F.front() == '-');
-    Flags.push_back(std::string(F));
+    Flags.push_back(F);
     return *this;
   }
 
   LLVM_DUMP_METHOD void dump() const;
-  /// print summary of the Multilib
+  /// \brief print summary of the Multilib
   void print(raw_ostream &OS) const;
 
   /// Check whether any of the 'against' flags contradict the 'for' flags.
@@ -113,12 +102,14 @@ raw_ostream &operator<<(raw_ostream &OS, const Multilib &M);
 
 class MultilibSet {
 public:
-  using multilib_list = std::vector<Multilib>;
-  using iterator = multilib_list::iterator;
-  using const_iterator = multilib_list::const_iterator;
-  using IncludeDirsFunc =
-      std::function<std::vector<std::string>(const Multilib &M)>;
-  using FilterCallback = llvm::function_ref<bool(const Multilib &)>;
+  typedef std::vector<Multilib> multilib_list;
+  typedef multilib_list::iterator iterator;
+  typedef multilib_list::const_iterator const_iterator;
+
+  typedef std::function<std::vector<std::string>(const Multilib &M)>
+      IncludeDirsFunc;
+
+  typedef llvm::function_ref<bool(const Multilib &)> FilterCallback;
 
 private:
   multilib_list Multilibs;
@@ -126,7 +117,7 @@ private:
   IncludeDirsFunc FilePathsCallback;
 
 public:
-  MultilibSet() = default;
+  MultilibSet() {}
 
   /// Add an optional Multilib segment
   MultilibSet &Maybe(const Multilib &M);
@@ -144,7 +135,6 @@ public:
 
   /// Filter out some subset of the Multilibs using a user defined callback
   MultilibSet &FilterOut(FilterCallback F);
-
   /// Filter out those Multilibs whose gccSuffix matches the given expression
   MultilibSet &FilterOut(const char *Regex);
 
@@ -154,7 +144,7 @@ public:
   /// Union this set of multilibs with another
   void combineWith(const MultilibSet &MS);
 
-  /// Remove all of the multilibs from the set
+  /// Remove all of thie multilibs from the set
   void clear() { Multilibs.clear(); }
 
   iterator begin() { return Multilibs.begin(); }
@@ -175,14 +165,12 @@ public:
     IncludeCallback = std::move(F);
     return *this;
   }
-
   const IncludeDirsFunc &includeDirsCallback() const { return IncludeCallback; }
 
   MultilibSet &setFilePathsCallback(IncludeDirsFunc F) {
     FilePathsCallback = std::move(F);
     return *this;
   }
-
   const IncludeDirsFunc &filePathsCallback() const { return FilePathsCallback; }
 
 private:
@@ -194,8 +182,8 @@ private:
 };
 
 raw_ostream &operator<<(raw_ostream &OS, const MultilibSet &MS);
+}
+}
 
-} // namespace driver
-} // namespace clang
+#endif
 
-#endif // LLVM_CLANG_DRIVER_MULTILIB_H

@@ -1,8 +1,9 @@
 //===- unittests/Support/EndianTest.cpp - Endian.h tests ------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -198,15 +199,6 @@ TEST(Endian, PackedEndianSpecificIntegral) {
     reinterpret_cast<little32_t *>(little + 1);
 
   EXPECT_EQ(*big_val, *little_val);
-}
-
-TEST(Endian, PacketEndianSpecificIntegralAsEnum) {
-  enum class Test : uint16_t { ONETWO = 0x0102, TWOONE = 0x0201 };
-  unsigned char bytes[] = {0x01, 0x02};
-  using LittleTest = little_t<Test>;
-  using BigTest = big_t<Test>;
-  EXPECT_EQ(Test::TWOONE, *reinterpret_cast<LittleTest *>(bytes));
-  EXPECT_EQ(Test::ONETWO, *reinterpret_cast<BigTest *>(bytes));
 }
 
 } // end anon namespace

@@ -1,8 +1,9 @@
 //===-- ExceptionDemo.cpp - An example using llvm Exceptions --------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -792,7 +793,7 @@ _Unwind_Reason_Code ourPersonality(int version, _Unwind_Action actions,
   }
 #endif
 
-  const uint8_t *lsda = (const uint8_t *)_Unwind_GetLanguageSpecificData(context);
+  const uint8_t *lsda = _Unwind_GetLanguageSpecificData(context);
 
 #ifdef DEBUG
   fprintf(stderr,
@@ -1904,7 +1905,7 @@ int main(int argc, char *argv[]) {
 
   // Make the module, which holds all the code.
   std::unique_ptr<llvm::Module> Owner =
-      std::make_unique<llvm::Module>("my cool jit", Context);
+      llvm::make_unique<llvm::Module>("my cool jit", Context);
   llvm::Module *module = Owner.get();
 
   std::unique_ptr<llvm::RTDyldMemoryManager> MemMgr(new llvm::SectionMemoryManager());
@@ -1959,13 +1960,11 @@ int main(int argc, char *argv[]) {
 
     executionEngine->finalizeObject();
 
-#ifndef NDEBUG
     fprintf(stderr, "\nBegin module dump:\n\n");
 
     module->dump();
 
     fprintf(stderr, "\nEnd module dump:\n");
-#endif
 
     fprintf(stderr, "\n\nBegin Test:\n");
 

@@ -908,8 +908,8 @@ LLVM_FORCE_USE_OLD_TOOLCHAIN:BOOL=OFF
 //Host on which LLVM binaries will run
 LLVM_HOST_TRIPLE:STRING=x86_64-pc-windows-msvc
 
-//Generate benchmark targets. If OFF, benchmarks can't be built.
-LLVM_INCLUDE_BENCHMARKS:BOOL=OFF
+//No help, variable specified on the command line.
+LLVM_INCLUDE_BENCHMARKS:UNINITIALIZED=OFF
 
 //Generate build targets for llvm documentation.
 LLVM_INCLUDE_DOCS:BOOL=ON
@@ -923,8 +923,8 @@ LLVM_INCLUDE_GO_TESTS:BOOL=OFF
 //Generate build targets for the LLVM runtimes.
 LLVM_INCLUDE_RUNTIMES:BOOL=ON
 
-//Generate build targets for the LLVM unit tests.
-LLVM_INCLUDE_TESTS:BOOL=OFF
+//No help, variable specified on the command line.
+LLVM_INCLUDE_TESTS:UNINITIALIZED=OFF
 
 //Generate build targets for the LLVM tools.
 LLVM_INCLUDE_TOOLS:BOOL=ON
@@ -1013,8 +1013,8 @@ LLVM_STATIC_LINK_CXX_STDLIB:BOOL=OFF
 //Native TableGen executable. Saves building one when cross-compiling.
 LLVM_TABLEGEN:STRING=llvm-tblgen
 
-//Semicolon-separated list of targets to build, or "all".
-LLVM_TARGETS_TO_BUILD:STRING=X86
+//No help, variable specified on the command line.
+LLVM_TARGETS_TO_BUILD:UNINITIALIZED=X86
 
 //Set target to use for LLVM JIT or use "host" for automatic detection.
 LLVM_TARGET_ARCH:STRING=host
@@ -1608,7 +1608,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=246
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=1
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //noop for ranlib

@@ -1,8 +1,9 @@
 //===-- llvm-config.cpp - LLVM project configuration utility --------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -16,16 +17,15 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "llvm/Config/llvm-config.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringMap.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/Triple.h"
 #include "llvm/ADT/Twine.h"
 #include "llvm/Config/config.h"
+#include "llvm/Config/llvm-config.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/Path.h"
-#include "llvm/Support/WithColor.h"
 #include "llvm/Support/raw_ostream.h"
 #include <cstdlib>
 #include <set>
@@ -46,10 +46,6 @@ using namespace llvm;
 // create entries for pseudo groups like x86 or all-targets.
 #include "LibraryDependencies.inc"
 
-// Built-in extensions also register their dependencies, but in a separate file,
-// later in the process.
-#include "ExtensionDependencies.inc"
-
 // LinkMode determines what libraries and flags are returned by llvm-config.
 enum LinkMode {
   // LinkModeAuto will link with the default link mode for the installation,
@@ -66,7 +62,7 @@ enum LinkMode {
   LinkModeStatic = 2,
 };
 
-/// Traverse a single component adding to the topological ordering in
+/// \brief Traverse a single component adding to the topological ordering in
 /// \arg RequiredLibs.
 ///
 /// \param Name - The component to traverse.
@@ -114,25 +110,6 @@ static void VisitComponent(const std::string &Name,
                    GetComponentLibraryPath, Missing, DirSep);
   }
 
-  // Special handling for the special 'extensions' component. Its content is
-  // not populated by llvm-build, but later in the process and loaded from
-  // ExtensionDependencies.inc.
-  if (Name == "extensions") {
-    for (auto const &AvailableExtension : AvailableExtensions) {
-      for (const char *const *Iter = &AvailableExtension.RequiredLibraries[0];
-           *Iter; ++Iter) {
-        AvailableComponent *AC = ComponentMap.lookup(*Iter);
-        if (!AC) {
-          RequiredLibs.push_back(*Iter);
-        } else {
-          VisitComponent(*Iter, ComponentMap, VisitedComponents, RequiredLibs,
-                         IncludeNonInstalled, GetComponentNames,
-                         GetComponentLibraryPath, Missing, DirSep);
-        }
-      }
-    }
-  }
-
   if (GetComponentNames) {
     RequiredLibs.push_back(Name);
     return;
@@ -152,7 +129,7 @@ static void VisitComponent(const std::string &Name,
   }
 }
 
-/// Compute the list of required libraries for a given list of
+/// \brief Compute the list of required libraries for a given list of
 /// components, in an order suitable for passing to a linker (that is, libraries
 /// appear prior to their dependencies).
 ///
@@ -235,6 +212,7 @@ Options:\n\
   --assertion-mode  Print assertion mode of LLVM tree (ON or OFF).\n\
   --build-system    Print the build system used to build LLVM (always cmake).\n\
   --has-rtti        Print whether or not LLVM was built with rtti (YES or NO).\n\
+  --has-global-isel Print whether or not LLVM was built with global-isel support (ON or OFF).\n\
   --shared-mode     Print how the provided components can be collectively linked (`shared` or `static`).\n\
   --link-shared     Link the components as shared libraries.\n\
   --link-static     Link the component libraries statically.\n\
@@ -245,7 +223,7 @@ Typical components:\n\
   exit(1);
 }
 
-/// Compute the path to the main executable.
+/// \brief Compute the path to the main executable.
 std::string GetExecutablePath(const char *Argv0) {
   // This just needs to be some symbol in the binary; C++ doesn't
   // allow taking the address of ::main however.
@@ -253,7 +231,7 @@ std::string GetExecutablePath(const char *Argv0) {
   return llvm::sys::fs::getMainExecutable(Argv0, P);
 }
 
-/// Expand the semi-colon delimited LLVM_DYLIB_COMPONENTS into
+/// \brief Expand the semi-colon delimited LLVM_DYLIB_COMPONENTS into
 /// the full list of components.
 std::vector<std::string> GetAllDyLibComponents(const bool IsInDevelopmentTree,
                                                const bool GetComponentNames,
@@ -313,8 +291,8 @@ int main(int argc, char **argv) {
     IsInDevelopmentTree = true;
     DevelopmentTreeLayout = CMakeStyle;
     ActiveObjRoot = LLVM_OBJ_ROOT;
-  } else if (sys::fs::equivalent(sys::path::parent_path(CurrentExecPrefix),
-                                 LLVM_OBJ_ROOT)) {
+  } else if (sys::fs::equivalent(CurrentExecPrefix,
+                                 Twine(LLVM_OBJ_ROOT) + "/bin")) {
     IsInDevelopmentTree = true;
     DevelopmentTreeLayout = CMakeBuildModeStyle;
     ActiveObjRoot = LLVM_OBJ_ROOT;
@@ -341,14 +319,11 @@ int main(int argc, char **argv) {
       ActiveCMakeDir = ActiveLibDir + "/cmake/llvm";
       break;
     case CMakeBuildModeStyle:
-      // FIXME: Should we consider the build-mode-specific path as the prefix?
       ActivePrefix = ActiveObjRoot;
-      ActiveBinDir = ActiveObjRoot + "/" + build_mode + "/bin";
+      ActiveBinDir = ActiveObjRoot + "/bin/" + build_mode;
       ActiveLibDir =
-          ActiveObjRoot + "/" + build_mode + "/lib" + LLVM_LIBDIR_SUFFIX;
-      // The CMake directory isn't separated by build mode.
-      ActiveCMakeDir =
-          ActivePrefix + "/lib" + LLVM_LIBDIR_SUFFIX + "/cmake/llvm";
+          ActiveObjRoot + "/lib" + LLVM_LIBDIR_SUFFIX + "/" + build_mode;
+      ActiveCMakeDir = ActiveLibDir + "/cmake/llvm";
       break;
     }
 
@@ -357,16 +332,10 @@ int main(int argc, char **argv) {
         ("-I" + ActiveIncludeDir + " " + "-I" + ActiveObjRoot + "/include");
   } else {
     ActivePrefix = CurrentExecPrefix;
-    {
-      SmallString<256> Path(LLVM_INSTALL_INCLUDEDIR);
-      sys::fs::make_absolute(ActivePrefix, Path);
-      ActiveIncludeDir = std::string(Path.str());
-    }
-    {
-      SmallString<256> Path(LLVM_TOOLS_INSTALL_DIR);
-      sys::fs::make_absolute(ActivePrefix, Path);
-      ActiveBinDir = std::string(Path.str());
-    }
+    ActiveIncludeDir = ActivePrefix + "/include";
+    SmallString<256> path(StringRef(LLVM_TOOLS_INSTALL_DIR));
+    sys::fs::make_absolute(ActivePrefix, path);
+    ActiveBinDir = path.str();
     ActiveLibDir = ActivePrefix + "/lib" + LLVM_LIBDIR_SUFFIX;
     ActiveCMakeDir = ActiveLibDir + "/cmake/llvm";
     ActiveIncludeOption = "-I" + ActiveIncludeDir;
@@ -380,14 +349,12 @@ int main(int argc, char **argv) {
   /// in the first place. This can't be done at configure/build time.
 
   StringRef SharedExt, SharedVersionedExt, SharedDir, SharedPrefix, StaticExt,
-      StaticPrefix, StaticDir = "lib";
-  std::string DirSep = "/";
+      StaticPrefix, StaticDir = "lib", DirSep = "/";
   const Triple HostTriple(Triple::normalize(LLVM_HOST_TRIPLE));
   if (HostTriple.isOSWindows()) {
     SharedExt = "dll";
     SharedVersionedExt = LLVM_DYLIB_VERSION ".dll";
     if (HostTriple.isOSCygMing()) {
-      SharedPrefix = "lib";
       StaticExt = "a";
       StaticPrefix = "lib";
     } else {
@@ -479,7 +446,7 @@ int main(int argc, char **argv) {
         // already has the necessary prefix and suffix (e.g. `.so`) added so
         // just return it unmodified.
         assert(Lib.endswith(SharedExt) && "DyLib is missing suffix");
-        LibFileName = std::string(Lib);
+        LibFileName = Lib;
       } else {
         LibFileName = (SharedPrefix + Lib + "." + SharedExt).str();
       }
@@ -555,7 +522,7 @@ int main(int argc, char **argv) {
             if (DyLibExists && !sys::fs::exists(path)) {
               Components =
                   GetAllDyLibComponents(IsInDevelopmentTree, true, DirSep);
-              llvm::sort(Components);
+              std::sort(Components.begin(), Components.end());
               break;
             }
           }
@@ -585,6 +552,8 @@ int main(int argc, char **argv) {
         OS << LLVM_BUILD_SYSTEM << '\n';
       } else if (Arg == "--has-rtti") {
         OS << (LLVM_HAS_RTTI ? "YES" : "NO") << '\n';
+      } else if (Arg == "--has-global-isel") {
+        OS << (LLVM_HAS_GLOBAL_ISEL ? "ON" : "OFF") << '\n';
       } else if (Arg == "--shared-mode") {
         PrintSharedMode = true;
       } else if (Arg == "--obj-root") {
@@ -610,7 +579,7 @@ int main(int argc, char **argv) {
     usage();
 
   if (LinkMode == LinkModeShared && !DyLibExists && !BuiltSharedLibs) {
-    WithColor::error(errs(), "llvm-config") << DyLibName << " is missing\n";
+    errs() << "llvm-config: error: " << DyLibName << " is missing\n";
     return 1;
   }
 
@@ -643,19 +612,19 @@ int main(int argc, char **argv) {
           break;
         // Using component shared libraries.
         for (auto &Lib : MissingLibs)
-          WithColor::error(errs(), "llvm-config") << "missing: " << Lib << "\n";
+          errs() << "llvm-config: error: missing: " << Lib << "\n";
         return 1;
       case LinkModeAuto:
         if (DyLibExists) {
           LinkMode = LinkModeShared;
           break;
         }
-        WithColor::error(errs(), "llvm-config")
-            << "component libraries and shared library\n\n";
+        errs()
+            << "llvm-config: error: component libraries and shared library\n\n";
         LLVM_FALLTHROUGH;
       case LinkModeStatic:
         for (auto &Lib : MissingLibs)
-          WithColor::error(errs(), "llvm-config") << "missing: " << Lib << "\n";
+          errs() << "llvm-config: error: missing: " << Lib << "\n";
         return 1;
       }
     } else if (LinkMode == LinkModeAuto) {
@@ -738,8 +707,7 @@ int main(int argc, char **argv) {
       OS << (LinkMode == LinkModeStatic ? LLVM_SYSTEM_LIBS : "") << '\n';
     }
   } else if (!Components.empty()) {
-    WithColor::error(errs(), "llvm-config")
-        << "components given, but unused\n\n";
+    errs() << "llvm-config: error: components given, but unused\n\n";
     usage();
   }
 

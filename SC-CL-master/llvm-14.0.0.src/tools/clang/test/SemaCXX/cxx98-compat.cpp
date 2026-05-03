@@ -1,6 +1,5 @@
 // RUN: %clang_cc1 -fsyntax-only -std=c++11 -Wc++98-compat -verify %s
 // RUN: %clang_cc1 -fsyntax-only -std=c++14 -Wc++98-compat -verify %s -DCXX14COMPAT
-// RUN: %clang_cc1 -fsyntax-only -std=c++17 -Wc++98-compat -verify %s -DCXX14COMPAT -DCXX17COMPAT
 
 namespace std {
   struct type_info;
@@ -48,8 +47,6 @@ namespace TemplateParsing {
 
 void Lambda() {
   []{}(); // expected-warning {{lambda expressions are incompatible with C++98}}
-  // Don't warn about implicit "-> auto" here.
-  [](){}(); // expected-warning {{lambda expressions are incompatible with C++98}}
 }
 
 struct Ctor {
@@ -104,8 +101,7 @@ struct RefQualifier {
 
 auto f() -> int; // expected-warning {{trailing return types are incompatible with C++98}}
 #ifdef CXX14COMPAT
-auto ff() { return 5; } // expected-warning {{'auto' type specifier is incompatible with C++98}} 
-// expected-warning@-1 {{return type deduction is incompatible with C++ standards before C++14}}
+auto ff() { return 5; } // expected-warning {{'auto' type specifier is incompatible with C++98}}
 #endif
 
 void RangeFor() {
@@ -122,7 +118,7 @@ void RangeFor() {
 }
 
 struct InClassInit {
-  int n = 0; // expected-warning {{default member initializer for non-static data members is incompatible with C++98}}
+  int n = 0; // expected-warning {{in-class initialization of non-static data members is incompatible with C++98}}
 };
 
 struct OverrideControlBase {
@@ -181,21 +177,17 @@ void LocalTemplateArg() {
 struct {} obj_of_unnamed_type; // expected-note {{here}}
 int UnnamedTemplateArg = TemplateFn(obj_of_unnamed_type); // expected-warning {{unnamed type as template argument is incompatible with C++98}}
 
-// FIXME: We do not implement C++98 compatibility warnings for the C++17
-// template argument evaluation rules.
-#ifndef CXX17COMPAT
 namespace RedundantParensInAddressTemplateParam {
   int n;
   template<int*p> struct S {};
   S<(&n)> s; // expected-warning {{redundant parentheses surrounding address non-type template argument are incompatible with C++98}}
   S<(((&n)))> t; // expected-warning {{redundant parentheses surrounding address non-type template argument are incompatible with C++98}}
 }
-#endif
 
 namespace TemplateSpecOutOfScopeNs {
-  template<typename T> struct S {};
+  template<typename T> struct S {}; // expected-note {{here}}
 }
-template<> struct TemplateSpecOutOfScopeNs::S<char> {};
+template<> struct TemplateSpecOutOfScopeNs::S<char> {}; // expected-warning {{class template specialization of 'S' outside namespace 'TemplateSpecOutOfScopeNs' is incompatible with C++98}}
 
 struct Typename {
   template<typename T> struct Inner {};
@@ -247,13 +239,13 @@ namespace UnionOrAnonStructMembers {
     ~NonTrivDtor(); // expected-note 2{{user-provided destructor}}
   };
   union BadUnion {
-    NonTrivCtor ntc; // expected-warning {{union member 'ntc' with a non-trivial default constructor is incompatible with C++98}}
+    NonTrivCtor ntc; // expected-warning {{union member 'ntc' with a non-trivial constructor is incompatible with C++98}}
     NonTrivCopy ntcp; // expected-warning {{union member 'ntcp' with a non-trivial copy constructor is incompatible with C++98}}
     NonTrivDtor ntd; // expected-warning {{union member 'ntd' with a non-trivial destructor is incompatible with C++98}}
   };
   struct Wrap {
     struct {
-      NonTrivCtor ntc; // expected-warning {{anonymous struct member 'ntc' with a non-trivial default constructor is incompatible with C++98}}
+      NonTrivCtor ntc; // expected-warning {{anonymous struct member 'ntc' with a non-trivial constructor is incompatible with C++98}}
       NonTrivCopy ntcp; // expected-warning {{anonymous struct member 'ntcp' with a non-trivial copy constructor is incompatible with C++98}}
       NonTrivDtor ntd; // expected-warning {{anonymous struct member 'ntd' with a non-trivial destructor is incompatible with C++98}}
     };
@@ -304,9 +296,6 @@ namespace LiteralUCNs {
   const wchar_t *s2 = L"bar\u0085"; // expected-warning {{universal character name referring to a control character is incompatible with C++98}}
 }
 
-// FIXME: We do not implement C++98 compatibility warnings for the C++17
-// template argument evaluation rules.
-#ifndef CXX17COMPAT
 namespace NonTypeTemplateArgs {
   template<typename T, T v> struct S {};
   const int k = 5; // expected-note {{here}}
@@ -322,7 +311,6 @@ namespace NullPointerTemplateArg {
   X<(int*)0> x; // expected-warning {{use of null pointer as non-type template argument is incompatible with C++98}}
   Y<(int A::*)0> y; // expected-warning {{use of null pointer as non-type template argument is incompatible with C++98}}
 }
-#endif
 
 namespace PR13480 {
   struct basic_iterator {
@@ -358,7 +346,7 @@ namespace rdar11736429 {
   };
 
   union S {
-    X x; // expected-warning{{union member 'x' with a non-trivial default constructor is incompatible with C++98}}
+    X x; // expected-warning{{union member 'x' with a non-trivial constructor is incompatible with C++98}}
   };
 }
 
@@ -408,12 +396,4 @@ float fsvar = B::v<float>;
 
 #ifdef CXX14COMPAT
 int digit_seps = 123'456; // expected-warning {{digit separators are incompatible with C++ standards before C++14}}
-#endif
-
-#ifdef CXX17COMPAT
-template<class T> struct CTAD {};
-void ctad_test() {
-  CTAD<int> s;
-  CTAD t = s; // expected-warning {{class template argument deduction is incompatible with C++ standards before C++17}}
-}
 #endif

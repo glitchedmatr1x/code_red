@@ -1,8 +1,9 @@
 //===- X86RecognizableInstr.h - Disassembler instruction spec ----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -16,15 +17,12 @@
 #ifndef LLVM_UTILS_TABLEGEN_X86RECOGNIZABLEINSTR_H
 #define LLVM_UTILS_TABLEGEN_X86RECOGNIZABLEINSTR_H
 
-#include "CodeGenInstruction.h"
+#include "CodeGenTarget.h"
+#include "X86DisassemblerTables.h"
 #include "llvm/Support/DataTypes.h"
-#include "llvm/Support/X86DisassemblerDecoderCommon.h"
-
-struct InstructionSpecifier;
+#include "llvm/TableGen/Record.h"
 
 namespace llvm {
-
-class Record;
 
 #define X86_INSTR_MRM_MAPPING     \
   MAP(C0, 64)                     \
@@ -104,41 +102,31 @@ namespace X86Local {
     RawFrmDstSrc  = 6,
     RawFrmImm8    = 7,
     RawFrmImm16   = 8,
-    AddCCFrm      = 9,
-    PrefixByte    = 10,
-    MRMr0          = 21,
-    MRMSrcMemFSIB  = 22,
-    MRMDestMemFSIB = 23,
-    MRMDestMem     = 24,
-    MRMSrcMem      = 25,
-    MRMSrcMem4VOp3 = 26,
-    MRMSrcMemOp4   = 27,
-    MRMSrcMemCC    = 28,
-    MRMXmCC = 30, MRMXm = 31,
-    MRM0m = 32, MRM1m = 33, MRM2m = 34, MRM3m = 35,
-    MRM4m = 36, MRM5m = 37, MRM6m = 38, MRM7m = 39,
-    MRMDestReg     = 40,
-    MRMSrcReg      = 41,
-    MRMSrcReg4VOp3 = 42,
-    MRMSrcRegOp4   = 43,
-    MRMSrcRegCC    = 44,
-    MRMXrCC = 46, MRMXr = 47,
-    MRM0r = 48, MRM1r = 49, MRM2r = 50, MRM3r = 51,
-    MRM4r = 52, MRM5r = 53, MRM6r = 54, MRM7r = 55,
-    MRM0X = 56, MRM1X = 57, MRM2X = 58, MRM3X = 59,
-    MRM4X = 60, MRM5X = 61, MRM6X = 62, MRM7X = 63,
+    MRMDestMem     = 32,
+    MRMSrcMem      = 33,
+    MRMSrcMem4VOp3 = 34,
+    MRMSrcMemOp4   = 35,
+    MRMXm = 39,
+    MRM0m = 40, MRM1m = 41, MRM2m = 42, MRM3m = 43,
+    MRM4m = 44, MRM5m = 45, MRM6m = 46, MRM7m = 47,
+    MRMDestReg     = 48,
+    MRMSrcReg      = 49,
+    MRMSrcReg4VOp3 = 50,
+    MRMSrcRegOp4   = 51,
+    MRMXr = 55,
+    MRM0r = 56, MRM1r = 57, MRM2r = 58, MRM3r = 59,
+    MRM4r = 60, MRM5r = 61, MRM6r = 62, MRM7r = 63,
 #define MAP(from, to) MRM_##from = to,
     X86_INSTR_MRM_MAPPING
 #undef MAP
   };
 
   enum {
-    OB = 0, TB = 1, T8 = 2, TA = 3, XOP8 = 4, XOP9 = 5, XOPA = 6, ThreeDNow = 7,
-    T_MAP5 = 8, T_MAP6 = 9
+    OB = 0, TB = 1, T8 = 2, TA = 3, XOP8 = 4, XOP9 = 5, XOPA = 6
   };
 
   enum {
-    PD = 1, XS = 2, XD = 3, PS = 4
+    PS = 1, PD = 2, XS = 3, XD = 4
   };
 
   enum {
@@ -152,11 +140,13 @@ namespace X86Local {
   enum {
     AdSize16 = 1, AdSize32 = 2, AdSize64 = 3
   };
+
+  enum {
+    VEX_W0 = 0, VEX_W1 = 1, VEX_WIG = 2
+  };
 }
 
 namespace X86Disassembler {
-
-class DisassemblerTables;
 
 /// RecognizableInstr - Encapsulates all information required to decode a single
 ///   instruction, as extracted from the LLVM instruction tables.  Has methods
@@ -187,10 +177,8 @@ private:
   bool HasREX_WPrefix;
   /// The hasVEX_4V field from the record
   bool HasVEX_4V;
-  /// The HasVEX_WPrefix field from the record
-  bool HasVEX_W;
-  /// The IgnoresVEX_W field from the record
-  bool IgnoresVEX_W;
+  /// The VEX_WPrefix field from the record
+  uint8_t VEX_WPrefix;
   /// Inferred from the operands; indicates whether the L bit in the VEX prefix is set
   bool HasVEX_LPrefix;
   /// The ignoreVEX_L field from the record
@@ -222,12 +210,12 @@ private:
   /// Indicates whether the instruction should be emitted into the decode
   /// tables; regardless, it will be emitted into the instruction info table
   bool ShouldBeEmitted;
-
+  
   /// The operands of the instruction, as listed in the CodeGenInstruction.
   /// They are not one-to-one with operands listed in the MCInst; for example,
   /// memory operands expand to 5 operands in the MCInst
   const std::vector<CGIOperandList::OperandInfo>* Operands;
-
+  
   /// The description of the instruction that is emitted into the instruction
   /// info table
   InstructionSpecifier* Spec;
@@ -284,7 +272,7 @@ private:
   static OperandEncoding writemaskRegisterEncodingFromString(const std::string &s,
                                                              uint8_t OpSize);
 
-  /// Adjust the encoding type for an operand based on the instruction.
+  /// \brief Adjust the encoding type for an operand based on the instruction.
   void adjustOperandEncoding(OperandEncoding &encoding);
 
   /// handleOperand - Converts a single operand from the LLVM table format to
@@ -295,7 +283,7 @@ private:
   ///                               operand exists.
   /// @param operandIndex         - The index into the generated operand table.
   ///                               Incremented by this function one or more
-  ///                               times to reflect possible duplicate
+  ///                               times to reflect possible duplicate 
   ///                               operands).
   /// @param physicalOperandIndex - The index of the current operand into the
   ///                               set of non-duplicate ('physical') operands.
@@ -326,12 +314,12 @@ private:
   bool shouldBeEmitted() const {
     return ShouldBeEmitted;
   }
-
+  
   /// emitInstructionSpecifier - Loads the instruction specifier for the current
   ///   instruction into a DisassemblerTables.
   ///
   void emitInstructionSpecifier();
-
+  
   /// emitDecodePath - Populates the proper fields in the decode tables
   ///   corresponding to the decode paths for this instruction.
   ///
@@ -361,7 +349,7 @@ public:
                            const CodeGenInstruction &insn,
                            InstrUID uid);
 };
-
+  
 } // namespace X86Disassembler
 
 } // namespace llvm

@@ -1,8 +1,9 @@
 //===- CoverageMappingWriter.h - Code coverage mapping writer ---*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -24,20 +25,20 @@ class raw_ostream;
 
 namespace coverage {
 
-/// Writer of the filenames section for the instrumentation
+/// \brief Writer of the filenames section for the instrumentation
 /// based code coverage.
 class CoverageFilenamesSectionWriter {
-  ArrayRef<std::string> Filenames;
+  ArrayRef<StringRef> Filenames;
 
 public:
-  CoverageFilenamesSectionWriter(ArrayRef<std::string> Filenames);
+  CoverageFilenamesSectionWriter(ArrayRef<StringRef> Filenames)
+      : Filenames(Filenames) {}
 
-  /// Write encoded filenames to the given output stream. If \p Compress is
-  /// true, attempt to compress the filenames.
-  void write(raw_ostream &OS, bool Compress = true);
+  /// \brief Write encoded filenames to the given output stream.
+  void write(raw_ostream &OS);
 };
 
-/// Writer for instrumentation based coverage mapping data.
+/// \brief Writer for instrumentation based coverage mapping data.
 class CoverageMappingWriter {
   ArrayRef<unsigned> VirtualFileMapping;
   ArrayRef<CounterExpression> Expressions;
@@ -50,7 +51,7 @@ public:
       : VirtualFileMapping(VirtualFileMapping), Expressions(Expressions),
         MappingRegions(MappingRegions) {}
 
-  /// Write encoded coverage mapping data to the given output stream.
+  /// \brief Write encoded coverage mapping data to the given output stream.
   void write(raw_ostream &OS);
 };
 

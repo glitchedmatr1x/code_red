@@ -1,44 +1,33 @@
-//===- Compilation.h - Compilation Task Data Structure ----------*- C++ -*-===//
+//===--- Compilation.h - Compilation Task Data Structure --------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_CLANG_DRIVER_COMPILATION_H
 #define LLVM_CLANG_DRIVER_COMPILATION_H
 
-#include "clang/Basic/LLVM.h"
 #include "clang/Driver/Action.h"
 #include "clang/Driver/Job.h"
 #include "clang/Driver/Util.h"
-#include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/DenseMap.h"
-#include "llvm/ADT/Optional.h"
-#include "llvm/ADT/StringRef.h"
-#include "llvm/Option/Option.h"
-#include <cassert>
-#include <iterator>
 #include <map>
-#include <memory>
-#include <utility>
-#include <vector>
 
 namespace llvm {
 namespace opt {
-
-class DerivedArgList;
-class InputArgList;
-
-} // namespace opt
-} // namespace llvm
+  class DerivedArgList;
+  class InputArgList;
+}
+}
 
 namespace clang {
 namespace driver {
-
-class Driver;
-class ToolChain;
+  class Driver;
+  class JobList;
+  class ToolChain;
 
 /// Compilation - A set of tasks to perform for a single driver
 /// invocation.
@@ -51,7 +40,7 @@ class Compilation {
 
   /// A mask of all the programming models the host has to support in the
   /// current compilation.
-  unsigned ActiveOffloadMask = 0;
+  unsigned ActiveOffloadMask;
 
   /// Array with the toolchains of offloading host and devices in the order they
   /// were requested by the user. We are preserving that order in case the code
@@ -84,11 +73,6 @@ class Compilation {
     const ToolChain *TC = nullptr;
     StringRef BoundArch;
     Action::OffloadKind DeviceOffloadKind = Action::OFK_None;
-
-    TCArgsKey(const ToolChain *TC, StringRef BoundArch,
-              Action::OffloadKind DeviceOffloadKind)
-        : TC(TC), BoundArch(BoundArch), DeviceOffloadKind(DeviceOffloadKind) {}
-
     bool operator<(const TCArgsKey &K) const {
       if (TC < K.TC)
         return true;
@@ -99,6 +83,9 @@ class Compilation {
         return true;
       return false;
     }
+    TCArgsKey(const ToolChain *TC, StringRef BoundArch,
+              Action::OffloadKind DeviceOffloadKind)
+        : TC(TC), BoundArch(BoundArch), DeviceOffloadKind(DeviceOffloadKind) {}
   };
   std::map<TCArgsKey, llvm::opt::DerivedArgList *> TCArgs;
 
@@ -115,19 +102,11 @@ class Compilation {
   /// Optional redirection for stdin, stdout, stderr.
   std::vector<Optional<StringRef>> Redirects;
 
-  /// Callback called after compilation job has been finished.
-  /// Arguments of the callback are the compilation job as an instance of
-  /// class Command and the exit status of the corresponding child process.
-  std::function<void(const Command &, int)> PostCallback;
-
   /// Whether we're compiling for diagnostic purposes.
-  bool ForDiagnostics = false;
+  bool ForDiagnostics;
 
   /// Whether an error during the parsing of the input args.
   bool ContainsError;
-
-  /// Whether to keep temporary files regardless of -save-temps.
-  bool ForceKeepTempFiles = false;
 
 public:
   Compilation(const Driver &D, const ToolChain &DefaultToolChain,
@@ -144,12 +123,12 @@ public:
   }
 
   /// Iterator that visits device toolchains of a given kind.
-  using const_offload_toolchains_iterator =
-      const std::multimap<Action::OffloadKind,
-                          const ToolChain *>::const_iterator;
-  using const_offload_toolchains_range =
-      std::pair<const_offload_toolchains_iterator,
-                const_offload_toolchains_iterator>;
+  typedef const std::multimap<Action::OffloadKind,
+                              const ToolChain *>::const_iterator
+      const_offload_toolchains_iterator;
+  typedef std::pair<const_offload_toolchains_iterator,
+                    const_offload_toolchains_iterator>
+      const_offload_toolchains_range;
 
   template <Action::OffloadKind Kind>
   const_offload_toolchains_range getOffloadToolChains() const {
@@ -215,14 +194,6 @@ public:
 
   const ArgStringMap &getFailureResultFiles() const {
     return FailureResultFiles;
-  }
-
-  /// Installs a handler that is executed when a compilation job is finished.
-  /// The arguments of the callback specify the compilation job as an instance
-  /// of class Command and the exit status of the child process executed that
-  /// job.
-  void setPostCallback(const std::function<void(const Command &, int)> &CB) {
-    PostCallback = CB;
   }
 
   /// Returns the sysroot path.
@@ -310,10 +281,6 @@ public:
   /// Return whether an error during the parsing of the input args.
   bool containsError() const { return ContainsError; }
 
-  /// Force driver to fail before toolchain is created. This is necessary when
-  /// error happens in action builder.
-  void setContainsError() { ContainsError = true; }
-
   /// Redirect - Redirect output of this compilation. Can only be done once.
   ///
   /// \param Redirects - array of optional paths. The array should have a size
@@ -322,7 +289,7 @@ public:
   void Redirect(ArrayRef<Optional<StringRef>> Redirects);
 };
 
-} // namespace driver
-} // namespace clang
+} // end namespace driver
+} // end namespace clang
 
-#endif // LLVM_CLANG_DRIVER_COMPILATION_H
+#endif

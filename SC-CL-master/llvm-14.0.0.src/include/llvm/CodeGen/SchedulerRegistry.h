@@ -1,8 +1,9 @@
 //===- llvm/CodeGen/SchedulerRegistry.h -------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -28,19 +29,16 @@ namespace llvm {
 class ScheduleDAGSDNodes;
 class SelectionDAGISel;
 
-class RegisterScheduler
-    : public MachinePassRegistryNode<
-          ScheduleDAGSDNodes *(*)(SelectionDAGISel *, CodeGenOpt::Level)> {
+class RegisterScheduler : public MachinePassRegistryNode {
 public:
   using FunctionPassCtor = ScheduleDAGSDNodes *(*)(SelectionDAGISel*,
                                                    CodeGenOpt::Level);
 
-  static MachinePassRegistry<FunctionPassCtor> Registry;
+  static MachinePassRegistry Registry;
 
   RegisterScheduler(const char *N, const char *D, FunctionPassCtor C)
-      : MachinePassRegistryNode(N, D, C) {
-    Registry.Add(this);
-  }
+  : MachinePassRegistryNode(N, D, (MachinePassCtor)C)
+  { Registry.Add(this); }
   ~RegisterScheduler() { Registry.Remove(this); }
 
 
@@ -53,7 +51,7 @@ public:
     return (RegisterScheduler *)Registry.getList();
   }
 
-  static void setListener(MachinePassRegistryListener<FunctionPassCtor> *L) {
+  static void setListener(MachinePassRegistryListener *L) {
     Registry.setListener(L);
   }
 };

@@ -1,8 +1,9 @@
 //===- unittest/AST/ExternalASTSourceTest.cpp -----------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -37,7 +38,7 @@ private:
 
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                  StringRef InFile) override {
-    return std::make_unique<ASTConsumer>();
+    return llvm::make_unique<ASTConsumer>();
   }
 
   IntrusiveRefCntPtr<ExternalASTSource> Source;
@@ -53,6 +54,7 @@ bool testExternalASTSource(ExternalASTSource *Source,
       "test.cc", MemoryBuffer::getMemBuffer(FileContents).release());
   const char *Args[] = { "test.cc" };
   CompilerInvocation::CreateFromArgs(*Invocation, Args,
+                                     Args + array_lengthof(Args),
                                      Compiler.getDiagnostics());
   Compiler.setInvocation(std::move(Invocation));
 

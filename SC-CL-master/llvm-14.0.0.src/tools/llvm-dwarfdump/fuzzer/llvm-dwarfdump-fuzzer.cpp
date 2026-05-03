@@ -1,13 +1,14 @@
 //===-- llvm-dwarfdump-fuzzer.cpp - Fuzz the llvm-dwarfdump tool ----------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// This file implements a function that runs llvm-dwarfdump
+/// \brief This file implements a function that runs llvm-dwarfdump
 ///  on a single input. This function is then linked into the Fuzzer library.
 ///
 //===----------------------------------------------------------------------===//

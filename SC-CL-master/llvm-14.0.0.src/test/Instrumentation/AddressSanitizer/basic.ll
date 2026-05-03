@@ -1,13 +1,11 @@
 ; Test basic address sanitizer instrumentation.
 ;
-
-; RUN: opt < %s -passes='asan-pipeline' -S | FileCheck --check-prefixes=CHECK,CHECK-S3 %s
-; RUN: opt < %s -passes='asan-pipeline' -asan-mapping-scale=5 -S | FileCheck --check-prefixes=CHECK,CHECK-S5 %s
+; RUN: opt < %s -asan -asan-module -S | FileCheck --check-prefixes=CHECK,CHECK-S3 %s
+; RUN: opt < %s -asan -asan-module -asan-mapping-scale=5 -S | FileCheck --check-prefixes=CHECK,CHECK-S5 %s
 
 target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v64:64:64-v128:128:128-a0:0:64-s0:64:64-f80:128:128-n8:16:32:64"
 target triple = "x86_64-unknown-linux-gnu"
-; CHECK: @llvm.used = appending global [1 x i8*] [i8* bitcast (void ()* @asan.module_ctor to i8*)]
-; CHECK: @llvm.global_ctors = {{.*}}{ i32 1, void ()* @asan.module_ctor, i8* bitcast (void ()* @asan.module_ctor to i8*) }
+; CHECK: @llvm.global_ctors = {{.*}}@asan.module_ctor
 
 define i32 @test_load(i32* %a) sanitize_address {
 ; CHECK-LABEL: @test_load
@@ -160,15 +158,15 @@ entry:
 ; CHECK-NOT: __asan_report
 ; CHECK: ret i32
 
-declare void @llvm.memset.p0i8.i64(i8* nocapture, i8, i64, i1) nounwind
-declare void @llvm.memmove.p0i8.p0i8.i64(i8* nocapture, i8* nocapture readonly, i64, i1) nounwind
-declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture, i8* nocapture readonly, i64, i1) nounwind
+declare void @llvm.memset.p0i8.i64(i8* nocapture, i8, i64, i32, i1) nounwind
+declare void @llvm.memmove.p0i8.p0i8.i64(i8* nocapture, i8* nocapture readonly, i64, i32, i1) nounwind
+declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture, i8* nocapture readonly, i64, i32, i1) nounwind
 
 define void @memintr_test(i8* %a, i8* %b) nounwind uwtable sanitize_address {
   entry:
-  tail call void @llvm.memset.p0i8.i64(i8* %a, i8 0, i64 100, i1 false)
-  tail call void @llvm.memmove.p0i8.p0i8.i64(i8* %a, i8* %b, i64 100, i1 false)
-  tail call void @llvm.memcpy.p0i8.p0i8.i64(i8* %a, i8* %b, i64 100, i1 false)
+  tail call void @llvm.memset.p0i8.i64(i8* %a, i8 0, i64 100, i32 1, i1 false)
+  tail call void @llvm.memmove.p0i8.p0i8.i64(i8* %a, i8* %b, i64 100, i32 1, i1 false)
+  tail call void @llvm.memcpy.p0i8.p0i8.i64(i8* %a, i8* %b, i64 100, i32 1, i1 false)
   ret void
 }
 
@@ -224,12 +222,8 @@ define void @test_swifterror_3() sanitize_address {
   ret void
 }
 
-;; ctor/dtor have the nounwind attribute. See uwtable.ll, they additionally have
-;; the uwtable attribute with the module flag "uwtable".
-; CHECK: define internal void @asan.module_ctor() #[[#ATTR:]] {{(comdat )?}}{
+; CHECK: define internal void @asan.module_ctor()
 ; CHECK: call void @__asan_init()
-
-; CHECK: attributes #[[#ATTR]] = { nounwind }
 
 ; PROF
 ; CHECK: ![[PROF]] = !{!"branch_weights", i32 1, i32 100000}

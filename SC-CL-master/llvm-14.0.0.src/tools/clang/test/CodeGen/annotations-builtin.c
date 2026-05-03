@@ -43,7 +43,4 @@ int main(int argc, char **argv) {
 // CHECK: call i32 @llvm.annotation.i32
 // CHECK: inttoptr {{.*}} to i8**
     return 0;
-
-    int after_return = __builtin_annotation(argc, "annotation_a");
-// CHECK-NOT: call i32 @llvm.annotation.i32
 }

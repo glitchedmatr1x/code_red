@@ -1,10 +1,7 @@
-; RUN: llc -verify-machineinstrs < %s -mtriple=powerpc-unknown-linux-gnu | FileCheck %s
+; RUN: llc -verify-machineinstrs < %s -mtriple=powerpc-apple-darwin
 ; Avoid reading memory that's already freed.
 
 @llvm.used = appending global [1 x i8*] [ i8* bitcast (i32 (i64)* @_Z13GetSectorSizey to i8*) ], section "llvm.metadata"		; <[1 x i8*]*> [#uses=0]
-
-; CHECK: @_Z13GetSectorSizey
-; CHECK: blr
 
 define i32 @_Z13GetSectorSizey(i64 %Base) nounwind  {
 entry:

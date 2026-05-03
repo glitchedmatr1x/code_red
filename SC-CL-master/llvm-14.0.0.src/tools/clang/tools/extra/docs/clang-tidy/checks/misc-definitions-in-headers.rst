@@ -26,7 +26,6 @@ from multiple translation units.
    static int b = 1;
    const int c = 1;
    const char* const str2 = "foo";
-   constexpr int k = 1;
 
    // Warning: function definition.
    int g() {
@@ -81,11 +80,9 @@ from multiple translation units.
 
    inline int i = 5; // OK: inline variable definition.
 
-   constexpr int f10() { return 0; } // OK: constexpr function implies inline.
+   constexpr int k = 1; // OK: constexpr variable has internal linkage.
 
-   // OK: C++14 variable templates are inline.
-   template <class T>
-   constexpr T pi = T(3.1415926L);
+   constexpr int f10() { return 0; } // OK: constexpr function definition.
 
 Options
 -------
@@ -95,10 +92,10 @@ Options
    A comma-separated list of filename extensions of header files (the filename
    extensions should not include "." prefix). Default is "h,hh,hpp,hxx".
    For header files without an extension, use an empty string (if there are no
-   other desired extensions) or leave an empty element in the list. E.g.,
+   other desired extensions) or leave an empty element in the list. e.g.,
    "h,hh,hpp,hxx," (note the trailing comma).
 
 .. option:: UseHeaderFileExtension
 
-   When `true`, the check will use the file extension to distinguish header
-   files. Default is `true`.
+   When non-zero, the check will use the file extension to distinguish header
+   files. Default is `1`.

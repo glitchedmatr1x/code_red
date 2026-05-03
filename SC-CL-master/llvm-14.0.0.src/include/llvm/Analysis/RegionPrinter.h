@@ -1,8 +1,9 @@
 //===-- RegionPrinter.h - Region printer external interface -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -25,7 +26,7 @@ namespace llvm {
   FunctionPass *createRegionOnlyPrinterPass();
 
 #ifndef NDEBUG
-  /// Open a viewer to display the GraphViz vizualization of the analysis
+  /// @brief Open a viewer to display the GraphViz vizualization of the analysis
   /// result.
   ///
   /// Practical to call in the debugger.
@@ -34,7 +35,7 @@ namespace llvm {
   /// @param RI The analysis to display.
   void viewRegion(llvm::RegionInfo *RI);
 
-  /// Analyze the regions of a function and open its GraphViz
+  /// @brief Analyze the regions of a function and open its GraphViz
   /// visualization in a viewer.
   ///
   /// Useful to call in the debugger.
@@ -45,7 +46,7 @@ namespace llvm {
   /// @param F Function to analyze.
   void viewRegion(const llvm::Function *F);
 
-  /// Open a viewer to display the GraphViz vizualization of the analysis
+  /// @brief Open a viewer to display the GraphViz vizualization of the analysis
   /// result.
   ///
   /// Useful to call in the debugger.
@@ -54,7 +55,7 @@ namespace llvm {
   /// @param RI The analysis to display.
   void viewRegionOnly(llvm::RegionInfo *RI);
 
-  /// Analyze the regions of a function and open its GraphViz
+  /// @brief Analyze the regions of a function and open its GraphViz
   /// visualization in a viewer.
   ///
   /// Useful to call in the debugger.

@@ -1,9 +1,9 @@
 /*===-- irreader_ocaml.c - LLVM OCaml Glue ----------------------*- C++ -*-===*\
 |*                                                                            *|
-|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
-|* Exceptions.                                                                *|
-|* See https://llvm.org/LICENSE.txt for license information.                  *|
-|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
+|*                     The LLVM Compiler Infrastructure                       *|
+|*                                                                            *|
+|* This file is distributed under the University of Illinois Open Source      *|
+|* License. See LICENSE.TXT for details.                                      *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -21,7 +21,8 @@
 void llvm_raise(value Prototype, char *Message);
 
 /* Llvm.llcontext -> Llvm.llmemorybuffer -> Llvm.llmodule */
-value llvm_parse_ir(LLVMContextRef C, LLVMMemoryBufferRef MemBuf) {
+CAMLprim value llvm_parse_ir(LLVMContextRef C,
+                             LLVMMemoryBufferRef MemBuf) {
   CAMLparam0();
   CAMLlocal2(Variant, MessageVal);
   LLVMModuleRef M;
@@ -30,5 +31,5 @@ value llvm_parse_ir(LLVMContextRef C, LLVMMemoryBufferRef MemBuf) {
   if (LLVMParseIRInContext(C, MemBuf, &M, &Message))
     llvm_raise(*caml_named_value("Llvm_irreader.Error"), Message);
 
-  CAMLreturn((value)M);
+  CAMLreturn((value) M);
 }

@@ -8,18 +8,16 @@
 ;
 ; CHECK: !prof
 
-target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
-define void @foo() #0 !dbg !7 {
+define void @foo() local_unnamed_addr !dbg !7 {
 entry:
   tail call void @bar(), !dbg !10
   ret void, !dbg !11
 }
 
 declare void @bar() local_unnamed_addr
-
-attributes #0 = {"local_unnamed_addr" "use-sample-profile"}
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!3, !4, !5}
@@ -32,7 +30,7 @@ attributes #0 = {"local_unnamed_addr" "use-sample-profile"}
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{i32 1, !"wchar_size", i32 4}
 !6 = !{!"clang version 6.0.0 "}
-!7 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 3, type: !8, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: true, unit: !0, retainedNodes: !2)
+!7 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 3, type: !8, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: true, unit: !0, variables: !2)
 !8 = !DISubroutineType(types: !9)
 !9 = !{null}
 !10 = !DILocation(line: 4, column: 5, scope: !7)

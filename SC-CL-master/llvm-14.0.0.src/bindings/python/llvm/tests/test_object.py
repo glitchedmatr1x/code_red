@@ -1,5 +1,3 @@
-from numbers import Integral
-
 from .base import TestBase
 from ..object import ObjectFile
 from ..object import Relocation
@@ -22,9 +20,9 @@ class TestObjectFile(TestBase):
             count += 1
             assert isinstance(section, Section)
             assert isinstance(section.name, str)
-            assert isinstance(section.size, Integral)
+            assert isinstance(section.size, long)
             assert isinstance(section.contents, str)
-            assert isinstance(section.address, Integral)
+            assert isinstance(section.address, long)
             assert len(section.contents) == section.size
 
         self.assertGreater(count, 0)
@@ -40,8 +38,8 @@ class TestObjectFile(TestBase):
             count += 1
             assert isinstance(symbol, Symbol)
             assert isinstance(symbol.name, str)
-            assert isinstance(symbol.address, Integral)
-            assert isinstance(symbol.size, Integral)
+            assert isinstance(symbol.address, long)
+            assert isinstance(symbol.size, long)
 
         self.assertGreater(count, 0)
 
@@ -62,8 +60,8 @@ class TestObjectFile(TestBase):
         for section in o.get_sections():
             for relocation in section.get_relocations():
                 assert isinstance(relocation, Relocation)
-                assert isinstance(relocation.address, Integral)
-                assert isinstance(relocation.offset, Integral)
-                assert isinstance(relocation.type_number, Integral)
+                assert isinstance(relocation.address, long)
+                assert isinstance(relocation.offset, long)
+                assert isinstance(relocation.type_number, long)
                 assert isinstance(relocation.type_name, str)
                 assert isinstance(relocation.value_string, str)

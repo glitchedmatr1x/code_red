@@ -1,8 +1,9 @@
 //===--- SlicingCheck.cpp - clang-tidy-------------------------------------===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -45,7 +46,7 @@ void SlicingCheck::registerMatchers(MatchFinder *Finder) {
   const auto IsWithinDerivedCtor =
       hasParent(cxxConstructorDecl(ofClass(equalsBoundNode("DerivedDecl"))));
 
-  // Assignment slicing: "a = b;" and "a = std::move(b);" variants.
+  // Assignement slicing: "a = b;" and "a = std::move(b);" variants.
   const auto SlicesObjectInAssignment =
       callExpr(callee(cxxMethodDecl(anyOf(isCopyAssignmentOperator(),
                                           isMoveAssignmentOperator()),
@@ -62,21 +63,20 @@ void SlicingCheck::registerMatchers(MatchFinder *Finder) {
       // constructor in DerivedDecl's constructors.
       unless(IsWithinDerivedCtor));
 
-  Finder->addMatcher(traverse(TK_AsIs, expr(anyOf(SlicesObjectInAssignment,
-                                                  SlicesObjectInCtor))
-                                           .bind("Call")),
-                     this);
+  Finder->addMatcher(
+      expr(anyOf(SlicesObjectInAssignment, SlicesObjectInCtor)).bind("Call"),
+      this);
 }
 
 /// Warns on methods overridden in DerivedDecl with respect to BaseDecl.
 /// FIXME: this warns on all overrides outside of the sliced path in case of
 /// multiple inheritance.
-void SlicingCheck::diagnoseSlicedOverriddenMethods(
+void SlicingCheck::DiagnoseSlicedOverriddenMethods(
     const Expr &Call, const CXXRecordDecl &DerivedDecl,
     const CXXRecordDecl &BaseDecl) {
   if (DerivedDecl.getCanonicalDecl() == BaseDecl.getCanonicalDecl())
     return;
-  for (const auto *Method : DerivedDecl.methods()) {
+  for (const auto &Method : DerivedDecl.methods()) {
     // Virtual destructors are OK. We're ignoring constructors since they are
     // tagged as overrides.
     if (isa<CXXConstructorDecl>(Method) || isa<CXXDestructorDecl>(Method))
@@ -92,7 +92,7 @@ void SlicingCheck::diagnoseSlicedOverriddenMethods(
     if (const auto *BaseRecordType = Base.getType()->getAs<RecordType>()) {
       if (const auto *BaseRecord = cast_or_null<CXXRecordDecl>(
               BaseRecordType->getDecl()->getDefinition()))
-        diagnoseSlicedOverriddenMethods(Call, *BaseRecord, BaseDecl);
+        DiagnoseSlicedOverriddenMethods(Call, *BaseRecord, BaseDecl);
     }
   }
 }
@@ -115,7 +115,7 @@ void SlicingCheck::check(const MatchFinder::MatchResult &Result) {
   //   class A { virtual void f(); };
   //   class B : public A {};
   // because in that case calling A::f is the same as calling B::f.
-  diagnoseSlicedOverriddenMethods(*Call, *DerivedDecl, *BaseDecl);
+  DiagnoseSlicedOverriddenMethods(*Call, *DerivedDecl, *BaseDecl);
 
   // Warn when slicing member variables.
   const auto &BaseLayout =

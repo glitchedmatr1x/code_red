@@ -1,8 +1,9 @@
 //===- llvm/CodeGen/MachineLoopInfo.h - Natural Loop Calculator -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -37,7 +38,6 @@
 
 namespace llvm {
 
-class MachineDominatorTree;
 // Implementation in LoopInfoImpl.h
 class MachineLoop;
 extern template class LoopBase<MachineBasicBlock, MachineLoop>;
@@ -54,7 +54,7 @@ public:
   /// that contains the header.
   MachineBasicBlock *getBottomBlock();
 
-  /// Find the block that contains the loop control variable and the
+  /// \brief Find the block that contains the loop control variable and the
   /// loop test. This will return the latch block if it's one of the exiting
   /// blocks. Otherwise, return the exiting block. Return 'null' when
   /// multiple exiting blocks are present.
@@ -66,12 +66,6 @@ public:
   /// cannot find a terminating instruction with location information,
   /// it returns an unknown location.
   DebugLoc getStartLoc() const;
-
-  /// Returns true if the instruction is loop invariant.
-  /// I.e., all virtual register operands are defined outside of the loop,
-  /// physical registers aren't accessed explicitly, and there are no side
-  /// effects that aren't captured by the operands or other flags.
-  bool isLoopInvariant(MachineInstr &I) const;
 
   void dump() const;
 
@@ -95,26 +89,21 @@ class MachineLoopInfo : public MachineFunctionPass {
 public:
   static char ID; // Pass identification, replacement for typeid
 
-  MachineLoopInfo();
-  explicit MachineLoopInfo(MachineDominatorTree &MDT)
-      : MachineFunctionPass(ID) {
-    calculate(MDT);
+  MachineLoopInfo() : MachineFunctionPass(ID) {
+    initializeMachineLoopInfoPass(*PassRegistry::getPassRegistry());
   }
   MachineLoopInfo(const MachineLoopInfo &) = delete;
   MachineLoopInfo &operator=(const MachineLoopInfo &) = delete;
 
   LoopInfoBase<MachineBasicBlock, MachineLoop>& getBase() { return LI; }
 
-  /// Find the block that either is the loop preheader, or could
+  /// \brief Find the block that either is the loop preheader, or could
   /// speculatively be used as the preheader. This is e.g. useful to place
   /// loop setup code. Code that cannot be speculated should not be placed
   /// here. SpeculativePreheader is controlling whether it also tries to
   /// find the speculative preheader if the regular preheader is not present.
-  /// With FindMultiLoopPreheader = false, nullptr will be returned if the found
-  /// preheader is the preheader of multiple loops.
-  MachineBasicBlock *
-  findLoopPreheader(MachineLoop *L, bool SpeculativePreheader = false,
-                    bool FindMultiLoopPreheader = false) const;
+  MachineBasicBlock *findLoopPreheader(MachineLoop *L,
+                                       bool SpeculativePreheader = false) const;
 
   /// The iterator interface to the top-level loops in the current function.
   using iterator = LoopInfoBase<MachineBasicBlock, MachineLoop>::iterator;
@@ -145,7 +134,6 @@ public:
 
   /// Calculate the natural loop information.
   bool runOnMachineFunction(MachineFunction &F) override;
-  void calculate(MachineDominatorTree &MDT);
 
   void releaseMemory() override { LI.releaseMemory(); }
 

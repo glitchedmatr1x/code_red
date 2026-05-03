@@ -121,12 +121,6 @@ non-obvious ways.  Here are some hints and tips:
   miscompilation.  Programs should be temporarily modified to disable outputs
   that are likely to vary from run to run.
 
-* In the `crash debugger`_, ``bugpoint`` does not distinguish different crashes
-  during reduction. Thus, if new crash or miscompilation happens, ``bugpoint``
-  will continue with the new crash instead. If you would like to stick to
-  particular crash, you should write check scripts to validate the error
-  message, see ``-compile-command`` in :doc:`CommandGuide/bugpoint`.
-
 * In the code generator and miscompilation debuggers, debugging will go faster
   if you manually modify the program or its inputs to reduce the runtime, but
   still exhibit the problem.
@@ -204,14 +198,14 @@ desired ranges.  For example:
 
   static int calledCount = 0;
   calledCount++;
-  LLVM_DEBUG(if (calledCount < 212) return false);
-  LLVM_DEBUG(if (calledCount > 217) return false);
-  LLVM_DEBUG(if (calledCount == 213) return false);
-  LLVM_DEBUG(if (calledCount == 214) return false);
-  LLVM_DEBUG(if (calledCount == 215) return false);
-  LLVM_DEBUG(if (calledCount == 216) return false);
-  LLVM_DEBUG(dbgs() << "visitXOR calledCount: " << calledCount << "\n");
-  LLVM_DEBUG(dbgs() << "I: "; I->dump());
+  DEBUG(if (calledCount < 212) return false);
+  DEBUG(if (calledCount > 217) return false);
+  DEBUG(if (calledCount == 213) return false);
+  DEBUG(if (calledCount == 214) return false);
+  DEBUG(if (calledCount == 215) return false);
+  DEBUG(if (calledCount == 216) return false);
+  DEBUG(dbgs() << "visitXOR calledCount: " << calledCount << "\n");
+  DEBUG(dbgs() << "I: "; I->dump());
 
 could be added to ``visitXOR`` to limit ``visitXor`` to being applied only to
 calls 212 and 217. This is from an actual test case and raises an important

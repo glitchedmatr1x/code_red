@@ -1,8 +1,9 @@
 //===- BinaryStream.h - Base interface for a stream of data -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -25,7 +26,7 @@ enum BinaryStreamFlags {
   LLVM_MARK_AS_BITMASK_ENUM(/* LargestValue = */ BSF_Append)
 };
 
-/// An interface for accessing data in a stream-like format, but which
+/// \brief An interface for accessing data in a stream-like format, but which
 /// discourages copying.  Instead of specifying a buffer in which to copy
 /// data on a read, the API returns an ArrayRef to data owned by the stream's
 /// implementation.  Since implementations may not necessarily store data in a
@@ -38,25 +39,25 @@ public:
 
   virtual llvm::support::endianness getEndian() const = 0;
 
-  /// Given an offset into the stream and a number of bytes, attempt to
+  /// \brief Given an offset into the stream and a number of bytes, attempt to
   /// read the bytes and set the output ArrayRef to point to data owned by the
   /// stream.
-  virtual Error readBytes(uint64_t Offset, uint64_t Size,
+  virtual Error readBytes(uint32_t Offset, uint32_t Size,
                           ArrayRef<uint8_t> &Buffer) = 0;
 
-  /// Given an offset into the stream, read as much as possible without
+  /// \brief Given an offset into the stream, read as much as possible without
   /// copying any data.
-  virtual Error readLongestContiguousChunk(uint64_t Offset,
+  virtual Error readLongestContiguousChunk(uint32_t Offset,
                                            ArrayRef<uint8_t> &Buffer) = 0;
 
-  /// Return the number of bytes of data in this stream.
-  virtual uint64_t getLength() = 0;
+  /// \brief Return the number of bytes of data in this stream.
+  virtual uint32_t getLength() = 0;
 
-  /// Return the properties of this stream.
+  /// \brief Return the properties of this stream.
   virtual BinaryStreamFlags getFlags() const { return BSF_None; }
 
 protected:
-  Error checkOffsetForRead(uint64_t Offset, uint64_t DataSize) {
+  Error checkOffsetForRead(uint32_t Offset, uint32_t DataSize) {
     if (Offset > getLength())
       return make_error<BinaryStreamError>(stream_error_code::invalid_offset);
     if (getLength() < DataSize + Offset)
@@ -65,7 +66,7 @@ protected:
   }
 };
 
-/// A BinaryStream which can be read from as well as written to.  Note
+/// \brief A BinaryStream which can be read from as well as written to.  Note
 /// that writing to a BinaryStream always necessitates copying from the input
 /// buffer to the stream's backing store.  Streams are assumed to be buffered
 /// so that to be portable it is necessary to call commit() on the stream when
@@ -74,19 +75,19 @@ class WritableBinaryStream : public BinaryStream {
 public:
   ~WritableBinaryStream() override = default;
 
-  /// Attempt to write the given bytes into the stream at the desired
+  /// \brief Attempt to write the given bytes into the stream at the desired
   /// offset. This will always necessitate a copy.  Cannot shrink or grow the
   /// stream, only writes into existing allocated space.
-  virtual Error writeBytes(uint64_t Offset, ArrayRef<uint8_t> Data) = 0;
+  virtual Error writeBytes(uint32_t Offset, ArrayRef<uint8_t> Data) = 0;
 
-  /// For buffered streams, commits changes to the backing store.
+  /// \brief For buffered streams, commits changes to the backing store.
   virtual Error commit() = 0;
 
-  /// Return the properties of this stream.
+  /// \brief Return the properties of this stream.
   BinaryStreamFlags getFlags() const override { return BSF_Write; }
 
 protected:
-  Error checkOffsetForWrite(uint64_t Offset, uint64_t DataSize) {
+  Error checkOffsetForWrite(uint32_t Offset, uint32_t DataSize) {
     if (!(getFlags() & BSF_Append))
       return checkOffsetForRead(Offset, DataSize);
 

@@ -1,8 +1,9 @@
 //===- llvm/Analysis/LoopAccessAnalysis.h -----------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -15,41 +16,47 @@
 #define LLVM_ANALYSIS_LOOPACCESSANALYSIS_H
 
 #include "llvm/ADT/EquivalenceClasses.h"
+#include "llvm/ADT/Optional.h"
+#include "llvm/ADT/SetVector.h"
+#include "llvm/Analysis/AliasAnalysis.h"
+#include "llvm/Analysis/AliasSetTracker.h"
 #include "llvm/Analysis/LoopAnalysisManager.h"
 #include "llvm/Analysis/ScalarEvolutionExpressions.h"
 #include "llvm/IR/DiagnosticInfo.h"
+#include "llvm/IR/ValueHandle.h"
 #include "llvm/Pass.h"
+#include "llvm/Support/raw_ostream.h"
 
 namespace llvm {
 
-class AAResults;
+class Value;
 class DataLayout;
+class ScalarEvolution;
 class Loop;
-class LoopAccessInfo;
-class raw_ostream;
 class SCEV;
 class SCEVUnionPredicate;
-class Value;
+class LoopAccessInfo;
+class OptimizationRemarkEmitter;
 
-/// Collection of parameters shared beetween the Loop Vectorizer and the
+/// \brief Collection of parameters shared beetween the Loop Vectorizer and the
 /// Loop Access Analysis.
 struct VectorizerParams {
-  /// Maximum SIMD width.
+  /// \brief Maximum SIMD width.
   static const unsigned MaxVectorWidth;
 
-  /// VF as overridden by the user.
+  /// \brief VF as overridden by the user.
   static unsigned VectorizationFactor;
-  /// Interleave factor as overridden by the user.
+  /// \brief Interleave factor as overridden by the user.
   static unsigned VectorizationInterleave;
-  /// True if force-vector-interleave was specified by the user.
+  /// \brief True if force-vector-interleave was specified by the user.
   static bool isInterleaveForced();
 
-  /// \When performing memory disambiguation checks at runtime do not
+  /// \\brief When performing memory disambiguation checks at runtime do not
   /// make more than this number of comparisons.
   static unsigned RuntimeMemoryCheckThreshold;
 };
 
-/// Checks memory dependences among accesses to the same underlying
+/// \brief Checks memory dependences among accesses to the same underlying
 /// object to determine whether there vectorization is legal or not (and at
 /// which vectorization factor).
 ///
@@ -87,25 +94,12 @@ class MemoryDepChecker {
 public:
   typedef PointerIntPair<Value *, 1, bool> MemAccessInfo;
   typedef SmallVector<MemAccessInfo, 8> MemAccessInfoList;
-  /// Set of potential dependent memory accesses.
+  /// \brief Set of potential dependent memory accesses.
   typedef EquivalenceClasses<MemAccessInfo> DepCandidates;
 
-  /// Type to keep track of the status of the dependence check. The order of
-  /// the elements is important and has to be from most permissive to least
-  /// permissive.
-  enum class VectorizationSafetyStatus {
-    // Can vectorize safely without RT checks. All dependences are known to be
-    // safe.
-    Safe,
-    // Can possibly vectorize with RT checks to overcome unknown dependencies.
-    PossiblySafeWithRtChecks,
-    // Cannot vectorize due to known unsafe dependencies.
-    Unsafe,
-  };
-
-  /// Dependece between memory access instructions.
+  /// \brief Dependece between memory access instructions.
   struct Dependence {
-    /// The type of the dependence.
+    /// \brief The type of the dependence.
     enum DepType {
       // No dependence.
       NoDep,
@@ -133,88 +127,87 @@ public:
       BackwardVectorizableButPreventsForwarding
     };
 
-    /// String version of the types.
+    /// \brief String version of the types.
     static const char *DepName[];
 
-    /// Index of the source of the dependence in the InstMap vector.
+    /// \brief Index of the source of the dependence in the InstMap vector.
     unsigned Source;
-    /// Index of the destination of the dependence in the InstMap vector.
+    /// \brief Index of the destination of the dependence in the InstMap vector.
     unsigned Destination;
-    /// The type of the dependence.
+    /// \brief The type of the dependence.
     DepType Type;
 
     Dependence(unsigned Source, unsigned Destination, DepType Type)
         : Source(Source), Destination(Destination), Type(Type) {}
 
-    /// Return the source instruction of the dependence.
+    /// \brief Return the source instruction of the dependence.
     Instruction *getSource(const LoopAccessInfo &LAI) const;
-    /// Return the destination instruction of the dependence.
+    /// \brief Return the destination instruction of the dependence.
     Instruction *getDestination(const LoopAccessInfo &LAI) const;
 
-    /// Dependence types that don't prevent vectorization.
-    static VectorizationSafetyStatus isSafeForVectorization(DepType Type);
+    /// \brief Dependence types that don't prevent vectorization.
+    static bool isSafeForVectorization(DepType Type);
 
-    /// Lexically forward dependence.
+    /// \brief Lexically forward dependence.
     bool isForward() const;
-    /// Lexically backward dependence.
+    /// \brief Lexically backward dependence.
     bool isBackward() const;
 
-    /// May be a lexically backward dependence type (includes Unknown).
+    /// \brief May be a lexically backward dependence type (includes Unknown).
     bool isPossiblyBackward() const;
 
-    /// Print the dependence.  \p Instr is used to map the instruction
+    /// \brief Print the dependence.  \p Instr is used to map the instruction
     /// indices to instructions.
     void print(raw_ostream &OS, unsigned Depth,
                const SmallVectorImpl<Instruction *> &Instrs) const;
   };
 
   MemoryDepChecker(PredicatedScalarEvolution &PSE, const Loop *L)
-      : PSE(PSE), InnermostLoop(L) {}
+      : PSE(PSE), InnermostLoop(L), AccessIdx(0), MaxSafeRegisterWidth(-1U),
+        ShouldRetryWithRuntimeCheck(false), SafeForVectorization(true),
+        RecordDependences(true) {}
 
-  /// Register the location (instructions are given increasing numbers)
+  /// \brief Register the location (instructions are given increasing numbers)
   /// of a write access.
-  void addAccess(StoreInst *SI);
+  void addAccess(StoreInst *SI) {
+    Value *Ptr = SI->getPointerOperand();
+    Accesses[MemAccessInfo(Ptr, true)].push_back(AccessIdx);
+    InstMap.push_back(SI);
+    ++AccessIdx;
+  }
 
-  /// Register the location (instructions are given increasing numbers)
+  /// \brief Register the location (instructions are given increasing numbers)
   /// of a write access.
-  void addAccess(LoadInst *LI);
+  void addAccess(LoadInst *LI) {
+    Value *Ptr = LI->getPointerOperand();
+    Accesses[MemAccessInfo(Ptr, false)].push_back(AccessIdx);
+    InstMap.push_back(LI);
+    ++AccessIdx;
+  }
 
-  /// Check whether the dependencies between the accesses are safe.
+  /// \brief Check whether the dependencies between the accesses are safe.
   ///
   /// Only checks sets with elements in \p CheckDeps.
   bool areDepsSafe(DepCandidates &AccessSets, MemAccessInfoList &CheckDeps,
                    const ValueToValueMap &Strides);
 
-  /// No memory dependence was encountered that would inhibit
+  /// \brief No memory dependence was encountered that would inhibit
   /// vectorization.
-  bool isSafeForVectorization() const {
-    return Status == VectorizationSafetyStatus::Safe;
-  }
+  bool isSafeForVectorization() const { return SafeForVectorization; }
 
-  /// Return true if the number of elements that are safe to operate on
-  /// simultaneously is not bounded.
-  bool isSafeForAnyVectorWidth() const {
-    return MaxSafeVectorWidthInBits == UINT_MAX;
-  }
-
-  /// The maximum number of bytes of a vector register we can vectorize
+  /// \brief The maximum number of bytes of a vector register we can vectorize
   /// the accesses safely with.
   uint64_t getMaxSafeDepDistBytes() { return MaxSafeDepDistBytes; }
 
-  /// Return the number of elements that are safe to operate on
+  /// \brief Return the number of elements that are safe to operate on
   /// simultaneously, multiplied by the size of the element in bits.
-  uint64_t getMaxSafeVectorWidthInBits() const {
-    return MaxSafeVectorWidthInBits;
-  }
+  uint64_t getMaxSafeRegisterWidth() const { return MaxSafeRegisterWidth; }
 
-  /// In same cases when the dependency check fails we can still
+  /// \brief In same cases when the dependency check fails we can still
   /// vectorize the loop with a dynamic array access check.
-  bool shouldRetryWithRuntimeCheck() const {
-    return FoundNonConstantDistanceDependence &&
-           Status == VectorizationSafetyStatus::PossiblySafeWithRtChecks;
-  }
+  bool shouldRetryWithRuntimeCheck() { return ShouldRetryWithRuntimeCheck; }
 
-  /// Returns the memory dependences.  If null is returned we exceeded
+  /// \brief Returns the memory dependences.  If null is returned we exceeded
   /// the MaxDependences threshold and this information is not
   /// available.
   const SmallVectorImpl<Dependence> *getDependences() const {
@@ -223,13 +216,13 @@ public:
 
   void clearDependences() { Dependences.clear(); }
 
-  /// The vector of memory access instructions.  The indices are used as
+  /// \brief The vector of memory access instructions.  The indices are used as
   /// instruction identifiers in the Dependence class.
   const SmallVectorImpl<Instruction *> &getMemoryInstructions() const {
     return InstMap;
   }
 
-  /// Generate a mapping between the memory instructions and their
+  /// \brief Generate a mapping between the memory instructions and their
   /// indices according to program order.
   DenseMap<Instruction *, unsigned> generateInstructionOrderMap() const {
     DenseMap<Instruction *, unsigned> OrderMap;
@@ -240,7 +233,7 @@ public:
     return OrderMap;
   }
 
-  /// Find the set of instructions that read or write via \p Ptr.
+  /// \brief Find the set of instructions that read or write via \p Ptr.
   SmallVector<Instruction *, 4> getInstructionsForAccess(Value *Ptr,
                                                          bool isWrite) const;
 
@@ -254,43 +247,42 @@ private:
   PredicatedScalarEvolution &PSE;
   const Loop *InnermostLoop;
 
-  /// Maps access locations (ptr, read/write) to program order.
+  /// \brief Maps access locations (ptr, read/write) to program order.
   DenseMap<MemAccessInfo, std::vector<unsigned> > Accesses;
 
-  /// Memory access instructions in program order.
+  /// \brief Memory access instructions in program order.
   SmallVector<Instruction *, 16> InstMap;
 
-  /// The program order index to be used for the next instruction.
-  unsigned AccessIdx = 0;
+  /// \brief The program order index to be used for the next instruction.
+  unsigned AccessIdx;
 
   // We can access this many bytes in parallel safely.
-  uint64_t MaxSafeDepDistBytes = 0;
+  uint64_t MaxSafeDepDistBytes;
 
-  /// Number of elements (from consecutive iterations) that are safe to
+  /// \brief Number of elements (from consecutive iterations) that are safe to
   /// operate on simultaneously, multiplied by the size of the element in bits.
   /// The size of the element is taken from the memory access that is most
   /// restrictive.
-  uint64_t MaxSafeVectorWidthInBits = -1U;
+  uint64_t MaxSafeRegisterWidth;
 
-  /// If we see a non-constant dependence distance we can still try to
+  /// \brief If we see a non-constant dependence distance we can still try to
   /// vectorize this loop with runtime checks.
-  bool FoundNonConstantDistanceDependence = false;
+  bool ShouldRetryWithRuntimeCheck;
 
-  /// Result of the dependence checks, indicating whether the checked
-  /// dependences are safe for vectorization, require RT checks or are known to
-  /// be unsafe.
-  VectorizationSafetyStatus Status = VectorizationSafetyStatus::Safe;
+  /// \brief No memory dependence was encountered that would inhibit
+  /// vectorization.
+  bool SafeForVectorization;
 
-  //// True if Dependences reflects the dependences in the
+  //// \brief True if Dependences reflects the dependences in the
   //// loop.  If false we exceeded MaxDependences and
   //// Dependences is invalid.
-  bool RecordDependences = true;
+  bool RecordDependences;
 
-  /// Memory dependences collected during the analysis.  Only valid if
+  /// \brief Memory dependences collected during the analysis.  Only valid if
   /// RecordDependences is true.
   SmallVector<Dependence, 8> Dependences;
 
-  /// Check whether there is a plausible dependence between the two
+  /// \brief Check whether there is a plausible dependence between the two
   /// accesses.
   ///
   /// Access \p A must happen before \p B in program order. The two indices
@@ -306,64 +298,17 @@ private:
                                   const MemAccessInfo &B, unsigned BIdx,
                                   const ValueToValueMap &Strides);
 
-  /// Check whether the data dependence could prevent store-load
+  /// \brief Check whether the data dependence could prevent store-load
   /// forwarding.
   ///
   /// \return false if we shouldn't vectorize at all or avoid larger
   /// vectorization factors by limiting MaxSafeDepDistBytes.
   bool couldPreventStoreLoadForward(uint64_t Distance, uint64_t TypeByteSize);
-
-  /// Updates the current safety status with \p S. We can go from Safe to
-  /// either PossiblySafeWithRtChecks or Unsafe and from
-  /// PossiblySafeWithRtChecks to Unsafe.
-  void mergeInStatus(VectorizationSafetyStatus S);
 };
 
-class RuntimePointerChecking;
-/// A grouping of pointers. A single memcheck is required between
-/// two groups.
-struct RuntimeCheckingPtrGroup {
-  /// Create a new pointer checking group containing a single
-  /// pointer, with index \p Index in RtCheck.
-  RuntimeCheckingPtrGroup(unsigned Index, RuntimePointerChecking &RtCheck);
-
-  RuntimeCheckingPtrGroup(unsigned Index, const SCEV *Start, const SCEV *End,
-                          unsigned AS)
-      : High(End), Low(Start), AddressSpace(AS) {
-    Members.push_back(Index);
-  }
-
-  /// Tries to add the pointer recorded in RtCheck at index
-  /// \p Index to this pointer checking group. We can only add a pointer
-  /// to a checking group if we will still be able to get
-  /// the upper and lower bounds of the check. Returns true in case
-  /// of success, false otherwise.
-  bool addPointer(unsigned Index, RuntimePointerChecking &RtCheck);
-  bool addPointer(unsigned Index, const SCEV *Start, const SCEV *End,
-                  unsigned AS, ScalarEvolution &SE);
-
-  /// The SCEV expression which represents the upper bound of all the
-  /// pointers in this group.
-  const SCEV *High;
-  /// The SCEV expression which represents the lower bound of all the
-  /// pointers in this group.
-  const SCEV *Low;
-  /// Indices of all the pointers that constitute this grouping.
-  SmallVector<unsigned, 2> Members;
-  /// Address space of the involved pointers.
-  unsigned AddressSpace;
-};
-
-/// A memcheck which made up of a pair of grouped pointers.
-typedef std::pair<const RuntimeCheckingPtrGroup *,
-                  const RuntimeCheckingPtrGroup *>
-    RuntimePointerCheck;
-
-/// Holds information about the memory runtime legality checks to verify
+/// \brief Holds information about the memory runtime legality checks to verify
 /// that a group of pointers do not overlap.
 class RuntimePointerChecking {
-  friend struct RuntimeCheckingPtrGroup;
-
 public:
   struct PointerInfo {
     /// Holds the pointer value that we need to check.
@@ -392,7 +337,7 @@ public:
           AliasSetId(AliasSetId), Expr(Expr) {}
   };
 
-  RuntimePointerChecking(ScalarEvolution *SE) : SE(SE) {}
+  RuntimePointerChecking(ScalarEvolution *SE) : Need(false), SE(SE) {}
 
   /// Reset the state of the pointer runtime information.
   void reset() {
@@ -410,46 +355,84 @@ public:
               unsigned ASId, const ValueToValueMap &Strides,
               PredicatedScalarEvolution &PSE);
 
-  /// No run-time memory checking is necessary.
+  /// \brief No run-time memory checking is necessary.
   bool empty() const { return Pointers.empty(); }
 
-  /// Generate the checks and store it.  This also performs the grouping
+  /// A grouping of pointers. A single memcheck is required between
+  /// two groups.
+  struct CheckingPtrGroup {
+    /// \brief Create a new pointer checking group containing a single
+    /// pointer, with index \p Index in RtCheck.
+    CheckingPtrGroup(unsigned Index, RuntimePointerChecking &RtCheck)
+        : RtCheck(RtCheck), High(RtCheck.Pointers[Index].End),
+          Low(RtCheck.Pointers[Index].Start) {
+      Members.push_back(Index);
+    }
+
+    /// \brief Tries to add the pointer recorded in RtCheck at index
+    /// \p Index to this pointer checking group. We can only add a pointer
+    /// to a checking group if we will still be able to get
+    /// the upper and lower bounds of the check. Returns true in case
+    /// of success, false otherwise.
+    bool addPointer(unsigned Index);
+
+    /// Constitutes the context of this pointer checking group. For each
+    /// pointer that is a member of this group we will retain the index
+    /// at which it appears in RtCheck.
+    RuntimePointerChecking &RtCheck;
+    /// The SCEV expression which represents the upper bound of all the
+    /// pointers in this group.
+    const SCEV *High;
+    /// The SCEV expression which represents the lower bound of all the
+    /// pointers in this group.
+    const SCEV *Low;
+    /// Indices of all the pointers that constitute this grouping.
+    SmallVector<unsigned, 2> Members;
+  };
+
+  /// \brief A memcheck which made up of a pair of grouped pointers.
+  ///
+  /// These *have* to be const for now, since checks are generated from
+  /// CheckingPtrGroups in LAI::addRuntimeChecks which is a const member
+  /// function.  FIXME: once check-generation is moved inside this class (after
+  /// the PtrPartition hack is removed), we could drop const.
+  typedef std::pair<const CheckingPtrGroup *, const CheckingPtrGroup *>
+      PointerCheck;
+
+  /// \brief Generate the checks and store it.  This also performs the grouping
   /// of pointers to reduce the number of memchecks necessary.
   void generateChecks(MemoryDepChecker::DepCandidates &DepCands,
                       bool UseDependencies);
 
-  /// Returns the checks that generateChecks created.
-  const SmallVectorImpl<RuntimePointerCheck> &getChecks() const {
-    return Checks;
-  }
+  /// \brief Returns the checks that generateChecks created.
+  const SmallVector<PointerCheck, 4> &getChecks() const { return Checks; }
 
-  /// Decide if we need to add a check between two groups of pointers,
+  /// \brief Decide if we need to add a check between two groups of pointers,
   /// according to needsChecking.
-  bool needsChecking(const RuntimeCheckingPtrGroup &M,
-                     const RuntimeCheckingPtrGroup &N) const;
+  bool needsChecking(const CheckingPtrGroup &M,
+                     const CheckingPtrGroup &N) const;
 
-  /// Returns the number of run-time checks required according to
+  /// \brief Returns the number of run-time checks required according to
   /// needsChecking.
   unsigned getNumberOfChecks() const { return Checks.size(); }
 
-  /// Print the list run-time memory checks necessary.
+  /// \brief Print the list run-time memory checks necessary.
   void print(raw_ostream &OS, unsigned Depth = 0) const;
 
   /// Print \p Checks.
-  void printChecks(raw_ostream &OS,
-                   const SmallVectorImpl<RuntimePointerCheck> &Checks,
+  void printChecks(raw_ostream &OS, const SmallVectorImpl<PointerCheck> &Checks,
                    unsigned Depth = 0) const;
 
   /// This flag indicates if we need to add the runtime check.
-  bool Need = false;
+  bool Need;
 
   /// Information about the pointers that may require checking.
   SmallVector<PointerInfo, 2> Pointers;
 
   /// Holds a partitioning of pointers into "check groups".
-  SmallVector<RuntimeCheckingPtrGroup, 2> CheckingGroups;
+  SmallVector<CheckingPtrGroup, 2> CheckingGroups;
 
-  /// Check if pointers are in the same partition
+  /// \brief Check if pointers are in the same partition
   ///
   /// \p PtrToPartition contains the partition number for pointers (-1 if the
   /// pointer belongs to multiple partitions).
@@ -457,19 +440,17 @@ public:
   arePointersInSamePartition(const SmallVectorImpl<int> &PtrToPartition,
                              unsigned PtrIdx1, unsigned PtrIdx2);
 
-  /// Decide whether we need to issue a run-time check for pointer at
+  /// \brief Decide whether we need to issue a run-time check for pointer at
   /// index \p I and \p J to prove their independence.
   bool needsChecking(unsigned I, unsigned J) const;
 
-  /// Return PointerInfo for pointer at index \p PtrIdx.
+  /// \brief Return PointerInfo for pointer at index \p PtrIdx.
   const PointerInfo &getPointerInfo(unsigned PtrIdx) const {
     return Pointers[PtrIdx];
   }
 
-  ScalarEvolution *getSE() const { return SE; }
-
 private:
-  /// Groups pointers such that a single memcheck is required
+  /// \brief Groups pointers such that a single memcheck is required
   /// between two different groups. This will clear the CheckingGroups vector
   /// and re-compute it. We will only group dependecies if \p UseDependencies
   /// is true, otherwise we will create a separate group for each pointer.
@@ -477,17 +458,18 @@ private:
                    bool UseDependencies);
 
   /// Generate the checks and return them.
-  SmallVector<RuntimePointerCheck, 4> generateChecks() const;
+  SmallVector<PointerCheck, 4>
+  generateChecks() const;
 
   /// Holds a pointer to the ScalarEvolution analysis.
   ScalarEvolution *SE;
 
-  /// Set of run-time checks required to establish independence of
+  /// \brief Set of run-time checks required to establish independence of
   /// otherwise may-aliasing pointers in the loop.
-  SmallVector<RuntimePointerCheck, 4> Checks;
+  SmallVector<PointerCheck, 4> Checks;
 };
 
-/// Drive the analysis of memory accesses in the loop
+/// \brief Drive the analysis of memory accesses in the loop
 ///
 /// This class is responsible for analyzing the memory accesses of a loop.  It
 /// collects the accesses and then its main helper the AccessAnalysis class
@@ -511,22 +493,17 @@ private:
 class LoopAccessInfo {
 public:
   LoopAccessInfo(Loop *L, ScalarEvolution *SE, const TargetLibraryInfo *TLI,
-                 AAResults *AA, DominatorTree *DT, LoopInfo *LI);
+                 AliasAnalysis *AA, DominatorTree *DT, LoopInfo *LI);
 
   /// Return true we can analyze the memory accesses in the loop and there are
   /// no memory dependence cycles.
   bool canVectorizeMemory() const { return CanVecMem; }
 
-  /// Return true if there is a convergent operation in the loop. There may
-  /// still be reported runtime pointer checks that would be required, but it is
-  /// not legal to insert them.
-  bool hasConvergentOp() const { return HasConvergentOp; }
-
   const RuntimePointerChecking *getRuntimePointerChecking() const {
     return PtrRtChecking.get();
   }
 
-  /// Number of memchecks required to prove independence of otherwise
+  /// \brief Number of memchecks required to prove independence of otherwise
   /// may-alias pointers.
   unsigned getNumRuntimePointerChecks() const {
     return PtrRtChecking->getNumberOfChecks();
@@ -544,35 +521,54 @@ public:
   unsigned getNumStores() const { return NumStores; }
   unsigned getNumLoads() const { return NumLoads;}
 
-  /// The diagnostics report generated for the analysis.  E.g. why we
+  /// \brief Add code that checks at runtime if the accessed arrays overlap.
+  ///
+  /// Returns a pair of instructions where the first element is the first
+  /// instruction generated in possibly a sequence of instructions and the
+  /// second value is the final comparator value or NULL if no check is needed.
+  std::pair<Instruction *, Instruction *>
+  addRuntimeChecks(Instruction *Loc) const;
+
+  /// \brief Generete the instructions for the checks in \p PointerChecks.
+  ///
+  /// Returns a pair of instructions where the first element is the first
+  /// instruction generated in possibly a sequence of instructions and the
+  /// second value is the final comparator value or NULL if no check is needed.
+  std::pair<Instruction *, Instruction *>
+  addRuntimeChecks(Instruction *Loc,
+                   const SmallVectorImpl<RuntimePointerChecking::PointerCheck>
+                       &PointerChecks) const;
+
+  /// \brief The diagnostics report generated for the analysis.  E.g. why we
   /// couldn't analyze the loop.
   const OptimizationRemarkAnalysis *getReport() const { return Report.get(); }
 
-  /// the Memory Dependence Checker which can determine the
+  /// \brief the Memory Dependence Checker which can determine the
   /// loop-independent and loop-carried dependences between memory accesses.
   const MemoryDepChecker &getDepChecker() const { return *DepChecker; }
 
-  /// Return the list of instructions that use \p Ptr to read or write
+  /// \brief Return the list of instructions that use \p Ptr to read or write
   /// memory.
   SmallVector<Instruction *, 4> getInstructionsForAccess(Value *Ptr,
                                                          bool isWrite) const {
     return DepChecker->getInstructionsForAccess(Ptr, isWrite);
   }
 
-  /// If an access has a symbolic strides, this maps the pointer value to
+  /// \brief If an access has a symbolic strides, this maps the pointer value to
   /// the stride symbol.
   const ValueToValueMap &getSymbolicStrides() const { return SymbolicStrides; }
 
-  /// Pointer has a symbolic stride.
+  /// \brief Pointer has a symbolic stride.
   bool hasStride(Value *V) const { return StrideSet.count(V); }
 
-  /// Print the information about the memory accesses in the loop.
+  /// \brief Print the information about the memory accesses in the loop.
   void print(raw_ostream &OS, unsigned Depth = 0) const;
 
-  /// If the loop has memory dependence involving an invariant address, i.e. two
-  /// stores or a store and a load, then return true, else return false.
-  bool hasDependenceInvolvingLoopInvariantAddress() const {
-    return HasDependenceInvolvingLoopInvariantAddress;
+  /// \brief Checks existence of store to invariant address inside loop.
+  /// If the loop has any store to invariant address, then it returns true,
+  /// else returns false.
+  bool hasStoreToLoopInvariantAddress() const {
+    return StoreToLoopInvariantAddress;
   }
 
   /// Used to add runtime SCEV checks. Simplifies SCEV expressions and converts
@@ -583,15 +579,15 @@ public:
   const PredicatedScalarEvolution &getPSE() const { return *PSE; }
 
 private:
-  /// Analyze the loop.
-  void analyzeLoop(AAResults *AA, LoopInfo *LI,
+  /// \brief Analyze the loop.
+  void analyzeLoop(AliasAnalysis *AA, LoopInfo *LI,
                    const TargetLibraryInfo *TLI, DominatorTree *DT);
 
-  /// Check if the structure of the loop allows it to be analyzed by this
+  /// \brief Check if the structure of the loop allows it to be analyzed by this
   /// pass.
   bool canAnalyzeLoop();
 
-  /// Save the analysis remark.
+  /// \brief Save the analysis remark.
   ///
   /// LAA does not directly emits the remarks.  Instead it stores it which the
   /// client can retrieve and presents as its own analysis
@@ -599,7 +595,7 @@ private:
   OptimizationRemarkAnalysis &recordAnalysis(StringRef RemarkName,
                                              Instruction *Instr = nullptr);
 
-  /// Collect memory access with loop invariant strides.
+  /// \brief Collect memory access with loop invariant strides.
   ///
   /// Looks for accesses like "a[i * StrideA]" where "StrideA" is loop
   /// invariant.
@@ -611,53 +607,54 @@ private:
   /// at runtime. Using std::unique_ptr to make using move ctor simpler.
   std::unique_ptr<RuntimePointerChecking> PtrRtChecking;
 
-  /// the Memory Dependence Checker which can determine the
+  /// \brief the Memory Dependence Checker which can determine the
   /// loop-independent and loop-carried dependences between memory accesses.
   std::unique_ptr<MemoryDepChecker> DepChecker;
 
   Loop *TheLoop;
 
-  unsigned NumLoads = 0;
-  unsigned NumStores = 0;
+  unsigned NumLoads;
+  unsigned NumStores;
 
-  uint64_t MaxSafeDepDistBytes = -1;
+  uint64_t MaxSafeDepDistBytes;
 
-  /// Cache the result of analyzeLoop.
-  bool CanVecMem = false;
-  bool HasConvergentOp = false;
+  /// \brief Cache the result of analyzeLoop.
+  bool CanVecMem;
 
-  /// Indicator that there are non vectorizable stores to a uniform address.
-  bool HasDependenceInvolvingLoopInvariantAddress = false;
+  /// \brief Indicator for storing to uniform addresses.
+  /// If a loop has write to a loop invariant address then it should be true.
+  bool StoreToLoopInvariantAddress;
 
-  /// The diagnostics report generated for the analysis.  E.g. why we
+  /// \brief The diagnostics report generated for the analysis.  E.g. why we
   /// couldn't analyze the loop.
   std::unique_ptr<OptimizationRemarkAnalysis> Report;
 
-  /// If an access has a symbolic strides, this maps the pointer value to
+  /// \brief If an access has a symbolic strides, this maps the pointer value to
   /// the stride symbol.
   ValueToValueMap SymbolicStrides;
 
-  /// Set of symbolic strides values.
+  /// \brief Set of symbolic strides values.
   SmallPtrSet<Value *, 8> StrideSet;
 };
 
 Value *stripIntegerCast(Value *V);
 
-/// Return the SCEV corresponding to a pointer with the symbolic stride
+/// \brief Return the SCEV corresponding to a pointer with the symbolic stride
 /// replaced with constant one, assuming the SCEV predicate associated with
 /// \p PSE is true.
 ///
 /// If necessary this method will version the stride of the pointer according
 /// to \p PtrToStride and therefore add further predicates to \p PSE.
 ///
-/// \p PtrToStride provides the mapping between the pointer value and its
+/// If \p OrigPtr is not null, use it to look up the stride value instead of \p
+/// Ptr.  \p PtrToStride provides the mapping between the pointer value and its
 /// stride as collected by LoopVectorizationLegality::collectStridedAccess.
 const SCEV *replaceSymbolicStrideSCEV(PredicatedScalarEvolution &PSE,
                                       const ValueToValueMap &PtrToStride,
-                                      Value *Ptr);
+                                      Value *Ptr, Value *OrigPtr = nullptr);
 
-/// If the pointer has a constant stride return it in units of the access type
-/// size.  Otherwise return zero.
+/// \brief If the pointer has a constant stride return it in units of its
+/// element size.  Otherwise return zero.
 ///
 /// Ensure that it does not wrap in the address space, assuming the predicate
 /// associated with \p PSE is true.
@@ -666,41 +663,16 @@ const SCEV *replaceSymbolicStrideSCEV(PredicatedScalarEvolution &PSE,
 /// to \p PtrToStride and therefore add further predicates to \p PSE.
 /// The \p Assume parameter indicates if we are allowed to make additional
 /// run-time assumptions.
-int64_t getPtrStride(PredicatedScalarEvolution &PSE, Type *AccessTy, Value *Ptr,
-                     const Loop *Lp,
+int64_t getPtrStride(PredicatedScalarEvolution &PSE, Value *Ptr, const Loop *Lp,
                      const ValueToValueMap &StridesMap = ValueToValueMap(),
                      bool Assume = false, bool ShouldCheckWrap = true);
 
-/// Returns the distance between the pointers \p PtrA and \p PtrB iff they are
-/// compatible and it is possible to calculate the distance between them. This
-/// is a simple API that does not depend on the analysis pass.
-/// \param StrictCheck Ensure that the calculated distance matches the
-/// type-based one after all the bitcasts removal in the provided pointers.
-Optional<int> getPointersDiff(Type *ElemTyA, Value *PtrA, Type *ElemTyB,
-                              Value *PtrB, const DataLayout &DL,
-                              ScalarEvolution &SE, bool StrictCheck = false,
-                              bool CheckType = true);
-
-/// Attempt to sort the pointers in \p VL and return the sorted indices
-/// in \p SortedIndices, if reordering is required.
-///
-/// Returns 'true' if sorting is legal, otherwise returns 'false'.
-///
-/// For example, for a given \p VL of memory accesses in program order, a[i+4],
-/// a[i+0], a[i+1] and a[i+7], this function will sort the \p VL and save the
-/// sorted indices in \p SortedIndices as a[i+0], a[i+1], a[i+4], a[i+7] and
-/// saves the mask for actual memory accesses in program order in
-/// \p SortedIndices as <1,2,0,3>
-bool sortPtrAccesses(ArrayRef<Value *> VL, Type *ElemTy, const DataLayout &DL,
-                     ScalarEvolution &SE,
-                     SmallVectorImpl<unsigned> &SortedIndices);
-
-/// Returns true if the memory operations \p A and \p B are consecutive.
-/// This is a simple API that does not depend on the analysis pass.
+/// \brief Returns true if the memory operations \p A and \p B are consecutive.
+/// This is a simple API that does not depend on the analysis pass. 
 bool isConsecutiveAccess(Value *A, Value *B, const DataLayout &DL,
                          ScalarEvolution &SE, bool CheckType = true);
 
-/// This analysis provides dependence information for the memory accesses
+/// \brief This analysis provides dependence information for the memory accesses
 /// of a loop.
 ///
 /// It runs the analysis for a loop on demand.  This can be initiated by
@@ -711,13 +683,15 @@ class LoopAccessLegacyAnalysis : public FunctionPass {
 public:
   static char ID;
 
-  LoopAccessLegacyAnalysis();
+  LoopAccessLegacyAnalysis() : FunctionPass(ID) {
+    initializeLoopAccessLegacyAnalysisPass(*PassRegistry::getPassRegistry());
+  }
 
   bool runOnFunction(Function &F) override;
 
   void getAnalysisUsage(AnalysisUsage &AU) const override;
 
-  /// Query the result of the loop access information for the loop \p L.
+  /// \brief Query the result of the loop access information for the loop \p L.
   ///
   /// If there is no cached result available run the analysis.
   const LoopAccessInfo &getInfo(Loop *L);
@@ -727,26 +701,26 @@ public:
     LoopAccessInfoMap.clear();
   }
 
-  /// Print the result of the analysis when invoked with -analyze.
+  /// \brief Print the result of the analysis when invoked with -analyze.
   void print(raw_ostream &OS, const Module *M = nullptr) const override;
 
 private:
-  /// The cache.
+  /// \brief The cache.
   DenseMap<Loop *, std::unique_ptr<LoopAccessInfo>> LoopAccessInfoMap;
 
   // The used analysis passes.
-  ScalarEvolution *SE = nullptr;
-  const TargetLibraryInfo *TLI = nullptr;
-  AAResults *AA = nullptr;
-  DominatorTree *DT = nullptr;
-  LoopInfo *LI = nullptr;
+  ScalarEvolution *SE;
+  const TargetLibraryInfo *TLI;
+  AliasAnalysis *AA;
+  DominatorTree *DT;
+  LoopInfo *LI;
 };
 
-/// This analysis provides dependence information for the memory
+/// \brief This analysis provides dependence information for the memory
 /// accesses of a loop.
 ///
 /// It runs the analysis for a loop on demand.  This can be initiated by
-/// querying the loop access info via AM.getResult<LoopAccessAnalysis>.
+/// querying the loop access info via AM.getResult<LoopAccessAnalysis>. 
 /// getResult return a LoopAccessInfo object.  See this class for the
 /// specifics of what information is provided.
 class LoopAccessAnalysis

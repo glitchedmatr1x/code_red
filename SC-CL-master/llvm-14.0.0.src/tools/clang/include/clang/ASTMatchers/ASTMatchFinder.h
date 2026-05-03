@@ -1,8 +1,9 @@
 //===--- ASTMatchFinder.h - Structural query framework ----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -49,7 +50,7 @@ namespace clang {
 
 namespace ast_matchers {
 
-/// A class to allow finding matches over the Clang AST.
+/// \brief A class to allow finding matches over the Clang AST.
 ///
 /// After creation, you can add multiple matchers to the MatchFinder via
 /// calls to addMatcher(...).
@@ -67,58 +68,52 @@ namespace ast_matchers {
 /// Not intended to be subclassed.
 class MatchFinder {
 public:
-  /// Contains all information for a given match.
+  /// \brief Contains all information for a given match.
   ///
   /// Every time a match is found, the MatchFinder will invoke the registered
   /// MatchCallback with a MatchResult containing information about the match.
   struct MatchResult {
     MatchResult(const BoundNodes &Nodes, clang::ASTContext *Context);
 
-    /// Contains the nodes bound on the current match.
+    /// \brief Contains the nodes bound on the current match.
     ///
     /// This allows user code to easily extract matched AST nodes.
     const BoundNodes Nodes;
 
-    /// Utilities for interpreting the matched AST structures.
+    /// \brief Utilities for interpreting the matched AST structures.
     /// @{
     clang::ASTContext * const Context;
     clang::SourceManager * const SourceManager;
     /// @}
   };
 
-  /// Called when the Match registered for it was successfully found
+  /// \brief Called when the Match registered for it was successfully found
   /// in the AST.
   class MatchCallback {
   public:
     virtual ~MatchCallback();
 
-    /// Called on every match by the \c MatchFinder.
+    /// \brief Called on every match by the \c MatchFinder.
     virtual void run(const MatchResult &Result) = 0;
 
-    /// Called at the start of each translation unit.
+    /// \brief Called at the start of each translation unit.
     ///
     /// Optionally override to do per translation unit tasks.
     virtual void onStartOfTranslationUnit() {}
 
-    /// Called at the end of each translation unit.
+    /// \brief Called at the end of each translation unit.
     ///
     /// Optionally override to do per translation unit tasks.
     virtual void onEndOfTranslationUnit() {}
 
-    /// An id used to group the matchers.
+    /// \brief An id used to group the matchers.
     ///
     /// This id is used, for example, for the profiling output.
     /// It defaults to "<unknown>".
     virtual StringRef getID() const;
-
-    /// TraversalKind to use while matching and processing
-    /// the result nodes. This API is temporary to facilitate
-    /// third parties porting existing code to the default
-    /// behavior of clang-tidy.
-    virtual llvm::Optional<TraversalKind> getCheckTraversalKind() const;
   };
 
-  /// Called when parsing is finished. Intended for testing only.
+  /// \brief Called when parsing is finished. Intended for testing only.
   class ParsingDoneTestCallback {
   public:
     virtual ~ParsingDoneTestCallback();
@@ -130,11 +125,11 @@ public:
       Profiling(llvm::StringMap<llvm::TimeRecord> &Records)
           : Records(Records) {}
 
-      /// Per bucket timing information.
+      /// \brief Per bucket timing information.
       llvm::StringMap<llvm::TimeRecord> &Records;
     };
 
-    /// Enables per-check timers.
+    /// \brief Enables per-check timers.
     ///
     /// It prints a report after match.
     llvm::Optional<Profiling> CheckProfiling;
@@ -143,7 +138,7 @@ public:
   MatchFinder(MatchFinderOptions Options = MatchFinderOptions());
   ~MatchFinder();
 
-  /// Adds a matcher to execute when running over the AST.
+  /// \brief Adds a matcher to execute when running over the AST.
   ///
   /// Calls 'Action' with the BoundNodes on every match.
   /// Adding more than one 'NodeMatch' allows finding different matches in a
@@ -165,12 +160,9 @@ public:
                   MatchCallback *Action);
   void addMatcher(const CXXCtorInitializerMatcher &NodeMatch,
                   MatchCallback *Action);
-  void addMatcher(const TemplateArgumentLocMatcher &NodeMatch,
-                  MatchCallback *Action);
-  void addMatcher(const AttrMatcher &NodeMatch, MatchCallback *Action);
   /// @}
 
-  /// Adds a matcher to execute when running over the AST.
+  /// \brief Adds a matcher to execute when running over the AST.
   ///
   /// This is similar to \c addMatcher(), but it uses the dynamic interface. It
   /// is more flexible, but the lost type information enables a caller to pass
@@ -181,32 +173,33 @@ public:
   bool addDynamicMatcher(const internal::DynTypedMatcher &NodeMatch,
                          MatchCallback *Action);
 
-  /// Creates a clang ASTConsumer that finds all matches.
+  /// \brief Creates a clang ASTConsumer that finds all matches.
   std::unique_ptr<clang::ASTConsumer> newASTConsumer();
 
-  /// Calls the registered callbacks on all matches on the given \p Node.
+  /// \brief Calls the registered callbacks on all matches on the given \p Node.
   ///
   /// Note that there can be multiple matches on a single node, for
   /// example when using decl(forEachDescendant(stmt())).
   ///
   /// @{
   template <typename T> void match(const T &Node, ASTContext &Context) {
-    match(clang::DynTypedNode::create(Node), Context);
+    match(clang::ast_type_traits::DynTypedNode::create(Node), Context);
   }
-  void match(const clang::DynTypedNode &Node, ASTContext &Context);
+  void match(const clang::ast_type_traits::DynTypedNode &Node,
+             ASTContext &Context);
   /// @}
 
-  /// Finds all matches in the given AST.
+  /// \brief Finds all matches in the given AST.
   void matchAST(ASTContext &Context);
 
-  /// Registers a callback to notify the end of parsing.
+  /// \brief Registers a callback to notify the end of parsing.
   ///
   /// The provided closure is called after parsing is done, before the AST is
   /// traversed. Useful for benchmarking.
   /// Each call to FindAll(...) will call the closure once.
   void registerTestCallbackAfterParsing(ParsingDoneTestCallback *ParsingDone);
 
-  /// For each \c Matcher<> a \c MatchCallback that will be called
+  /// \brief For each \c Matcher<> a \c MatchCallback that will be called
   /// when it matches.
   struct MatchersByType {
     std::vector<std::pair<internal::DynTypedMatcher, MatchCallback *>>
@@ -218,10 +211,7 @@ public:
         NestedNameSpecifierLoc;
     std::vector<std::pair<TypeLocMatcher, MatchCallback *>> TypeLoc;
     std::vector<std::pair<CXXCtorInitializerMatcher, MatchCallback *>> CtorInit;
-    std::vector<std::pair<TemplateArgumentLocMatcher, MatchCallback *>>
-        TemplateArgumentLoc;
-    std::vector<std::pair<AttrMatcher, MatchCallback *>> Attr;
-    /// All the callbacks in one container to simplify iteration.
+    /// \brief All the callbacks in one container to simplify iteration.
     llvm::SmallPtrSet<MatchCallback *, 16> AllCallbacks;
   };
 
@@ -230,11 +220,11 @@ private:
 
   MatchFinderOptions Options;
 
-  /// Called when parsing is done.
+  /// \brief Called when parsing is done.
   ParsingDoneTestCallback *ParsingDone;
 };
 
-/// Returns the results of matching \p Matcher on \p Node.
+/// \brief Returns the results of matching \p Matcher on \p Node.
 ///
 /// Collects the \c BoundNodes of all callback invocations when matching
 /// \p Matcher on \p Node and returns the collected results.
@@ -253,16 +243,17 @@ SmallVector<BoundNodes, 1>
 match(MatcherT Matcher, const NodeT &Node, ASTContext &Context);
 
 template <typename MatcherT>
-SmallVector<BoundNodes, 1> match(MatcherT Matcher, const DynTypedNode &Node,
-                                 ASTContext &Context);
+SmallVector<BoundNodes, 1>
+match(MatcherT Matcher, const ast_type_traits::DynTypedNode &Node,
+      ASTContext &Context);
 /// @}
 
-/// Returns the results of matching \p Matcher on the translation unit of
+/// \brief Returns the results of matching \p Matcher on the translation unit of
 /// \p Context and collects the \c BoundNodes of all callback invocations.
 template <typename MatcherT>
 SmallVector<BoundNodes, 1> match(MatcherT Matcher, ASTContext &Context);
 
-/// Returns the first result of type \c NodeT bound to \p BoundTo.
+/// \brief Returns the first result of type \c NodeT bound to \p BoundTo.
 ///
 /// Returns \c NULL if there is no match, or if the matching node cannot be
 /// casted to \c NodeT.
@@ -288,18 +279,14 @@ public:
   void run(const MatchFinder::MatchResult &Result) override {
     Nodes.push_back(Result.Nodes);
   }
-
-  llvm::Optional<TraversalKind> getCheckTraversalKind() const override {
-    return llvm::None;
-  }
-
   SmallVector<BoundNodes, 1> Nodes;
 };
 }
 
 template <typename MatcherT>
-SmallVector<BoundNodes, 1> match(MatcherT Matcher, const DynTypedNode &Node,
-                                 ASTContext &Context) {
+SmallVector<BoundNodes, 1>
+match(MatcherT Matcher, const ast_type_traits::DynTypedNode &Node,
+      ASTContext &Context) {
   internal::CollectMatchesCallback Callback;
   MatchFinder Finder;
   Finder.addMatcher(Matcher, &Callback);
@@ -310,7 +297,7 @@ SmallVector<BoundNodes, 1> match(MatcherT Matcher, const DynTypedNode &Node,
 template <typename MatcherT, typename NodeT>
 SmallVector<BoundNodes, 1>
 match(MatcherT Matcher, const NodeT &Node, ASTContext &Context) {
-  return match(Matcher, DynTypedNode::create(Node), Context);
+  return match(Matcher, ast_type_traits::DynTypedNode::create(Node), Context);
 }
 
 template <typename MatcherT>
@@ -319,32 +306,6 @@ match(MatcherT Matcher, ASTContext &Context) {
   internal::CollectMatchesCallback Callback;
   MatchFinder Finder;
   Finder.addMatcher(Matcher, &Callback);
-  Finder.matchAST(Context);
-  return std::move(Callback.Nodes);
-}
-
-inline SmallVector<BoundNodes, 1>
-matchDynamic(internal::DynTypedMatcher Matcher, const DynTypedNode &Node,
-             ASTContext &Context) {
-  internal::CollectMatchesCallback Callback;
-  MatchFinder Finder;
-  Finder.addDynamicMatcher(Matcher, &Callback);
-  Finder.match(Node, Context);
-  return std::move(Callback.Nodes);
-}
-
-template <typename NodeT>
-SmallVector<BoundNodes, 1> matchDynamic(internal::DynTypedMatcher Matcher,
-                                        const NodeT &Node,
-                                        ASTContext &Context) {
-  return matchDynamic(Matcher, DynTypedNode::create(Node), Context);
-}
-
-inline SmallVector<BoundNodes, 1>
-matchDynamic(internal::DynTypedMatcher Matcher, ASTContext &Context) {
-  internal::CollectMatchesCallback Callback;
-  MatchFinder Finder;
-  Finder.addDynamicMatcher(Matcher, &Callback);
   Finder.matchAST(Context);
   return std::move(Callback.Nodes);
 }

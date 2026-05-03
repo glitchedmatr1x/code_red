@@ -1,8 +1,9 @@
 //===-- tools/extra/clang-reorder-fields/tool/ClangReorderFields.cpp -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 ///
@@ -50,14 +51,8 @@ static cl::opt<bool> Inplace("i", cl::desc("Overwrite edited files."),
 const char Usage[] = "A tool to reorder fields in C/C++ structs/classes.\n";
 
 int main(int argc, const char **argv) {
-  auto ExpectedParser = tooling::CommonOptionsParser::create(
-      argc, argv, ClangReorderFieldsCategory, cl::OneOrMore, Usage);
-  if (!ExpectedParser) {
-    llvm::errs() << ExpectedParser.takeError();
-    return 1;
-  }
-
-  tooling::CommonOptionsParser &OP = ExpectedParser.get();
+  tooling::CommonOptionsParser OP(argc, argv, ClangReorderFieldsCategory,
+                                  Usage);
 
   auto Files = OP.getSourcePathList();
   tooling::RefactoringTool Tool(OP.getCompilations(), Files);
@@ -84,8 +79,8 @@ int main(int argc, const char **argv) {
   Tool.applyAllReplacements(Rewrite);
 
   for (const auto &File : Files) {
-    auto Entry = FileMgr.getFile(File);
-    const auto ID = Sources.getOrCreateFileID(*Entry, SrcMgr::C_User);
+    const auto *Entry = FileMgr.getFile(File);
+    const auto ID = Sources.getOrCreateFileID(Entry, SrcMgr::C_User);
     Rewrite.getEditBuffer(ID).write(outs());
   }
 

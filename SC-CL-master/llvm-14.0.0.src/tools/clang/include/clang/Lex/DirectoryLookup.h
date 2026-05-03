@@ -1,8 +1,9 @@
 //===--- DirectoryLookup.h - Info for searching for headers -----*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,15 +15,16 @@
 #define LLVM_CLANG_LEX_DIRECTORYLOOKUP_H
 
 #include "clang/Basic/LLVM.h"
-#include "clang/Basic/FileManager.h"
 #include "clang/Basic/SourceManager.h"
 #include "clang/Lex/ModuleMap.h"
 
 namespace clang {
 class HeaderMap;
+class DirectoryEntry;
+class FileEntry;
 class HeaderSearch;
 class Module;
-
+  
 /// DirectoryLookup - This class represents one entry in the search list that
 /// specifies the search order for directories in \#include directives.  It
 /// represents either a directory, a framework, or a headermap.
@@ -35,17 +37,14 @@ public:
     LT_HeaderMap
   };
 private:
-  union DLU { // This union is discriminated by isHeaderMap.
+  union {  // This union is discriminated by isHeaderMap.
     /// Dir - This is the actual directory that we're referring to for a normal
     /// directory or a framework.
-    DirectoryEntryRef Dir;
+    const DirectoryEntry *Dir;
 
     /// Map - This is the HeaderMap if this is a headermap lookup.
     ///
     const HeaderMap *Map;
-
-    DLU(DirectoryEntryRef Dir) : Dir(Dir) {}
-    DLU(const HeaderMap *Map) : Map(Map) {}
   } u;
 
   /// DirCharacteristic - The type of directory this is: this is an instance of
@@ -55,27 +54,33 @@ private:
   /// LookupType - This indicates whether this DirectoryLookup object is a
   /// normal directory, a framework, or a headermap.
   unsigned LookupType : 2;
-
-  /// Whether this is a header map used when building a framework.
+  
+  /// \brief Whether this is a header map used when building a framework.
   unsigned IsIndexHeaderMap : 1;
 
-  /// Whether we've performed an exhaustive search for module maps
+  /// \brief Whether we've performed an exhaustive search for module maps
   /// within the subdirectories of this directory.
   unsigned SearchedAllModuleMaps : 1;
-
+  
 public:
-  /// This ctor *does not take ownership* of 'Dir'.
-  DirectoryLookup(DirectoryEntryRef Dir, SrcMgr::CharacteristicKind DT,
+  /// DirectoryLookup ctor - Note that this ctor *does not take ownership* of
+  /// 'dir'.
+  DirectoryLookup(const DirectoryEntry *dir, SrcMgr::CharacteristicKind DT,
                   bool isFramework)
-      : u(Dir), DirCharacteristic(DT),
-        LookupType(isFramework ? LT_Framework : LT_NormalDir),
-        IsIndexHeaderMap(false), SearchedAllModuleMaps(false) {}
+    : DirCharacteristic(DT),
+      LookupType(isFramework ? LT_Framework : LT_NormalDir),
+      IsIndexHeaderMap(false), SearchedAllModuleMaps(false) {
+    u.Dir = dir;
+  }
 
-  /// This ctor *does not take ownership* of 'Map'.
-  DirectoryLookup(const HeaderMap *Map, SrcMgr::CharacteristicKind DT,
+  /// DirectoryLookup ctor - Note that this ctor *does not take ownership* of
+  /// 'map'.
+  DirectoryLookup(const HeaderMap *map, SrcMgr::CharacteristicKind DT,
                   bool isIndexHeaderMap)
-      : u(Map), DirCharacteristic(DT), LookupType(LT_HeaderMap),
-        IsIndexHeaderMap(isIndexHeaderMap), SearchedAllModuleMaps(false) {}
+    : DirCharacteristic(DT), LookupType(LT_HeaderMap),
+      IsIndexHeaderMap(isIndexHeaderMap), SearchedAllModuleMaps(false) {
+    u.Map = map;
+  }
 
   /// getLookupType - Return the kind of directory lookup that this is: either a
   /// normal directory, a framework path, or a HeaderMap.
@@ -88,17 +93,13 @@ public:
   /// getDir - Return the directory that this entry refers to.
   ///
   const DirectoryEntry *getDir() const {
-    return isNormalDir() ? &u.Dir.getDirEntry() : nullptr;
+    return isNormalDir() ? u.Dir : nullptr;
   }
 
   /// getFrameworkDir - Return the directory that this framework refers to.
   ///
   const DirectoryEntry *getFrameworkDir() const {
-    return isFramework() ? &u.Dir.getDirEntry() : nullptr;
-  }
-
-  Optional<DirectoryEntryRef> getFrameworkDirRef() const {
-    return isFramework() ? Optional<DirectoryEntryRef>(u.Dir) : None;
+    return isFramework() ? u.Dir : nullptr;
   }
 
   /// getHeaderMap - Return the directory that this entry refers to.
@@ -117,11 +118,11 @@ public:
   /// isHeaderMap - Return true if this is a header map, not a normal directory.
   bool isHeaderMap() const { return getLookupType() == LT_HeaderMap; }
 
-  /// Determine whether we have already searched this entire
+  /// \brief Determine whether we have already searched this entire
   /// directory for module maps.
   bool haveSearchedAllModuleMaps() const { return SearchedAllModuleMaps; }
 
-  /// Specify whether we have already searched all of the subdirectories
+  /// \brief Specify whether we have already searched all of the subdirectories
   /// for module maps.
   void setSearchedAllModuleMaps(bool SAMM) {
     SearchedAllModuleMaps = SAMM;
@@ -133,16 +134,16 @@ public:
     return (SrcMgr::CharacteristicKind)DirCharacteristic;
   }
 
-  /// Whether this describes a system header directory.
+  /// \brief Whether this describes a system header directory.
   bool isSystemHeaderDirectory() const {
     return getDirCharacteristic() != SrcMgr::C_User;
   }
 
-  /// Whether this header map is building a framework or not.
-  bool isIndexHeaderMap() const {
-    return isHeaderMap() && IsIndexHeaderMap;
+  /// \brief Whether this header map is building a framework or not.
+  bool isIndexHeaderMap() const { 
+    return isHeaderMap() && IsIndexHeaderMap; 
   }
-
+  
   /// LookupFile - Lookup the specified file in this search path, returning it
   /// if it exists or returning null if not.
   ///
@@ -170,26 +171,28 @@ public:
   /// set to true if the file is located in a framework that has been
   /// user-specified to be treated as a system framework.
   ///
-  /// \param [out] IsFrameworkFound For a framework directory set to true if
-  /// specified '.framework' directory is found.
-  ///
   /// \param [out] MappedName if this is a headermap which maps the filename to
   /// a framework include ("Foo.h" -> "Foo/Foo.h"), set the new name to this
   /// vector and point Filename to it.
-  Optional<FileEntryRef>
-  LookupFile(StringRef &Filename, HeaderSearch &HS, SourceLocation IncludeLoc,
-             SmallVectorImpl<char> *SearchPath,
-             SmallVectorImpl<char> *RelativePath, Module *RequestingModule,
-             ModuleMap::KnownHeader *SuggestedModule,
-             bool &InUserSpecifiedSystemFramework, bool &IsFrameworkFound,
-             bool &IsInHeaderMap, SmallVectorImpl<char> &MappedName) const;
+  const FileEntry *LookupFile(StringRef &Filename, HeaderSearch &HS,
+                              SourceLocation IncludeLoc,
+                              SmallVectorImpl<char> *SearchPath,
+                              SmallVectorImpl<char> *RelativePath,
+                              Module *RequestingModule,
+                              ModuleMap::KnownHeader *SuggestedModule,
+                              bool &InUserSpecifiedSystemFramework,
+                              bool &HasBeenMapped,
+                              SmallVectorImpl<char> &MappedName) const;
 
 private:
-  Optional<FileEntryRef> DoFrameworkLookup(
-      StringRef Filename, HeaderSearch &HS, SmallVectorImpl<char> *SearchPath,
-      SmallVectorImpl<char> *RelativePath, Module *RequestingModule,
+  const FileEntry *DoFrameworkLookup(
+      StringRef Filename, HeaderSearch &HS,
+      SmallVectorImpl<char> *SearchPath,
+      SmallVectorImpl<char> *RelativePath,
+      Module *RequestingModule,
       ModuleMap::KnownHeader *SuggestedModule,
-      bool &InUserSpecifiedSystemFramework, bool &IsFrameworkFound) const;
+      bool &InUserSpecifiedSystemHeader) const;
+
 };
 
 }  // end namespace clang

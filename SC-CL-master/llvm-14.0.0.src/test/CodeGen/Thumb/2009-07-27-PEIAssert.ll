@@ -1,4 +1,4 @@
-; RUN: llc < %s -mtriple=thumbv6-apple-darwin -relocation-model=pic -frame-pointer=all
+; RUN: llc < %s -mtriple=thumbv6-apple-darwin -relocation-model=pic -disable-fp-elim
 
 	%struct.LinkList = type { i32, %struct.LinkList* }
 	%struct.List = type { i32, i32* }

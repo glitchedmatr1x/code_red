@@ -1,16 +1,17 @@
 //===--- HeaderGuard.h - clang-tidy -----------------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_CLANG_TOOLS_EXTRA_CLANG_TIDY_UTILS_HEADERGUARD_H
 #define LLVM_CLANG_TOOLS_EXTRA_CLANG_TIDY_UTILS_HEADERGUARD_H
 
-#include "../ClangTidyCheck.h"
-#include "../utils/FileExtensionsUtils.h"
+#include "../ClangTidy.h"
+#include "../utils/HeaderFileExtensionsUtils.h"
 
 namespace clang {
 namespace tidy {
@@ -18,28 +19,21 @@ namespace utils {
 
 /// Finds and fixes header guards.
 /// The check supports these options:
-///   - `HeaderFileExtensions`: a semicolon-separated list of filename
-///     extensions of header files (The filename extension should not contain
-///     "." prefix). ";h;hh;hpp;hxx" by default.
-///
+///   - `HeaderFileExtensions`: a comma-separated list of filename extensions of
+///     header files (The filename extension should not contain "." prefix).
+///     ",h,hh,hpp,hxx" by default.
 ///     For extension-less header files, using an empty string or leaving an
-///     empty string between ";" if there are other filename extensions.
+///     empty string between "," if there are other filename extensions.
 class HeaderGuardCheck : public ClangTidyCheck {
 public:
   HeaderGuardCheck(StringRef Name, ClangTidyContext *Context)
       : ClangTidyCheck(Name, Context),
         RawStringHeaderFileExtensions(Options.getLocalOrGlobal(
             "HeaderFileExtensions", utils::defaultHeaderFileExtensions())) {
-    utils::parseFileExtensions(RawStringHeaderFileExtensions,
-                               HeaderFileExtensions,
-                               utils::defaultFileExtensionDelimiters());
+    utils::parseHeaderFileExtensions(RawStringHeaderFileExtensions,
+                                     HeaderFileExtensions, ',');
   }
-  void storeOptions(ClangTidyOptions::OptionMap &Opts) override;
-  void registerPPCallbacks(const SourceManager &SM, Preprocessor *PP,
-                           Preprocessor *ModuleExpanderPP) override;
-
-  /// Ensure that the provided header guard is a non-reserved identifier.
-  std::string sanitizeHeaderGuard(StringRef Guard);
+  void registerPPCallbacks(CompilerInstance &Compiler) override;
 
   /// Returns ``true`` if the check should suggest inserting a trailing comment
   /// on the ``#endif`` of the header guard. It will use the same name as
@@ -60,7 +54,7 @@ public:
 
 private:
   std::string RawStringHeaderFileExtensions;
-  utils::FileExtensionsSet HeaderFileExtensions;
+  utils::HeaderFileExtensionsSet HeaderFileExtensions;
 };
 
 } // namespace utils

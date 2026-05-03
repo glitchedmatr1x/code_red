@@ -1,5 +1,5 @@
 ; RUN: opt < %s -licm -pass-remarks=licm -o /dev/null 2>&1 | FileCheck %s
-; RUN: opt -aa-pipeline=basic-aa -passes='require<aa>,require<targetir>,require<scalar-evolution>,require<opt-remark-emit>,loop-mssa(licm)' %s -o /dev/null -pass-remarks=licm 2>&1 | FileCheck %s
+; RUN: opt -aa-pipeline=basic-aa -passes='require<aa>,require<targetir>,require<scalar-evolution>,require<opt-remark-emit>,loop(licm)' %s -o /dev/null -pass-remarks=licm 2>&1 | FileCheck %s
 target datalayout = "E-p:64:64:64-a0:0:8-f32:32:32-f64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:32:64-v64:64:64-v128:128:128"
 
 define void @hoist(i32* %array, i32* noalias %p) {
@@ -74,7 +74,7 @@ Out:
 !3 = !{i32 2, !"Debug Info Version", i32 3}
 !4 = !{i32 1, !"PIC Level", i32 2}
 !5 = !{!"clang version 3.9.0 "}
-!6 = distinct !DISubprogram(name: "success", scope: !1, file: !1, line: 1, type: !7, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !2)
+!6 = distinct !DISubprogram(name: "success", scope: !1, file: !1, line: 1, type: !7, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !2)
 !7 = !DISubroutineType(types: !2)
 !8 = !DILocation(line: 2, column: 20, scope: !6)
 !9 = !DILocation(line: 2, column: 21, scope: !6)

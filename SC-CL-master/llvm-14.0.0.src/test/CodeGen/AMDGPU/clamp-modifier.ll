@@ -1,4 +1,4 @@
-; RUN: llc -march=amdgcn -mcpu=tahiti -verify-machineinstrs < %s | FileCheck -enable-var-scope -check-prefixes=GCN,SI %s
+; RUN: llc -march=amdgcn -verify-machineinstrs < %s | FileCheck -enable-var-scope -check-prefixes=GCN,SI %s
 ; RUN: llc -march=amdgcn -mcpu=fiji -verify-machineinstrs < %s | FileCheck -enable-var-scope -check-prefixes=GCN,GFX89 %s
 ; RUN: llc -march=amdgcn -mcpu=gfx900 -verify-machineinstrs < %s | FileCheck -enable-var-scope -check-prefixes=GCN,GFX89,GFX9 %s
 
@@ -62,7 +62,7 @@ define amdgpu_kernel void @v_clamp_add_neg_src_f32(float addrspace(1)* %out, flo
   %out.gep = getelementptr float, float addrspace(1)* %out, i32 %tid
   %a = load float, float addrspace(1)* %gep0
   %floor = call float @llvm.floor.f32(float %a)
-  %neg.floor = fneg float %floor
+  %neg.floor = fsub float -0.0, %floor
   %max = call float @llvm.maxnum.f32(float %neg.floor, float 0.0)
   %clamp = call float @llvm.minnum.f32(float %max, float 1.0)
   store float %clamp, float addrspace(1)* %out.gep
@@ -188,8 +188,9 @@ define amdgpu_kernel void @v_clamp_mac_to_mad(float addrspace(1)* %out, float ad
 
 
 ; GCN-LABEL: {{^}}v_clamp_add_src_v2f16_denorm:
-; GCN:  {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
-; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], 1.0 op_sel_hi:[1,0] clamp{{$}}
+; GCN-DAG: {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
+; GFX9-DAG: s_mov_b32 [[ONE:s[0-9]+]], 0x3c003c00
+; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], [[ONE]] clamp{{$}}
 define amdgpu_kernel void @v_clamp_add_src_v2f16_denorm(<2 x half> addrspace(1)* %out, <2 x half> addrspace(1)* %aptr) #0 {
   %tid = call i32 @llvm.amdgcn.workitem.id.x()
   %gep0 = getelementptr <2 x half>, <2 x half> addrspace(1)* %aptr, i32 %tid
@@ -203,8 +204,9 @@ define amdgpu_kernel void @v_clamp_add_src_v2f16_denorm(<2 x half> addrspace(1)*
 }
 
 ; GCN-LABEL: {{^}}v_clamp_add_src_v2f16_no_denormals:
-; GCN:  {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
-; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], 1.0 op_sel_hi:[1,0] clamp{{$}}
+; GCN-DAG: {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
+; GFX9-DAG: s_mov_b32 [[ONE:s[0-9]+]], 0x3c003c00
+; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], [[ONE]] clamp{{$}}
 define amdgpu_kernel void @v_clamp_add_src_v2f16_no_denormals(<2 x half> addrspace(1)* %out, <2 x half> addrspace(1)* %aptr) #3 {
   %tid = call i32 @llvm.amdgcn.workitem.id.x()
   %gep0 = getelementptr <2 x half>, <2 x half> addrspace(1)* %aptr, i32 %tid
@@ -218,8 +220,9 @@ define amdgpu_kernel void @v_clamp_add_src_v2f16_no_denormals(<2 x half> addrspa
 }
 
 ; GCN-LABEL: {{^}}v_clamp_add_src_v2f16_denorm_neg:
-; GCN:  {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
-; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], 1.0 op_sel_hi:[1,0]{{$}}
+; GCN-DAG: {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
+; GFX9-DAG: s_mov_b32 [[ONE:s[0-9]+]], 0x3c003c00
+; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], [[ONE]]{{$}}
 ; GFX9: v_pk_max_f16 [[MAX:v[0-9]+]], [[ADD]], [[ADD]] neg_lo:[1,1] neg_hi:[1,1] clamp{{$}}
 define amdgpu_kernel void @v_clamp_add_src_v2f16_denorm_neg(<2 x half> addrspace(1)* %out, <2 x half> addrspace(1)* %aptr) #0 {
   %tid = call i32 @llvm.amdgcn.workitem.id.x()
@@ -235,8 +238,9 @@ define amdgpu_kernel void @v_clamp_add_src_v2f16_denorm_neg(<2 x half> addrspace
 }
 
 ; GCN-LABEL: {{^}}v_clamp_add_src_v2f16_denorm_neg_lo:
-; GCN:  {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
-; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], 1.0 op_sel_hi:[1,0]{{$}}
+; GCN-DAG: {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
+; GFX9-DAG: s_mov_b32 [[ONE:s[0-9]+]], 0x3c003c00
+; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], [[ONE]]{{$}}
 ; GFX9: v_pk_max_f16 [[MAX:v[0-9]+]], [[ADD]], [[ADD]] neg_lo:[1,1] clamp{{$}}
 define amdgpu_kernel void @v_clamp_add_src_v2f16_denorm_neg_lo(<2 x half> addrspace(1)* %out, <2 x half> addrspace(1)* %aptr) #0 {
   %tid = call i32 @llvm.amdgcn.workitem.id.x()
@@ -254,8 +258,9 @@ define amdgpu_kernel void @v_clamp_add_src_v2f16_denorm_neg_lo(<2 x half> addrsp
 }
 
 ; GCN-LABEL: {{^}}v_clamp_add_src_v2f16_denorm_neg_hi:
-; GCN:  {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
-; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], 1.0 op_sel_hi:[1,0]{{$}}
+; GCN-DAG: {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
+; GFX9-DAG: s_mov_b32 [[ONE:s[0-9]+]], 0x3c003c00
+; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], [[ONE]]{{$}}
 ; GFX9: v_pk_max_f16 [[MAX:v[0-9]+]], [[ADD]], [[ADD]] neg_hi:[1,1] clamp{{$}}
 define amdgpu_kernel void @v_clamp_add_src_v2f16_denorm_neg_hi(<2 x half> addrspace(1)* %out, <2 x half> addrspace(1)* %aptr) #0 {
   %tid = call i32 @llvm.amdgcn.workitem.id.x()
@@ -273,8 +278,9 @@ define amdgpu_kernel void @v_clamp_add_src_v2f16_denorm_neg_hi(<2 x half> addrsp
 }
 
 ; GCN-LABEL: {{^}}v_clamp_add_src_v2f16_denorm_shuf:
-; GCN:  {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
-; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], 1.0 op_sel_hi:[1,0]{{$}}
+; GCN-DAG: {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
+; GFX9-DAG: s_mov_b32 [[ONE:s[0-9]+]], 0x3c003c00
+; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], [[ONE]]{{$}}
 ; GFX9: v_pk_max_f16 [[MAX:v[0-9]+]], [[ADD]], [[ADD]] op_sel:[1,1] op_sel_hi:[0,0] clamp{{$}}
 define amdgpu_kernel void @v_clamp_add_src_v2f16_denorm_shuf(<2 x half> addrspace(1)* %out, <2 x half> addrspace(1)* %aptr) #0 {
   %tid = call i32 @llvm.amdgcn.workitem.id.x()
@@ -309,8 +315,9 @@ define amdgpu_kernel void @v_no_clamp_add_src_v2f16_f32_src(<2 x half> addrspace
 }
 
 ; GCN-LABEL: {{^}}v_no_clamp_add_packed_src_f32:
-; GCN:  {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
-; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], 1.0 op_sel_hi:[1,0]{{$}}
+; GCN-DAG: {{buffer|flat|global}}_load_dword [[A:v[0-9]+]]
+; GFX9-DAG: s_mov_b32 [[ONE:s[0-9]+]], 0x3c003c00
+; GFX9: v_pk_add_f16 [[ADD:v[0-9]+]], [[A]], [[ONE]]{{$}}
 ; GFX9: v_max_f32_e64 [[CLAMP:v[0-9]+]], [[ADD]], [[ADD]] clamp{{$}}
 define amdgpu_kernel void @v_no_clamp_add_packed_src_f32(float addrspace(1)* %out, <2 x half> addrspace(1)* %aptr) #0 {
   %tid = call i32 @llvm.amdgcn.workitem.id.x()
@@ -346,28 +353,6 @@ define amdgpu_kernel void @v_no_clamp_add_src_v2f16_f16_src(<2 x half> addrspace
   ret void
 }
 
-; FIXME: Worse code pre-gfx9
-
-; GCN-LABEL: {{^}}v_clamp_cvt_pkrtz_src_v2f16_denorm:
-; GFX9: s_waitcnt
-; GFX9-NEXT: v_cvt_pkrtz_f16_f32 v0, v0, v1 clamp{{$}}
-; GFX9-NEXT: s_setpc_b64
-
-; VI: v_cvt_pkrtz_f16_f32 v0, v0, v1{{$}}
-; VI: v_max_f16_sdwa
-; VI: v_max_f16_e64
-; VI: v_or_b32
-
-; SI: v_cvt_pkrtz_f16_f32_e32 v0, v0, v1{{$}}
-; SI-DAG: v_cvt_f32_f16_e64 v0, v0 clamp
-; SI-DAG: v_cvt_f32_f16_e64 v1, v1 clamp
-define <2 x half> @v_clamp_cvt_pkrtz_src_v2f16_denorm(float %a, float %b) #0 {
-  %add = call <2 x half> @llvm.amdgcn.cvt.pkrtz(float %a, float %b)
-  %max = call <2 x half> @llvm.maxnum.v2f16(<2 x half> %add, <2 x half> zeroinitializer)
-  %clamp = call <2 x half> @llvm.minnum.v2f16(<2 x half> %max, <2 x half> <half 1.0, half 1.0>)
-  ret <2 x half> %clamp
-}
-
 declare i32 @llvm.amdgcn.workitem.id.x() #1
 declare float @llvm.fabs.f32(float) #1
 declare float @llvm.floor.f32(float) #1
@@ -384,15 +369,14 @@ declare <2 x half> @llvm.minnum.v2f16(<2 x half>, <2 x half>) #1
 declare <2 x half> @llvm.maxnum.v2f16(<2 x half>, <2 x half>) #1
 declare <2 x float> @llvm.minnum.v2f32(<2 x float>, <2 x float>) #1
 declare <2 x float> @llvm.maxnum.v2f32(<2 x float>, <2 x float>) #1
-declare <2 x half> @llvm.amdgcn.cvt.pkrtz(float, float) #1
 
 
 declare void @llvm.dbg.value(metadata, i64, metadata, metadata) #1
 
-attributes #0 = { nounwind "denormal-fp-math-f32"="preserve-sign,preserve-sign" }
+attributes #0 = { nounwind }
 attributes #1 = { nounwind readnone }
-attributes #2 = { nounwind "denormal-fp-math-f32"="ieee.ieee" }
-attributes #3 = { nounwind "denormal-fp-math-f32"="ieee,ieee" "denormal-fp-math"="preserve-sign,preserve-sign" }
+attributes #2 = { nounwind "target-features"="+fp32-denormals" }
+attributes #3 = { nounwind "target-features"="-fp64-fp16-denormals" }
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!2, !3}

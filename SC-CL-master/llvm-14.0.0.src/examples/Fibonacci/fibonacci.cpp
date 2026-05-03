@@ -1,8 +1,9 @@
 //===--- examples/Fibonacci/fibonacci.cpp - An example use of the JIT -----===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -51,10 +52,9 @@ using namespace llvm;
 static Function *CreateFibFunction(Module *M, LLVMContext &Context) {
   // Create the fib function and insert it into module M. This function is said
   // to return an int and take an int parameter.
-  FunctionType *FibFTy = FunctionType::get(Type::getInt32Ty(Context),
-                                           {Type::getInt32Ty(Context)}, false);
   Function *FibF =
-      Function::Create(FibFTy, Function::ExternalLinkage, "fib", M);
+    cast<Function>(M->getOrInsertFunction("fib", Type::getInt32Ty(Context),
+                                          Type::getInt32Ty(Context)));
 
   // Add a basic block to the function.
   BasicBlock *BB = BasicBlock::Create(Context, "EntryBlock", FibF);

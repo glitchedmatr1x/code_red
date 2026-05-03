@@ -1,8 +1,9 @@
 //=== FileOutputBuffer.h - File Output Buffer -------------------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -13,9 +14,11 @@
 #ifndef LLVM_SUPPORT_FILEOUTPUTBUFFER_H
 #define LLVM_SUPPORT_FILEOUTPUTBUFFER_H
 
+#include "llvm/ADT/SmallString.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/DataTypes.h"
 #include "llvm/Support/Error.h"
+#include "llvm/Support/FileSystem.h"
 
 namespace llvm {
 /// FileOutputBuffer - This interface provides simple way to create an in-memory
@@ -27,24 +30,13 @@ namespace llvm {
 /// not committed, the file will be deleted in the FileOutputBuffer destructor.
 class FileOutputBuffer {
 public:
-  enum {
-    /// Set the 'x' bit on the resulting file.
-    F_executable = 1,
-
-    /// Don't use mmap and instead write an in-memory buffer to a file when this
-    /// buffer is closed.
-    F_no_mmap = 2,
+  enum  {
+    F_executable = 1  /// set the 'x' bit on the resulting file
   };
 
   /// Factory method to create an OutputBuffer object which manages a read/write
   /// buffer of the specified size. When committed, the buffer will be written
   /// to the file at the specified path.
-  ///
-  /// When F_modify is specified and \p FilePath refers to an existing on-disk
-  /// file \p Size may be set to -1, in which case the entire file is used.
-  /// Otherwise, the file shrinks or grows as necessary based on the value of
-  /// \p Size.  It is an error to specify F_modify and Size=-1 if \p FilePath
-  /// does not exist.
   static Expected<std::unique_ptr<FileOutputBuffer>>
   create(StringRef FilePath, size_t Size, unsigned Flags = 0);
 
@@ -70,11 +62,7 @@ public:
   /// If this object was previously committed, the destructor just deletes
   /// this object.  If this object was not committed, the destructor
   /// deallocates the buffer and the target file is never written.
-  virtual ~FileOutputBuffer() = default;
-
-  /// This removes the temporary file (unless it already was committed)
-  /// but keeps the memory mapping alive.
-  virtual void discard() {}
+  virtual ~FileOutputBuffer() {}
 
 protected:
   FileOutputBuffer(StringRef Path) : FinalPath(Path) {}

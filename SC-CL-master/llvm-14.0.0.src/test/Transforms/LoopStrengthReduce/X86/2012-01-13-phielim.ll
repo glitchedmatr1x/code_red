@@ -1,4 +1,4 @@
-; RUN: llc < %s -O3 -mtriple=x86_64-- -mcpu=core2 | FileCheck %s
+; RUN: llc < %s -O3 -march=x86-64 -mcpu=core2 | FileCheck %s
 
 declare i1 @check() nounwind
 declare i1 @foo(i8*, i8*, i8*) nounwind
@@ -96,8 +96,7 @@ while.end:                                        ; preds = %entry
 ; itself a phi.
 ;
 ; CHECK: @test3
-; CHECK: %meshBB1
-; CHECK: %meshBB
+; CHECK: %for.body3.lr.ph.us.i.loopexit
 ; CHECK-NEXT: Parent Loop
 ; CHECK-NEXT: Inner Loop
 ; CHECK-NEXT: incq

@@ -1,9 +1,6 @@
-; RUN: llc -verify-machineinstrs < %s -mtriple=powerpc-unknown-linux-gnu | FileCheck %s
+; RUN: llc -verify-machineinstrs < %s -mtriple=powerpc-apple-darwin
 
 declare i8* @bar(i32)
-
-; CHECK: @foo
-; CHECK: blr
 
 define void @foo(i8* %pp) nounwind  {
 entry:

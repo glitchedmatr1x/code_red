@@ -1,8 +1,9 @@
 //===--- TextDiagnosticPrinter.h - Text Diagnostic Client -------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 //
@@ -28,7 +29,7 @@ class TextDiagnosticPrinter : public DiagnosticConsumer {
   raw_ostream &OS;
   IntrusiveRefCntPtr<DiagnosticOptions> DiagOpts;
 
-  /// Handle to the currently active text diagnostic emitter.
+  /// \brief Handle to the currently active text diagnostic emitter.
   std::unique_ptr<TextDiagnostic> TextDiag;
 
   /// A string to prefix to error messages.

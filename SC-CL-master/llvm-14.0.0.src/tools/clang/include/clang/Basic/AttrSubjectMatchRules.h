@@ -1,13 +1,14 @@
 //===-- AttrSubjectMatchRules.h - Attribute subject match rules -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_BASIC_ATTRSUBJECTMATCHRULES_H
-#define LLVM_CLANG_BASIC_ATTRSUBJECTMATCHRULES_H
+#ifndef LLVM_CLANG_BASIC_ATTR_SUBJECT_MATCH_RULES_H
+#define LLVM_CLANG_BASIC_ATTR_SUBJECT_MATCH_RULES_H
 
 #include "clang/Basic/SourceLocation.h"
 #include "llvm/ADT/DenseMap.h"
@@ -15,7 +16,7 @@
 namespace clang {
 namespace attr {
 
-/// A list of all the recognized kinds of attributes.
+/// \brief A list of all the recognized kinds of attributes.
 enum SubjectMatchRule {
 #define ATTR_MATCH_RULE(X, Spelling, IsAbstract) X,
 #include "clang/Basic/AttrSubMatchRulesList.inc"

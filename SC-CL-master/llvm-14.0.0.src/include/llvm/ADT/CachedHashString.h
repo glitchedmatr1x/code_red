@@ -1,27 +1,28 @@
 //===- llvm/ADT/CachedHashString.h - Prehashed string/StringRef -*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file defines CachedHashString and CachedHashStringRef.  These are
-/// owning and not-owning string types that store their hash in addition to
-/// their string data.
-///
-/// Unlike std::string, CachedHashString can be used in DenseSet/DenseMap
-/// (because, unlike std::string, CachedHashString lets us have empty and
-/// tombstone values).
-///
+//
+// This file defines CachedHashString and CachedHashStringRef.  These are owning
+// and not-owning string types that store their hash in addition to their string
+// data.
+//
+// Unlike std::string, CachedHashString can be used in DenseSet/DenseMap
+// (because, unlike std::string, CachedHashString lets us have empty and
+// tombstone values).
+//
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_ADT_CACHEDHASHSTRING_H
-#define LLVM_ADT_CACHEDHASHSTRING_H
+#ifndef LLVM_ADT_CACHED_HASH_STRING_H
+#define LLVM_ADT_CACHED_HASH_STRING_H
 
-#include "llvm/ADT/DenseMapInfo.h"
+#include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/Support/raw_ostream.h"
 
 namespace llvm {
 
@@ -42,7 +43,6 @@ public:
   }
 
   StringRef val() const { return StringRef(P, Size); }
-  const char *data() const { return P; }
   uint32_t size() const { return Size; }
   uint32_t hash() const { return Hash; }
 };

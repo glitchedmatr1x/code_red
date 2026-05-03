@@ -1,8 +1,9 @@
 //===- EnumTables.h - Enum to string conversion tables ----------*- C++ -*-===//
 //
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
 //
 //===----------------------------------------------------------------------===//
 
@@ -20,7 +21,7 @@ namespace codeview {
 
 ArrayRef<EnumEntry<SymbolKind>> getSymbolTypeNames();
 ArrayRef<EnumEntry<TypeLeafKind>> getTypeLeafNames();
-ArrayRef<EnumEntry<uint16_t>> getRegisterNames(CPUType Cpu);
+ArrayRef<EnumEntry<uint16_t>> getRegisterNames();
 ArrayRef<EnumEntry<uint32_t>> getPublicSymFlagNames();
 ArrayRef<EnumEntry<uint8_t>> getProcSymFlagNames();
 ArrayRef<EnumEntry<uint16_t>> getLocalFlagNames();
@@ -37,17 +38,6 @@ ArrayRef<EnumEntry<uint8_t>> getThunkOrdinalNames();
 ArrayRef<EnumEntry<uint16_t>> getTrampolineNames();
 ArrayRef<EnumEntry<COFF::SectionCharacteristics>>
 getImageSectionCharacteristicNames();
-ArrayRef<EnumEntry<uint16_t>> getClassOptionNames();
-ArrayRef<EnumEntry<uint8_t>> getMemberAccessNames();
-ArrayRef<EnumEntry<uint16_t>> getMethodOptionNames();
-ArrayRef<EnumEntry<uint16_t>> getMemberKindNames();
-ArrayRef<EnumEntry<uint8_t>> getPtrKindNames();
-ArrayRef<EnumEntry<uint8_t>> getPtrModeNames();
-ArrayRef<EnumEntry<uint16_t>> getPtrMemberRepNames();
-ArrayRef<EnumEntry<uint16_t>> getTypeModifierNames();
-ArrayRef<EnumEntry<uint8_t>> getCallingConventions();
-ArrayRef<EnumEntry<uint8_t>> getFunctionOptionEnum();
-ArrayRef<EnumEntry<uint16_t>> getLabelTypeEnum();
 
 } // end namespace codeview
 } // end namespace llvm

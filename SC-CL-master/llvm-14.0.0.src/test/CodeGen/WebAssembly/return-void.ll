@@ -1,10 +1,11 @@
 ; RUN: llc < %s -asm-verbose=false | FileCheck %s
 ; RUN: llc < %s -asm-verbose=false -fast-isel -fast-isel-abort=1 | FileCheck %s
 
-target triple = "wasm32-unknown-unknown"
+target datalayout = "e-m:e-p:32:32-i64:64-n32:64-S128"
+target triple = "wasm32-unknown-unknown-wasm"
 
 ; CHECK-LABEL: return_void:
-; CHECK: end_function{{$}}
+; CHECK-NEXT: end_function{{$}}
 define void @return_void() {
   ret void
 }
