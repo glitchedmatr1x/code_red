@@ -4,7 +4,7 @@
 Standalone extension for the script lane:
 scan -> read -> open -> edit -> export decompiled/readable -> import queue -> recompile queue.
 
-This tool is deliberately source-safe:
+Design rules:
 - text/source files are copied into edit/import/recompile workspaces
 - compiled script binaries are fully read and exported as raw + readable reports
 - binary bytecode decompile/recompile remains blocked until real compiler/decompiler proof exists
@@ -27,7 +27,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
-VERSION = "1.0.0-script-workshop-extension"
+VERSION = "1.1.0-script-workshop-extension-hardening"
 TEXT_SUFFIXES = {".c", ".h", ".hpp", ".cpp", ".cc", ".cxx", ".py", ".bat", ".cmd", ".ps1", ".txt", ".md", ".xml", ".ini", ".csv", ".json", ".toml", ".cfg"}
 SOURCE_SUFFIXES = {".c", ".h", ".hpp", ".cpp", ".cc", ".cxx"}
 COMPILED_SCRIPT_SUFFIXES = {".wsc", ".csc", ".xsc", ".sco", ".ysc"}
@@ -68,7 +68,6 @@ def find_repo_root(start: Path | None = None) -> Path:
     for candidate in [here, *here.parents]:
         if (candidate / "main.py").exists() and (candidate / "python_workbench.py").exists():
             return candidate
-    # extension path: related_apps/CodeRED_Script_Workshop/CodeRED_Script_Workshop.py
     return Path(__file__).resolve().parents[2]
 
 
@@ -88,13 +87,13 @@ def safe_name(rel: str) -> str:
 
 
 def open_path(path: Path) -> None:
+    if not path.exists():
+        raise FileNotFoundError(path)
     if sys.platform.startswith("win") and hasattr(os, "startfile"):
         os.startfile(str(path))  # type: ignore[attr-defined]
         return
-    if sys.platform == "darwin":
-        subprocess.Popen(["open", str(path)])
-        return
-    subprocess.Popen(["xdg-open", str(path)])
+    opener = "open" if sys.platform == "darwin" else "xdg-open"
+    subprocess.Popen([opener, str(path)])
 
 
 def workspace_root(root: Path) -> Path:
@@ -124,6 +123,7 @@ def source_roots(root: Path) -> list[Path]:
     candidates = [
         root / "related_apps" / "code_red_sccl_attempt_bundle_v1" / "code_red_script_compile_lab_v1",
         root / "related_apps" / "Code_RED_ScriptHookRDR_AI_Menu",
+        root / "related_apps" / "CodeRED_Script_Workshop" / "new_scripts",
         root / "tools",
         root / "docs",
         root / "research",
@@ -137,10 +137,10 @@ def iter_script_files(root: Path, extra_roots: Iterable[Path] = ()) -> Iterable[
     for base in [*source_roots(root), *extra_roots]:
         if not base.exists():
             continue
+        candidates: list[Path] = []
         if base.is_file():
-            candidates = [base]
+            candidates.append(base)
         else:
-            candidates = []
             for current, dirnames, filenames in os.walk(base):
                 dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
                 for name in filenames:
@@ -164,15 +164,9 @@ def load_native_names(root: Path) -> set[str]:
             data = json.loads(candidate.read_text(encoding="utf-8"))
         except Exception:
             continue
-        if isinstance(data, dict):
-            records = data.get("records") or data.get("natives") or data.get("items") or []
-        else:
-            records = data if isinstance(data, list) else []
+        records = data.get("records") or data.get("natives") or data.get("items") or [] if isinstance(data, dict) else data if isinstance(data, list) else []
         for item in records:
-            if isinstance(item, dict):
-                name = str(item.get("name") or item.get("native") or "").strip().upper()
-            else:
-                name = str(item).strip().upper()
+            name = str(item.get("name") or item.get("native") or "" if isinstance(item, dict) else item).strip().upper()
             if name:
                 names.add(name)
     return names
@@ -188,12 +182,9 @@ def text_tokens(text: str, native_names: set[str]) -> tuple[list[str], list[str]
 def binary_strings(data: bytes, limit: int = 500) -> list[str]:
     out: list[str] = []
     for raw in ASCII_RE.findall(data):
-        try:
-            s = raw.decode("ascii", errors="ignore").strip()
-        except Exception:
-            continue
-        if s and s not in out:
-            out.append(s)
+        text = raw.decode("ascii", errors="ignore").strip()
+        if text and text not in out:
+            out.append(text)
         if len(out) >= limit:
             break
     return out
@@ -254,13 +245,7 @@ def scan_pipeline(root: Path, refresh: bool = False, extra_roots: Iterable[Path]
         string_count = 0
         kind = "source_text" if suffix in TEXT_SUFFIXES else "compiled_binary" if suffix in COMPILED_SCRIPT_SUFFIXES else "binary"
         state = "editable_source" if suffix in TEXT_SUFFIXES else "binary_readonly"
-        full_read_export = ""
-        open_target = ""
-        edit_copy = ""
-        decompiled = ""
-        raw_export = ""
-        import_item = ""
-        recompile_item = ""
+        full_read_export = open_target = edit_copy = decompiled = raw_export = import_item = recompile_item = ""
 
         if suffix in TEXT_SUFFIXES:
             text = data.decode("utf-8", errors="replace")
@@ -312,61 +297,19 @@ def scan_pipeline(root: Path, refresh: bool = False, extra_roots: Iterable[Path]
             decompiled = full_read_export
             open_target = full_read_export
 
-        records.append(ScriptRecord(
-            path=rel,
-            suffix=suffix,
-            size=len(data),
-            sha1=digest,
-            kind=kind,
-            state=state,
-            full_read_export=full_read_export,
-            open_target=open_target,
-            edit_copy=edit_copy,
-            decompiled_export=decompiled,
-            raw_export=raw_export,
-            import_queue=import_item,
-            recompile_queue=recompile_item,
-            native_tokens=natives,
-            hash_tokens=hashes,
-            string_count=string_count,
-        ))
-
-    # Manifests expected by Code RED script lanes.
-    decode_manifest = []
-    compile_manifest = []
-    for rec in records:
-        decode_manifest.append({
-            "path": rec.path,
-            "suffix": rec.suffix,
-            "size": rec.size,
-            "sha1": rec.sha1,
-            "editable": rec.state == "editable_source",
-            "kind": rec.kind,
-            "state": rec.state,
-            "full_read_export": rec.full_read_export,
-            "decompiled_export": rec.decompiled_export,
-            "native_tokens": rec.native_tokens,
-            "hash_tokens": rec.hash_tokens,
-        })
-        if rec.recompile_queue:
-            compile_manifest.append({
-                "path": rec.path,
-                "compile_state": "source_compile_candidate",
-                "edit_state": "safe_edit_copy",
-                "source": rec.recompile_queue,
-                "native_tokens": rec.native_tokens,
-                "hash_tokens": rec.hash_tokens,
-            })
+        records.append(ScriptRecord(rel, suffix, len(data), digest, kind, state, full_read_export, open_target, edit_copy, decompiled, raw_export, import_item, recompile_item, natives, hashes, string_count))
 
     data_dir = root / "data" / "codered"
     logs_dir = root / "logs"
     data_dir.mkdir(parents=True, exist_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
+    decode_manifest = [asdict(r) for r in records]
+    compile_manifest = [{"path": r.path, "compile_state": "source_compile_candidate", "edit_state": "safe_edit_copy", "source": r.recompile_queue, "native_tokens": r.native_tokens, "hash_tokens": r.hash_tokens} for r in records if r.recompile_queue]
     write_json(data_dir / "script_workshop_decode_manifest.json", decode_manifest)
     write_json(data_dir / "script_workshop_compile_candidates.json", compile_manifest)
     write_json(folders["import_queue"] / "IMPORT_QUEUE.json", import_queue)
     write_json(folders["recompile_queue"] / "RECOMPILE_QUEUE.json", recompile_queue)
-    write_json(data_dir / "script_workshop_extension_manifest.json", [asdict(r) for r in records])
+    write_json(data_dir / "script_workshop_extension_manifest.json", decode_manifest)
 
     csv_path = data_dir / "script_workshop_extension_manifest.csv"
     with csv_path.open("w", newline="", encoding="utf-8") as f:
@@ -429,9 +372,32 @@ def compile_proof_plan(root: Path) -> dict:
     bat = folders["proof"] / "Run_Windows_Compile_Proof.bat"
     ps1 = folders["proof"] / "Run_Windows_Compile_Proof.ps1"
     sh = folders["proof"] / "run_linux_compile_prep_check.sh"
-    write_text(bat, "@echo off\r\nsetlocal\r\ncd /d %~dp0\\..\\..\\..\\..\r\necho Code RED Script Workshop Windows Compile Proof\r\npy -3 related_apps\\CodeRED_Script_Workshop\\CodeRED_Script_Workshop.py scan --refresh\r\npy -3 tools\\codered_script_compile_validation.py\r\nif errorlevel 1 exit /b 1\r\necho Review workspace\\recompile_queue before enabling real compiler output promotion.\r\nendlocal\r\n")
-    write_text(ps1, "$ErrorActionPreference = 'Stop'\nSet-Location (Resolve-Path "$PSScriptRoot\\..\\..\\..\\..")\npy -3 related_apps\\CodeRED_Script_Workshop\\CodeRED_Script_Workshop.py scan --refresh\npy -3 tools\\codered_script_compile_validation.py\nWrite-Host 'Review recompile queue before output promotion.'\n")
-    write_text(sh, "#!/usr/bin/env bash\nset -euo pipefail\ncd \"$(dirname \"$0\")/../../../..\"\npython3 related_apps/CodeRED_Script_Workshop/CodeRED_Script_Workshop.py scan --refresh\npython3 -m py_compile related_apps/CodeRED_Script_Workshop/CodeRED_Script_Workshop.py\necho 'Linux prep check passed. Windows compiler proof still runs on Windows.'\n")
+    write_text(bat, textwrap.dedent(r"""
+        @echo off
+        setlocal
+        cd /d "%~dp0\..\..\..\.."
+        echo Code RED Script Workshop Windows Compile Proof
+        py -3 related_apps\CodeRED_Script_Workshop\CodeRED_Script_Workshop.py scan --refresh
+        py -3 tools\codered_script_compile_validation.py
+        if errorlevel 1 exit /b 1
+        echo Review related_apps\CodeRED_Script_Workshop\workspace\recompile_queue before enabling real compiler output promotion.
+        endlocal
+        """).strip() + "\n")
+    write_text(ps1, textwrap.dedent(r"""
+        $ErrorActionPreference = 'Stop'
+        Set-Location (Resolve-Path "$PSScriptRoot\..\..\..\..")
+        py -3 related_apps\CodeRED_Script_Workshop\CodeRED_Script_Workshop.py scan --refresh
+        py -3 tools\codered_script_compile_validation.py
+        Write-Host 'Review related_apps\CodeRED_Script_Workshop\workspace\recompile_queue before output promotion.'
+        """).strip() + "\n")
+    write_text(sh, textwrap.dedent("""
+        #!/usr/bin/env bash
+        set -euo pipefail
+        cd "$(dirname "$0")/../../../.."
+        python3 related_apps/CodeRED_Script_Workshop/CodeRED_Script_Workshop.py scan --refresh
+        python3 -m py_compile related_apps/CodeRED_Script_Workshop/CodeRED_Script_Workshop.py
+        echo 'Linux prep check passed. Windows compiler proof still runs on Windows.'
+        """).strip() + "\n")
     try:
         sh.chmod(0o755)
     except Exception:
@@ -449,23 +415,39 @@ def run_all(root: Path, refresh: bool) -> dict:
     return proof
 
 
+def self_test(root: Path) -> dict:
+    proof = run_all(root, refresh=True)
+    errors: list[str] = []
+    for rel in ["decode_manifest", "compile_candidates", "import_queue", "recompile_queue"]:
+        out = proof["outputs"].get(rel)
+        if out and not (root / out).exists():
+            errors.append(f"missing output: {out}")
+    plan = compile_proof_plan(root)
+    for out in plan.values():
+        if not (root / out).exists():
+            errors.append(f"missing proof helper: {out}")
+    result = {"ok": not errors, "errors": errors, "proof": proof, "compile_proof_plan": plan}
+    write_json(root / "logs" / "CodeRED_Script_Workshop_Extension_SelfTest.json", result)
+    return result
+
+
 def build_gui(root: Path):
     import tkinter as tk
     from tkinter import messagebox, ttk
-
     win = tk.Tk()
     win.title("Code RED Script Workshop")
-    win.geometry("980x640")
+    win.geometry("1040x680")
     folders = ensure_workspace(root)
-
     status = tk.StringVar(value="Ready. Run Scan Scripts to build the workspace.")
+    top = ttk.Frame(win)
+    top.pack(fill="x", padx=10, pady=(10, 0))
     text = tk.Text(win, wrap="word")
     text.pack(fill="both", expand=True, padx=10, pady=10)
 
     def log(msg: str) -> None:
         text.insert("end", msg.rstrip() + "\n")
         text.see("end")
-        status.set(msg.rstrip())
+        status.set(msg.rstrip().splitlines()[-1] if msg.rstrip() else "Ready")
         win.update_idletasks()
 
     def do_scan(refresh: bool = False) -> None:
@@ -476,21 +458,27 @@ def build_gui(root: Path):
             messagebox.showerror("Script Workshop", str(exc))
             log(f"ERROR: {exc}")
 
+    def do_self_test() -> None:
+        result = self_test(root)
+        log("Self-test: " + ("PASS" if result["ok"] else "FAIL") + "\n" + json.dumps(result.get("errors", []), indent=2))
+
     def do_open(key: str) -> None:
         try:
             open_path(folders[key])
         except Exception as exc:
             messagebox.showerror("Open folder", str(exc))
 
-    top = ttk.Frame(win)
-    top.pack(fill="x", padx=10, pady=(10, 0))
-    ttk.Button(top, text="Scan Scripts", command=lambda: do_scan(False)).pack(side="left", padx=3)
-    ttk.Button(top, text="Refresh/Rebuild", command=lambda: do_scan(True)).pack(side="left", padx=3)
-    ttk.Button(top, text="Open Edit", command=lambda: do_open("edit")).pack(side="left", padx=3)
-    ttk.Button(top, text="Open Export", command=lambda: do_open("decompiled_export")).pack(side="left", padx=3)
-    ttk.Button(top, text="Open Import Queue", command=lambda: do_open("import_queue")).pack(side="left", padx=3)
-    ttk.Button(top, text="Open Recompile Queue", command=lambda: do_open("recompile_queue")).pack(side="left", padx=3)
-    ttk.Button(top, text="Open Proof", command=lambda: do_open("proof")).pack(side="left", padx=3)
+    for label, cmd in [
+        ("Scan", lambda: do_scan(False)),
+        ("Refresh/Rebuild", lambda: do_scan(True)),
+        ("Self-Test", do_self_test),
+        ("Open Edit", lambda: do_open("edit")),
+        ("Open Export", lambda: do_open("decompiled_export")),
+        ("Open Import", lambda: do_open("import_queue")),
+        ("Open Recompile", lambda: do_open("recompile_queue")),
+        ("Open Proof", lambda: do_open("proof")),
+    ]:
+        ttk.Button(top, text=label, command=cmd).pack(side="left", padx=3)
     ttk.Label(win, textvariable=status).pack(fill="x", padx=10, pady=(0, 10))
     text.insert("end", "Code RED Script Workshop\n\nWorkflow: scan -> read -> open -> edit -> export -> import queue -> recompile queue.\n\n")
     return win
@@ -498,7 +486,7 @@ def build_gui(root: Path):
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Code RED Script Workshop extension")
-    p.add_argument("command", nargs="?", default="gui", choices=["gui", "scan", "refresh", "open-edit", "open-export", "open-import", "open-recompile", "open-proof", "compile-proof-plan"], help="Action to run")
+    p.add_argument("command", nargs="?", default="gui", choices=["gui", "scan", "refresh", "self-test", "open-edit", "open-export", "open-import", "open-recompile", "open-proof", "compile-proof-plan"], help="Action to run")
     p.add_argument("--root", default=None, help="Code RED root")
     p.add_argument("--refresh", action="store_true", help="Rebuild generated workspace folders")
     return p
@@ -516,16 +504,14 @@ def main(argv: Iterable[str] | None = None) -> int:
         proof = run_all(root, refresh=args.refresh or args.command == "refresh")
         print(report_markdown(proof))
         return 0
+    if args.command == "self-test":
+        result = self_test(root)
+        print(json.dumps({"ok": result["ok"], "errors": result["errors"]}, indent=2))
+        return 0 if result["ok"] else 2
     if args.command == "compile-proof-plan":
         print(json.dumps(compile_proof_plan(root), indent=2))
         return 0
-    open_map = {
-        "open-edit": "edit",
-        "open-export": "decompiled_export",
-        "open-import": "import_queue",
-        "open-recompile": "recompile_queue",
-        "open-proof": "proof",
-    }
+    open_map = {"open-edit": "edit", "open-export": "decompiled_export", "open-import": "import_queue", "open-recompile": "recompile_queue", "open-proof": "proof"}
     open_path(folders[open_map[args.command]])
     return 0
 
