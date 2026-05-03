@@ -1,0 +1,270 @@
+#!/usr/bin/env python3
+"""Timeout-safe SC-CL vehicle menu compile probe.
+
+This replaces the silent batch-only compile step. It prints progress, runs SC-CL
+with a timeout, uses documented SC-CL output options, and writes proof logs.
+
+It does not install scripts into the game and does not promote compiled output
+into archives.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Iterable
+
+VERSION = "1.0.0-safe-sccl-compile-probe"
+KIT = Path("related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1")
+LAB = Path("related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1")
+DROP = Path("resources/SC-CL_DROP_HERE")
+REPORT_JSON = Path("logs/CodeRED_SCCL_Safe_Compile_Probe_Report.json")
+REPORT_MD = Path("logs/CodeRED_SCCL_Safe_Compile_Probe_Report.md")
+OUTPUT_LOG = Path("logs/CodeRED_SCCL_Safe_Compile_Probe_Output.txt")
+
+
+@dataclass
+class CommandResult:
+    name: str
+    command: list[str]
+    exit_code: int | None
+    timed_out: bool = False
+    stdout_tail: str = ""
+    stderr_tail: str = ""
+
+
+@dataclass
+class ProbeReport:
+    version: str
+    generated_utc: str
+    root: str
+    ok: bool
+    sccl_exe: str | None
+    source: str
+    output_dir: str
+    commands: list[CommandResult] = field(default_factory=list)
+    output_files: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    next_steps: list[str] = field(default_factory=list)
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def root_from_arg(raw: str | None) -> Path:
+    return Path(raw).resolve() if raw else Path(__file__).resolve().parents[1]
+
+
+def rel(path: Path, root: Path) -> str:
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except Exception:
+        return str(path)
+
+
+def tail(text: str, limit: int = 8000) -> str:
+    return text if len(text) <= limit else text[-limit:]
+
+
+def write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8", errors="ignore")
+
+
+def write_json(path: Path, obj) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(obj, indent=2), encoding="utf-8")
+
+
+def find_sccl(root: Path, explicit: str | None = None) -> Path | None:
+    candidates = []
+    if explicit:
+        candidates.append(Path(explicit))
+    env = os.environ.get("SCCL_EXE")
+    if env:
+        candidates.append(Path(env))
+    candidates.extend([
+        root / KIT / "SC-CL.exe",
+        root / DROP / "SC-CL.exe",
+        root / "SC-CL.exe",
+        root / "SC-CL-master" / "SC-CL.exe",
+        root / "SC-CL-master" / "codered_llvm_build" / "Release" / "bin" / "SC-CL.exe",
+        root / "resources" / "SC-CL_bitbucket_source" / "SC-CL.exe",
+        root / "resources" / "SC-CL_bitbucket_source" / "codered_llvm_build" / "Release" / "bin" / "SC-CL.exe",
+    ])
+    seen = set()
+    for path in candidates:
+        resolved = path.resolve()
+        key = str(resolved).lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        if resolved.exists():
+            return resolved
+    return None
+
+
+def run_command(name: str, cmd: list[str], cwd: Path, timeout: int) -> CommandResult:
+    try:
+        proc = subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True, timeout=timeout, check=False)
+        return CommandResult(name=name, command=cmd, exit_code=proc.returncode, stdout_tail=tail(proc.stdout), stderr_tail=tail(proc.stderr))
+    except subprocess.TimeoutExpired as exc:
+        return CommandResult(
+            name=name,
+            command=cmd,
+            exit_code=None,
+            timed_out=True,
+            stdout_tail=tail((exc.stdout or "") if isinstance(exc.stdout, str) else ""),
+            stderr_tail=tail((exc.stderr or "") if isinstance(exc.stderr, str) else ""),
+        )
+
+
+def list_outputs(out_dir: Path, root: Path) -> list[str]:
+    if not out_dir.exists():
+        return []
+    return [rel(p, root) for p in out_dir.rglob("*") if p.is_file()]
+
+
+def compile_probe(root: Path, sccl_arg: str | None, timeout: int) -> ProbeReport:
+    root = root.resolve()
+    sccl = find_sccl(root, sccl_arg)
+    src = root / LAB / "src" / "main.c"
+    out_dir = root / KIT / "output" / "vehicle_menu_probe_build"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    report = ProbeReport(
+        version=VERSION,
+        generated_utc=utc_now(),
+        root=str(root),
+        ok=False,
+        sccl_exe=str(sccl) if sccl else None,
+        source=rel(src, root),
+        output_dir=rel(out_dir, root),
+    )
+    if not sccl:
+        report.warnings.append("SC-CL.exe was not found.")
+        report.next_steps = ["Run: py -3 tools\\codered_sccl_finalize_build.py --validate"]
+        write_outputs(root, report)
+        return report
+    if not src.exists():
+        report.warnings.append(f"Missing probe source: {src}")
+        write_outputs(root, report)
+        return report
+
+    print(f"[CodeRED] SC-CL: {sccl}", flush=True)
+    print(f"[CodeRED] Source: {src}", flush=True)
+    print(f"[CodeRED] Output: {out_dir}", flush=True)
+
+    # Quick health check. SC-CL may return nonzero for help/version, so this is diagnostic only.
+    report.commands.append(run_command("SC-CL help", [str(sccl), "-help"], root, timeout=min(timeout, 20)))
+
+    compile_commands = [
+        [str(sccl), "-target=RDR_#SC", "-platform=X360", "-out-dir", str(out_dir), "-name=vehicle_menu_probe", str(src)],
+        [str(sccl), "-target=RDR_SCO", "-platform=X360", "-out-dir", str(out_dir), "-name=vehicle_menu_probe", str(src)],
+        [str(sccl), "-target=RDR_#SC", "-out-dir", str(out_dir), "-name=vehicle_menu_probe", str(src)],
+        [str(sccl), "-target=RDR_SCO", "-out-dir", str(out_dir), "-name=vehicle_menu_probe", str(src)],
+    ]
+
+    for index, cmd in enumerate(compile_commands, 1):
+        print(f"[CodeRED] Compile attempt {index}/{len(compile_commands)}...", flush=True)
+        result = run_command(f"compile attempt {index}", cmd, root, timeout=timeout)
+        report.commands.append(result)
+        report.output_files = list_outputs(out_dir, root)
+        if result.timed_out:
+            report.warnings.append(f"Compile attempt {index} timed out after {timeout}s; trying next target/options.")
+            continue
+        if result.exit_code == 0 and report.output_files:
+            report.ok = True
+            break
+
+    if not report.ok:
+        report.output_files = list_outputs(out_dir, root)
+        report.warnings.append("SC-CL did not produce a verified output file from the probe source.")
+        report.next_steps = [
+            "Open logs\\CodeRED_SCCL_Safe_Compile_Probe_Output.txt and inspect the first compile error.",
+            "If SC-CL opens a GUI or hangs, rerun with a shorter timeout: py -3 tools\\codered_sccl_safe_compile_probe.py --timeout 20",
+            "Do not install/promote any compiled output until this probe passes.",
+        ]
+    else:
+        report.next_steps = [
+            "Vehicle menu compile probe produced output. Next: controlled compiled-output verification before archive import.",
+        ]
+    write_outputs(root, report)
+    return report
+
+
+def markdown(report: ProbeReport) -> str:
+    lines = [
+        "# Code RED SC-CL Safe Compile Probe Report",
+        "",
+        f"Generated UTC: `{report.generated_utc}`",
+        f"Result: **{'PASS' if report.ok else 'NEEDS ATTENTION'}**",
+        f"SC-CL.exe: `{report.sccl_exe}`",
+        f"Source: `{report.source}`",
+        f"Output dir: `{report.output_dir}`",
+        "",
+        "## Output Files",
+        "",
+    ]
+    lines.extend(f"- `{p}`" for p in report.output_files or ["none"])
+    lines.extend(["", "## Commands", ""])
+    for item in report.commands:
+        lines.extend([
+            f"### {item.name}",
+            f"- exit: `{item.exit_code}`",
+            f"- timed_out: `{item.timed_out}`",
+            f"- command: `{' '.join(item.command)}`",
+            "",
+        ])
+        if item.stdout_tail:
+            lines.extend(["stdout:", "```text", item.stdout_tail, "```", ""])
+        if item.stderr_tail:
+            lines.extend(["stderr:", "```text", item.stderr_tail, "```", ""])
+    if report.warnings:
+        lines.extend(["", "## Warnings", ""])
+        lines.extend(f"- {w}" for w in report.warnings)
+    lines.extend(["", "## Next Steps", ""])
+    lines.extend(f"- {s}" for s in report.next_steps)
+    return "\n".join(lines) + "\n"
+
+
+def write_outputs(root: Path, report: ProbeReport) -> None:
+    write_json(root / REPORT_JSON, asdict(report))
+    md = markdown(report)
+    write_text(root / REPORT_MD, md)
+    # Compact command output log for quick inspection.
+    chunks = []
+    for item in report.commands:
+        chunks.append("\n".join([
+            f"## {item.name}",
+            f"exit={item.exit_code} timed_out={item.timed_out}",
+            "COMMAND: " + " ".join(item.command),
+            "STDOUT:\n" + item.stdout_tail,
+            "STDERR:\n" + item.stderr_tail,
+        ]))
+    write_text(root / OUTPUT_LOG, "\n\n".join(chunks) + "\n")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(description="Run a timeout-safe SC-CL compile probe.")
+    p.add_argument("--root", default=None)
+    p.add_argument("--sccl", default=None, help="Explicit SC-CL.exe path")
+    p.add_argument("--timeout", type=int, default=90, help="Seconds per compile attempt")
+    return p
+
+
+def main(argv: Iterable[str] | None = None) -> int:
+    args = build_parser().parse_args(list(argv) if argv is not None else None)
+    root = root_from_arg(args.root)
+    report = compile_probe(root, args.sccl, timeout=max(5, args.timeout))
+    print(markdown(report))
+    return 0 if report.ok else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
