@@ -1,0 +1,93 @@
+{
+  "version": "1.0.0-safe-sccl-compile-probe",
+  "generated_utc": "2026-05-03T14:41:43Z",
+  "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
+  "ok": false,
+  "sccl_exe": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+  "source": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
+  "output_dir": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/vehicle_menu_probe_build",
+  "commands": [
+    {
+      "name": "SC-CL help",
+      "command": [
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+        "-help"
+      ],
+      "exit_code": 3221225781,
+      "timed_out": false,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "name": "compile attempt 1",
+      "command": [
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+        "-target=RDR_#SC",
+        "-platform=X360",
+        "-out-dir",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\output\\vehicle_menu_probe_build",
+        "-name=vehicle_menu_probe",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c"
+      ],
+      "exit_code": 3221225781,
+      "timed_out": false,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "name": "compile attempt 2",
+      "command": [
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+        "-target=RDR_SCO",
+        "-platform=X360",
+        "-out-dir",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\output\\vehicle_menu_probe_build",
+        "-name=vehicle_menu_probe",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c"
+      ],
+      "exit_code": 3221225781,
+      "timed_out": false,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "name": "compile attempt 3",
+      "command": [
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+        "-target=RDR_#SC",
+        "-out-dir",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\output\\vehicle_menu_probe_build",
+        "-name=vehicle_menu_probe",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c"
+      ],
+      "exit_code": 3221225781,
+      "timed_out": false,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "name": "compile attempt 4",
+      "command": [
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+        "-target=RDR_SCO",
+        "-out-dir",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\output\\vehicle_menu_probe_build",
+        "-name=vehicle_menu_probe",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c"
+      ],
+      "exit_code": 3221225781,
+      "timed_out": false,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    }
+  ],
+  "output_files": [],
+  "warnings": [
+    "SC-CL did not produce a verified output file from the probe source."
+  ],
+  "next_steps": [
+    "Open logs\\CodeRED_SCCL_Safe_Compile_Probe_Output.txt and inspect the first compile error.",
+    "If SC-CL opens a GUI or hangs, rerun with a shorter timeout: py -3 tools\\codered_sccl_safe_compile_probe.py --timeout 20",
+    "Do not install/promote any compiled output until this probe passes."
+  ]
+}
