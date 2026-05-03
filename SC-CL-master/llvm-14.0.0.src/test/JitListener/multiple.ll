@@ -26,15 +26,15 @@
 ; 21: }
 ;
 
-; CHECK: Method load [1]: bar, Size = {{[0-9]+}}
-; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[5,6,7,9]}}
-; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[5,6,7,9]}}
-; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[5,6,7,9]}}
-; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[5,6,7,9]}}
+; CHECK: Method load [1]: foo, Size = {{[0-9]+}}
+; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[1,2]}}
+; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[1,2]}}
 
-; CHECK: Method load [2]: foo, Size = {{[0-9]+}}
-; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[1,2]}}
-; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[1,2]}}
+; CHECK: Method load [2]: bar, Size = {{[0-9]+}}
+; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[5,6,7,9]}}
+; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[5,6,7,9]}}
+; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[5,6,7,9]}}
+; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[5,6,7,9]}}
 
 ; CHECK: Method load [3]: fubar, Size = {{[0-9]+}}
 ; CHECK:   Line info @ {{[0-9]+}}: multiple.c, line {{[12,13,15,17,19]}}
@@ -118,7 +118,7 @@ return:                                           ; preds = %sw.default, %sw.bb1
   ret i32 %1, !dbg !39
 }
 
-attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -128,13 +128,13 @@ attributes #1 = { nounwind readnone }
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, producer: "clang version 3.6.0 (trunk)", isOptimized: false, emissionKind: FullDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "multiple.c", directory: "F:\5Cusers\5Cakaylor\5Cllvm-s\5Cllvm\5Ctest\5CJitListener")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", line: 1, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 1, file: !1, scope: !5, type: !6, variables: !2)
+!4 = distinct !DISubprogram(name: "foo", line: 1, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 1, file: !1, scope: !5, type: !6, retainedNodes: !2)
 !5 = !DIFile(filename: "multiple.c", directory: "F:CusersCakaylorCllvm-sCllvmCtestCJitListener")
 !6 = !DISubroutineType(types: !7)
 !7 = !{!8, !8}
 !8 = !DIBasicType(tag: DW_TAG_base_type, name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
-!9 = distinct !DISubprogram(name: "bar", line: 5, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 5, file: !1, scope: !5, type: !6, variables: !2)
-!10 = distinct !DISubprogram(name: "fubar", line: 12, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 12, file: !1, scope: !5, type: !6, variables: !2)
+!9 = distinct !DISubprogram(name: "bar", line: 5, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 5, file: !1, scope: !5, type: !6, retainedNodes: !2)
+!10 = distinct !DISubprogram(name: "fubar", line: 12, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 12, file: !1, scope: !5, type: !6, retainedNodes: !2)
 !11 = !{i32 2, !"Dwarf Version", i32 4}
 !12 = !{i32 2, !"Debug Info Version", i32 3}
 !13 = !{i32 1, !"PIC Level", i32 2}

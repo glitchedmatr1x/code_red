@@ -1,9 +1,8 @@
 //===--- CloexecInotifyInit1Check.cpp - clang-tidy-------------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -25,7 +24,7 @@ void CloexecInotifyInit1Check::registerMatchers(MatchFinder *Finder) {
 }
 
 void CloexecInotifyInit1Check::check(const MatchFinder::MatchResult &Result) {
-  insertMacroFlag(Result, /*MarcoFlag=*/"IN_CLOEXEC", /*ArgPos=*/0);
+  insertMacroFlag(Result, /*MacroFlag=*/"IN_CLOEXEC", /*ArgPos=*/0);
 }
 
 } // namespace android

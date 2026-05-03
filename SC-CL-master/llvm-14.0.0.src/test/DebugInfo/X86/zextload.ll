@@ -23,7 +23,7 @@
 
 ; CHECK-LABEL: @test
 ; CHECK:   [[LOADVAL:%[0-9]+]] = load i32, i32* %ptr, align 4, !dbg [[DEBUGLOC:![0-9]+]]
-; CHECK-NEXT:                    zext i32 [[LOADVAL]] to i64, !dbg [[DEBUGLOC]]
+; CHECK-NEXT:                    zext i32 [[LOADVAL]] to i64
 ; CHECK:   [[DEBUGLOC]] = !DILocation(line: 3
 
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
@@ -59,7 +59,7 @@ sw.epilog:                                        ; preds = %sw.bb1, %entry, %sw
 !2 = !{}
 !3 = !{i32 2, !"Dwarf Version", i32 4}
 !4 = !{i32 2, !"Debug Info Version", i32 3}
-!5 = distinct !DISubprogram(name: "test", scope: !1, file: !1, line: 1, type: !6, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !2)
+!5 = distinct !DISubprogram(name: "test", scope: !1, file: !1, line: 1, type: !6, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !2)
 !6 = !DISubroutineType(types: !2)
 !7 = !DILocation(line: 3, column: 18, scope: !5)
 !8 = !DILocation(line: 4, column: 3, scope: !5)

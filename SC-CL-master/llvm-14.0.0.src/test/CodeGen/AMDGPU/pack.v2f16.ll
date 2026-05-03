@@ -1,6 +1,6 @@
-; RUN: llc -mtriple=amdgcn--amdhsa -mcpu=gfx900 -mattr=-flat-for-global,-fp64-fp16-denormals -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=GFX9 %s
-; RUN: llc -mtriple=amdgcn--amdhsa -mcpu=fiji -mattr=-flat-for-global -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=VI %s
-; RUN: llc -mtriple=amdgcn--amdhsa -mcpu=kaveri -mattr=-flat-for-global -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=CI %s
+; RUN: llc -mtriple=amdgcn--amdhsa -mcpu=gfx900 -mattr=-flat-for-global -denormal-fp-math=preserve-sign -verify-machineinstrs < %s | FileCheck --check-prefixes=GCN,GFX9 %s
+; RUN: llc -mtriple=amdgcn--amdhsa -mcpu=fiji -mattr=-flat-for-global -verify-machineinstrs < %s | FileCheck -check-prefix=GCN %s
+; RUN: llc -mtriple=amdgcn--amdhsa -mcpu=kaveri -mattr=-flat-for-global -verify-machineinstrs < %s | FileCheck -check-prefix=GCN %s
 
 
 ; GCN-LABEL: {{^}}s_pack_v2f16:
@@ -8,9 +8,9 @@
 ; GFX9: s_load_dword [[VAL1:s[0-9]+]]
 ; GFX9: s_pack_ll_b32_b16 [[PACKED:s[0-9]+]], [[VAL0]], [[VAL1]]
 ; GFX9: ; use [[PACKED]]
-define amdgpu_kernel void @s_pack_v2f16(i32 addrspace(2)* %in0, i32 addrspace(2)* %in1) #0 {
-  %val0 = load volatile i32, i32 addrspace(2)* %in0
-  %val1 = load volatile i32, i32 addrspace(2)* %in1
+define amdgpu_kernel void @s_pack_v2f16(i32 addrspace(4)* %in0, i32 addrspace(4)* %in1) #0 {
+  %val0 = load volatile i32, i32 addrspace(4)* %in0
+  %val1 = load volatile i32, i32 addrspace(4)* %in1
   %lo.i = trunc i32 %val0 to i16
   %hi.i = trunc i32 %val1 to i16
   %lo = bitcast i16 %lo.i to half
@@ -27,8 +27,8 @@ define amdgpu_kernel void @s_pack_v2f16(i32 addrspace(2)* %in0, i32 addrspace(2)
 ; GFX9: s_load_dword [[VAL1:s[0-9]+]]
 ; GFX9: s_pack_ll_b32_b16 [[PACKED:s[0-9]+]], 0x1234, [[VAL1]]
 ; GFX9: ; use [[PACKED]]
-define amdgpu_kernel void @s_pack_v2f16_imm_lo(i32 addrspace(2)* %in1) #0 {
-  %val1 = load i32, i32 addrspace(2)* %in1
+define amdgpu_kernel void @s_pack_v2f16_imm_lo(i32 addrspace(4)* %in1) #0 {
+  %val1 = load i32, i32 addrspace(4)* %in1
   %hi.i = trunc i32 %val1 to i16
   %hi = bitcast i16 %hi.i to half
   %vec.0 = insertelement <2 x half> undef, half 0xH1234, i32 0
@@ -43,8 +43,8 @@ define amdgpu_kernel void @s_pack_v2f16_imm_lo(i32 addrspace(2)* %in1) #0 {
 ; GFX9: s_load_dword [[VAL0:s[0-9]+]]
 ; GFX9: s_pack_ll_b32_b16 [[PACKED:s[0-9]+]], [[VAL0]], 0x1234
 ; GFX9: ; use [[PACKED]]
-define amdgpu_kernel void @s_pack_v2f16_imm_hi(i32 addrspace(2)* %in0) #0 {
-  %val0 = load i32, i32 addrspace(2)* %in0
+define amdgpu_kernel void @s_pack_v2f16_imm_hi(i32 addrspace(4)* %in0) #0 {
+  %val0 = load i32, i32 addrspace(4)* %in0
   %lo.i = trunc i32 %val0 to i16
   %lo = bitcast i16 %lo.i to half
   %vec.0 = insertelement <2 x half> undef, half %lo, i32 0

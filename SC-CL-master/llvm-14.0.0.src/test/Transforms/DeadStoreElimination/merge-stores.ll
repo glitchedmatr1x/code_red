@@ -39,7 +39,6 @@ entry:
 
   %wptr = bitcast i64* %ptr to i16*
   %wptr1 = getelementptr inbounds i16, i16* %wptr, i64 1
-  %wptr2 = getelementptr inbounds i16, i16* %wptr, i64 2
   %wptr3 = getelementptr inbounds i16, i16* %wptr, i64 3
 
   ;; We should be able to merge these two stores with the i64 one above
@@ -165,7 +164,7 @@ define void @foo(%union.U* nocapture %u) {
 ;
 entry:
   %i = getelementptr inbounds %union.U, %union.U* %u, i64 0, i32 0
-  store i64 0, i64* %i, align 8, !dbg !22, !tbaa !26, !noalias !30, !nontemporal !29
+  store i64 0, i64* %i, align 8, !dbg !22, !tbaa !26, !noalias !32, !nontemporal !29
   %s = bitcast %union.U* %u to i16*
   store i16 42, i16* %s, align 8
   ret void
@@ -190,23 +189,23 @@ define void @PR34074(i32* %x, i64* %y) {
 
 define void @PR36129(i32* %P, i32* %Q) {
 ; CHECK-LABEL: @PR36129(
-; CHECK-NEXT:    store i32 1, i32* [[P:%.*]]
+; CHECK-NEXT:    store i32 1, i32* [[P:%.*]], align 4
 ; CHECK-NEXT:    [[P2:%.*]] = bitcast i32* [[P]] to i8*
-; CHECK-NEXT:    store i32 2, i32* [[Q:%.*]]
-; CHECK-NEXT:    store i8 3, i8* [[P2]]
+; CHECK-NEXT:    store i32 2, i32* [[Q:%.*]], align 4
+; CHECK-NEXT:    store i8 3, i8* [[P2]], align 1
 ; CHECK-NEXT:    ret void
 ;
-  store i32 1, i32* %P
+  store i32 1, i32* %P, align 4
   %P2 = bitcast i32* %P to i8*
-  store i32 2, i32* %Q
-  store i8 3, i8* %P2
+  store i32 2, i32* %Q, align 4
+  store i8 3, i8* %P2, align 1
   ret void
 }
 
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, file: !1, producer: "clang version 5.0.0 (trunk 306512)", isOptimized: true, runtimeVersion: 0, emissionKind: FullDebug, enums: !2)
 !1 = !DIFile(filename: "me.cpp", directory: "/compiler-explorer")
 !2 = !{}
-!7 = distinct !DISubprogram(name: "foo", linkageName: "foo(U*)", scope: !1, file: !1, line: 9, type: !8, isLocal: false, isDefinition: true, scopeLine: 9, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !20)
+!7 = distinct !DISubprogram(name: "foo", linkageName: "foo(U*)", scope: !1, file: !1, line: 9, type: !8, isLocal: false, isDefinition: true, scopeLine: 9, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !20)
 !8 = !DISubroutineType(types: !9)
 !9 = !{null, !10}
 !10 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !11, size: 64)
@@ -232,6 +231,4 @@ define void @PR36129(i32* %P, i32* %Q) {
 ; Domains and scopes which might alias
 !30 = !{!30}
 !31 = !{!31, !30}
-
-!32 = !{!32}
-!33 = !{!33, !32}
+!32 = !{!31}

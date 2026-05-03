@@ -1,9 +1,8 @@
 //===- YAMLBench - Benchmark the YAMLParser implementation ----------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -68,7 +67,7 @@ static raw_ostream &operator <<(raw_ostream &os, const indent &in) {
   return os;
 }
 
-/// \brief Pretty print a tag by replacing tag:yaml.org,2002: with !!.
+/// Pretty print a tag by replacing tag:yaml.org,2002: with !!.
 static std::string prettyTag(yaml::Node *N) {
   std::string Tag = N->getVerbatimTag();
   if (StringRef(Tag).startswith("tag:yaml.org,2002:")) {
@@ -185,12 +184,10 @@ static std::string createJSONText(size_t MemoryMB, unsigned ValueSize) {
            << "  \"key2\": \"" << std::string(ValueSize, '*') << "\",\n"
            << "  \"key3\": \"" << std::string(ValueSize, '*') << "\"\n"
            << " }";
-    Stream.flush();
     if (JSONText.size() < MemoryBytes) Stream << ",";
     Stream << "\n";
   }
   Stream << "]\n";
-  Stream.flush();
   return JSONText;
 }
 

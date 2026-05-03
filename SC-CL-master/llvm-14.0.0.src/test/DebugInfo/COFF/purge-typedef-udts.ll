@@ -1,4 +1,4 @@
-; RUN: llc < %s -filetype=obj | llvm-readobj - -codeview | FileCheck %s
+; RUN: llc < %s -filetype=obj | llvm-readobj - --codeview | FileCheck %s
 source_filename = "test/DebugInfo/COFF/purge-typedef-udts.ll"
 target datalayout = "e-m:x-p:32:32-i64:64-f80:32-n8:16:32-a:0:32-S32"
 target triple = "i686-pc-windows-msvc19.11.25506"
@@ -62,7 +62,7 @@ entry:
   ret i32 %call, !dbg !48
 }
 
-attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="pentium4" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="pentium4" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone speculatable }
 
 !llvm.dbg.cu = !{!0}
@@ -79,14 +79,14 @@ attributes #1 = { nounwind readnone speculatable }
 !7 = !{i32 2, !"Debug Info Version", i32 3}
 !8 = !{i32 1, !"wchar_size", i32 2}
 !9 = !{!"clang version 6.0.0 "}
-!10 = distinct !DISubprogram(name: "func", linkageName: "\01?func@@YAHPAX@Z", scope: !1, file: !1, line: 10, type: !11, isLocal: false, isDefinition: true, scopeLine: 10, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!10 = distinct !DISubprogram(name: "func", linkageName: "\01?func@@YAHPAX@Z", scope: !1, file: !1, line: 10, type: !11, isLocal: false, isDefinition: true, scopeLine: 10, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !11 = !DISubroutineType(types: !12)
 !12 = !{!13, !4}
 !13 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)
 !14 = !DILocalVariable(name: "F", arg: 1, scope: !10, file: !1, line: 10, type: !4)
 !15 = !DILocation(line: 10, column: 16, scope: !10)
 !16 = !DILocation(line: 10, column: 21, scope: !10)
-!17 = distinct !DISubprogram(name: "func", linkageName: "\01?func@@YAHPBUFoo@@@Z", scope: !1, file: !1, line: 11, type: !18, isLocal: false, isDefinition: true, scopeLine: 11, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!17 = distinct !DISubprogram(name: "func", linkageName: "\01?func@@YAHPBUFoo@@@Z", scope: !1, file: !1, line: 11, type: !18, isLocal: false, isDefinition: true, scopeLine: 11, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !18 = !DISubroutineType(types: !19)
 !19 = !{!13, !20}
 !20 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !21, size: 32)
@@ -98,7 +98,7 @@ attributes #1 = { nounwind readnone speculatable }
 !26 = !DILocation(line: 11, column: 52, scope: !17)
 !27 = !DILocation(line: 11, column: 40, scope: !17)
 !28 = !DILocation(line: 11, column: 33, scope: !17)
-!29 = distinct !DISubprogram(name: "func", linkageName: "\01?func@@YAHPBUBar@@@Z", scope: !1, file: !1, line: 12, type: !30, isLocal: false, isDefinition: true, scopeLine: 12, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!29 = distinct !DISubprogram(name: "func", linkageName: "\01?func@@YAHPBUBar@@@Z", scope: !1, file: !1, line: 12, type: !30, isLocal: false, isDefinition: true, scopeLine: 12, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !30 = !DISubroutineType(types: !31)
 !31 = !{!13, !32}
 !32 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !33, size: 32)

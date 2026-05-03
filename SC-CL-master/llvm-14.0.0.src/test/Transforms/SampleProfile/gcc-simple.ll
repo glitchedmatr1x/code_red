@@ -1,6 +1,6 @@
 ; RUN: opt < %s -sample-profile -sample-profile-file=%S/Inputs/gcc-simple.afdo -S | FileCheck %s
 ; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/gcc-simple.afdo -S | FileCheck %s
-; XFAIL: powerpc64-, s390x, mips-, mips64-, sparc
+;
 ; Original code:
 ;
 ; #include <stdlib.h>
@@ -136,9 +136,9 @@ for.end.6:                                        ; preds = %for.cond
 ; CHECK ![[PROF3]] = !{!"branch_weights", i32 1, i32 1}
 ; CHECK ![[PROF4]] = !{!"branch_weights", i32 1, i32 20238}
 
-attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" "use-sample-profile" }
 attributes #1 = { nounwind readnone }
-attributes #2 = { nounwind "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { nounwind "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #3 = { nounwind }
 
 !llvm.dbg.cu = !{!0}
@@ -148,12 +148,12 @@ attributes #3 = { nounwind }
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, file: !1, producer: "clang version 3.8.0 (trunk 247554) (llvm/trunk 247557)", isOptimized: false, runtimeVersion: 0, emissionKind: NoDebug, enums: !2)
 !1 = !DIFile(filename: "discriminator.cc", directory: "/usr/local/google/home/dnovillo/llvm/test/autofdo")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fool", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fool", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !5 = !DISubroutineType(types: !6)
 !6 = !{!7, !8}
 !7 = !DIBasicType(name: "long long int", size: 64, align: 64, encoding: DW_ATE_signed)
 !8 = !DIBasicType(name: "long int", size: 64, align: 64, encoding: DW_ATE_signed)
-!9 = distinct !DISubprogram(name: "main", scope: !1, file: !1, line: 7, type: !10, isLocal: false, isDefinition: true, scopeLine: 7, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!9 = distinct !DISubprogram(name: "main", scope: !1, file: !1, line: 7, type: !10, isLocal: false, isDefinition: true, scopeLine: 7, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !10 = !DISubroutineType(types: !11)
 !11 = !{!12}
 !12 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)

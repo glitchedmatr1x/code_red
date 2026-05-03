@@ -5,7 +5,7 @@
 ;
 ; RUN: llc < %s -mtriple=s390x-linux-gnu -mcpu=z10 | \
 ; RUN:   FileCheck -check-prefix=CHECK-NOFP %s
-; RUN: llc < %s -mtriple=s390x-linux-gnu -mcpu=z10 -disable-fp-elim | \
+; RUN: llc < %s -mtriple=s390x-linux-gnu -mcpu=z10 -frame-pointer=all | \
 ; RUN:   FileCheck -check-prefix=CHECK-FP %s
 
 ; This file tests what happens when a displacement is converted from
@@ -233,10 +233,10 @@ define void @f10(i32 *%vptr, i8 %byte) {
 ; CHECK-FP: stc %r3, 0([[REGISTER]],%r11)
 ; CHECK-FP: lg [[REGISTER]], [[OFFSET]](%r11)
 ; CHECK-FP: br %r14
-  %i0 = load volatile i32 , i32 *%vptr
-  %i1 = load volatile i32 , i32 *%vptr
-  %i4 = load volatile i32 , i32 *%vptr
-  %i5 = load volatile i32 , i32 *%vptr
+  %i0 = load volatile i32, i32 *%vptr
+  %i1 = load volatile i32, i32 *%vptr
+  %i4 = load volatile i32, i32 *%vptr
+  %i5 = load volatile i32, i32 *%vptr
   %region1 = alloca [524104 x i8], align 8
   %region2 = alloca [524104 x i8], align 8
   %ptr1 = getelementptr inbounds [524104 x i8], [524104 x i8]* %region1, i64 0, i64 8
@@ -272,19 +272,19 @@ define void @f11(i32 *%vptr, i8 %byte) {
 ; CHECK-FP: lg [[REGISTER]], [[OFFSET]](%r11)
 ; CHECK-FP: lmg %r6, %r15,
 ; CHECK-FP: br %r14
-  %i0 = load volatile i32 , i32 *%vptr
-  %i1 = load volatile i32 , i32 *%vptr
-  %i4 = load volatile i32 , i32 *%vptr
-  %i5 = load volatile i32 , i32 *%vptr
-  %i6 = load volatile i32 , i32 *%vptr
-  %i7 = load volatile i32 , i32 *%vptr
-  %i8 = load volatile i32 , i32 *%vptr
-  %i9 = load volatile i32 , i32 *%vptr
-  %i10 = load volatile i32 , i32 *%vptr
-  %i11 = load volatile i32 , i32 *%vptr
-  %i12 = load volatile i32 , i32 *%vptr
-  %i13 = load volatile i32 , i32 *%vptr
-  %i14 = load volatile i32 , i32 *%vptr
+  %i0 = load volatile i32, i32 *%vptr
+  %i1 = load volatile i32, i32 *%vptr
+  %i4 = load volatile i32, i32 *%vptr
+  %i5 = load volatile i32, i32 *%vptr
+  %i6 = load volatile i32, i32 *%vptr
+  %i7 = load volatile i32, i32 *%vptr
+  %i8 = load volatile i32, i32 *%vptr
+  %i9 = load volatile i32, i32 *%vptr
+  %i10 = load volatile i32, i32 *%vptr
+  %i11 = load volatile i32, i32 *%vptr
+  %i12 = load volatile i32, i32 *%vptr
+  %i13 = load volatile i32, i32 *%vptr
+  %i14 = load volatile i32, i32 *%vptr
   %region1 = alloca [524104 x i8], align 8
   %region2 = alloca [524104 x i8], align 8
   %ptr1 = getelementptr inbounds [524104 x i8], [524104 x i8]* %region1, i64 0, i64 8
@@ -311,13 +311,13 @@ define void @f11(i32 *%vptr, i8 %byte) {
 define void @f12(i8 %byte, i64 %index) {
 ; CHECK-NOFP-LABEL: f12:
 ; CHECK-NOFP: llilh %r1, 8
-; CHECK-NOFP: agr %r1, %r15
+; CHECK-NOFP: la %r1, 0(%r1,%r15)
 ; CHECK-NOFP: stc %r2, 0(%r3,%r1)
 ; CHECK-NOFP: br %r14
 ;
 ; CHECK-FP-LABEL: f12:
 ; CHECK-FP: llilh %r1, 8
-; CHECK-FP: agr %r1, %r11
+; CHECK-FP: la %r1, 0(%r1,%r11)
 ; CHECK-FP: stc %r2, 0(%r3,%r1)
 ; CHECK-FP: br %r14
   %region1 = alloca [524104 x i8], align 8

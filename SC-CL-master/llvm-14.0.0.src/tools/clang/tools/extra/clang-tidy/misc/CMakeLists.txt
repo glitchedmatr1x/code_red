@@ -1,45 +1,42 @@
-set(LLVM_LINK_COMPONENTS support)
+set(LLVM_LINK_COMPONENTS
+  FrontendOpenMP
+  Support
+  )
 
 add_clang_library(clangTidyMiscModule
-  ForwardingReferenceOverloadCheck.cpp
-  LambdaFunctionNameCheck.cpp
-  MisplacedConstCheck.cpp
-  UnconventionalAssignOperatorCheck.cpp
   DefinitionsInHeadersCheck.cpp
-  IncorrectRoundings.cpp
-  MacroParenthesesCheck.cpp
-  MacroRepeatedSideEffectsCheck.cpp
   MiscTidyModule.cpp
-  MisplacedWideningCastCheck.cpp
+  MisleadingBidirectional.cpp
+  MisleadingIdentifier.cpp
+  MisplacedConstCheck.cpp
   NewDeleteOverloadsCheck.cpp
+  NoRecursionCheck.cpp
   NonCopyableObjects.cpp
+  NonPrivateMemberVariablesInClassesCheck.cpp
   RedundantExpressionCheck.cpp
-  SizeofContainerCheck.cpp
-  SizeofExpressionCheck.cpp
   StaticAssertCheck.cpp
-  StringCompareCheck.cpp
-  StringIntegerAssignmentCheck.cpp
-  StringLiteralWithEmbeddedNulCheck.cpp
-  SuspiciousEnumUsageCheck.cpp
-  SuspiciousMissingCommaCheck.cpp
-  SuspiciousSemicolonCheck.cpp
-  SuspiciousStringCompareCheck.cpp
-  SwappedArgumentsCheck.cpp
   ThrowByValueCatchByReferenceCheck.cpp
-  UndelegatedConstructor.cpp
+  UnconventionalAssignOperatorCheck.cpp
   UniqueptrResetReleaseCheck.cpp
   UnusedAliasDeclsCheck.cpp
   UnusedParametersCheck.cpp
-  UnusedRAIICheck.cpp
   UnusedUsingDeclsCheck.cpp
 
   LINK_LIBS
+  clangTidy
+  clangTidyUtils
+
+  DEPENDS
+  omp_gen
+  )
+
+clang_target_link_libraries(clangTidyMiscModule
+  PRIVATE
   clangAnalysis
   clangAST
   clangASTMatchers
   clangBasic
   clangLex
-  clangTidy
-  clangTidyUtils
+  clangSerialization
   clangTooling
   )

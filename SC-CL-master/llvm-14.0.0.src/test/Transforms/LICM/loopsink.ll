@@ -1,5 +1,7 @@
 ; RUN: opt -S -loop-sink < %s | FileCheck %s
+; RUN: opt -S -verify-memoryssa -enable-mssa-in-legacy-loop-sink -loop-sink < %s | FileCheck %s
 ; RUN: opt -S -aa-pipeline=basic-aa -passes=loop-sink < %s | FileCheck %s
+; RUN: opt -S -verify-memoryssa -enable-mssa-in-loop-sink -aa-pipeline=basic-aa -passes=loop-sink < %s | FileCheck %s
 
 @g = global i32 0, align 4
 
@@ -198,7 +200,7 @@ define i32 @t3(i32, i32) #0 !prof !0 {
 ; For single-BB loop with <=1 avg trip count, sink load to b1
 ; CHECK: t4
 ; CHECK: .preheader:
-; CHECK-not: load i32, i32* @g
+; CHECK-NOT: load i32, i32* @g
 ; CHECK: .b1:
 ; CHECK: load i32, i32* @g
 ; CHECK: .exit:

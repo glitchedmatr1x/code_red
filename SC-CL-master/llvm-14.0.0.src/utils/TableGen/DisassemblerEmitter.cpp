@@ -1,13 +1,13 @@
 //===- DisassemblerEmitter.cpp - Generate a disassembler ------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
 #include "CodeGenTarget.h"
+#include "WebAssemblyDisassemblerEmitter.h"
 #include "X86DisassemblerTables.h"
 #include "X86RecognizableInstr.h"
 #include "llvm/TableGen/Error.h"
@@ -74,8 +74,8 @@ using namespace llvm::X86Disassembler;
 ///     accurate.  Sometimes they are not.
 /// (3) to fix the tables to reflect the actual context (for example, required
 ///     prefixes), and possibly to add a new context by editing
-///     lib/Target/X86/X86DisassemblerDecoderCommon.h.  This is unlikely to be
-///     the cause.
+///     include/llvm/Support/X86DisassemblerDecoderCommon.h.  This is unlikely
+///     to be the cause.
 ///
 /// DisassemblerEmitter.cpp contains the implementation for the emitter,
 ///   which simply pulls out instructions from the CodeGenTarget and pushes them
@@ -125,10 +125,18 @@ void EmitDisassembler(RecordKeeper &Records, raw_ostream &OS) {
     return;
   }
 
+  // WebAssembly has variable length opcodes, so can't use EmitFixedLenDecoder
+  // below (which depends on a Size table-gen Record), and also uses a custom
+  // disassembler.
+  if (Target.getName() == "WebAssembly") {
+    emitWebAssemblyDisassemblerTables(OS, Target.getInstructionsByEnumValue());
+    return;
+  }
+
   // ARM and Thumb have a CHECK() macro to deal with DecodeStatuses.
   if (Target.getName() == "ARM" || Target.getName() == "Thumb" ||
       Target.getName() == "AArch64" || Target.getName() == "ARM64") {
-    std::string PredicateNamespace = Target.getName();
+    std::string PredicateNamespace = std::string(Target.getName());
     if (PredicateNamespace == "Thumb")
       PredicateNamespace = "ARM";
 
@@ -140,9 +148,9 @@ void EmitDisassembler(RecordKeeper &Records, raw_ostream &OS) {
     return;
   }
 
-  EmitFixedLenDecoder(Records, OS, Target.getName(),
-                      "if (", " == MCDisassembler::Fail)",
-                      "MCDisassembler::Success", "MCDisassembler::Fail", "");
+  EmitFixedLenDecoder(Records, OS, std::string(Target.getName()), "if (",
+                      " == MCDisassembler::Fail)", "MCDisassembler::Success",
+                      "MCDisassembler::Fail", "");
 }
 
-} // End llvm namespace
+} // end namespace llvm

@@ -5,7 +5,7 @@ define void @i64_write(i64* %p, i64 %val) nounwind {
 ; CHECK-LABEL: i64_write:
 ; CHECK: ldrexd [[REG1:(r[0-9]?[02468])]], {{r[0-9]?[13579]}}, [r{{[0-9]+}}]
 ; CHECK: strexd [[REG1]], {{r[0-9]?[02468]}}, {{r[0-9]?[13579]}}
-  %1 = tail call i64 asm sideeffect "1: ldrexd $0, ${0:H}, [$2]\0A strexd $0, $3, ${3:H}, [$2]\0A teq $0, #0\0A bne 1b", "=&r,=*Qo,r,r,~{cc}"(i64* %p, i64* %p, i64 %val) nounwind
+  %1 = tail call i64 asm sideeffect "1: ldrexd $0, ${0:H}, [$2]\0A strexd $0, $3, ${3:H}, [$2]\0A teq $0, #0\0A bne 1b", "=&r,=*Qo,r,r,~{cc}"(i64* elementtype(i64) %p, i64* %p, i64 %val) nounwind
   ret void
 }
 
@@ -49,7 +49,7 @@ define void @foo(i64* %p, i64 %i) nounwind {
 ; CHECK: ldrexd [[REG1:(r[0-9]?[02468])]], {{r[0-9]?[13579]}}, [r{{[0-9]+}}]
 ; CHECK: strexd [[REG1]], {{r[0-9]?[02468]}}, {{r[0-9]?[13579]}}
 ; CHECK: {{pop|pop.w}} {{{r[4-9]|r10|r11}}
-  %1 = tail call { i64, i64 } asm sideeffect "@ atomic64_set\0A1: ldrexd $0, ${0:H}, [$3]\0Aldrexd $1, ${1:H}, [$3]\0A strexd $0, $4, ${4:H}, [$3]\0A teq $0, #0\0A bne 1b", "=&r,=&r,=*Qo,r,r,~{cc}"(i64* %p, i64* %p, i64 %i) nounwind
+  %1 = tail call { i64, i64 } asm sideeffect "@ atomic64_set\0A1: ldrexd $0, ${0:H}, [$3]\0Aldrexd $1, ${1:H}, [$3]\0A strexd $0, $4, ${4:H}, [$3]\0A teq $0, #0\0A bne 1b", "=&r,=&r,=*Qo,r,r,~{cc}"(i64* elementtype(i64) %p, i64* %p, i64 %i) nounwind
   ret void
 }
 
@@ -91,7 +91,7 @@ define i64 @tied_64bit_test(i64 %in) nounwind {
 ; CHECK-LABEL: tied_64bit_test:
 ; CHECK: OUT([[OUTREG:r[0-9]+]]), IN([[OUTREG]])
   %addr = alloca i64
-  call void asm "OUT($0), IN($1)", "=*rm,0"(i64* %addr, i64 %in)
+  call void asm "OUT($0), IN($1)", "=*rm,0"(i64* elementtype(i64) %addr, i64 %in)
   ret i64 %in
 }
 
@@ -102,5 +102,13 @@ define i64 @tied_64bit_lookback_test(i64 %in) nounwind {
 ; CHECK: OUTLO([[LO:r[0-9]+]]) OUTHI([[HI:r[0-9]+]]) INLO([[LO]]) INHI([[HI]])
   %vars = call {i64, i32, i64} asm "OUTLO(${2:Q}) OUTHI(${2:R}) INLO(${3:Q}) INHI(${3:R})", "=r,=r,=r,2"(i64 %in)
   %res = extractvalue {i64, i32, i64} %vars, 2
+  ret i64 %res
+}
+
+; Check access to low and high part with a specific register pair constraint
+define i64 @low_high_specific_reg_pair(i64 %in) nounwind {
+; CHECK-LABEL: low_high_specific_reg_pair
+; CHECK: mov r3, r2
+  %res = call i64 asm "mov ${0:R}, ${1:Q}", "=&{r2},0"(i64 %in)
   ret i64 %res
 }

@@ -1,9 +1,9 @@
 /*===-- llvm-c/TargetMachine.h - Target Machine Library C Interface - C++ -*-=*\
 |*                                                                            *|
-|*                     The LLVM Compiler Infrastructure                       *|
-|*                                                                            *|
-|* This file is distributed under the University of Illinois Open Source      *|
-|* License. See LICENSE.TXT for details.                                      *|
+|* Part of the LLVM Project, under the Apache License v2.0 with LLVM          *|
+|* Exceptions.                                                                *|
+|* See https://llvm.org/LICENSE.txt for license information.                  *|
+|* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    *|
 |*                                                                            *|
 |*===----------------------------------------------------------------------===*|
 |*                                                                            *|
@@ -19,12 +19,18 @@
 #ifndef LLVM_C_TARGETMACHINE_H
 #define LLVM_C_TARGETMACHINE_H
 
+#include "llvm-c/ExternC.h"
 #include "llvm-c/Target.h"
 #include "llvm-c/Types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+LLVM_C_EXTERN_C_BEGIN
+
+/**
+ * @addtogroup LLVMCTarget
+ *
+ * @{
+ */
+
 typedef struct LLVMOpaqueTargetMachine *LLVMTargetMachineRef;
 typedef struct LLVMTarget *LLVMTargetRef;
 
@@ -39,12 +45,16 @@ typedef enum {
     LLVMRelocDefault,
     LLVMRelocStatic,
     LLVMRelocPIC,
-    LLVMRelocDynamicNoPic
+    LLVMRelocDynamicNoPic,
+    LLVMRelocROPI,
+    LLVMRelocRWPI,
+    LLVMRelocROPI_RWPI
 } LLVMRelocMode;
 
 typedef enum {
     LLVMCodeModelDefault,
     LLVMCodeModelJITDefault,
+    LLVMCodeModelTiny,
     LLVMCodeModelSmall,
     LLVMCodeModelKernel,
     LLVMCodeModelMedium,
@@ -137,11 +147,25 @@ LLVMBool LLVMTargetMachineEmitToMemoryBuffer(LLVMTargetMachineRef T, LLVMModuleR
   disposed with LLVMDisposeMessage. */
 char* LLVMGetDefaultTargetTriple(void);
 
+/** Normalize a target triple. The result needs to be disposed with
+  LLVMDisposeMessage. */
+char* LLVMNormalizeTargetTriple(const char* triple);
+
+/** Get the host CPU as a string. The result needs to be disposed with
+  LLVMDisposeMessage. */
+char* LLVMGetHostCPUName(void);
+
+/** Get the host CPU's features as a string. The result needs to be disposed
+  with LLVMDisposeMessage. */
+char* LLVMGetHostCPUFeatures(void);
+
 /** Adds the target-specific analysis passes to the pass manager. */
 void LLVMAddAnalysisPasses(LLVMTargetMachineRef T, LLVMPassManagerRef PM);
 
-#ifdef __cplusplus
-}
-#endif
+/**
+ * @}
+ */
+
+LLVM_C_EXTERN_C_END
 
 #endif

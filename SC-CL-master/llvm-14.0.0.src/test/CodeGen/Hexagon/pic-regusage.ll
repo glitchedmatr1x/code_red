@@ -5,7 +5,7 @@
 ; R14, R15 and R28).
 ; CHECK: call __save_r16_through_r27
 ; CHECK: }
-; CHECK: r14{{ *}}=
+; CHECK: r14 =
 
 @.str = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
 
@@ -29,7 +29,7 @@ declare i32 @printf(i8*, ...) #0
 ; Same as above for R15.
 ; CHECK: call __save_r16_through_r27
 ; CHECK: }
-; CHECK: r15{{ *}}=
+; CHECK: r15 =
 
 ; Function Attrs: nounwind optsize
 define i32 @_Z7testR15Pi(i32* nocapture %res) #0 {
@@ -48,7 +48,7 @@ entry:
 ; Same as above for R28.
 ; CHECK: call __save_r16_through_r27
 ; CHECK: }
-; CHECK: r28{{ *}}=
+; CHECK: r28 =
 
 ; Function Attrs: nounwind optsize
 define i32 @_Z7testR28Pi(i32* nocapture %res) #0 {
@@ -64,6 +64,6 @@ entry:
   ret i32 0
 }
 
-attributes #0 = { nounwind optsize "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind optsize "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind }
 attributes #2 = { nounwind optsize }

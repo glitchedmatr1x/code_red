@@ -1,9 +1,8 @@
 //===- CodeGenTarget.h - Target Class Wrapper -------------------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -61,32 +60,42 @@ class CodeGenTarget {
 
   mutable std::unique_ptr<CodeGenSchedModels> SchedModels;
 
+  mutable StringRef InstNamespace;
   mutable std::vector<const CodeGenInstruction*> InstrsByEnum;
+  mutable unsigned NumPseudoInstructions = 0;
 public:
   CodeGenTarget(RecordKeeper &Records);
   ~CodeGenTarget();
 
   Record *getTargetRecord() const { return TargetRec; }
-  const StringRef getName() const;
+  StringRef getName() const;
 
   /// getInstNamespace - Return the target-specific instruction namespace.
   ///
   StringRef getInstNamespace() const;
 
+  /// getRegNamespace - Return the target-specific register namespace.
+  StringRef getRegNamespace() const;
+
   /// getInstructionSet - Return the InstructionSet object.
   ///
   Record *getInstructionSet() const;
+
+  /// getAllowRegisterRenaming - Return the AllowRegisterRenaming flag value for
+  /// this target.
+  ///
+  bool getAllowRegisterRenaming() const;
 
   /// getAsmParser - Return the AssemblyParser definition for this target.
   ///
   Record *getAsmParser() const;
 
-  /// getAsmParserVariant - Return the AssmblyParserVariant definition for
+  /// getAsmParserVariant - Return the AssemblyParserVariant definition for
   /// this target.
   ///
   Record *getAsmParserVariant(unsigned i) const;
 
-  /// getAsmParserVariantCount - Return the AssmblyParserVariant definition
+  /// getAsmParserVariantCount - Return the AssemblyParserVariant definition
   /// available for this target.
   ///
   unsigned getAsmParserVariantCount() const;
@@ -97,6 +106,13 @@ public:
 
   /// getRegBank - Return the register bank description.
   CodeGenRegBank &getRegBank() const;
+
+  /// Return the largest register class on \p RegBank which supports \p Ty and
+  /// covers \p SubIdx if it exists.
+  Optional<CodeGenRegisterClass *>
+  getSuperRegForSubReg(const ValueTypeByHwMode &Ty, CodeGenRegBank &RegBank,
+                       const CodeGenSubRegIndex *SubIdx,
+                       bool MustBeAllocatable = false) const;
 
   /// getRegisterByName - If there is a register with the specific AsmName,
   /// return it.
@@ -140,11 +156,25 @@ public:
     return *I->second;
   }
 
-  /// getInstructionsByEnumValue - Return all of the instructions defined by the
-  /// target, ordered by their enum value.
-  ArrayRef<const CodeGenInstruction *>
-  getInstructionsByEnumValue() const {
-    if (InstrsByEnum.empty()) ComputeInstrsByEnum();
+  /// Returns the number of predefined instructions.
+  static unsigned getNumFixedInstructions();
+
+  /// Returns the number of pseudo instructions.
+  unsigned getNumPseudoInstructions() const {
+    if (InstrsByEnum.empty())
+      ComputeInstrsByEnum();
+    return NumPseudoInstructions;
+  }
+
+  /// Return all of the instructions defined by the target, ordered by their
+  /// enum value.
+  /// The following order of instructions is also guaranteed:
+  /// - fixed / generic instructions as declared in TargetOpcodes.def, in order;
+  /// - pseudo instructions in lexicographical order sorted by name;
+  /// - other instructions in lexicographical order sorted by name.
+  ArrayRef<const CodeGenInstruction *> getInstructionsByEnumValue() const {
+    if (InstrsByEnum.empty())
+      ComputeInstrsByEnum();
     return InstrsByEnum;
   }
 
@@ -172,7 +202,7 @@ private:
 /// ComplexPattern - ComplexPattern info, corresponding to the ComplexPattern
 /// tablegen class in TargetSelectionDAG.td
 class ComplexPattern {
-  MVT::SimpleValueType Ty;
+  Record *Ty;
   unsigned NumOperands;
   std::string SelectFunc;
   std::vector<Record*> RootNodes;
@@ -181,7 +211,7 @@ class ComplexPattern {
 public:
   ComplexPattern(Record *R);
 
-  MVT::SimpleValueType getValueType() const { return Ty; }
+  Record *getValueType() const { return Ty; }
   unsigned getNumOperands() const { return NumOperands; }
   const std::string &getSelectFunc() const { return SelectFunc; }
   const std::vector<Record*> &getRootNodes() const {

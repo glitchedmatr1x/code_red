@@ -66,7 +66,7 @@ declare i8* @llvm.stacksave() #2
 ; Function Attrs: nounwind
 declare void @llvm.stackrestore(i8*) #2
 
-attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 attributes #2 = { nounwind }
 
@@ -77,7 +77,7 @@ attributes #2 = { nounwind }
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, producer: "clang version 3.7.0 (trunk 227074)", isOptimized: false, emissionKind: FullDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "dbg-combine.c", directory: "/home/probinson/projects/scratch")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", line: 1, isLocal: false, isDefinition: true, isOptimized: false, unit: !0, scopeLine: 2, file: !1, scope: !5, type: !6, variables: !2)
+!4 = distinct !DISubprogram(name: "foo", line: 1, isLocal: false, isDefinition: true, isOptimized: false, unit: !0, scopeLine: 2, file: !1, scope: !5, type: !6, retainedNodes: !2)
 !5 = !DIFile(filename: "dbg-combine.c", directory: "/home/probinson/projects/scratch")
 !6 = !DISubroutineType(types: !7)
 !7 = !{!8}

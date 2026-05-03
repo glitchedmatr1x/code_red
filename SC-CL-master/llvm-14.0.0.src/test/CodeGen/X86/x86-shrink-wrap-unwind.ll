@@ -1,17 +1,14 @@
-; RUN: llc %s -o - | FileCheck %s
+; RUN: llc -mtriple=x86_64-apple-darwin10.6 < %s | FileCheck %s
+; RUN: llc -mtriple=x86_64-linux < %s | FileCheck %s --check-prefix=NOCOMPACTUNWIND
 ;
 ; Note: This test cannot be merged with the shrink-wrapping tests
 ; because the booleans set on the command line take precedence on
 ; the target logic that disable shrink-wrapping.
-target datalayout = "e-m:o-i64:64-i128:128-n32:64-S128"
-target triple = "x86_64-apple-macosx"
 
-
-; This test checks that we do not use shrink-wrapping when
-; the function does not have any frame pointer and may unwind.
-; This is a workaround for a limitation in the emission of
-; the CFI directives, that are not correct in such case.
-; PR25614
+; The current compact unwind scheme does not work when the prologue is not at
+; the start (the instructions before the prologue cannot be described).
+; Currently we choose to not perform shrink-wrapping for functions without FP
+; not marked as nounwind. PR25614
 ;
 ; No shrink-wrapping should occur here, until the CFI information are fixed.
 ; CHECK-LABEL: framelessUnwind:
@@ -23,7 +20,7 @@ target triple = "x86_64-apple-macosx"
 ; Compare the arguments and jump to exit.
 ; After the prologue is set.
 ; CHECK: movl %edi, [[ARG0CPY:%e[a-z]+]]
-; CHECK-NEXT: cmpl %esi, [[ARG0CPY]]
+; CHECK-NEXT: cmpl %esi, %edi
 ; CHECK-NEXT: jge [[EXIT_LABEL:LBB[0-9_]+]]
 ;
 ; Store %a in the alloca.
@@ -41,6 +38,12 @@ target triple = "x86_64-apple-macosx"
 ; CHECK-NEXT: popq
 ;
 ; CHECK-NEXT: retq
+
+; On a platform which does not support compact unwind, shrink wrapping is enabled.
+; NOCOMPACTUNWIND-LABEL: framelessUnwind:
+; NOCOMPACTUNWIND-NOT:     pushq
+; NOCOMPACTUNWIND:       # %bb.1:
+; NOCOMPACTUNWIND-NEXT:    pushq %rax
 define i32 @framelessUnwind(i32 %a, i32 %b) #0 {
   %tmp = alloca i32, align 4
   %tmp2 = icmp slt i32 %a, %b
@@ -58,7 +61,7 @@ false:
 
 declare i32 @doSomething(i32, i32*)
 
-attributes #0 = { "no-frame-pointer-elim"="false" }
+attributes #0 = { "frame-pointer"="none" }
 
 ; Shrink-wrapping should occur here. We have a frame pointer.
 ; CHECK-LABEL: frameUnwind:
@@ -69,7 +72,7 @@ attributes #0 = { "no-frame-pointer-elim"="false" }
 ; Compare the arguments and jump to exit.
 ; After the prologue is set.
 ; CHECK: movl %edi, [[ARG0CPY:%e[a-z]+]]
-; CHECK-NEXT: cmpl %esi, [[ARG0CPY]]
+; CHECK-NEXT: cmpl %esi, %edi
 ; CHECK-NEXT: jge [[EXIT_LABEL:LBB[0-9_]+]]
 ;
 ; Prologue code.
@@ -104,7 +107,7 @@ false:
   ret i32 %tmp.0
 }
 
-attributes #1 = { "no-frame-pointer-elim"="true" }
+attributes #1 = { "frame-pointer"="all" }
 
 ; Shrink-wrapping should occur here. We do not have to unwind.
 ; CHECK-LABEL: framelessnoUnwind:
@@ -115,7 +118,7 @@ attributes #1 = { "no-frame-pointer-elim"="true" }
 ; Compare the arguments and jump to exit.
 ; After the prologue is set.
 ; CHECK: movl %edi, [[ARG0CPY:%e[a-z]+]]
-; CHECK-NEXT: cmpl %esi, [[ARG0CPY]]
+; CHECK-NEXT: cmpl %esi, %edi
 ; CHECK-NEXT: jge [[EXIT_LABEL:LBB[0-9_]+]]
 ;
 ; Prologue code.
@@ -150,7 +153,7 @@ false:
   ret i32 %tmp.0
 }
 
-attributes #2 = { "no-frame-pointer-elim"="false" nounwind }
+attributes #2 = { "frame-pointer"="none" nounwind }
 
 
 ; Check that we generate correct code for segmented stack.
@@ -160,14 +163,7 @@ attributes #2 = { "no-frame-pointer-elim"="false" nounwind }
 ;
 ; CHECK-LABEL: segmentedStack:
 ; CHECK: cmpq
-; CHECK-NEXT: ja [[ENTRY_LABEL:LBB[0-9_]+]]
-;
-; CHECK: callq ___morestack
-; CHECK-NEXT: retq
-;
-; CHECK: [[ENTRY_LABEL]]:
-; Prologue
-; CHECK: push
+; CHECK-NEXT: jbe [[ENTRY_LABEL:LBB[0-9_]+]]
 ;
 ; In PR26107, we use to drop these two basic blocks, because
 ; the segmentedStack entry block was jumping directly to
@@ -186,6 +182,12 @@ attributes #2 = { "no-frame-pointer-elim"="false" nounwind }
 ;
 ; CHECK: [[STRINGS_EQUAL]]
 ; CHECK: popq
+;
+; CHECK: [[ENTRY_LABEL]]:
+; CHECK: callq ___morestack
+; CHECK-NEXT: retq
+;
+
 define zeroext i1 @segmentedStack(i8* readonly %vk1, i8* readonly %vk2, i64 %key_size) #5 {
 entry:
   %cmp.i = icmp eq i8* %vk1, null
@@ -222,3 +224,106 @@ __go_ptr_strings_equal.exit:                      ; preds = %land.rhs.i.i, %if.e
 declare i32 @memcmp(i8* nocapture, i8* nocapture, i64) #5
 
 attributes #5 = { nounwind readonly ssp uwtable "split-stack" }
+
+; Check that correctly take into account the jumps to landing pad.
+; We used to consider function that may throw like regular
+; function calls.
+; Therefore, in this example, we were happily inserting the epilogue
+; right after the call to throw_exception. Because of that we would not
+; execute the epilogue when an execption occur and bad things will
+; happen.
+; PR36513
+;
+; CHECK-LABEL: with_nounwind:
+; Prologue
+; CHECK: push
+;
+; Jump to throw_exception:
+; CHECK-NEXT: .cfi_def_cfa_offset
+; CHECK-NEXT: testb $1, %dil
+; CHECK-NEXT: jne [[THROW_LABEL:LBB[0-9_]+]]
+; Else return exit
+; CHECK: popq
+; CHECK-NEXT: retq
+;
+; CHECK-NEXT: [[THROW_LABEL]]:
+; CHECK: callq	_throw_exception
+; Unreachable block...
+;
+; Epilogue must be after the landing pad.
+; CHECK-NOT: popq
+;
+; Look for the landing pad label.
+; CHECK: LBB{{[0-9_]+}}:
+; Epilogue on the landing pad
+; CHECK: popq
+; CHECK-NEXT: retq
+define void @with_nounwind(i1 %cond) nounwind personality i32 (...)* @my_personality {
+entry:
+  br i1 %cond, label %throw, label %return
+
+throw:
+  invoke void @throw_exception()
+          to label %unreachable unwind label %landing
+
+unreachable:
+  unreachable
+
+landing:
+  %pad = landingpad { i8*, i32 }
+          catch i8* null
+  ret void
+
+return:
+  ret void
+}
+
+; Check landing pad again.
+; This time checks that we can shrink-wrap when the epilogue does not
+; span accross several blocks.
+;
+; CHECK-LABEL: with_nounwind_same_succ:
+;
+; Jump to throw_exception:
+; CHECK: testb $1, %dil
+; CHECK-NEXT: je [[RET_LABEL:LBB[0-9_]+]]
+;
+; Prologue
+; CHECK: push
+; CHECK: callq	_throw_exception
+;
+; Fallthrough label
+; CHECK: [[FALLTHROUGH_LABEL:LBB[0-9_]+]]
+; CHECK: nop
+; CHECK: popq
+;
+; CHECK: [[RET_LABEL]]
+; CHECK: retq
+;
+; Look for the landing pad label.
+; CHECK: LBB{{[0-9_]+}}:
+; Landing pad jumps to fallthrough
+; CHECK: jmp [[FALLTHROUGH_LABEL]]
+define void @with_nounwind_same_succ(i1 %cond) nounwind personality i32 (...)* @my_personality2 {
+entry:
+  br i1 %cond, label %throw, label %return
+
+throw:
+  invoke void @throw_exception()
+          to label %fallthrough unwind label %landing
+landing:
+  %pad = landingpad { i8*, i32 }
+          catch i8* null
+  br label %fallthrough
+
+fallthrough:
+  tail call void asm "nop", ""()
+  br label %return
+
+return:
+  ret void
+}
+
+declare void @throw_exception()
+declare i32 @my_personality(...)
+declare i32 @my_personality2(...)

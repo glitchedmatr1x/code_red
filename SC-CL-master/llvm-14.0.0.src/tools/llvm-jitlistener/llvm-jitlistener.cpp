@@ -1,9 +1,8 @@
 //===-- llvm-jitlistener.cpp - Utility for testing MCJIT event listener ---===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -24,10 +23,8 @@
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/Host.h"
-#include "llvm/Support/ManagedStatic.h"
+#include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/MemoryBuffer.h"
-#include "llvm/Support/PrettyStackTrace.h"
-#include "llvm/Support/Signals.h"
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/raw_ostream.h"
@@ -87,6 +84,46 @@ int NotifyEvent(iJIT_JVM_EVENT EventType, void *EventSpecificData) {
     break;
     default:
       break;
+  }
+  return 0;
+}
+
+int ittNotifyInfo(IttEventType EventType, const char *Name, unsigned int Size) {
+  switch (EventType) {
+  case LoadBinaryModule: {
+    if (!Name) {
+      errs() << "Error: The IttNotify event listener did not provide a module "
+                "name.";
+      return -1;
+    }
+    outs() << "Module loaded : Name = " << Name << ", Size = " << Size << "\n";
+  } break;
+  case LoadBinarySection: {
+    if (!Name) {
+      errs() << "Error: The IttNotify event listener did not provide a section "
+                "name.";
+      return -1;
+    }
+    outs() << "Loaded section : Name = " << Name << ", Size = " << Size << "\n";
+  } break;
+  case UnloadBinaryModule: {
+    if (!Name) {
+      errs() << "Error: The IttNotify event listener did not provide a module "
+                "name.";
+      return -1;
+    }
+    outs() << "Module unloaded : Name = " << Name << ", Size = " << Size
+           << "\n";
+  } break;
+  case UnloadBinarySection: {
+    if (!Name) {
+      errs() << "Error: The IttNotify event listener did not provide a section "
+                "name.";
+      return -1;
+    }
+    outs() << "Unloaded section : Name = " << Name << ", Size = " << Size
+           << "\n";
+  } break;
   }
   return 0;
 }
@@ -158,7 +195,8 @@ public:
 
     std::unique_ptr<llvm::JITEventListener> Listener(
         JITEventListener::createIntelJITEventListener(new IntelJITEventsWrapper(
-            NotifyEvent, 0, IsProfilingActive, 0, 0, GetNewMethodID)));
+            NotifyEvent, ittNotifyInfo, 0, IsProfilingActive, 0, 0,
+            GetNewMethodID)));
 
     TheJIT->RegisterJITEventListener(Listener.get());
 
@@ -178,16 +216,10 @@ InputFilename(cl::Positional, cl::desc("<input IR file>"),
                cl::Required);
 
 int main(int argc, char **argv) {
-  // Print a stack trace if we signal out.
-  sys::PrintStackTraceOnErrorSignal(argv[0]);
-  PrettyStackTraceProgram X(argc, argv);
-  llvm_shutdown_obj Y;  // Call llvm_shutdown() on exit.
-
+  InitLLVM X(argc, argv);
   cl::ParseCommandLineOptions(argc, argv, "llvm jit event listener test utility\n");
 
   JitEventListenerTest Test;
-
   Test.ProcessInput(InputFilename);
-
   return 0;
 }

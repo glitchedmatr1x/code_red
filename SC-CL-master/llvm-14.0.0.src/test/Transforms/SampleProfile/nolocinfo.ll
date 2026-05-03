@@ -1,7 +1,7 @@
 ; RUN: opt < %s -sample-profile -sample-profile-file=%S/Inputs/nolocinfo.prof -S -pass-remarks=sample-profile 2>&1 | FileCheck %s
 ; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/nolocinfo.prof -S -pass-remarks=sample-profile 2>&1 | FileCheck %s
 
-define i32 @foo(i32 %i)  !dbg !4 {
+define i32 @foo(i32 %i) #0 !dbg !4 {
 entry:
   %i.addr = alloca i32, align 4
   %0 = load i32, i32* %i.addr, align 4
@@ -20,6 +20,8 @@ if.end:
   ret i32 1
 }
 
+attributes #0 = { "use-sample-profile" }
+
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!8, !9}
 !llvm.ident = !{!10}
@@ -27,7 +29,7 @@ if.end:
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang version 3.8.0 (trunk 251335) (llvm/trunk 251344)", isOptimized: false, runtimeVersion: 0, emissionKind: NoDebug, enums: !2)
 !1 = !DIFile(filename: "nolocinfo.c", directory: ".")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 1, type: !5, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!4 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 1, type: !5, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !5 = !DISubroutineType(types: !6)
 !6 = !{!7, !7}
 !7 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)

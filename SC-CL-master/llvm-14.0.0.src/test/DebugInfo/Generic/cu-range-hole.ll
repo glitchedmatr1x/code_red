@@ -1,4 +1,3 @@
-; REQUIRES: object-emission
 ; RUN: %llc_dwarf -O0 -filetype=obj %s -o %t
 ; RUN: llvm-dwarfdump %t | FileCheck %s
 
@@ -48,7 +47,7 @@ entry:
   ret i32 %add, !dbg !16
 }
 
-attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.ident = !{!0, !0}
@@ -59,12 +58,12 @@ attributes #1 = { nounwind readnone }
 !1 = distinct !DICompileUnit(language: DW_LANG_C99, producer: "clang version 3.5.0 (trunk 204164) (llvm/trunk 204183)", isOptimized: false, emissionKind: FullDebug, file: !2, enums: !3, retainedTypes: !3, globals: !3, imports: !3)
 !2 = !DIFile(filename: "b.c", directory: "/usr/local/google/home/echristo")
 !3 = !{}
-!5 = distinct !DISubprogram(name: "b", line: 1, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !1, scopeLine: 1, file: !2, scope: !6, type: !7, variables: !3)
+!5 = distinct !DISubprogram(name: "b", line: 1, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !1, scopeLine: 1, file: !2, scope: !6, type: !7, retainedNodes: !3)
 !6 = !DIFile(filename: "b.c", directory: "/usr/local/google/home/echristo")
 !7 = !DISubroutineType(types: !8)
 !8 = !{!9, !9}
 !9 = !DIBasicType(tag: DW_TAG_base_type, name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
-!10 = distinct !DISubprogram(name: "d", line: 3, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !1, scopeLine: 3, file: !2, scope: !6, type: !7, variables: !3)
+!10 = distinct !DISubprogram(name: "d", line: 3, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !1, scopeLine: 3, file: !2, scope: !6, type: !7, retainedNodes: !3)
 !11 = !{i32 2, !"Dwarf Version", i32 4}
 !12 = !{i32 1, !"Debug Info Version", i32 3}
 !13 = !DILocalVariable(name: "c", line: 1, arg: 1, scope: !5, file: !6, type: !9)

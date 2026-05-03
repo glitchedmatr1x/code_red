@@ -28,3 +28,23 @@ entry:
   ret double %2
 }
 
+; CHECK-LABEL: test_constraint_float_reg:
+; CHECK: fadds %f20, %f20, %f20
+; CHECK: faddd %f20, %f20, %f20
+; CHECK: faddq %f40, %f40, %f40
+define void @test_constraint_float_reg() {
+entry:
+  tail call void asm sideeffect "fadds $0,$1,$2", "{f20},{f20},{f20}"(float 6.0, float 7.0, float 8.0)
+  tail call void asm sideeffect "faddd $0,$1,$2", "{f20},{f20},{f20}"(double 9.0, double 10.0, double 11.0)
+  tail call void asm sideeffect "faddq $0,$1,$2", "{f40},{f40},{f40}"(fp128 0xL0, fp128 0xL0, fp128 0xL0)
+  ret void
+}
+
+;; Ensure that 64-bit immediates aren't truncated
+; CHECK-LABEL: test_large_immediate
+; CHECK: or %o0, %lo(4294967296), %o0
+define i64 @test_large_immediate(i64) {
+entry:
+  %1 = tail call i64 asm "or $0, %lo($1), $0", "=r,i,r"(i64 4294967296, i64 %0)
+  ret i64 %1
+}

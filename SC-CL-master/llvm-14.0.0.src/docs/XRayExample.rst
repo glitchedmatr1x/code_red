@@ -38,7 +38,7 @@ look for the ``xray_instr_map`` section.
 
   $ objdump -h -j xray_instr_map ./bin/llc
   ./bin/llc:     file format elf64-x86-64
-  
+
   Sections:
   Idx Name          Size      VMA               LMA               File off  Algn
    14 xray_instr_map 00002fc0  00000000041516c6  00000000041516c6  03d516c6  2**0
@@ -48,11 +48,11 @@ Getting Traces
 --------------
 
 By default, XRay does not write out the trace files or patch the application
-before main starts. If we just run ``llc`` it should just work like a normally
-built binary. However, if we want to get a full trace of the application's
-operations (of the functions we do end up instrumenting with XRay) then we need
-to enable XRay at application start. To do this, XRay checks the
-``XRAY_OPTIONS`` environment variable.
+before main starts. If we run ``llc`` it should work like a normally built
+binary. If we want to get a full trace of the application's operations (of the
+functions we do end up instrumenting with XRay) then we need to enable XRay
+at application start. To do this, XRay checks the ``XRAY_OPTIONS`` environment
+variable.
 
 ::
 
@@ -73,13 +73,12 @@ instrumented, and how much time we're spending in parts of the code. To make
 sense of this data, we use the ``llvm-xray`` tool which has a few subcommands
 to help us understand our trace.
 
-One of the simplest things we can do is to get an accounting of the functions
-that have been instrumented. We can see an example accounting with ``llvm-xray
-account``:
+One of the things we can do is to get an accounting of the functions that have
+been instrumented. We can see an example accounting with ``llvm-xray account``:
 
 ::
 
-  $ llvm-xray account xray-log.llc.m35qPB -top=10 -sort=sum -sortorder=dsc -instr_map ./bin/llc
+  $ llvm-xray account xray-log.llc.m35qPB --top=10 --sort=sum --sortorder=dsc --instr_map=./bin/llc
   Functions with latencies: 29
      funcid      count [      min,       med,       90p,       99p,       max]       sum  function
         187        360 [ 0.000000,  0.000001,  0.000014,  0.000032,  0.000075]  0.001596  LLLexer.cpp:446:0: llvm::LLLexer::LexIdentifier()
@@ -104,15 +103,15 @@ output for an example trace would look like the following:
 
 ::
 
-  $ llvm-xray convert -f yaml -symbolize -instr_map=./bin/llc xray-log.llc.m35qPB
+  $ llvm-xray convert -f yaml --symbolize --instr_map=./bin/llc xray-log.llc.m35qPB
   ---
-  header:          
+  header:
     version:         1
     type:            0
     constant-tsc:    true
     nonstop-tsc:     true
     cycle-frequency: 2601000000
-  records:         
+  records:
     - { type: 0, func-id: 110, function: __cxx_global_var_init.8, cpu: 37, thread: 69819, kind: function-enter, tsc: 5434426023268520 }
     - { type: 0, func-id: 110, function: __cxx_global_var_init.8, cpu: 37, thread: 69819, kind: function-exit, tsc: 5434426023523052 }
     - { type: 0, func-id: 164, function: __cxx_global_var_init, cpu: 37, thread: 69819, kind: function-enter, tsc: 5434426029925386 }
@@ -152,9 +151,9 @@ function bodies to 1. We can do that with the
   $ XRAY_OPTIONS="patch_premain=true" ./bin/llc input.ll
   ==69819==XRay: Log file in 'xray-log.llc.5rqxkU'
 
-  $ llvm-xray account xray-log.llc.5rqxkU -top=10 -sort=sum -sortorder=dsc -instr_map ./bin/llc
+  $ llvm-xray account xray-log.llc.5rqxkU --top=10 --sort=sum --sortorder=dsc --instr_map=./bin/llc
   Functions with latencies: 36652
-   funcid      count [      min,       med,       90p,       99p,       max]       sum  function    
+   funcid      count [      min,       med,       90p,       99p,       max]       sum  function
        75          1 [ 0.672368,  0.672368,  0.672368,  0.672368,  0.672368]  0.672368  llc.cpp:271:0: main
        78          1 [ 0.626455,  0.626455,  0.626455,  0.626455,  0.626455]  0.626455  llc.cpp:381:0: compileModule(char**, llvm::LLVMContext&)
    139617          1 [ 0.472618,  0.472618,  0.472618,  0.472618,  0.472618]  0.472618  LegacyPassManager.cpp:1723:0: llvm::legacy::PassManager::run(llvm::Module&)
@@ -178,22 +177,22 @@ add the attribute to the source.
 To use this feature, you can define one file for the functions to always
 instrument, and another for functions to never instrument. The format of these
 files are exactly the same as the SanitizerLists files that control similar
-things for the sanitizer implementations. For example, we can have two
-different files like below:
+things for the sanitizer implementations. For example:
 
 ::
 
-  # always-instrument.txt
+  # xray-attr-list.txt
   # always instrument functions that match the following filters:
+  [always]
   fun:main
 
-  # never-instrument.txt
   # never instrument functions that match the following filters:
+  [never]
   fun:__cxx_*
 
-Given the above two files we can re-build by providing those two files as
-arguments to clang as ``-fxray-always-instrument=always-instrument.txt`` or
-``-fxray-never-instrument=never-instrument.txt``.
+Given the file above we can re-build by providing it to the
+``-fxray-attr-list=`` flag to clang. You can have multiple files, each defining
+different sets of attribute sets, to be combined into a single list by clang.
 
 The XRay stack tool
 -------------------
@@ -202,12 +201,11 @@ Given a trace, and optionally an instrumentation map, the ``llvm-xray stack``
 command can be used to analyze a call stack graph constructed from the function
 call timeline.
 
-The simplest way to use the command is simply to output the top stacks by call
-count and time spent.
+The way to use the command is to output the top stacks by call count and time spent.
 
 ::
 
-  $ llvm-xray stack xray-log.llc.5rqxkU -instr_map ./bin/llc
+  $ llvm-xray stack xray-log.llc.5rqxkU --instr_map=./bin/llc
 
   Unique Stacks: 3069
   Top 10 Stacks by leaf sum:
@@ -229,9 +227,9 @@ In the default mode, identical stacks on different threads are independently
 aggregated. In a multithreaded program, you may end up having identical call
 stacks fill your list of top calls.
 
-To address this, you may specify the ``-aggregate-threads`` or
-``-per-thread-stacks`` flags. ``-per-thread-stacks`` treats the thread id as an
-implicit root in each call stack tree, while ``-aggregate-threads`` combines
+To address this, you may specify the ``--aggregate-threads`` or
+``--per-thread-stacks`` flags. ``--per-thread-stacks`` treats the thread id as an
+implicit root in each call stack tree, while ``--aggregate-threads`` combines
 identical stacks from all threads.
 
 Flame Graph Generation
@@ -245,19 +243,34 @@ FlameGraph tool, currently available on `github
 
 To generate output for a flamegraph, a few more options are necessary.
 
-- ``-all-stacks`` - Emits all of the stacks instead of just the top stacks.
-- ``-stack-format`` - Choose the flamegraph output format 'flame'.
-- ``-aggregation-type`` - Choose the metric to graph.
+- ``--all-stacks`` - Emits all of the stacks.
+- ``--stack-format`` - Choose the flamegraph output format 'flame'.
+- ``--aggregation-type`` - Choose the metric to graph.
 
 You may pipe the command output directly to the flamegraph tool to obtain an
 svg file.
 
 ::
 
-  $llvm-xray stack xray-log.llc.5rqxkU -instr_map ./bin/llc -stack-format=flame -aggregation-type=time -all-stacks | \
+  $ llvm-xray stack xray-log.llc.5rqxkU --instr_map=./bin/llc --stack-format=flame --aggregation-type=time --all-stacks | \
   /path/to/FlameGraph/flamegraph.pl > flamegraph.svg
 
 If you open the svg in a browser, mouse events allow exploring the call stacks.
+
+Chrome Trace Viewer Visualization
+---------------------------------
+
+We can also generate a trace which can be loaded by the Chrome Trace Viewer
+from the same generated trace:
+
+::
+
+  $ llvm-xray convert --symbolize --instr_map=./bin/llc \
+    --output-format=trace_event xray-log.llc.5rqxkU \
+      | gzip > llc-trace.txt.gz
+
+From a Chrome browser, navigating to ``chrome:///tracing`` allows us to load
+the ``sample-trace.txt.gz`` file to visualize the execution trace.
 
 Further Exploration
 -------------------
@@ -303,10 +316,10 @@ We then build the above with XRay instrumentation:
 ::
 
   $ clang++ -o sample -O3 sample.cc -std=c++11 -fxray-instrument -fxray-instruction-threshold=1
-  $ XRAY_OPTIONS="patch_premain=true" ./sample
+  $ XRAY_OPTIONS="patch_premain=true xray_mode=xray-basic" ./sample
 
 We can then explore the graph rendering of the trace generated by this sample
-application. We assume you have the graphviz toosl available in your system,
+application. We assume you have the graphviz tools available in your system,
 including both ``unflatten`` and ``dot``. If you prefer rendering or exploring
 the graph using another tool, then that should be feasible as well. ``llvm-xray
 graph`` will create DOT format graphs which should be usable in most graph
@@ -316,8 +329,9 @@ applications:
 
 ::
 
-  $ llvm-xray graph xray-log.sample.* -m sample -color-edges=sum -edge-label=sum \
+  $ llvm-xray graph xray-log.sample.* -m sample --color-edges=sum --edge-label=sum \
       | unflatten -f -l10 | dot -Tsvg -o sample.svg
+
 
 Next Steps
 ----------
@@ -329,9 +343,5 @@ making things better.
 
   - Implement a query/filtering library that allows for finding patterns in the
     XRay traces.
-  - A conversion from the XRay trace onto something that can be visualised
-    better by other tools (like the Chrome trace viewer for example).
   - Collecting function call stacks and how often they're encountered in the
     XRay trace.
-
-

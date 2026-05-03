@@ -13,12 +13,13 @@ define i8* @wibble(i8* %arg1, i8* %arg2) {
 bb:
   %tmp = alloca [1024 x i8], align 16
   %tmp2 = getelementptr inbounds [1024 x i8], [1024 x i8]* %tmp, i64 0, i64 0
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %tmp2, i8* %arg1, i64 1024, i32 0, i1 false)
-; CHECK:         call void @llvm.memcpy
-  %tmp3 = call i64 @llvm.objectsize.i64.p0i8(i8* %tmp2, i1 false, i1 true)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %tmp2, i8* %arg1, i64 1024, i1 false)
+; CHECK:         call void @llvm.memcpy.p0i8.p0i8.i64(i8* noundef nonnull align 16 dereferenceable(1024) 
+  %tmp3 = call i64 @llvm.objectsize.i64.p0i8(i8* %tmp2, i1 false, i1 true, i1 false)
   %tmp4 = call i8* @__strncpy_chk(i8* %arg2, i8* %tmp2, i64 1023, i64 %tmp3)
 ; CHECK-NOT:     call
-; CHECK:         call i8* @strncpy(i8* %arg2, i8* nonnull %tmp2, i64 1023)
+; CHECK:         call i8* @strncpy(i8* noundef nonnull dereferenceable(1) %arg2, i8* noundef nonnull dereferenceable(1) %tmp2, i64 1023)
+
 ; CHECK-NOT:     call
 
   ret i8* %tmp4
@@ -27,17 +28,18 @@ bb:
 
 define i8* @strncpy(i8* %arg1, i8* %arg2, i64 %size) noinline {
 bb:
+; CHECK:         call i8* @my_special_strncpy(i8* %arg1, i8* %arg2, i64 %size)
   %result = call i8* @my_special_strncpy(i8* %arg1, i8* %arg2, i64 %size)
   ret i8* %result
 }
 
 declare i8* @my_special_strncpy(i8* %arg1, i8* %arg2, i64 %size)
 
-declare i64 @llvm.objectsize.i64.p0i8(i8*, i1, i1)
+declare i64 @llvm.objectsize.i64.p0i8(i8*, i1, i1, i1)
 
 declare i8* @__strncpy_chk(i8*, i8*, i64, i64)
 
-declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture writeonly, i8* nocapture readonly, i64, i32, i1)
+declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture writeonly, i8* nocapture readonly, i64, i1)
 
 ; Check that even when we completely remove a libcall we don't get the call
 ; graph wrong once we handle libcalls in the call graph specially to address

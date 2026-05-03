@@ -240,9 +240,9 @@ define <4 x i32> @zextload_v8i8tov8i32_fake_update(<4 x i8>** %ptr) {
 ;CHECK-LABEL: zextload_v8i8tov8i32_fake_update:
 ;CHECK: ldr   r[[PTRREG:[0-9]+]], [r0]
 ;CHECK: vld1.32 {{{d[0-9]+}}[0]}, [r[[PTRREG]]:32]
-;CHECK: add.w   r[[INCREG:[0-9]+]], r[[PTRREG]], #16
 ;CHECK: vmovl.u8        {{q[0-9]+}}, {{d[0-9]+}}
 ;CHECK: vmovl.u16       {{q[0-9]+}}, {{d[0-9]+}}
+;CHECK: add.w   r[[INCREG:[0-9]+]], r[[PTRREG]], #16
 ;CHECK: str   r[[INCREG]], [r0]
 	%A = load <4 x i8>*, <4 x i8>** %ptr
 	%lA = load <4 x i8>, <4 x i8>* %A, align 4
@@ -253,9 +253,8 @@ define <4 x i32> @zextload_v8i8tov8i32_fake_update(<4 x i8>** %ptr) {
 }
 
 ; CHECK-LABEL: test_silly_load:
-; CHECK: vldr d{{[0-9]+}}, [r0, #16]
-; CHECK: movs r1, #24
-; CHECK: vld1.8 {d{{[0-9]+}}, d{{[0-9]+}}}, [r0:128], r1
+; CHECK: vld1.8 {d{{[0-9]+}}, d{{[0-9]+}}}, [r0:128]!
+; CHECK: vld1.8 {d{{[0-9]+}}}, [r0:64]!
 ; CHECK: ldr {{r[0-9]+}}, [r0]
 
 define void @test_silly_load(<28 x i8>* %addr) {

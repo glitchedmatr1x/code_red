@@ -1,4 +1,3 @@
-; REQUIRES: object-emission
 ;
 ; RUN: %llc_dwarf -filetype=obj -O0 -dwarf-linkage-names=All < %s | llvm-dwarfdump -v -debug-info - | FileCheck %s
 
@@ -8,15 +7,15 @@
 
 ; CHECK: DW_TAG_compile_unit
 ; CHECK: 0x[[ENUM:.*]]: DW_TAG_enumeration_type
-; CHECK-NEXT:   DW_AT_name {{.*}} "EA"
+; CHECK-NEXT:   DW_AT_name {{.*}}"EA"
 ; CHECK: DW_TAG_subprogram
-; CHECK: DW_AT_MIPS_linkage_name {{.*}} "_Z4topA2EA"
+; CHECK: DW_AT_MIPS_linkage_name {{.*}}"_Z4topA2EA"
 ; CHECK: DW_TAG_formal_parameter
 ; CHECK: DW_AT_type [DW_FORM_ref4] (cu + 0x{{.*}} => {0x[[ENUM]]}
 
 ; CHECK: DW_TAG_compile_unit
 ; CHECK: DW_TAG_subprogram
-; CHECK:   DW_AT_MIPS_linkage_name {{.*}} "_Z4topB2EA"
+; CHECK:   DW_AT_MIPS_linkage_name {{.*}}"_Z4topB2EA"
 ; CHECK: DW_TAG_formal_parameter
 ; CHECK: DW_AT_type [DW_FORM_ref_addr] {{.*}}[[ENUM]]
 
@@ -41,7 +40,7 @@ entry:
   ret void, !dbg !27
 }
 
-attributes #0 = { nounwind ssp uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind ssp uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0, !12}
@@ -54,7 +53,7 @@ attributes #1 = { nounwind readnone }
 !3 = !DICompositeType(tag: DW_TAG_enumeration_type, name: "EA", line: 1, size: 32, align: 32, file: !1, elements: !4, identifier: "_ZTS2EA")
 !4 = !{!5}
 !5 = !DIEnumerator(name: "EA_0", value: 0) ; [ DW_TAG_enumerator ] [EA_0 :: 0]
-!7 = distinct !DISubprogram(name: "topA", linkageName: "_Z4topA2EA", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 5, file: !1, scope: !8, type: !9, variables: !11)
+!7 = distinct !DISubprogram(name: "topA", linkageName: "_Z4topA2EA", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 5, file: !1, scope: !8, type: !9, retainedNodes: !11)
 !8 = !DIFile(filename: "a.cpp", directory: "")
 !9 = !DISubroutineType(types: !10)
 !10 = !{null, !3}
@@ -63,9 +62,9 @@ attributes #1 = { nounwind readnone }
 !13 = !DIFile(filename: "b.cpp", directory: "")
 !14 = !{!15}
 !15 = !DICompositeType(tag: DW_TAG_enumeration_type, name: "EA", line: 1, size: 32, align: 32, file: !13, elements: !4, identifier: "_ZTS2EA")
-!17 = distinct !DISubprogram(name: "topB", linkageName: "_Z4topB2EA", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !12, scopeLine: 5, file: !13, scope: !18, type: !9, variables: !11)
+!17 = distinct !DISubprogram(name: "topB", linkageName: "_Z4topB2EA", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !12, scopeLine: 5, file: !13, scope: !18, type: !9, retainedNodes: !11)
 !18 = !DIFile(filename: "b.cpp", directory: "")
-!19 = !{i32 2, !"Dwarf Version", i32 2}
+!19 = !{i32 2, !"Dwarf Version", i32 3}
 !20 = !{i32 2, !"Debug Info Version", i32 3}
 !21 = !{!"clang version 3.5.0 (trunk 214102:214133) (llvm/trunk 214102:214132)"}
 !22 = !DILocalVariable(name: "sa", line: 5, arg: 1, scope: !7, file: !8, type: !3)

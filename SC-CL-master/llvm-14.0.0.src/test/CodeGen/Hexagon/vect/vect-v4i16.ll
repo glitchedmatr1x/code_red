@@ -1,9 +1,7 @@
 ; RUN: llc -march=hexagon -mcpu=hexagonv5 -disable-hsdr < %s | FileCheck %s
 
 ; Check that store is post-incremented.
-; CHECK: memuh(r{{[0-9]+}}+#6)
-; CHECK: combine(r{{[0-9]+}},r{{[0-9]+}})
-; CHECK: vaddh
+; CHECK: memh(r{{[0-9]+}}++#2)
 
 target datalayout = "e-p:32:32:32-i64:64:64-i32:32:32-i16:16:16-i1:32:32-f64:64:64-f32:32:32-v64:64:64-v32:32:32-a0:0-n16:32"
 target triple = "hexagon"
@@ -70,4 +68,4 @@ polly.stmt.for.body29:                            ; preds = %polly.stmt.for.body
   br i1 %exitcond, label %for.end.loopexit, label %polly.stmt.for.body29
 }
 
-attributes #0 = { nounwind "fp-contract-model"="standard" "no-frame-pointer-elim-non-leaf" "realign-stack" "relocation-model"="static" "ssp-buffers-size"="8" }
+attributes #0 = { nounwind "fp-contract-model"="standard" "frame-pointer"="non-leaf" "realign-stack" "relocation-model"="static" "ssp-buffers-size"="8" }

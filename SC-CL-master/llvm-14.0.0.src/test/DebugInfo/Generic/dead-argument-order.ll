@@ -1,6 +1,4 @@
-; REQUIRES: object-emission
-
-; RUN: %llc_dwarf -O0 -filetype=obj < %s | llvm-dwarfdump -v -debug-info - | FileCheck %s
+; RUN: %llc_dwarf -O0 -filetype=obj < %s | llvm-dwarfdump -debug-info - | FileCheck %s
 
 ; Built from the following source with clang -O1
 ; struct S { int i; };
@@ -15,11 +13,11 @@
 
 ; CHECK: DW_TAG_subprogram
 ; CHECK-NOT: DW_TAG
-; CHECK:   DW_AT_name {{.*}} "function"
+; CHECK:   DW_AT_name ("function")
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:   DW_TAG_formal_parameter
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_name {{.*}} "s"
+; CHECK:     DW_AT_name ("s")
 ; CHECK-NOT: DW_TAG
 ; FIXME: Even though 's' is never reconstituted into a struct, the one member
 ; variable is still live and used, and so we should be able to describe 's's
@@ -30,7 +28,7 @@
 ; CHECK-NOT: DW_TAG
 ; CHECK:     DW_AT_location
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_name {{.*}} "i"
+; CHECK:     DW_AT_name ("i")
 
 
 %struct.S = type { i32 }
@@ -50,7 +48,7 @@ declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind readnone uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind readnone uwtable "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -65,7 +63,7 @@ attributes #1 = { nounwind readnone }
 !5 = !{!6}
 !6 = !DIDerivedType(tag: DW_TAG_member, name: "i", line: 1, size: 32, align: 32, file: !1, scope: !4, baseType: !7)
 !7 = !DIBasicType(tag: DW_TAG_base_type, name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
-!9 = distinct !DISubprogram(name: "function", linkageName: "_Z8function1Si", line: 2, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 2, file: !1, scope: !10, type: !11, variables: !13)
+!9 = distinct !DISubprogram(name: "function", linkageName: "_Z8function1Si", line: 2, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 2, file: !1, scope: !10, type: !11, retainedNodes: !13)
 !10 = !DIFile(filename: "dead-argument-order.cpp", directory: "/tmp/dbginfo")
 !11 = !DISubroutineType(types: !12)
 !12 = !{!7, !4, !7}

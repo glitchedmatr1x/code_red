@@ -11,7 +11,7 @@ entry:
 
 ; CHECK-LABEL: @testExpandISELToIfElse
 ; CHECK: addi r5, r3, 1
-; CHECK-NEXT: cmpwi cr0, r3, 0
+; CHECK-NEXT: cmpwi r3, 0
 ; CHECK-NEXT: bc 12, gt, [[TRUE:.LBB[0-9]+]]
 ; CHECK: ori r3, r4, 0
 ; CHECK-NEXT: b [[SUCCESSOR:.LBB[0-9]+]]
@@ -79,13 +79,13 @@ entry:
 ; CHECK: cmpwi r7, 0
 ; CHECK-NEXT: bc 12, gt, [[TRUE:.LBB[0-9]+]]
 ; CHECK: ori r3, r4, 0
-; CHECK-NEXT: ori r12, r6, 0
+; CHECK-NEXT: ori r4, r6, 0
 ; CHECK-NEXT: b [[SUCCESSOR:.LBB[0-9]+]]
 ; CHECK-NEXT:  [[TRUE]]
 ; CHECK-NEXT: addi r3, r7, 0
-; CHECK-NEXT: addi r12, r5, 0
+; CHECK-NEXT: addi r4, r5, 0
 ; CHECK-NEXT: [[SUCCESSOR]]
-; CHECK-NEXT: add r3, r3, r12
+; CHECK-NEXT: add r3, r3, r4
 ; CHECK-NEXT: extsw r3, r3
 ; CHECK-NEXT: blr
 }
@@ -101,15 +101,15 @@ entry:
   ret i32 %add
 
 ; CHECK-LABEL: @testExpandISELsTo2ORIs1ADDI
-; CHECK: cmpwi cr0, r7, 0
+; CHECK: cmpwi r7, 0
 ; CHECK-NEXT: bc 12, gt, [[TRUE:.LBB[0-9]+]]
 ; CHECK: ori r3, r4, 0
-; CHECK-NEXT: ori r12, r6, 0
+; CHECK-NEXT: ori r4, r6, 0
 ; CHECK-NEXT: b [[SUCCESSOR:.LBB[0-9]+]]
 ; CHECK-NEXT: [[TRUE]]
-; CHECK-NEXT: addi r12, r5, 0
+; CHECK-NEXT: addi r4, r5, 0
 ; CHECK-NEXT:  [[SUCCESSOR]]
-; CHECK-NEXT: add r3, r3, r12
+; CHECK-NEXT: add r3, r3, r4
 ; CHECK-NEXT: extsw r3, r3
 ; CHECK-NEXT: blr
 }
@@ -127,7 +127,7 @@ entry:
   ret i32 %add2
 
 ; CHECK-LABEL: @testExpandISELsTo1ORI1ADDI
-; CHECK: cmpwi cr0, r7, 0
+; CHECK: cmpwi r7, 0
 ; CHECK-NEXT: bc 12, gt, [[TRUE:.LBB[0-9]+]]
 ; CHECK: ori r5, r6, 0
 ; CHECK-NEXT: b [[SUCCESSOR:.LBB[0-9]+]]
@@ -154,7 +154,7 @@ entry:
   ret i32 %sub1
 
 ; CHECK-LABEL: @testExpandISELsTo0ORI2ADDIs
-; CHECK: cmpwi cr0, r7, 0
+; CHECK: cmpwi r7, 0
 ; CHECK-NEXT: bc 12, gt, [[TRUE:.LBB[0-9]+]]
 ; CHECK-NEXT: b [[SUCCESSOR:.LBB[0-9]+]]
 ; CHECK-NEXT:  [[TRUE]]
@@ -163,14 +163,14 @@ entry:
 ; CHECK-NEXT:  [[SUCCESSOR]]
 ; CHECK-NEXT: add r4, r4, r6
 ; CHECK-NEXT: add r3, r3, r4
-; CHECK-NEXT: subf r3, r5, r3
+; CHECK-NEXT: sub r3, r3, r5
 ; CHECK-NEXT: extsw r3, r3
 ; CHECK-NEXT: blr
 }
 
 
-@b = common local_unnamed_addr global i32 0, align 4
-@a = common local_unnamed_addr global i32 0, align 4
+@b = local_unnamed_addr global i32 0, align 4
+@a = local_unnamed_addr global i32 0, align 4
 ; Function Attrs: norecurse nounwind readonly
 define signext i32 @testComplexISEL() #0 {
 entry:

@@ -51,7 +51,7 @@ for.cond1816.preheader.for.inc1898_crit_edge:     ; preds = %for.cond1816.prehea
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, i64, metadata, metadata) #1
 
-attributes #0 = { nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!7}
@@ -320,7 +320,7 @@ attributes #1 = { nounwind readnone }
 !260 = !DIGlobalVariable(name: "tmp1", scope: null, file: !2, line: 88, type: !13, isLocal: true, isDefinition: true)
 !261 = !{i32 2, !"Dwarf Version", i32 4}
 !262 = !{i32 1, !"Debug Info Version", i32 3}
-!263 = distinct !DISubprogram(name: "compute_rhs", scope: !8, file: !8, line: 1767, type: !264, isLocal: true, isDefinition: true, scopeLine: 1767, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !7, variables: !266)
+!263 = distinct !DISubprogram(name: "compute_rhs", scope: !8, file: !8, line: 1767, type: !264, isLocal: true, isDefinition: true, scopeLine: 1767, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !7, retainedNodes: !266)
 !264 = !DISubroutineType(types: !265)
 !265 = !{null}
 !266 = !{!267, !268, !269, !270, !271, !272, !273, !274, !275, !276, !277, !278, !279, !280}

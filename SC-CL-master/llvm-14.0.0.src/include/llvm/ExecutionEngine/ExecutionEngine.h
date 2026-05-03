@@ -1,9 +1,8 @@
 //===- ExecutionEngine.h - Abstract Execution Engine Interface --*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -60,7 +59,7 @@ class ObjectFile;
 
 } // end namespace object
 
-/// \brief Helper class for helping synchronize access to the global address map
+/// Helper class for helping synchronize access to the global address map
 /// table.  Access to this class should be serialized under a mutex.
 class ExecutionEngineState {
 public:
@@ -86,7 +85,7 @@ public:
     return GlobalAddressReverseMap;
   }
 
-  /// \brief Erase an entry from the mapping table.
+  /// Erase an entry from the mapping table.
   ///
   /// \returns The address that \p ToUnmap was happed to.
   uint64_t RemoveMapping(StringRef Name);
@@ -94,7 +93,7 @@ public:
 
 using FunctionCreator = std::function<void *(const std::string &)>;
 
-/// \brief Abstract interface for implementation execution of LLVM modules,
+/// Abstract interface for implementation execution of LLVM modules,
 /// designed to support both interpreter and just-in-time (JIT) compiler
 /// implementations.
 class ExecutionEngine {
@@ -137,17 +136,10 @@ protected:
   virtual char *getMemoryForGV(const GlobalVariable *GV);
 
   static ExecutionEngine *(*MCJITCtor)(
-                                std::unique_ptr<Module> M,
-                                std::string *ErrorStr,
-                                std::shared_ptr<MCJITMemoryManager> MM,
-                                std::shared_ptr<JITSymbolResolver> SR,
-                                std::unique_ptr<TargetMachine> TM);
-
-  static ExecutionEngine *(*OrcMCJITReplacementCtor)(
-                                std::string *ErrorStr,
-                                std::shared_ptr<MCJITMemoryManager> MM,
-                                std::shared_ptr<JITSymbolResolver> SR,
-                                std::unique_ptr<TargetMachine> TM);
+      std::unique_ptr<Module> M, std::string *ErrorStr,
+      std::shared_ptr<MCJITMemoryManager> MM,
+      std::shared_ptr<LegacyJITSymbolResolver> SR,
+      std::unique_ptr<TargetMachine> TM);
 
   static ExecutionEngine *(*InterpCtor)(std::unique_ptr<Module> M,
                                         std::string *ErrorStr);
@@ -159,6 +151,8 @@ protected:
 
   /// getMangledName - Get mangled name.
   std::string getMangledName(const GlobalValue *GV);
+
+  std::string ErrMsg;
 
 public:
   /// lock - This lock protects the ExecutionEngine and MCJIT classes. It must
@@ -277,7 +271,19 @@ public:
   /// object have been relocated using mapSectionAddress.  When this method is
   /// called the MCJIT execution engine will reapply relocations for a loaded
   /// object.  This method has no effect for the interpeter.
+  ///
+  /// Returns true on success, false on failure. Error messages can be retrieved
+  /// by calling getError();
   virtual void finalizeObject() {}
+
+  /// Returns true if an error has been recorded.
+  bool hasError() const { return !ErrMsg.empty(); }
+
+  /// Clear the error message.
+  void clearErrorMessage() { ErrMsg.clear(); }
+
+  /// Returns the most recent error message.
+  const std::string &getErrorMessage() const { return ErrMsg; }
 
   /// runStaticConstructorsDestructors - This method is used to execute all of
   /// the static constructors or destructors for a program.
@@ -501,7 +507,7 @@ protected:
 
   void emitGlobals();
 
-  void EmitGlobalVariable(const GlobalVariable *GV);
+  void emitGlobalVariable(const GlobalVariable *GV);
 
   GenericValue getConstantValue(const Constant *C);
   void LoadValueFromMemory(GenericValue &Result, GenericValue *Ptr,
@@ -532,7 +538,7 @@ private:
   std::string *ErrorStr;
   CodeGenOpt::Level OptLevel;
   std::shared_ptr<MCJITMemoryManager> MemMgr;
-  std::shared_ptr<JITSymbolResolver> Resolver;
+  std::shared_ptr<LegacyJITSymbolResolver> Resolver;
   TargetOptions Options;
   Optional<Reloc::Model> RelocModel;
   Optional<CodeModel::Model> CMModel;
@@ -540,7 +546,6 @@ private:
   std::string MCPU;
   SmallVector<std::string, 4> MAttrs;
   bool VerifyModules;
-  bool UseOrcMCJITReplacement;
   bool EmulatedTLS = true;
 
 public:
@@ -571,8 +576,7 @@ public:
   EngineBuilder&
   setMemoryManager(std::unique_ptr<MCJITMemoryManager> MM);
 
-  EngineBuilder&
-  setSymbolResolver(std::unique_ptr<JITSymbolResolver> SR);
+  EngineBuilder &setSymbolResolver(std::unique_ptr<LegacyJITSymbolResolver> SR);
 
   /// setErrorStr - Set the error string to write to on error.  This option
   /// defaults to NULL.
@@ -637,15 +641,10 @@ public:
     return *this;
   }
 
-  // \brief Use OrcMCJITReplacement instead of MCJIT. Off by default.
-  void setUseOrcMCJITReplacement(bool UseOrcMCJITReplacement) {
-    this->UseOrcMCJITReplacement = UseOrcMCJITReplacement;
-  }
-
   void setEmulatedTLS(bool EmulatedTLS) {
     this->EmulatedTLS = EmulatedTLS;
   }
-  
+
   TargetMachine *selectTarget();
 
   /// selectTarget - Pick a target either via -march or by guessing the native

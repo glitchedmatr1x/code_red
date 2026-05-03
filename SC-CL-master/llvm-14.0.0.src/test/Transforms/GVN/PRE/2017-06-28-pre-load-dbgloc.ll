@@ -38,7 +38,7 @@ entry:
 ; ALL: br i1 %tobool, label %entry.cond.end_crit_edge, label %cond.false, !dbg [[LOC_15_6:![0-9]+]]
 ; ALL: entry.cond.end_crit_edge:
 ; GVN: %.pre = load %struct.node*, %struct.node** null, align 8, !dbg [[LOC_16_13:![0-9]+]]
-; INSTCOMBINE:store %struct.node* undef, %struct.node** null, align 536870912, !dbg [[LOC_16_13:![0-9]+]]
+; INSTCOMBINE:store %struct.node* poison, %struct.node** null, align 4294967296, !dbg [[LOC_16_13:![0-9]+]]
 
 cond.false:
   %0 = bitcast %struct.desc* %desc to i8***, !dbg !11
@@ -65,7 +65,7 @@ declare i32 @bar(i8*, i8*) local_unnamed_addr #1
 !1 = !DIFile(filename: "test.c", directory: ".")
 !2 = !{i32 2, !"Dwarf Version", i32 4}
 !3 = !{i32 2, !"Debug Info Version", i32 3}
-!4 = distinct !DISubprogram(name: "test", scope: !1, file: !1, line: 12, type: !5, isLocal: false, isDefinition: true, scopeLine: 13, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !8)
+!4 = distinct !DISubprogram(name: "test", scope: !1, file: !1, line: 12, type: !5, isLocal: false, isDefinition: true, scopeLine: 13, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !8)
 !5 = !DISubroutineType(types: !6)
 !6 = !{!7}
 !7 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)

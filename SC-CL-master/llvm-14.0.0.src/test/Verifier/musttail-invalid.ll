@@ -1,4 +1,5 @@
 ; RUN: not llvm-as %s -o /dev/null 2>&1 | FileCheck %s
+; RUN: not llvm-as %s -opaque-pointers -o /dev/null 2>&1 | FileCheck %s
 
 ; Each musttail call should fail to validate.
 
@@ -40,7 +41,7 @@ define void @mismatched_retty(i32) {
 }
 
 declare void @mismatched_byval_callee({ i32 }*)
-define void @mismatched_byval({ i32 }* byval %a) {
+define void @mismatched_byval({ i32 }* byval({ i32 }) %a) {
 ; CHECK: mismatched ABI impacting function attributes
   musttail call void @mismatched_byval_callee({ i32 }* %a)
   ret void
@@ -53,23 +54,23 @@ define void @mismatched_inreg(i32 %a) {
   ret void
 }
 
-declare void @mismatched_sret_callee(i32* sret)
+declare void @mismatched_sret_callee(i32* sret(i32))
 define void @mismatched_sret(i32* %a) {
 ; CHECK: mismatched ABI impacting function attributes
-  musttail call void @mismatched_sret_callee(i32* sret %a)
+  musttail call void @mismatched_sret_callee(i32* sret(i32) %a)
   ret void
 }
 
-declare void @mismatched_alignment_callee(i32* byval align 8)
-define void @mismatched_alignment(i32* byval align 4 %a) {
+declare void @mismatched_alignment_callee(i32* byval(i32) align 8)
+define void @mismatched_alignment(i32* byval(i32) align 4 %a) {
 ; CHECK: mismatched ABI impacting function attributes
-  musttail call void @mismatched_alignment_callee(i32* byval align 8 %a)
+  musttail call void @mismatched_alignment_callee(i32* byval(i32) align 8 %a)
   ret void
 }
 
 declare i32 @not_tail_pos_callee()
 define i32 @not_tail_pos() {
-; CHECK: musttail call must be precede a ret with an optional bitcast
+; CHECK: musttail call must precede a ret with an optional bitcast
   %v = musttail call i32 @not_tail_pos_callee()
   %w = add i32 %v, 1
   ret i32 %w

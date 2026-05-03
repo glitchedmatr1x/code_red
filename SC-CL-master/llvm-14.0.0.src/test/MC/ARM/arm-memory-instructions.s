@@ -194,11 +194,13 @@ Lbaz: .quad 0
 @------------------------------------------------------------------------------
         ldrht r9, [r7], #128
         ldrht r4, [r3], #-75
+        ldrht r4, [r3]
         ldrht r9, [r7], r2
         ldrht r4, [r3], -r2
 
 @ CHECK: ldrht	r9, [r7], #128          @ encoding: [0xb0,0x98,0xf7,0xe0]
 @ CHECK: ldrht	r4, [r3], #-75          @ encoding: [0xbb,0x44,0x73,0xe0]
+@ CHECK: ldrht	r4, [r3], #0            @ encoding: [0xb0,0x40,0xf3,0xe0]
 @ CHECK: ldrht	r9, [r7], r2            @ encoding: [0xb2,0x90,0xb7,0xe0]
 @ CHECK: ldrht	r4, [r3], -r2           @ encoding: [0xb2,0x40,0x33,0xe0]
 
@@ -244,11 +246,13 @@ Lbaz: .quad 0
 @------------------------------------------------------------------------------
         ldrsbt r5, [r6], #1
         ldrsbt r3, [r8], #-12
+        ldrsbt r5, [r6]
         ldrsbt r8, [r9], r5
         ldrsbt r2, [r1], -r4
 
 @ CHECK: ldrsbt	r5, [r6], #1            @ encoding: [0xd1,0x50,0xf6,0xe0]
 @ CHECK: ldrsbt	r3, [r8], #-12          @ encoding: [0xdc,0x30,0x78,0xe0]
+@ CHECK: ldrsbt	r5, [r6], #0            @ encoding: [0xd0,0x50,0xf6,0xe0]
 @ CHECK: ldrsbt	r8, [r9], r5            @ encoding: [0xd5,0x80,0xb9,0xe0]
 @ CHECK: ldrsbt	r2, [r1], -r4           @ encoding: [0xd4,0x20,0x31,0xe0]
 
@@ -293,11 +297,13 @@ Lbaz: .quad 0
 @------------------------------------------------------------------------------
         ldrsht r5, [r6], #1
         ldrsht r3, [r8], #-12
+        ldrsht r5, [r6]
         ldrsht r8, [r9], r5
         ldrsht r2, [r1], -r4
 
 @ CHECK: ldrsht	r5, [r6], #1            @ encoding: [0xf1,0x50,0xf6,0xe0]
 @ CHECK: ldrsht	r3, [r8], #-12          @ encoding: [0xfc,0x30,0x78,0xe0]
+@ CHECK: ldrsht	r5, [r6], #0            @ encoding: [0xf0,0x50,0xf6,0xe0]
 @ CHECK: ldrsht	r8, [r9], r5            @ encoding: [0xf5,0x80,0xb9,0xe0]
 @ CHECK: ldrsht	r2, [r1], -r4           @ encoding: [0xf4,0x20,0x31,0xe0]
 
@@ -404,21 +410,21 @@ Lbaz: .quad 0
 @------------------------------------------------------------------------------
 @ STRD (immediate)
 @------------------------------------------------------------------------------
-        strd r1, r2, [r4]
+        strd r2, r3, [r4]
         strd r2, r3, [r6, #1]
-        strd r3, r4, [r7, #22]!
+        strd r0, r1, [r7, #22]!
         strd r4, r5, [r8], #7
-        strd r5, r6, [sp], #0
+        strd r4, r5, [sp], #0
         strd r6, r7, [lr], #+0
-        strd r7, r8, [r9], #-0
+        strd r10, r11, [r9], #-0
 
-@ CHECK: strd	r1, r2, [r4]            @ encoding: [0xf0,0x10,0xc4,0xe1]
+@ CHECK: strd	r2, r3, [r4]            @ encoding: [0xf0,0x20,0xc4,0xe1]
 @ CHECK: strd	r2, r3, [r6, #1]        @ encoding: [0xf1,0x20,0xc6,0xe1]
-@ CHECK: strd	r3, r4, [r7, #22]!      @ encoding: [0xf6,0x31,0xe7,0xe1]
+@ CHECK: strd	r0, r1, [r7, #22]!      @ encoding: [0xf6,0x01,0xe7,0xe1]
 @ CHECK: strd	r4, r5, [r8], #7        @ encoding: [0xf7,0x40,0xc8,0xe0]
-@ CHECK: strd	r5, r6, [sp], #0        @ encoding: [0xf0,0x50,0xcd,0xe0]
+@ CHECK: strd	r4, r5, [sp], #0        @ encoding: [0xf0,0x40,0xcd,0xe0]
 @ CHECK: strd	r6, r7, [lr], #0        @ encoding: [0xf0,0x60,0xce,0xe0]
-@ CHECK: strd	r7, r8, [r9], #-0       @ encoding: [0xf0,0x70,0x49,0xe0]
+@ CHECK: strd	r10, r11, [r9], #-0     @ encoding: [0xf0,0xa0,0x49,0xe0]
 
 
 @------------------------------------------------------------------------------
@@ -429,14 +435,14 @@ Lbaz: .quad 0
 @ STRD (register)
 @------------------------------------------------------------------------------
         strd r8, r9, [r4, r1]
-        strd r7, r8, [r3, r9]!
+        strd r6, r7, [r3, r9]!
         strd r6, r7, [r5], r8
-        strd r5, r6, [r12], -r10
+        strd r4, r5, [r12], -r10
 
 @ CHECK: strd	r8, r9, [r4, r1]        @ encoding: [0xf1,0x80,0x84,0xe1]
-@ CHECK: strd	r7, r8, [r3, r9]!       @ encoding: [0xf9,0x70,0xa3,0xe1]
+@ CHECK: strd	r6, r7, [r3, r9]!       @ encoding: [0xf9,0x60,0xa3,0xe1]
 @ CHECK: strd	r6, r7, [r5], r8        @ encoding: [0xf8,0x60,0x85,0xe0]
-@ CHECK: strd	r5, r6, [r12], -r10     @ encoding: [0xfa,0x50,0x0c,0xe0]
+@ CHECK: strd	r4, r5, [r12], -r10     @ encoding: [0xfa,0x40,0x0c,0xe0]
 
 
 @------------------------------------------------------------------------------

@@ -42,7 +42,7 @@ declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind ssp uwtable "fp-contract-model"="standard" "no-frame-pointer-elim" "no-frame-pointer-elim-non-leaf" "relocation-model"="pic" "ssp-buffers-size"="8" }
+attributes #0 = { nounwind ssp uwtable "fp-contract-model"="standard" "frame-pointer"="non-leaf" "relocation-model"="pic" "ssp-buffers-size"="8" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!11}
@@ -63,7 +63,7 @@ attributes #1 = { nounwind readnone }
 !12 = !{}
 !13 = !{!0, !7, !9}
 !14 = !{i32 1, !"Debug Info Version", i32 3}
-!15 = distinct !DISubprogram(name: "test", linkageName: "test", scope: !2, file: !2, line: 5, type: !16, isLocal: false, isDefinition: true, scopeLine: 5, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !11, variables: !18)
+!15 = distinct !DISubprogram(name: "test", linkageName: "test", scope: !2, file: !2, line: 5, type: !16, isLocal: false, isDefinition: true, scopeLine: 5, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !11, retainedNodes: !18)
 !16 = !DISubroutineType(types: !17)
 !17 = !{!4}
 !18 = !{!19}

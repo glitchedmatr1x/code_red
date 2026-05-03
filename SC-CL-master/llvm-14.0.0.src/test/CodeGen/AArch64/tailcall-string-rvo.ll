@@ -1,4 +1,5 @@
 ; RUN: llc -relocation-model=static -verify-machineinstrs -O2 < %s | FileCheck %s
+; RUN: llc -relocation-model=static -verify-machineinstrs -global-isel -O2 < %s | FileCheck %s
 
 ; The call to function TestBar should be a tail call, when in C++ the string
 ; `ret` is RVO returned.
@@ -16,15 +17,15 @@ target triple = "aarch64-linux-gnu"
 %"struct.__gnu_cxx::__vstring_utility<char, std::char_traits<char>, std::allocator<char> >::_Alloc_hider.7.38.69" = type { i8* }
 %union.anon.8.39.70 = type { i64, [8 x i8] }
 
-declare void @TestBaz(%class.basic_string.11.42.73* noalias sret %arg)
+declare void @TestBaz(%class.basic_string.11.42.73* noalias sret(%class.basic_string.11.42.73) %arg)
 
-define void @TestBar(%class.basic_string.11.42.73* noalias sret %arg) {
+define void @TestBar(%class.basic_string.11.42.73* noalias sret(%class.basic_string.11.42.73) %arg) {
 bb:
-  call void @TestBaz(%class.basic_string.11.42.73* noalias sret %arg)
+  call void @TestBaz(%class.basic_string.11.42.73* noalias sret(%class.basic_string.11.42.73) %arg)
   ret void
 }
 
-define void @TestFoo(%class.basic_string.11.42.73* noalias sret %arg) {
+define void @TestFoo(%class.basic_string.11.42.73* noalias sret(%class.basic_string.11.42.73) %arg) {
 ; CHECK-LABEL: TestFoo:
 ; CHECK: b TestBar
 bb:
@@ -32,16 +33,16 @@ bb:
   %tmp1 = bitcast %class.basic_string.11.42.73* %arg to %union.anon.8.39.70**
   store %union.anon.8.39.70* %tmp, %union.anon.8.39.70** %tmp1, align 8
   %tmp2 = bitcast %union.anon.8.39.70* %tmp to i8*
-  tail call void @llvm.memcpy.p0i8.p0i8.i64(i8* %tmp2, i8* nonnull undef, i64 13, i32 1, i1 false)
+  tail call void @llvm.memcpy.p0i8.p0i8.i64(i8* %tmp2, i8* nonnull undef, i64 13, i1 false)
   %tmp3 = getelementptr inbounds %class.basic_string.11.42.73, %class.basic_string.11.42.73* %arg, i64 0, i32 0, i32 0, i32 1
   store i64 13, i64* %tmp3, align 8
   %tmp4 = getelementptr inbounds %class.basic_string.11.42.73, %class.basic_string.11.42.73* %arg, i64 0, i32 0, i32 0, i32 2, i32 1, i64 5
   store i8 0, i8* %tmp4, align 1
-  tail call void @TestBar(%class.basic_string.11.42.73* noalias sret %arg)
+  tail call void @TestBar(%class.basic_string.11.42.73* noalias sret(%class.basic_string.11.42.73) %arg)
   ret void
 }
 
 ; Function Attrs: argmemonly nounwind
-declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture, i8* nocapture readonly, i64, i32, i1) #0
+declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture, i8* nocapture readonly, i64, i1) #0
 
 attributes #0 = { argmemonly nounwind }

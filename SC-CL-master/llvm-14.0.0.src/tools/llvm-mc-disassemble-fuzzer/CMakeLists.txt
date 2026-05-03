@@ -1,5 +1,4 @@
 set(LLVM_LINK_COMPONENTS
-    AllTargetsAsmPrinters
     AllTargetsDescs
     AllTargetsDisassemblers
     AllTargetsInfos
@@ -8,4 +7,6 @@ set(LLVM_LINK_COMPONENTS
     MCParser
     Support
 )
-add_llvm_fuzzer(llvm-mc-disassemble-fuzzer llvm-mc-disassemble-fuzzer.cpp)
+add_llvm_fuzzer(llvm-mc-disassemble-fuzzer
+  llvm-mc-disassemble-fuzzer.cpp
+  )

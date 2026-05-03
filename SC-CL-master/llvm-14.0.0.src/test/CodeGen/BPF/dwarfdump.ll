@@ -23,7 +23,7 @@ define i32 @testprog(i32, i32) local_unnamed_addr #0 !dbg !2 {
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, i64, metadata, metadata) #1
 
-attributes #0 = { nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!7}
@@ -32,7 +32,7 @@ attributes #1 = { nounwind readnone }
 
 !0 = distinct !DIGlobalVariableExpression(var: !1, expr: !DIExpression())
 !1 = !DIGlobalVariable(name: "myvar_c", scope: !2, file: !3, line: 3, type: !6, isLocal: true, isDefinition: true)
-!2 = distinct !DISubprogram(name: "testprog", scope: !3, file: !3, line: 1, type: !4, isLocal: false, isDefinition: true, scopeLine: 2, flags: DIFlagPrototyped, isOptimized: true, unit: !7, variables: !10)
+!2 = distinct !DISubprogram(name: "testprog", scope: !3, file: !3, line: 1, type: !4, isLocal: false, isDefinition: true, scopeLine: 2, flags: DIFlagPrototyped, isOptimized: true, unit: !7, retainedNodes: !10)
 !3 = !DIFile(filename: "testprog.c", directory: "/w/llvm/bld")
 !4 = !DISubroutineType(types: !5)
 !5 = !{!6, !6, !6}
@@ -59,6 +59,8 @@ attributes #1 = { nounwind readnone }
 !26 = !DILocation(line: 7, column: 17, scope: !2)
 !27 = !DILocation(line: 9, column: 9, scope: !2)
 
-; CHECK: file_names[  1]    0 0x00000000 0x00000000 testprog.c
+; CHECK: file_names[  1]:
+; CHECK-NEXT: name: "testprog.c"
+; CHECK-NEXT: dir_index: 0
 ; CHECK: 0x0000000000000000      2
-; CHECK: 0x0000000000000020      7
+; CHECK: 0x0000000000000028      7

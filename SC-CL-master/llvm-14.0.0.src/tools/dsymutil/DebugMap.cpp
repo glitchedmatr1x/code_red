@@ -1,9 +1,8 @@
 //===- tools/dsymutil/DebugMap.cpp - Generic debug map representation -----===//
 //
-//                             The LLVM Linker
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -22,6 +21,7 @@
 #include "llvm/Support/Format.h"
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/Path.h"
+#include "llvm/Support/WithColor.h"
 #include "llvm/Support/YAMLTraits.h"
 #include "llvm/Support/raw_ostream.h"
 #include <algorithm>
@@ -41,7 +41,7 @@ using namespace llvm::object;
 DebugMapObject::DebugMapObject(StringRef ObjectFilename,
                                sys::TimePoint<std::chrono::seconds> Timestamp,
                                uint8_t Type)
-    : Filename(ObjectFilename), Timestamp(Timestamp), Type(Type) {}
+    : Filename(std::string(ObjectFilename)), Timestamp(Timestamp), Type(Type) {}
 
 bool DebugMapObject::addSymbol(StringRef Name, Optional<uint64_t> ObjectAddress,
                                uint64_t LinkedAddress, uint32_t Size) {
@@ -60,11 +60,11 @@ void DebugMapObject::print(raw_ostream &OS) const {
   using Entry = std::pair<StringRef, SymbolMapping>;
   std::vector<Entry> Entries;
   Entries.reserve(Symbols.getNumItems());
-  for (const auto &Sym : make_range(Symbols.begin(), Symbols.end()))
+  for (const auto &Sym : Symbols)
     Entries.push_back(std::make_pair(Sym.getKey(), Sym.getValue()));
-  std::sort(
-      Entries.begin(), Entries.end(),
-      [](const Entry &LHS, const Entry &RHS) { return LHS.first < RHS.first; });
+  llvm::sort(Entries, [](const Entry &LHS, const Entry &RHS) {
+    return LHS.first < RHS.first;
+  });
   for (const auto &Sym : Entries) {
     if (Sym.second.ObjectAddress)
       OS << format("\t%016" PRIx64, uint64_t(*Sym.second.ObjectAddress));
@@ -228,37 +228,51 @@ MappingTraits<dsymutil::DebugMapObject>::YamlDMO::YamlDMO(
   Timestamp = sys::toTimeT(Obj.getTimestamp());
   Entries.reserve(Obj.Symbols.size());
   for (auto &Entry : Obj.Symbols)
-    Entries.push_back(std::make_pair(Entry.getKey(), Entry.getValue()));
+    Entries.push_back(
+        std::make_pair(std::string(Entry.getKey()), Entry.getValue()));
 }
 
 dsymutil::DebugMapObject
 MappingTraits<dsymutil::DebugMapObject>::YamlDMO::denormalize(IO &IO) {
-  BinaryHolder BinHolder(/* Verbose =*/false);
+  BinaryHolder BinHolder(vfs::getRealFileSystem(), /* Verbose =*/false);
   const auto &Ctxt = *reinterpret_cast<YAMLContext *>(IO.getContext());
   SmallString<80> Path(Ctxt.PrependPath);
   StringMap<uint64_t> SymbolAddresses;
 
   sys::path::append(Path, Filename);
-  auto ErrOrObjectFiles = BinHolder.GetObjectFiles(Path);
-  if (auto EC = ErrOrObjectFiles.getError()) {
-    errs() << "warning: Unable to open " << Path << " " << EC.message() << '\n';
-  } else if (auto ErrOrObjectFile = BinHolder.Get(Ctxt.BinaryTriple)) {
-    // Rewrite the object file symbol addresses in the debug map. The
-    // YAML input is mainly used to test llvm-dsymutil without
-    // requiring binaries checked-in. If we generate the object files
-    // during the test, we can't hardcode the symbols addresses, so
-    // look them up here and rewrite them.
-    for (const auto &Sym : ErrOrObjectFile->symbols()) {
-      uint64_t Address = Sym.getValue();
-      Expected<StringRef> Name = Sym.getName();
-      if (!Name ||
-          (Sym.getFlags() & (SymbolRef::SF_Absolute | SymbolRef::SF_Common))) {
-        // TODO: Actually report errors helpfully.
-        if (!Name)
-          consumeError(Name.takeError());
-        continue;
+
+  auto ObjectEntry = BinHolder.getObjectEntry(Path);
+  if (!ObjectEntry) {
+    auto Err = ObjectEntry.takeError();
+    WithColor::warning() << "Unable to open " << Path << " "
+                         << toString(std::move(Err)) << '\n';
+  } else {
+    auto Object = ObjectEntry->getObject(Ctxt.BinaryTriple);
+    if (!Object) {
+      auto Err = Object.takeError();
+      WithColor::warning() << "Unable to open " << Path << " "
+                           << toString(std::move(Err)) << '\n';
+    } else {
+      for (const auto &Sym : Object->symbols()) {
+        Expected<uint64_t> AddressOrErr = Sym.getValue();
+        if (!AddressOrErr) {
+          // TODO: Actually report errors helpfully.
+          consumeError(AddressOrErr.takeError());
+          continue;
+        }
+        Expected<StringRef> Name = Sym.getName();
+        Expected<uint32_t> FlagsOrErr = Sym.getFlags();
+        if (!Name || !FlagsOrErr ||
+            (*FlagsOrErr & (SymbolRef::SF_Absolute | SymbolRef::SF_Common))) {
+          // TODO: Actually report errors helpfully.
+          if (!FlagsOrErr)
+            consumeError(FlagsOrErr.takeError());
+          if (!Name)
+            consumeError(Name.takeError());
+          continue;
+        }
+        SymbolAddresses[*Name] = *AddressOrErr;
       }
-      SymbolAddresses[*Name] = Address;
     }
   }
 
@@ -277,5 +291,4 @@ MappingTraits<dsymutil::DebugMapObject>::YamlDMO::denormalize(IO &IO) {
 }
 
 } // end namespace yaml
-
 } // end namespace llvm

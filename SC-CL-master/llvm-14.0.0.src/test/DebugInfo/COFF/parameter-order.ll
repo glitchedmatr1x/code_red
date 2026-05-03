@@ -81,7 +81,7 @@ entry:
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -95,7 +95,7 @@ attributes #1 = { nounwind readnone }
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{i32 1, !"PIC Level", i32 2}
 !6 = !{!"clang version 3.9.0 (trunk 273683) (llvm/trunk 273691)"}
-!7 = distinct !DISubprogram(name: "f", linkageName: "\01?f@@YAHHHH@Z", scope: !1, file: !1, line: 1, type: !8, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!7 = distinct !DISubprogram(name: "f", linkageName: "\01?f@@YAHHHH@Z", scope: !1, file: !1, line: 1, type: !8, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !8 = !DISubroutineType(types: !9)
 !9 = !{!10, !10, !10, !10}
 !10 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)

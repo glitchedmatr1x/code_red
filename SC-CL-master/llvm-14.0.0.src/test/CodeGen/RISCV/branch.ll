@@ -2,65 +2,52 @@
 ; RUN: llc -mtriple=riscv32 -verify-machineinstrs < %s \
 ; RUN:   | FileCheck -check-prefix=RV32I %s
 
-define void @foo(i32 %a, i32 *%b, i1 %c) {
+define void @foo(i32 %a, i32 *%b, i1 %c) nounwind {
 ; RV32I-LABEL: foo:
 ; RV32I:       # %bb.0:
-; RV32I-NEXT:    addi sp, sp, -16
-; RV32I-NEXT:    sw ra, 12(sp)
-; RV32I-NEXT:    sw s0, 8(sp)
-; RV32I-NEXT:    addi s0, sp, 16
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    beq a3, a0, .LBB0_12
-; RV32I-NEXT:    j .LBB0_1
-; RV32I-NEXT:  .LBB0_1: # %test2
+; RV32I-NEXT:    beq a3, a0, .LBB0_14
+; RV32I-NEXT:  # %bb.1: # %test2
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    bne a3, a0, .LBB0_12
-; RV32I-NEXT:    j .LBB0_2
-; RV32I-NEXT:  .LBB0_2: # %test3
+; RV32I-NEXT:    bne a3, a0, .LBB0_14
+; RV32I-NEXT:  # %bb.2: # %test3
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    blt a3, a0, .LBB0_12
-; RV32I-NEXT:    j .LBB0_3
-; RV32I-NEXT:  .LBB0_3: # %test4
+; RV32I-NEXT:    blt a3, a0, .LBB0_14
+; RV32I-NEXT:  # %bb.3: # %test4
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    bge a3, a0, .LBB0_12
-; RV32I-NEXT:    j .LBB0_4
-; RV32I-NEXT:  .LBB0_4: # %test5
+; RV32I-NEXT:    bge a3, a0, .LBB0_14
+; RV32I-NEXT:  # %bb.4: # %test5
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    bltu a3, a0, .LBB0_12
-; RV32I-NEXT:    j .LBB0_5
-; RV32I-NEXT:  .LBB0_5: # %test6
+; RV32I-NEXT:    bltu a3, a0, .LBB0_14
+; RV32I-NEXT:  # %bb.5: # %test6
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    bgeu a3, a0, .LBB0_12
-; RV32I-NEXT:    j .LBB0_6
-; RV32I-NEXT:  .LBB0_6: # %test7
+; RV32I-NEXT:    bgeu a3, a0, .LBB0_14
+; RV32I-NEXT:  # %bb.6: # %test7
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    blt a0, a3, .LBB0_12
-; RV32I-NEXT:    j .LBB0_7
-; RV32I-NEXT:  .LBB0_7: # %test8
+; RV32I-NEXT:    blt a0, a3, .LBB0_14
+; RV32I-NEXT:  # %bb.7: # %test8
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    bge a0, a3, .LBB0_12
-; RV32I-NEXT:    j .LBB0_8
-; RV32I-NEXT:  .LBB0_8: # %test9
+; RV32I-NEXT:    bge a0, a3, .LBB0_14
+; RV32I-NEXT:  # %bb.8: # %test9
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    bltu a0, a3, .LBB0_12
-; RV32I-NEXT:    j .LBB0_9
-; RV32I-NEXT:  .LBB0_9: # %test10
+; RV32I-NEXT:    bltu a0, a3, .LBB0_14
+; RV32I-NEXT:  # %bb.9: # %test10
 ; RV32I-NEXT:    lw a3, 0(a1)
-; RV32I-NEXT:    bgeu a0, a3, .LBB0_12
-; RV32I-NEXT:    j .LBB0_10
-; RV32I-NEXT:  .LBB0_10: # %test11
+; RV32I-NEXT:    bgeu a0, a3, .LBB0_14
+; RV32I-NEXT:  # %bb.10: # %test11
 ; RV32I-NEXT:    lw a0, 0(a1)
 ; RV32I-NEXT:    andi a0, a2, 1
-; RV32I-NEXT:    bnez a0, .LBB0_12
-; RV32I-NEXT:    j .LBB0_11
-; RV32I-NEXT:  .LBB0_11: # %test12
+; RV32I-NEXT:    bnez a0, .LBB0_14
+; RV32I-NEXT:  # %bb.11: # %test12
 ; RV32I-NEXT:    lw a0, 0(a1)
-; RV32I-NEXT:  .LBB0_12: # %end
-; RV32I-NEXT:    lw s0, 8(sp)
-; RV32I-NEXT:    lw ra, 12(sp)
-; RV32I-NEXT:    addi sp, sp, 16
+; RV32I-NEXT:    bgez a0, .LBB0_14
+; RV32I-NEXT:  # %bb.12: # %test13
+; RV32I-NEXT:    lw a0, 0(a1)
+; RV32I-NEXT:    blez a0, .LBB0_14
+; RV32I-NEXT:  # %bb.13: # %test14
+; RV32I-NEXT:    lw a0, 0(a1)
+; RV32I-NEXT:  .LBB0_14: # %end
 ; RV32I-NEXT:    ret
-
   %val1 = load volatile i32, i32* %b
   %tst1 = icmp eq i32 %val1, %a
   br i1 %tst1, label %end, label %test2
@@ -119,8 +106,22 @@ test11:
   %val11 = load volatile i32, i32* %b
   br i1 %c, label %end, label %test12
 
+; Check that we use bgez for X > -1 which is the canonical form.
+
 test12:
   %val12 = load volatile i32, i32* %b
+  %tst12 = icmp sgt i32 %val12, -1
+  br i1 %tst12, label %end, label %test13
+
+; Check that we use blez (X <= 0) for (X < 1)
+
+test13:
+  %val13 = load volatile i32, i32* %b
+  %tst13 = icmp slt i32 %val13, 1
+  br i1 %tst13, label %end, label %test14
+
+test14:
+  %val14 = load volatile i32, i32* %b
   br label %end
 
 end:

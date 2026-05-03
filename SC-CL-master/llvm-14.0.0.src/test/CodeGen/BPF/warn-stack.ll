@@ -34,10 +34,10 @@ define void @warn() local_unnamed_addr #0 !dbg !20 {
   ret void, !dbg !29
 }
 
-attributes #0 = { nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { argmemonly nounwind }
 attributes #2 = { nounwind readnone }
-attributes #3 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #3 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #4 = { nounwind }
 
 !llvm.dbg.cu = !{!0}
@@ -50,7 +50,7 @@ attributes #4 = { nounwind }
 !3 = !{i32 2, !"Dwarf Version", i32 4}
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{!"clang version 5.0.0 (trunk 292141) (llvm/trunk 292156)"}
-!6 = distinct !DISubprogram(name: "nowarn", scope: !1, file: !1, line: 2, type: !7, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !9)
+!6 = distinct !DISubprogram(name: "nowarn", scope: !1, file: !1, line: 2, type: !7, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !9)
 !7 = !DISubroutineType(types: !8)
 !8 = !{null}
 !9 = !{!10}
@@ -64,7 +64,7 @@ attributes #4 = { nounwind }
 !17 = !DILocation(line: 4, column: 7, scope: !6)
 !18 = !DILocation(line: 5, column: 2, scope: !6)
 !19 = !DILocation(line: 6, column: 1, scope: !6)
-!20 = distinct !DISubprogram(name: "warn", scope: !1, file: !1, line: 7, type: !7, isLocal: false, isDefinition: true, scopeLine: 8, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !21)
+!20 = distinct !DISubprogram(name: "warn", scope: !1, file: !1, line: 7, type: !7, isLocal: false, isDefinition: true, scopeLine: 8, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !21)
 !21 = !{!22}
 !22 = !DILocalVariable(name: "buf", scope: !20, file: !1, line: 9, type: !23)
 !23 = !DICompositeType(tag: DW_TAG_array_type, baseType: !12, size: 4096, elements: !24)

@@ -50,7 +50,7 @@ for.body:                                         ; preds = %for.body.preheader,
   br i1 %exitcond, label %for.cond.cleanup, label %for.body, !dbg !9, !llvm.loop !18
 }
 
-attributes #0 = { norecurse nounwind ssp uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="core2" "target-features"="+cx16,+fxsr,+mmx,+sse,+sse2,+sse3,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { norecurse nounwind ssp uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="core2" "target-features"="+cx16,+fxsr,+mmx,+sse,+sse2,+sse3,+ssse3,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!3, !4}
@@ -62,7 +62,7 @@ attributes #0 = { norecurse nounwind ssp uwtable "correctly-rounded-divide-sqrt-
 !3 = !{i32 2, !"Debug Info Version", i32 3}
 !4 = !{i32 1, !"PIC Level", i32 2}
 !5 = !{!"clang version 4.0.0 (trunk 281293) (llvm/trunk 281290)"}
-!6 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 4, type: !7, isLocal: false, isDefinition: true, scopeLine: 4, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !2)
+!6 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 4, type: !7, isLocal: false, isDefinition: true, scopeLine: 4, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !2)
 !7 = !DISubroutineType(types: !2)
 !8 = !DILocation(line: 5, column: 21, scope: !6)
 !9 = !DILocation(line: 5, column: 3, scope: !6)

@@ -1,9 +1,8 @@
 //===- ArgList.h - Argument List Management ---------------------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -84,9 +83,6 @@ public:
       this->Ids[I] = Ids[I];
     SkipToNextArg();
   }
-
-  // FIXME: This conversion function makes no sense.
-  operator const Arg*() { return *Current; }
 
   reference operator*() const { return *Current; }
   pointer operator->() const { return Current; }
@@ -249,6 +245,12 @@ public:
     return getLastArg(Ids...) != nullptr;
   }
 
+  /// Return true if the arg list contains multiple arguments matching \p Id.
+  bool hasMultipleArgs(OptSpecifier Id) const {
+    auto Args = filtered(Id);
+    return (Args.begin() != Args.end()) && (++Args.begin()) != Args.end();
+  }
+
   /// Return the last argument matching \p Id, or null.
   template<typename ...OptSpecifiers>
   Arg *getLastArg(OptSpecifiers ...Ids) const {
@@ -305,10 +307,12 @@ public:
   bool hasFlag(OptSpecifier Pos, OptSpecifier PosAlias, OptSpecifier Neg,
                bool Default = true) const;
 
-  /// AddLastArg - Render only the last argument match \p Id0, if present.
-  void AddLastArg(ArgStringList &Output, OptSpecifier Id0) const;
-  void AddLastArg(ArgStringList &Output, OptSpecifier Id0,
-                  OptSpecifier Id1) const;
+  /// Render only the last argument match \p Id0, if present.
+  template<typename ...OptSpecifiers>
+  void AddLastArg(ArgStringList &Output, OptSpecifiers ...Ids) const {
+    if (Arg *A = getLastArg(Ids...)) // Calls claim() on all Ids's Args.
+      A->render(*this, Output);
+  }
 
   /// AddAllArgsExcept - Render all arguments matching any of the given ids
   /// and not matching any of the excluded ids.
@@ -343,7 +347,6 @@ public:
   /// ClaimAllArgs - Claim all arguments.
   ///
   void ClaimAllArgs() const;
-
   /// @}
   /// @name Arg Synthesis
   /// @{
@@ -356,7 +359,7 @@ public:
     return MakeArgStringRef(Str.toStringRef(Buf));
   }
 
-  /// \brief Create an arg string for (\p LHS + \p RHS), reusing the
+  /// Create an arg string for (\p LHS + \p RHS), reusing the
   /// string at \p Index if possible.
   const char *GetOrMakeJoinedArgString(unsigned Index, StringRef LHS,
                                         StringRef RHS) const;
@@ -390,6 +393,8 @@ private:
   void releaseMemory();
 
 public:
+  InputArgList() : NumInputArgStrings(0) {}
+
   InputArgList(const char* const *ArgBegin, const char* const *ArgEnd);
 
   InputArgList(InputArgList &&RHS)
@@ -410,6 +415,10 @@ public:
 
   const char *getArgString(unsigned Index) const override {
     return ArgStrings[Index];
+  }
+
+  void replaceArgString(unsigned Index, const Twine &S) {
+    ArgStrings[Index] = MakeArgString(S);
   }
 
   unsigned getNumInputArgStrings() const override {

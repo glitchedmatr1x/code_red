@@ -1,9 +1,8 @@
 //===- MCJITTestBase.h - Common base class for MCJIT Unit tests  ----------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -20,6 +19,8 @@
 #include "llvm/ADT/Triple.h"
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/InitializePasses.h"
+#include "llvm/MC/TargetRegistry.h"
+#include "llvm/PassRegistry.h"
 #include "llvm/Support/Host.h"
 #include "llvm/Support/TargetSelect.h"
 
@@ -28,7 +29,7 @@
 // inherits from MCJITTestBase. See MCJITTest.cpp for examples.
 #define SKIP_UNSUPPORTED_PLATFORM \
   do \
-    if (!ArchSupportsMCJIT() || !OSSupportsMCJIT()) \
+    if (!ArchSupportsMCJIT() || !OSSupportsMCJIT() || !HostCanBeTargeted()) \
       return; \
   while(0)
 
@@ -46,11 +47,16 @@ protected:
     // fail to initialize the AssumptionCacheTracker.
     initializeAssumptionCacheTrackerPass(*PassRegistry::getPassRegistry());
 
-#ifdef LLVM_ON_WIN32
+#ifdef _WIN32
     // On Windows, generate ELF objects by specifying "-elf" in triple
     HostTriple += "-elf";
-#endif // LLVM_ON_WIN32
+#endif // _WIN32
     HostTriple = Triple::normalize(HostTriple);
+  }
+
+  bool HostCanBeTargeted() {
+    std::string Error;
+    return TargetRegistry::lookupTarget(HostTriple, Error) != nullptr;
   }
 
   /// Returns true if the host architecture is known to support MCJIT

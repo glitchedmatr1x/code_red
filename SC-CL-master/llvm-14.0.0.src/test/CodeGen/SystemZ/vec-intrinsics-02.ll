@@ -123,6 +123,15 @@ define <16 x i8> @test_vlrl4(i8 *%base, i64 %index) {
   ret <16 x i8> %res
 }
 
+; VLRL with length >= 15 should become VL.
+define <16 x i8> @test_vlrl5(i8 *%ptr) {
+; CHECK-LABEL: test_vlrl5:
+; CHECK: vl %v24, 0({{%r[1-5]}})
+; CHECK: br %r14
+  %res = call <16 x i8> @llvm.s390.vlrl(i32 15, i8 *%ptr)
+  ret <16 x i8> %res
+}
+
 ; VSTRLR with the lowest in-range displacement.
 define void @test_vstrlr1(<16 x i8> %vec, i8 *%ptr, i32 %length) {
 ; CHECK-LABEL: test_vstrlr1:
@@ -201,6 +210,15 @@ define void @test_vstrl4(<16 x i8> %vec, i8 *%base, i64 %index) {
   ret void
 }
 
+; VSTRL with length >= 15 should become VST.
+define void @test_vstrl5(<16 x i8> %vec, i8 *%ptr) {
+; CHECK-LABEL: test_vstrl5:
+; CHECK: vst %v24, 0({{%r[1-5]}})
+; CHECK: br %r14
+  call void @llvm.s390.vstrl(<16 x i8> %vec, i32 15, i8 *%ptr)
+  ret void
+}
+
 ; VFCESBS with no processing of the result.
 define i32 @test_vfcesbs(<4 x float> %a, <4 x float> %b) {
 ; CHECK-LABEL: test_vfcesbs:
@@ -218,9 +236,8 @@ define i32 @test_vfcesbs(<4 x float> %a, <4 x float> %b) {
 define i32 @test_vfcesbs_any_bool(<4 x float> %a, <4 x float> %b) {
 ; CHECK-LABEL: test_vfcesbs_any_bool:
 ; CHECK: vfcesbs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm %r2
-; CHECK: afi %r2, -536870912
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochile %r2, 1
 ; CHECK: br %r14
   %call = call {<4 x i32>, i32} @llvm.s390.vfcesbs(<4 x float> %a,
                                                    <4 x float> %b)
@@ -271,8 +288,8 @@ define i32 @test_vfchsbs(<4 x float> %a, <4 x float> %b) {
 define i32 @test_vfchsbs_notall_bool(<4 x float> %a, <4 x float> %b) {
 ; CHECK-LABEL: test_vfchsbs_notall_bool:
 ; CHECK: vfchsbs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 36
+; CHECK: lhi %r2, 0
+; CHECK: lochinhe %r2, 1
 ; CHECK: br %r14
   %call = call {<4 x i32>, i32} @llvm.s390.vfchsbs(<4 x float> %a,
                                                    <4 x float> %b)
@@ -323,8 +340,8 @@ define i32 @test_vfchesbs(<4 x float> %a, <4 x float> %b) {
 define i32 @test_vfchesbs_none_bool(<4 x float> %a, <4 x float> %b) {
 ; CHECK-LABEL: test_vfchesbs_none_bool:
 ; CHECK: vfchesbs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 35
+; CHECK: lhi %r2, 0
+; CHECK: lochio %r2, 1
 ; CHECK: br %r14
   %call = call {<4 x i32>, i32} @llvm.s390.vfchesbs(<4 x float> %a,
 						    <4 x float> %b)
@@ -375,8 +392,8 @@ define i32 @test_vftcisb(<4 x float> %a) {
 define i32 @test_vftcisb_all_bool(<4 x float> %a) {
 ; CHECK-LABEL: test_vftcisb_all_bool:
 ; CHECK: vftcisb {{%v[0-9]+}}, %v24, 4094
-; CHECK: afi %r2, -268435456
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochie %r2, 1
 ; CHECK: br %r14
   %call = call {<4 x i32>, i32} @llvm.s390.vftcisb(<4 x float> %a, i32 4094)
   %res = extractvalue {<4 x i32>, i32} %call, 1

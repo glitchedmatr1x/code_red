@@ -322,6 +322,15 @@ define <16 x i8> @test_vll4(i8 *%base, i64 %index, i32 %length) {
   ret <16 x i8> %res
 }
 
+; VLL with length >= 15 should become VL.
+define <16 x i8> @test_vll5(i8 *%ptr) {
+; CHECK-LABEL: test_vll5:
+; CHECK: vl %v24, 0({{%r[1-5]}})
+; CHECK: br %r14
+  %res = call <16 x i8> @llvm.s390.vll(i32 15, i8 *%ptr)
+  ret <16 x i8> %res
+}
+
 ; VPDI taking element 0 from each half.
 define <2 x i64> @test_vpdi1(<2 x i64> %a, <2 x i64> %b) {
 ; CHECK-LABEL: test_vpdi1:
@@ -334,9 +343,9 @@ define <2 x i64> @test_vpdi1(<2 x i64> %a, <2 x i64> %b) {
 ; VPDI taking element 1 from each half.
 define <2 x i64> @test_vpdi2(<2 x i64> %a, <2 x i64> %b) {
 ; CHECK-LABEL: test_vpdi2:
-; CHECK: vpdi %v24, %v24, %v26, 10
+; CHECK: vpdi %v24, %v24, %v26, 5
 ; CHECK: br %r14
-  %res = call <2 x i64> @llvm.s390.vpdi(<2 x i64> %a, <2 x i64> %b, i32 10)
+  %res = call <2 x i64> @llvm.s390.vpdi(<2 x i64> %a, <2 x i64> %b, i32 5)
   ret <2 x i64> %res
 }
 
@@ -660,6 +669,15 @@ define void @test_vstl4(<16 x i8> %vec, i8 *%base, i64 %index, i32 %length) {
 ; CHECK: br %r14
   %ptr = getelementptr i8, i8 *%base, i64 %index
   call void @llvm.s390.vstl(<16 x i8> %vec, i32 %length, i8 *%ptr)
+  ret void
+}
+
+; VSTL with length >= 15 should become VST.
+define void @test_vstl5(<16 x i8> %vec, i8 *%ptr) {
+; CHECK-LABEL: test_vstl5:
+; CHECK: vst %v24, 0({{%r[1-5]}})
+; CHECK: br %r14
+  call void @llvm.s390.vstl(<16 x i8> %vec, i32 15, i8 *%ptr)
   ret void
 }
 
@@ -1736,9 +1754,8 @@ define i32 @test_vceqbs(<16 x i8> %a, <16 x i8> %b) {
 define i32 @test_vceqbs_any_bool(<16 x i8> %a, <16 x i8> %b) {
 ; CHECK-LABEL: test_vceqbs_any_bool:
 ; CHECK: vceqbs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm %r2
-; CHECK: afi %r2, -536870912
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochile %r2, 1
 ; CHECK: br %r14
   %call = call {<16 x i8>, i32} @llvm.s390.vceqbs(<16 x i8> %a, <16 x i8> %b)
   %res = extractvalue {<16 x i8>, i32} %call, 1
@@ -1785,8 +1802,8 @@ define i32 @test_vceqhs(<8 x i16> %a, <8 x i16> %b) {
 define i32 @test_vceqhs_notall_bool(<8 x i16> %a, <8 x i16> %b) {
 ; CHECK-LABEL: test_vceqhs_notall_bool:
 ; CHECK: vceqhs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 36
+; CHECK: lhi %r2, 0
+; CHECK: lochinhe %r2, 1
 ; CHECK: br %r14
   %call = call {<8 x i16>, i32} @llvm.s390.vceqhs(<8 x i16> %a, <8 x i16> %b)
   %res = extractvalue {<8 x i16>, i32} %call, 1
@@ -1834,8 +1851,8 @@ define i32 @test_vceqfs(<4 x i32> %a, <4 x i32> %b) {
 define i32 @test_vceqfs_none_bool(<4 x i32> %a, <4 x i32> %b) {
 ; CHECK-LABEL: test_vceqfs_none_bool:
 ; CHECK: vceqfs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 35
+; CHECK: lhi %r2, 0
+; CHECK: lochio %r2, 1
 ; CHECK: br %r14
   %call = call {<4 x i32>, i32} @llvm.s390.vceqfs(<4 x i32> %a, <4 x i32> %b)
   %res = extractvalue {<4 x i32>, i32} %call, 1
@@ -1883,9 +1900,8 @@ define i32 @test_vceqgs(<2 x i64> %a, <2 x i64> %b) {
 define i32 @test_vceqgs_all_bool(<2 x i64> %a, <2 x i64> %b) {
 ; CHECK-LABEL: test_vceqgs_all_bool:
 ; CHECK: vceqgs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm %r2
-; CHECK: afi %r2, -268435456
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochie %r2, 1
 ; CHECK: br %r14
   %call = call {<2 x i64>, i32} @llvm.s390.vceqgs(<2 x i64> %a, <2 x i64> %b)
   %res = extractvalue {<2 x i64>, i32} %call, 1
@@ -1932,9 +1948,8 @@ define i32 @test_vchbs(<16 x i8> %a, <16 x i8> %b) {
 define i32 @test_vchbs_any_bool(<16 x i8> %a, <16 x i8> %b) {
 ; CHECK-LABEL: test_vchbs_any_bool:
 ; CHECK: vchbs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm %r2
-; CHECK: afi %r2, -536870912
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochile %r2, 1
 ; CHECK: br %r14
   %call = call {<16 x i8>, i32} @llvm.s390.vchbs(<16 x i8> %a, <16 x i8> %b)
   %res = extractvalue {<16 x i8>, i32} %call, 1
@@ -1981,8 +1996,8 @@ define i32 @test_vchhs(<8 x i16> %a, <8 x i16> %b) {
 define i32 @test_vchhs_notall_bool(<8 x i16> %a, <8 x i16> %b) {
 ; CHECK-LABEL: test_vchhs_notall_bool:
 ; CHECK: vchhs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 36
+; CHECK: lhi %r2, 0
+; CHECK: lochinhe %r2, 1
 ; CHECK: br %r14
   %call = call {<8 x i16>, i32} @llvm.s390.vchhs(<8 x i16> %a, <8 x i16> %b)
   %res = extractvalue {<8 x i16>, i32} %call, 1
@@ -2030,8 +2045,8 @@ define i32 @test_vchfs(<4 x i32> %a, <4 x i32> %b) {
 define i32 @test_vchfs_none_bool(<4 x i32> %a, <4 x i32> %b) {
 ; CHECK-LABEL: test_vchfs_none_bool:
 ; CHECK: vchfs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 35
+; CHECK: lhi %r2, 0
+; CHECK: lochio %r2, 1
 ; CHECK: br %r14
   %call = call {<4 x i32>, i32} @llvm.s390.vchfs(<4 x i32> %a, <4 x i32> %b)
   %res = extractvalue {<4 x i32>, i32} %call, 1
@@ -2078,9 +2093,8 @@ define i32 @test_vchgs(<2 x i64> %a, <2 x i64> %b) {
 define i32 @test_vchgs_all_bool(<2 x i64> %a, <2 x i64> %b) {
 ; CHECK-LABEL: test_vchgs_all_bool:
 ; CHECK: vchgs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm %r2
-; CHECK: afi %r2, -268435456
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochie %r2, 1
 ; CHECK: br %r14
   %call = call {<2 x i64>, i32} @llvm.s390.vchgs(<2 x i64> %a, <2 x i64> %b)
   %res = extractvalue {<2 x i64>, i32} %call, 1
@@ -2127,9 +2141,8 @@ define i32 @test_vchlbs(<16 x i8> %a, <16 x i8> %b) {
 define i32 @test_vchlbs_any_bool(<16 x i8> %a, <16 x i8> %b) {
 ; CHECK-LABEL: test_vchlbs_any_bool:
 ; CHECK: vchlbs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm %r2
-; CHECK: afi %r2, -536870912
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochile %r2, 1
 ; CHECK: br %r14
   %call = call {<16 x i8>, i32} @llvm.s390.vchlbs(<16 x i8> %a, <16 x i8> %b)
   %res = extractvalue {<16 x i8>, i32} %call, 1
@@ -2176,8 +2189,8 @@ define i32 @test_vchlhs(<8 x i16> %a, <8 x i16> %b) {
 define i32 @test_vchlhs_notall_bool(<8 x i16> %a, <8 x i16> %b) {
 ; CHECK-LABEL: test_vchlhs_notall_bool:
 ; CHECK: vchlhs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 36
+; CHECK: lhi %r2, 0
+; CHECK: lochinhe %r2, 1
 ; CHECK: br %r14
   %call = call {<8 x i16>, i32} @llvm.s390.vchlhs(<8 x i16> %a, <8 x i16> %b)
   %res = extractvalue {<8 x i16>, i32} %call, 1
@@ -2225,8 +2238,8 @@ define i32 @test_vchlfs(<4 x i32> %a, <4 x i32> %b) {
 define i32 @test_vchlfs_none_bool(<4 x i32> %a, <4 x i32> %b) {
 ; CHECK-LABEL: test_vchlfs_none_bool:
 ; CHECK: vchlfs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 35
+; CHECK: lhi %r2, 0
+; CHECK: lochio %r2, 1
 ; CHECK: br %r14
   %call = call {<4 x i32>, i32} @llvm.s390.vchlfs(<4 x i32> %a, <4 x i32> %b)
   %res = extractvalue {<4 x i32>, i32} %call, 1
@@ -2274,9 +2287,8 @@ define i32 @test_vchlgs(<2 x i64> %a, <2 x i64> %b) {
 define i32 @test_vchlgs_all_bool(<2 x i64> %a, <2 x i64> %b) {
 ; CHECK-LABEL: test_vchlgs_all_bool:
 ; CHECK: vchlgs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm %r2
-; CHECK: afi %r2, -268435456
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochie %r2, 1
 ; CHECK: br %r14
   %call = call {<2 x i64>, i32} @llvm.s390.vchlgs(<2 x i64> %a, <2 x i64> %b)
   %res = extractvalue {<2 x i64>, i32} %call, 1
@@ -3148,9 +3160,8 @@ define i32 @test_vfcedbs(<2 x double> %a, <2 x double> %b) {
 define i32 @test_vfcedbs_any_bool(<2 x double> %a, <2 x double> %b) {
 ; CHECK-LABEL: test_vfcedbs_any_bool:
 ; CHECK: vfcedbs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm %r2
-; CHECK: afi %r2, -536870912
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochile %r2, 1
 ; CHECK: br %r14
   %call = call {<2 x i64>, i32} @llvm.s390.vfcedbs(<2 x double> %a,
                                                    <2 x double> %b)
@@ -3201,8 +3212,8 @@ define i32 @test_vfchdbs(<2 x double> %a, <2 x double> %b) {
 define i32 @test_vfchdbs_notall_bool(<2 x double> %a, <2 x double> %b) {
 ; CHECK-LABEL: test_vfchdbs_notall_bool:
 ; CHECK: vfchdbs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 36
+; CHECK: lhi %r2, 0
+; CHECK: lochinhe %r2, 1
 ; CHECK: br %r14
   %call = call {<2 x i64>, i32} @llvm.s390.vfchdbs(<2 x double> %a,
                                                    <2 x double> %b)
@@ -3253,8 +3264,8 @@ define i32 @test_vfchedbs(<2 x double> %a, <2 x double> %b) {
 define i32 @test_vfchedbs_none_bool(<2 x double> %a, <2 x double> %b) {
 ; CHECK-LABEL: test_vfchedbs_none_bool:
 ; CHECK: vfchedbs {{%v[0-9]+}}, %v24, %v26
-; CHECK: ipm [[REG:%r[0-5]]]
-; CHECK: risblg %r2, [[REG]], 31, 159, 35
+; CHECK: lhi %r2, 0
+; CHECK: lochio %r2, 1
 ; CHECK: br %r14
   %call = call {<2 x i64>, i32} @llvm.s390.vfchedbs(<2 x double> %a,
 						    <2 x double> %b)
@@ -3305,8 +3316,8 @@ define i32 @test_vftcidb(<2 x double> %a) {
 define i32 @test_vftcidb_all_bool(<2 x double> %a) {
 ; CHECK-LABEL: test_vftcidb_all_bool:
 ; CHECK: vftcidb {{%v[0-9]+}}, %v24, 4094
-; CHECK: afi %r2, -268435456
-; CHECK: srl %r2, 31
+; CHECK: lhi %r2, 0
+; CHECK: lochie %r2, 1
 ; CHECK: br %r14
   %call = call {<2 x i64>, i32} @llvm.s390.vftcidb(<2 x double> %a, i32 4094)
   %res = extractvalue {<2 x i64>, i32} %call, 1

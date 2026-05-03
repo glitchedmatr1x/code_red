@@ -1,4 +1,3 @@
-; REQUIRES: object-emission
 
 ; RUN: llc -mtriple=x86_64-apple-macosx10.10.0 -o %t %s
 
@@ -61,7 +60,7 @@ declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind ssp uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind ssp uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -75,7 +74,7 @@ attributes #1 = { nounwind readnone }
 !4 = !DIDerivedType(tag: DW_TAG_typedef, name: "int16_t", line: 30, file: !5, baseType: !6)
 !5 = !DIFile(filename: "/usr/include/sys/_types/_int16_t.h", directory: "/tmp")
 !6 = !DIBasicType(tag: DW_TAG_base_type, name: "short", size: 16, align: 16, encoding: DW_ATE_signed)
-!8 = distinct !DISubprogram(name: "foo", line: 3, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 3, file: !1, scope: !9, type: !10, variables: !2)
+!8 = distinct !DISubprogram(name: "foo", line: 3, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 3, file: !1, scope: !9, type: !10, retainedNodes: !2)
 !9 = !DIFile(filename: "ghost-sdnode-dbgvalues.c", directory: "/tmp")
 !10 = !DISubroutineType(types: !11)
 !11 = !{!12, !12}

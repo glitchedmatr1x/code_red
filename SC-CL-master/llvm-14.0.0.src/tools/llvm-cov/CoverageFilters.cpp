@@ -1,9 +1,8 @@
 //===- CoverageFilters.cpp - Function coverage mapping filters ------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,6 +13,7 @@
 #include "CoverageFilters.h"
 #include "CoverageSummaryInfo.h"
 #include "llvm/Support/Regex.h"
+#include "llvm/Support/SpecialCaseList.h"
 
 using namespace llvm;
 
@@ -21,7 +21,7 @@ bool NameCoverageFilter::matches(
     const coverage::CoverageMapping &,
     const coverage::FunctionRecord &Function) const {
   StringRef FuncName = Function.Name;
-  return FuncName.find(Name) != StringRef::npos;
+  return FuncName.contains(Name);
 }
 
 bool NameRegexCoverageFilter::matches(
@@ -30,6 +30,17 @@ bool NameRegexCoverageFilter::matches(
   return llvm::Regex(Regex).match(Function.Name);
 }
 
+bool NameRegexCoverageFilter::matchesFilename(StringRef Filename) const {
+  return llvm::Regex(Regex).match(Filename);
+}
+
+bool NameAllowlistCoverageFilter::matches(
+    const coverage::CoverageMapping &,
+    const coverage::FunctionRecord &Function) const {
+  return Allowlist.inSection("llvmcov", "allowlist_fun", Function.Name);
+}
+
+// TODO: remove this when -name-whitelist option is removed.
 bool NameWhitelistCoverageFilter::matches(
     const coverage::CoverageMapping &,
     const coverage::FunctionRecord &Function) const {
@@ -58,6 +69,14 @@ bool CoverageFilters::matches(const coverage::CoverageMapping &CM,
                               const coverage::FunctionRecord &Function) const {
   for (const auto &Filter : Filters) {
     if (Filter->matches(CM, Function))
+      return true;
+  }
+  return false;
+}
+
+bool CoverageFilters::matchesFilename(StringRef Filename) const {
+  for (const auto &Filter : Filters) {
+    if (Filter->matchesFilename(Filename))
       return true;
   }
   return false;

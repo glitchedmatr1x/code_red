@@ -1,5 +1,7 @@
 ; RUN: llc -emulated-tls -mtriple=arm-linux-android \
 ; RUN:     -relocation-model=pic < %s | FileCheck -check-prefix=ARM32 %s
+; RUN: llc -mtriple=arm-linux-android \
+; RUN:     -relocation-model=pic < %s | FileCheck -check-prefix=ARM32 %s
 
 ; Copied from X86/emutls.ll
 
@@ -257,7 +259,7 @@ entry:
 ; ARM32-NEXT: .long 0
 ; ARM32-NEXT: .long __emutls_t.s1
 
-; ARM32 .section .rodata,
+; ARM32: .section .rodata,
 ; ARM32-LABEL: __emutls_t.s1:
 ; ARM32-NEXT: .short 15
 

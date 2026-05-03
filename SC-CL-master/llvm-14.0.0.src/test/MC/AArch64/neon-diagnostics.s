@@ -279,10 +279,15 @@
 //----------------------------------------------------------------------
         // invalid vector type (2s, 4s, 2d)
          fmov v0.4h, #1.0
+         // invalid immediate (negative hexadecimal encoding)
+         fmov v0.4s, #-0x0
 
 // CHECK:ERROR: error: invalid operand for instruction
 // CHECK:ERROR:         fmov v0.4h, #1.0
 // CHECK:ERROR:              ^
+// CHECK-ERROR: error: encoded floating point value out of range
+// CHECK-ERROR:         fmov v0.4s, #-0x0
+// CHECK-ERROR:                     ^
 
 //----------------------------------------------------------------------
 // Vector Move -  register
@@ -3878,7 +3883,7 @@
 // CHECK-ERROR: error: invalid number of vectors
 // CHECK-ERROR:        ld1 {v0.8h, v1.8h, v2.8h, v3.8h, v4.8h}, [x0]
 // CHECK-ERROR:                                         ^
-// CHECK-ERROR: error: unexpected token in argument list
+// CHECK-ERROR: error: invalid operand for instruction
 // CHECK-ERROR:        ld1 v0.8b, v1.8b}, [x0]
 // CHECK-ERROR:            ^
 // CHECK-ERROR: error: invalid number of vectors
@@ -3986,7 +3991,7 @@
 // CHECK-ERROR: error: invalid number of vectors
 // CHECK-ERROR:        st1 {v0.8h, v1.8h, v2.8h, v3.8h, v4.8h}, [x0]
 // CHECK-ERROR:                                         ^
-// CHECK-ERROR: error: unexpected token in argument list
+// CHECK-ERROR: error: invalid operand for instruction
 // CHECK-ERROR:        st1 v0.8b, v1.8b}, [x0]
 // CHECK-ERROR:            ^
 // CHECK-ERROR: error: invalid number of vectors

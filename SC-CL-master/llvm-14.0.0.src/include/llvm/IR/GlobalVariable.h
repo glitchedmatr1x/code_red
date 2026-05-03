@@ -1,9 +1,8 @@
 //===-- llvm/GlobalVariable.h - GlobalVariable class ------------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -20,7 +19,6 @@
 #ifndef LLVM_IR_GLOBALVARIABLE_H
 #define LLVM_IR_GLOBALVARIABLE_H
 
-#include "llvm/ADT/PointerUnion.h"
 #include "llvm/ADT/Twine.h"
 #include "llvm/ADT/ilist_node.h"
 #include "llvm/IR/Attributes.h"
@@ -36,7 +34,6 @@ class Constant;
 class Module;
 
 template <typename ValueSubClass> class SymbolTableListTraits;
-class DIGlobalVariable;
 class DIGlobalVariableExpression;
 
 class GlobalVariable : public GlobalObject, public ilist_node<GlobalVariable> {
@@ -58,24 +55,32 @@ public:
                  bool isExternallyInitialized = false);
   /// GlobalVariable ctor - This creates a global and inserts it before the
   /// specified other global.
-  GlobalVariable(Module &M, Type *Ty, bool isConstant,
-                 LinkageTypes Linkage, Constant *Initializer,
-                 const Twine &Name = "", GlobalVariable *InsertBefore = nullptr,
-                 ThreadLocalMode = NotThreadLocal, unsigned AddressSpace = 0,
+  GlobalVariable(Module &M, Type *Ty, bool isConstant, LinkageTypes Linkage,
+                 Constant *Initializer, const Twine &Name = "",
+                 GlobalVariable *InsertBefore = nullptr,
+                 ThreadLocalMode = NotThreadLocal,
+                 Optional<unsigned> AddressSpace = None,
                  bool isExternallyInitialized = false);
   GlobalVariable(const GlobalVariable &) = delete;
   GlobalVariable &operator=(const GlobalVariable &) = delete;
 
   ~GlobalVariable() {
     dropAllReferences();
-
-    // FIXME: needed by operator delete
-    setGlobalVariableNumOperands(1);
   }
 
   // allocate space for exactly one operand
   void *operator new(size_t s) {
     return User::operator new(s, 1);
+  }
+
+  // delete space for exactly one operand as created in the corresponding new operator
+  void operator delete(void *ptr){
+    assert(ptr != nullptr && "must not be nullptr");
+    User *Obj = static_cast<User *>(ptr);
+    // Number of operands can be set to 0 after construction and initialization. Make sure
+    // that number of operands is reset to 1, as this is needed in User::operator delete
+    Obj->setGlobalVariableNumOperands(1);
+    User::operator delete(Obj);
   }
 
   /// Provide fast operand accessors
@@ -237,6 +242,7 @@ public:
   bool hasImplicitSection() const {
     return getAttributes().hasAttribute("bss-section") ||
            getAttributes().hasAttribute("data-section") ||
+           getAttributes().hasAttribute("relro-section") ||
            getAttributes().hasAttribute("rodata-section");
   }
 

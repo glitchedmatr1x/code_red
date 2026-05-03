@@ -1,8 +1,8 @@
-; RUN: llc -print-machineinstrs=expand-isel-pseudos %s -o /dev/null 2>&1 | FileCheck %s
+; RUN: llc -print-after=finalize-isel %s -o /dev/null 2>&1 | FileCheck %s
 
 ; Check if the edge weight to the catchpad is calculated correctly.
 
-; CHECK: Successors according to CFG: %bb.2(0x7ffff100 / 0x80000000 = 100.00%) %bb.1(0x00000800 / 0x80000000 = 0.00%) %bb.3(0x00000400 / 0x80000000 = 0.00%) %bb.4(0x00000200 / 0x80000000 = 0.00%) %bb.5(0x00000100 / 0x80000000 = 0.00%)
+; CHECK: successors: %bb.2(0x7ffff100), %bb.1(0x00000800), %bb.3(0x00000400), %bb.4(0x00000200), %bb.5(0x00000100)
 
 target datalayout = "e-m:w-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64--windows-msvc18.0.0"
@@ -75,8 +75,8 @@ declare void @"\01??1HasDtor@@QEAA@XZ"(%struct.HasDtor*) #3
 ; Function Attrs: nounwind argmemonly
 declare void @llvm.lifetime.end.p0i8(i64, i8* nocapture) #1
 
-attributes #0 = { uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind argmemonly }
-attributes #2 = { "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #3 = { nounwind "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #3 = { nounwind "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #4 = { nounwind }

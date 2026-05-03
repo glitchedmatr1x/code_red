@@ -1,0 +1,59 @@
+# Code RED Script Compile Validation Report
+
+Generated UTC: `2026-05-03T14:29:17Z`
+Result: **PASS**
+
+## Summary
+
+- Lab root: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1`
+- Build kit root: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1`
+- Missing lab files: 0
+- Missing build-kit files: 0
+- Bundled validator exit: 0
+- Missing native symbols: 0
+- Missing constants: 0
+
+## Toolchain
+
+- sccl_exe: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe`
+- cl_exe: `None`
+- gcc: `None`
+- python: `C:\Users\glitc\AppData\Local\Programs\Python\Python312\python.exe`
+- windows_host: `True`
+
+## Source Checks
+
+- source_exists: `True`
+- source_bytes: `3138`
+- brace_balance: `True`
+- paren_balance: `True`
+- has_main_loop: `True`
+- has_visible_menu: `True`
+- has_vehicle_spawn: `True`
+- has_live_tune: `True`
+- has_script_registration: `True`
+- native_requirements: `24`
+- constant_requirements: `3`
+
+## Bundled Validator Output
+
+```text
+source_exists: True
+brace_balance: True
+paren_balance: True
+has_main_loop: True
+has_visible_menu: True
+has_vehicle_spawn: True
+has_live_tune: True
+missing_symbols: []
+RESULT: PASS
+
+```
+
+## Notes
+
+- This validates the Code RED script compile lab assets and the vehicle-menu probe source.
+- It does not claim arbitrary existing .wsc/.xsc/.sco binary roundtrip is solved.
+- On non-Windows hosts, SC-CL execution is expected to remain unavailable unless a compatible executable/toolchain is staged.
+- Use the generated Windows build plan for the real compile step when Visual Studio/SC-CL are available.
+

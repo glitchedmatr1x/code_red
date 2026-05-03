@@ -1,14 +1,14 @@
 //===- llvm/ADT/PackedVector.h - Packed values vector -----------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
-//
-// This file implements the PackedVector class.
-//
+///
+/// \file
+/// This file implements the PackedVector class.
+///
 //===----------------------------------------------------------------------===//
 
 #ifndef LLVM_ADT_PACKEDVECTOR_H
@@ -65,7 +65,7 @@ protected:
   }
 };
 
-/// \brief Store a vector of values using a specific number of bits for each
+/// Store a vector of values using a specific number of bits for each
 /// value. Both signed and unsigned types can be used, e.g
 /// @code
 ///   PackedVector<signed, 2> vec;

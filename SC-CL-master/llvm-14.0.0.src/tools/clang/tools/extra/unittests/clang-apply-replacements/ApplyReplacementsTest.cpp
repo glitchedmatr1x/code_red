@@ -1,14 +1,14 @@
 //===- clang-apply-replacements/ApplyReplacementsTest.cpp
 //----------------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
 #include "clang-apply-replacements/Tooling/ApplyReplacements.h"
+#include "clang/Format/Format.h"
 #include "gtest/gtest.h"
 
 using namespace clang::replace;
@@ -23,13 +23,9 @@ makeTUDiagnostics(const std::string &MainSourceFile, StringRef DiagnosticName,
                   const StringMap<Replacements> &Replacements,
                   StringRef BuildDirectory) {
   TUDiagnostics TUs;
-  TUs.push_back({MainSourceFile,
-                 {{DiagnosticName,
-                   Message,
-                   Replacements,
-                   {},
-                   Diagnostic::Warning,
-                   BuildDirectory}}});
+  TUs.push_back(
+      {MainSourceFile,
+       {{DiagnosticName, Message, {}, Diagnostic::Warning, BuildDirectory}}});
   return TUs;
 }
 
@@ -41,11 +37,12 @@ TEST(ApplyReplacementsTest, mergeDiagnosticsWithNoFixes) {
       IntrusiveRefCntPtr<DiagnosticIDs>(new DiagnosticIDs()), DiagOpts.get());
   FileManager Files((FileSystemOptions()));
   SourceManager SM(Diagnostics, Files);
+  TUReplacements TURs;
   TUDiagnostics TUs =
       makeTUDiagnostics("path/to/source.cpp", "diagnostic", {}, {}, "path/to");
-  FileToReplacementsMap ReplacementsMap;
+  FileToChangesMap ReplacementsMap;
 
-  EXPECT_TRUE(mergeAndDeduplicate(TUs, ReplacementsMap, SM));
+  EXPECT_TRUE(mergeAndDeduplicate(TURs, TUs, ReplacementsMap, SM));
   EXPECT_TRUE(ReplacementsMap.empty());
 }
 

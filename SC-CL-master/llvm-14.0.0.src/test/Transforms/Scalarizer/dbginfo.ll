@@ -1,4 +1,4 @@
-; RUN: opt %s -scalarizer -scalarize-load-store -S | FileCheck %s
+; RUN: opt %s -passes='function(scalarizer)' -scalarize-load-store -S | FileCheck %s
 target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v64:64:64-v128:128:128-a0:0:64-s0:64:64-f80:128:128-n8:16:32:64-S128"
 
 ; Function Attrs: nounwind uwtable
@@ -50,7 +50,7 @@ entry:
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -60,7 +60,7 @@ attributes #1 = { nounwind readnone }
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, producer: "clang version 3.4 (trunk 194134) (llvm/trunk 194126)", isOptimized: true, emissionKind: FullDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "/tmp/add.c", directory: "/home/richards/llvm/build")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "f1", line: 3, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 4, file: !1, scope: !5, type: !6, variables: !14)
+!4 = distinct !DISubprogram(name: "f1", line: 3, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 4, file: !1, scope: !5, type: !6, retainedNodes: !14)
 !5 = !DIFile(filename: "/tmp/add.c", directory: "/home/richards/llvm/build")
 !6 = !DISubroutineType(types: !7)
 !7 = !{null, !8, !8, !8}

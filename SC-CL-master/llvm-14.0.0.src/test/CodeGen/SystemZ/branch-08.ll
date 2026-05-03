@@ -1,4 +1,4 @@
-; Test SystemZInstrInfo::AnalyzeBranch and SystemZInstrInfo::InsertBranch.
+; Test SystemZInstrInfo::analyzeBranch and SystemZInstrInfo::insertBranch.
 ;
 ; RUN: llc < %s -mtriple=s390x-linux-gnu | FileCheck %s
 
@@ -14,7 +14,7 @@ define i32 @f1(i32 %a, i32 *%bptr) {
 ; CHECK: .L[[LABEL]]:
 ; CHECK: brasl %r14, foo@PLT
 entry:
-  %b = load i32 , i32 *%bptr
+  %b = load i32, i32 *%bptr
   %cmp = icmp ult i32 %a, %b
   br i1 %cmp, label %callit, label %return
 

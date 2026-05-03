@@ -60,7 +60,7 @@ declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind optsize readnone "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind optsize readnone "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -70,7 +70,7 @@ attributes #1 = { nounwind readnone }
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, producer: "clang version 3.4 ", isOptimized: true, emissionKind: FullDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "<unknown>", directory: "/Volumes/Data/radar/15464571")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "run", line: 1, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 2, file: !5, scope: !6, type: !7, variables: !10)
+!4 = distinct !DISubprogram(name: "run", line: 1, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 2, file: !5, scope: !6, type: !7, retainedNodes: !10)
 !5 = !DIFile(filename: "test.c", directory: "/Volumes/Data/radar/15464571")
 !6 = !DIFile(filename: "test.c", directory: "/Volumes/Data/radar/15464571")
 !7 = !DISubroutineType(types: !8)

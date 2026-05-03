@@ -1,9 +1,8 @@
 //===- IRCompileLayer.h -- Eagerly compile IR for JIT -----------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -16,9 +15,12 @@
 
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ExecutionEngine/JITSymbol.h"
+#include "llvm/ExecutionEngine/Orc/Layer.h"
 #include "llvm/Support/Error.h"
+#include "llvm/Support/MemoryBuffer.h"
+#include <functional>
 #include <memory>
-#include <string>
+#include <mutex>
 
 namespace llvm {
 
@@ -26,78 +28,46 @@ class Module;
 
 namespace orc {
 
-/// @brief Eager IR compiling layer.
-///
-///   This layer immediately compiles each IR module added via addModule to an
-/// object file and adds this module file to the layer below, which must
-/// implement the object layer concept.
-template <typename BaseLayerT, typename CompileFtor>
-class IRCompileLayer {
+class IRCompileLayer : public IRLayer {
 public:
+  class IRCompiler {
+  public:
+    IRCompiler(IRSymbolMapper::ManglingOptions MO) : MO(std::move(MO)) {}
+    virtual ~IRCompiler();
+    const IRSymbolMapper::ManglingOptions &getManglingOptions() const {
+      return MO;
+    }
+    virtual Expected<std::unique_ptr<MemoryBuffer>> operator()(Module &M) = 0;
 
-  /// @brief Handle to a compiled module.
-  using ModuleHandleT = typename BaseLayerT::ObjHandleT;
+  protected:
+    IRSymbolMapper::ManglingOptions &manglingOptions() { return MO; }
 
-  /// @brief Construct an IRCompileLayer with the given BaseLayer, which must
-  ///        implement the ObjectLayer concept.
-  IRCompileLayer(BaseLayerT &BaseLayer, CompileFtor Compile)
-      : BaseLayer(BaseLayer), Compile(std::move(Compile)) {}
+  private:
+    IRSymbolMapper::ManglingOptions MO;
+  };
 
-  /// @brief Get a reference to the compiler functor.
-  CompileFtor& getCompiler() { return Compile; }
+  using NotifyCompiledFunction = std::function<void(
+      MaterializationResponsibility &R, ThreadSafeModule TSM)>;
 
-  /// @brief Compile the module, and add the resulting object to the base layer
-  ///        along with the given memory manager and symbol resolver.
-  ///
-  /// @return A handle for the added module.
-  Expected<ModuleHandleT>
-  addModule(std::shared_ptr<Module> M,
-            std::shared_ptr<JITSymbolResolver> Resolver) {
-    using CompileResult = decltype(Compile(*M));
-    auto Obj = std::make_shared<CompileResult>(Compile(*M));
-    return BaseLayer.addObject(std::move(Obj), std::move(Resolver));
-  }
+  IRCompileLayer(ExecutionSession &ES, ObjectLayer &BaseLayer,
+                 std::unique_ptr<IRCompiler> Compile);
 
-  /// @brief Remove the module associated with the handle H.
-  Error removeModule(ModuleHandleT H) {
-    return BaseLayer.removeObject(H);
-  }
+  IRCompiler &getCompiler() { return *Compile; }
 
-  /// @brief Search for the given named symbol.
-  /// @param Name The name of the symbol to search for.
-  /// @param ExportedSymbolsOnly If true, search only for exported symbols.
-  /// @return A handle for the given named symbol, if it exists.
-  JITSymbol findSymbol(const std::string &Name, bool ExportedSymbolsOnly) {
-    return BaseLayer.findSymbol(Name, ExportedSymbolsOnly);
-  }
+  void setNotifyCompiled(NotifyCompiledFunction NotifyCompiled);
 
-  /// @brief Get the address of the given symbol in compiled module represented
-  ///        by the handle H. This call is forwarded to the base layer's
-  ///        implementation.
-  /// @param H The handle for the module to search in.
-  /// @param Name The name of the symbol to search for.
-  /// @param ExportedSymbolsOnly If true, search only for exported symbols.
-  /// @return A handle for the given named symbol, if it is found in the
-  ///         given module.
-  JITSymbol findSymbolIn(ModuleHandleT H, const std::string &Name,
-                         bool ExportedSymbolsOnly) {
-    return BaseLayer.findSymbolIn(H, Name, ExportedSymbolsOnly);
-  }
-
-  /// @brief Immediately emit and finalize the module represented by the given
-  ///        handle.
-  /// @param H Handle for module to emit/finalize.
-  Error emitAndFinalize(ModuleHandleT H) {
-    return BaseLayer.emitAndFinalize(H);
-  }
+  void emit(std::unique_ptr<MaterializationResponsibility> R,
+            ThreadSafeModule TSM) override;
 
 private:
-  BaseLayerT &BaseLayer;
-  CompileFtor Compile;
+  mutable std::mutex IRLayerMutex;
+  ObjectLayer &BaseLayer;
+  std::unique_ptr<IRCompiler> Compile;
+  const IRSymbolMapper::ManglingOptions *ManglingOpts;
+  NotifyCompiledFunction NotifyCompiled = NotifyCompiledFunction();
 };
 
 } // end namespace orc
-
 } // end namespace llvm
 
-#endif // LLVM_EXECUTIONENGINE_ORC_IRCOMPILINGLAYER_H
+#endif // LLVM_EXECUTIONENGINE_ORC_IRCOMPILELAYER_H

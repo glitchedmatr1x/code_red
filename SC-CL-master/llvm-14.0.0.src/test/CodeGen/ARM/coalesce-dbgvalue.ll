@@ -72,8 +72,8 @@ declare i32 @fn3(...) #1
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #2
 
-attributes #0 = { nounwind ssp "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind ssp "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind readnone }
 attributes #3 = { nounwind }
 
@@ -95,7 +95,7 @@ attributes #3 = { nounwind }
 !12 = !{}
 !13 = !{!6, !4, !0, !9}
 !14 = !{i32 1, !"Debug Info Version", i32 3}
-!15 = distinct !DISubprogram(name: "pr16110", scope: !2, file: !2, line: 7, type: !16, isLocal: false, isDefinition: true, scopeLine: 7, virtualIndex: 6, isOptimized: true, unit: !11, variables: !18)
+!15 = distinct !DISubprogram(name: "pr16110", scope: !2, file: !2, line: 7, type: !16, isLocal: false, isDefinition: true, scopeLine: 7, virtualIndex: 6, isOptimized: true, unit: !11, retainedNodes: !18)
 !16 = !DISubroutineType(types: !17)
 !17 = !{!3}
 !18 = !{!19, !20}

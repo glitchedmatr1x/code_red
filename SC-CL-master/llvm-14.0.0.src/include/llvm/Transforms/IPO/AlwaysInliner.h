@@ -1,9 +1,8 @@
 //===-- AlwaysInliner.h - Pass to inline "always_inline" functions --------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 ///
@@ -16,6 +15,7 @@
 #define LLVM_TRANSFORMS_IPO_ALWAYSINLINER_H
 
 #include "llvm/IR/PassManager.h"
+#include "llvm/Pass.h"
 
 namespace llvm {
 
@@ -27,8 +27,15 @@ namespace llvm {
 /// be the simplest possible pass to remove always_inline function definitions'
 /// uses by inlining them. The \c GlobalDCE pass can be used to remove these
 /// functions once all users are gone.
-struct AlwaysInlinerPass : PassInfoMixin<AlwaysInlinerPass> {
+class AlwaysInlinerPass : public PassInfoMixin<AlwaysInlinerPass> {
+  bool InsertLifetime;
+
+public:
+  AlwaysInlinerPass(bool InsertLifetime = true)
+      : InsertLifetime(InsertLifetime) {}
+
   PreservedAnalyses run(Module &M, ModuleAnalysisManager &);
+  static bool isRequired() { return true; }
 };
 
 /// Create a legacy pass manager instance of a pass to inline and remove

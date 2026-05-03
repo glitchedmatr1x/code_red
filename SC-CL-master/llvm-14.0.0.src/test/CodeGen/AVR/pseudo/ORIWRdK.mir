@@ -14,11 +14,12 @@
 name:            test_oriwrdrr
 body: |
   bb.0.entry:
+    liveins: $r21r20
 
     ; CHECK-LABEL: test_oriwrdrr
 
-    ; CHECK:      %r20 = ORIRdK %r20, 175, implicit-def dead %sreg
-    ; CHECK-NEXT: %r21 = ORIRdK %r21, 250, implicit-def %sreg
+    ; CHECK:      $r20 = ORIRdK $r20, 175, implicit-def dead $sreg
+    ; CHECK-NEXT: $r21 = ORIRdK $r21, 250, implicit-def $sreg
 
-    %r21r20 = ORIWRdK %r21r20, 64175, implicit-def %sreg
+    $r21r20 = ORIWRdK $r21r20, 64175, implicit-def $sreg
 ...

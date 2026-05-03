@@ -1,6 +1,4 @@
-; REQUIRES: object-emission
-
-; RUN: %llc_dwarf -O0 -filetype=obj < %s | llvm-dwarfdump -v -debug-info - | FileCheck %s
+; RUN: %llc_dwarf -O0 -filetype=obj < %s | llvm-dwarfdump -debug-info - | FileCheck %s
 
 ; Testing that two distinct (distinct by writing them in separate files, while
 ; still fulfilling C++'s ODR by having identical token sequences) functions,
@@ -29,13 +27,13 @@
 ; The DISubprogram should show up in compile unit a.
 ; CHECK: DW_TAG_compile_unit
 ; CHECK-NOT: DW_TAG
-; CHECK:    DW_AT_name {{.*}}"b.cpp"
+; CHECK:    DW_AT_name ("b.cpp")
 ; CHECK-NOT: DW_TAG_subprogram
 
 ; CHECK: DW_TAG_compile_unit
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_name {{.*}}"a.cpp"
-; CHECK:     DW_AT_name {{.*}} "func"
+; CHECK:     DW_AT_name ("a.cpp")
+; CHECK:     DW_AT_name ("func")
 
 source_filename = "test/DebugInfo/Generic/cross-cu-linkonce-distinct.ll"
 
@@ -80,7 +78,7 @@ attributes #1 = { nounwind readnone }
 !15 = !{i32 2, !"Dwarf Version", i32 4}
 !16 = !{i32 1, !"Debug Info Version", i32 3}
 !17 = !{!"clang version 3.5.0 "}
-!18 = distinct !DISubprogram(name: "func", linkageName: "_Z4funci", scope: !2, file: !2, line: 1, type: !4, isLocal: false, isDefinition: true, scopeLine: 1, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !13, variables: !11)
+!18 = distinct !DISubprogram(name: "func", linkageName: "_Z4funci", scope: !2, file: !2, line: 1, type: !4, isLocal: false, isDefinition: true, scopeLine: 1, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !13, retainedNodes: !11)
 !19 = !DILocalVariable(name: "i", arg: 1, scope: !18, file: !2, line: 1, type: !6)
 !20 = !DIExpression()
 !21 = !DILocation(line: 1, scope: !18)

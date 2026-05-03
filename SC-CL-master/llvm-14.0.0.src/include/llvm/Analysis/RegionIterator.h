@@ -1,9 +1,8 @@
 //===- RegionIterator.h - Iterators to iteratate over Regions ---*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 // This file defines the iterators to iterate over the elements of a Region.
@@ -26,7 +25,7 @@ namespace llvm {
 class BasicBlock;
 
 //===----------------------------------------------------------------------===//
-/// @brief Hierarchical RegionNode successor iterator.
+/// Hierarchical RegionNode successor iterator.
 ///
 /// This iterator iterates over all successors of a RegionNode.
 ///
@@ -36,10 +35,15 @@ class BasicBlock;
 ///
 /// For a subregion RegionNode there is just one successor. The RegionNode
 /// representing the exit of the subregion.
-template <class NodeRef, class BlockT, class RegionT>
-class RNSuccIterator
-    : public std::iterator<std::forward_iterator_tag, NodeRef> {
-  using super = std::iterator<std::forward_iterator_tag, NodeRef>;
+template <class NodeRef, class BlockT, class RegionT> class RNSuccIterator {
+public:
+  using iterator_category = std::forward_iterator_tag;
+  using value_type = NodeRef;
+  using difference_type = std::ptrdiff_t;
+  using pointer = value_type *;
+  using reference = value_type &;
+
+private:
   using BlockTraits = GraphTraits<BlockT *>;
   using SuccIterTy = typename BlockTraits::ChildIteratorType;
 
@@ -100,9 +104,8 @@ class RNSuccIterator
 
 public:
   using Self = RNSuccIterator<NodeRef, BlockT, RegionT>;
-  using value_type = typename super::value_type;
 
-  /// @brief Create begin iterator of a RegionNode.
+  /// Create begin iterator of a RegionNode.
   inline RNSuccIterator(NodeRef node)
       : Node(node, node->isSubRegion() ? ItRgBegin : ItBB),
         BItor(BlockTraits::child_begin(node->getEntry())) {
@@ -115,7 +118,7 @@ public:
       advanceRegionSucc();
   }
 
-  /// @brief Create an end iterator.
+  /// Create an end iterator.
   inline RNSuccIterator(NodeRef node, bool)
       : Node(node, node->isSubRegion() ? ItRgEnd : ItBB),
         BItor(BlockTraits::child_end(node->getEntry())) {}
@@ -158,15 +161,13 @@ public:
 };
 
 //===----------------------------------------------------------------------===//
-/// @brief Flat RegionNode iterator.
+/// Flat RegionNode iterator.
 ///
 /// The Flat Region iterator will iterate over all BasicBlock RegionNodes that
 /// are contained in the Region and its subregions. This is close to a virtual
 /// control flow graph of the Region.
 template <class NodeRef, class BlockT, class RegionT>
-class RNSuccIterator<FlatIt<NodeRef>, BlockT, RegionT>
-    : public std::iterator<std::forward_iterator_tag, NodeRef> {
-  using super = std::iterator<std::forward_iterator_tag, NodeRef>;
+class RNSuccIterator<FlatIt<NodeRef>, BlockT, RegionT> {
   using BlockTraits = GraphTraits<BlockT *>;
   using SuccIterTy = typename BlockTraits::ChildIteratorType;
 
@@ -174,10 +175,15 @@ class RNSuccIterator<FlatIt<NodeRef>, BlockT, RegionT>
   SuccIterTy Itor;
 
 public:
-  using Self = RNSuccIterator<FlatIt<NodeRef>, BlockT, RegionT>;
-  using value_type = typename super::value_type;
+  using iterator_category = std::forward_iterator_tag;
+  using value_type = NodeRef;
+  using difference_type = std::ptrdiff_t;
+  using pointer = value_type *;
+  using reference = value_type &;
 
-  /// @brief Create the iterator from a RegionNode.
+  using Self = RNSuccIterator<FlatIt<NodeRef>, BlockT, RegionT>;
+
+  /// Create the iterator from a RegionNode.
   ///
   /// Note that the incoming node must be a bb node, otherwise it will trigger
   /// an assertion when we try to get a BasicBlock.
@@ -193,7 +199,7 @@ public:
       ++Itor;
   }
 
-  /// @brief Create an end iterator
+  /// Create an end iterator
   inline RNSuccIterator(NodeRef node, bool)
       : Node(node), Itor(BlockTraits::child_end(node->getEntry())) {
     assert(!Node->isSubRegion() &&

@@ -1,5 +1,5 @@
-; RUN: llc %s -stop-after=livedebugvalues -o - | FileCheck --check-prefix=SANITY %s
-; RUN: llc < %s -filetype=obj | llvm-dwarfdump -v - | FileCheck %s
+; RUN: llc %s -stop-after=livedebugvalues -o - -experimental-debug-variable-locations=true | FileCheck --check-prefix=SANITY %s
+; RUN: llc < %s -filetype=obj -experimental-debug-variable-locations=true | llvm-dwarfdump -v - | FileCheck %s
 ; Test debug_loc support for floating point constants.
 ;
 ; Created from clang -O1:
@@ -14,19 +14,17 @@
 ;   }
 ;
 ; SANITY: CALL{{.*}} @barrier
-; SANITY: DBG_VALUE x86_fp80 0xK4000C8F5C28F5C28F800
 ; SANITY: DBG_VALUE float 0x40091EB860000000
+; SANITY: DBG_VALUE x86_fp80 0xK4000C8F5C28F5C28F800
 ; SANITY: TAILJMP{{.*}} @barrier
 ;
 ; CHECK: .debug_info contents:
 ; CHECK: DW_TAG_variable
 ; CHECK-NEXT:  DW_AT_location {{.*}} (
-; CHECK-NEXT:    [[START:0x.*]] - [[END:0x.*]]: DW_OP_constu 0xc8f5c28f5c28f800, DW_OP_piece 0x8, DW_OP_constu 0x4000, DW_OP_bit_piece 0x10 0x40)
-; CHECK-NEXT:  DW_AT_name {{.*}}"ld"
-; CHECK: DW_TAG_variable
-; CHECK-NEXT:  DW_AT_location {{.*}} (
-; CHECK-NEXT:    [[START]] - [[END]]: DW_OP_constu 0x4048f5c3)
+; CHECK-NEXT:    [0x{{.*}}, 0x{{.*}}): DW_OP_constu 0x4048f5c3)
 ; CHECK-NEXT:  DW_AT_name {{.*}}"f"
+; CHECK: DW_TAG_variable
+; CHECK-NEXT:  DW_AT_name {{.*}}"ld"
 
 source_filename = "test.c"
 target datalayout = "e-m:o-i64:64-f80:128-n8:16:32:64-S128"
@@ -58,7 +56,7 @@ attributes #3 = { nounwind }
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang version 3.9.0 (trunk 265328) (llvm/trunk 265330)", isOptimized: true, runtimeVersion: 0, emissionKind: FullDebug, enums: !2)
 !1 = !DIFile(filename: "test.c", directory: "/Volumes/Data/radar/25448338")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 4, isOptimized: true, unit: !0, variables: !7)
+!4 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 4, isOptimized: true, unit: !0, retainedNodes: !7)
 !5 = !DISubroutineType(types: !6)
 !6 = !{null}
 !7 = !{!8, !10}

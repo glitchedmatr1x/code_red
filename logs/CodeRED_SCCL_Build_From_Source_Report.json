@@ -1,11 +1,11 @@
 {
   "version": "1.2.0-sccl-cmake-policy-fix",
-  "generated_utc": "2026-05-03T14:04:27Z",
+  "generated_utc": "2026-05-03T14:25:29Z",
   "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
   "source": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master",
-  "ok": false,
-  "sccl_exe": null,
-  "adopted_to": null,
+  "ok": true,
+  "sccl_exe": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin\\SC-CL.exe",
+  "adopted_to": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
   "source_exists": true,
   "rdr_ready_markers": [
     "Red Dead Redemption",
@@ -15,84 +15,16 @@
     "CSC format",
     "SCO format"
   ],
-  "sln_files": [
-    "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\LLVM.sln",
-    "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin\\projects\\MenuBase\\MenuBase.sln",
-    "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin\\projects\\testing\\test.sln",
-    "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\tools\\clang\\tools\\clang-format-vs\\ClangFormat.sln",
-    "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\tools\\clang\\tools\\extra\\clang-tidy-vs\\ClangTidy.sln",
-    "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\tools\\clang\\tools\\extra\\SC-CL\\bin\\projects\\MenuBase\\MenuBase.sln",
-    "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\tools\\clang\\tools\\extra\\SC-CL\\bin\\projects\\testing\\test.sln"
-  ],
-  "skipped_solutions": [
-    {
-      "solution": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\LLVM.sln",
-      "reason": "stale generated LLVM.sln/ZERO_CHECK points at an old Code RED output path"
-    },
-    {
-      "solution": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin\\projects\\MenuBase\\MenuBase.sln",
-      "reason": "example/test solution, not SC-CL.exe"
-    },
-    {
-      "solution": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin\\projects\\testing\\test.sln",
-      "reason": "example/test solution, not SC-CL.exe"
-    },
-    {
-      "solution": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\tools\\clang\\tools\\clang-format-vs\\ClangFormat.sln",
-      "reason": "Visual Studio extension solution, not SC-CL.exe"
-    },
-    {
-      "solution": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\tools\\clang\\tools\\extra\\clang-tidy-vs\\ClangTidy.sln",
-      "reason": "Visual Studio extension solution, not SC-CL.exe"
-    },
-    {
-      "solution": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\tools\\clang\\tools\\extra\\SC-CL\\bin\\projects\\MenuBase\\MenuBase.sln",
-      "reason": "example/test solution, not SC-CL.exe"
-    },
-    {
-      "solution": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\tools\\clang\\tools\\extra\\SC-CL\\bin\\projects\\testing\\test.sln",
-      "reason": "example/test solution, not SC-CL.exe"
-    }
-  ],
+  "sln_files": [],
+  "skipped_solutions": [],
   "cmake_lists": null,
-  "cmake_source_used": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src",
-  "cmake_source_diagnostics": [
-    "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\CMakeLists.txt: appears to be a top-level CMake source root"
-  ],
+  "cmake_source_used": null,
+  "cmake_source_diagnostics": [],
   "msbuild": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
   "cmake": "C:\\Program Files\\CMake\\bin\\cmake.EXE",
-  "attempts": [
-    {
-      "name": "CMake configure clean LLVM source",
-      "command": [
-        "C:\\Program Files\\CMake\\bin\\cmake.EXE",
-        "-S",
-        "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src",
-        "-B",
-        "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\codered_llvm_build",
-        "-A",
-        "x64",
-        "-Thost=x64",
-        "-DLLVM_TARGETS_TO_BUILD=X86",
-        "-DLLVM_INCLUDE_TESTS=OFF",
-        "-DLLVM_INCLUDE_BENCHMARKS=OFF",
-        "-DCMAKE_BUILD_TYPE=Release",
-        "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
-      ],
-      "cwd": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master",
-      "exit_code": 1,
-      "stdout_tail": "-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.19045.\n-- Configuring incomplete, errors occurred!\n",
-      "stderr_tail": "CMake Deprecation Warning at CMakeLists.txt:3 (cmake_minimum_required):\n  Compatibility with CMake < 3.10 will be removed from a future version of\n  CMake.\n\n  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax\n  to tell CMake that the project requires at least <min> but has been updated\n  to work with policies introduced by <max> or earlier.\n\n\nCMake Error at CMakeLists.txt:14 (cmake_policy):\n  Policy CMP0051 may not be set to OLD behavior because this version of CMake\n  no longer supports it.  The policy was introduced in CMake version 3.1.0,\n  and use of NEW behavior is now required.\n\n  Please either update your CMakeLists.txt files to conform to the new\n  behavior or use an older version of CMake that still supports the old\n  behavior.  Run cmake --help-policy CMP0051 for more information.\n\n\nCMake Error at CMakeLists.txt:257 (message):\n  Apparently there is a previous in-source build,\n\n  probably as the result of running `configure' and `make' on\n\n  D:/Games/Red Dead Redemption/Code_RED/SC-CL-master/llvm-14.0.0.src.\n\n  This may cause problems.  The suspicious files are:\n\n  D:/Games/Red Dead\n  Redemption/Code_RED/SC-CL-master/llvm-14.0.0.src/lib/Target/Hexagon/HexagonDepDecoders.inc\n\n\n\n  Please clean the source directory.\n\n\n",
-      "skipped_reason": ""
-    }
-  ],
-  "warnings": [
-    "Generated/example/Visual Studio extension solutions were skipped; they are not SC-CL.exe build targets.",
-    "SC-CL.exe was not produced. Review the CMake build output and the target list."
-  ],
+  "attempts": [],
+  "warnings": [],
   "next_steps": [
-    "Open logs\\CodeRED_SCCL_Build_From_Source_Output.txt and find the first CMake error after the policy fix.",
-    "If configure succeeds but target SC-CL is unknown, build ALL_BUILD in Visual Studio from codered_llvm_build and then run the finalizer.",
-    "After SC-CL.exe exists, run: py -3 tools\\codered_sccl_finalize_build.py --validate --compile-helper"
+    "Run: py -3 tools\\codered_sccl_finalize_build.py --validate --compile-helper"
   ]
 }

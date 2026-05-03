@@ -1,10 +1,13 @@
-; RUN: llc -march=amdgcn -mcpu=tahiti -misched=gcn-minreg -verify-machineinstrs < %s | FileCheck -check-prefix=SI %s
-; RUN: llc -march=amdgcn -mcpu=tahiti -misched=gcn-max-occupancy-experimental -verify-machineinstrs < %s | FileCheck -check-prefix=SI %s
-; RUN: llc -march=amdgcn -mcpu=fiji -misched=gcn-minreg -verify-machineinstrs < %s | FileCheck -check-prefix=VI %s
-; RUN: llc -march=amdgcn -mcpu=fiji -misched=gcn-max-occupancy-experimental -verify-machineinstrs < %s | FileCheck -check-prefix=VI %s
+; RUN: llc -march=amdgcn -mcpu=tahiti -enable-amdgpu-aa=0 -misched=gcn-minreg -verify-machineinstrs < %s | FileCheck --check-prefix=SI-MINREG %s
+; RUN: llc -march=amdgcn -mcpu=tahiti -enable-amdgpu-aa=0 -misched=gcn-max-occupancy-experimental -verify-machineinstrs < %s | FileCheck --check-prefix=SI-MAXOCC %s
+; RUN: llc -march=amdgcn -mcpu=fiji -enable-amdgpu-aa=0 -misched=gcn-minreg -verify-machineinstrs < %s | FileCheck --check-prefix=VI %s
+; RUN: llc -march=amdgcn -mcpu=fiji -enable-amdgpu-aa=0 -misched=gcn-max-occupancy-experimental -verify-machineinstrs < %s | FileCheck --check-prefix=VI %s
 
-; SI: NumSgprs: {{[1-9]$}}
-; SI: NumVgprs: {{[1-9]$}}
+; SI-MINREG: NumSgprs: {{[1-9]$}}
+; SI-MINREG: NumVgprs: {{[1-9]$}}
+
+; SI-MAXOCC: NumSgprs: {{[0-4][0-9]$}}
+; SI-MAXOCC: NumVgprs: {{[0-4][0-9]$}}
 
 ; stores may alias loads
 ; VI: NumSgprs: {{[0-9]$}}

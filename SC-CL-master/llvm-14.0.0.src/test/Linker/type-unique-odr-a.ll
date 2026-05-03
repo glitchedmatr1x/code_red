@@ -2,11 +2,11 @@
 ;
 ; RUN: llvm-link %s %p/type-unique-odr-b.ll -S -o - \
 ; RUN:   | %llc_dwarf -dwarf-linkage-names=All -filetype=obj -O0 \
-; RUN:   | llvm-dwarfdump -v -debug-info - \
+; RUN:   | llvm-dwarfdump -debug-info - \
 ; RUN:   | FileCheck %s
 ; RUN: llvm-link %p/type-unique-odr-b.ll %s -S -o - \
 ; RUN:   | %llc_dwarf -dwarf-linkage-names=All -filetype=obj -O0 \
-; RUN:   | llvm-dwarfdump -v -debug-info - \
+; RUN:   | llvm-dwarfdump -debug-info - \
 ; RUN:   | FileCheck %s
 ;
 ; Test ODR-based type uniquing for C++ class members.
@@ -30,16 +30,16 @@
 ; }
 ;
 ; CHECK:      DW_TAG_class_type
-; CHECK-NEXT:   DW_AT_name {{.*}} "A"
+; CHECK-NEXT:   DW_AT_name ("A")
 ; CHECK-NOT:    DW_TAG
 ; CHECK:        DW_TAG_member
-; CHECK-NEXT:     DW_AT_name {{.*}} "data"
+; CHECK-NEXT:     DW_AT_name ("data")
 ; CHECK-NOT:    DW_TAG
 ; CHECK:        DW_TAG_subprogram
 ; CHECK-NOT:    DW_TAG
-; CHECK:          DW_AT_linkage_name {{.*}} "_ZN1A6getFooEv"
+; CHECK:          DW_AT_linkage_name ("_ZN1A6getFooEv")
 ; CHECK-NOT:    DW_TAG
-; CHECK:          DW_AT_name {{.*}} "getFoo"
+; CHECK:          DW_AT_name ("getFoo")
 
 ; Ensure that there aren't any other subprograms in class A.
 ; CHECK-NOT:      DW_TAG
@@ -96,11 +96,11 @@ attributes #1 = { nounwind readnone }
 !10 = !DISubroutineType(types: !11)
 !11 = !{null, !12}
 !12 = !DIDerivedType(tag: DW_TAG_pointer_type, size: 64, align: 64, flags: DIFlagArtificial | DIFlagObjectPointer, baseType: !4)
-!15 = distinct !DISubprogram(name: "baz", linkageName: "_Z3bazv", line: 11, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 11, file: !5, scope: !16, type: !17, variables: !2)
+!15 = distinct !DISubprogram(name: "baz", linkageName: "_Z3bazv", line: 11, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 11, file: !5, scope: !16, type: !17, retainedNodes: !2)
 !16 = !DIFile(filename: "type-unique-odr-a.cpp", directory: "")
 !17 = !DISubroutineType(types: !18)
 !18 = !{null}
-!19 = distinct !DISubprogram(name: "bar", linkageName: "_ZL3barv", line: 7, isLocal: true, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 7, file: !5, scope: !16, type: !17, variables: !2)
+!19 = distinct !DISubprogram(name: "bar", linkageName: "_ZL3barv", line: 7, isLocal: true, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 7, file: !5, scope: !16, type: !17, retainedNodes: !2)
 !20 = !{i32 2, !"Dwarf Version", i32 4}
 !21 = !{i32 1, !"Debug Info Version", i32 3}
 !22 = !{!"clang version 3.5.0 "}

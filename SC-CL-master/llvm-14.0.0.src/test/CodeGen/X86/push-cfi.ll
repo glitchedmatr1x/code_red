@@ -75,7 +75,7 @@ cleanup:
 ; LINUX-NEXT: .cfi_adjust_cfa_offset 4
 ; LINUX-NEXT: call
 ; LINUX-NEXT: addl $28, %esp
-; LINUX: .cfi_adjust_cfa_offset -16
+; LINUX: .cfi_adjust_cfa_offset -28
 ; DARWIN-NOT: .cfi_escape
 ; DARWIN-NOT: pushl
 define void @test2_nofp() #0 personality i8* bitcast (i32 (...)* @__gxx_personality_v0 to i8*) {
@@ -289,4 +289,4 @@ cleanup:
 }
 
 attributes #0 = { optsize }
-attributes #1 = { optsize "no-frame-pointer-elim"="true" }
+attributes #1 = { optsize "frame-pointer"="all" }

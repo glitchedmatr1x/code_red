@@ -1,5 +1,5 @@
 ; RUN:  llc -amdgpu-scalarize-global-loads=false  -march=amdgcn -mcpu=tahiti -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=GCN-NOHSA -check-prefix=SI %s
-; RUN:  llc -amdgpu-scalarize-global-loads=false  -march=amdgcn -mcpu=bonaire -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=GCN-NOHSA -check-prefix=CI %s
+; RUN:  llc -amdgpu-scalarize-global-loads=false  -march=amdgcn -mcpu=bonaire -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=GCN-NOHSA -check-prefix=CI -check-prefix=CI-NOHSA %s
 ; RUN:  llc -amdgpu-scalarize-global-loads=false  -mtriple=amdgcn--amdhsa -mcpu=bonaire -verify-machineinstrs < %s | FileCheck -check-prefix=GCN -check-prefix=CI --check-prefix=GCN-HSA %s
 
 declare i32 @llvm.amdgcn.workitem.id.x() #0
@@ -55,34 +55,33 @@ done:                                             ; preds = %loop
 
 ; GCN-LABEL: {{^}}smrd_valu:
 ; SI: s_movk_i32 [[OFFSET:s[0-9]+]], 0x2ee0
-; SI: s_mov_b32
 ; GCN: v_readfirstlane_b32 s[[PTR_LO:[0-9]+]], v{{[0-9]+}}
 ; GCN: v_readfirstlane_b32 s[[PTR_HI:[0-9]+]], v{{[0-9]+}}
-; SI: s_nop 3
-; SI: s_load_dword [[OUT:s[0-9]+]], s{{\[}}[[PTR_LO]]:[[PTR_HI]]{{\]}}, [[OFFSET]]
+; SI-DAG: s_mov_b32
+; SI-DAG: s_load_dword [[OUT:s[0-9]+]], s{{\[}}[[PTR_LO]]:[[PTR_HI]]{{\]}}, [[OFFSET]]
 
 ; CI: s_load_dword [[OUT:s[0-9]+]], s{{\[}}[[PTR_LO]]:[[PTR_HI]]{{\]}}, 0xbb8
 ; GCN: v_mov_b32_e32 [[V_OUT:v[0-9]+]], [[OUT]]
 ; GCN-NOHSA: buffer_store_dword [[V_OUT]]
 ; GCN-HSA: flat_store_dword {{.*}}, [[V_OUT]]
-define amdgpu_kernel void @smrd_valu(i32 addrspace(2)* addrspace(1)* %in, i32 %a, i32 %b, i32 addrspace(1)* %out) #1 {
+define amdgpu_kernel void @smrd_valu(i32 addrspace(4)* addrspace(1)* %in, i32 %a, i32 %b, i32 addrspace(1)* %out) #1 {
 entry:
   %tmp = icmp ne i32 %a, 0
   br i1 %tmp, label %if, label %else
 
 if:                                               ; preds = %entry
-  %tmp1 = load i32 addrspace(2)*, i32 addrspace(2)* addrspace(1)* %in
+  %tmp1 = load i32 addrspace(4)*, i32 addrspace(4)* addrspace(1)* %in
   br label %endif
 
 else:                                             ; preds = %entry
-  %tmp2 = getelementptr i32 addrspace(2)*, i32 addrspace(2)* addrspace(1)* %in
-  %tmp3 = load i32 addrspace(2)*, i32 addrspace(2)* addrspace(1)* %tmp2
+  %tmp2 = getelementptr i32 addrspace(4)*, i32 addrspace(4)* addrspace(1)* %in
+  %tmp3 = load i32 addrspace(4)*, i32 addrspace(4)* addrspace(1)* %tmp2
   br label %endif
 
 endif:                                            ; preds = %else, %if
-  %tmp4 = phi i32 addrspace(2)* [ %tmp1, %if ], [ %tmp3, %else ]
-  %tmp5 = getelementptr i32, i32 addrspace(2)* %tmp4, i32 3000
-  %tmp6 = load i32, i32 addrspace(2)* %tmp5
+  %tmp4 = phi i32 addrspace(4)* [ %tmp1, %if ], [ %tmp3, %else ]
+  %tmp5 = getelementptr i32, i32 addrspace(4)* %tmp4, i32 3000
+  %tmp6 = load i32, i32 addrspace(4)* %tmp5
   store i32 %tmp6, i32 addrspace(1)* %out
   ret void
 }
@@ -93,12 +92,12 @@ endif:                                            ; preds = %else, %if
 ; GCN-NOHSA-NOT: v_add
 ; GCN-NOHSA: buffer_load_dword v{{[0-9]+}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], 0 addr64 offset:16{{$}}
 ; GCN-HSA: flat_load_dword v{{[0-9]+}}, v[{{[0-9]+:[0-9]+}}]
-define amdgpu_kernel void @smrd_valu2(i32 addrspace(1)* %out, [8 x i32] addrspace(2)* %in) #1 {
+define amdgpu_kernel void @smrd_valu2(i32 addrspace(1)* %out, [8 x i32] addrspace(4)* %in) #1 {
 entry:
   %tmp = call i32 @llvm.amdgcn.workitem.id.x()
   %tmp1 = add i32 %tmp, 4
-  %tmp2 = getelementptr [8 x i32], [8 x i32] addrspace(2)* %in, i32 %tmp, i32 4
-  %tmp3 = load i32, i32 addrspace(2)* %tmp2
+  %tmp2 = getelementptr [8 x i32], [8 x i32] addrspace(4)* %in, i32 %tmp, i32 4
+  %tmp3 = load i32, i32 addrspace(4)* %tmp2
   store i32 %tmp3, i32 addrspace(1)* %out
   ret void
 }
@@ -113,12 +112,12 @@ entry:
 ; GCN-NOHSA: buffer_store_dword
 ; GCN-HSA: flat_load_dword v{{[0-9]+}}, v[{{[0-9]+:[0-9]+}}]
 ; GCN-HSA: flat_store_dword v[{{[0-9]+:[0-9]+}}], v{{[0-9]+}}
-define amdgpu_kernel void @smrd_valu_ci_offset(i32 addrspace(1)* %out, i32 addrspace(2)* %in, i32 %c) #1 {
+define amdgpu_kernel void @smrd_valu_ci_offset(i32 addrspace(1)* %out, i32 addrspace(4)* %in, i32 %c) #1 {
 entry:
   %tmp = call i32 @llvm.amdgcn.workitem.id.x()
-  %tmp2 = getelementptr i32, i32 addrspace(2)* %in, i32 %tmp
-  %tmp3 = getelementptr i32, i32 addrspace(2)* %tmp2, i32 5000
-  %tmp4 = load i32, i32 addrspace(2)* %tmp3
+  %tmp2 = getelementptr i32, i32 addrspace(4)* %in, i32 %tmp
+  %tmp3 = getelementptr i32, i32 addrspace(4)* %tmp2, i32 5000
+  %tmp4 = load i32, i32 addrspace(4)* %tmp3
   %tmp5 = add i32 %tmp4, %c
   store i32 %tmp5, i32 addrspace(1)* %out
   ret void
@@ -133,12 +132,12 @@ entry:
 ; GCN-NOHSA: v_or_b32_e32 {{v[0-9]+}}, {{s[0-9]+}}, {{v[0-9]+}}
 ; GCN-NOHSA: buffer_store_dwordx2
 ; GCN-HSA: flat_load_dwordx2 v[{{[0-9]+:[0-9]+}}], v[{{[0-9]+:[0-9]+}}]
-define amdgpu_kernel void @smrd_valu_ci_offset_x2(i64 addrspace(1)* %out, i64 addrspace(2)* %in, i64 %c) #1 {
+define amdgpu_kernel void @smrd_valu_ci_offset_x2(i64 addrspace(1)* %out, i64 addrspace(4)* %in, i64 %c) #1 {
 entry:
   %tmp = call i32 @llvm.amdgcn.workitem.id.x()
-  %tmp2 = getelementptr i64, i64 addrspace(2)* %in, i32 %tmp
-  %tmp3 = getelementptr i64, i64 addrspace(2)* %tmp2, i32 5000
-  %tmp4 = load i64, i64 addrspace(2)* %tmp3
+  %tmp2 = getelementptr i64, i64 addrspace(4)* %in, i32 %tmp
+  %tmp3 = getelementptr i64, i64 addrspace(4)* %tmp2, i32 5000
+  %tmp4 = load i64, i64 addrspace(4)* %tmp3
   %tmp5 = or i64 %tmp4, %c
   store i64 %tmp5, i64 addrspace(1)* %out
   ret void
@@ -155,12 +154,12 @@ entry:
 ; GCN-NOHSA: v_or_b32_e32 {{v[0-9]+}}, {{s[0-9]+}}, {{v[0-9]+}}
 ; GCN-NOHSA: buffer_store_dwordx4
 ; GCN-HSA: flat_load_dwordx4 v[{{[0-9]+:[0-9]+}}], v[{{[0-9]+:[0-9]+}}]
-define amdgpu_kernel void @smrd_valu_ci_offset_x4(<4 x i32> addrspace(1)* %out, <4 x i32> addrspace(2)* %in, <4 x i32> %c) #1 {
+define amdgpu_kernel void @smrd_valu_ci_offset_x4(<4 x i32> addrspace(1)* %out, <4 x i32> addrspace(4)* %in, <4 x i32> %c) #1 {
 entry:
   %tmp = call i32 @llvm.amdgcn.workitem.id.x()
-  %tmp2 = getelementptr <4 x i32>, <4 x i32> addrspace(2)* %in, i32 %tmp
-  %tmp3 = getelementptr <4 x i32>, <4 x i32> addrspace(2)* %tmp2, i32 1234
-  %tmp4 = load <4 x i32>, <4 x i32> addrspace(2)* %tmp3
+  %tmp2 = getelementptr <4 x i32>, <4 x i32> addrspace(4)* %in, i32 %tmp
+  %tmp3 = getelementptr <4 x i32>, <4 x i32> addrspace(4)* %tmp2, i32 1234
+  %tmp4 = load <4 x i32>, <4 x i32> addrspace(4)* %tmp3
   %tmp5 = or <4 x i32> %tmp4, %c
   store <4 x i32> %tmp5, <4 x i32> addrspace(1)* %out
   ret void
@@ -170,11 +169,11 @@ entry:
 ; CI.
 
 ; GCN-LABEL: {{^}}smrd_valu_ci_offset_x8:
-; GCN-NOHSA: s_mov_b32 [[OFFSET0:s[0-9]+]], 0x9a40{{$}}
-; GCN-NOHSA-NOT: v_add
-; GCN-NOHSA: s_mov_b32 [[OFFSET1:s[0-9]+]], 0x9a50{{$}}
-; GCN-NOHSA-NOT: v_add
-; GCN-NOHSA: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET1]] addr64{{$}}
+; GCN-NOHSA-DAG: s_mov_b32 [[OFFSET0:s[0-9]+]], 0x9a40{{$}}
+; CI-NOHSA-NOT: v_add
+; SI: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], 0 addr64 offset:16
+; CI-NOHSA-DAG: s_mov_b32 [[OFFSET1:s[0-9]+]], 0x9a50{{$}}
+; CI-NOHSA-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET1]] addr64{{$}}
 ; GCN-NOHSA: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET0]] addr64{{$}}
 
 ; GCN-NOHSA: v_or_b32_e32 {{v[0-9]+}}, {{s[0-9]+}}, {{v[0-9]+}}
@@ -189,12 +188,12 @@ entry:
 ; GCN-NOHSA: buffer_store_dwordx4
 ; GCN-HSA: flat_load_dwordx4
 ; GCN-HSA: flat_load_dwordx4
-define amdgpu_kernel void @smrd_valu_ci_offset_x8(<8 x i32> addrspace(1)* %out, <8 x i32> addrspace(2)* %in, <8 x i32> %c) #1 {
+define amdgpu_kernel void @smrd_valu_ci_offset_x8(<8 x i32> addrspace(1)* %out, <8 x i32> addrspace(4)* %in, <8 x i32> %c) #1 {
 entry:
   %tmp = call i32 @llvm.amdgcn.workitem.id.x()
-  %tmp2 = getelementptr <8 x i32>, <8 x i32> addrspace(2)* %in, i32 %tmp
-  %tmp3 = getelementptr <8 x i32>, <8 x i32> addrspace(2)* %tmp2, i32 1234
-  %tmp4 = load <8 x i32>, <8 x i32> addrspace(2)* %tmp3
+  %tmp2 = getelementptr <8 x i32>, <8 x i32> addrspace(4)* %in, i32 %tmp
+  %tmp3 = getelementptr <8 x i32>, <8 x i32> addrspace(4)* %tmp2, i32 1234
+  %tmp4 = load <8 x i32>, <8 x i32> addrspace(4)* %tmp3
   %tmp5 = or <8 x i32> %tmp4, %c
   store <8 x i32> %tmp5, <8 x i32> addrspace(1)* %out
   ret void
@@ -202,14 +201,19 @@ entry:
 
 ; GCN-LABEL: {{^}}smrd_valu_ci_offset_x16:
 
-; GCN-NOHSA-DAG: s_mov_b32 [[OFFSET0:s[0-9]+]], 0x13480{{$}}
-; GCN-NOHSA-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET0]] addr64{{$}}
-; GCN-NOHSA-DAG: s_mov_b32 [[OFFSET1:s[0-9]+]], 0x13490{{$}}
-; GCN-NOHSA-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET1]] addr64{{$}}
-; GCN-NOHSA-DAG: s_mov_b32 [[OFFSET2:s[0-9]+]], 0x134a0{{$}}
-; GCN-NOHSA-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET2]] addr64{{$}}
-; GCN-NOHSA-DAG: s_mov_b32 [[OFFSET3:s[0-9]+]], 0x134b0{{$}}
-; GCN-NOHSA-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET3]] addr64{{$}}
+; SI: s_mov_b32 {{s[0-9]+}}, 0x13480
+; SI-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], 0 addr64 offset:16
+; SI-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], 0 addr64 offset:32
+; SI-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], 0 addr64 offset:48
+; SI: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], {{s[0-9]+}} addr64
+; CI-NOHSA-DAG: s_mov_b32 [[OFFSET0:s[0-9]+]], 0x13480{{$}}
+; CI-NOHSA-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET0]] addr64{{$}}
+; CI-NOHSA-DAG: s_mov_b32 [[OFFSET1:s[0-9]+]], 0x13490{{$}}
+; CI-NOHSA-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET1]] addr64{{$}}
+; CI-NOHSA-DAG: s_mov_b32 [[OFFSET2:s[0-9]+]], 0x134a0{{$}}
+; CI-NOHSA-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET2]] addr64{{$}}
+; CI-NOHSA-DAG: s_mov_b32 [[OFFSET3:s[0-9]+]], 0x134b0{{$}}
+; CI-NOHSA-DAG: buffer_load_dwordx4 v{{\[[0-9]+:[0-9]+\]}}, v{{\[[0-9]+:[0-9]+\]}}, s[{{[0-9]+:[0-9]+}}], [[OFFSET3]] addr64{{$}}
 
 ; GCN-NOHSA: v_or_b32_e32 {{v[0-9]+}}, {{s[0-9]+}}, {{v[0-9]+}}
 ; GCN-NOHSA: v_or_b32_e32 {{v[0-9]+}}, {{s[0-9]+}}, {{v[0-9]+}}
@@ -230,12 +234,12 @@ entry:
 ; GCN-HSA: flat_load_dwordx4
 
 ; GCN: s_endpgm
-define amdgpu_kernel void @smrd_valu_ci_offset_x16(<16 x i32> addrspace(1)* %out, <16 x i32> addrspace(2)* %in, <16 x i32> %c) #1 {
+define amdgpu_kernel void @smrd_valu_ci_offset_x16(<16 x i32> addrspace(1)* %out, <16 x i32> addrspace(4)* %in, <16 x i32> %c) #1 {
 entry:
   %tmp = call i32 @llvm.amdgcn.workitem.id.x()
-  %tmp2 = getelementptr <16 x i32>, <16 x i32> addrspace(2)* %in, i32 %tmp
-  %tmp3 = getelementptr <16 x i32>, <16 x i32> addrspace(2)* %tmp2, i32 1234
-  %tmp4 = load <16 x i32>, <16 x i32> addrspace(2)* %tmp3
+  %tmp2 = getelementptr <16 x i32>, <16 x i32> addrspace(4)* %in, i32 %tmp
+  %tmp3 = getelementptr <16 x i32>, <16 x i32> addrspace(4)* %tmp2, i32 1234
+  %tmp4 = load <16 x i32>, <16 x i32> addrspace(4)* %tmp3
   %tmp5 = or <16 x i32> %tmp4, %c
   store <16 x i32> %tmp5, <16 x i32> addrspace(1)* %out
   ret void
@@ -247,12 +251,12 @@ entry:
 ; GCN: v_add_i32_e32 [[ADD:v[0-9]+]], vcc, s{{[0-9]+}}, [[MOVED]]
 ; GCN-NOHSA: buffer_store_dword [[ADD]]
 ; GCN-HSA: flat_store_dword {{.*}}, [[ADD]]
-define amdgpu_kernel void @smrd_valu2_salu_user(i32 addrspace(1)* %out, [8 x i32] addrspace(2)* %in, i32 %a) #1 {
+define amdgpu_kernel void @smrd_valu2_salu_user(i32 addrspace(1)* %out, [8 x i32] addrspace(4)* %in, i32 %a) #1 {
 entry:
   %tmp = call i32 @llvm.amdgcn.workitem.id.x()
   %tmp1 = add i32 %tmp, 4
-  %tmp2 = getelementptr [8 x i32], [8 x i32] addrspace(2)* %in, i32 %tmp, i32 4
-  %tmp3 = load i32, i32 addrspace(2)* %tmp2
+  %tmp2 = getelementptr [8 x i32], [8 x i32] addrspace(4)* %in, i32 %tmp, i32 4
+  %tmp3 = load i32, i32 addrspace(4)* %tmp2
   %tmp4 = add i32 %tmp3, %a
   store i32 %tmp4, i32 addrspace(1)* %out
   ret void
@@ -260,13 +264,13 @@ entry:
 
 ; GCN-LABEL: {{^}}smrd_valu2_max_smrd_offset:
 ; GCN-NOHSA: buffer_load_dword v{{[0-9]+}}, v{{\[[0-9]+:[0-9]+\]}}, s{{\[[0-9]+:[0-9]+\]}}, 0 addr64 offset:1020{{$}}
-; GCN-HSA flat_load_dword v{{[0-9]}}, v{{[0-9]+:[0-9]+}}
-define amdgpu_kernel void @smrd_valu2_max_smrd_offset(i32 addrspace(1)* %out, [1024 x i32] addrspace(2)* %in) #1 {
+; GCN-HSA: flat_load_dword v{{[0-9]}}, v[{{[0-9]+:[0-9]+}}]
+define amdgpu_kernel void @smrd_valu2_max_smrd_offset(i32 addrspace(1)* %out, [1024 x i32] addrspace(4)* %in) #1 {
 entry:
   %tmp = call i32 @llvm.amdgcn.workitem.id.x()
   %tmp1 = add i32 %tmp, 4
-  %tmp2 = getelementptr [1024 x i32], [1024 x i32] addrspace(2)* %in, i32 %tmp, i32 255
-  %tmp3 = load i32, i32 addrspace(2)* %tmp2
+  %tmp2 = getelementptr [1024 x i32], [1024 x i32] addrspace(4)* %in, i32 %tmp, i32 255
+  %tmp3 = load i32, i32 addrspace(4)* %tmp2
   store i32 %tmp3, i32 addrspace(1)* %out
   ret void
 }
@@ -275,12 +279,12 @@ entry:
 ; GCN-NOHSA-NOT: v_add
 ; GCN-NOHSA: buffer_load_dword v{{[0-9]+}}, v{{\[[0-9]+:[0-9]+\]}}, s{{\[[0-9]+:[0-9]+\]}}, 0 addr64 offset:1024{{$}}
 ; GCN-HSA: flat_load_dword v{{[0-9]}}, v[{{[0-9]+:[0-9]+}}]
-define amdgpu_kernel void @smrd_valu2_mubuf_offset(i32 addrspace(1)* %out, [1024 x i32] addrspace(2)* %in) #1 {
+define amdgpu_kernel void @smrd_valu2_mubuf_offset(i32 addrspace(1)* %out, [1024 x i32] addrspace(4)* %in) #1 {
 entry:
   %tmp = call i32 @llvm.amdgcn.workitem.id.x()
   %tmp1 = add i32 %tmp, 4
-  %tmp2 = getelementptr [1024 x i32], [1024 x i32] addrspace(2)* %in, i32 %tmp, i32 256
-  %tmp3 = load i32, i32 addrspace(2)* %tmp2
+  %tmp2 = getelementptr [1024 x i32], [1024 x i32] addrspace(4)* %in, i32 %tmp, i32 256
+  %tmp3 = load i32, i32 addrspace(4)* %tmp2
   store i32 %tmp3, i32 addrspace(1)* %out
   ret void
 }
@@ -290,12 +294,12 @@ entry:
 ; GCN-NOHSA: buffer_load_dwordx4
 ; GCN-HSA: flat_load_dwordx4
 ; GCN-HSA: flat_load_dwordx4
-define amdgpu_kernel void @s_load_imm_v8i32(<8 x i32> addrspace(1)* %out, i32 addrspace(2)* nocapture readonly %in) #1 {
+define amdgpu_kernel void @s_load_imm_v8i32(<8 x i32> addrspace(1)* %out, i32 addrspace(4)* nocapture readonly %in) #1 {
 entry:
   %tmp0 = tail call i32 @llvm.amdgcn.workitem.id.x()
-  %tmp1 = getelementptr inbounds i32, i32 addrspace(2)* %in, i32 %tmp0
-  %tmp2 = bitcast i32 addrspace(2)* %tmp1 to <8 x i32> addrspace(2)*
-  %tmp3 = load <8 x i32>, <8 x i32> addrspace(2)* %tmp2, align 4
+  %tmp1 = getelementptr inbounds i32, i32 addrspace(4)* %in, i32 %tmp0
+  %tmp2 = bitcast i32 addrspace(4)* %tmp1 to <8 x i32> addrspace(4)*
+  %tmp3 = load <8 x i32>, <8 x i32> addrspace(4)* %tmp2, align 4
   store <8 x i32> %tmp3, <8 x i32> addrspace(1)* %out, align 32
   ret void
 }
@@ -313,12 +317,12 @@ entry:
 ; GCN-NOHSA: buffer_store_dword
 ; GCN-HSA: flat_load_dwordx4
 ; GCN-HSA: flat_load_dwordx4
-define amdgpu_kernel void @s_load_imm_v8i32_salu_user(i32 addrspace(1)* %out, i32 addrspace(2)* nocapture readonly %in) #1 {
+define amdgpu_kernel void @s_load_imm_v8i32_salu_user(i32 addrspace(1)* %out, i32 addrspace(4)* nocapture readonly %in) #1 {
 entry:
   %tmp0 = tail call i32 @llvm.amdgcn.workitem.id.x()
-  %tmp1 = getelementptr inbounds i32, i32 addrspace(2)* %in, i32 %tmp0
-  %tmp2 = bitcast i32 addrspace(2)* %tmp1 to <8 x i32> addrspace(2)*
-  %tmp3 = load <8 x i32>, <8 x i32> addrspace(2)* %tmp2, align 4
+  %tmp1 = getelementptr inbounds i32, i32 addrspace(4)* %in, i32 %tmp0
+  %tmp2 = bitcast i32 addrspace(4)* %tmp1 to <8 x i32> addrspace(4)*
+  %tmp3 = load <8 x i32>, <8 x i32> addrspace(4)* %tmp2, align 4
 
   %elt0 = extractelement <8 x i32> %tmp3, i32 0
   %elt1 = extractelement <8 x i32> %tmp3, i32 1
@@ -350,12 +354,12 @@ entry:
 ; GCN-HSA: flat_load_dwordx4
 ; GCN-HSA: flat_load_dwordx4
 ; GCN-HSA: flat_load_dwordx4
-define amdgpu_kernel void @s_load_imm_v16i32(<16 x i32> addrspace(1)* %out, i32 addrspace(2)* nocapture readonly %in) #1 {
+define amdgpu_kernel void @s_load_imm_v16i32(<16 x i32> addrspace(1)* %out, i32 addrspace(4)* nocapture readonly %in) #1 {
 entry:
   %tmp0 = tail call i32 @llvm.amdgcn.workitem.id.x()
-  %tmp1 = getelementptr inbounds i32, i32 addrspace(2)* %in, i32 %tmp0
-  %tmp2 = bitcast i32 addrspace(2)* %tmp1 to <16 x i32> addrspace(2)*
-  %tmp3 = load <16 x i32>, <16 x i32> addrspace(2)* %tmp2, align 4
+  %tmp1 = getelementptr inbounds i32, i32 addrspace(4)* %in, i32 %tmp0
+  %tmp2 = bitcast i32 addrspace(4)* %tmp1 to <16 x i32> addrspace(4)*
+  %tmp3 = load <16 x i32>, <16 x i32> addrspace(4)* %tmp2, align 4
   store <16 x i32> %tmp3, <16 x i32> addrspace(1)* %out, align 32
   ret void
 }
@@ -385,12 +389,12 @@ entry:
 ; GCN-HSA: flat_load_dwordx4
 ; GCN-HSA: flat_load_dwordx4
 ; GCN-HSA: flat_load_dwordx4
-define amdgpu_kernel void @s_load_imm_v16i32_salu_user(i32 addrspace(1)* %out, i32 addrspace(2)* nocapture readonly %in) #1 {
+define amdgpu_kernel void @s_load_imm_v16i32_salu_user(i32 addrspace(1)* %out, i32 addrspace(4)* nocapture readonly %in) #1 {
 entry:
   %tmp0 = tail call i32 @llvm.amdgcn.workitem.id.x()
-  %tmp1 = getelementptr inbounds i32, i32 addrspace(2)* %in, i32 %tmp0
-  %tmp2 = bitcast i32 addrspace(2)* %tmp1 to <16 x i32> addrspace(2)*
-  %tmp3 = load <16 x i32>, <16 x i32> addrspace(2)* %tmp2, align 4
+  %tmp1 = getelementptr inbounds i32, i32 addrspace(4)* %in, i32 %tmp0
+  %tmp2 = bitcast i32 addrspace(4)* %tmp1 to <16 x i32> addrspace(4)*
+  %tmp3 = load <16 x i32>, <16 x i32> addrspace(4)* %tmp2, align 4
 
   %elt0 = extractelement <16 x i32> %tmp3, i32 0
   %elt1 = extractelement <16 x i32> %tmp3, i32 1
@@ -435,7 +439,7 @@ entry:
 ; GCN: s_load_dword [[SGPR:s[0-9]+]]
 ; GCN: v_cmp_le_u32_e32 vcc, [[SGPR]], v{{[0-9]+}}
 ; GCN: s_and_b64 vcc, exec, vcc
-; GCN: s_cbranch_vccnz [[EXIT:[A-Z0-9_]+]]
+; GCN: s_cbranch_vccnz [[EXIT:.L[A-Z0-9_]+]]
 ; GCN: v_mov_b32_e32 [[ONE:v[0-9]+]], 1
 ; GCN-NOHSA: buffer_store_dword [[ONE]]
 ; GCN-HSA: flat_store_dword v[{{[0-9]+:[0-9]+}}], [[ONE]]
@@ -458,7 +462,7 @@ bb7:                                              ; preds = %bb3
 }
 
 ; GCN-LABEL: {{^}}phi_visit_order:
-; GCN: v_add_i32_e32 v{{[0-9]+}}, vcc, 1, v{{[0-9]+}}
+; GCN: v_add_i32_e64 v{{[0-9]+}}, s{{\[[0-9]+:[0-9]+\]}}, 1, v{{[0-9]+}}
 define amdgpu_kernel void @phi_visit_order() {
 bb:
   br label %bb1
@@ -475,13 +479,14 @@ bb2:
 
 bb4:
   %tmp5 = phi i32 [ %tmp3, %bb2 ], [ %tmp, %bb1 ]
+  store volatile i32 %tmp5, i32 addrspace(1)* undef
   br label %bb1
 }
 
 ; GCN-LABEL: {{^}}phi_imm_in_sgprs
 ; GCN: s_movk_i32 [[A:s[0-9]+]], 0x400
 ; GCN: s_movk_i32 [[B:s[0-9]+]], 0x400
-; GCN: [[LOOP_LABEL:[0-9a-zA-Z_]+]]:
+; GCN: [[LOOP_LABEL:.L[0-9a-zA-Z_]+]]:
 ; GCN: s_xor_b32 [[B]], [[B]], [[A]]
 ; GCN: s_cbranch_scc{{[01]}} [[LOOP_LABEL]]
 define amdgpu_kernel void @phi_imm_in_sgprs(i32 addrspace(3)* %out, i32 %cond) {

@@ -1,5 +1,4 @@
-; RUN: opt < %s -sample-profile -sample-profile-file=%S/Inputs/offset.prof | opt -analyze -branch-prob | FileCheck %s
-; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/offset.prof | opt -analyze -branch-prob | FileCheck %s
+; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/offset.prof | opt -passes='print<branch-prob>' -disable-output 2>&1 | FileCheck %s
 
 ; Original C++ code for this test case:
 ;
@@ -48,7 +47,7 @@ return:                                           ; preds = %if.else, %if.then
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" "use-sample-profile" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -58,7 +57,7 @@ attributes #1 = { nounwind readnone }
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, file: !1, producer: "clang version 3.8.0 (trunk 250750)", isOptimized: false, runtimeVersion: 0, emissionKind: NoDebug, enums: !2)
 !1 = !DIFile(filename: "a.cc", directory: "/tmp")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fooi", scope: !1, file: !1, line: 5, type: !5, isLocal: false, isDefinition: true, scopeLine: 5, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fooi", scope: !1, file: !1, line: 5, type: !5, isLocal: false, isDefinition: true, scopeLine: 5, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !5 = !DISubroutineType(types: !6)
 !6 = !{!7, !7}
 !7 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)

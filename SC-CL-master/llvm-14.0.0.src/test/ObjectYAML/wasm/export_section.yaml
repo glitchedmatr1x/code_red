@@ -3,22 +3,29 @@
 FileHeader:
   Version:         0x00000001
 Sections:
+  - Type:            TYPE
+    Signatures:
+      - Index:           0
+        ParamTypes:
+        ReturnTypes:     []
   - Type:            FUNCTION
     FunctionTypes: [ 0, 0 ]
   - Type:            GLOBAL
     Globals:
-      - Type:        I32
+      - Index:       0
+        Type:        I32
         Mutable:     false
         InitExpr:
           Opcode:          I64_CONST
           Value:           32
-      - Type:        I32
+      - Index:       1
+        Type:        I32
         Mutable:     false
         InitExpr:
           Opcode:          I64_CONST
           Value:           64
   - Type:            EXPORT
-    Exports:         
+    Exports:
       - Name:            function_export
         Kind:            FUNCTION
         Index:           1
@@ -31,13 +38,21 @@ Sections:
       - Name:            table_export
         Kind:            TABLE
         Index:           0
+  - Type:            CODE
+    Functions:
+      - Index:           0
+        Locals:
+        Body:            0B
+      - Index:           1
+        Locals:
+        Body:            0B
 ...
 # CHECK: --- !WASM
 # CHECK: FileHeader:
-# CHECK:   Version:           0x00000001
+# CHECK:   Version:           0x1
 # CHECK: Sections:
 # CHECK:   - Type:            EXPORT
-# CHECK:     Exports:         
+# CHECK:     Exports:
 # CHECK:       - Name:            function_export
 # CHECK:         Kind:            FUNCTION
 # CHECK:         Index:           1

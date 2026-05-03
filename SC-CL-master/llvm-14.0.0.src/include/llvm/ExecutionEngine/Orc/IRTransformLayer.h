@@ -1,9 +1,8 @@
 //===- IRTransformLayer.h - Run all IR through a functor --------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -14,80 +13,40 @@
 #ifndef LLVM_EXECUTIONENGINE_ORC_IRTRANSFORMLAYER_H
 #define LLVM_EXECUTIONENGINE_ORC_IRTRANSFORMLAYER_H
 
+#include "llvm/ADT/FunctionExtras.h"
 #include "llvm/ExecutionEngine/JITSymbol.h"
+#include "llvm/ExecutionEngine/Orc/Layer.h"
 #include <memory>
-#include <string>
 
 namespace llvm {
-class Module;
 namespace orc {
 
-/// @brief IR mutating layer.
-///
-///   This layer applies a user supplied transform to each module that is added,
-/// then adds the transformed module to the layer below.
-template <typename BaseLayerT, typename TransformFtor>
-class IRTransformLayer {
+/// A layer that applies a transform to emitted modules.
+/// The transform function is responsible for locking the ThreadSafeContext
+/// before operating on the module.
+class IRTransformLayer : public IRLayer {
 public:
+  using TransformFunction = unique_function<Expected<ThreadSafeModule>(
+      ThreadSafeModule, MaterializationResponsibility &R)>;
 
-  /// @brief Handle to a set of added modules.
-  using ModuleHandleT = typename BaseLayerT::ModuleHandleT;
+  IRTransformLayer(ExecutionSession &ES, IRLayer &BaseLayer,
+                   TransformFunction Transform = identityTransform);
 
-  /// @brief Construct an IRTransformLayer with the given BaseLayer
-  IRTransformLayer(BaseLayerT &BaseLayer,
-                   TransformFtor Transform = TransformFtor())
-    : BaseLayer(BaseLayer), Transform(std::move(Transform)) {}
-
-  /// @brief Apply the transform functor to the module, then add the module to
-  ///        the layer below, along with the memory manager and symbol resolver.
-  ///
-  /// @return A handle for the added modules.
-  Expected<ModuleHandleT>
-  addModule(std::shared_ptr<Module> M,
-            std::shared_ptr<JITSymbolResolver> Resolver) {
-    return BaseLayer.addModule(Transform(std::move(M)), std::move(Resolver));
+  void setTransform(TransformFunction Transform) {
+    this->Transform = std::move(Transform);
   }
 
-  /// @brief Remove the module associated with the handle H.
-  Error removeModule(ModuleHandleT H) { return BaseLayer.removeModule(H); }
+  void emit(std::unique_ptr<MaterializationResponsibility> R,
+            ThreadSafeModule TSM) override;
 
-  /// @brief Search for the given named symbol.
-  /// @param Name The name of the symbol to search for.
-  /// @param ExportedSymbolsOnly If true, search only for exported symbols.
-  /// @return A handle for the given named symbol, if it exists.
-  JITSymbol findSymbol(const std::string &Name, bool ExportedSymbolsOnly) {
-    return BaseLayer.findSymbol(Name, ExportedSymbolsOnly);
+  static ThreadSafeModule identityTransform(ThreadSafeModule TSM,
+                                            MaterializationResponsibility &R) {
+    return TSM;
   }
-
-  /// @brief Get the address of the given symbol in the context of the module
-  ///        represented by the handle H. This call is forwarded to the base
-  ///        layer's implementation.
-  /// @param H The handle for the module to search in.
-  /// @param Name The name of the symbol to search for.
-  /// @param ExportedSymbolsOnly If true, search only for exported symbols.
-  /// @return A handle for the given named symbol, if it is found in the
-  ///         given module.
-  JITSymbol findSymbolIn(ModuleHandleT H, const std::string &Name,
-                         bool ExportedSymbolsOnly) {
-    return BaseLayer.findSymbolIn(H, Name, ExportedSymbolsOnly);
-  }
-
-  /// @brief Immediately emit and finalize the module represented by the given
-  ///        handle.
-  /// @param H Handle for module to emit/finalize.
-  Error emitAndFinalize(ModuleHandleT H) {
-    return BaseLayer.emitAndFinalize(H);
-  }
-
-  /// @brief Access the transform functor directly.
-  TransformFtor& getTransform() { return Transform; }
-
-  /// @brief Access the mumate functor directly.
-  const TransformFtor& getTransform() const { return Transform; }
 
 private:
-  BaseLayerT &BaseLayer;
-  TransformFtor Transform;
+  IRLayer &BaseLayer;
+  TransformFunction Transform;
 };
 
 } // end namespace orc

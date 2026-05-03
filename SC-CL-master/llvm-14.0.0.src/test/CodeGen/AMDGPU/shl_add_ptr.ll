@@ -33,8 +33,8 @@ define amdgpu_kernel void @load_shl_base_lds_0(float addrspace(1)* %out, i32 add
 ; remaining add use goes through the normal shl + add constant fold.
 
 ; GCN-LABEL: {{^}}load_shl_base_lds_1:
-; GCN: v_lshlrev_b32_e32 [[PTR:v[0-9]+]], 2, {{v[0-9]+}}
-; GCN: ds_read_b32 [[RESULT:v[0-9]+]], [[PTR]] offset:8
+; GCN: v_lshlrev_b32_e32 [[OFS:v[0-9]+]], 2, {{v[0-9]+}}
+; GCN: ds_read_b32 [[RESULT:v[0-9]+]], [[OFS]] offset:8
 ; GCN: v_add_{{[iu]}}32_e32 [[ADDUSE:v[0-9]+]], vcc, 8, v{{[0-9]+}}
 ; GCN-DAG: buffer_store_dword [[RESULT]]
 ; GCN-DAG: buffer_store_dword [[ADDUSE]]
@@ -71,7 +71,7 @@ define amdgpu_kernel void @load_shl_base_lds_max_offset(i8 addrspace(1)* %out, i
 ; GCN-LABEL: {{^}}load_shl_base_lds_2:
 ; GCN: v_lshlrev_b32_e32 [[PTR:v[0-9]+]], 2, {{v[0-9]+}}
 ; GCN: s_mov_b32 m0, -1
-; GCN-NEXT: ds_read2st64_b32 {{v\[[0-9]+:[0-9]+\]}}, [[PTR]] offset0:1 offset1:9
+; GCN: ds_read2st64_b32 {{v\[[0-9]+:[0-9]+\]}}, [[PTR]] offset0:1 offset1:9
 ; GCN: s_endpgm
 define amdgpu_kernel void @load_shl_base_lds_2(float addrspace(1)* %out) #0 {
   %tid.x = tail call i32 @llvm.amdgcn.workitem.id.x() #1
@@ -282,9 +282,8 @@ define amdgpu_kernel void @atomic_umax_shl_base_lds_0(i32 addrspace(1)* %out, i3
 
 ; GCN-LABEL: {{^}}shl_add_ptr_combine_2use_lds:
 ; GCN: v_lshlrev_b32_e32 [[SCALE0:v[0-9]+]], 3, v0
-; GCN: ds_write_b32 [[SCALE0]], v{{[0-9]+}} offset:32
-
 ; GCN: v_lshlrev_b32_e32 [[SCALE1:v[0-9]+]], 4, v0
+; GCN: ds_write_b32 [[SCALE0]], v{{[0-9]+}} offset:32
 ; GCN: ds_write_b32 [[SCALE1]], v{{[0-9]+}} offset:64
 define void @shl_add_ptr_combine_2use_lds(i32 %idx) #0 {
   %idx.add = add nuw i32 %idx, 4
@@ -333,63 +332,63 @@ define void @shl_add_ptr_combine_2use_both_max_lds_offset(i32 %idx) #0 {
 
 ; GCN-LABEL: {{^}}shl_add_ptr_combine_2use_private:
 ; GCN: v_lshlrev_b32_e32 [[SCALE0:v[0-9]+]], 2, v0
-; GCN: buffer_store_dword v{{[0-9]+}}, [[SCALE0]], s[0:3], s4 offen offset:16
-
 ; GCN: v_lshlrev_b32_e32 [[SCALE1:v[0-9]+]], 3, v0
-; GCN: buffer_store_dword v{{[0-9]+}}, [[SCALE1]], s[0:3], s4 offen offset:32
+; GCN: buffer_store_dword v{{[0-9]+}}, [[SCALE0]], s[0:3], 0 offen offset:16
+; GCN: buffer_store_dword v{{[0-9]+}}, [[SCALE1]], s[0:3], 0 offen offset:32
 define void @shl_add_ptr_combine_2use_private(i16 zeroext %idx.arg) #0 {
   %idx = zext i16 %idx.arg to i32
   %idx.add = add nuw i32 %idx, 4
   %shl0 = shl i32 %idx.add, 2
   %shl1 = shl i32 %idx.add, 3
-  %ptr0 = inttoptr i32 %shl0 to i32*
-  %ptr1 = inttoptr i32 %shl1 to i32*
-  store volatile i32 9, i32* %ptr0
-  store volatile i32 10, i32* %ptr1
+  %ptr0 = inttoptr i32 %shl0 to i32 addrspace(5)*
+  %ptr1 = inttoptr i32 %shl1 to i32 addrspace(5)*
+  store volatile i32 9, i32 addrspace(5)* %ptr0
+  store volatile i32 10, i32 addrspace(5)* %ptr1
   ret void
 }
 
 ; GCN-LABEL: {{^}}shl_add_ptr_combine_2use_max_private_offset:
 ; GCN-DAG: v_lshlrev_b32_e32 [[SCALE0:v[0-9]+]], 3, v0
 ; GCN-DAG: v_lshlrev_b32_e32 [[SCALE1:v[0-9]+]], 4, v0
-; GCN-DAG: buffer_store_dword v{{[0-9]+}}, [[SCALE0]], s[0:3], s4 offen offset:4088
+; GCN-DAG: buffer_store_dword v{{[0-9]+}}, [[SCALE0]], s[0:3], 0 offen offset:4088
 ; GCN-DAG: v_add_{{[iu]}}32_e32 [[ADD:v[0-9]+]], vcc, 0x1ff0, [[SCALE1]]
-; GCN: buffer_store_dword v{{[0-9]+}}, [[ADD]], s[0:3], s4 offen{{$}}
+; GCN: buffer_store_dword v{{[0-9]+}}, [[ADD]], s[0:3], 0 offen{{$}}
 define void @shl_add_ptr_combine_2use_max_private_offset(i16 zeroext %idx.arg) #0 {
   %idx = zext i16 %idx.arg to i32
   %idx.add = add nuw i32 %idx, 511
   %shl0 = shl i32 %idx.add, 3
   %shl1 = shl i32 %idx.add, 4
-  %ptr0 = inttoptr i32 %shl0 to i32*
-  %ptr1 = inttoptr i32 %shl1 to i32*
-  store volatile i32 9, i32* %ptr0
-  store volatile i32 10, i32* %ptr1
+  %ptr0 = inttoptr i32 %shl0 to i32 addrspace(5)*
+  %ptr1 = inttoptr i32 %shl1 to i32 addrspace(5)*
+  store volatile i32 9, i32 addrspace(5)* %ptr0
+  store volatile i32 10, i32 addrspace(5)* %ptr1
   ret void
 }
 ; GCN-LABEL: {{^}}shl_add_ptr_combine_2use_both_max_private_offset:
 ; GCN: v_add_{{[iu]}}32_e32 [[ADD:v[0-9]+]], vcc, 0x100, v0
 ; GCN-DAG: v_lshlrev_b32_e32 [[SCALE0:v[0-9]+]], 4, [[ADD]]
 ; GCN-DAG: v_lshlrev_b32_e32 [[SCALE1:v[0-9]+]], 5, [[ADD]]
-; GCN-DAG: buffer_store_dword v{{[0-9]+}}, [[SCALE0]], s[0:3], s4 offen{{$}}
-; GCN: buffer_store_dword v{{[0-9]+}}, [[SCALE1]], s[0:3], s4 offen{{$}}
+; GCN-DAG: buffer_store_dword v{{[0-9]+}}, [[SCALE0]], s[0:3], 0 offen{{$}}
+; GCN: buffer_store_dword v{{[0-9]+}}, [[SCALE1]], s[0:3], 0 offen{{$}}
 define void @shl_add_ptr_combine_2use_both_max_private_offset(i16 zeroext %idx.arg) #0 {
   %idx = zext i16 %idx.arg to i32
   %idx.add = add nuw i32 %idx, 256
   %shl0 = shl i32 %idx.add, 4
   %shl1 = shl i32 %idx.add, 5
-  %ptr0 = inttoptr i32 %shl0 to i32*
-  %ptr1 = inttoptr i32 %shl1 to i32*
-  store volatile i32 9, i32* %ptr0
-  store volatile i32 10, i32* %ptr1
+  %ptr0 = inttoptr i32 %shl0 to i32 addrspace(5)*
+  %ptr1 = inttoptr i32 %shl1 to i32 addrspace(5)*
+  store volatile i32 9, i32 addrspace(5)* %ptr0
+  store volatile i32 10, i32 addrspace(5)* %ptr1
   ret void
 }
 
+; FIXME: This or should fold into an offset on the write
 ; GCN-LABEL: {{^}}shl_or_ptr_combine_2use_lds:
 ; GCN: v_lshlrev_b32_e32 [[SCALE0:v[0-9]+]], 3, v0
-; GCN: ds_write_b32 [[SCALE0]], v{{[0-9]+}} offset:32
-
-; GCN: v_lshlrev_b32_e32 [[SCALE1:v[0-9]+]], 4, v0
-; GCN: ds_write_b32 [[SCALE1]], v{{[0-9]+}} offset:64
+; GCN: v_or_b32_e32 [[SCALE1:v[0-9]+]], 32, [[SCALE0]]
+; GCN: v_lshlrev_b32_e32 [[SCALE2:v[0-9]+]], 4, v0
+; GCN: ds_write_b32 [[SCALE1]], v{{[0-9]+}}
+; GCN: ds_write_b32 [[SCALE2]], v{{[0-9]+}} offset:64
 define void @shl_or_ptr_combine_2use_lds(i32 %idx) #0 {
   %idx.add = or i32 %idx, 4
   %shl0 = shl i32 %idx.add, 3

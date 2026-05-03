@@ -1,9 +1,8 @@
 //===- Linker.h - Module Linker Interface -----------------------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -15,8 +14,6 @@
 
 namespace llvm {
 class Module;
-class StructType;
-class Type;
 
 /// This class provides the core functionality of linking in LLVM. It keeps a
 /// pointer to the merged module so far. It doesn't take ownership of the
@@ -34,7 +31,7 @@ public:
 
   Linker(Module &M);
 
-  /// \brief Link \p Src into the composite.
+  /// Link \p Src into the composite.
   ///
   /// Passing OverrideSymbols as true will have symbols from Src
   /// shadow those in the Dest.

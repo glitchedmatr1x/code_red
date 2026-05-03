@@ -1,6 +1,6 @@
 ; Test that coverage instrumentation does not lose debug location.
 
-; RUN: opt < %s -sancov -sanitizer-coverage-level=1 -S | FileCheck %s
+; RUN: opt < %s -passes='module(sancov-module)' -sanitizer-coverage-level=1 -S | FileCheck %s
 
 ; C++ source:
 ; 1: struct A {
@@ -15,7 +15,7 @@
 ; and add sanitize_address to @_ZN1A1fEv
 
 ; Test that __sanitizer_cov_trace_pc_guard call has !dbg pointing to the opening { of A::f().
-; CHECK: call void @__sanitizer_cov_trace_pc_guard(i32*{{.*}}), !dbg [[A:!.*]]
+; CHECK: call void @__sanitizer_cov_trace_pc_guard(i32*{{.*}}) #{{.*}}, !dbg [[A:!.*]]
 ; CHECK: [[A]] = !DILocation(line: 6, scope: !{{.*}})
 
 
@@ -36,7 +36,7 @@ entry:
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, i64, metadata, metadata) #1
 
-attributes #0 = { sanitize_address nounwind readonly uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { sanitize_address nounwind readonly uwtable "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -55,7 +55,7 @@ attributes #1 = { nounwind readnone }
 !9 = !DISubroutineType(types: !10)
 !10 = !{!7, !11}
 !11 = !DIDerivedType(tag: DW_TAG_pointer_type, size: 64, align: 64, flags: DIFlagArtificial | DIFlagObjectPointer, baseType: !4)
-!13 = distinct !DISubprogram(name: "f", linkageName: "_ZN1A1fEv", line: 6, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 6, file: !1, scope: !4, type: !9, declaration: !8, variables: !14)
+!13 = distinct !DISubprogram(name: "f", linkageName: "_ZN1A1fEv", line: 6, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 6, file: !1, scope: !4, type: !9, declaration: !8, retainedNodes: !14)
 !14 = !{!15}
 !15 = !DILocalVariable(name: "this", arg: 1, flags: DIFlagArtificial | DIFlagObjectPointer, scope: !13, type: !16)
 !16 = !DIDerivedType(tag: DW_TAG_pointer_type, size: 64, align: 64, baseType: !4)

@@ -56,13 +56,13 @@ define void @test_musttail_basic_a(i32* %p) {
 ; CHECK: musttail call void @test_byval_c(
 ; CHECK-NEXT: ret void
 
-declare void @test_byval_c(i32* byval %p)
-define internal void @test_byval_b(i32* byval %p) {
-  musttail call void @test_byval_c(i32* byval %p)
+declare void @test_byval_c(i32* byval(i32) %p)
+define internal void @test_byval_b(i32* byval(i32) %p) {
+  musttail call void @test_byval_c(i32* byval(i32) %p)
   ret void
 }
-define void @test_byval_a(i32* byval %p) {
-  musttail call void @test_byval_b(i32* byval %p)
+define void @test_byval_a(i32* byval(i32) %p) {
+  musttail call void @test_byval_b(i32* byval(i32) %p)
   ret void
 }
 
@@ -74,15 +74,15 @@ define void @test_byval_a(i32* byval %p) {
 ; CHECK-NEXT: ret void
 
 declare void @escape(i8* %buf)
-declare void @test_dynalloca_c(i32* byval %p, i32 %n)
-define internal void @test_dynalloca_b(i32* byval %p, i32 %n) alwaysinline {
+declare void @test_dynalloca_c(i32* byval(i32) %p, i32 %n)
+define internal void @test_dynalloca_b(i32* byval(i32) %p, i32 %n) alwaysinline {
   %buf = alloca i8, i32 %n              ; dynamic alloca
   call void @escape(i8* %buf)           ; escape it
-  musttail call void @test_dynalloca_c(i32* byval %p, i32 %n)
+  musttail call void @test_dynalloca_c(i32* byval(i32) %p, i32 %n)
   ret void
 }
-define void @test_dynalloca_a(i32* byval %p, i32 %n) {
-  musttail call void @test_dynalloca_b(i32* byval %p, i32 %n)
+define void @test_dynalloca_a(i32* byval(i32) %p, i32 %n) {
+  musttail call void @test_dynalloca_b(i32* byval(i32) %p, i32 %n)
   ret void
 }
 
@@ -196,3 +196,24 @@ define i32 @test_notail() {
   %rv = tail call i32 @notail()
   ret i32 %rv
 }
+
+; PR31014: Inlining a musttail call through a notail call site should remove
+; any tail marking, otherwise we break verifier invariants.
+
+declare void @do_ret(i32)
+
+define void @test_notail_inline_musttail(i32 %a) {
+  notail call void @inline_musttail(i32 %a)
+  musttail call void @do_ret(i32 %a)
+  ret void
+}
+
+define internal void @inline_musttail(i32 %a) {
+  musttail call void @do_ret(i32 %a)
+  ret void
+}
+
+; CHECK-LABEL: define void @test_notail_inline_musttail(i32 %a)
+; CHECK:   {{^ *}}call void @do_ret(i32 %a)
+; CHECK:   musttail call void @do_ret(i32 %a)
+; CHECK:   ret void

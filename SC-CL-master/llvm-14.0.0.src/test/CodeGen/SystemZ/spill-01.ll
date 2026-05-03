@@ -5,30 +5,30 @@
 
 declare void @foo()
 
-@g0 = global i32 0
-@g1 = global i32 1
-@g2 = global i32 2
-@g3 = global i32 3
-@g4 = global i32 4
-@g5 = global i32 5
-@g6 = global i32 6
-@g7 = global i32 7
-@g8 = global i32 8
-@g9 = global i32 9
+@g0 = dso_local global i32 0
+@g1 = dso_local global i32 1
+@g2 = dso_local global i32 2
+@g3 = dso_local global i32 3
+@g4 = dso_local global i32 4
+@g5 = dso_local global i32 5
+@g6 = dso_local global i32 6
+@g7 = dso_local global i32 7
+@g8 = dso_local global i32 8
+@g9 = dso_local global i32 9
 
-@h0 = global i64 0
-@h1 = global i64 1
-@h2 = global i64 2
-@h3 = global i64 3
-@h4 = global i64 4
-@h5 = global i64 5
-@h6 = global i64 6
-@h7 = global i64 7
-@h8 = global i64 8
-@h9 = global i64 9
+@h0 = dso_local global i64 0
+@h1 = dso_local global i64 1
+@h2 = dso_local global i64 2
+@h3 = dso_local global i64 3
+@h4 = dso_local global i64 4
+@h5 = dso_local global i64 5
+@h6 = dso_local global i64 6
+@h7 = dso_local global i64 7
+@h8 = dso_local global i64 8
+@h9 = dso_local global i64 9
 
 ; This function shouldn't spill anything
-define void @f1(i32 *%ptr0) {
+define dso_local void @f1(i32 *%ptr0) {
 ; CHECK-LABEL: f1:
 ; CHECK: stmg
 ; CHECK: aghi %r15, -160
@@ -44,13 +44,13 @@ define void @f1(i32 *%ptr0) {
   %ptr5 = getelementptr i32, i32 *%ptr0, i32 10
   %ptr6 = getelementptr i32, i32 *%ptr0, i32 12
 
-  %val0 = load i32 , i32 *%ptr0
-  %val1 = load i32 , i32 *%ptr1
-  %val2 = load i32 , i32 *%ptr2
-  %val3 = load i32 , i32 *%ptr3
-  %val4 = load i32 , i32 *%ptr4
-  %val5 = load i32 , i32 *%ptr5
-  %val6 = load i32 , i32 *%ptr6
+  %val0 = load i32, i32 *%ptr0
+  %val1 = load i32, i32 *%ptr1
+  %val2 = load i32, i32 *%ptr2
+  %val3 = load i32, i32 *%ptr3
+  %val4 = load i32, i32 *%ptr4
+  %val5 = load i32, i32 *%ptr5
+  %val6 = load i32, i32 *%ptr6
 
   call void @foo()
 
@@ -67,7 +67,7 @@ define void @f1(i32 *%ptr0) {
 
 ; Test a case where at least one i32 load and at least one i32 store
 ; need spills.
-define void @f2(i32 *%ptr0) {
+define dso_local void @f2(i32 *%ptr0) {
 ; CHECK-LABEL: f2:
 ; CHECK: mvc [[OFFSET1:16[04]]](4,%r15), [[OFFSET2:[0-9]+]]({{%r[0-9]+}})
 ; CHECK: brasl %r14, foo@PLT
@@ -82,15 +82,15 @@ define void @f2(i32 *%ptr0) {
   %ptr7 = getelementptr i32, i32 *%ptr0, i64 14
   %ptr8 = getelementptr i32, i32 *%ptr0, i64 16
 
-  %val0 = load i32 , i32 *%ptr0
-  %val1 = load i32 , i32 *%ptr1
-  %val2 = load i32 , i32 *%ptr2
-  %val3 = load i32 , i32 *%ptr3
-  %val4 = load i32 , i32 *%ptr4
-  %val5 = load i32 , i32 *%ptr5
-  %val6 = load i32 , i32 *%ptr6
-  %val7 = load i32 , i32 *%ptr7
-  %val8 = load i32 , i32 *%ptr8
+  %val0 = load i32, i32 *%ptr0
+  %val1 = load i32, i32 *%ptr1
+  %val2 = load i32, i32 *%ptr2
+  %val3 = load i32, i32 *%ptr3
+  %val4 = load i32, i32 *%ptr4
+  %val5 = load i32, i32 *%ptr5
+  %val6 = load i32, i32 *%ptr6
+  %val7 = load i32, i32 *%ptr7
+  %val8 = load i32, i32 *%ptr8
 
   call void @foo()
 
@@ -109,7 +109,7 @@ define void @f2(i32 *%ptr0) {
 
 ; Test a case where at least one i64 load and at least one i64 store
 ; need spills.
-define void @f3(i64 *%ptr0) {
+define dso_local void @f3(i64 *%ptr0) {
 ; CHECK-LABEL: f3:
 ; CHECK: mvc 160(8,%r15), [[OFFSET:[0-9]+]]({{%r[0-9]+}})
 ; CHECK: brasl %r14, foo@PLT
@@ -124,15 +124,15 @@ define void @f3(i64 *%ptr0) {
   %ptr7 = getelementptr i64, i64 *%ptr0, i64 14
   %ptr8 = getelementptr i64, i64 *%ptr0, i64 16
 
-  %val0 = load i64 , i64 *%ptr0
-  %val1 = load i64 , i64 *%ptr1
-  %val2 = load i64 , i64 *%ptr2
-  %val3 = load i64 , i64 *%ptr3
-  %val4 = load i64 , i64 *%ptr4
-  %val5 = load i64 , i64 *%ptr5
-  %val6 = load i64 , i64 *%ptr6
-  %val7 = load i64 , i64 *%ptr7
-  %val8 = load i64 , i64 *%ptr8
+  %val0 = load i64, i64 *%ptr0
+  %val1 = load i64, i64 *%ptr1
+  %val2 = load i64, i64 *%ptr2
+  %val3 = load i64, i64 *%ptr3
+  %val4 = load i64, i64 *%ptr4
+  %val5 = load i64, i64 *%ptr5
+  %val6 = load i64, i64 *%ptr6
+  %val7 = load i64, i64 *%ptr7
+  %val8 = load i64, i64 *%ptr8
 
   call void @foo()
 
@@ -154,7 +154,7 @@ define void @f3(i64 *%ptr0) {
 ; need spills.  The 8 call-saved FPRs could be used for 8 of the %vals
 ; (and are at the time of writing), but it would really be better to use
 ; MVC for all 10.
-define void @f4(float *%ptr0) {
+define dso_local void @f4(float *%ptr0) {
 ; CHECK-LABEL: f4:
 ; CHECK: mvc [[OFFSET1:16[04]]](4,%r15), [[OFFSET2:[0-9]+]]({{%r[0-9]+}})
 ; CHECK: brasl %r14, foo@PLT
@@ -170,16 +170,16 @@ define void @f4(float *%ptr0) {
   %ptr8 = getelementptr float, float *%ptr0, i64 16
   %ptr9 = getelementptr float, float *%ptr0, i64 18
 
-  %val0 = load float , float *%ptr0
-  %val1 = load float , float *%ptr1
-  %val2 = load float , float *%ptr2
-  %val3 = load float , float *%ptr3
-  %val4 = load float , float *%ptr4
-  %val5 = load float , float *%ptr5
-  %val6 = load float , float *%ptr6
-  %val7 = load float , float *%ptr7
-  %val8 = load float , float *%ptr8
-  %val9 = load float , float *%ptr9
+  %val0 = load float, float *%ptr0
+  %val1 = load float, float *%ptr1
+  %val2 = load float, float *%ptr2
+  %val3 = load float, float *%ptr3
+  %val4 = load float, float *%ptr4
+  %val5 = load float, float *%ptr5
+  %val6 = load float, float *%ptr6
+  %val7 = load float, float *%ptr7
+  %val8 = load float, float *%ptr8
+  %val9 = load float, float *%ptr9
 
   call void @foo()
 
@@ -198,7 +198,7 @@ define void @f4(float *%ptr0) {
 }
 
 ; Similarly for f64.
-define void @f5(double *%ptr0) {
+define dso_local void @f5(double *%ptr0) {
 ; CHECK-LABEL: f5:
 ; CHECK: mvc 160(8,%r15), [[OFFSET:[0-9]+]]({{%r[0-9]+}})
 ; CHECK: brasl %r14, foo@PLT
@@ -214,16 +214,16 @@ define void @f5(double *%ptr0) {
   %ptr8 = getelementptr double, double *%ptr0, i64 16
   %ptr9 = getelementptr double, double *%ptr0, i64 18
 
-  %val0 = load double , double *%ptr0
-  %val1 = load double , double *%ptr1
-  %val2 = load double , double *%ptr2
-  %val3 = load double , double *%ptr3
-  %val4 = load double , double *%ptr4
-  %val5 = load double , double *%ptr5
-  %val6 = load double , double *%ptr6
-  %val7 = load double , double *%ptr7
-  %val8 = load double , double *%ptr8
-  %val9 = load double , double *%ptr9
+  %val0 = load double, double *%ptr0
+  %val1 = load double, double *%ptr1
+  %val2 = load double, double *%ptr2
+  %val3 = load double, double *%ptr3
+  %val4 = load double, double *%ptr4
+  %val5 = load double, double *%ptr5
+  %val6 = load double, double *%ptr6
+  %val7 = load double, double *%ptr7
+  %val8 = load double, double *%ptr8
+  %val9 = load double, double *%ptr9
 
   call void @foo()
 
@@ -242,7 +242,7 @@ define void @f5(double *%ptr0) {
 }
 
 ; Repeat f2 with atomic accesses.  We shouldn't use MVC here.
-define void @f6(i32 *%ptr0) {
+define dso_local void @f6(i32 *%ptr0) {
 ; CHECK-LABEL: f6:
 ; CHECK-NOT: mvc
 ; CHECK: br %r14
@@ -255,15 +255,15 @@ define void @f6(i32 *%ptr0) {
   %ptr7 = getelementptr i32, i32 *%ptr0, i64 14
   %ptr8 = getelementptr i32, i32 *%ptr0, i64 16
 
-  %val0 = load atomic i32 , i32 *%ptr0 unordered, align 4
-  %val1 = load atomic i32 , i32 *%ptr1 unordered, align 4
-  %val2 = load atomic i32 , i32 *%ptr2 unordered, align 4
-  %val3 = load atomic i32 , i32 *%ptr3 unordered, align 4
-  %val4 = load atomic i32 , i32 *%ptr4 unordered, align 4
-  %val5 = load atomic i32 , i32 *%ptr5 unordered, align 4
-  %val6 = load atomic i32 , i32 *%ptr6 unordered, align 4
-  %val7 = load atomic i32 , i32 *%ptr7 unordered, align 4
-  %val8 = load atomic i32 , i32 *%ptr8 unordered, align 4
+  %val0 = load atomic i32, i32 *%ptr0 unordered, align 4
+  %val1 = load atomic i32, i32 *%ptr1 unordered, align 4
+  %val2 = load atomic i32, i32 *%ptr2 unordered, align 4
+  %val3 = load atomic i32, i32 *%ptr3 unordered, align 4
+  %val4 = load atomic i32, i32 *%ptr4 unordered, align 4
+  %val5 = load atomic i32, i32 *%ptr5 unordered, align 4
+  %val6 = load atomic i32, i32 *%ptr6 unordered, align 4
+  %val7 = load atomic i32, i32 *%ptr7 unordered, align 4
+  %val8 = load atomic i32, i32 *%ptr8 unordered, align 4
 
   call void @foo()
 
@@ -281,7 +281,7 @@ define void @f6(i32 *%ptr0) {
 }
 
 ; ...likewise volatile accesses.
-define void @f7(i32 *%ptr0) {
+define dso_local void @f7(i32 *%ptr0) {
 ; CHECK-LABEL: f7:
 ; CHECK-NOT: mvc
 ; CHECK: br %r14
@@ -294,15 +294,15 @@ define void @f7(i32 *%ptr0) {
   %ptr7 = getelementptr i32, i32 *%ptr0, i64 14
   %ptr8 = getelementptr i32, i32 *%ptr0, i64 16
 
-  %val0 = load volatile i32 , i32 *%ptr0
-  %val1 = load volatile i32 , i32 *%ptr1
-  %val2 = load volatile i32 , i32 *%ptr2
-  %val3 = load volatile i32 , i32 *%ptr3
-  %val4 = load volatile i32 , i32 *%ptr4
-  %val5 = load volatile i32 , i32 *%ptr5
-  %val6 = load volatile i32 , i32 *%ptr6
-  %val7 = load volatile i32 , i32 *%ptr7
-  %val8 = load volatile i32 , i32 *%ptr8
+  %val0 = load volatile i32, i32 *%ptr0
+  %val1 = load volatile i32, i32 *%ptr1
+  %val2 = load volatile i32, i32 *%ptr2
+  %val3 = load volatile i32, i32 *%ptr3
+  %val4 = load volatile i32, i32 *%ptr4
+  %val5 = load volatile i32, i32 *%ptr5
+  %val6 = load volatile i32, i32 *%ptr6
+  %val7 = load volatile i32, i32 *%ptr7
+  %val8 = load volatile i32, i32 *%ptr8
 
   call void @foo()
 
@@ -320,20 +320,20 @@ define void @f7(i32 *%ptr0) {
 }
 
 ; Check that LRL and STRL are not converted.
-define void @f8() {
+define dso_local void @f8() {
 ; CHECK-LABEL: f8:
 ; CHECK-NOT: mvc
 ; CHECK: br %r14
-  %val0 = load i32 , i32 *@g0
-  %val1 = load i32 , i32 *@g1
-  %val2 = load i32 , i32 *@g2
-  %val3 = load i32 , i32 *@g3
-  %val4 = load i32 , i32 *@g4
-  %val5 = load i32 , i32 *@g5
-  %val6 = load i32 , i32 *@g6
-  %val7 = load i32 , i32 *@g7
-  %val8 = load i32 , i32 *@g8
-  %val9 = load i32 , i32 *@g9
+  %val0 = load i32, i32 *@g0
+  %val1 = load i32, i32 *@g1
+  %val2 = load i32, i32 *@g2
+  %val3 = load i32, i32 *@g3
+  %val4 = load i32, i32 *@g4
+  %val5 = load i32, i32 *@g5
+  %val6 = load i32, i32 *@g6
+  %val7 = load i32, i32 *@g7
+  %val8 = load i32, i32 *@g8
+  %val9 = load i32, i32 *@g9
 
   call void @foo()
 
@@ -352,20 +352,20 @@ define void @f8() {
 }
 
 ; Likewise LGRL and STGRL.
-define void @f9() {
+define dso_local void @f9() {
 ; CHECK-LABEL: f9:
 ; CHECK-NOT: mvc
 ; CHECK: br %r14
-  %val0 = load i64 , i64 *@h0
-  %val1 = load i64 , i64 *@h1
-  %val2 = load i64 , i64 *@h2
-  %val3 = load i64 , i64 *@h3
-  %val4 = load i64 , i64 *@h4
-  %val5 = load i64 , i64 *@h5
-  %val6 = load i64 , i64 *@h6
-  %val7 = load i64 , i64 *@h7
-  %val8 = load i64 , i64 *@h8
-  %val9 = load i64 , i64 *@h9
+  %val0 = load i64, i64 *@h0
+  %val1 = load i64, i64 *@h1
+  %val2 = load i64, i64 *@h2
+  %val3 = load i64, i64 *@h3
+  %val4 = load i64, i64 *@h4
+  %val5 = load i64, i64 *@h5
+  %val6 = load i64, i64 *@h6
+  %val7 = load i64, i64 *@h7
+  %val8 = load i64, i64 *@h8
+  %val9 = load i64, i64 *@h9
 
   call void @foo()
 
@@ -388,7 +388,7 @@ define void @f9() {
 ; has two frame index operands.  Stack coloring chose a valid renumbering
 ; [FI0, FI1] -> [FI1, FI2], but applied it in the form FI0 -> FI1 -> FI2,
 ; so that both operands ended up being the same.
-define void @f10() {
+define dso_local void @f10() {
 ; CHECK-LABEL: f10:
 ; CHECK: lgrl [[REG:%r[0-9]+]], h9
 ; CHECK: stg [[REG]], [[VAL9:[0-9]+]](%r15)
@@ -400,16 +400,16 @@ define void @f10() {
 ; CHECK: stgrl [[REG]], h8
 ; CHECK: br %r14
 entry:
-  %val8 = load volatile i64 , i64 *@h8
-  %val0 = load volatile i64 , i64 *@h0
-  %val1 = load volatile i64 , i64 *@h1
-  %val2 = load volatile i64 , i64 *@h2
-  %val3 = load volatile i64 , i64 *@h3
-  %val4 = load volatile i64 , i64 *@h4
-  %val5 = load volatile i64 , i64 *@h5
-  %val6 = load volatile i64 , i64 *@h6
-  %val7 = load volatile i64 , i64 *@h7
-  %val9 = load volatile i64 , i64 *@h9
+  %val8 = load volatile i64, i64 *@h8
+  %val0 = load volatile i64, i64 *@h0
+  %val1 = load volatile i64, i64 *@h1
+  %val2 = load volatile i64, i64 *@h2
+  %val3 = load volatile i64, i64 *@h3
+  %val4 = load volatile i64, i64 *@h4
+  %val5 = load volatile i64, i64 *@h5
+  %val6 = load volatile i64, i64 *@h6
+  %val7 = load volatile i64, i64 *@h7
+  %val9 = load volatile i64, i64 *@h9
 
   call void @foo()
 
@@ -422,7 +422,7 @@ entry:
   store volatile i64 %val6, i64 *@h6
   store volatile i64 %val7, i64 *@h7
 
-  %check = load volatile i64 , i64 *@h0
+  %check = load volatile i64, i64 *@h0
   %cond = icmp eq i64 %check, 0
   br i1 %cond, label %skip, label %fallthru
 
@@ -459,22 +459,22 @@ skip:
 }
 
 ; This used to generate a no-op MVC.  It is very sensitive to spill heuristics.
-define void @f11() {
+define dso_local void @f11() {
 ; CHECK-LABEL: f11:
 ; CHECK-NOT: mvc [[OFFSET:[0-9]+]](8,%r15), [[OFFSET]](%r15)
 ; CHECK: br %r14
 entry:
-  %val0 = load volatile i64 , i64 *@h0
-  %val1 = load volatile i64 , i64 *@h1
-  %val2 = load volatile i64 , i64 *@h2
-  %val3 = load volatile i64 , i64 *@h3
-  %val4 = load volatile i64 , i64 *@h4
-  %val5 = load volatile i64 , i64 *@h5
-  %val6 = load volatile i64 , i64 *@h6
-  %val7 = load volatile i64 , i64 *@h7
+  %val0 = load volatile i64, i64 *@h0
+  %val1 = load volatile i64, i64 *@h1
+  %val2 = load volatile i64, i64 *@h2
+  %val3 = load volatile i64, i64 *@h3
+  %val4 = load volatile i64, i64 *@h4
+  %val5 = load volatile i64, i64 *@h5
+  %val6 = load volatile i64, i64 *@h6
+  %val7 = load volatile i64, i64 *@h7
 
-  %altval0 = load volatile i64 , i64 *@h0
-  %altval1 = load volatile i64 , i64 *@h1
+  %altval0 = load volatile i64, i64 *@h0
+  %altval1 = load volatile i64, i64 *@h1
 
   call void @foo()
 
@@ -487,7 +487,7 @@ entry:
   store volatile i64 %val6, i64 *@h6
   store volatile i64 %val7, i64 *@h7
 
-  %check = load volatile i64 , i64 *@h0
+  %check = load volatile i64, i64 *@h0
   %cond = icmp eq i64 %check, 0
   br i1 %cond, label %a1, label %b1
 

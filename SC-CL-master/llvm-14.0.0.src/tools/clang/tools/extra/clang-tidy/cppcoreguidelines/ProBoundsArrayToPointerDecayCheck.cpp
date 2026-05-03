@@ -1,14 +1,14 @@
 //===--- ProBoundsArrayToPointerDecayCheck.cpp - clang-tidy----------------===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
 #include "ProBoundsArrayToPointerDecayCheck.h"
 #include "clang/AST/ASTContext.h"
+#include "clang/AST/ParentMapContext.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 
 using namespace clang::ast_matchers;
@@ -17,6 +17,7 @@ namespace clang {
 namespace tidy {
 namespace cppcoreguidelines {
 
+namespace {
 AST_MATCHER_P(CXXForRangeStmt, hasRangeBeginEndStmt,
               ast_matchers::internal::Matcher<DeclStmt>, InnerMatcher) {
   for (const DeclStmt *Stmt : {Node.getBeginStmt(), Node.getEndStmt()})
@@ -35,8 +36,7 @@ AST_MATCHER_P(Expr, hasParentIgnoringImpCasts,
               ast_matchers::internal::Matcher<Expr>, InnerMatcher) {
   const Expr *E = &Node;
   do {
-    ASTContext::DynTypedNodeList Parents =
-        Finder->getASTContext().getParents(*E);
+    DynTypedNodeList Parents = Finder->getASTContext().getParents(*E);
     if (Parents.size() != 1)
       return false;
     E = Parents[0].get<Expr>();
@@ -46,21 +46,25 @@ AST_MATCHER_P(Expr, hasParentIgnoringImpCasts,
 
   return InnerMatcher.matches(*E, Finder, Builder);
 }
+} // namespace
 
 void ProBoundsArrayToPointerDecayCheck::registerMatchers(MatchFinder *Finder) {
-  if (!getLangOpts().CPlusPlus)
-    return;
-
   // The only allowed array to pointer decay
   // 1) just before array subscription
   // 2) inside a range-for over an array
   // 3) if it converts a string literal to a pointer
   Finder->addMatcher(
-      implicitCastExpr(unless(hasParent(arraySubscriptExpr())),
-                       unless(hasParentIgnoringImpCasts(explicitCastExpr())),
-                       unless(isInsideOfRangeBeginEndStmt()),
-                       unless(hasSourceExpression(stringLiteral())))
-          .bind("cast"),
+      traverse(
+          TK_AsIs,
+          implicitCastExpr(
+              unless(hasParent(arraySubscriptExpr())),
+              unless(hasParentIgnoringImpCasts(explicitCastExpr())),
+              unless(isInsideOfRangeBeginEndStmt()),
+              unless(hasSourceExpression(ignoringParens(stringLiteral()))),
+              unless(hasSourceExpression(ignoringParens(conditionalOperator(
+                  allOf(hasTrueExpression(stringLiteral()),
+                        hasFalseExpression(stringLiteral())))))))
+              .bind("cast")),
       this);
 }
 

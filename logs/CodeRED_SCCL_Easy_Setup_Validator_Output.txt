@@ -1,6 +1,6 @@
 # Code RED Script Compile Validation Report
 
-Generated UTC: `2026-05-03T12:17:42Z`
+Generated UTC: `2026-05-03T14:29:41Z`
 Result: **PASS**
 
 ## Summary
@@ -15,7 +15,7 @@ Result: **PASS**
 
 ## Toolchain
 
-- sccl_exe: `None`
+- sccl_exe: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe`
 - cl_exe: `None`
 - gcc: `None`
 - python: `C:\Users\glitc\AppData\Local\Programs\Python\Python312\python.exe`

@@ -1,6 +1,10 @@
-; REQUIRES: object-emission
+; RUN: %llc_dwarf -O0 -filetype=obj < %s | llvm-dwarfdump -debug-info - | FileCheck %s
 
-; RUN: %llc_dwarf -O0 -filetype=obj < %s | llvm-dwarfdump -v -debug-info - | FileCheck %s
+; The formal parameter 'b' for Function 'x' when inlined within 'a' is lost on
+; powerpc64 (and on x86_64 at at least -O2). Presumably this is a SelectionDAG
+; issue.
+; FIXME: arm64 is an alias for aarch64 on macs, apparently?
+; XFAIL: powerpc64, aarch64, arm64, hexagon, riscv
 
 ; Build from the following source with clang -O2.
 
@@ -34,25 +38,25 @@
 
 ; CHECK: [[X_DECL:.*]]: DW_TAG_subprogram
 ; CHECK-NOT: DW_TAG
-; CHECK:   DW_AT_name {{.*}} "x"
+; CHECK:   DW_AT_name ("x")
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:   DW_TAG_formal_parameter
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_name {{.*}} "b"
+; CHECK:     DW_AT_name ("b")
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:       DW_TAG_lexical_block
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:   DW_TAG_variable
 ; CHECK-NOT: DW_TAG
-; CHECK:         DW_AT_name {{.*}} "s"
+; CHECK:         DW_AT_name ("s")
 
 ; CHECK: DW_TAG_subprogram
 ; CHECK-NOT: DW_TAG
-; CHECK:   DW_AT_name {{.*}} "b"
+; CHECK:   DW_AT_name ("b")
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:   DW_TAG_inlined_subroutine
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_abstract_origin {{.*}} {[[X_DECL]]}
+; CHECK:     DW_AT_abstract_origin {{.*}}[[X_DECL]]
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:     DW_TAG_formal_parameter
 ; CHECK-NOT: DW_TAG
@@ -67,19 +71,20 @@
 
 ; CHECK: DW_TAG_subprogram
 ; CHECK-NOT: DW_TAG
-; CHECK:   DW_AT_name {{.*}} "a"
+; CHECK:   DW_AT_name ("a")
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:   DW_TAG_formal_parameter
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; CHECK:   DW_TAG_inlined_subroutine
 ; CHECK-NOT: DW_TAG
-; CHECK:     DW_AT_abstract_origin {{.*}} {[[X_DECL]]}
+; CHECK:     DW_AT_abstract_origin {{.*}}[[X_DECL]]
 ; CHECK-NOT: {{DW_TAG|NULL}}
 ; FIXME: This formal parameter goes missing at least at -O2 (& on
 ; mips/powerpc), maybe before that. Perhaps SelectionDAG is to blame (and
 ; fastisel succeeds).
 ; CHECK:     DW_TAG_formal_parameter
 ; CHECK-NOT: DW_TAG
+; CHECK:       DW_AT_location
 ; CHECK:       DW_AT_abstract_origin {{.*}} "b"
 
 ; CHECK-NOT: {{DW_TAG|NULL}}
@@ -122,8 +127,8 @@ declare void @_Z1fi(i32) #1
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #2
 
-attributes #0 = { uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { uwtable "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -133,17 +138,17 @@ attributes #2 = { nounwind readnone }
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, producer: "clang version 3.5.0 ", isOptimized: true, emissionKind: FullDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "missing-abstract-variables.cc", directory: "/tmp/dbginfo")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "b", linkageName: "_Z1bv", line: 13, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 13, file: !1, scope: !5, type: !6, variables: !2)
+!4 = distinct !DISubprogram(name: "b", linkageName: "_Z1bv", line: 13, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 13, file: !1, scope: !5, type: !6, retainedNodes: !2)
 !5 = !DIFile(filename: "missing-abstract-variables.cc", directory: "/tmp/dbginfo")
 !6 = !DISubroutineType(types: !7)
 !7 = !{null}
-!8 = distinct !DISubprogram(name: "a", linkageName: "_Z1ab", line: 17, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 17, file: !1, scope: !5, type: !9, variables: !12)
+!8 = distinct !DISubprogram(name: "a", linkageName: "_Z1ab", line: 17, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 17, file: !1, scope: !5, type: !9, retainedNodes: !12)
 !9 = !DISubroutineType(types: !10)
 !10 = !{null, !11}
 !11 = !DIBasicType(tag: DW_TAG_base_type, name: "bool", size: 8, align: 8, encoding: DW_ATE_boolean)
 !12 = !{!13}
 !13 = !DILocalVariable(name: "u", line: 17, arg: 1, scope: !8, file: !5, type: !11)
-!14 = distinct !DISubprogram(name: "x", linkageName: "_Z1xb", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 5, file: !1, scope: !5, type: !9, variables: !15)
+!14 = distinct !DISubprogram(name: "x", linkageName: "_Z1xb", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 5, file: !1, scope: !5, type: !9, retainedNodes: !15)
 !15 = !{!16, !17}
 !16 = !DILocalVariable(name: "b", line: 5, arg: 1, scope: !14, file: !5, type: !11)
 !17 = !DILocalVariable(name: "s", line: 7, scope: !18, file: !5, type: !20)

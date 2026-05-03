@@ -52,7 +52,7 @@ declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 ; Function Attrs: noreturn nounwind
 declare void @llvm.trap() #2
 
-attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-features"="+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-features"="+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone speculatable }
 attributes #2 = { noreturn nounwind }
 
@@ -69,7 +69,7 @@ attributes #2 = { noreturn nounwind }
 !6 = !{i32 2, !"Debug Info Version", i32 3}
 !7 = !{i32 1, !"wchar_size", i32 2}
 !8 = !{!"clang version 6.0.0 "}
-!9 = distinct !DISubprogram(name: "m_fn1", linkageName: "\01?m_fn1@B@@AAE_NXZ", scope: !11, file: !10, line: 8, type: !18, isLocal: false, isDefinition: true, scopeLine: 8, flags: DIFlagPrototyped, isOptimized: false, unit: !0, declaration: !17, variables: !2)
+!9 = distinct !DISubprogram(name: "m_fn1", linkageName: "\01?m_fn1@B@@AAE_NXZ", scope: !11, file: !10, line: 8, type: !18, isLocal: false, isDefinition: true, scopeLine: 8, flags: DIFlagPrototyped, isOptimized: false, unit: !0, declaration: !17, retainedNodes: !2)
 !10 = !DIFile(filename: "bug.cpp", directory: "D:\5Csrc\5Cbug", checksumkind: CSK_MD5, checksum: "2216f11c5ddda8c48a6f92a6079ad4b6")
 !11 = distinct !DICompositeType(tag: DW_TAG_class_type, name: "B", file: !10, line: 4, size: 8, elements: !12, identifier: ".?AVB@@")
 !12 = !{!13, !17}

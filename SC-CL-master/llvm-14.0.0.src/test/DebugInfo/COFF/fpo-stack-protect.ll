@@ -1,4 +1,4 @@
-; RUN: llc < %s | FileCheck %s
+; RUN: llc < %s -experimental-debug-variable-locations=true | FileCheck %s
 
 ; C source:
 ; void escape(int *);
@@ -30,7 +30,7 @@
 ; CHECK:         addl    $20, %esp
 ; CHECK:         popl    %esi
 ; CHECK:         retl
-; CHECK: Ltmp2:
+; CHECK: Ltmp4:
 ; CHECK:         .cv_fpo_endproc
 
 ; ModuleID = 't.c'
@@ -73,10 +73,10 @@ declare void @llvm.lifetime.end.p0i8(i64, i8* nocapture) #2
 ; Function Attrs: nounwind readnone speculatable
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind sspstrong "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="pentium4" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind sspstrong "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="pentium4" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone speculatable }
 attributes #2 = { argmemonly nounwind }
-attributes #3 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="pentium4" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #3 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="pentium4" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #4 = { nounwind }
 
 !llvm.dbg.cu = !{!0}
@@ -91,7 +91,7 @@ attributes #4 = { nounwind }
 !5 = !{i32 2, !"Debug Info Version", i32 3}
 !6 = !{i32 1, !"wchar_size", i32 2}
 !7 = !{!"clang version 6.0.0 "}
-!8 = distinct !DISubprogram(name: "ssp", scope: !1, file: !1, line: 2, type: !9, isLocal: false, isDefinition: true, scopeLine: 2, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !12)
+!8 = distinct !DISubprogram(name: "ssp", scope: !1, file: !1, line: 2, type: !9, isLocal: false, isDefinition: true, scopeLine: 2, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !12)
 !9 = !DISubroutineType(types: !10)
 !10 = !{!11, !11}
 !11 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)

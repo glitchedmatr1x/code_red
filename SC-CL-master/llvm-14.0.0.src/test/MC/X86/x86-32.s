@@ -45,16 +45,16 @@
 // CHECK: encoding: [0x0f,0x01,0xf8]
 
 	vmrun %eax
-// CHECK: vmrun %eax
+// CHECK: vmrun
 // CHECK: encoding: [0x0f,0x01,0xd8]
 	vmmcall
 // CHECK: vmmcall
 // CHECK: encoding: [0x0f,0x01,0xd9]
 	vmload %eax
-// CHECK: vmload %eax
+// CHECK: vmload
 // CHECK: encoding: [0x0f,0x01,0xda]
 	vmsave %eax
-// CHECK: vmsave %eax
+// CHECK: vmsave
 // CHECK: encoding: [0x0f,0x01,0xdb]
 	stgi
 // CHECK: stgi
@@ -63,10 +63,10 @@
 // CHECK: clgi
 // CHECK: encoding: [0x0f,0x01,0xdd]
 	skinit %eax
-// CHECK: skinit %eax
+// CHECK: skinit
 // CHECK: encoding: [0x0f,0x01,0xde]
-	invlpga %ecx, %eax
-// CHECK: invlpga %ecx, %eax
+	invlpga %eax, %ecx
+// CHECK: invlpga
 // CHECK: encoding: [0x0f,0x01,0xdf]
 
 	rdtscp
@@ -262,28 +262,28 @@ cmovnae	%bx,%bx
 // CHECK:  encoding: [0x0f,0x44,0xd0]
         	cmovzl	%eax,%edx
 
-// CHECK: cmpps	$0, %xmm0, %xmm1
+// CHECK: cmpeqps	%xmm0, %xmm1
 // CHECK: encoding: [0x0f,0xc2,0xc8,0x00]
         cmpps $0, %xmm0, %xmm1
-// CHECK:	cmpps	$0, (%eax), %xmm1
+// CHECK:	cmpeqps	(%eax), %xmm1
 // CHECK: encoding: [0x0f,0xc2,0x08,0x00]
         cmpps $0, 0(%eax), %xmm1
-// CHECK:	cmppd	$0, %xmm0, %xmm1
+// CHECK:	cmpeqpd	%xmm0, %xmm1
 // CHECK: encoding: [0x66,0x0f,0xc2,0xc8,0x00]
         cmppd $0, %xmm0, %xmm1
-// CHECK:	cmppd	$0, (%eax), %xmm1
+// CHECK:	cmpeqpd	(%eax), %xmm1
 // CHECK: encoding: [0x66,0x0f,0xc2,0x08,0x00]
         cmppd $0, 0(%eax), %xmm1
-// CHECK:	cmpss	$0, %xmm0, %xmm1
+// CHECK:	cmpeqss	%xmm0, %xmm1
 // CHECK: encoding: [0xf3,0x0f,0xc2,0xc8,0x00]
         cmpss $0, %xmm0, %xmm1
-// CHECK:	cmpss	$0, (%eax), %xmm1
+// CHECK:	cmpeqss	(%eax), %xmm1
 // CHECK: encoding: [0xf3,0x0f,0xc2,0x08,0x00]
         cmpss $0, 0(%eax), %xmm1
-// CHECK:	cmpsd	$0, %xmm0, %xmm1
+// CHECK:	cmpeqsd	%xmm0, %xmm1
 // CHECK: encoding: [0xf2,0x0f,0xc2,0xc8,0x00]
         cmpsd $0, %xmm0, %xmm1
-// CHECK:	cmpsd	$0, (%eax), %xmm1
+// CHECK:	cmpeqsd	(%eax), %xmm1
 // CHECK: encoding: [0xf2,0x0f,0xc2,0x08,0x00]
         cmpsd $0, 0(%eax), %xmm1
 
@@ -451,6 +451,14 @@ cmovnae	%bx,%bx
 // CHECK:       clzero
 // CHECK:  encoding: [0x0f,0x01,0xfc]
                 clzero %eax
+
+// CHECK:       tlbsync 
+// CHECK:  encoding: [0x0f,0x01,0xff]
+                tlbsync
+
+// CHECK:       invlpgb
+// CHECK:  encoding: [0x0f,0x01,0xfe]
+                invlpgb %eax, %edx
 
 // radr://8017522
 // CHECK: wait
@@ -644,8 +652,6 @@ inl	(%dx), %eax
 
 //PR15455
 
-outs	(%esi), (%dx)
-// CHECK: outsw	(%esi), %dx
 outsb	(%esi), (%dx)
 // CHECK: outsb	(%esi), %dx
 outsw	(%esi), (%dx)
@@ -653,8 +659,6 @@ outsw	(%esi), (%dx)
 outsl	(%esi), (%dx)
 // CHECK: outsl	(%esi), %dx
 
-ins 	(%dx), %es:(%edi)
-// CHECK: insw	%dx, %es:(%edi)
 insb	(%dx), %es:(%edi)
 // CHECK: insb	%dx, %es:(%edi)
 insw	(%dx), %es:(%edi)
@@ -770,13 +774,13 @@ pshufw $90, %mm4, %mm0
 // CHECK:  encoding: [0x66,0xca,0xce,0x7a]
         	lretw	$0x7ace
 
-// CHECK: bound	2(%eax), %bx
+// CHECK: bound	%bx, 2(%eax)
 // CHECK:  encoding: [0x66,0x62,0x58,0x02]
-        	bound	2(%eax),%bx
+        	bound	%bx,2(%eax)
 
-// CHECK: bound	4(%ebx), %ecx
+// CHECK: bound	%ecx, 4(%ebx)
 // CHECK:  encoding: [0x62,0x4b,0x04]
-        	bound	4(%ebx),%ecx
+        	bound	%ecx,4(%ebx)
 
 // CHECK: arpl	%bx, %bx
 // CHECK:  encoding: [0x63,0xdb]
@@ -922,9 +926,13 @@ pshufw $90, %mm4, %mm0
 // CHECK:  encoding: [0x0f,0x0b]
         	ud2a
 
-// CHECK: ud2b
-// CHECK:  encoding: [0x0f,0xb9]
-        	ud2b
+// CHECK: ud1l %edx, %edi
+// CHECK:  encoding: [0x0f,0xb9,0xfa]
+        	ud1 %edx, %edi
+
+// CHECK: ud1l (%ebx), %ecx
+// CHECK:  encoding: [0x0f,0xb9,0x0b]
+        	ud2b (%ebx), %ecx
 
 // CHECK: loope 0
 // CHECK: encoding: [0xe1,A]
@@ -1059,7 +1067,7 @@ pshufw $90, %mm4, %mm0
 fsubp %st,%st(1)
 
 // PR9164
-// CHECK: fsubp	%st(2)
+// CHECK: fsubp %st, %st(2)
 // CHECK: encoding: [0xde,0xe2]
 fsubp   %st, %st(2)
 
@@ -1109,3 +1117,26 @@ ptwritel 0xdeadbeef(%ebx,%ecx,8)
 // CHECK: ptwritel %eax
 // CHECK:  encoding: [0xf3,0x0f,0xae,0xe0]
 ptwritel %eax
+
+// CHECK: jmp foo
+// CHECK:  encoding: [0xe9,A,A,A,A]
+// CHECK:  fixup A - offset: 1, value: foo-4, kind: FK_PCRel_4
+// CHECK: jmp foo
+// CHECK:  encoding: [0xe9,A,A,A,A]
+// CHECK:  fixup A - offset: 1, value: foo-4, kind: FK_PCRel_4
+{disp32} jmp foo
+jmp.d32 foo
+foo:
+
+// CHECK: je foo
+// CHECK:  encoding: [0x0f,0x84,A,A,A,A]
+// CHECK:  fixup A - offset: 2, value: foo-4, kind: FK_PCRel_4
+// CHECK: je foo
+// CHECK:  encoding: [0x0f,0x84,A,A,A,A]
+// CHECK:  fixup A - offset: 2, value: foo-4, kind: FK_PCRel_4
+{disp32} je foo
+je.d32 foo
+
+// CHECK: ljmpl *%cs:305419896
+// CHECK:  encoding: [0x2e,0xff,0x2d,0x78,0x56,0x34,0x12]
+ljmp %cs:*0x12345678

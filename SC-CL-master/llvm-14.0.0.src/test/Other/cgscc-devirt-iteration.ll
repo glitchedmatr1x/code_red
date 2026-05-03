@@ -4,20 +4,23 @@
 ; devirtualization here with GVN which forwards a store through a load and to
 ; an indirect call.
 ;
-; RUN: opt -aa-pipeline=basic-aa -passes='cgscc(function-attrs,function(gvn,instcombine))' -S < %s | FileCheck %s --check-prefix=CHECK --check-prefix=BEFORE
-; RUN: opt -aa-pipeline=basic-aa -passes='cgscc(devirt<1>(function-attrs,function(gvn,instcombine)))' -S < %s | FileCheck %s --check-prefix=CHECK --check-prefix=AFTER --check-prefix=AFTER1
-; RUN: opt -aa-pipeline=basic-aa -passes='cgscc(devirt<2>(function-attrs,function(gvn,instcombine)))' -S < %s | FileCheck %s --check-prefix=CHECK --check-prefix=AFTER --check-prefix=AFTER2
+; RUN: opt -aa-pipeline=basic-aa -passes='module(inferattrs),cgscc(function-attrs,function(gvn,instcombine))' -S < %s | FileCheck %s --check-prefix=CHECK --check-prefix=BEFORE
+; RUN: opt -aa-pipeline=basic-aa -passes='module(inferattrs),cgscc(devirt<1>(function-attrs,function(gvn,instcombine)))' -S < %s | FileCheck %s --check-prefix=CHECK --check-prefix=AFTER --check-prefix=AFTER1
+; RUN: opt -aa-pipeline=basic-aa -passes='module(inferattrs),cgscc(devirt<2>(function-attrs,function(gvn,instcombine)))' -S < %s | FileCheck %s --check-prefix=CHECK --check-prefix=AFTER --check-prefix=AFTER2
+;
+; RUN: not --crash opt -abort-on-max-devirt-iterations-reached -aa-pipeline=basic-aa -passes='module(inferattrs),cgscc(devirt<1>(function-attrs,function(gvn,instcombine)))' -S < %s
+; RUN: opt -abort-on-max-devirt-iterations-reached -aa-pipeline=basic-aa -passes='module(inferattrs),cgscc(devirt<2>(function-attrs,function(gvn,instcombine)))' -S < %s
 ;
 ; We also verify that the real O2 pipeline catches these cases.
 ; RUN: opt -aa-pipeline=basic-aa -passes='default<O2>' -S < %s | FileCheck %s --check-prefix=CHECK --check-prefix=AFTER --check-prefix=AFTER2
 
 declare void @readnone() readnone
-; CHECK: Function Attrs: readnone
-; CHECK: declare void @readnone()
+; CHECK: Function Attrs: nofree nosync readnone
+; CHECK-NEXT: declare void @readnone()
 
 declare void @unknown()
 ; CHECK-NOT: Function Attrs
-; CHECK: declare void @unknown()
+; CHECK-LABEL: declare void @unknown(){{ *$}}
 
 ; The @test1 function checks that when we refine an indirect call to a direct
 ; call we revisit the SCC passes to reflect the more precise information. This
@@ -25,8 +28,8 @@ declare void @unknown()
 
 define void @test1() {
 ; BEFORE-NOT: Function Attrs
-; AFTER: Function Attrs: readnone
-; CHECK: define void @test1()
+; AFTER: Function Attrs: nofree nosync readnone
+; CHECK-LABEL: define void @test1()
 entry:
   %fptr = alloca void ()*
   store void ()* @readnone, void ()** %fptr
@@ -48,13 +51,13 @@ entry:
 ; devirtualize again, and then deduce readnone.
 
 declare void @readnone_with_arg(void ()**) readnone
-; CHECK: Function Attrs: readnone
-; CHECK: declare void @readnone_with_arg(void ()**)
+; CHECK: Function Attrs: nofree nosync readnone
+; CHECK-LABEL: declare void @readnone_with_arg(void ()**)
 
 define void @test2_a(void ()** %ignore) {
 ; BEFORE-NOT: Function Attrs
-; AFTER1: Function Attrs: readonly
-; AFTER2: Function Attrs: readnone
+; AFTER1: Function Attrs: nofree readonly
+; AFTER2: Function Attrs: nofree nosync readnone
 ; BEFORE: define void @test2_a(void ()** %ignore)
 ; AFTER: define void @test2_a(void ()** readnone %ignore)
 entry:
@@ -74,9 +77,9 @@ entry:
 
 define void @test2_b() {
 ; BEFORE-NOT: Function Attrs
-; AFTER1: Function Attrs: readonly
-; AFTER2: Function Attrs: readnone
-; CHECK: define void @test2_b()
+; AFTER1: Function Attrs: nofree readonly
+; AFTER2: Function Attrs: nofree nosync readnone
+; CHECK-LABEL: define void @test2_b()
 entry:
   %f2ptr = alloca void ()*
   store void ()* @readnone, void ()** %f2ptr
@@ -96,17 +99,20 @@ entry:
 }
 
 declare i8* @memcpy(i8*, i8*, i64)
-; CHECK: declare i8* @memcpy(
+; CHECK-LABEL: i8* @memcpy(
 
 ; The @test3 function checks that when we refine an indirect call to an
 ; intrinsic we still revisit the SCC pass. This also covers cases where the
 ; value handle itself doesn't persist due to the nature of how instcombine
 ; creates the memcpy intrinsic call, and we rely on the count of indirect calls
 ; decreasing and the count of direct calls increasing.
-define void @test3(i8* %src, i8* %dest, i64 %size) {
-; CHECK-NOT: Function Attrs
-; BEFORE: define void @test3(i8* %src, i8* %dest, i64 %size)
-; AFTER: define void @test3(i8* nocapture readonly %src, i8* nocapture %dest, i64 %size)
+; Adding 'noinline' attribute to force attributes for improved matching.
+define void @test3(i8* %src, i8* %dest, i64 %size) noinline {
+; CHECK: Function Attrs
+; CHECK-NOT: read
+; CHECK-SAME: noinline
+; BEFORE-LABEL: define void @test3(i8* %src, i8* %dest, i64 %size)
+; AFTER-LABEL: define void @test3(i8* nocapture readonly %src, i8* nocapture writeonly %dest, i64 %size)
   %fptr = alloca i8* (i8*, i8*, i64)*
   store i8* (i8*, i8*, i64)* @memcpy, i8* (i8*, i8*, i64)** %fptr
   %f = load i8* (i8*, i8*, i64)*, i8* (i8*, i8*, i64)** %fptr
@@ -118,7 +124,7 @@ define void @test3(i8* %src, i8* %dest, i64 %size) {
 ; A boring function that just keeps our declarations around.
 define void @keep(i8** %sink) {
 ; CHECK-NOT: Function Attrs
-; CHECK: define void @keep(
+; CHECK-LABEL: define void @keep(
 entry:
   store volatile i8* bitcast (void ()* @readnone to i8*), i8** %sink
   store volatile i8* bitcast (void ()* @unknown to i8*), i8** %sink

@@ -1,9 +1,8 @@
 //===- llvm-mt.cpp - Merge .manifest files ---------------------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===---------------------------------------------------------------------===//
 //
@@ -17,12 +16,14 @@
 #include "llvm/Option/Option.h"
 #include "llvm/Support/Error.h"
 #include "llvm/Support/FileOutputBuffer.h"
+#include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/ManagedStatic.h"
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/Path.h"
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/Support/Process.h"
 #include "llvm/Support/Signals.h"
+#include "llvm/Support/WithColor.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/WindowsManifest/WindowsManifestMerger.h"
 
@@ -45,7 +46,7 @@ enum ID {
 #include "Opts.inc"
 #undef PREFIX
 
-static const opt::OptTable::Info InfoTable[] = {
+const opt::OptTable::Info InfoTable[] = {
 #define OPTION(PREFIX, NAME, ID, KIND, GROUP, ALIAS, ALIASARGS, FLAGS, PARAM,  \
                HELPTEXT, METAVAR, VALUES)                                      \
 {                                                                              \
@@ -61,12 +62,10 @@ class CvtResOptTable : public opt::OptTable {
 public:
   CvtResOptTable() : OptTable(InfoTable, true) {}
 };
-
-static ExitOnError ExitOnErr;
 } // namespace
 
-LLVM_ATTRIBUTE_NORETURN void reportError(Twine Msg) {
-  errs() << "llvm-mt error: " << Msg << "\n";
+[[noreturn]] static void reportError(Twine Msg) {
+  WithColor::error(errs(), "llvm-mt") << Msg << '\n';
   exit(1);
 }
 
@@ -74,37 +73,33 @@ static void reportError(StringRef Input, std::error_code EC) {
   reportError(Twine(Input) + ": " + EC.message());
 }
 
-void error(std::error_code EC) {
-  if (EC)
-    reportError(EC.message());
-}
-
-void error(Error EC) {
+static void error(Error EC) {
   if (EC)
     handleAllErrors(std::move(EC), [&](const ErrorInfoBase &EI) {
       reportError(EI.message());
     });
 }
 
-int main(int argc, const char **argv) {
-  sys::PrintStackTraceOnErrorSignal(argv[0]);
-  PrettyStackTraceProgram X(argc, argv);
-
-  ExitOnErr.setBanner("llvm-mt: ");
-
-  SmallVector<const char *, 256> argv_buf;
-  SpecificBumpPtrAllocator<char> ArgAllocator;
-  ExitOnErr(errorCodeToError(sys::Process::GetArgumentVector(
-      argv_buf, makeArrayRef(argv, argc), ArgAllocator)));
-  llvm_shutdown_obj Y; // Call llvm_shutdown() on exit.
+int main(int Argc, const char **Argv) {
+  InitLLVM X(Argc, Argv);
 
   CvtResOptTable T;
   unsigned MAI, MAC;
-  ArrayRef<const char *> ArgsArr = makeArrayRef(argv + 1, argc);
+  ArrayRef<const char *> ArgsArr = makeArrayRef(Argv + 1, Argc - 1);
   opt::InputArgList InputArgs = T.ParseArgs(ArgsArr, MAI, MAC);
 
-  for (auto *Arg : InputArgs.filtered(OPT_INPUT))
-    reportError(Twine("invalid option ") + Arg->getSpelling());
+  for (auto *Arg : InputArgs.filtered(OPT_INPUT)) {
+    auto ArgString = Arg->getAsString(InputArgs);
+    std::string Diag;
+    raw_string_ostream OS(Diag);
+    OS << "invalid option '" << ArgString << "'";
+
+    std::string Nearest;
+    if (T.findNearest(ArgString, Nearest) < 2)
+      OS << ", did you mean '" << Nearest << "'?";
+
+    reportError(OS.str());
+  }
 
   for (auto &Arg : InputArgs) {
     if (Arg->getOption().matches(OPT_unsupported)) {
@@ -114,7 +109,7 @@ int main(int argc, const char **argv) {
   }
 
   if (InputArgs.hasArg(OPT_help)) {
-    T.PrintHelp(outs(), "mt", "Manifest Tool", false);
+    T.printHelp(outs(), "llvm-mt [options] file...", "Manifest Tool", false);
     return 0;
   }
 
@@ -140,8 +135,7 @@ int main(int argc, const char **argv) {
         MemoryBuffer::getFile(File);
     if (!ManifestOrErr)
       reportError(File, ManifestOrErr.getError());
-    MemoryBuffer &Manifest = *ManifestOrErr.get();
-    error(Merger.merge(Manifest));
+    error(Merger.merge(*ManifestOrErr.get()));
   }
 
   std::unique_ptr<MemoryBuffer> OutputBuffer = Merger.getMergedManifest();

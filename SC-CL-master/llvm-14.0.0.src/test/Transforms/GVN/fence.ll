@@ -1,4 +1,4 @@
-; RUN: opt -S -basicaa -gvn < %s | FileCheck %s
+; RUN: opt -S -basic-aa -gvn < %s | FileCheck %s
 
 @a = external constant i32
 ; We can value forward across the fence since we can (semantically) 
@@ -86,4 +86,3 @@ define i32 @test4(i32* %addr) {
 ; }
 ; Given we chose to forward across the release fence, we clearly can't forward
 ; across the acquire fence as well.
-

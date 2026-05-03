@@ -1,4 +1,3 @@
-; REQUIRES: object-emission
 
 ; RUN: llc -mtriple=x86_64-linux -O0 -filetype=obj < %s \
 ; RUN:     | llvm-dwarfdump -v -debug-info - | FileCheck --check-prefix=CHECK --check-prefix=CHECK-V4 %s
@@ -41,7 +40,7 @@ if.end:                                           ; preds = %if.then, %entry
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -51,7 +50,7 @@ attributes #1 = { nounwind readnone }
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, producer: "clang version 3.5.0 ", isOptimized: false, emissionKind: FullDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "lexical_block.cpp", directory: "/tmp/dbginfo")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "b", linkageName: "_Z1bv", line: 1, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 1, file: !1, scope: !5, type: !6, variables: !2)
+!4 = distinct !DISubprogram(name: "b", linkageName: "_Z1bv", line: 1, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 1, file: !1, scope: !5, type: !6, retainedNodes: !2)
 !5 = !DIFile(filename: "lexical_block.cpp", directory: "/tmp/dbginfo")
 !6 = !DISubroutineType(types: !7)
 !7 = !{null}

@@ -225,7 +225,7 @@ bool SCCL::ASTVisitorGlobal::VisitDecl(Decl *D)
 
 					}
 					else if (globalVarDecl->getStorageClass() != SC_Extern)
-						Throw("Var " + dumpName(cast<NamedDecl>(D)) + " is already defined", TheRewriter, D->getLocStart());
+						Throw("Var " + dumpName(cast<NamedDecl>(D)) + " is already defined", TheRewriter, D->getBeginLoc());
 				}
 
 			}
@@ -860,7 +860,7 @@ int32_t SCCL::ASTVisitorGlobal::ParseLiteral(const Expr *e, bool isAddr, bool is
 			if (type->isPointerType())
 				type = const_cast<Type*>(type->getPointeeType().getTypePtr());
 
-			llvm::APSInt iResult;
+			Expr::EvalResult iResult;
 			if (index->EvaluateAsInt(iResult, context))
 			{
 				doesCurrentValueNeedSet = true;
@@ -877,11 +877,11 @@ int32_t SCCL::ASTVisitorGlobal::ParseLiteral(const Expr *e, bool isAddr, bool is
 					if (type->isArrayType())
 						elementSize = getSizeOfType(base->getType()->getArrayElementTypeNoTypeQual());
 
-					cur->addOpAddImm(iResult.getSExtValue() * elementSize);
+					cur->addOpAddImm(iResult.Val.getInt().getSExtValue() * elementSize);
 				}
 				else
 				{
-					cur->addOpAddImm(ssize * iResult.getSExtValue());
+					cur->addOpAddImm(ssize * iResult.Val.getInt().getSExtValue());
 				}
 
 				ssize = getSizeOfType(type);
@@ -965,7 +965,7 @@ int32_t SCCL::ASTVisitorGlobal::ParseLiteral(const Expr *e, bool isAddr, bool is
 		{
 			Throw("DeclRefExpr error", TheRewriter, e->getSourceRange());
 		}
-	}
+	} 
 	else
 		Throw("Class " + string(e->getStmtClassName()) + " is unimplemented for a static define");
 	return -1;

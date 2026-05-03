@@ -1,4 +1,5 @@
-; RUN: opt -functionattrs -S < %s | FileCheck %s
+; RUN: opt -function-attrs -S < %s | FileCheck %s
+; RUN: opt -passes=function-attrs -S < %s | FileCheck %s
 
 ; CHECK: Function Attrs
 ; CHECK-NOT: convergent

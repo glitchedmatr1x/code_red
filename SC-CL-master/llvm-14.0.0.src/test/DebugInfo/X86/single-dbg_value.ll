@@ -1,6 +1,6 @@
-; RUN: %llc_dwarf -stop-after=livedebugvalues -o - %s \
+; RUN: llc -stop-after=livedebugvalues -o - %s \
 ; RUN:   | FileCheck %s --check-prefix=SANITY
-; RUN: %llc_dwarf -march=x86-64 -o - %s -filetype=obj \
+; RUN: llc -march=x86-64 -o - %s -filetype=obj \
 ; RUN:   | llvm-dwarfdump -v -all - | FileCheck %s
 ;
 ; CHECK: .debug_info contents:
@@ -42,7 +42,7 @@ declare i32 @g(...)
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind ssp uwtable "no-frame-pointer-elim"="true" }
+attributes #0 = { nounwind ssp uwtable "frame-pointer"="all" }
 attributes #1 = { nounwind readnone }
 attributes #2 = { nounwind }
 
@@ -53,7 +53,7 @@ attributes #2 = { nounwind }
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang version 3.9.0 ", isOptimized: true, runtimeVersion: 0, emissionKind: FullDebug, enums: !2)
 !1 = !DIFile(filename: "test.c", directory: "/Volumes/Data/llvm")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: true, unit: !0, variables: !7)
+!4 = distinct !DISubprogram(name: "f", scope: !1, file: !1, line: 3, type: !5, isLocal: false, isDefinition: true, scopeLine: 3, isOptimized: true, unit: !0, retainedNodes: !7)
 !5 = !DISubroutineType(types: !6)
 !6 = !{null}
 !7 = !{!8}

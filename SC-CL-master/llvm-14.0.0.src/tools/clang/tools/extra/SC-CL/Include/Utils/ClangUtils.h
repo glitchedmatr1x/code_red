@@ -7,6 +7,7 @@
 #include "clang/Frontend/FrontendActions.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "llvm/ADT/STLExtras.h"
+#include "llvm/ADT/StringRef.h"
 #include "clang/Tooling/ArgumentsAdjusters.h"
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "clang/Tooling/Tooling.h"
@@ -24,7 +25,7 @@ public:
 	}
 
 	std::vector<clang::tooling::CompileCommand>
-		getCompileCommands(StringRef FilePath) const override {
+        getCompileCommands(llvm::StringRef FilePath) const override {
 		return adjustCommands(Compilations->getCompileCommands(FilePath));
 	}
 

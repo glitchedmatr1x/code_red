@@ -1,9 +1,8 @@
 //===-- llvm/GlobalValue.h - Class to represent a global value --*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -39,12 +38,12 @@ class GlobalObject;
 class Module;
 
 namespace Intrinsic {
-  enum ID : unsigned;
+typedef unsigned ID;
 } // end namespace Intrinsic
 
 class GlobalValue : public Constant {
 public:
-  /// @brief An enumeration for the kinds of linkage for global values.
+  /// An enumeration for the kinds of linkage for global values.
   enum LinkageTypes {
     ExternalLinkage = 0,///< Externally visible function
     AvailableExternallyLinkage, ///< Available for inspection, not emission.
@@ -59,14 +58,14 @@ public:
     CommonLinkage       ///< Tentative definitions.
   };
 
-  /// @brief An enumeration for the kinds of visibility of global values.
+  /// An enumeration for the kinds of visibility of global values.
   enum VisibilityTypes {
     DefaultVisibility = 0,  ///< The GV is visible
     HiddenVisibility,       ///< The GV is hidden
     ProtectedVisibility     ///< The GV is protected
   };
 
-  /// @brief Storage classes of global values for PE targets.
+  /// Storage classes of global values for PE targets.
   enum DLLStorageClassTypes {
     DefaultStorageClass   = 0,
     DLLImportStorageClass = 1, ///< Function to be imported from DLL
@@ -77,17 +76,18 @@ protected:
   GlobalValue(Type *Ty, ValueTy VTy, Use *Ops, unsigned NumOps,
               LinkageTypes Linkage, const Twine &Name, unsigned AddressSpace)
       : Constant(PointerType::get(Ty, AddressSpace), VTy, Ops, NumOps),
-        ValueType(Ty), Linkage(Linkage), Visibility(DefaultVisibility),
+        ValueType(Ty), Visibility(DefaultVisibility),
         UnnamedAddrVal(unsigned(UnnamedAddr::None)),
         DllStorageClass(DefaultStorageClass), ThreadLocal(NotThreadLocal),
-        HasLLVMReservedName(false), IsDSOLocal(false),
+        HasLLVMReservedName(false), IsDSOLocal(false), HasPartition(false),
         IntID((Intrinsic::ID)0U), Parent(nullptr) {
+    setLinkage(Linkage);
     setName(Name);
   }
 
   Type *ValueType;
 
-  static const unsigned GlobalValueSubClassDataBits = 17;
+  static const unsigned GlobalValueSubClassDataBits = 16;
 
   // All bitfields use unsigned as the underlying type so that MSVC will pack
   // them.
@@ -108,12 +108,16 @@ protected:
   /// definition cannot be runtime preempted.
   unsigned IsDSOLocal : 1;
 
-private:
-  friend class Constant;
+  /// True if this symbol has a partition name assigned (see
+  /// https://lld.llvm.org/Partitions.html).
+  unsigned HasPartition : 1;
 
+private:
   // Give subclasses access to what otherwise would be wasted padding.
-  // (17 + 4 + 2 + 2 + 2 + 3 + 1 + 1) == 32.
+  // (16 + 4 + 2 + 2 + 2 + 3 + 1 + 1 + 1) == 32.
   unsigned SubClassData : GlobalValueSubClassDataBits;
+
+  friend class Constant;
 
   void destroyConstantImpl();
   Value *handleOperandChangeImpl(Value *From, Value *To);
@@ -143,7 +147,7 @@ private:
   }
 
 protected:
-  /// \brief The intrinsic ID for this subclass (which must be a Function).
+  /// The intrinsic ID for this subclass (which must be a Function).
   ///
   /// This member is defined by this class, but not used for anything.
   /// Subclasses can use it to store their intrinsic ID, if they have one.
@@ -181,7 +185,7 @@ public:
 
   GlobalValue(const GlobalValue &) = delete;
 
-  unsigned getAlignment() const;
+  unsigned getAddressSpace() const;
 
   enum class UnnamedAddr {
     None,
@@ -232,6 +236,8 @@ public:
     assert((!hasLocalLinkage() || V == DefaultVisibility) &&
            "local linkage requires default visibility");
     Visibility = V;
+    if (isImplicitDSOLocal())
+      setDSOLocal(true);
   }
 
   /// If the value is "Thread Local", its value isn't shared by the threads.
@@ -266,11 +272,22 @@ public:
 
   Type *getValueType() const { return ValueType; }
 
+  bool isImplicitDSOLocal() const {
+    return hasLocalLinkage() ||
+           (!hasDefaultVisibility() && !hasExternalWeakLinkage());
+  }
+
   void setDSOLocal(bool Local) { IsDSOLocal = Local; }
 
   bool isDSOLocal() const {
     return IsDSOLocal;
   }
+
+  bool hasPartition() const {
+    return HasPartition;
+  }
+  StringRef getPartition() const;
+  void setPartition(StringRef Part);
 
   static LinkageTypes getLinkOnceLinkage(bool ODR) {
     return ODR ? LinkOnceODRLinkage : LinkOnceAnyLinkage;
@@ -285,11 +302,14 @@ public:
   static bool isAvailableExternallyLinkage(LinkageTypes Linkage) {
     return Linkage == AvailableExternallyLinkage;
   }
+  static bool isLinkOnceAnyLinkage(LinkageTypes Linkage) {
+    return Linkage == LinkOnceAnyLinkage;
+  }
   static bool isLinkOnceODRLinkage(LinkageTypes Linkage) {
     return Linkage == LinkOnceODRLinkage;
   }
   static bool isLinkOnceLinkage(LinkageTypes Linkage) {
-    return Linkage == LinkOnceAnyLinkage || Linkage == LinkOnceODRLinkage;
+    return isLinkOnceAnyLinkage(Linkage) || isLinkOnceODRLinkage(Linkage);
   }
   static bool isWeakAnyLinkage(LinkageTypes Linkage) {
     return Linkage == WeakAnyLinkage;
@@ -405,16 +425,20 @@ public:
   }
 
   /// Return true if this global's definition can be substituted with an
-  /// *arbitrary* definition at link time.  We cannot do any IPO or inlinining
-  /// across interposable call edges, since the callee can be replaced with
-  /// something arbitrary at link time.
-  bool isInterposable() const { return isInterposableLinkage(getLinkage()); }
+  /// *arbitrary* definition at link time or load time. We cannot do any IPO or
+  /// inlining across interposable call edges, since the callee can be
+  /// replaced with something arbitrary.
+  bool isInterposable() const;
+  bool canBenefitFromLocalAlias() const;
 
   bool hasExternalLinkage() const { return isExternalLinkage(getLinkage()); }
   bool hasAvailableExternallyLinkage() const {
     return isAvailableExternallyLinkage(getLinkage());
   }
   bool hasLinkOnceLinkage() const { return isLinkOnceLinkage(getLinkage()); }
+  bool hasLinkOnceAnyLinkage() const {
+    return isLinkOnceAnyLinkage(getLinkage());
+  }
   bool hasLinkOnceODRLinkage() const {
     return isLinkOnceODRLinkage(getLinkage());
   }
@@ -437,6 +461,8 @@ public:
     if (isLocalLinkage(LT))
       Visibility = DefaultVisibility;
     Linkage = LT;
+    if (isImplicitDSOLocal())
+      setDSOLocal(true);
   }
   LinkageTypes getLinkage() const { return LinkageTypes(Linkage); }
 
@@ -528,14 +554,10 @@ public:
     return !(isDeclarationForLinker() || isWeakForLinker());
   }
 
-  // Returns true if the alignment of the value can be unilaterally
-  // increased.
-  bool canIncreaseAlignment() const;
-
-  const GlobalObject *getBaseObject() const;
-  GlobalObject *getBaseObject() {
+  const GlobalObject *getAliaseeObject() const;
+  GlobalObject *getAliaseeObject() {
     return const_cast<GlobalObject *>(
-                       static_cast<const GlobalValue *>(this)->getBaseObject());
+        static_cast<const GlobalValue *>(this)->getAliaseeObject());
   }
 
   /// Returns whether this is a reference to an absolute symbol.
@@ -563,6 +585,13 @@ public:
            V->getValueID() == Value::GlobalAliasVal ||
            V->getValueID() == Value::GlobalIFuncVal;
   }
+
+  /// True if GV can be left out of the object symbol table. This is the case
+  /// for linkonce_odr values whose address is not significant. While legal, it
+  /// is not normally profitable to omit them from the .o symbol table. Using
+  /// this analysis makes sense when the information can be passed down to the
+  /// linker or we are in LTO.
+  bool canBeOmittedFromSymbolTable() const;
 };
 
 } // end namespace llvm

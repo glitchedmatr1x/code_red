@@ -3,8 +3,8 @@
 ; alias information for inner loops, and in the new PM it is recomputed for each
 ; loop.
 ;
-; RUN: opt -S -aa-pipeline=basic-aa -passes='require<opt-remark-emit>,loop(licm)' < %s | FileCheck %s
-; RUN: opt -S -basicaa -licm < %s | FileCheck %s
+; RUN: opt -S -aa-pipeline=basic-aa -passes='require<opt-remark-emit>,loop-mssa(licm)' < %s | FileCheck %s
+; RUN: opt -S -basic-aa -licm < %s | FileCheck %s
 
 define i32 @test(i32* %a, i64 %n.0, i64 %n.0.0, i64 %n.0.0.0, i64 %n.0.0.0.0) nounwind uwtable readonly {
 ; CHECK-LABEL: define i32 @test
@@ -49,8 +49,8 @@ l.0.0.0.header:
   %iv.0.0.0 = phi i64 [ %iv.0.0.0.next, %l.0.0.0.header ], [ 0, %l.0.0.header ]
   %iv.0.0.0.next = add i64 %iv.0.0.0, 1
   %exitcond.0.0.0 = icmp eq i64 %iv.0.0.0.next, %n.0.0.0
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %a.i8, i8* %c.i8, i64 4, i32 1, i1 false)
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %b.i8, i8* %c.i8, i64 4, i32 1, i1 false)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %a.i8, i8* %c.i8, i64 4, i1 false)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %b.i8, i8* %c.i8, i64 4, i1 false)
   br i1 %exitcond.0.0.0, label %l.0.0.0.header, label %l.0.0.latch
 ; CHECK: call void @llvm.memcpy.{{.*}}(i8* %[[AI8]], i8* %[[CI8]], i64 4
 ; CHECK: call void @llvm.memcpy.{{.*}}(i8* %[[BI8]], i8* %[[CI8]], i64 4
@@ -73,4 +73,4 @@ exit:
 ; CHECK: ret i32 %[[LCSSA]]
 }
 
-declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture writeonly, i8* nocapture readonly, i64, i32, i1)
+declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture writeonly, i8* nocapture readonly, i64, i1)

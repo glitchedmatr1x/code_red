@@ -56,7 +56,7 @@ entry:
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind readnone "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="pentium4" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind readnone "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="pentium4" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!2}
@@ -76,7 +76,7 @@ attributes #1 = { nounwind readnone }
 !10 = !{i32 2, !"Dwarf Version", i32 4}
 !11 = !{i32 2, !"Debug Info Version", i32 3}
 !12 = !{!"clang version 3.9.0 (trunk 272067)"}
-!13 = distinct !DISubprogram(name: "f", linkageName: "\01?f@@YIHHH@Z", scope: !3, file: !3, line: 1, type: !7, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: true, unit: !2, variables: !14)
+!13 = distinct !DISubprogram(name: "f", linkageName: "\01?f@@YIHHH@Z", scope: !3, file: !3, line: 1, type: !7, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: true, unit: !2, retainedNodes: !14)
 !14 = !{!15, !16}
 !15 = !DILocalVariable(name: "b", arg: 2, scope: !13, file: !3, line: 1, type: !9)
 !16 = !DILocalVariable(name: "a", arg: 1, scope: !13, file: !3, line: 1, type: !9)

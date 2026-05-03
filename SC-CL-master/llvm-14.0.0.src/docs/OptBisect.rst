@@ -157,7 +157,6 @@ to make this check uniform across all passes.  These helper functions are:
   bool ModulePass::skipModule(Module &M);
   bool CallGraphSCCPass::skipSCC(CallGraphSCC &SCC);
   bool FunctionPass::skipFunction(const Function &F);
-  bool BasicBlockPass::skipBasicBlock(const BasicBlock &BB);
   bool LoopPass::skipLoop(const Loop *L);
 
 A MachineFunctionPass should use FunctionPass::skipFunction() as such:
@@ -166,7 +165,7 @@ A MachineFunctionPass should use FunctionPass::skipFunction() as such:
 
   bool MyMachineFunctionPass::runOnMachineFunction(Function &MF) {
     if (skipFunction(*MF.getFunction())
-	  return false;
+      return false;
     // Otherwise, run the pass normally.
   }
 

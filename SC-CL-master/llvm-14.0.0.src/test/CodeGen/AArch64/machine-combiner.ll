@@ -3,7 +3,7 @@
 ; Incremental updates of the instruction depths should be enough for this test
 ; case.
 ; RUN: llc -mtriple=aarch64-gnu-linux -mcpu=cortex-a57 -enable-unsafe-fp-math \
-; RUN:     -disable-post-ra -machine-combiner-inc-threshold=0 < %s | FileCheck %s
+; RUN:     -disable-post-ra -machine-combiner-inc-threshold=0 -machine-combiner-verify-pattern-order=true < %s | FileCheck %s
 
 ; Verify that the first two adds are independent regardless of how the inputs are
 ; commuted. The destination registers are used as source registers for the third add.
@@ -220,13 +220,13 @@ declare double @bar()
 define double @reassociate_adds_from_calls() {
 ; CHECK-LABEL: reassociate_adds_from_calls:
 ; CHECK:       bl   bar
-; CHECK-NEXT:  mov  v8.16b, v0.16b 
+; CHECK-NEXT:  fmov d8, d0
 ; CHECK-NEXT:  bl   bar
-; CHECK-NEXT:  mov  v9.16b, v0.16b
+; CHECK-NEXT:  fmov d9, d0
 ; CHECK-NEXT:  bl   bar
-; CHECK-NEXT:  mov  v10.16b, v0.16b 
+; CHECK-NEXT:  fmov d10, d0
 ; CHECK-NEXT:  bl   bar
-; CHECK:       fadd d1, d8, d9 
+; CHECK:       fadd d1, d8, d9
 ; CHECK-NEXT:  fadd d0, d10, d0
 ; CHECK-NEXT:  fadd d0, d1, d0
   %x0 = call double @bar()
@@ -242,11 +242,11 @@ define double @reassociate_adds_from_calls() {
 define double @already_reassociated() {
 ; CHECK-LABEL: already_reassociated:
 ; CHECK:       bl   bar
-; CHECK-NEXT:  mov  v8.16b, v0.16b 
+; CHECK-NEXT:  fmov d8, d0
 ; CHECK-NEXT:  bl   bar
-; CHECK-NEXT:  mov  v9.16b, v0.16b
+; CHECK-NEXT:  fmov d9, d0
 ; CHECK-NEXT:  bl   bar
-; CHECK-NEXT:  mov  v10.16b, v0.16b 
+; CHECK-NEXT:  fmov d10, d0
 ; CHECK-NEXT:  bl   bar
 ; CHECK:       fadd d1, d8, d9 
 ; CHECK-NEXT:  fadd d0, d10, d0

@@ -2,11 +2,8 @@
 ; formats. This checks that we produce the same profile annotations regardless
 ; of the profile format.
 ;
-; RUN: opt < %s -sample-profile -sample-profile-file=%S/Inputs/fnptr.prof | opt -analyze -branch-prob | FileCheck %s
-; RUN: opt < %s -sample-profile -sample-profile-file=%S/Inputs/fnptr.binprof | opt -analyze -branch-prob | FileCheck %s
-
-; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/fnptr.prof | opt -analyze -branch-prob | FileCheck %s
-; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/fnptr.binprof | opt -analyze -branch-prob | FileCheck %s
+; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/fnptr.prof | opt -passes='print<branch-prob>' -disable-output 2>&1 | FileCheck %s
+; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/fnptr.binprof | opt -passes='print<branch-prob>' -disable-output 2>&1 | FileCheck %s
 
 ; CHECK:   edge for.body3 -> if.then probability is 0x1a56a56a / 0x80000000 = 20.58%
 ; CHECK:   edge for.body3 -> if.else probability is 0x65a95a96 / 0x80000000 = 79.42%
@@ -127,6 +124,9 @@ declare i32 @rand() #1
 ; Function Attrs: nounwind
 declare i32 @printf(i8* nocapture readonly, ...) #1
 
+attributes #0 = {"use-sample-profile"}
+attributes #2 = {"use-sample-profile"}
+
 !llvm.module.flags = !{!0}
 !llvm.ident = !{!1}
 !llvm.dbg.cu = !{!26}
@@ -134,17 +134,17 @@ declare i32 @printf(i8* nocapture readonly, ...) #1
 !0 = !{i32 2, !"Debug Info Version", i32 3}
 !1 = !{!"clang version 3.6.0 "}
 !2 = !DILocation(line: 9, column: 3, scope: !3)
-!3 = distinct !DISubprogram(name: "foo", line: 8, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: true, unit: !26, scopeLine: 8, file: !4, scope: !5, type: !6, variables: !7)
+!3 = distinct !DISubprogram(name: "foo", line: 8, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: true, unit: !26, scopeLine: 8, file: !4, scope: !5, type: !6, retainedNodes: !7)
 !4 = !DIFile(filename: "fnptr.cc", directory: ".")
 !5 = !DIFile(filename: "fnptr.cc", directory: ".")
 !6 = !DISubroutineType(types: !7)
 !7 = !{}
 !8 = !DILocation(line: 9, column: 14, scope: !3)
 !9 = !DILocation(line: 13, column: 3, scope: !10)
-!10 = distinct !DISubprogram(name: "bar", line: 12, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: true, unit: !26, scopeLine: 12, file: !4, scope: !5, type: !6, variables: !7)
+!10 = distinct !DISubprogram(name: "bar", line: 12, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: true, unit: !26, scopeLine: 12, file: !4, scope: !5, type: !6, retainedNodes: !7)
 !11 = !DILocation(line: 13, column: 14, scope: !10)
 !12 = !DILocation(line: 19, column: 3, scope: !13)
-!13 = distinct !DISubprogram(name: "main", line: 16, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: true, unit: !26, scopeLine: 16, file: !4, scope: !5, type: !6, variables: !7)
+!13 = distinct !DISubprogram(name: "main", line: 16, isLocal: false, isDefinition: true, flags: DIFlagPrototyped, isOptimized: true, unit: !26, scopeLine: 16, file: !4, scope: !5, type: !6, retainedNodes: !7)
 !14 = !DILocation(line: 20, column: 5, scope: !13)
 !15 = !DILocation(line: 21, column: 15, scope: !13)
 !16 = !DILocation(line: 22, column: 11, scope: !13)

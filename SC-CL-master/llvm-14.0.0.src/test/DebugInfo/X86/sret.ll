@@ -1,18 +1,21 @@
 ; RUN: llc -split-dwarf-file=foo.dwo -O0 %s -mtriple=x86_64-unknown-linux-gnu -filetype=obj -o %t
-; RUN: llvm-dwarfdump -v -all %t | FileCheck %s --check-prefix=CHECK-DWO
+; RUN: llvm-dwarfdump -debug-info %t | FileCheck %s --check-prefix=CHECK-DWO
 
 ; Based on the debuginfo-tests/sret.cpp code.
 
-; CHECK-DWO: DW_AT_GNU_dwo_id [DW_FORM_data8] (0x51ac5644b1937aa1)
-; CHECK-DWO: DW_AT_GNU_dwo_id [DW_FORM_data8] (0x51ac5644b1937aa1)
+; CHECK-DWO: DW_AT_GNU_dwo_id (0xa58a336e896549f1)
+; CHECK-DWO: DW_AT_GNU_dwo_id (0xa58a336e896549f1)
 
-; RUN: llc -O0 -fast-isel=true -mtriple=x86_64-apple-darwin -filetype=obj -o - %s | llvm-dwarfdump -v - | FileCheck %s
-; RUN: llc -O0 -fast-isel=false -mtriple=x86_64-apple-darwin -filetype=obj -o - %s | llvm-dwarfdump -v - | FileCheck %s
+; RUN: llc -O0 -fast-isel=true -mtriple=x86_64-apple-darwin -filetype=obj -o - %s | llvm-dwarfdump -debug-info - | FileCheck -check-prefixes=CHECK,FASTISEL %s
+; RUN: llc -O0 -fast-isel=false -mtriple=x86_64-apple-darwin -filetype=obj -o - %s | llvm-dwarfdump -debug-info - | FileCheck -check-prefixes=CHECK,SDAG %s
 ; CHECK: _ZN1B9AInstanceEv
-; CHECK: DW_TAG_variable  
-; CHECK-NEXT:   DW_AT_location [DW_FORM_sec_offset] (0x00000000
-; CHECK-NEXT:     {{.*}} - {{.*}}: DW_OP_breg5 RDI+0
-; CHECK-NEXT:     {{.*}} - {{.*}}: DW_OP_breg6 RBP-24, DW_OP_deref)
+; CHECK: DW_TAG_variable
+; CHECK-NEXT:   DW_AT_location (0x00000000
+; FASTISEL-NEXT:     [{{.*}}, {{.*}}): DW_OP_breg6 RBP-32, DW_OP_deref
+; FASTISEL-NEXT:     [{{.*}}, {{.*}}): DW_OP_breg5 RDI+0
+; FASTISEL-NEXT:     [{{.*}}, {{.*}}): DW_OP_breg6 RBP-32, DW_OP_deref)
+; SDAG-NEXT:     [{{.*}}, {{.*}}): DW_OP_breg5 RDI+0
+; SDAG-NEXT:     [{{.*}}, {{.*}}): DW_OP_breg6 RBP-32, DW_OP_deref)
 ; CHECK-NEXT:   DW_AT_name {{.*}}"a"
 
 %class.A = type { i32 (...)**, i32 }
@@ -98,7 +101,7 @@ entry:
 }
 
 ; Function Attrs: uwtable
-define void @_ZN1B9AInstanceEv(%class.A* noalias sret %agg.result, %class.B* %this) #2 align 2 !dbg !53 {
+define void @_ZN1B9AInstanceEv(%class.A* noalias sret(%class.A) %agg.result, %class.B* %this) #2 align 2 !dbg !53 {
 entry:
   %this.addr = alloca %class.B*, align 8
   %nrvo = alloca i1
@@ -153,7 +156,7 @@ entry:
   call void @llvm.dbg.declare(metadata %class.B* %b, metadata !107, metadata !DIExpression()), !dbg !108
   call void @_ZN1BC2Ev(%class.B* %b), !dbg !108
   call void @llvm.dbg.declare(metadata i32* %return_val, metadata !109, metadata !DIExpression()), !dbg !110
-  call void @_ZN1B9AInstanceEv(%class.A* sret %temp.lvalue, %class.B* %b), !dbg !110
+  call void @_ZN1B9AInstanceEv(%class.A* sret(%class.A) %temp.lvalue, %class.B* %b), !dbg !110
   %call = invoke i32 @_ZN1A7get_intEv(%class.A* %temp.lvalue)
           to label %invoke.cont unwind label %lpad, !dbg !110
 
@@ -161,7 +164,7 @@ invoke.cont:                                      ; preds = %entry
   call void @_ZN1AD2Ev(%class.A* %temp.lvalue), !dbg !111
   store i32 %call, i32* %return_val, align 4, !dbg !111
   call void @llvm.dbg.declare(metadata %class.A* %a, metadata !113, metadata !DIExpression()), !dbg !114
-  call void @_ZN1B9AInstanceEv(%class.A* sret %a, %class.B* %b), !dbg !114
+  call void @_ZN1B9AInstanceEv(%class.A* sret(%class.A) %a, %class.B* %b), !dbg !114
   %0 = load i32, i32* %return_val, align 4, !dbg !115
   store i32 %0, i32* %retval, !dbg !115
   store i32 1, i32* %cleanup.dest.slot
@@ -259,11 +262,11 @@ eh.resume:                                        ; preds = %lpad
 ; Function Attrs: nobuiltin nounwind
 declare void @_ZdlPv(i8*) #4
 
-attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
-attributes #2 = { uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #3 = { noinline noreturn nounwind }
-attributes #4 = { nobuiltin nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #4 = { nobuiltin nounwind "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #5 = { noreturn nounwind }
 attributes #6 = { nounwind }
 attributes #7 = { builtin nounwind }
@@ -313,21 +316,21 @@ attributes #7 = { builtin nounwind }
 !44 = !DISubprogram(name: "AInstance", linkageName: "_ZN1B9AInstanceEv", line: 43, isLocal: false, isDefinition: false, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, scopeLine: 43, file: !1, scope: !37, type: !45)
 !45 = !DISubroutineType(types: !46)
 !46 = !{!4, !42}
-!49 = distinct !DISubprogram(name: "A", linkageName: "_ZN1AC2Ei", line: 16, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 18, file: !1, scope: !4, type: !15, declaration: !14, variables: !2)
-!50 = distinct !DISubprogram(name: "A", linkageName: "_ZN1AC2ERKS_", line: 21, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 23, file: !1, scope: !4, type: !20, declaration: !19, variables: !2)
-!51 = distinct !DISubprogram(name: "operator=", linkageName: "_ZN1AaSERKS_", line: 27, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 28, file: !1, scope: !4, type: !26, declaration: !25, variables: !2)
-!52 = distinct !DISubprogram(name: "get_int", linkageName: "_ZN1A7get_intEv", line: 33, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 34, file: !1, scope: !4, type: !34, declaration: !33, variables: !2)
-!53 = distinct !DISubprogram(name: "AInstance", linkageName: "_ZN1B9AInstanceEv", line: 47, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 48, file: !1, scope: !37, type: !45, declaration: !44, variables: !2)
-!54 = distinct !DISubprogram(name: "main", line: 53, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 54, file: !1, scope: !7, type: !55, variables: !2)
+!49 = distinct !DISubprogram(name: "A", linkageName: "_ZN1AC2Ei", line: 16, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 18, file: !1, scope: !4, type: !15, declaration: !14, retainedNodes: !2)
+!50 = distinct !DISubprogram(name: "A", linkageName: "_ZN1AC2ERKS_", line: 21, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 23, file: !1, scope: !4, type: !20, declaration: !19, retainedNodes: !2)
+!51 = distinct !DISubprogram(name: "operator=", linkageName: "_ZN1AaSERKS_", line: 27, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 28, file: !1, scope: !4, type: !26, declaration: !25, retainedNodes: !2)
+!52 = distinct !DISubprogram(name: "get_int", linkageName: "_ZN1A7get_intEv", line: 33, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 34, file: !1, scope: !4, type: !34, declaration: !33, retainedNodes: !2)
+!53 = distinct !DISubprogram(name: "AInstance", linkageName: "_ZN1B9AInstanceEv", line: 47, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 48, file: !1, scope: !37, type: !45, declaration: !44, retainedNodes: !2)
+!54 = distinct !DISubprogram(name: "main", line: 53, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 54, file: !1, scope: !7, type: !55, retainedNodes: !2)
 !55 = !DISubroutineType(types: !56)
 !56 = !{!12, !12, !57}
 !57 = !DIDerivedType(tag: DW_TAG_pointer_type, size: 64, align: 64, baseType: !58)
 !58 = !DIDerivedType(tag: DW_TAG_pointer_type, size: 64, align: 64, baseType: !59)
 !59 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !60)
 !60 = !DIBasicType(tag: DW_TAG_base_type, name: "char", size: 8, align: 8, encoding: DW_ATE_signed_char)
-!61 = distinct !DISubprogram(name: "~A", linkageName: "_ZN1AD0Ev", line: 8, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 8, file: !1, scope: !4, type: !30, declaration: !29, variables: !2)
-!62 = distinct !DISubprogram(name: "B", linkageName: "_ZN1BC2Ev", line: 41, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 41, file: !1, scope: !37, type: !40, declaration: !39, variables: !2)
-!63 = distinct !DISubprogram(name: "~A", linkageName: "_ZN1AD2Ev", line: 8, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 8, file: !1, scope: !4, type: !30, declaration: !29, variables: !2)
+!61 = distinct !DISubprogram(name: "~A", linkageName: "_ZN1AD0Ev", line: 8, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 8, file: !1, scope: !4, type: !30, declaration: !29, retainedNodes: !2)
+!62 = distinct !DISubprogram(name: "B", linkageName: "_ZN1BC2Ev", line: 41, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 41, file: !1, scope: !37, type: !40, declaration: !39, retainedNodes: !2)
+!63 = distinct !DISubprogram(name: "~A", linkageName: "_ZN1AD2Ev", line: 8, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 8, file: !1, scope: !4, type: !30, declaration: !29, retainedNodes: !2)
 !64 = !{i32 2, !"Dwarf Version", i32 4}
 !65 = !{i32 1, !"Debug Info Version", i32 3}
 !66 = !{!"clang version 3.5.0 (trunk 203283) (llvm/trunk 203307)"}

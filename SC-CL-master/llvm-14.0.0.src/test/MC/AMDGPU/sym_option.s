@@ -1,4 +1,4 @@
-// RUN: llvm-mc -arch=amdgcn -mcpu=tahiti      %s | FileCheck %s --check-prefix=SI
+// RUN: llvm-mc -arch=amdgcn -mcpu=tahiti %s | FileCheck %s --check-prefix=SI
 // RUN: llvm-mc -arch=amdgcn -mcpu=bonaire %s | FileCheck %s --check-prefix=BONAIRE
 // RUN: llvm-mc -arch=amdgcn -mcpu=hawaii %s | FileCheck %s --check-prefix=HAWAII
 // RUN: llvm-mc -arch=amdgcn -mcpu=kabini  %s | FileCheck %s --check-prefix=KABINI
@@ -35,7 +35,7 @@
 // BONAIRE: .byte 4
 // HAWAII: .byte 1
 // KABINI: .byte 3
-// ICELAND: .byte 0
+// ICELAND: .byte 2
 // CARRIZO: .byte 1
 // TONGA: .byte 2
 // FIJI: .byte 3

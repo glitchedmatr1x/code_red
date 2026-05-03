@@ -1,6 +1,4 @@
-; REQUIRES: object-emission
-
-; RUN: %llc_dwarf -O0 -filetype=obj -dwarf-linkage-names=All < %s | llvm-dwarfdump -v -debug-info - | FileCheck %s
+; RUN: %llc_dwarf -O0 -filetype=obj -dwarf-linkage-names=All < %s | llvm-dwarfdump -debug-info - | FileCheck %s
 
 ; Generate from clang with the following source. Note that the definition of
 ; the inline function follows its use to workaround another bug that should be
@@ -13,11 +11,11 @@
 ; int __attribute__((always_inline)) ns::func(int i) { return i * 2; }
 
 ; CHECK: DW_TAG_namespace
-; CHECK-NEXT: DW_AT_name {{.*}} "ns"
+; CHECK-NEXT: DW_AT_name ("ns")
 ; CHECK-NOT: DW_TAG
 ; CHECK:   DW_TAG_subprogram
 ; CHECK-NOT: DW_TAG
-; CHECK:   DW_AT_linkage_name {{.*}} "_ZN2ns4funcEi"
+; CHECK:   DW_AT_linkage_name ("_ZN2ns4funcEi")
 ; CHECK-NOT: DW_TAG
 ; CHECK:   DW_TAG_formal_parameter
 ; CHECK:   NULL
@@ -62,8 +60,8 @@ entry:
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.declare(metadata, metadata, metadata) #2
 
-attributes #0 = { uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { alwaysinline nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { alwaysinline nounwind uwtable "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -73,12 +71,12 @@ attributes #2 = { nounwind readnone }
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, producer: "clang version 3.5.0 ", isOptimized: false, emissionKind: FullDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "namespace_inline_function_definition.cpp", directory: "/tmp/dbginfo")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "main", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 5, file: !1, scope: !5, type: !6, variables: !2)
+!4 = distinct !DISubprogram(name: "main", line: 5, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 5, file: !1, scope: !5, type: !6, retainedNodes: !2)
 !5 = !DIFile(filename: "namespace_inline_function_definition.cpp", directory: "/tmp/dbginfo")
 !6 = !DISubroutineType(types: !7)
 !7 = !{!8}
 !8 = !DIBasicType(tag: DW_TAG_base_type, name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
-!9 = distinct !DISubprogram(name: "func", linkageName: "_ZN2ns4funcEi", line: 6, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 6, file: !1, scope: !10, type: !11, variables: !2)
+!9 = distinct !DISubprogram(name: "func", linkageName: "_ZN2ns4funcEi", line: 6, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 6, file: !1, scope: !10, type: !11, retainedNodes: !2)
 !10 = !DINamespace(name: "ns", scope: null)
 !11 = !DISubroutineType(types: !12)
 !12 = !{!8, !8}

@@ -1,27 +1,27 @@
-; RUN: llc < %s -march=x86 -regalloc=greedy -stop-after=greedy | FileCheck %s
+; RUN: llc -consider-local-interval-cost < %s -march=x86 -regalloc=greedy -stop-after=greedy | FileCheck %s
 ; Make sure bad eviction sequence doesnt occur
 
 ; Part of the fix for bugzilla 26810.
 ; This test is meant to make sure bad eviction sequence like the one described
 ; below does not occur
 ;
-; movl	%ebp, 8(%esp)           # 4-byte Spill
+; movl	%ebp, 8($esp)           # 4-byte Spill
 ; movl	%ecx, %ebp
 ; movl	%ebx, %ecx
-; movl	%edi, %ebx
-; movl	%edx, %edi
+; movl	$edi, %ebx
+; movl	$edx, $edi
 ; cltd
 ; idivl	%esi
-; movl	%edi, %edx
-; movl	%ebx, %edi
+; movl	$edi, $edx
+; movl	%ebx, $edi
 ; movl	%ecx, %ebx
 ; movl	%ebp, %ecx
-; movl	16(%esp), %ebp          # 4 - byte Reload
+; movl	16($esp), %ebp          # 4 - byte Reload
 
 ; Make sure we have no redundant copies in the problematic code seqtion
 ; CHECK-LABEL: name: bar
 ; CHECK: bb.3.for.body:
-; CHECK: %eax = COPY
+; CHECK: $eax = COPY
 ; CHECK-NEXT: CDQ
 ; CHECK-NEXT: IDIV32r
 ; CHECK-NEXT: ADD32rr
@@ -99,8 +99,8 @@ for.body:                                         ; preds = %entry, %for.body
   br i1 %exitcond, label %for.cond.cleanup, label %for.body, !llvm.loop !7
 }
 
-attributes #0 = { norecurse nounwind readnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-features"="+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { norecurse nounwind readonly "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-features"="+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { norecurse nounwind readnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-features"="+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { norecurse nounwind readonly "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-features"="+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 
 !llvm.module.flags = !{!0, !1}
 !llvm.ident = !{!2}

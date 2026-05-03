@@ -11,7 +11,7 @@ define i32 @t0(i64 %x) nounwind {
 ;
 ; X64-LABEL: t0:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %rdi, %mm0
+; X64-NEXT:    movq %rdi, %mm0
 ; X64-NEXT:    pshufw $238, %mm0, %mm0 # mm0 = mm0[2,3,2,3]
 ; X64-NEXT:    movd %mm0, %eax
 ; X64-NEXT:    retq
@@ -34,10 +34,10 @@ define i64 @t1(i64 %x, i32 %n) nounwind {
 ; X86-NEXT:    movl %esp, %ebp
 ; X86-NEXT:    andl $-8, %esp
 ; X86-NEXT:    subl $8, %esp
-; X86-NEXT:    movd 16(%ebp), %mm0
-; X86-NEXT:    movq 8(%ebp), %mm1
-; X86-NEXT:    psllq %mm0, %mm1
-; X86-NEXT:    movq %mm1, (%esp)
+; X86-NEXT:    movq 8(%ebp), %mm0
+; X86-NEXT:    movd 16(%ebp), %mm1
+; X86-NEXT:    psllq %mm1, %mm0
+; X86-NEXT:    movq %mm0, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -46,10 +46,10 @@ define i64 @t1(i64 %x, i32 %n) nounwind {
 ;
 ; X64-LABEL: t1:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %esi, %mm0
-; X64-NEXT:    movd %rdi, %mm1
-; X64-NEXT:    psllq %mm0, %mm1
-; X64-NEXT:    movd %mm1, %rax
+; X64-NEXT:    movq %rdi, %mm0
+; X64-NEXT:    movd %esi, %mm1
+; X64-NEXT:    psllq %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast i64 %x to x86_mmx
@@ -65,11 +65,11 @@ define i64 @t2(i64 %x, i32 %n, i32 %w) nounwind {
 ; X86-NEXT:    movl %esp, %ebp
 ; X86-NEXT:    andl $-8, %esp
 ; X86-NEXT:    subl $8, %esp
-; X86-NEXT:    movd 16(%ebp), %mm0
-; X86-NEXT:    movd 20(%ebp), %mm1
-; X86-NEXT:    psllq %mm0, %mm1
-; X86-NEXT:    por 8(%ebp), %mm1
-; X86-NEXT:    movq %mm1, (%esp)
+; X86-NEXT:    movd 20(%ebp), %mm0
+; X86-NEXT:    movd 16(%ebp), %mm1
+; X86-NEXT:    psllq %mm1, %mm0
+; X86-NEXT:    por 8(%ebp), %mm0
+; X86-NEXT:    movq %mm0, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -78,12 +78,12 @@ define i64 @t2(i64 %x, i32 %n, i32 %w) nounwind {
 ;
 ; X64-LABEL: t2:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %esi, %mm0
-; X64-NEXT:    movd %edx, %mm1
-; X64-NEXT:    psllq %mm0, %mm1
-; X64-NEXT:    movd %rdi, %mm0
-; X64-NEXT:    por %mm1, %mm0
-; X64-NEXT:    movd %mm0, %rax
+; X64-NEXT:    movd %edx, %mm0
+; X64-NEXT:    movd %esi, %mm1
+; X64-NEXT:    psllq %mm1, %mm0
+; X64-NEXT:    movq %rdi, %mm1
+; X64-NEXT:    por %mm0, %mm1
+; X64-NEXT:    movq %mm1, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = insertelement <2 x i32> undef, i32 %w, i32 0
@@ -120,7 +120,7 @@ define i64 @t3(<1 x i64>* %y, i32* %n) nounwind {
 ; X64-NEXT:    movq (%rdi), %mm0
 ; X64-NEXT:    movd (%rsi), %mm1
 ; X64-NEXT:    psllq %mm1, %mm0
-; X64-NEXT:    movd %mm0, %rax
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64>* %y to x86_mmx*

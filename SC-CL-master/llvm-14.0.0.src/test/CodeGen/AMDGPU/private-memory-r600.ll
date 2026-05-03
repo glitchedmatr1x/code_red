@@ -1,5 +1,6 @@
-; RUN: llc -march=r600 -mtriple=r600---amdgiz -mcpu=redwood < %s | FileCheck %s -check-prefix=R600 -check-prefix=FUNC
-; RUN: opt -S -mtriple=r600-unknown-unknown-amdgiz -mcpu=redwood -amdgpu-promote-alloca < %s | FileCheck -check-prefix=OPT %s
+; RUN: llc -march=r600 -mcpu=redwood -disable-promote-alloca-to-vector < %s | FileCheck %s -check-prefix=R600 -check-prefix=FUNC
+; RUN: llc -march=r600 -mcpu=redwood < %s | FileCheck %s -check-prefix=R600-VECT -check-prefix=FUNC
+; RUN: opt -S -mtriple=r600-unknown-unknown -mcpu=redwood -amdgpu-promote-alloca -disable-promote-alloca-to-vector < %s | FileCheck -check-prefix=OPT %s
 target datalayout = "A5"
 
 declare i32 @llvm.r600.read.tidig.x() nounwind readnone
@@ -110,7 +111,7 @@ for.end:
 
 ; FUNC-LABEL: {{^}}short_array:
 
-; R600: MOVA_INT
+; R600-VECT: MOVA_INT
 define amdgpu_kernel void @short_array(i32 addrspace(1)* %out, i32 %index) #0 {
 entry:
   %0 = alloca [2 x i16], addrspace(5)
@@ -127,7 +128,7 @@ entry:
 
 ; FUNC-LABEL: {{^}}char_array:
 
-; R600: MOVA_INT
+; R600-VECT: MOVA_INT
 define amdgpu_kernel void @char_array(i32 addrspace(1)* %out, i32 %index) #0 {
 entry:
   %0 = alloca [2 x i8], addrspace(5)
@@ -167,9 +168,6 @@ entry:
 ; Test that two stack objects are not stored in the same register
 ; The second stack object should be in T3.X
 ; FUNC-LABEL: {{^}}no_overlap:
-; R600_CHECK: MOV
-; R600_CHECK: [[CHAN:[XYZW]]]+
-; R600-NOT: [[CHAN]]+
 define amdgpu_kernel void @no_overlap(i32 addrspace(1)* %out, i32 %in) #0 {
 entry:
   %0 = alloca [3 x i8], align 1, addrspace(5)
@@ -299,4 +297,4 @@ define amdgpu_kernel void @ptrtoint(i32 addrspace(1)* %out, i32 %a, i32 %b) #0 {
 ; OPT: !0 = !{i32 0, i32 257}
 ; OPT: !1 = !{i32 0, i32 256}
 
-attributes #0 = { nounwind "amdgpu-waves-per-eu"="1,2" }
+attributes #0 = { nounwind "amdgpu-waves-per-eu"="1,2" "amdgpu-flat-work-group-size"="1,256" }

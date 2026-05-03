@@ -66,7 +66,7 @@ define <8 x i16> @t2(<8 x i16> %A, <8 x i16> %B) nounwind {
 ; X86:       # %bb.0:
 ; X86-NEXT:    movdqa {{.*#+}} xmm2 = [0,65535,65535,0,65535,65535,65535,65535]
 ; X86-NEXT:    pand %xmm2, %xmm0
-; X86-NEXT:    pshuflw {{.*#+}} xmm1 = xmm1[1,1,2,1,4,5,6,7]
+; X86-NEXT:    pshuflw {{.*#+}} xmm1 = xmm1[1,1,1,1,4,5,6,7]
 ; X86-NEXT:    pandn %xmm1, %xmm2
 ; X86-NEXT:    por %xmm2, %xmm0
 ; X86-NEXT:    retl
@@ -75,7 +75,7 @@ define <8 x i16> @t2(<8 x i16> %A, <8 x i16> %B) nounwind {
 ; X64:       # %bb.0:
 ; X64-NEXT:    movdqa {{.*#+}} xmm2 = [0,65535,65535,0,65535,65535,65535,65535]
 ; X64-NEXT:    pand %xmm2, %xmm0
-; X64-NEXT:    pshuflw {{.*#+}} xmm1 = xmm1[1,1,2,1,4,5,6,7]
+; X64-NEXT:    pshuflw {{.*#+}} xmm1 = xmm1[1,1,1,1,4,5,6,7]
 ; X64-NEXT:    pandn %xmm1, %xmm2
 ; X64-NEXT:    por %xmm2, %xmm0
 ; X64-NEXT:    retq
@@ -215,16 +215,16 @@ define void @t9(<4 x float>* %r, <2 x i32>* %A) nounwind {
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movapd (%ecx), %xmm0
-; X86-NEXT:    movhpd {{.*#+}} xmm0 = xmm0[0],mem[0]
-; X86-NEXT:    movapd %xmm0, (%ecx)
+; X86-NEXT:    movaps (%ecx), %xmm0
+; X86-NEXT:    movhps {{.*#+}} xmm0 = xmm0[0,1],mem[0,1]
+; X86-NEXT:    movaps %xmm0, (%ecx)
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t9:
 ; X64:       # %bb.0:
-; X64-NEXT:    movapd (%rdi), %xmm0
-; X64-NEXT:    movhpd {{.*#+}} xmm0 = xmm0[0],mem[0]
-; X64-NEXT:    movapd %xmm0, (%rdi)
+; X64-NEXT:    movaps (%rdi), %xmm0
+; X64-NEXT:    movhps {{.*#+}} xmm0 = xmm0[0,1],mem[0,1]
+; X64-NEXT:    movaps %xmm0, (%rdi)
 ; X64-NEXT:    retq
 	%tmp = load <4 x float>, <4 x float>* %r
 	%tmp.upgrd.3 = bitcast <2 x i32>* %A to double*
@@ -249,8 +249,8 @@ define void @t9(<4 x float>* %r, <2 x i32>* %A) nounwind {
 ; FIXME: This testcase produces icky code. It can be made much better!
 ; PR2585
 
-@g1 = external constant <4 x i32>
-@g2 = external constant <4 x i16>
+@g1 = external dso_local constant <4 x i32>
+@g2 = external dso_local constant <4 x i16>
 
 define void @t10() nounwind {
 ; X86-LABEL: t10:
@@ -266,7 +266,7 @@ define void @t10() nounwind {
 ; X64-NEXT:    pshuflw {{.*#+}} xmm0 = mem[0,2,2,3,4,5,6,7]
 ; X64-NEXT:    pshufhw {{.*#+}} xmm0 = xmm0[0,1,2,3,4,6,6,7]
 ; X64-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,2,2,3]
-; X64-NEXT:    movq %xmm0, {{.*}}(%rip)
+; X64-NEXT:    movq %xmm0, g2(%rip)
 ; X64-NEXT:    retq
   load <4 x i32>, <4 x i32>* @g1, align 16
   bitcast <4 x i32> %1 to <8 x i16>
@@ -379,16 +379,12 @@ entry:
 define <16 x i8> @t16(<16 x i8> %T0) nounwind readnone {
 ; X86-LABEL: t16:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movdqa {{.*#+}} xmm1 = [0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0]
-; X86-NEXT:    punpcklwd {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1],xmm1[2],xmm0[2],xmm1[3],xmm0[3]
-; X86-NEXT:    movdqa %xmm1, %xmm0
+; X86-NEXT:    pslld $16, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t16:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    movdqa {{.*#+}} xmm1 = [0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0]
-; X64-NEXT:    punpcklwd {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1],xmm1[2],xmm0[2],xmm1[3],xmm0[3]
-; X64-NEXT:    movdqa %xmm1, %xmm0
+; X64-NEXT:    pslld $16, %xmm0
 ; X64-NEXT:    retq
 entry:
   %tmp8 = shufflevector <16 x i8> <i8 0, i8 0, i8 0, i8 0, i8 1, i8 1, i8 1, i8 1, i8 0, i8 0, i8 0, i8 0,  i8 0, i8 0, i8 0, i8 0>, <16 x i8> %T0, <16 x i32> < i32 0, i32 1, i32 16, i32 undef, i32 undef, i32 undef, i32 undef, i32 undef, i32 undef, i32 undef, i32 undef, i32 undef, i32 undef, i32 undef, i32 undef , i32 undef >
@@ -400,18 +396,14 @@ entry:
 define <4 x i32> @t17() nounwind {
 ; X86-LABEL: t17:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movaps (%eax), %xmm0
-; X86-NEXT:    unpcklps {{.*#+}} xmm0 = xmm0[0,0,1,1]
-; X86-NEXT:    xorps %xmm1, %xmm1
-; X86-NEXT:    unpcklps {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
+; X86-NEXT:    pshufd {{.*#+}} xmm0 = mem[0,1,0,1]
+; X86-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t17:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    movaps (%rax), %xmm0
-; X64-NEXT:    unpcklps {{.*#+}} xmm0 = xmm0[0,0,1,1]
-; X64-NEXT:    xorps %xmm1, %xmm1
-; X64-NEXT:    unpcklps {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
+; X64-NEXT:    pshufd {{.*#+}} xmm0 = mem[0,1,0,1]
+; X64-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; X64-NEXT:    retq
 entry:
   %tmp1 = load <4 x float>, <4 x float>* undef, align 16

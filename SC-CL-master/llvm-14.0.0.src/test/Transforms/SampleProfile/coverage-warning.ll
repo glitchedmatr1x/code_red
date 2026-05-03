@@ -1,6 +1,6 @@
 ; RUN: opt < %s -sample-profile -sample-profile-file=%S/Inputs/coverage-warning.prof -sample-profile-check-record-coverage=90 -sample-profile-check-sample-coverage=100 -o /dev/null 2>&1 | FileCheck %s
 ; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/coverage-warning.prof -sample-profile-check-record-coverage=90 -sample-profile-check-sample-coverage=100 -o /dev/null 2>&1 | FileCheck %s
-define i32 @foo(i32 %i) !dbg !4 {
+define i32 @foo(i32 %i) #0 !dbg !4 {
 ; The profile has samples for line locations that are no longer present.
 ; Coverage does not reach 90%, so we should get this warning:
 ;
@@ -27,6 +27,8 @@ return:                                           ; preds = %if.end, %if.then
   ret i32 %1, !dbg !13
 }
 
+attributes #0 = {"use-sample-profile"}
+
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!6, !7}
 !llvm.ident = !{!8}
@@ -34,7 +36,7 @@ return:                                           ; preds = %if.end, %if.then
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang version 3.8.0 (trunk 251524) (llvm/trunk 251531)", isOptimized: false, runtimeVersion: 0, emissionKind: LineTablesOnly, enums: !2)
 !1 = !DIFile(filename: "coverage-warning.c", directory: ".")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 1, type: !5, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!4 = distinct !DISubprogram(name: "foo", scope: !1, file: !1, line: 1, type: !5, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !5 = !DISubroutineType(types: !2)
 !6 = !{i32 2, !"Dwarf Version", i32 4}
 !7 = !{i32 2, !"Debug Info Version", i32 3}

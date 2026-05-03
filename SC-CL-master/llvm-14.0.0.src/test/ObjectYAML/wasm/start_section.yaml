@@ -6,18 +6,28 @@ FileHeader:
 Sections:
   - Type:            TYPE
     Signatures:
-      - ReturnType:      I32
-        ParamTypes:
-          - F32
-          - F32
+      - Index:           0
+        ParamTypes:      []
+        ReturnTypes:     []
   - Type:            FUNCTION
     FunctionTypes: [ 0, 0, 0 ]
   - Type:            START
     StartFunction:   1
+  - Type:            CODE
+    Functions:
+      - Index:           0
+        Locals:
+        Body:            0B
+      - Index:           1
+        Locals:
+        Body:            0B
+      - Index:           2
+        Locals:
+        Body:            0B
 ...
 # CHECK: --- !WASM
 # CHECK: FileHeader:
-# CHECK:   Version:           0x00000001
+# CHECK:   Version:           0x1
 # CHECK: Sections:
 # CHECK:  - Type:            START
 # CHECK:    StartFunction:   1

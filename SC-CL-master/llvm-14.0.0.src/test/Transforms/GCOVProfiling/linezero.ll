@@ -88,9 +88,9 @@ entry:
   ret void, !dbg !45
 }
 
-attributes #0 = { nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
-attributes #2 = { "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-realign-stack" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #3 = { noreturn nounwind }
 
 !llvm.dbg.cu = !{!0}
@@ -112,12 +112,12 @@ attributes #3 = { noreturn nounwind }
 !11 = !DIBasicType(tag: DW_TAG_base_type, name: "char", size: 8, align: 8, encoding: DW_ATE_signed_char)
 !12 = !DIDerivedType(tag: DW_TAG_pointer_type, size: 64, align: 64, flags: DIFlagArtificial | DIFlagObjectPointer, baseType: !4)
 !13 = !DISubprogram(name: "end", linkageName: "_ZN6vector3endEv", line: 26, isLocal: false, isDefinition: false, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, scopeLine: 26, file: !5, scope: !4, type: !8)
-!15 = distinct !DISubprogram(name: "test", linkageName: "_Z4testv", line: 50, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 50, file: !5, scope: !16, type: !17, variables: !2)
+!15 = distinct !DISubprogram(name: "test", linkageName: "_Z4testv", line: 50, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 50, file: !5, scope: !16, type: !17, retainedNodes: !2)
 !16 = !DIFile(filename: "linezero.cc", directory: "PATTERN")
 !17 = !DISubroutineType(types: !18)
 !18 = !{!19}
 !19 = !DIBasicType(tag: DW_TAG_base_type, name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
-!20 = distinct !DISubprogram(name: "f1", linkageName: "_Z2f1v", line: 54, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 54, file: !5, scope: !16, type: !21, variables: !2)
+!20 = distinct !DISubprogram(name: "f1", linkageName: "_Z2f1v", line: 54, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: false, unit: !0, scopeLine: 54, file: !5, scope: !16, type: !21, retainedNodes: !2)
 !21 = !DISubroutineType(types: !22)
 !22 = !{null}
 !23 = !{i32 2, !"Dwarf Version", i32 4}

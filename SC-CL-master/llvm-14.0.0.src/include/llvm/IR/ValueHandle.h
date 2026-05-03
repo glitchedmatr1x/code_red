@@ -1,9 +1,8 @@
 //===- ValueHandle.h - Value Smart Pointer classes --------------*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
@@ -22,7 +21,7 @@
 
 namespace llvm {
 
-/// \brief This is the common base class of value handles.
+/// This is the common base class of value handles.
 ///
 /// ValueHandle's are smart pointers to Value's that have special behavior when
 /// the value is deleted or ReplaceAllUsesWith'd.  See the specific handles
@@ -31,7 +30,7 @@ class ValueHandleBase {
   friend class Value;
 
 protected:
-  /// \brief This indicates what sub class the handle actually is.
+  /// This indicates what sub class the handle actually is.
   ///
   /// This is to avoid having a vtable for the light-weight handle pointers. The
   /// fully general Callback version does have a vtable.
@@ -90,7 +89,11 @@ public:
   }
 
   Value *operator->() const { return getValPtr(); }
-  Value &operator*() const { return *getValPtr(); }
+  Value &operator*() const {
+    Value *V = getValPtr();
+    assert(V && "Dereferencing deleted ValueHandle");
+    return *V;
+  }
 
 protected:
   Value *getValPtr() const { return Val; }
@@ -101,10 +104,10 @@ protected:
            V != DenseMapInfo<Value *>::getTombstoneKey();
   }
 
-  /// \brief Remove this ValueHandle from its current use list.
+  /// Remove this ValueHandle from its current use list.
   void RemoveFromUseList();
 
-  /// \brief Clear the underlying pointer without clearing the use list.
+  /// Clear the underlying pointer without clearing the use list.
   ///
   /// This should only be used if a derived class has manually removed the
   /// handle from the use list.
@@ -121,20 +124,20 @@ private:
   HandleBaseKind getKind() const { return PrevPair.getInt(); }
   void setPrevPtr(ValueHandleBase **Ptr) { PrevPair.setPointer(Ptr); }
 
-  /// \brief Add this ValueHandle to the use list for V.
+  /// Add this ValueHandle to the use list for V.
   ///
   /// List is the address of either the head of the list or a Next node within
   /// the existing use list.
   void AddToExistingUseList(ValueHandleBase **List);
 
-  /// \brief Add this ValueHandle to the use list after Node.
+  /// Add this ValueHandle to the use list after Node.
   void AddToExistingUseListAfter(ValueHandleBase *Node);
 
-  /// \brief Add this ValueHandle to the use list for V.
+  /// Add this ValueHandle to the use list for V.
   void AddToUseList();
 };
 
-/// \brief A nullable Value handle that is nullable.
+/// A nullable Value handle that is nullable.
 ///
 /// This is a value handle that points to a value, and nulls itself
 /// out if that value is deleted.
@@ -172,7 +175,26 @@ template <> struct simplify_type<const WeakVH> {
   static SimpleType getSimplifiedValue(const WeakVH &WVH) { return WVH; }
 };
 
-/// \brief Value handle that is nullable, but tries to track the Value.
+// Specialize DenseMapInfo to allow WeakVH to participate in DenseMap.
+template <> struct DenseMapInfo<WeakVH> {
+  static inline WeakVH getEmptyKey() {
+    return WeakVH(DenseMapInfo<Value *>::getEmptyKey());
+  }
+
+  static inline WeakVH getTombstoneKey() {
+    return WeakVH(DenseMapInfo<Value *>::getTombstoneKey());
+  }
+
+  static unsigned getHashValue(const WeakVH &Val) {
+    return DenseMapInfo<Value *>::getHashValue(Val);
+  }
+
+  static bool isEqual(const WeakVH &LHS, const WeakVH &RHS) {
+    return DenseMapInfo<Value *>::isEqual(LHS, RHS);
+  }
+};
+
+/// Value handle that is nullable, but tries to track the Value.
 ///
 /// This is a value handle that tries hard to point to a Value, even across
 /// RAUW operations, but will null itself out if the value is destroyed.  this
@@ -219,7 +241,7 @@ template <> struct simplify_type<const WeakTrackingVH> {
   }
 };
 
-/// \brief Value handle that asserts if the Value is deleted.
+/// Value handle that asserts if the Value is deleted.
 ///
 /// This is a Value Handle that points to a value and asserts out if the value
 /// is destroyed while the handle is still live.  This is very useful for
@@ -236,13 +258,13 @@ template <> struct simplify_type<const WeakTrackingVH> {
 /// class turns into a trivial wrapper around a pointer.
 template <typename ValueTy>
 class AssertingVH
-#ifndef NDEBUG
-  : public ValueHandleBase
+#if LLVM_ENABLE_ABI_BREAKING_CHECKS
+    : public ValueHandleBase
 #endif
-  {
+{
   friend struct DenseMapInfo<AssertingVH<ValueTy>>;
 
-#ifndef NDEBUG
+#if LLVM_ENABLE_ABI_BREAKING_CHECKS
   Value *getRawValPtr() const { return ValueHandleBase::getValPtr(); }
   void setRawValPtr(Value *P) { ValueHandleBase::operator=(P); }
 #else
@@ -258,13 +280,14 @@ class AssertingVH
   void setValPtr(ValueTy *P) { setRawValPtr(GetAsValue(P)); }
 
 public:
-#ifndef NDEBUG
+#if LLVM_ENABLE_ABI_BREAKING_CHECKS
   AssertingVH() : ValueHandleBase(Assert) {}
   AssertingVH(ValueTy *P) : ValueHandleBase(Assert, GetAsValue(P)) {}
   AssertingVH(const AssertingVH &RHS) : ValueHandleBase(Assert, RHS) {}
 #else
   AssertingVH() : ThePtr(nullptr) {}
   AssertingVH(ValueTy *P) : ThePtr(GetAsValue(P)) {}
+  AssertingVH(const AssertingVH &) = default;
 #endif
 
   operator ValueTy*() const {
@@ -284,41 +307,12 @@ public:
   ValueTy &operator*() const { return *getValPtr(); }
 };
 
-// Specialize DenseMapInfo to allow AssertingVH to participate in DenseMap.
+// Treat AssertingVH<T> like T* inside maps. This also allows using find_as()
+// to look up a value without constructing a value handle.
 template<typename T>
-struct DenseMapInfo<AssertingVH<T>> {
-  static inline AssertingVH<T> getEmptyKey() {
-    AssertingVH<T> Res;
-    Res.setRawValPtr(DenseMapInfo<Value *>::getEmptyKey());
-    return Res;
-  }
+struct DenseMapInfo<AssertingVH<T>> : DenseMapInfo<T *> {};
 
-  static inline AssertingVH<T> getTombstoneKey() {
-    AssertingVH<T> Res;
-    Res.setRawValPtr(DenseMapInfo<Value *>::getTombstoneKey());
-    return Res;
-  }
-
-  static unsigned getHashValue(const AssertingVH<T> &Val) {
-    return DenseMapInfo<Value *>::getHashValue(Val.getRawValPtr());
-  }
-
-  static bool isEqual(const AssertingVH<T> &LHS, const AssertingVH<T> &RHS) {
-    return DenseMapInfo<Value *>::isEqual(LHS.getRawValPtr(),
-                                          RHS.getRawValPtr());
-  }
-};
-
-template <typename T>
-struct isPodLike<AssertingVH<T>> {
-#ifdef NDEBUG
-  static const bool value = true;
-#else
-  static const bool value = false;
-#endif
-};
-
-/// \brief Value handle that tracks a Value across RAUW.
+/// Value handle that tracks a Value across RAUW.
 ///
 /// TrackingVH is designed for situations where a client needs to hold a handle
 /// to a Value (or subclass) across some operations which may move that value,
@@ -379,7 +373,7 @@ public:
   ValueTy &operator*() const { return *getValPtr(); }
 };
 
-/// \brief Value handle with callbacks on RAUW and destruction.
+/// Value handle with callbacks on RAUW and destruction.
 ///
 /// This is a value handle that allows subclasses to define callbacks that run
 /// when the underlying Value has RAUW called on it or is destroyed.  This
@@ -400,12 +394,13 @@ protected:
 public:
   CallbackVH() : ValueHandleBase(Callback) {}
   CallbackVH(Value *P) : ValueHandleBase(Callback, P) {}
+  CallbackVH(const Value *P) : CallbackVH(const_cast<Value *>(P)) {}
 
   operator Value*() const {
     return getValPtr();
   }
 
-  /// \brief Callback for Value destruction.
+  /// Callback for Value destruction.
   ///
   /// Called when this->getValPtr() is destroyed, inside ~Value(), so you
   /// may call any non-virtual Value method on getValPtr(), but no subclass
@@ -418,7 +413,7 @@ public:
   /// Value that's being destroyed.
   virtual void deleted() { setValPtr(nullptr); }
 
-  /// \brief Callback for Value RAUW.
+  /// Callback for Value RAUW.
   ///
   /// Called when this->getValPtr()->replaceAllUsesWith(new_value) is called,
   /// _before_ any of the uses have actually been replaced.  If WeakTrackingVH
@@ -447,9 +442,9 @@ public:
 /// PoisoningVH's as it moves. This is required because in non-assert mode this
 /// class turns into a trivial wrapper around a pointer.
 template <typename ValueTy>
-class PoisoningVH
-#ifndef NDEBUG
-    final : public CallbackVH
+class PoisoningVH final
+#if LLVM_ENABLE_ABI_BREAKING_CHECKS
+    : public CallbackVH
 #endif
 {
   friend struct DenseMapInfo<PoisoningVH<ValueTy>>;
@@ -458,7 +453,7 @@ class PoisoningVH
   static Value *GetAsValue(Value *V) { return V; }
   static Value *GetAsValue(const Value *V) { return const_cast<Value *>(V); }
 
-#ifndef NDEBUG
+#if LLVM_ENABLE_ABI_BREAKING_CHECKS
   /// A flag tracking whether this value has been poisoned.
   ///
   /// On delete and RAUW, we leave the value pointer alone so that as a raw
@@ -483,7 +478,7 @@ class PoisoningVH
     Poisoned = true;
     RemoveFromUseList();
   }
-#else // NDEBUG
+#else // LLVM_ENABLE_ABI_BREAKING_CHECKS
   Value *ThePtr = nullptr;
 
   Value *getRawValPtr() const { return ThePtr; }
@@ -491,14 +486,16 @@ class PoisoningVH
 #endif
 
   ValueTy *getValPtr() const {
+#if LLVM_ENABLE_ABI_BREAKING_CHECKS
     assert(!Poisoned && "Accessed a poisoned value handle!");
+#endif
     return static_cast<ValueTy *>(getRawValPtr());
   }
   void setValPtr(ValueTy *P) { setRawValPtr(GetAsValue(P)); }
 
 public:
   PoisoningVH() = default;
-#ifndef NDEBUG
+#if LLVM_ENABLE_ABI_BREAKING_CHECKS
   PoisoningVH(ValueTy *P) : CallbackVH(GetAsValue(P)) {}
   PoisoningVH(const PoisoningVH &RHS)
       : CallbackVH(RHS), Poisoned(RHS.Poisoned) {}
@@ -547,14 +544,17 @@ template <typename T> struct DenseMapInfo<PoisoningVH<T>> {
     return DenseMapInfo<Value *>::isEqual(LHS.getRawValPtr(),
                                           RHS.getRawValPtr());
   }
-};
 
-template <typename T> struct isPodLike<PoisoningVH<T>> {
-#ifdef NDEBUG
-  static const bool value = true;
-#else
-  static const bool value = false;
-#endif
+  // Allow lookup by T* via find_as(), without constructing a temporary
+  // value handle.
+
+  static unsigned getHashValue(const T *Val) {
+    return DenseMapInfo<Value *>::getHashValue(Val);
+  }
+
+  static bool isEqual(const T *LHS, const PoisoningVH<T> &RHS) {
+    return DenseMapInfo<Value *>::isEqual(LHS, RHS.getRawValPtr());
+  }
 };
 
 } // end namespace llvm

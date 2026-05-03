@@ -1,9 +1,8 @@
 //===- StringTableBuilder.h - String table building utility -----*- C++ -*-===//
 //
-//                     The LLVM Compiler Infrastructure
-//
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 
@@ -20,10 +19,20 @@ namespace llvm {
 
 class raw_ostream;
 
-/// \brief Utility for building string tables with deduplicated suffixes.
+/// Utility for building string tables with deduplicated suffixes.
 class StringTableBuilder {
 public:
-  enum Kind { ELF, WinCOFF, MachO, RAW };
+  enum Kind {
+    ELF,
+    WinCOFF,
+    MachO,
+    MachO64,
+    MachOLinked,
+    MachO64Linked,
+    RAW,
+    DWARF,
+    XCOFF
+  };
 
 private:
   DenseMap<CachedHashStringRef, size_t> StringIndexMap;
@@ -39,13 +48,13 @@ public:
   StringTableBuilder(Kind K, unsigned Alignment = 1);
   ~StringTableBuilder();
 
-  /// \brief Add a string to the builder. Returns the position of S in the
+  /// Add a string to the builder. Returns the position of S in the
   /// table. The position will be changed if finalize is used.
   /// Can only be used before the table is finalized.
   size_t add(CachedHashStringRef S);
   size_t add(StringRef S) { return add(CachedHashStringRef(S)); }
 
-  /// \brief Analyze the strings and build the final table. No more strings can
+  /// Analyze the strings and build the final table. No more strings can
   /// be added after this point.
   void finalize();
 
@@ -53,11 +62,21 @@ public:
   /// returned by add will still be valid.
   void finalizeInOrder();
 
-  /// \brief Get the offest of a string in the string table. Can only be used
+  /// Get the offest of a string in the string table. Can only be used
   /// after the table is finalized.
   size_t getOffset(CachedHashStringRef S) const;
   size_t getOffset(StringRef S) const {
     return getOffset(CachedHashStringRef(S));
+  }
+
+  /// Check if a string is contained in the string table. Since this class
+  /// doesn't store the string values, this function can be used to check if
+  /// storage needs to be done prior to adding the string.
+  bool contains(StringRef S) const {
+    return contains(CachedHashStringRef(S));
+  }
+  bool contains(CachedHashStringRef S) const {
+    return StringIndexMap.count(S);
   }
 
   size_t getSize() const { return Size; }

@@ -55,7 +55,7 @@ define void @_Z3bari(i32) #0 !dbg !9 {
   ret void
 }
 
-attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!3}
@@ -67,6 +67,6 @@ attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fp
 !3 = !{i32 2, !"Debug Info Version", i32 3}
 !4 = !{!"clang version 3.9.0 (trunk 272227) (llvm/trunk 272226)"}
 !6 = !DISubroutineType(types: !2)
-!9 = distinct !DISubprogram(name: "bar", scope: !1, file: !1, line: 14, type: !6, isLocal: false, isDefinition: true, scopeLine: 14, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !2)
+!9 = distinct !DISubprogram(name: "bar", scope: !1, file: !1, line: 14, type: !6, isLocal: false, isDefinition: true, scopeLine: 14, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !2)
 !10 = !DILocation(line: 15, column: 7, scope: !9)
 !11 = !DILocation(line: 16, column: 7, scope: !9)

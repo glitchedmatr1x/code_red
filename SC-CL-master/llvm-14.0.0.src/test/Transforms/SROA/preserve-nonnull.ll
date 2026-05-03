@@ -1,9 +1,9 @@
-; RUN: opt < %s -sroa -S | FileCheck %s
+; RUN: opt < %s -passes=sroa -S | FileCheck %s
 ;
 ; Make sure that SROA doesn't lose nonnull metadata
 ; on loads from allocas that get optimized out.
 
-declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture writeonly, i8* nocapture readonly, i64, i32, i1)
+declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture writeonly, i8* nocapture readonly, i64, i1)
 
 ; Check that we do basic propagation of nonnull when rewriting.
 define i8* @propagate_nonnull(i32* %v) {
@@ -12,7 +12,7 @@ define i8* @propagate_nonnull(i32* %v) {
 ; CHECK-NEXT:    %[[A:.*]] = alloca i8*
 ; CHECK-NEXT:    %[[V_CAST:.*]] = bitcast i32* %v to i8*
 ; CHECK-NEXT:    store i8* %[[V_CAST]], i8** %[[A]]
-; CHECK-NEXT:    %[[LOAD:.*]] = load volatile i8*, i8** %[[A]], !nonnull !0
+; CHECK-NEXT:    %[[LOAD:.*]] = load volatile i8*, i8** %[[A]], align 8, !nonnull !0
 ; CHECK-NEXT:    ret i8* %[[LOAD]]
 entry:
   %a = alloca [2 x i8*]
@@ -37,7 +37,7 @@ entry:
   %buf = alloca float*
   %_arg_i8 = bitcast float** %arg to i8*
   %_buf_i8 = bitcast float** %buf to i8*
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %_buf_i8, i8* %_arg_i8, i64 8, i32 8, i1 false)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %_buf_i8, i8* align 8 %_arg_i8, i64 8, i1 false)
   %ret = load float*, float** %buf, align 8, !nonnull !0
   ret float* %ret
 }
@@ -51,11 +51,10 @@ entry:
 define i8* @propagate_nonnull_to_int() {
 ; CHECK-LABEL: define i8* @propagate_nonnull_to_int(
 ; CHECK-NEXT:  entry:
-; CHECK-NEXT:    %[[A:.*]] = alloca i64
-; CHECK-NEXT:    store i64 42, i64* %[[A]]
-; CHECK-NEXT:    %[[LOAD:.*]] = load volatile i64, i64* %[[A]]
-; CHECK-NEXT:    %[[CAST:.*]] = inttoptr i64 %[[LOAD]] to i8*
-; CHECK-NEXT:    ret i8* %[[CAST]]
+; CHECK-NEXT:    %[[A:.*]] = alloca i8*
+; CHECK-NEXT:    store i8* inttoptr (i64 42 to i8*), i8** %[[A]]
+; CHECK-NEXT:    %[[LOAD:.*]] = load volatile i8*, i8** %[[A]]
+; CHECK-NEXT:    ret i8* %[[LOAD]]
 entry:
   %a = alloca [2 x i8*]
   %a.gep0 = getelementptr [2 x i8*], [2 x i8*]* %a, i32 0, i32 0
@@ -75,8 +74,7 @@ entry:
 define i8* @propagate_nonnull_to_int_and_promote() {
 ; CHECK-LABEL: define i8* @propagate_nonnull_to_int_and_promote(
 ; CHECK-NEXT:  entry:
-; CHECK-NEXT:    %[[PROMOTED_VALUE:.*]] = inttoptr i64 42 to i8*
-; CHECK-NEXT:    ret i8* %[[PROMOTED_VALUE]]
+; CHECK-NEXT:    ret i8* inttoptr (i64 42 to i8*)
 entry:
   %a = alloca [2 x i8*], align 8
   %a.gep0 = getelementptr [2 x i8*], [2 x i8*]* %a, i32 0, i32 0

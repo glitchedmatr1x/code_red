@@ -9,10 +9,10 @@
 ; MUL_HiLo PhysReg def copies should be just below the mul.
 ;
 ; CHECK: *** Final schedule for %bb.1 ***
-; CHECK:      %eax = COPY
-; CHECK-NEXT: MUL32r %{{[0-9]+}}, implicit-def %eax, implicit-def %edx, implicit-def dead %eflags, implicit %eax;
-; CHECK-NEXT: COPY %e{{[ad]}}x
-; CHECK-NEXT: COPY %e{{[ad]}}x
+; CHECK:      $eax = COPY
+; CHECK-NEXT: MUL32r %{{[0-9]+}}:gr32, implicit-def $eax, implicit-def $edx, implicit-def dead $eflags, implicit $eax
+; CHECK-NEXT: COPY $e{{[ad]}}x
+; CHECK-NEXT: COPY $e{{[ad]}}x
 ; CHECK:      DIVSSrm
 define i64 @mulhoist(i32 %a, i32 %b) #0 {
 entry:
@@ -42,7 +42,7 @@ end:
   ret i64 %add
 }
 
-attributes #0 = { nounwind ssp uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind ssp uwtable "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
 
 !0 = !{!"float", !1}
 !1 = !{!"omnipotent char", !2}

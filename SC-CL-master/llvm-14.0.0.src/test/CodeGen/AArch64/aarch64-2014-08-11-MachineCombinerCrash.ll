@@ -37,7 +37,7 @@ for.body:                                         ; preds = %for.body, %entry
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.value(metadata, i64, metadata, metadata) #1
 
-attributes #0 = { nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -47,7 +47,7 @@ attributes #1 = { nounwind readnone }
 !0 = distinct !DICompileUnit(language: DW_LANG_C99, producer: "clang version 3.6.0 ", isOptimized: true, emissionKind: FullDebug, file: !1, enums: !2, retainedTypes: !2, globals: !2, imports: !2)
 !1 = !DIFile(filename: "test.c", directory: "")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "", line: 140, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 141, file: !1, scope: !1, type: !6, variables: !12)
+!4 = distinct !DISubprogram(name: "", line: 140, isLocal: false, isDefinition: true, virtualIndex: 6, flags: DIFlagPrototyped, isOptimized: true, unit: !0, scopeLine: 141, file: !1, scope: !1, type: !6, retainedNodes: !12)
 !6 = !DISubroutineType(types: !7)
 !7 = !{null, !8}
 !8 = !DIDerivedType(tag: DW_TAG_pointer_type, size: 64, align: 64, baseType: !9)

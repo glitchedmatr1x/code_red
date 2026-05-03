@@ -1,5 +1,4 @@
-; RUN: opt < %s -sample-profile -sample-profile-file=%S/Inputs/propagate.prof | opt -analyze -branch-prob | FileCheck %s
-; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/propagate.prof | opt -analyze -branch-prob | FileCheck %s
+; RUN: opt < %s -passes=sample-profile -sample-profile-file=%S/Inputs/propagate.prof | opt -passes='print<branch-prob>' -disable-output 2>&1 | FileCheck %s
 
 ; Original C++ code for this test case:
 ;
@@ -201,10 +200,10 @@ entry:
 
 declare i32 @printf(i8*, ...) #3
 
-attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" "use-sample-profile" }
 attributes #1 = { nounwind readnone }
-attributes #2 = { norecurse uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #3 = { "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { norecurse uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" "use-sample-profile" }
+attributes #3 = { "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="all" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 
 !llvm.dbg.cu = !{!0}
 !llvm.module.flags = !{!3, !4}
@@ -216,7 +215,7 @@ attributes #3 = { "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-
 !3 = !{i32 2, !"Dwarf Version", i32 4}
 !4 = !{i32 2, !"Debug Info Version", i32 3}
 !5 = !{!"clang version 3.9.0 (trunk 266819)"}
-!6 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fooiil", scope: !1, file: !1, line: 3, type: !7, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!6 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fooiil", scope: !1, file: !1, line: 3, type: !7, isLocal: false, isDefinition: true, scopeLine: 3, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !7 = !DISubroutineType(types: !8)
 !8 = !{!9, !10, !10, !9}
 !9 = !DIBasicType(name: "long int", size: 64, align: 64, encoding: DW_ATE_signed)
@@ -296,7 +295,7 @@ attributes #3 = { "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-
 !83 = !DILocation(line: 21, column: 12, scope: !6)
 !84 = !DILocation(line: 21, column: 3, scope: !6)
 !85 = !DILocation(line: 22, column: 1, scope: !6)
-!86 = distinct !DISubprogram(name: "main", scope: !1, file: !1, line: 24, type: !87, isLocal: false, isDefinition: true, scopeLine: 24, flags: DIFlagPrototyped, isOptimized: false, unit: !0, variables: !2)
+!86 = distinct !DISubprogram(name: "main", scope: !1, file: !1, line: 24, type: !87, isLocal: false, isDefinition: true, scopeLine: 24, flags: DIFlagPrototyped, isOptimized: false, unit: !0, retainedNodes: !2)
 !87 = !DISubroutineType(types: !88)
 !88 = !{!10}
 !89 = !DILocalVariable(name: "x", scope: !86, file: !1, line: 25, type: !10)

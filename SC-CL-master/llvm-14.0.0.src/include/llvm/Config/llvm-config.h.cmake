@@ -1,9 +1,9 @@
 /*===------- llvm/Config/llvm-config.h - llvm configuration -------*- C -*-===*/
 /*                                                                            */
-/*                     The LLVM Compiler Infrastructure                       */
-/*                                                                            */
-/* This file is distributed under the University of Illinois Open Source      */
-/* License. See LICENSE.TXT for details.                                      */
+/* Part of the LLVM Project, under the Apache License v2.0 with LLVM          */
+/* Exceptions.                                                                */
+/* See https://llvm.org/LICENSE.txt for license information.                  */
+/* SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception                    */
 /*                                                                            */
 /*===----------------------------------------------------------------------===*/
 
@@ -16,9 +16,6 @@
 
 /* Define if LLVM_ENABLE_DUMP is enabled */
 #cmakedefine LLVM_ENABLE_DUMP
-
-/* Define if we link Polly to the tools */
-#cmakedefine LINK_POLLY_INTO_TOOLS
 
 /* Target triple LLVM will generate code for by default */
 #cmakedefine LLVM_DEFAULT_TARGET_TRIPLE "${LLVM_DEFAULT_TARGET_TRIPLE}"
@@ -53,17 +50,20 @@
 /* LLVM name for the native target MC init function, if available */
 #cmakedefine LLVM_NATIVE_TARGETMC LLVMInitialize${LLVM_NATIVE_ARCH}TargetMC
 
+/* LLVM name for the native target MCA init function, if available */
+#cmakedefine LLVM_NATIVE_TARGETMCA LLVMInitialize${LLVM_NATIVE_ARCH}TargetMCA
+
 /* Define if this is Unixish platform */
 #cmakedefine LLVM_ON_UNIX ${LLVM_ON_UNIX}
-
-/* Define if this is Win32ish platform */
-#cmakedefine LLVM_ON_WIN32 ${LLVM_ON_WIN32}
 
 /* Define if we have the Intel JIT API runtime support library */
 #cmakedefine01 LLVM_USE_INTEL_JITEVENTS
 
 /* Define if we have the oprofile JIT-support library */
 #cmakedefine01 LLVM_USE_OPROFILE
+
+/* Define if we have the perf JIT-support library */
+#cmakedefine01 LLVM_USE_PERF
 
 /* Major version of the LLVM API */
 #define LLVM_VERSION_MAJOR ${LLVM_VERSION_MAJOR}
@@ -76,5 +76,40 @@
 
 /* LLVM version string */
 #define LLVM_VERSION_STRING "${PACKAGE_VERSION}"
+
+/* Whether LLVM records statistics for use with GetStatistics(),
+ * PrintStatistics() or PrintStatisticsJSON()
+ */
+#cmakedefine01 LLVM_FORCE_ENABLE_STATS
+
+/* Define if we have z3 and want to build it */
+#cmakedefine LLVM_WITH_Z3 ${LLVM_WITH_Z3}
+
+/* Define if we have curl and want to use it */
+#cmakedefine LLVM_ENABLE_CURL ${LLVM_ENABLE_CURL}
+
+/* Define if zlib compression is available */
+#cmakedefine01 LLVM_ENABLE_ZLIB
+
+/* Define if LLVM was built with a dependency to the libtensorflow dynamic library */
+#cmakedefine LLVM_HAVE_TF_API
+
+/* Define to 1 if you have the <sysexits.h> header file. */
+#cmakedefine HAVE_SYSEXITS_H ${HAVE_SYSEXITS_H}
+
+/* Define to 1 to enable the experimental new pass manager by default */
+#cmakedefine01 LLVM_ENABLE_NEW_PASS_MANAGER
+
+/* Define if the xar_open() function is supported on this platform. */
+#cmakedefine LLVM_HAVE_LIBXAR ${LLVM_HAVE_LIBXAR}
+
+/* Define if building libLLVM shared library */
+#cmakedefine LLVM_BUILD_LLVM_DYLIB
+
+/* Define if building LLVM with BUILD_SHARED_LIBS */
+#cmakedefine LLVM_BUILD_SHARED_LIBS
+
+/* Define if building LLVM with LLVM_FORCE_USE_OLD_TOOLCHAIN_LIBS */
+#cmakedefine LLVM_FORCE_USE_OLD_TOOLCHAIN $(LLVM_FORCE_USE_OLD_TOOLCHAIN)
 
 #endif

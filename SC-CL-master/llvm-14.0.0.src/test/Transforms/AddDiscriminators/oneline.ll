@@ -1,4 +1,3 @@
-; RUN: opt < %s -add-discriminators -S | FileCheck %s
 ; RUN: opt < %s -passes=add-discriminators -S | FileCheck %s
 
 ; Discriminator support for code that is written in one line:
@@ -52,7 +51,7 @@ define i32 @_Z3fooi(i32 %i) #0 !dbg !4 {
 ; Function Attrs: nounwind readnone
 declare void @llvm.dbg.declare(metadata, metadata, metadata) #1
 
-attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #0 = { nounwind uwtable "disable-tail-calls"="false" "less-precise-fpmad"="false" "frame-pointer"="none" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+fxsr,+mmx,+sse,+sse2" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { nounwind readnone }
 
 !llvm.dbg.cu = !{!0}
@@ -62,7 +61,7 @@ attributes #1 = { nounwind readnone }
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus, file: !1, producer: "clang version 3.8.0 (trunk 250915)", isOptimized: true, runtimeVersion: 0, emissionKind: NoDebug, enums: !2)
 !1 = !DIFile(filename: "a.cc", directory: "/usr/local/google/home/dehao/discr")
 !2 = !{}
-!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fooi", scope: !1, file: !1, line: 1, type: !5, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: true, unit: !0, variables: !8)
+!4 = distinct !DISubprogram(name: "foo", linkageName: "_Z3fooi", scope: !1, file: !1, line: 1, type: !5, isLocal: false, isDefinition: true, scopeLine: 1, flags: DIFlagPrototyped, isOptimized: true, unit: !0, retainedNodes: !8)
 !5 = !DISubroutineType(types: !6)
 !6 = !{!7, !7}
 !7 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
