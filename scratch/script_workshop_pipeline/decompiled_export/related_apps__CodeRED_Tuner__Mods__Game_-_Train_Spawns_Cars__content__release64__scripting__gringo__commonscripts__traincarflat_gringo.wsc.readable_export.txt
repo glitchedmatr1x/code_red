@@ -1,0 +1,94 @@
+# Code RED Compiled Script Readable Export
+
+Source: related_apps/CodeRED_Tuner/Mods/Game - Train Spawns Cars/content/release64/scripting/gringo/commonscripts/traincarflat_gringo.wsc
+Suffix: .wsc
+Size: 9908
+SHA1: 1b0a2469309d9a761ccfcc9370d9c22fe458894d
+Export type: binary-readable metadata/string/native report, not proven bytecode decompile.
+Roundtrip state: blocked until compiler/decompiler proof passes.
+
+Native hits: none
+Hash hits: none
+
+## String preview
+
+- d$]-
+- TcdO4
+- .U82
+- 2keS=sJ
+- fyF(
+- qKt=
+- ]V3U
+- =\Wh
+- ,y'<
+- |mLa3
+- 3cQ7
+- PX;6
+- F.u1J
+- F:Q/
+- Hp\\P
+- aDS~>"0
+- "U|$u
+- ?z.o
+- bw37
+- KN'3
+- Q8?us?
+- '6\4#k
+- jb]
+- Vbbv
+- '^+<#
+- !jGX
+- x^7p
+- GQ2#
+- kS8<
+- Vv^jee
+- l+T=
+- }?`z
+- _|iw
+- v)g\P
+- XJ4M
+- `Yr6
+- C`2]
+- GOF)
+- Gc'i
+- .E;(-
+- qZkR
+- |%Qu
+- Q'48
+- KHq`
+- *gfX
+- |ZL\}
+- L3t8X
+- vY1m
+- `Y!g
+- (.Je
+- yn59
+- KZfj
+- hy_S
+- !3"0
+- +-"!
+- {2&=
+- 461M(<
+- 01Nm
+- Q%+FK
+- Z-L+
+- O!Er
+- D8|J
+- 4U7e
+- Tx3
+- (BBm$
+- U-WF;b
+- )4;@
+- 7">b
+- vK4K
+- Z$L\
+- tDA8
+- #4|:1@
+- %\KCt
+- u?1H
+- hK/`B
+- |5:$
+- #x>p
+- <f x
+- FQFc
+- ZYz~]

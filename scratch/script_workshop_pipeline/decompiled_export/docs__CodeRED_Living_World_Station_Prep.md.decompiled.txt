@@ -1,0 +1,91 @@
+# Code RED Decompiled Source Export
+# Source: docs/CodeRED_Living_World_Station_Prep.md
+# SHA1: 5204131bd0d4ca28d00b274b25429980a802b7cc
+# Export type: source/text copy
+
+# Code RED Living World Station Prep
+
+Purpose: prepare the next faction-war and living-world pass without losing older progress.
+
+## Direction
+
+Code RED should keep doing what worked best:
+
+- raw-file patching first
+- copied archive builders
+- patch manifests and reopen validation
+- placement, tune, refgroup, population, and event edits
+- in-game plugin work only when raw files cannot express the behavior
+
+The goal is to build one larger living-world system from the proven faction-war work instead of bouncing between unrelated experiments.
+
+## Known strong baseline
+
+Use the Pass 15 / Pass 15.30 validated lineage as the first reconstruction map. The validated manifest says it was a Blackwater Chaos + Faction War full rebase built from:
+
+- Pass 12 wilderness living-world base
+- Pass 13 empty-world placement lane
+- Pass 14 Blackwater plus lasso tune lane
+- strings research as reference only
+
+Important preserved checks from that manifest included:
+
+- Pass 12 wilderness living-world set
+- Pass 12 empty-country trouble set
+- Pass 13 empty-world activity set
+- Pass 14 Blackwater chaos set
+- rowdy gangs
+- lone lawman
+- duels
+- law high alert
+- pathfinding deny loosened
+- playerally gang relations preserved
+- content companion AI pulse preserved
+- tune companion AI pulse preserved
+- wilderness population preserved
+- default traffic routes preserved
+- ambient actor cap 130 preserved
+- lasso, base_lasso, and sheriff tune changes applied
+
+## No-regression rule
+
+Before adding the user performance/world mod or any new living-world changes:
+
+1. Inventory every older faction-war pass still in the repo.
+2. Extract each pass manifest/report if present.
+3. Build a feature matrix by pass.
+4. Mark features as proven, uncertain, or missing from the current baseline.
+5. Do not overwrite the Pass 12/13/14/15 lineage until the matrix is complete.
+6. Keep copied archive workflows only.
+7. Add the new performance mod as a separate layer, then compare it against the validated faction-war feature matrix.
+
+## First easy-pass objective
+
+Do not start with hard live-spawn behavior.
+
+Start by confirming raw-file edits still work:
+
+- placementglobals.xml event allow-set changes
+- tune setting changes
+- level_pop and population pressure changes
+- refgroup and camp persistence changes
+- traffic and roadside activity changes
+- simple law, gang, and event pressure changes
+
+## Reload test order
+
+When testing raw-file edits, determine the fastest reload path in this order:
+
+1. load save
+2. reload save
+3. exit to title/menu and reload
+4. restart game
+5. only then investigate cache behavior
+
+Do not clear caches blindly.
+
+## Next likely pass name
+
+Code RED Living World Pass 16 - No-Regression Raw-File Rebuild
+
+Primary job: restore the strongest faction-war/living-world baseline, add the user's performance mod as a separate layer, and prove which easy raw-file edits still apply before attempting harder live-control behaviors.

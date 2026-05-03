@@ -1,0 +1,94 @@
+# Code RED Compiled Script Readable Export
+
+Source: research/menu resources/1. Normal-Hardcore RDR Story/fuieventmonitor.wsc
+Suffix: .wsc
+Size: 23482
+SHA1: acea680a38969a2a821f5dae16c037834399d0c4
+Export type: binary-readable metadata/string/native report, not proven bytecode decompile.
+Roundtrip state: blocked until compiler/decompiler proof passes.
+
+Native hits: none
+Hash hits: none
+
+## String preview
+
+- 9kL]
+- }ZeLN
+- Tuc}
+- .L]r
+- 8za:a
+- ce>rC
+- }ajC
+- /5tL
+- Q>71
+- o-lz
+- '>CT2v
+- '`RY(
+- }yCz$
+- w&0li
+- t/um
+- Sh;{c
+- !jRr
+- Q>v5
+- WcqE
+- :-!-y/L>
+- uGt.
+- oKcn:
+- vaW5|
+- ^*Uf
+- @W}z
+- <2%H
+- HtS:z
+- P!1hD
+- BkJ:\
+- US^:
+- ?J'fN
+- S<iqA
+- y>{x
+- @|eKy}vu
+- 4K/V
+- SXl$
+- M$9B
+- Pq":
+- E(WPw
+- HbP8;
+- yb|>'
+- dO6z
+- ZACM
+- 6tHD)
+- =d:L
+- !JS[
+- xW4h
+- tH+
+- VF%Sy
+- *~=?
+- Y?bp
+- yk6n
+- my98
+- )pRg
+- o-`>y
+- 9~J"
+- dU/V
+- 1J!}
+- Xrlm
+- t~7[
+- ^"\L
+- V_=!U
+- |8~b
+- `6Mv
+- RX<~
+- yie=
+- NEpP
+- ug]D
+- XL;Ac
+- |[Aen
+- ==i]
+- },C*
+- *cB0
+- [SSF
+- |IKv
+- ^jo)3
+- N'J7 H{f
+- #\:e
+- I:Wn
+- HuhtX

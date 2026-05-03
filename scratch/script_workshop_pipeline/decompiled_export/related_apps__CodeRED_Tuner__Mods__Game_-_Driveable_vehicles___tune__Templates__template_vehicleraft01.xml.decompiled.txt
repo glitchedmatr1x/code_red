@@ -1,0 +1,27 @@
+# Code RED Decompiled Source Export
+# Source: related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/Templates/template_vehicleraft01.xml
+# SHA1: dc6e382ac88b9791d18689b069e8868e39285288
+# Export type: source/text copy
+
+
+<actor name="template_VehicleRaft01" abstract="0" updatestate="Asleep" spawnlater="0" base="template_base_boat" proxy="Stagecoach.mb">
+	<contents>
+		<Vehicle>
+			<attributes>
+			</attributes>
+		</Vehicle>
+    <AIObstacle>
+      <attributes>
+        <Offset type="double3" value="0.000 0.000 0.000"/>
+        <Length type="double" value="5"/>
+        <Width type="double" value="4"/>
+        <Height type="double" value="1"/>
+      </attributes>
+    </AIObstacle>
+		<Target>
+ 			<attributes>
+				<m_TargetOffset value="0 0.85 0"/>
+ 			</attributes>
+		</Target>    
+  </contents>
+</actor>

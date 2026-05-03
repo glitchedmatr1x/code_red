@@ -1,0 +1,92 @@
+# Code RED Compiled Script Readable Export
+
+Source: research/menu resources/3. Add-On Menu/1.wsc
+Suffix: .wsc
+Size: 6866
+SHA1: 3e08507833bf3aa4833f2780de75897e8d45d04e
+Export type: binary-readable metadata/string/native report, not proven bytecode decompile.
+Roundtrip state: blocked until compiler/decompiler proof passes.
+
+Native hits: none
+Hash hits: none
+
+## String preview
+
+- yJIK
+- qwJQ
+- @L*C
+- 41MR
+- :E(Z
+- >%_P
+- 1MSF
+- Q{/F
+- TWGv
+- Kf{x83
+- ,mrz
+- )7\A
+- k{{Q
+- mr&K
+- hL9^
+- -y 76
+- x7JWY%jS
+- 3xpzfK
+- AWl[
+- p'sD
+- z}1j_
+- }H3M4$
+- c@.q
+- *)p
+- -%U&tc
+- *gu(/
+- W>UL
+- (gQ6n
+- fUi+
+- RoL}~
+- mJ >
+- {}^M*p
+- :~sZ&i
+- #Tjo
+- LZY1
+- JH^O
+- .s}Z
+- !\{g
+- C(wk
+- cHA4
+- Ihl<w
+- 4 MP
+- ($d0//&
+- WY1/s
+- "dK:<
+- Z$8a~3~_
+- !9I4@r
+- @pnv
+- 4#&[
+- !pgc
+- }8+LK
+- @:$%v
+- DT~c
+- .[fm
+- 5^j<
+- QZ's
+- 6I'o
+- ),E~
+- 'z:,Q*
+- 9d:@;
+- MoMiO^
+- /fAr
+- Ks#rF
+- }WJ
+- V9:?
+- cDE)F
+- FNR-
+- ek&@4
+- (+e.F
+- uB8.\
+- xC1S
+- GT5|
+- 1FA~e
+- GeLW
+- QoLa
+- fzyA
+- <r;$R
+- sd,:

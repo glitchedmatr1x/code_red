@@ -1,0 +1,212 @@
+[
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/common.c",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/common.c",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__include__common.c.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/common.h",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/common.h",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__include__common.h.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__include__constants.h.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__include__intrinsics.h.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__include__natives.h.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__include__types.h.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/varargs.h",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/varargs.h",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__include__varargs.h.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/scripts/validate_vehicle_menu_probe.py",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/scripts/validate_vehicle_menu_probe.py",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__scripts__validate_vehicle_menu_probe.py.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__src__main.c.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__include__RDR__consts32.h.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_script_compile_lab_v1__include__RDR__natives32.h.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/build_sccl_windows.bat",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/build_sccl_windows.bat",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_sccl_windows_build_kit_v1__build_sccl_windows.bat.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/build_sccl_windows.ps1",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/build_sccl_windows.ps1",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_sccl_windows_build_kit_v1__build_sccl_windows.ps1.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/compile_vehicle_menu_probe_windows.bat",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/compile_vehicle_menu_probe_windows.bat",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_sccl_windows_build_kit_v1__compile_vehicle_menu_probe_windows.bat.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/compile_vehicle_menu_probe_windows.ps1",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/compile_vehicle_menu_probe_windows.ps1",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_sccl_windows_build_kit_v1__compile_vehicle_menu_probe_windows.ps1.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/README_SCCL_DETECTION_V3.txt",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/README_SCCL_DETECTION_V3.txt",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_sccl_windows_build_kit_v1__README_SCCL_DETECTION_V3.txt.decompiled.txt"
+  },
+  {
+    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/run_build_then_compile_vehicle_menu_probe.bat",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/run_build_then_compile_vehicle_menu_probe.bat",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__code_red_sccl_attempt_bundle_v1__code_red_sccl_windows_build_kit_v1__run_build_then_compile_vehicle_menu_probe.bat.decompiled.txt"
+  },
+  {
+    "path": "docs/CodeRED_ACTIVE_FOLDER_IMPORTANCE.md",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/docs/CodeRED_ACTIVE_FOLDER_IMPORTANCE.md",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/docs__CodeRED_ACTIVE_FOLDER_IMPORTANCE.md.decompiled.txt"
+  },
+  {
+    "path": "docs/CodeRED_Living_World_Station_Prep.md",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/docs/CodeRED_Living_World_Station_Prep.md",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/docs__CodeRED_Living_World_Station_Prep.md.decompiled.txt"
+  },
+  {
+    "path": "docs/CodeRED_Tune_Max_Render_And_Spawns_Research.md",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/docs/CodeRED_Tune_Max_Render_And_Spawns_Research.md",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/docs__CodeRED_Tune_Max_Render_And_Spawns_Research.md.decompiled.txt"
+  },
+  {
+    "path": "docs/REPO_STRUCTURE.md",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/docs/REPO_STRUCTURE.md",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/docs__REPO_STRUCTURE.md.decompiled.txt"
+  },
+  {
+    "path": "docs/CodeRED_One_App_Upgrade_Plan_2026-05-03.md",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/docs/CodeRED_One_App_Upgrade_Plan_2026-05-03.md",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/docs__CodeRED_One_App_Upgrade_Plan_2026-05-03.md.decompiled.txt"
+  },
+  {
+    "path": "related_apps/CodeRED_Tuner/Mods/README_PATCH_OPTIONS.md",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/CodeRED_Tuner/Mods/README_PATCH_OPTIONS.md",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__CodeRED_Tuner__Mods__README_PATCH_OPTIONS.md.decompiled.txt"
+  },
+  {
+    "path": "related_apps/CodeRED_Tuner/Mods/Game - Train Spawns Cars/Tune/Vehicles/Locsets/locset_car01.xml",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/CodeRED_Tuner/Mods/Game - Train Spawns Cars/Tune/Vehicles/Locsets/locset_car01.xml",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__CodeRED_Tuner__Mods__Game_-_Train_Spawns_Cars__Tune__Vehicles__Locsets__locset_car01.xml.decompiled.txt"
+  },
+  {
+    "path": "related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/Locsets/locset_raft.xml",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/Locsets/locset_raft.xml",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__CodeRED_Tuner__Mods__Game_-_Driveable_vehicles___tune__Locsets__locset_raft.xml.decompiled.txt"
+  },
+  {
+    "path": "related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/player/input_boat.xml",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/player/input_boat.xml",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__CodeRED_Tuner__Mods__Game_-_Driveable_vehicles___tune__player__input_boat.xml.decompiled.txt"
+  },
+  {
+    "path": "related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/player/input_car.xml",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/player/input_car.xml",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__CodeRED_Tuner__Mods__Game_-_Driveable_vehicles___tune__player__input_car.xml.decompiled.txt"
+  },
+  {
+    "path": "related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/Templates/template_vehicleraft01.xml",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/Templates/template_vehicleraft01.xml",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__CodeRED_Tuner__Mods__Game_-_Driveable_vehicles___tune__Templates__template_vehicleraft01.xml.decompiled.txt"
+  },
+  {
+    "path": "related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/Templates/template_vehicleraft02.xml",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/Templates/template_vehicleraft02.xml",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__CodeRED_Tuner__Mods__Game_-_Driveable_vehicles___tune__Templates__template_vehicleraft02.xml.decompiled.txt"
+  },
+  {
+    "path": "related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/Templates/template_vehicleraft03.xml",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/related_apps/CodeRED_Tuner/Mods/Game - Driveable vehicles +/tune/Templates/template_vehicleraft03.xml",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/related_apps__CodeRED_Tuner__Mods__Game_-_Driveable_vehicles___tune__Templates__template_vehicleraft03.xml.decompiled.txt"
+  },
+  {
+    "path": "research/menu resources/ImportedFileNames.txt",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/research/menu resources/ImportedFileNames.txt",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/research__menu_resources__ImportedFileNames.txt.decompiled.txt"
+  },
+  {
+    "path": "research/menu resources/natives.h",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/research/menu resources/natives.h",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/research__menu_resources__natives.h.decompiled.txt"
+  },
+  {
+    "path": "research/menu resources/3. Add-On Menu/Cutscenes Info.txt",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/research/menu resources/3. Add-On Menu/Cutscenes Info.txt",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/research__menu_resources__3._Add-On_Menu__Cutscenes_Info.txt.decompiled.txt"
+  },
+  {
+    "path": "research/menu resources/3. Add-On Menu/READ.txt",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/research/menu resources/3. Add-On Menu/READ.txt",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/research__menu_resources__3._Add-On_Menu__READ.txt.decompiled.txt"
+  },
+  {
+    "path": "research/menu resources/root/content/ui/boot.sc.xml",
+    "state": "editable_import_candidate",
+    "edit_copy": "scratch/script_workshop_pipeline/edit_workspace/research/menu resources/root/content/ui/boot.sc.xml",
+    "decompiled_export": "scratch/script_workshop_pipeline/decompiled_export/research__menu_resources__root__content__ui__boot.sc.xml.decompiled.txt"
+  }
+]

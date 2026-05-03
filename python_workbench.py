@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import argparse
+import csv
 import io
 import json
 import os
@@ -3055,6 +3056,159 @@ def _codered_write_workbench_crash(exc: BaseException) -> Path:
 
 
 
+def _codered_text_preview(path: Path, *, limit: int = 9000) -> str:
+    try:
+        data = path.read_text(encoding="utf-8", errors="replace")
+    except Exception as exc:
+        return f"Preview unavailable: {exc}"
+    if len(data) > limit:
+        return data[:limit] + "\n\n... preview truncated ..."
+    return data
+
+
+def _codered_safe_rel(root: Path, path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(root.resolve()))
+    except Exception:
+        return str(path)
+
+
+def _codered_add_research_entry(entries: list[dict], seen: set[str], *, source: str, topic: str, title: str, path: Path, notes: str = "") -> None:
+    try:
+        key = str(path.resolve())
+    except Exception:
+        key = str(path)
+    if key in seen:
+        return
+    seen.add(key)
+    exists = path.exists()
+    try:
+        size = path.stat().st_size if exists and path.is_file() else 0
+    except Exception:
+        size = 0
+    entries.append({
+        "source": source,
+        "topic": topic or "index",
+        "title": title or path.name,
+        "path": str(path),
+        "relative_path": _codered_safe_rel(CODERED_APP_ROOT, path),
+        "format": path.suffix.lstrip(".").lower() or "folder",
+        "notes": notes or "",
+        "exists": exists,
+        "size": size,
+    })
+
+
+def _codered_resolve_manifest_path(root: Path, raw: str) -> Path:
+    rel = Path(str(raw or "").strip())
+    candidates = []
+    if rel.is_absolute():
+        candidates.append(rel)
+    else:
+        candidates.extend([
+            root / rel,
+            root / "research" / rel,
+            root / "logs" / rel,
+            root / "docs" / rel,
+        ])
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0] if candidates else root / str(raw)
+
+
+def _codered_load_research_browser_entries(root: Path) -> list[dict]:
+    entries: list[dict] = []
+    seen: set[str] = set()
+
+    manifest = root / "research" / "CodeRED_RESEARCH_MANIFEST.csv"
+    if manifest.exists():
+        try:
+            with manifest.open("r", encoding="utf-8", newline="") as handle:
+                for row in csv.DictReader(handle):
+                    path = _codered_resolve_manifest_path(root, row.get("path", ""))
+                    _codered_add_research_entry(
+                        entries,
+                        seen,
+                        source="research manifest",
+                        topic=row.get("topic", "research"),
+                        title=row.get("title", path.name),
+                        path=path,
+                        notes=row.get("notes", ""),
+                    )
+        except Exception as exc:
+            _codered_add_research_entry(entries, seen, source="error", topic="research", title="Manifest read error", path=manifest, notes=str(exc))
+
+    for path, title, topic in [
+        (root / "logs" / "CodeRED_LOG_INDEX.md", "Code RED Log Index", "index"),
+        (root / "logs" / "code_red_stage_report_latest.md", "Code RED Stage Report", "status"),
+        (root / "README.md", "README", "readme"),
+        (root / "docs" / "CodeRED_One_App_Upgrade_Plan_2026-05-03.md", "One-App Upgrade Plan", "planning"),
+        (root / "docs" / "REPO_STRUCTURE.md", "Repository Structure", "planning"),
+    ]:
+        if path.exists():
+            _codered_add_research_entry(entries, seen, source="curated", topic=topic, title=title, path=path)
+
+    logs_dir = root / "logs"
+    if logs_dir.exists():
+        for path in sorted(logs_dir.glob("CodeRED_*.md")):
+            _codered_add_research_entry(entries, seen, source="logs", topic="pass/report", title=path.stem.replace("_", " "), path=path)
+        for path in sorted(logs_dir.glob("CodeRed_*.txt")):
+            _codered_add_research_entry(entries, seen, source="logs", topic="pass/report", title=path.stem.replace("_", " "), path=path)
+        for path in sorted(logs_dir.glob("README*.txt")):
+            _codered_add_research_entry(entries, seen, source="logs", topic="readme", title=path.stem.replace("_", " "), path=path)
+        for path in sorted(logs_dir.glob("CodeRED_*Report*.json")):
+            _codered_add_research_entry(entries, seen, source="proof json", topic="proof", title=path.stem.replace("_", " "), path=path)
+
+    research_dir = root / "research"
+    if research_dir.exists():
+        for pattern in ("CodeRED_*.md", "CodeRed_*.txt", "*_handoff*.md", "*_report*.md"):
+            for path in sorted(research_dir.glob(pattern)):
+                _codered_add_research_entry(entries, seen, source="research", topic="research", title=path.stem.replace("_", " "), path=path)
+
+    docs_dir = root / "docs"
+    if docs_dir.exists():
+        for path in sorted(docs_dir.glob("*.md")):
+            _codered_add_research_entry(entries, seen, source="docs", topic="docs", title=path.stem.replace("_", " "), path=path)
+
+    for pattern in ("Code_RED_*patch*.zip", "Code_RED_*pass*.zip", "CodeRED_*patch*.zip", "CodeRED_*pass*.zip"):
+        for path in sorted(root.glob(pattern)):
+            _codered_add_research_entry(entries, seen, source="regression zip", topic="checkpoint", title=path.name, path=path, notes="Regression checkpoint zip")
+
+    entries.sort(key=lambda item: (not bool(item.get("exists")), str(item.get("topic", "")), str(item.get("title", "")).lower()))
+    return entries
+
+
+def _codered_build_research_browser_report(root: Path) -> dict:
+    entries = _codered_load_research_browser_entries(root)
+    counts = Counter(str(item.get("topic", "unknown")) for item in entries)
+    missing = [item for item in entries if not item.get("exists")]
+    lines = [
+        "Code RED Research Browser Report",
+        "================================",
+        "",
+        f"Root: {root}",
+        f"Entries indexed: {len(entries)}",
+        f"Missing referenced entries: {len(missing)}",
+        "",
+        "Topic counts:",
+    ]
+    for topic, count in sorted(counts.items()):
+        lines.append(f"- {topic}: {count}")
+    lines.extend(["", "Indexed entries:"])
+    for item in entries:
+        mark = "OK" if item.get("exists") else "MISSING"
+        lines.append(f"- [{mark}] {item.get('topic')} / {item.get('title')} -> {item.get('relative_path')}")
+    logs = root / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    md = logs / "CodeRED_Research_Browser_Report.md"
+    js = logs / "CodeRED_Research_Browser_Report.json"
+    payload = {"root": str(root), "entries": entries, "counts": dict(sorted(counts.items())), "missing_count": len(missing)}
+    md.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    js.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return {"markdown": str(md), "json": str(js), "entries": entries, "counts": payload["counts"], "missing_count": len(missing), "text": "\n".join(lines)}
+
+
 class WorkbenchApp(tk.Tk):
     def __init__(self, startup_workspace: Optional[Path] = None):
         super().__init__()
@@ -3068,6 +3222,8 @@ class WorkbenchApp(tk.Tk):
         self.output_boxes: Dict[str, tk.Text] = {}
         self._setup_theme()
         self._build_ui()
+        self._populate_one_app_dashboard()
+        self._populate_research_browser()
         self._populate_home()
         self._populate_stage()
         self._populate_completion()
@@ -3115,6 +3271,24 @@ class WorkbenchApp(tk.Tk):
             ("Scan Selected Folder", self.scan_workspace),
             ("Inspect Selection", self.inspect_selection),
             ("Refresh Stage Check", self.refresh_stage_report),
+            ("Refresh Dashboard", self.refresh_one_app_dashboard),
+            ("Write Status Report", self.write_one_app_status_report),
+            ("Regression Guard", self.run_regression_guard_lane),
+            ("Regression Guard", self.run_regression_guard_lane),
+            ("Refresh Research", self.refresh_research_browser),
+            ("Write Research Index", self.write_research_browser_report),
+            ("Validate AI Trainer", self.validate_ai_trainer_lane),
+            ("Validate Archives", self.validate_archive_lane),
+            ("Validate File IO", self.validate_file_io_lane),
+            ("Validate CodeX", self.validate_codex_modelxml_lane),
+            ("Build Native DB", self.build_native_database_lane),
+            ("Generate Bridge", self.generate_native_bridge_lane),
+            ("Prep AI Bridge", self.prepare_ai_menu_bridge_lane),
+            ("Validate Scripts", self.validate_script_compile_lane),
+            ("Validate Script Workshop", self.validate_script_workshop_decode_lane),
+            ("Prep Script Workshop", self.prepare_script_workshop_compile_lane),
+            ("Script Pipeline", self.run_script_pipeline_lane),
+            ("Validate Terrain", self.validate_terrainboundres_lane),
             ("Stage Bundled Archive", self.stage_bundled_archive),
             ("Run Archive Proof Pass", self.run_archive_proof_pass),
             ("Audit Primary Archive", self.audit_primary_archive),
@@ -3160,6 +3334,8 @@ class WorkbenchApp(tk.Tk):
         self.notebook = ttk.Notebook(right)
         self.notebook.pack(fill="both", expand=True, padx=10, pady=10)
 
+        self.dashboard_frame = self._add_one_app_dashboard_tab()
+        self.research_frame = self._add_research_browser_tab()
         self.home_text = self._add_text_tab("Home")
         self.stage_text = self._add_text_tab("Stage")
         self.completion_text = self._add_text_tab("Completion")
@@ -3187,6 +3363,897 @@ class WorkbenchApp(tk.Tk):
         self.status_var = tk.StringVar(value="Ready")
         status = tk.Label(self, textvariable=self.status_var, anchor="w", bg=c["accent"], fg=c["fg"])
         status.pack(side="bottom", fill="x")
+
+    def _add_one_app_dashboard_tab(self) -> tk.Frame:
+        frame = tk.Frame(self.notebook, bg=self.theme["bg"])
+        self.notebook.add(frame, text="Dashboard")
+
+        header = tk.Frame(frame, bg=self.theme["bg"])
+        header.pack(fill="x", padx=14, pady=(14, 6))
+        self.one_app_summary_var = tk.StringVar(value="One-app status not loaded yet")
+        tk.Label(
+            header,
+            text="Code RED One-App Command Center",
+            font=("SegoeUI", 14, "bold"),
+            bg=self.theme["accent"],
+            fg=self.theme["fg"],
+            anchor="w",
+        ).pack(fill="x")
+        tk.Label(
+            header,
+            textvariable=self.one_app_summary_var,
+            bg=self.theme["bg"],
+            fg=self.theme["fg"],
+            anchor="w",
+            justify="left",
+        ).pack(fill="x", pady=(6, 0))
+
+        buttons = tk.Frame(frame, bg=self.theme["bg"])
+        buttons.pack(fill="x", padx=14, pady=(0, 8))
+        for caption, command in (
+            ("Refresh Dashboard", self.refresh_one_app_dashboard),
+            ("Write Status Report", self.write_one_app_status_report),
+            ("Refresh Research", self.refresh_research_browser),
+            ("Write Research Index", self.write_research_browser_report),
+            ("Validate AI Trainer", self.validate_ai_trainer_lane),
+            ("Validate Archives", self.validate_archive_lane),
+            ("Validate File IO", self.validate_file_io_lane),
+            ("Validate CodeX", self.validate_codex_modelxml_lane),
+            ("Build Native DB", self.build_native_database_lane),
+            ("Generate Bridge", self.generate_native_bridge_lane),
+            ("Prep AI Bridge", self.prepare_ai_menu_bridge_lane),
+            ("Validate Scripts", self.validate_script_compile_lane),
+            ("Validate Script Workshop", self.validate_script_workshop_decode_lane),
+            ("Prep Script Workshop", self.prepare_script_workshop_compile_lane),
+            ("Script Pipeline", self.run_script_pipeline_lane),
+            ("Validate Terrain", self.validate_terrainboundres_lane),
+            ("Open Logs", self.open_logs_folder),
+            ("Open Imports", self.open_imports_folder),
+        ):
+            tk.Button(buttons, text=caption, command=command, bg=self.theme["accent"], fg=self.theme["fg"], relief="flat", padx=10, pady=6).pack(side="left", padx=(0, 8))
+
+        split = tk.PanedWindow(frame, orient="vertical", sashrelief="flat", sashwidth=6, bg=self.theme["bg"])
+        split.pack(fill="both", expand=True, padx=14, pady=(0, 14))
+
+        tree_frame = tk.Frame(split, bg=self.theme["bg"])
+        self.one_app_tree = ttk.Treeview(
+            tree_frame,
+            columns=("state", "category", "lane", "required", "proof"),
+            show="headings",
+            height=12,
+        )
+        for col, title, width in (
+            ("state", "State", 130),
+            ("category", "Category", 120),
+            ("lane", "Lane", 280),
+            ("required", "Required", 120),
+            ("proof", "Proof", 120),
+        ):
+            self.one_app_tree.heading(col, text=title)
+            self.one_app_tree.column(col, width=width, anchor="w")
+        self.one_app_tree.pack(fill="both", expand=True)
+        self.one_app_tree.bind("<<TreeviewSelect>>", self._on_one_app_lane_select)
+
+        detail_frame = tk.Frame(split, bg=self.theme["bg"])
+        self.one_app_detail_text = tk.Text(detail_frame, wrap="word", bg=self.theme["panel"], fg=self.theme["fg"], insertbackground=self.theme["fg"], relief="flat")
+        self.one_app_detail_text.pack(fill="both", expand=True)
+
+        split.add(tree_frame, height=330)
+        split.add(detail_frame)
+        return frame
+
+    def _populate_one_app_dashboard(self) -> None:
+        try:
+            from codered_app.launcher_registry import build_status_report
+        except Exception as exc:
+            self.one_app_summary_var.set(f"One-app registry import failed: {exc}")
+            self._set_text_widget_content(self.one_app_detail_text, f"One-app registry import failed:\n{exc}")
+            return
+
+        report = build_status_report(CODERED_APP_ROOT)
+        self.one_app_report = report
+        counts = report.get("counts", {})
+        self.one_app_summary_var.set(
+            " | ".join([
+                f"Root: {report.get('root')}",
+                f"Readiness: {report.get('score', 0)}%",
+                f"Ready: {counts.get('ready', 0)}",
+                f"Needs proof: {counts.get('ready-no-proof', 0)}",
+                f"Missing: {counts.get('missing', 0)}",
+            ])
+        )
+        for item in self.one_app_tree.get_children():
+            self.one_app_tree.delete(item)
+        first_item = None
+        for lane in report.get("lanes", []):
+            required = f"{lane.get('ready_required', 0)}/{lane.get('total_required', 0)}"
+            proof = str(len(lane.get("present_proof", [])))
+            item = self.one_app_tree.insert(
+                "",
+                "end",
+                iid=lane.get("id") or None,
+                values=(lane.get("state", ""), lane.get("category", ""), lane.get("title", ""), required, proof),
+            )
+            if first_item is None:
+                first_item = item
+        if first_item:
+            self.one_app_tree.selection_set(first_item)
+            self.one_app_tree.focus(first_item)
+            self._show_one_app_lane_detail(first_item)
+        else:
+            self._set_text_widget_content(self.one_app_detail_text, "No one-app lanes are registered yet.")
+
+    def refresh_one_app_dashboard(self) -> None:
+        self._populate_one_app_dashboard()
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        self.log("One-app dashboard refreshed.")
+
+    def write_one_app_status_report(self) -> None:
+        try:
+            from codered_app.launcher_registry import write_status_outputs
+            result = write_status_outputs(CODERED_APP_ROOT)
+            self._populate_one_app_dashboard()
+            self.notebook.select(self._tab_index_for_name("Dashboard"))
+            self._show_result(OperationResult(True, "One-app status written", f"Markdown:\n{result['markdown']}\n\nJSON:\n{result['json']}"))
+            self.log("One-app status report written.")
+        except Exception as exc:
+            self._show_result(OperationResult(False, "One-app status write failed", str(exc)))
+
+    def validate_archive_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_archive_lane_validation.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "Archive validator missing", f"Missing validator:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=90,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Archive validation failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_Archive_Lane_Validation_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("rpf_edit_lab")
+            self.one_app_tree.focus("rpf_edit_lab")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "Archive validation produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("Archive validation passed.")
+            self._show_result(OperationResult(True, "Archive validation passed", "RPF inventory and sample-read proof passed. Reports were written to logs/."))
+        else:
+            self.log("Archive validation partial/failed.")
+            self._show_result(OperationResult(False, "Archive validation partial/failed", output or f"Exit code: {proc.returncode}"))
+
+    def run_regression_guard_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_regression_guard.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "Regression Guard missing", f"Missing validator:\n{script}"))
+            return
+        baseline_candidates = [
+            CODERED_APP_ROOT / "Code_RED.zip",
+            CODERED_APP_ROOT / "imports" / "Code_RED.zip",
+            CODERED_APP_ROOT.parent / "Code_RED.zip",
+        ]
+        command = [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)]
+        baseline = next((candidate for candidate in baseline_candidates if candidate.exists()), None)
+        if baseline is not None:
+            command.extend(["--baseline", str(baseline)])
+        try:
+            proc = subprocess.run(
+                command,
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=120,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Regression Guard failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_Regression_Guard_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("regression_guard")
+            self.one_app_tree.focus("regression_guard")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "Regression Guard produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("Regression Guard passed.")
+            self._show_result(OperationResult(True, "Regression Guard passed", "Checkpoint comparison, obsolete-file guard, critical-file checks, and source decode checks passed."))
+        else:
+            self.log("Regression Guard found issues.")
+            self._show_result(OperationResult(False, "Regression Guard found issues", output or f"Exit code: {proc.returncode}"))
+
+    def validate_file_io_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_file_io_validation.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "File IO validator missing", f"Missing validator:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=300,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "File IO validation failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_File_IO_Decode_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("file_io_decode")
+            self.one_app_tree.focus("file_io_decode")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "File IO validation produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("File IO / full decode validation passed.")
+            self._show_result(OperationResult(True, "File IO validation passed", "Full-file read/decode and staged archive entry extraction proof passed. Reports were written to logs/."))
+        else:
+            self.log("File IO / full decode validation partial/failed.")
+            self._show_result(OperationResult(False, "File IO validation partial/failed", output or f"Exit code: {proc.returncode}"))
+
+    def validate_codex_modelxml_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_codex_modelxml_validation.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "CodeX / ModelXML validator missing", f"Missing validator:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=300,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "CodeX / ModelXML validation failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_CodeX_ModelXML_Validation_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("codex_bundle")
+            self.one_app_tree.focus("codex_bundle")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "CodeX / ModelXML validation produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("CodeX / ModelXML validation passed.")
+            self._show_result(OperationResult(True, "CodeX / ModelXML validation passed", "Bundle export/import and copied-archive readback proof passed. Reports were written to logs/."))
+        else:
+            self.log("CodeX / ModelXML validation failed.")
+            self._show_result(OperationResult(False, "CodeX / ModelXML validation failed", output or f"Exit code: {proc.returncode}"))
+
+    def validate_ai_trainer_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_ai_trainer_validation.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "AI Trainer validator missing", f"Missing validator:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "AI Trainer validation failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_AI_Trainer_Validation_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("ai_trainer_menu")
+            self.one_app_tree.focus("ai_trainer_menu")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "AI Trainer validation produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("AI Trainer validation passed.")
+            self._show_result(OperationResult(True, "AI Trainer validation passed", "Enum map, roster, behavior actions, INI, and native-hook source checks passed. Reports were written to logs/."))
+        else:
+            self.log("AI Trainer validation failed.")
+            self._show_result(OperationResult(False, "AI Trainer validation failed", output or f"Exit code: {proc.returncode}"))
+
+    def build_native_database_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_native_database.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "Native database builder missing", f"Missing builder:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=90,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Native database build failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_Native_Database_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("native_probe")
+            self.one_app_tree.focus("native_probe")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "Native database build produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("Native database build passed.")
+            self._show_result(OperationResult(True, "Native database build passed", "Native database, legacy data/natives.json, and bridge-prep stubs were written."))
+        else:
+            self.log("Native database build failed.")
+            self._show_result(OperationResult(False, "Native database build failed", output or f"Exit code: {proc.returncode}"))
+
+    def generate_native_bridge_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_native_bridge_generation.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "Native bridge generator missing", f"Missing generator:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=90,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Native bridge generation failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_Native_Bridge_Generation_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("native_probe")
+            self.one_app_tree.focus("native_probe")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "Native bridge generation produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("Native bridge generation passed.")
+            self._show_result(OperationResult(True, "Native bridge generation passed", "Selected native wrappers, manifest, and bridge prep report were written."))
+        else:
+            self.log("Native bridge generation partial/failed.")
+            self._show_result(OperationResult(False, "Native bridge generation partial/failed", output or f"Exit code: {proc.returncode}"))
+
+    def prepare_ai_menu_bridge_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_ai_menu_bridge_integration.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "AI Menu bridge integration tool missing", f"Missing tool:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=90,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "AI Menu bridge prep failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_AI_Menu_Bridge_Integration_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("ai_menu_bridge_integration")
+            self.one_app_tree.focus("ai_menu_bridge_integration")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "AI Menu bridge integration produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("AI Menu bridge integration prep passed.")
+            self._show_result(OperationResult(True, "AI Menu bridge prep passed", "Bridge candidate source, candidate build helper, manifest, and diff were written. Review before compiling/installing."))
+        else:
+            self.log("AI Menu bridge integration prep failed.")
+            self._show_result(OperationResult(False, "AI Menu bridge prep failed", output or f"Exit code: {proc.returncode}"))
+
+    def validate_script_compile_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_script_compile_validation.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "Script Compile validator missing", f"Missing validator:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=60,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Script Compile validation failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_Script_Compile_Validation_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("script_compile_lab")
+            self.one_app_tree.focus("script_compile_lab")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "Script Compile validation produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("Script Compile validation passed.")
+            self._show_result(OperationResult(True, "Script Compile validation passed", "Compile-lab source, required symbols, constants, and Windows build-kit staging were validated. Reports were written to logs/."))
+        else:
+            self.log("Script Compile validation failed.")
+            self._show_result(OperationResult(False, "Script Compile validation failed", output or f"Exit code: {proc.returncode}"))
+
+    def validate_script_workshop_decode_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_script_workshop_decode.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "Script Workshop decoder missing", f"Missing validator:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=120,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Script Workshop decode validation failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_Script_Workshop_Decode_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("script_workshop_decode")
+            self.one_app_tree.focus("script_workshop_decode")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "Script Workshop decode validation produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("Script Workshop decode validation passed.")
+            self._show_result(OperationResult(True, "Script Workshop decode validation passed", "Script Lab/Workshop full decode, editable manifest, binary script reads, and capability proof were written."))
+        else:
+            self.log("Script Workshop decode validation failed.")
+            self._show_result(OperationResult(False, "Script Workshop decode validation failed", output or f"Exit code: {proc.returncode}"))
+
+    def prepare_script_workshop_compile_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_script_workshop_compile_prep.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "Script Workshop compile prep missing", f"Missing prep tool:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=120,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Script Workshop compile prep failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_Script_Workshop_Compile_Prep_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("script_workshop_compile_prep")
+            self.one_app_tree.focus("script_workshop_compile_prep")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "Script Workshop compile/edit prep produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("Script Workshop compile/edit prep passed.")
+            self._show_result(OperationResult(True, "Script Workshop compile/edit prep passed", "Safe edit copies, source compile candidates, native dependency maps, and compile-proof workspace were written."))
+        else:
+            self.log("Script Workshop compile/edit prep failed.")
+            self._show_result(OperationResult(False, "Script Workshop compile/edit prep failed", output or f"Exit code: {proc.returncode}"))
+
+    def run_script_pipeline_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_script_pipeline.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "Script Pipeline tool missing", f"Missing tool:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=180,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Script Pipeline failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_Script_Pipeline_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("script_pipeline")
+            self.one_app_tree.focus("script_pipeline")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "Script Pipeline produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("Script Pipeline passed.")
+            self._show_result(OperationResult(True, "Script Pipeline passed", "Script scan/read/open/edit/decompiled-export/import/recompile queues and new script templates were generated."))
+        else:
+            self.log("Script Pipeline failed or partial.")
+            self._show_result(OperationResult(False, "Script Pipeline failed or partial", output or f"Exit code: {proc.returncode}"))
+
+    def validate_terrainboundres_lane(self) -> None:
+        script = CODERED_APP_ROOT / "tools" / "codered_terrainboundres_validation.py"
+        if not script.exists():
+            self._show_result(OperationResult(False, "Terrainboundres validator missing", f"Missing validator:\n{script}"))
+            return
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(script), "--root", str(CODERED_APP_ROOT)],
+                cwd=str(CODERED_APP_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=90,
+                check=False,
+            )
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Terrainboundres validation failed", str(exc)))
+            return
+        output = "\n".join(part.strip() for part in (proc.stdout, proc.stderr) if part and part.strip())
+        report_md = CODERED_APP_ROOT / "logs" / "CodeRED_Terrainboundres_Validation_Report.md"
+        if report_md.exists():
+            try:
+                output = report_md.read_text(encoding="utf-8")
+            except Exception:
+                pass
+        self._populate_one_app_dashboard()
+        try:
+            self.one_app_tree.selection_set("terrain_tools")
+            self.one_app_tree.focus("terrain_tools")
+        except Exception:
+            pass
+        self.notebook.select(self._tab_index_for_name("Dashboard"))
+        detail_output = output or "Terrainboundres validation produced no output."
+        self._set_text_widget_content(self.one_app_detail_text, detail_output)
+        self.after_idle(lambda text=detail_output: self._set_text_widget_content(self.one_app_detail_text, text))
+        if proc.returncode == 0:
+            self.log("Terrainboundres validation passed.")
+            self._show_result(OperationResult(True, "Terrainboundres validation passed", "Inventory/decode proof passed. Reports were written to logs/."))
+        else:
+            self.log("Terrainboundres validation failed.")
+            self._show_result(OperationResult(False, "Terrainboundres validation failed", output or f"Exit code: {proc.returncode}"))
+
+    def _on_one_app_lane_select(self, event=None) -> None:
+        del event
+        selection = self.one_app_tree.selection()
+        if not selection:
+            return
+        self._show_one_app_lane_detail(selection[0])
+
+    def _show_one_app_lane_detail(self, lane_id: str) -> None:
+        report = getattr(self, "one_app_report", {}) or {}
+        lane = next((item for item in report.get("lanes", []) if item.get("id") == lane_id), None)
+        if not lane:
+            self._set_text_widget_content(self.one_app_detail_text, "Lane detail not found.")
+            return
+        command = " ".join(str(part) for part in lane.get("command", []))
+        lines = [
+            lane.get("title", "Unknown lane"),
+            "=" * max(8, len(lane.get("title", "Unknown lane"))),
+            "",
+            f"State: {lane.get('state')}",
+            f"Category: {lane.get('category')}",
+            f"Command: {command}",
+            "",
+            lane.get("description", ""),
+            "",
+            "Required files present:",
+        ]
+        present_required = lane.get("present_required", []) or []
+        missing_required = lane.get("missing_required", []) or []
+        present_optional = lane.get("present_optional", []) or []
+        present_proof = lane.get("present_proof", []) or []
+        replaces_external = lane.get("replaces_external", []) or []
+        lines.extend([f"- {item}" for item in present_required] or ["- none"])
+        lines.extend(["", "Missing required files:"])
+        lines.extend([f"- {item}" for item in missing_required] or ["- none"])
+        lines.extend(["", "Optional files present:"])
+        lines.extend([f"- {item}" for item in present_optional] or ["- none"])
+        lines.extend(["", "Proof files present:"])
+        lines.extend([f"- {item}" for item in present_proof] or ["- none"])
+        if replaces_external:
+            lines.extend(["", "External/manual workflows this lane is intended to replace:"])
+            lines.extend([f"- {item}" for item in replaces_external])
+        if lane.get("notes"):
+            lines.extend(["", "Notes:", lane.get("notes", "")])
+        self._set_text_widget_content(self.one_app_detail_text, "\n".join(lines))
+
+
+    def _add_research_browser_tab(self) -> tk.Frame:
+        frame = tk.Frame(self.notebook, bg=self.theme["bg"])
+        self.notebook.add(frame, text="Research")
+
+        header = tk.Frame(frame, bg=self.theme["bg"])
+        header.pack(fill="x", padx=14, pady=(14, 6))
+        self.research_summary_var = tk.StringVar(value="Research browser not loaded yet")
+        tk.Label(
+            header,
+            text="Code RED Logs / Research Browser",
+            font=("SegoeUI", 14, "bold"),
+            bg=self.theme["accent"],
+            fg=self.theme["fg"],
+            anchor="w",
+        ).pack(fill="x")
+        tk.Label(header, textvariable=self.research_summary_var, bg=self.theme["bg"], fg=self.theme["fg"], anchor="w", justify="left").pack(fill="x", pady=(6, 0))
+
+        buttons = tk.Frame(frame, bg=self.theme["bg"])
+        buttons.pack(fill="x", padx=14, pady=(0, 8))
+        for caption, command in (
+            ("Refresh Research", self.refresh_research_browser),
+            ("Write Research Index", self.write_research_browser_report),
+            ("Open Selected", self.open_selected_research_item),
+            ("Open Logs", self.open_logs_folder),
+            ("Open Research Folder", self.open_research_folder),
+        ):
+            tk.Button(buttons, text=caption, command=command, bg=self.theme["accent"], fg=self.theme["fg"], relief="flat", padx=10, pady=6).pack(side="left", padx=(0, 8))
+
+        split = tk.PanedWindow(frame, orient="vertical", sashrelief="flat", sashwidth=6, bg=self.theme["bg"])
+        split.pack(fill="both", expand=True, padx=14, pady=(0, 14))
+
+        tree_frame = tk.Frame(split, bg=self.theme["bg"])
+        self.research_tree = ttk.Treeview(
+            tree_frame,
+            columns=("topic", "source", "title", "path", "state"),
+            show="headings",
+            height=13,
+        )
+        for col, title, width in (
+            ("topic", "Topic", 130),
+            ("source", "Source", 150),
+            ("title", "Title", 320),
+            ("path", "Path", 420),
+            ("state", "State", 90),
+        ):
+            self.research_tree.heading(col, text=title)
+            self.research_tree.column(col, width=width, anchor="w")
+        self.research_tree.pack(fill="both", expand=True)
+        self.research_tree.bind("<<TreeviewSelect>>", self._on_research_select)
+
+        detail_frame = tk.Frame(split, bg=self.theme["bg"])
+        self.research_detail_text = tk.Text(detail_frame, wrap="word", bg=self.theme["panel"], fg=self.theme["fg"], insertbackground=self.theme["fg"], relief="flat")
+        self.research_detail_text.pack(fill="both", expand=True)
+
+        split.add(tree_frame, height=350)
+        split.add(detail_frame)
+        self.research_entries_by_id: dict[str, dict] = {}
+        return frame
+
+    def _populate_research_browser(self) -> None:
+        try:
+            entries = _codered_load_research_browser_entries(CODERED_APP_ROOT)
+        except Exception as exc:
+            self.research_summary_var.set(f"Research browser load failed: {exc}")
+            self._set_text_widget_content(self.research_detail_text, f"Research browser load failed:\n{exc}")
+            return
+        self.research_entries_by_id = {}
+        for item in self.research_tree.get_children():
+            self.research_tree.delete(item)
+        missing = 0
+        first_item = None
+        for idx, entry in enumerate(entries):
+            iid = f"research_{idx:04d}"
+            self.research_entries_by_id[iid] = entry
+            state = "OK" if entry.get("exists") else "MISSING"
+            if state == "MISSING":
+                missing += 1
+            item = self.research_tree.insert(
+                "",
+                "end",
+                iid=iid,
+                values=(entry.get("topic", ""), entry.get("source", ""), entry.get("title", ""), entry.get("relative_path", ""), state),
+            )
+            if first_item is None:
+                first_item = item
+        self.research_summary_var.set(f"Indexed: {len(entries)} | Missing referenced: {missing} | Root: {CODERED_APP_ROOT}")
+        if first_item:
+            self.research_tree.selection_set(first_item)
+            self.research_tree.focus(first_item)
+            self._show_research_detail(first_item)
+        else:
+            self._set_text_widget_content(self.research_detail_text, "No research/log entries found.")
+
+    def refresh_research_browser(self) -> None:
+        self._populate_research_browser()
+        self.notebook.select(self._tab_index_for_name("Research"))
+        self.log("Research browser refreshed.")
+
+    def write_research_browser_report(self) -> None:
+        try:
+            result = _codered_build_research_browser_report(CODERED_APP_ROOT)
+            self._populate_research_browser()
+            self.notebook.select(self._tab_index_for_name("Research"))
+            self._set_text_widget_content(self.research_detail_text, result.get("text", ""))
+            self._show_result(OperationResult(True, "Research browser report written", f"Markdown:\n{result['markdown']}\n\nJSON:\n{result['json']}"))
+            self.log("Research browser report written.")
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Research browser report failed", str(exc)))
+
+    def _on_research_select(self, event=None) -> None:
+        del event
+        selection = self.research_tree.selection()
+        if not selection:
+            return
+        self._show_research_detail(selection[0])
+
+    def _show_research_detail(self, item_id: str) -> None:
+        entry = self.research_entries_by_id.get(item_id)
+        if not entry:
+            self._set_text_widget_content(self.research_detail_text, "Research detail not found.")
+            return
+        path = Path(entry.get("path", ""))
+        lines = [
+            str(entry.get("title", path.name)),
+            "=" * max(8, len(str(entry.get("title", path.name)))),
+            "",
+            f"Topic: {entry.get('topic')}",
+            f"Source: {entry.get('source')}",
+            f"Format: {entry.get('format')}",
+            f"State: {'present' if entry.get('exists') else 'missing'}",
+            f"Path: {entry.get('relative_path')}",
+            f"Full path: {entry.get('path')}",
+            f"Size: {_codered_human_size(int(entry.get('size') or 0))}",
+        ]
+        if entry.get("notes"):
+            lines.extend(["", "Notes:", str(entry.get("notes"))])
+        if path.exists() and path.is_file() and path.suffix.lower() in {".md", ".txt", ".csv", ".json", ".xml", ".ini", ".log"}:
+            lines.extend(["", "Preview:", _codered_text_preview(path)])
+        elif path.exists():
+            lines.extend(["", "Preview:", "Binary/archive/folder item. Use Open Selected to inspect it in the OS file browser."])
+        else:
+            lines.extend(["", "Preview:", "Referenced file is missing in this package/workspace."])
+        self._set_text_widget_content(self.research_detail_text, "\n".join(lines))
+
+    def open_selected_research_item(self) -> None:
+        selection = self.research_tree.selection()
+        if not selection:
+            self._show_result(OperationResult(False, "No research item selected", "Select a row in the Research tab first."))
+            return
+        entry = self.research_entries_by_id.get(selection[0]) or {}
+        path = Path(entry.get("path", ""))
+        if not path.exists():
+            self._show_result(OperationResult(False, "Research item missing", f"Missing:\n{path}"))
+            return
+        try:
+            msg = _codered_open_path_in_os(path)
+            self.log(msg)
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Open selected research item failed", str(exc)))
+
+    def open_research_folder(self) -> None:
+        path = CODERED_APP_ROOT / "research"
+        try:
+            msg = _codered_open_path_in_os(path)
+            self.log(msg)
+        except Exception as exc:
+            self._show_result(OperationResult(False, "Open research folder failed", str(exc)))
 
     def _add_text_tab(self, title: str) -> tk.Text:
         txt = tk.Text(self.notebook, wrap="word", bg=self.theme["panel"], fg=self.theme["fg"], insertbackground=self.theme["fg"], relief="flat")

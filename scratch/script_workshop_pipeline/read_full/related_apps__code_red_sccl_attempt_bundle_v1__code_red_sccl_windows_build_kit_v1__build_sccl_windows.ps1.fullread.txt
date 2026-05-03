@@ -1,0 +1,223 @@
+param(
+    [string]$ScclPath = ""
+)
+
+$ErrorActionPreference = "Stop"
+
+function Resolve-FullPath([string]$p) {
+    if ([string]::IsNullOrWhiteSpace($p)) { return $null }
+    try { return (Resolve-Path -LiteralPath $p -ErrorAction Stop).Path } catch { return $null }
+}
+
+function Add-UniquePath([System.Collections.Generic.List[string]]$list, [string]$path) {
+    $r = Resolve-FullPath $path
+    if ($r -and -not $list.Contains($r)) { [void]$list.Add($r) }
+}
+
+function Find-ScclRootUnder([string[]]$roots) {
+    foreach ($root in $roots) {
+        $r = Resolve-FullPath $root
+        if (-not $r) { continue }
+        $direct = Join-Path $r "llvm-14.0.0.src/CMakeLists.txt"
+        if (Test-Path -LiteralPath $direct) { return $r }
+        try {
+            $hit = Get-ChildItem -LiteralPath $r -Directory -Recurse -Filter "llvm-14.0.0.src" -ErrorAction SilentlyContinue |
+                Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName "CMakeLists.txt") } |
+                Select-Object -First 1
+            if ($hit) { return (Split-Path -Parent $hit.FullName) }
+        } catch {}
+    }
+    return $null
+}
+
+function Find-ScclExeUnder([string[]]$roots) {
+    foreach ($root in $roots) {
+        $r = Resolve-FullPath $root
+        if (-not $r) { continue }
+        $directs = @(
+            (Join-Path $r "SC-CL.exe"),
+            (Join-Path $r "output/SC-CL.exe"),
+            (Join-Path $r "bin/Release/SC-CL.exe"),
+            (Join-Path $r "bin/MinSizeRel/SC-CL.exe"),
+            (Join-Path $r "SC-CL-master/bin/Release/SC-CL.exe"),
+            (Join-Path $r "SC-CL-master/bin/MinSizeRel/SC-CL.exe")
+        )
+        foreach ($p in $directs) {
+            if (Test-Path -LiteralPath $p) { return (Resolve-Path -LiteralPath $p).Path }
+        }
+        try {
+            $hit = Get-ChildItem -LiteralPath $r -File -Recurse -Filter "SC-CL.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($hit) { return $hit.FullName }
+        } catch {}
+    }
+    return $null
+}
+
+function Find-ScclZipUnder([string[]]$roots) {
+    $names = @("SC-CL-master.zip", "SC-CL.zip", "SC-CL-main.zip")
+    foreach ($root in $roots) {
+        $r = Resolve-FullPath $root
+        if (-not $r) { continue }
+        foreach ($name in $names) {
+            $direct = Join-Path $r $name
+            if (Test-Path -LiteralPath $direct) { return (Resolve-Path -LiteralPath $direct).Path }
+        }
+        try {
+            foreach ($name in $names) {
+                $hit = Get-ChildItem -LiteralPath $r -File -Recurse -Filter $name -ErrorAction SilentlyContinue | Select-Object -First 1
+                if ($hit) { return $hit.FullName }
+            }
+        } catch {}
+    }
+    return $null
+}
+
+$KitDir = $PSScriptRoot
+$BundleDir = (Resolve-Path -LiteralPath (Join-Path $KitDir "..")).Path
+$DataDir = (Resolve-Path -LiteralPath (Join-Path $BundleDir "..")).Path
+$CodeRedDir = (Resolve-Path -LiteralPath (Join-Path $DataDir "..")).Path
+$PackageDir = (Resolve-Path -LiteralPath (Join-Path $CodeRedDir "..")).Path
+$OutDir = Join-Path $KitDir "output"
+$LogFile = Join-Path $OutDir "build_sccl_windows.log"
+$ThirdPartyDir = Join-Path $KitDir "third_party"
+$ExtractDir = Join-Path $ThirdPartyDir "sccl_source"
+
+New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+New-Item -ItemType Directory -Force -Path $ThirdPartyDir | Out-Null
+
+"==== Code RED SC-CL robust build helper v3 ====" | Set-Content -LiteralPath $LogFile
+"KitDir=$KitDir" | Add-Content -LiteralPath $LogFile
+"BundleDir=$BundleDir" | Add-Content -LiteralPath $LogFile
+"DataDir=$DataDir" | Add-Content -LiteralPath $LogFile
+"CodeRedDir=$CodeRedDir" | Add-Content -LiteralPath $LogFile
+"PackageDir=$PackageDir" | Add-Content -LiteralPath $LogFile
+"Arg ScclPath=$ScclPath" | Add-Content -LiteralPath $LogFile
+"Env SCCL_EXE=$env:SCCL_EXE" | Add-Content -LiteralPath $LogFile
+"Env SCCL_ROOT=$env:SCCL_ROOT" | Add-Content -LiteralPath $LogFile
+"Env SCCL_ZIP=$env:SCCL_ZIP" | Add-Content -LiteralPath $LogFile
+
+$searchRoots = New-Object 'System.Collections.Generic.List[string]'
+Add-UniquePath $searchRoots $KitDir
+Add-UniquePath $searchRoots $BundleDir
+Add-UniquePath $searchRoots $DataDir
+Add-UniquePath $searchRoots $CodeRedDir
+Add-UniquePath $searchRoots $PackageDir
+Add-UniquePath $searchRoots (Get-Location).Path
+Add-UniquePath $searchRoots (Join-Path (Get-Location).Path "..")
+if ($env:USERPROFILE) {
+    Add-UniquePath $searchRoots (Join-Path $env:USERPROFILE "Downloads")
+    Add-UniquePath $searchRoots (Join-Path $env:USERPROFILE "Desktop")
+}
+
+$ScclExe = $null
+$ScclRoot = $null
+$ScclZip = $null
+
+$arg = Resolve-FullPath $ScclPath
+if ($arg) {
+    if ((Test-Path -LiteralPath $arg -PathType Leaf) -and ([IO.Path]::GetFileName($arg).ToLower() -eq "sc-cl.exe")) { $ScclExe = $arg }
+    elseif ((Test-Path -LiteralPath $arg -PathType Leaf) -and ([IO.Path]::GetExtension($arg).ToLower() -eq ".zip")) { $ScclZip = $arg }
+    elseif (Test-Path -LiteralPath $arg -PathType Container) { $ScclRoot = Find-ScclRootUnder @($arg) }
+}
+
+if (-not $ScclExe -and $env:SCCL_EXE) { $ScclExe = Resolve-FullPath $env:SCCL_EXE }
+if (-not $ScclRoot -and $env:SCCL_ROOT) { $ScclRoot = Find-ScclRootUnder @($env:SCCL_ROOT) }
+if (-not $ScclZip -and $env:SCCL_ZIP) { $ScclZip = Resolve-FullPath $env:SCCL_ZIP }
+
+if (-not $ScclExe) { $ScclExe = Find-ScclExeUnder $searchRoots.ToArray() }
+if ($ScclExe) {
+    $dest = Join-Path $OutDir "SC-CL.exe"
+    Copy-Item -LiteralPath $ScclExe -Destination $dest -Force
+    "SUCCESS: Found existing SC-CL.exe: $ScclExe" | Add-Content -LiteralPath $LogFile
+    Write-Host "SUCCESS: Found existing SC-CL.exe and copied it to:"
+    Write-Host "  $dest"
+    Write-Host "Log: $LogFile"
+    exit 0
+}
+
+if (-not $ScclRoot) { $ScclRoot = Find-ScclRootUnder $searchRoots.ToArray() }
+
+if (-not $ScclRoot) {
+    if (-not $ScclZip) { $ScclZip = Find-ScclZipUnder $searchRoots.ToArray() }
+    if ($ScclZip) {
+        "Found SC-CL zip: $ScclZip" | Add-Content -LiteralPath $LogFile
+        Write-Host "Found SC-CL zip: $ScclZip"
+        if (Test-Path -LiteralPath $ExtractDir) { Remove-Item -LiteralPath $ExtractDir -Recurse -Force }
+        New-Item -ItemType Directory -Force -Path $ExtractDir | Out-Null
+        Expand-Archive -LiteralPath $ScclZip -DestinationPath $ExtractDir -Force
+        $ScclRoot = Find-ScclRootUnder @($ExtractDir)
+    }
+}
+
+if (-not $ScclRoot) {
+    "ERROR: Could not find SC-CL.exe, SC-CL-master folder, or SC-CL-master.zip." | Add-Content -LiteralPath $LogFile
+    "Searched roots:" | Add-Content -LiteralPath $LogFile
+    foreach ($r in $searchRoots) { "  $r" | Add-Content -LiteralPath $LogFile }
+    Write-Host "ERROR: Could not find SC-CL."
+    Write-Host "Use one of these simple options:"
+    Write-Host "  1) Put SC-CL-master.zip directly in this folder: $KitDir"
+    Write-Host "  2) Extract SC-CL-master directly in this folder: $KitDir"
+    Write-Host "  3) Run: build_sccl_windows.bat C:\full\path\to\SC-CL-master.zip"
+    Write-Host "  4) Run: set SCCL_ZIP=C:\full\path\to\SC-CL-master.zip then rerun."
+    Write-Host "Log: $LogFile"
+    exit 1
+}
+
+$LlvmDir = Join-Path $ScclRoot "llvm-14.0.0.src"
+if (-not (Test-Path -LiteralPath (Join-Path $LlvmDir "CMakeLists.txt"))) {
+    "ERROR: Invalid SC-CL root: $ScclRoot" | Add-Content -LiteralPath $LogFile
+    Write-Host "ERROR: Invalid SC-CL root: $ScclRoot"
+    exit 1
+}
+
+"SCCL_ROOT=$ScclRoot" | Add-Content -LiteralPath $LogFile
+"LLVM_DIR=$LlvmDir" | Add-Content -LiteralPath $LogFile
+Write-Host "Using SC-CL source root: $ScclRoot"
+
+$cmake = Get-Command cmake -ErrorAction SilentlyContinue
+if (-not $cmake) {
+    "ERROR: cmake not found in PATH." | Add-Content -LiteralPath $LogFile
+    Write-Host "ERROR: cmake not found. Open x64 Native Tools Command Prompt for VS 2022."
+    exit 1
+}
+$cl = Get-Command cl.exe -ErrorAction SilentlyContinue
+if (-not $cl) {
+    "ERROR: cl.exe not found in PATH." | Add-Content -LiteralPath $LogFile
+    Write-Host "ERROR: cl.exe not found. Open x64 Native Tools Command Prompt for VS 2022."
+    exit 1
+}
+
+$BuildDir = Join-Path $LlvmDir "build_codered_win"
+New-Item -ItemType Directory -Force -Path $BuildDir | Out-Null
+Push-Location $BuildDir
+try {
+    Write-Host "Running CMake generation..."
+    & cmake -G "Visual Studio 17 2022" -A x64 .. 2>&1 | Tee-Object -Append -FilePath $LogFile
+    if ($LASTEXITCODE -ne 0) { throw "cmake generation failed" }
+
+    Write-Host "Building SC-CL target..."
+    & cmake --build . --config MinSizeRel --target SC-CL 2>&1 | Tee-Object -Append -FilePath $LogFile
+    if ($LASTEXITCODE -ne 0) { throw "SC-CL build failed" }
+} catch {
+    Write-Host "ERROR: $_"
+    Write-Host "Log: $LogFile"
+    Pop-Location
+    exit 1
+}
+Pop-Location
+
+$BuiltExe = Find-ScclExeUnder @($BuildDir, $LlvmDir, $ScclRoot)
+if (-not $BuiltExe) {
+    "ERROR: Build finished but SC-CL.exe was not found." | Add-Content -LiteralPath $LogFile
+    Write-Host "ERROR: Build finished but SC-CL.exe was not found."
+    Write-Host "Log: $LogFile"
+    exit 2
+}
+
+$destExe = Join-Path $OutDir "SC-CL.exe"
+Copy-Item -LiteralPath $BuiltExe -Destination $destExe -Force
+"SUCCESS: Built SC-CL.exe: $BuiltExe" | Add-Content -LiteralPath $LogFile
+Write-Host "SUCCESS: SC-CL.exe copied to:"
+Write-Host "  $destExe"
+Write-Host "Log: $LogFile"
+exit 0

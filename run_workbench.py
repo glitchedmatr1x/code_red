@@ -1,22 +1,28 @@
 from __future__ import annotations
-import importlib.util
-import sys
+
+"""Compatibility launcher for the old Code RED Resource Workbench path.
+
+The canonical launcher is now main.py. This wrapper preserves the old
+MP-Companion startup behavior for users or shortcuts that still call
+run_workbench.py directly, while sharing main.py crash logging and path setup.
+"""
+
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parent
-TARGET_CANDIDATES = [
-    ROOT / "related_apps" / "Code_RED_MP_Companion_v19",
-    ROOT / "data" / "Code_RED_MP_Companion_v19",
-    ROOT / "Code_RED_MP_Companion_v19",
-]
-TARGET = next((candidate for candidate in TARGET_CANDIDATES if candidate.exists()), ROOT)
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-spec = importlib.util.spec_from_file_location("codered_workbench", ROOT / "python_workbench.py")
-if spec is None or spec.loader is None:
-    raise SystemExit("Could not load python_workbench.py")
-module = importlib.util.module_from_spec(spec)
-sys.modules["codered_workbench"] = module
-spec.loader.exec_module(module)
-app = module.WorkbenchApp(startup_workspace=TARGET if TARGET.exists() else ROOT)
-app.title("Code RED Resource Workbench")
-app.mainloop()
+import main as codered_main  # noqa: E402
+
+
+if __name__ == '__main__':
+    raise SystemExit(
+        codered_main.main([
+            '--legacy-companion-workspace',
+            '--title',
+            'Code RED Resource Workbench',
+            *sys.argv[1:],
+        ])
+    )

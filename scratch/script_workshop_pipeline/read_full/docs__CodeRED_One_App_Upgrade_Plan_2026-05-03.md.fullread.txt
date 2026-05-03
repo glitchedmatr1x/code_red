@@ -1,0 +1,84 @@
+# Code RED One-App Upgrade Plan
+
+Date: 2026-05-03
+
+## Goal
+
+Move Code RED from a collection of launchers and related apps into one app shell with discoverable lanes, proof logs, and controlled patch/build actions.
+
+## Current Rule
+
+When a helper/launcher/app is 100% consumed and its useful behavior is fully salvaged into the canonical app path, delete the old file instead of keeping it as a wrapper.
+
+First obsolete removal:
+
+```text
+run_workbench.py
+```
+
+Reason: its useful MP Companion workspace detection is now in `main.py --legacy-companion-workspace`, and keeping the old file would allow the MP Companion-first startup behavior to come back by accident.
+
+## Canonical Path
+
+```text
+Run_Code_RED.bat -> main.py -> python_workbench.py / future codered_app shell
+```
+
+## New One-App Foundation
+
+```text
+codered_app/
+  __init__.py
+  paths.py
+  launcher_registry.py
+
+tools/codered_one_app_status.py
+```
+
+The registry now discovers active lanes and reports whether they are ready, missing files, or ready but still needing proof logs.
+
+## Lanes To Unify
+
+- Dashboard / repo doctor / readiness status
+- Archive/RPF tools and proof patching
+- Tuner and Arcade
+- AI Trainer / ScriptHookRDR AI Menu
+- Actor enum, roster, and behavior action editor
+- Native database and native bridge prep
+- Script compile/recompile lab
+- WSI / map / terrain tools
+- Vehicle / gringo research
+- Logs and research browser
+- Packaging/export/install helpers
+
+## Needed Now
+
+1. Keep `main.py` as the only root app entry.
+2. Keep adding modular one-app services under `codered_app/`.
+3. Use the registry as the source of truth for related apps and tools.
+4. Embed lane panels gradually instead of adding root launchers.
+5. Keep every build/patch/spawn action proof-gated.
+
+## Not Needed
+
+- More root launchers.
+- More separate GUI apps.
+- Adding every function directly into `python_workbench.py`.
+- Auto-patching live archives.
+- Auto-programming every discovered native into the ASI.
+- Treating research-only lanes as finished before proof.
+
+## Current Status From This Package
+
+```text
+Ready: 14
+Ready but needs proof: 2
+Missing required files: 0
+Weighted readiness: 94%
+```
+
+Ready-but-unproven lanes count only halfway so the app does not claim 100% until proof logs exist.
+
+## Next Pass
+
+Add a real Dashboard/Status panel to the UI that reads `codered_app.launcher_registry` and shows all lanes without needing the command line.

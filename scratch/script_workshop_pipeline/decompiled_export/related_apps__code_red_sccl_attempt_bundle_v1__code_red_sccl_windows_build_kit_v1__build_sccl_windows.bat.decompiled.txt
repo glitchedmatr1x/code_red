@@ -1,0 +1,10 @@
+# Code RED Decompiled Source Export
+# Source: related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/build_sccl_windows.bat
+# SHA1: 62804a476503da973840b322fe8c7325445313f8
+# Export type: source/text copy
+
+@echo off
+setlocal
+cd /d "%~dp0"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0build_sccl_windows.ps1" -ScclPath "%~1"
+exit /b %ERRORLEVEL%

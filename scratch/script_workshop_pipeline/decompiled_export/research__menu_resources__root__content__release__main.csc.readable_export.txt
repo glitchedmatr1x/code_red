@@ -1,0 +1,94 @@
+# Code RED Compiled Script Readable Export
+
+Source: research/menu resources/root/content/release/main.csc
+Suffix: .csc
+Size: 83457
+SHA1: 1dbbd7f2e0f120c9ac5a7611b26878bfd83dc813
+Export type: binary-readable metadata/string/native report, not proven bytecode decompile.
+Roundtrip state: blocked until compiler/decompiler proof passes.
+
+Native hits: none
+Hash hits: none
+
+## String preview
+
+- LK^i(Y
+- YD</,155
+- [N E
+- RV)8
+- hPH<
+- :Zb~
+- +TcO
+- q}o6J
+- ^VpV
+- ym]+0
+- eQ.\
+- pQm
+- I\jT
+- ^]P@T5
+- |XB=
+- cQf?Z
+- wSx^
+- 4fKryTd.
+- =@MyH
+- !A=!
+- zA#<
+- ?}?B
+- b<,w
+- 6_}R
+- vZ,eP
+- jAbs
+- ylX,
+- =r*o\
+- 7sS~Ai
+- 2# {M
+- !KHC
+- ,DLI&
+- xT*d
+- `J+5
+- {wV_
+- K85;b
+- 8g %
+- Kz${E)
+- iE'r@
+- sQmn
+- lFmV
+- +"Fo
+- 7NoC
+- txb#N
+- E0;$
+- LFnad
+- kqkD
+- DK`L)
+- r%t=
+- RSs'
+- 8.ah
+- 6j:fYk
+- ?2[$
+- 8].*}
+- `FwL:
+- 3a?X
+- /z0:
+- B]b 8
+- gg~*E
+- .IcC
+- C2#b!
+- wbxo
+- =^Vs
+- r2iK
+- G|T|
+- Nh."L
+- K-[]
+- t'/P
+- $^pi
+- 8_+,
+- $^*N
+- TZ$3
+- WHWL,
+- Zv-t
+- In^R
+- 3UKs
+- piu<
+- W[:/:
+- fQ4+
+- d&\<

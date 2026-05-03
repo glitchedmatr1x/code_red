@@ -1,0 +1,157 @@
+# Code RED Decompiled Source Export
+# Source: docs/REPO_STRUCTURE.md
+# SHA1: f85d03106fe01d4cc7b369dc3c0ed64b5c2f064b
+# Export type: source/text copy
+
+# Code RED Repository Structure
+
+This document defines the intended layout so Code RED does not drift into broken cleanup labels, duplicate launchers, or mixed generated outputs.
+
+## Active root launchers
+
+Keep these at the repo root because they are intended user entry points:
+
+```text
+Run_Code_RED.bat
+Run_CodeRED_AI_Menu_Setup.bat
+Run_CodeRED_Build_Assistant.bat
+Run_CodeRED_Repo_Doctor.bat
+Code_RED_Dependency_Installer.bat
+```
+
+Do not add a new root launcher for every research lane. Prefer adding new actions inside the workbench, build assistant, tuner, or a related app folder.
+
+## Active runtime folders
+
+These names are active runtime paths and must not be renamed:
+
+```text
+data/
+logs/
+related_apps/
+tools/
+```
+
+Do not rename them to cleanup labels like:
+
+```text
+data - Important/
+logs - Organize/
+related_apps - Combine/
+tools - Implement/
+```
+
+Those labels may look tidy, but they break launchers and tools that expect the original paths.
+
+## Main app and workbench
+
+```text
+main.py
+python_workbench.py
+requirements.txt
+```
+
+These are the primary Code RED workbench entry files.
+
+## Active tools
+
+```text
+tools/codered_actor_enum_tool.py
+tools/codered_build_assistant.py
+tools/codered_repo_doctor.py
+```
+
+Other helper tools can live in `tools/`, but generated logs, caches, and one-off outputs should not be committed there.
+
+## Runtime data
+
+```text
+data/codered/
+```
+
+Active data includes actor enum maps, NPC rosters, behavior action menus, trainer/AI profiles, and related runtime files. Keep this folder available for the ASI/menu and setup tools.
+
+## Related apps
+
+```text
+related_apps/
+```
+
+This folder contains the active and research-adjacent Code RED lanes, including:
+
+- CodeRED Tuner
+- Code Red Arcade demo
+- ScriptHookRDR AI Menu
+- Faction War research and builder lanes
+- MP Companion lanes
+- WSI/WGD/refgroup/navres research tools
+- vehicle and content patch research
+
+Do not delete or archive related-app folders without a no-regression manifest.
+
+## Faction War lane
+
+```text
+related_apps/CodeRedFactionWar/
+related_apps/CodeRedFactionWar/research_notes/
+```
+
+Faction War research notes and pass-planning files should stay close to the related app, especially Pass 16 living-world notes.
+
+Large generated RPF outputs should stay out of GitHub unless intentionally published as a release artifact.
+
+## Logs
+
+Use `logs/` for curated pass reports, validation reports, handoffs, and project index files.
+
+Prefer committing:
+
+```text
+logs/CodeRED_*_Pass*.md
+logs/CodeRED_LOG_INDEX.md
+logs/README.md
+```
+
+Avoid committing disposable runtime logs unless they are useful proof files:
+
+```text
+logs/CodeRED_Build_Assistant_last.log
+logs/CodeRED_Build_Assistant_last_report.json
+logs/CodeRED_Repo_Doctor_Report.json
+```
+
+## Generated outputs and caches
+
+Do not commit generated build/cache clutter:
+
+```text
+__pycache__/
+*.pyc
+*.pdb
+*.obj
+*.pch
+*.ipdb
+*.iobj
+*.vc.db
+.vs/
+build/
+dist/
+related_apps/Code_RED_ScriptHookRDR_AI_Menu/build/
+CodeRED_Backups/
+```
+
+## New work rule
+
+Before adding a file, choose one bucket:
+
+```text
+active runtime source
+active tool
+runtime data
+curated log/report
+related-app research
+release artifact
+local/generated output
+```
+
+If it is local/generated output, keep it out of Git unless it is intentionally preserved as proof.

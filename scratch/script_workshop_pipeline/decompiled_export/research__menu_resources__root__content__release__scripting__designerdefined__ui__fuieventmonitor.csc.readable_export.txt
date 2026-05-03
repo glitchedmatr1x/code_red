@@ -1,0 +1,94 @@
+# Code RED Compiled Script Readable Export
+
+Source: research/menu resources/root/content/release/scripting/designerdefined/ui/fuieventmonitor.csc
+Suffix: .csc
+Size: 28252
+SHA1: ceaa282d7a69cb946c5fb0d573d638af9f6e4ab3
+Export type: binary-readable metadata/string/native report, not proven bytecode decompile.
+Roundtrip state: blocked until compiler/decompiler proof passes.
+
+Native hits: none
+Hash hits: none
+
+## String preview
+
+- Am4@z
+- mBvy
+- i`nC
+- whhy
+- aH%M
+- 2~Ze*
+- iEP;
+- j;(Uv
+- O#~3o
+- '"u'q
+- 2$K2s
+- GbC2
+- md>N
+- a9sD
+- |!=1
+- QiF9SU
+- =s.T
+- t,ZF#T_r
+- <`VV
+- /~{f:V{
+- -I)t
+- ?!\B6
+- #PyP
+- ;u)I
+- .F%"
+- oK,p
+- iUL}*a
+- E"^)
+- NRGAh
+- TqL:
+- h9I"
+- N2*<?"?x
+- nS2{
+- HLEJB
+- drd+
+- m3E<D
+- 0`~\
+- U[GO
+- x2Hw
+- j)Oh
+- ~tPf
+- e9Icb
+- n>yG%z.
+- ;b}!
+- ).+h
+- hu6#i
+- dv!.2
+- G9J6<
+- O;:
+- T,su
+- ~1Yg
+- w\&1
+- >fS!
+- Q/gmSR
+- ^wOO1
+- @9n._t
+- EwcH
+- f#b\
+- "r0_
+- 8HG!
+- w;Cr
+- #t)T
+- q`H2
+- k#GkoM
+- XktKW
+- ;G&)
+- <B4xy
+- 3p4Y/
+- 7x46
+- (((^
+- q00IPZ|W(
+- f{S0]
+- &$';$
+- 4``(
+- [rwb
+- %,
+- C+*f
+- |O|9
+- &Sd
+- oZvK
