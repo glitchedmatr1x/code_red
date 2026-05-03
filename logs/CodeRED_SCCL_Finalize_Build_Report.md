@@ -1,19 +1,19 @@
 # Code RED SC-CL Finalize Build Report
 
-Generated UTC: `2026-05-03T14:29:17Z`
-Result: **PASS**
+Generated UTC: `2026-05-03T16:45:28Z`
+Result: **NEEDS ATTENTION**
 SC-CL.exe found: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\bin\SC-CL.exe`
 Adopted to: `related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/SC-CL.exe`
 Mirrored to: `resources/SC-CL_DROP_HERE/SC-CL.exe`
 Validator exit: `0`
-Compile helper exit: `0`
+Compile helper exit: `2`
 
 ## Actions
 
 - Copied SC-CL.exe into build kit: related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/SC-CL.exe
 - Mirrored SC-CL.exe into drop folder: resources/SC-CL_DROP_HERE/SC-CL.exe
 - Script compile validator exit: 0
-- Vehicle menu compile helper exit: 0
+- Vehicle menu compile helper exit: 2
 
 ## Next Steps
 
@@ -23,7 +23,6 @@ Compile helper exit: `0`
 
 ## Searched Paths
 
-- `D:\Games\Red Dead Redemption\Code_RED\FULL_PATH_TO_SC-CL.exe`
 - `D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\SC-CL.exe`
 - `D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\sccl.exe`
 - `D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\SC-CL.exe`

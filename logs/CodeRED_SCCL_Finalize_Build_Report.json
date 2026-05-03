@@ -1,15 +1,14 @@
 {
   "version": "1.0.0-sccl-finalize-build",
-  "generated_utc": "2026-05-03T14:29:17Z",
+  "generated_utc": "2026-05-03T16:45:28Z",
   "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
-  "ok": true,
+  "ok": false,
   "sccl_exe": "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin\\SC-CL.exe",
   "adopted_to": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/SC-CL.exe",
   "mirrored_to": "resources/SC-CL_DROP_HERE/SC-CL.exe",
   "validator_exit": 0,
-  "compile_helper_exit": 0,
+  "compile_helper_exit": 2,
   "searched_paths": [
-    "D:\\Games\\Red Dead Redemption\\Code_RED\\FULL_PATH_TO_SC-CL.exe",
     "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\SC-CL.exe",
     "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\sccl.exe",
     "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\bin\\SC-CL.exe",
@@ -30,7 +29,7 @@
     "Copied SC-CL.exe into build kit: related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/SC-CL.exe",
     "Mirrored SC-CL.exe into drop folder: resources/SC-CL_DROP_HERE/SC-CL.exe",
     "Script compile validator exit: 0",
-    "Vehicle menu compile helper exit: 0"
+    "Vehicle menu compile helper exit: 2"
   ],
   "warnings": [],
   "next_steps": [

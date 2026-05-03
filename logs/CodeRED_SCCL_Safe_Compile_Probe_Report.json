@@ -1,6 +1,6 @@
 {
   "version": "1.1.0-safe-sccl-compile-probe-dll-guard",
-  "generated_utc": "2026-05-03T15:54:18Z",
+  "generated_utc": "2026-05-03T16:45:28Z",
   "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
   "ok": false,
   "sccl_exe": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
@@ -13,20 +13,82 @@
         "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
         "-help"
       ],
-      "exit_code": 3221225781,
+      "exit_code": 0,
+      "timed_out": false,
+      "stdout_tail": "OVERVIEW:  SC-CL\n\nUSAGE: SC-CL.exe [options] <source0> [... <sourceN>]\n\nOPTIONS:\n\nClang Options:\n\n  -extra-arg=<string>        - Additional argument to append to the compiler command line\n  -extra-arg-before=<string> - Additional argument to prepend to the compiler command line\n  -p=<string>                - Build path\n\nCompiler Options:\n\n  Choose obfuscation level: (This option is experimental use at your own risk)\n    -Fs                      - Obfuscate string table - GTA V Only\n    -F1                      - Enable low obfuscations\n    -F2                      - Enable default obfuscations\n    -F3                      - Enable high obfuscations\n    -F4                      - Enable very high obfuscations\n    -F5                      - Enable max obfuscations\n  Choose optimization level:\n    -g                       - No optimizations, enable debugging\n    -O1                      - Enable trivial optimizations\n    -O2                      - Enable default optimizations\n    -O3                      - Enable expensive optimizations\n  -emit-asm                  - Emits the pre compiled ASM representation of the script\n  -emit-asm-only             - Only emits the pre compiled ASM representation of the script\n  -hvi=<uint>                - Sets the starting index for host variables to ignore\n  -hvs=<uint>                - Sets the amount of host variables to ignore\n  -n                         - Disable function names in script output, Enabled when optimisations are turned on\n  -name=<string>             - File name of output script, defaults to input file name\n  -no-rsc7                   - Removes the RSC7 header from the output (GTAV)\n  -out-dir=<string>          - Specify the output directory of the script\n  -pc-version=<uint>         - Sets the pc version for use in the native translation table\n  -platform                  - Choose target platform:\n    =X360                    -   Target Xbox (32 bit, big endian)\n    =PS3                     -   Target PS3 (32 bit, big endian)\n    =PC                      -   Target PC (64 bit, little endian)\n  -pvi=<uint>                - Sets the starting index for player variables to ignore\n  -pvs=<uint>                - Sets the amount of player variables to ignore\n  -s                         - Limits script to one instance on runtime (GTAV | GTAIV)\n  -target                    - Choose build target:\n    =GTAIV                   -   Grand Theft Auto IV (sco output)\n    =GTAIV_TLAD              -   Grand Theft Auto IV The Lost and Damned (sco output)\n    =GTAIV_TBOGT             -   Grand Theft Auto IV The Ballad of Gay Tony (sco output)\n    =GTAV                    -   Grand Theft Auto V (#sc output)\n    =RDR_SCO                 -   Red Dead Redemption (sco output)\n    =RDR_#SC                 -   Red Dead Redemption (#sc output)\n  -vcx=<vcxproj path>        - Parses source files out of a vcxproj file to allow for seamless linking in Visual Studio\n\nGeneral options:\n\n  -stats                     - Enable statistics output from program (available with Asserts)\n\nGeneric Options:\n\n  -help                      - Display available options (-help-hidden for more)\n  -help-list                 - Display list of available options (-help-list-hidden for more)\n  -version                   - Display the version of this program\n",
+      "stderr_tail": "Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1\n"
+    },
+    {
+      "name": "compile attempt 1",
+      "command": [
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+        "-target=RDR_#SC",
+        "-platform=X360",
+        "-out-dir",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\output\\vehicle_menu_probe_build",
+        "-name=vehicle_menu_probe",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c"
+      ],
+      "exit_code": null,
+      "timed_out": true,
+      "stdout_tail": "error: Function Prototype Implementation missing on referenced function: _CLEAR_PRINTS\n\nPress ENTER to exit...",
+      "stderr_tail": "Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1\nError while trying to load a compilation database:\nCould not auto-detect compilation database for file \"D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c\"\nNo compilation database found in D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src or any parent directory\njson-compilation-database: Error while opening JSON database: no such file or directory\nRunning without flags.\nCompiling: D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c\n"
+    },
+    {
+      "name": "compile attempt 2",
+      "command": [
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+        "-target=RDR_SCO",
+        "-platform=X360",
+        "-out-dir",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\output\\vehicle_menu_probe_build",
+        "-name=vehicle_menu_probe",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c"
+      ],
+      "exit_code": 1,
+      "timed_out": false,
+      "stdout_tail": "error: Function Prototype Implementation missing on referenced function: _CLEAR_PRINTS\n\nPress ENTER to exit...",
+      "stderr_tail": "Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1\nError while trying to load a compilation database:\nCould not auto-detect compilation database for file \"D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c\"\nNo compilation database found in D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src or any parent directory\njson-compilation-database: Error while opening JSON database: no such file or directory\nRunning without flags.\nCompiling: D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c\n"
+    },
+    {
+      "name": "compile attempt 3",
+      "command": [
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+        "-target=RDR_#SC",
+        "-out-dir",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\output\\vehicle_menu_probe_build",
+        "-name=vehicle_menu_probe",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c"
+      ],
+      "exit_code": 1,
       "timed_out": false,
       "stdout_tail": "",
-      "stderr_tail": ""
+      "stderr_tail": "Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1\nSC-CL.exe: for the -platform option: must be specified at least once!\n"
+    },
+    {
+      "name": "compile attempt 4",
+      "command": [
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\SC-CL.exe",
+        "-target=RDR_SCO",
+        "-out-dir",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\output\\vehicle_menu_probe_build",
+        "-name=vehicle_menu_probe",
+        "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c"
+      ],
+      "exit_code": 1,
+      "timed_out": false,
+      "stdout_tail": "",
+      "stderr_tail": "Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1\nSC-CL.exe: for the -platform option: must be specified at least once!\n"
     }
   ],
   "output_files": [],
   "warnings": [
-    "SC-CL.exe cannot launch: 0xC0000135 / STATUS_DLL_NOT_FOUND. A required DLL/runtime is missing."
+    "Compile attempt 1 timed out after 90s; trying next target/options.",
+    "SC-CL did not produce a verified output file from the probe source."
   ],
   "next_steps": [
-    "Run: py -3 tools\\codered_sccl_dependency_probe.py",
-    "Install/repair Microsoft Visual C++ Redistributable 2015-2022 x64 if runtime DLLs are missing.",
-    "If SC-CL.exe came from a build folder, copy SC-CL.exe together with its adjacent LLVM/Clang DLLs into the build kit folder.",
-    "After dependency probe passes, rerun: py -3 tools\\codered_sccl_safe_compile_probe.py --timeout 30"
+    "Open logs\\CodeRED_SCCL_Safe_Compile_Probe_Output.txt and inspect the first compile error.",
+    "If SC-CL opens a GUI or hangs, rerun with a shorter timeout: py -3 tools\\codered_sccl_safe_compile_probe.py --timeout 20",
+    "Do not install/promote any compiled output until this probe passes."
   ]
 }
