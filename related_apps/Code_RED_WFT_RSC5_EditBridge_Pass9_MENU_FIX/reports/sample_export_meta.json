@@ -1,0 +1,13 @@
+{
+  "entry": "root/fragments/zombie_mexicanrebel_01.wft",
+  "rsc5": {
+    "magic_hex": "52 53 43 05",
+    "resource_type": 138,
+    "flag1": 3221235741,
+    "compressed_offset": 12,
+    "compressed_size": 72066,
+    "decompressed_size": 237568,
+    "compressed_sha1": "1d2b3a971b6b94423679146e16149efa8cd08a9b",
+    "decompressed_sha1": "1754b1e623b167d90e87722920d5077d658c46bd"
+  }
+}

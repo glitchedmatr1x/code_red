@@ -1,0 +1,29 @@
+{
+  "name": "Code RED WFT/RSC5 Edit Bridge Pass 9 - Menu Fix",
+  "purpose": "Fix double-click open/close by adding persistent menu, batch launcher, logging, and self-test.",
+  "generated_utc": "2026-05-02T19:46:02Z",
+  "included_tools": [
+    "RUN_WFT_TOOL_MENU.bat",
+    "DRAG_DROP_UNPACK_WFT.bat",
+    "DRAG_DROP_SAMPLE_SELF_TEST.bat",
+    "tools/codered_wft_rsc5_tool.py",
+    "tools/codered_rpf_utils_patch.py"
+  ],
+  "validation": {
+    "no_arg_launch_opens_menu": true,
+    "menu_self_test_passed": true,
+    "standalone_unpack_repack_verified": true,
+    "fragments2_scan_wft_count": 41,
+    "fragments2_scan_rsc5_ok_count": 41,
+    "all_fragments2_wfts_parse": true,
+    "log_file_created": true,
+    "contains_game_patch": false,
+    "contains_asi": false,
+    "all_required_checks_pass": true
+  },
+  "notes": [
+    "This is a tooling/usability pass only, not a game archive patch.",
+    "Same-size decoded RSC5 payload edits remain the safe default.",
+    "Requires zstd command-line utility for decompress/recompress."
+  ]
+}

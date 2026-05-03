@@ -12,13 +12,13 @@ Live branch
 - MP Companion: D:\Games\Red Dead Redemption\Code_RED\related_apps\Code_RED_MP_Companion_v19\mp_companion.py
 
 Workspace footprint
-- Files: 208
-- Folders: 70
-- Size: 32.7 MB
+- Files: 709
+- Folders: 212
+- Size: 126.3 MB
 - Archives: 0
-- Code-bearing files: 56
-- Compiled scripts: 14
-- Skipped generated/cache folders: 3
+- Code-bearing files: 121
+- Compiled scripts: 17
+- Skipped generated/cache folders: 6
 - Skipped generated/cache files: 0
 - Scan capped: no
 

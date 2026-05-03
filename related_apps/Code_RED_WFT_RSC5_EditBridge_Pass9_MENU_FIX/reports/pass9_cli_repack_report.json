@@ -1,0 +1,30 @@
+{
+  "tool": "codered_wft_rsc5_tool.py Pass9-menu-fix",
+  "mode": "repack",
+  "generated_utc": "2026-05-02T19:44:53Z",
+  "original_wft": "samples/zombie_mexicanrebel_01.wft",
+  "payload": "self_test_cli/unpacked/zombie_mexicanrebel_01.wft.rsc5_payload.bin",
+  "out_wft": "self_test_cli/zombie_mexicanrebel_01_roundtrip.wft",
+  "old": {
+    "magic_hex": "52 53 43 05",
+    "resource_type": 138,
+    "flag1": 3221235741,
+    "compressed_offset": 12,
+    "compressed_size": 72066,
+    "decompressed_size": 237568,
+    "compressed_sha1": "1d2b3a971b6b94423679146e16149efa8cd08a9b",
+    "decompressed_sha1": "1754b1e623b167d90e87722920d5077d658c46bd"
+  },
+  "new": {
+    "magic_hex": "52 53 43 05",
+    "resource_type": 138,
+    "flag1": 3221235741,
+    "compressed_offset": 12,
+    "compressed_size": 80495,
+    "decompressed_size": 237568,
+    "compressed_sha1": "ebd519fa9f424f4f063a05f605bf5b1c5562ebab",
+    "decompressed_sha1": "1754b1e623b167d90e87722920d5077d658c46bd"
+  },
+  "payload_sha1_match_input": true,
+  "same_decompressed_size": true
+}

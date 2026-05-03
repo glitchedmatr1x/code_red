@@ -1,0 +1,28 @@
+{
+  "tool": "codered_wft_rsc5_tool.py Pass9-menu-fix",
+  "generated_utc": "2026-05-02T19:45:24Z",
+  "sample": "/mnt/data/Code_RED_WFT_RSC5_EditBridge_Pass9_MENU_FIX/samples/zombie_mexicanrebel_01.wft",
+  "rebuilt": "/mnt/data/Code_RED_WFT_RSC5_EditBridge_Pass9_MENU_FIX/self_test/zombie_mexicanrebel_01_roundtrip.wft",
+  "payload_sha1_same": true,
+  "old": {
+    "magic_hex": "52 53 43 05",
+    "resource_type": 138,
+    "flag1": 3221235741,
+    "compressed_offset": 12,
+    "compressed_size": 72066,
+    "decompressed_size": 237568,
+    "compressed_sha1": "1d2b3a971b6b94423679146e16149efa8cd08a9b",
+    "decompressed_sha1": "1754b1e623b167d90e87722920d5077d658c46bd"
+  },
+  "new": {
+    "magic_hex": "52 53 43 05",
+    "resource_type": 138,
+    "flag1": 3221235741,
+    "compressed_offset": 12,
+    "compressed_size": 80495,
+    "decompressed_size": 237568,
+    "compressed_sha1": "ebd519fa9f424f4f063a05f605bf5b1c5562ebab",
+    "decompressed_sha1": "1754b1e623b167d90e87722920d5077d658c46bd"
+  },
+  "report": "/mnt/data/Code_RED_WFT_RSC5_EditBridge_Pass9_MENU_FIX/reports/pass9_self_test_repack_report.json"
+}
