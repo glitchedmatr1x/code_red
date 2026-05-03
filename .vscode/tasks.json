@@ -59,34 +59,6 @@
       "problemMatcher": []
     },
     {
-      "label": "CodeRED SC-CL: Bitbucket Setup Status",
-      "type": "shell",
-      "command": "${command:python.interpreterPath}",
-      "args": ["tools/codered_sccl_bitbucket_setup.py"],
-      "problemMatcher": []
-    },
-    {
-      "label": "CodeRED SC-CL: Build From Source",
-      "type": "shell",
-      "command": "${command:python.interpreterPath}",
-      "args": ["tools/codered_sccl_build_from_source.py", "--source", "${workspaceFolder}/resources/SC-CL_bitbucket_source", "--adopt"],
-      "problemMatcher": []
-    },
-    {
-      "label": "CodeRED SC-CL: Finalize Built EXE",
-      "type": "shell",
-      "command": "${command:python.interpreterPath}",
-      "args": ["tools/codered_sccl_finalize_build.py", "--validate"],
-      "problemMatcher": []
-    },
-    {
-      "label": "CodeRED SC-CL: Finalize and Compile Probe",
-      "type": "shell",
-      "command": "${command:python.interpreterPath}",
-      "args": ["tools/codered_sccl_finalize_build.py", "--validate", "--compile-helper"],
-      "problemMatcher": []
-    },
-    {
       "label": "CodeRED: One-App Status",
       "type": "shell",
       "command": "${command:python.interpreterPath}",
