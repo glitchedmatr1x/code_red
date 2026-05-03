@@ -25,15 +25,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
-VERSION = "1.0.0-sccl-easy-setup"
+VERSION = "1.0.1-sccl-easy-setup-friendly-errors"
 BUNDLE = Path("related_apps/code_red_sccl_attempt_bundle_v1")
 LAB = BUNDLE / "code_red_script_compile_lab_v1"
 KIT = BUNDLE / "code_red_sccl_windows_build_kit_v1"
+DROP = Path("resources/SC-CL_DROP_HERE")
 REPORT_JSON = Path("logs/CodeRED_SCCL_Easy_Setup_Report.json")
 REPORT_MD = Path("logs/CodeRED_SCCL_Easy_Setup_Report.md")
 PASS_LOG = Path("logs/CodeRED_SCCL_Easy_Setup_Lane_Pass_2026-05-03.md")
 ENV_BAT = KIT / "CodeRED_SCCL_Env.bat"
 ENV_PS1 = KIT / "CodeRED_SCCL_Env.ps1"
+PLACEHOLDER_TOKENS = {"PATH_TO_SC-CL.EXE", "PATH_TO_SCCL.EXE", "C:\\PATH\\TO\\SC-CL.EXE"}
 
 
 @dataclass
@@ -74,6 +76,7 @@ def candidate_sccl_paths(root: Path) -> list[Path]:
         root / "SC-CL.exe",
         root / "resources" / "SC-CL.exe",
         root / "resources" / "SC-CL" / "SC-CL.exe",
+        root / DROP / "SC-CL.exe",
         root / "resources" / "SC-CL-master" / "bin" / "SC-CL.exe",
         root / "resources" / "SC-CL-master" / "llvm-14.0.0.src" / "MinSizeRel" / "bin" / "SC-CL.exe",
         root / BUNDLE / "SC-CL.exe",
@@ -156,10 +159,26 @@ def write_json(path: Path, obj) -> None:
     path.write_text(json.dumps(obj, indent=2), encoding="utf-8")
 
 
+def ensure_drop_readme(root: Path) -> Path:
+    drop = root / DROP
+    drop.mkdir(parents=True, exist_ok=True)
+    readme = drop / "README_DROP_SC_CL_EXE_HERE.txt"
+    if not readme.exists():
+        write_text(readme,
+            "Code RED SC-CL Drop Folder\n"
+            "==========================\n\n"
+            "Put the real SC-CL.exe here:\n\n"
+            "  resources\\SC-CL_DROP_HERE\\SC-CL.exe\n\n"
+            "Then run:\n\n"
+            "  py -3 tools\\codered_sccl_easy_setup.py adopt --sccl resources\\SC-CL_DROP_HERE\\SC-CL.exe --run-validator\n",
+        )
+    return readme
+
+
 def write_env_helpers(root: Path, sccl: Path | None, report: SetupReport) -> None:
     kit = root / KIT
     kit.mkdir(parents=True, exist_ok=True)
-    sccl_text = str(sccl) if sccl else str(kit / "SC-CL.exe")
+    sccl_text = str(sccl) if sccl else str(root / DROP / "SC-CL.exe")
     write_text(root / ENV_BAT,
         "@echo off\n"
         "rem Code RED SC-CL environment helper.\n"
@@ -173,11 +192,25 @@ def write_env_helpers(root: Path, sccl: Path | None, report: SetupReport) -> Non
     )
     report.outputs["env_bat"] = rel_to(root / ENV_BAT, root)
     report.outputs["env_ps1"] = rel_to(root / ENV_PS1, root)
+    report.outputs["drop_readme"] = rel_to(ensure_drop_readme(root), root)
 
 
-def adopt_sccl(root: Path, source: Path, report: SetupReport) -> Path:
+def is_placeholder_path(source: Path) -> bool:
+    raw = str(source).upper()
+    return source.name.upper() in PLACEHOLDER_TOKENS or "PATH_TO" in raw or "PATH\\TO" in raw
+
+
+def adopt_sccl(root: Path, source: Path, report: SetupReport) -> Path | None:
+    if is_placeholder_path(source):
+        report.warnings.append("The --sccl value is still a placeholder. Replace PATH_TO_SC-CL.exe with the real file path, or put SC-CL.exe in resources\\SC-CL_DROP_HERE.")
+        report.actions.append("Adopt skipped because a placeholder path was supplied.")
+        return None
     if not source.exists():
-        raise FileNotFoundError(source)
+        report.warnings.append(f"SC-CL.exe was not found at: {source}")
+        report.actions.append("Adopt skipped because the supplied file does not exist.")
+        return None
+    if source.name.lower() != "sc-cl.exe":
+        report.warnings.append(f"The supplied file is named {source.name!r}; expected SC-CL.exe. It will still be staged if it exists.")
     target = root / KIT / "SC-CL.exe"
     target.parent.mkdir(parents=True, exist_ok=True)
     if source.resolve() != target.resolve():
@@ -187,6 +220,20 @@ def adopt_sccl(root: Path, source: Path, report: SetupReport) -> Path:
         report.actions.append(f"SC-CL.exe already staged at {rel_to(target, root)}")
     report.sccl_exe = str(target)
     return target
+
+
+def next_steps_for(sccl_found: bool) -> list[str]:
+    if sccl_found:
+        return [
+            "Run: py -3 tools\\codered_script_compile_validation.py",
+            "Run: related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\run_build_then_compile_vehicle_menu_probe.bat",
+        ]
+    return [
+        "Run: py -3 tools\\codered_sccl_source_probe.py --source \"D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\"",
+        "If the source probe says RDR-ready but no exe exists, build SC-CL or obtain the Windows SC-CL.exe.",
+        "Place the real SC-CL.exe at: resources\\SC-CL_DROP_HERE\\SC-CL.exe",
+        "Run: py -3 tools\\codered_sccl_easy_setup.py adopt --sccl resources\\SC-CL_DROP_HERE\\SC-CL.exe --run-validator",
+    ]
 
 
 def build_report(root: Path, *, adopt: Path | None = None, run_validator: bool = False) -> SetupReport:
@@ -213,18 +260,13 @@ def build_report(root: Path, *, adopt: Path | None = None, run_validator: bool =
     write_env_helpers(root, staged_sccl, report)
 
     if not staged_sccl:
-        report.warnings.append("SC-CL.exe was not found. Drop SC-CL.exe into the build kit folder or run adopt with a full path.")
+        report.warnings.append("SC-CL.exe is not staged yet. This blocks real compiled-script output, but not scan/read/edit/export queue preparation.")
     if report.windows_host and not report.cl_exe and not report.msbuild_exe:
         report.warnings.append("Visual Studio Build Tools/MSVC were not detected in PATH. This is only needed if building SC-CL or C/C++ helper binaries locally.")
     if not report.windows_host:
         report.warnings.append("Non-Windows host: setup can validate paths, but real SC-CL Windows proof should run on Windows.")
 
-    report.next_steps = [
-        "Run: py -3 tools\\codered_sccl_easy_setup.py status",
-        "If SC-CL.exe is missing, run: py -3 tools\\codered_sccl_easy_setup.py adopt --sccl C:\\path\\to\\SC-CL.exe",
-        "Run: py -3 tools\\codered_script_compile_validation.py",
-        "Run: related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\run_build_then_compile_vehicle_menu_probe.bat",
-    ]
+    report.next_steps = next_steps_for(staged_sccl is not None)
 
     if run_validator:
         proc = subprocess.run(
@@ -239,7 +281,7 @@ def build_report(root: Path, *, adopt: Path | None = None, run_validator: bool =
         validator_log = root / "logs" / "CodeRED_SCCL_Easy_Setup_Validator_Output.txt"
         write_text(validator_log, proc.stdout + "\n" + proc.stderr)
         report.outputs["validator_output"] = rel_to(validator_log, root)
-    report.ok = bool(report.sccl_exe) and not any("SC-CL.exe was not found" in w for w in report.warnings)
+    report.ok = bool(report.sccl_exe)
     return report
 
 
@@ -300,10 +342,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_status.add_argument("--run-validator", action="store_true")
     p_adopt = sub.add_parser("adopt", help="Copy a supplied SC-CL.exe into the Code RED build kit")
     p_adopt.add_argument("--root", default=None)
-    p_adopt.add_argument("--sccl", required=True, help="Path to SC-CL.exe")
+    p_adopt.add_argument("--sccl", required=True, help="Path to the real SC-CL.exe file. Do not use the placeholder text PATH_TO_SC-CL.exe.")
     p_adopt.add_argument("--run-validator", action="store_true")
     p_open = sub.add_parser("open-kit", help="Open the Windows build kit folder")
     p_open.add_argument("--root", default=None)
+    p_drop = sub.add_parser("open-drop", help="Open/create the SC-CL.exe drop folder")
+    p_drop.add_argument("--root", default=None)
     return parser
 
 
@@ -315,6 +359,10 @@ def main(argv: Iterable[str] | None = None) -> int:
     if command == "open-kit":
         (root / KIT).mkdir(parents=True, exist_ok=True)
         open_folder(root / KIT)
+        return 0
+    if command == "open-drop":
+        ensure_drop_readme(root)
+        open_folder(root / DROP)
         return 0
     adopt = Path(args.sccl).resolve() if command == "adopt" else None
     report = build_report(root, adopt=adopt, run_validator=getattr(args, "run_validator", False))
