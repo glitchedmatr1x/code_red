@@ -1,6 +1,6 @@
 # Code RED SC-CL Build From Source Report
 
-Generated UTC: `2026-05-03T12:24:15Z`
+Generated UTC: `2026-05-03T12:34:16Z`
 Result: **NEEDS BUILD**
 Source: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master`
 SC-CL.exe: `None`
@@ -20,184 +20,248 @@ Adopted to: `None`
 - MSBuild: `C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe`
 - CMake: `C:\Program Files\CMake\bin\cmake.EXE`
 - CMakeLists.txt: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\CMakeLists.txt`
+- CMake source used: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\llvm-14.0.0.src`
 - Solutions:
   - `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln`
   - `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\bin\projects\MenuBase\MenuBase.sln`
   - `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\bin\projects\testing\test.sln`
 
+## Skipped Solutions
+
+- `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln` — stale generated LLVM.sln/ZERO_CHECK points at an old Code RED output path
+- `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\bin\projects\MenuBase\MenuBase.sln` — example/test solution, not SC-CL.exe
+- `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\bin\projects\testing\test.sln` — example/test solution, not SC-CL.exe
+
+## CMake Source Diagnostics
+
+- D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\llvm-14.0.0.src\CMakeLists.txt: appears to be a top-level CMake source root
+
 ## Attempts
 
-### MSBuild Release x64
+### CMake configure clean source
 - cwd: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master`
 - exit: `1`
 - skipped: ``
-- command: `C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln /m /p:Configuration=Release /p:Platform=x64`
+- command: `C:\Program Files\CMake\bin\cmake.EXE -S D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\llvm-14.0.0.src -B D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\codered_llvm_build -A x64 -Thost=x64 -DLLVM_TARGETS_TO_BUILD=X86 -DLLVM_INCLUDE_TESTS=OFF -DLLVM_INCLUDE_BENCHMARKS=OFF -DCMAKE_BUILD_TYPE=Release`
 
 stdout tail:
 ```text
- The project "PACKAGE" is not selected for building in solution configuration "Release|x64".
-         The project "PowerPC" is not selected for building in solution configuration "Release|x64".
-         The project "RISCV" is not selected for building in solution configuration "Release|x64".
-         The project "Sparc" is not selected for building in solution configuration "Release|x64".
-         The project "SystemZ" is not selected for building in solution configuration "Release|x64".
-         The project "VE" is not selected for building in solution configuration "Release|x64".
-         The project "WebAssembly" is not selected for building in solution configuration "Release|x64".
-         The project "X86" is not selected for building in solution configuration "Release|x64".
-         The project "XCore" is not selected for building in solution configuration "Release|x64".
-         The project "all-targets" is not selected for building in solution configuration "Release|x64".
-         The project "bash-autocomplete" is not selected for building in solution configuration "Release|x64".
-         The project "clang-headers" is not selected for building in solution configuration "Release|x64".
-         The project "clang-libraries" is not selected for building in solution configuration "Release|x64".
-         The project "clang-tidy-headers" is not selected for building in solution configuration "Release|x64".
-         The project "distribution" is not selected for building in solution configuration "Release|x64".
-         The project "install-distribution" is not selected for building in solution configuration "Release|x64".
-         The project "install-distribution-stripped" is not selected for building in solution configuration "Release|x64".
-         The project "install-scan-build-py" is not selected for building in solution configuration "Release|x64".
-         The project "install-scan-build-py-stripped" is not selected for building in solution configuration "Release|x64".
-         The project "libclang-headers" is not selected for building in solution configuration "Release|x64".
-         The project "llvm-headers" is not selected for building in solution configuration "Release|x64".
-         The project "llvm-libraries" is not selected for building in solution configuration "Release|x64".
-         The project "ocaml_all" is not selected for building in solution configuration "Release|x64".
-         The project "ocaml_make_directory" is not selected for building in solution configuration "Release|x64".
-         The project "opt-viewer" is not selected for building in solution configuration "Release|x64".
-         The project "run-ast-api-dump-tool" is not selected for building in solution configuration "Release|x64".
-         The project "run-ast-api-generate-tool" is not selected for building in solution configuration "Release|x64".
-         The project "srpm" is not selected for building in solution configuration "Release|x64".
-     1>Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (1) is building "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj" (3) on node 2 (default targets).
-     3>PrepareForBuild:
-         Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-       InitializeBuildStatus:
-         Touching "x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild".
-       CustomBuild:
-         1>Checking Build System
-         CMake is re-running because D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/CMakeFiles/generate.stamp dependency file is missing.
-     3>CUSTOMBUILD : CMake error : The source directory "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src" does not exist. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj]
-         Specify --help for usage, or press the help button on the CMake GUI.
-         The system cannot find the batch label specified - VCEnd
-     3>C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(237,5): error MSB8066: Custom build for 'D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\CMakeFiles\6bc23dc81e49bf9a725f5f3346984c3b\generate.stamp.rule' exited with code 1. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj]
-     3>Done Building Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj" (default targets) -- FAILED.
-     1>Done Building Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default targets) -- FAILED.
-
-Build FAILED.
-
-       "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default target) (1) ->
-       "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj" (default target) (3) ->
-       (CustomBuild target) -> 
-         CUSTOMBUILD : CMake error : The source directory "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src" does not exist. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj]
-         C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(237,5): error MSB8066: Custom build for 'D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\CMakeFiles\6bc23dc81e49bf9a725f5f3346984c3b\generate.stamp.rule' exited with code 1. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj]
-
-    0 Warning(s)
-    2 Error(s)
-
-Time Elapsed 00:00:14.67
-
-```
-
-### MSBuild Release Win32
-- cwd: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master`
-- exit: `1`
-- skipped: ``
-- command: `C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln /m /p:Configuration=Release /p:Platform=Win32`
-
-stdout tail:
-```text
-MSBuild version 17.14.40+3e7442088 for .NET Framework
-Build started 5/3/2026 5:24:35 AM.
-
-     1>Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" on node 1 (default targets).
-     1>D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln.metaproj : error MSB4126: The specified solution configuration "Release|Win32" is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform="Any CPU") or leave those properties blank to use the default solution configuration. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln]
-     1>Done Building Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default targets) -- FAILED.
-
-Build FAILED.
-
-       "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default target) (1) ->
-       (ValidateSolutionConfiguration target) -> 
-         D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln.metaproj : error MSB4126: The specified solution configuration "Release|Win32" is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform="Any CPU") or leave those properties blank to use the default solution configuration. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln]
-
-    0 Warning(s)
-    1 Error(s)
-
-Time Elapsed 00:00:00.60
-
-```
-
-### MSBuild Release Any CPU
-- cwd: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master`
-- exit: `1`
-- skipped: ``
-- command: `C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln /m /p:Configuration=Release /p:Platform=Any CPU`
-
-stdout tail:
-```text
-MSBuild version 17.14.40+3e7442088 for .NET Framework
-Build started 5/3/2026 5:24:37 AM.
-
-     1>Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" on node 1 (default targets).
-     1>D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln.metaproj : error MSB4126: The specified solution configuration "Release|Any CPU" is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform="Any CPU") or leave those properties blank to use the default solution configuration. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln]
-     1>Done Building Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default targets) -- FAILED.
-
-Build FAILED.
-
-       "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default target) (1) ->
-       (ValidateSolutionConfiguration target) -> 
-         D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln.metaproj : error MSB4126: The specified solution configuration "Release|Any CPU" is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform="Any CPU") or leave those properties blank to use the default solution configuration. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln]
-
-    0 Warning(s)
-    1 Error(s)
-
-Time Elapsed 00:00:00.57
-
-```
-
-### CMake configure
-- cwd: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master`
-- exit: `1`
-- skipped: ``
-- command: `C:\Program Files\CMake\bin\cmake.EXE -S D:\Games\Red Dead Redemption\Code_RED\SC-CL-master -B D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\codered_build -A x64`
-
-stdout tail:
-```text
--- Building for: Visual Studio 17 2022
--- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.19045.
--- The C compiler identification is MSVC 19.44.35225.0
--- The CXX compiler identification is MSVC 19.44.35225.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
--- Detecting CXX compile features
--- Detecting CXX compile features - done
+r unistd.h - not found
+-- Looking for valgrind/valgrind.h
+-- Looking for valgrind/valgrind.h - not found
+-- Looking for fenv.h
+-- Looking for fenv.h - found
+-- Looking for FE_ALL_EXCEPT
+-- Looking for FE_ALL_EXCEPT - found
+-- Looking for FE_INEXACT
+-- Looking for FE_INEXACT - found
+-- Looking for mach/mach.h
+-- Looking for mach/mach.h - not found
+-- Looking for histedit.h
+-- Looking for histedit.h - not found
+-- Looking for CrashReporterClient.h
+-- Looking for CrashReporterClient.h - not found
+-- Looking for pfm_initialize in pfm
+-- Looking for pfm_initialize in pfm - not found
+-- Could NOT find ZLIB (missing: ZLIB_LIBRARY ZLIB_INCLUDE_DIR) 
+-- Could NOT find LibXml2 (missing: LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR) 
+-- Looking for xar_open in xar
+-- Looking for xar_open in xar - not found
+-- Looking for arc4random
+-- Looking for arc4random - not found
+-- Looking for backtrace
+-- Looking for backtrace - not found
+-- Could NOT find Backtrace (missing: Backtrace_LIBRARY Backtrace_INCLUDE_DIR) 
+-- Performing Test C_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW
+-- Performing Test C_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW - Failed
+-- Looking for __register_frame
+-- Looking for __register_frame - not found
+-- Looking for __deregister_frame
+-- Looking for __deregister_frame - not found
+-- Looking for __unw_add_dynamic_fde
+-- Looking for __unw_add_dynamic_fde - not found
+-- Looking for _Unwind_Backtrace
+-- Looking for _Unwind_Backtrace - not found
+-- Looking for getpagesize
+-- Looking for getpagesize - not found
+-- Looking for sysconf
+-- Looking for sysconf - not found
+-- Looking for getrusage
+-- Looking for getrusage - not found
+-- Looking for setrlimit
+-- Looking for setrlimit - not found
+-- Looking for isatty
+-- Looking for isatty - not found
+-- Looking for futimens
+-- Looking for futimens - not found
+-- Looking for futimes
+-- Looking for futimes - not found
+-- Looking for sigaltstack
+-- Looking for sigaltstack - not found
+-- Looking for lseek64
+-- Looking for lseek64 - not found
+-- Looking for mallctl
+-- Looking for mallctl - not found
+-- Looking for mallinfo
+-- Looking for mallinfo - not found
+-- Looking for mallinfo2
+-- Looking for mallinfo2 - not found
+-- Looking for malloc_zone_statistics
+-- Looking for malloc_zone_statistics - not found
+-- Looking for getrlimit
+-- Looking for getrlimit - not found
+-- Looking for posix_spawn
+-- Looking for posix_spawn - not found
+-- Looking for pread
+-- Looking for pread - not found
+-- Looking for sbrk
+-- Looking for sbrk - not found
+-- Looking for strerror
+-- Looking for strerror - found
+-- Looking for strerror_r
+-- Looking for strerror_r - not found
+-- Looking for strerror_s
+-- Looking for strerror_s - found
+-- Looking for setenv
+-- Looking for setenv - not found
+-- Looking for _chsize_s
+-- Looking for _chsize_s - found
+-- Looking for _alloca
+-- Looking for _alloca - not found
+-- Looking for __alloca
+-- Looking for __alloca - not found
+-- Looking for __chkstk
+-- Looking for __chkstk - found
+-- Looking for __chkstk_ms
+-- Looking for __chkstk_ms - not found
+-- Looking for ___chkstk
+-- Looking for ___chkstk - not found
+-- Looking for ___chkstk_ms
+-- Looking for ___chkstk_ms - not found
+-- Looking for __ashldi3
+-- Looking for __ashldi3 - not found
+-- Looking for __ashrdi3
+-- Looking for __ashrdi3 - not found
+-- Looking for __divdi3
+-- Looking for __divdi3 - not found
+-- Looking for __fixdfdi
+-- Looking for __fixdfdi - not found
+-- Looking for __fixsfdi
+-- Looking for __fixsfdi - not found
+-- Looking for __floatdidf
+-- Looking for __floatdidf - not found
+-- Looking for __lshrdi3
+-- Looking for __lshrdi3 - not found
+-- Looking for __moddi3
+-- Looking for __moddi3 - not found
+-- Looking for __udivdi3
+-- Looking for __udivdi3 - not found
+-- Looking for __umoddi3
+-- Looking for __umoddi3 - not found
+-- Looking for __main
+-- Looking for __main - not found
+-- Looking for __cmpdi2
+-- Looking for __cmpdi2 - not found
+-- Performing Test HAVE_STRUCT_STAT_ST_MTIMESPEC_TV_NSEC
+-- Performing Test HAVE_STRUCT_STAT_ST_MTIMESPEC_TV_NSEC - Failed
+-- Performing Test HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC
+-- Performing Test HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC - Failed
+-- Looking for __GLIBC__
+-- Looking for __GLIBC__ - not found
+-- Looking for proc_pid_rusage
+-- Looking for proc_pid_rusage - not found
+-- Performing Test HAVE_STD_IS_TRIVIALLY_COPYABLE
+-- Performing Test HAVE_STD_IS_TRIVIALLY_COPYABLE - Success
+-- Performing Test LLVM_HAS_ATOMICS
+-- Performing Test LLVM_HAS_ATOMICS - Success
+-- Performing Test SUPPORTS_VARIADIC_MACROS_FLAG
+-- Performing Test SUPPORTS_VARIADIC_MACROS_FLAG - Failed
+-- Performing Test SUPPORTS_GNU_ZERO_VARIADIC_MACRO_ARGUMENTS_FLAG
+-- Performing Test SUPPORTS_GNU_ZERO_VARIADIC_MACRO_ARGUMENTS_FLAG - Failed
+-- Native target architecture is X86
+-- Threads enabled.
+-- Doxygen disabled.
+-- Go bindings disabled.
+-- Could NOT find OCaml (missing: OCAMLFIND OCAML_VERSION OCAML_STDLIB_PATH) 
+-- OCaml bindings disabled.
+-- Could NOT find Python module pygments
+-- Could NOT find Python module pygments.lexers.c_cpp
+-- Could NOT find Python module yaml
+-- LLVM host triple: x86_64-pc-windows-msvc
+-- LLVM default target triple: x86_64-pc-windows-msvc
+-- Using Debug VC++ CRT: MDd
+-- Using Release VC++ CRT: MD
+-- Using MinSizeRel VC++ CRT: MD
+-- Using RelWithDebInfo VC++ CRT: MD
+-- Using Release VC++ CRT: MD
+-- Looking for os_signpost_interval_begin
+-- Looking for os_signpost_interval_begin - not found
+-- Found Python3: C:/Users/glitc/AppData/Local/Programs/Python/Python312/python.exe (found suitable version "3.12.4", minimum required is "3.0") found components: Interpreter
+-- Performing Test HAS_WERROR_GLOBAL_CTORS
+-- Performing Test HAS_WERROR_GLOBAL_CTORS - Failed
+-- Found Git: C:/Program Files/Git/cmd/git.exe (found version "2.52.0.windows.1")
+-- LLVMHello ignored -- Loadable modules not supported on this platform.
+-- Targeting X86
+-- Looking for sys/resource.h
+-- Looking for sys/resource.h - not found
+-- Clang version: 14.0.0
 -- Configuring incomplete, errors occurred!
 
 ```
 
 stderr tail:
 ```text
-CMake Warning (dev) in CMakeLists.txt:
-  No project() command is present.  The top-level CMakeLists.txt file must
-  contain a literal, direct call to the project() command.  Add a line of
-  code such as
+CMake Deprecation Warning at CMakeLists.txt:8 (cmake_policy):
+  The OLD behavior for policy CMP0116 will be removed from a future version
+  of CMake.
 
-    project(ProjectName)
+  The cmake-policies(7) manual explains that the OLD behaviors of all
+  policies are deprecated and that a policy should be set to OLD only under
+  specific short-term circumstances.  Projects should be ported to the NEW
+  behavior and not rely on setting a policy to OLD.
 
-  near the top of the file, but after cmake_minimum_required().
 
-  CMake is pretending there is a "project(Project)" command on the first
-  line.
+CMake Warning (dev) at C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeDetermineASMCompiler.cmake:234 (message):
+  Policy CMP194 is not set: MSVC is not an assembler for language ASM.  Run
+  "cmake --help-policy CMP194" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+Call Stack (most recent call first):
+  CMakeLists.txt:49 (project)
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-CMake Warning (dev) in CMakeLists.txt:
-  cmake_minimum_required() should be called prior to this top-level project()
-  call.  Please see the cmake-commands(7) manual for usage documentation of
-  both commands.
+CMake Warning (dev) at tools/clang/CMakeLists.txt:309 (find_package):
+  Policy CMP0146 is not set: The FindCUDA module is removed.  Run "cmake
+  --help-policy CMP0146" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
 This warning is for project developers.  Use -Wno-dev to suppress it.
 
-CMake Error at CMakeLists.txt:63 (add_clang_executable):
-  Unknown CMake command "add_clang_executable".
+CMake Warning (dev) at tools/clang/lib/Tooling/CMakeLists.txt:55 (add_custom_command):
+  COMMENT requires exactly one argument, but multiple values or COMMENT
+  keywords have been given.
+
+  Policy CMP0175 is not set: add_custom_command() rejects invalid arguments.
+  Run "cmake --help-policy CMP0175" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at tools/clang/lib/Tooling/CMakeLists.txt:76 (add_custom_command):
+  COMMENT requires exactly one argument, but multiple values or COMMENT
+  keywords have been given.
+
+  Policy CMP0175 is not set: add_custom_command() rejects invalid arguments.
+  Run "cmake --help-policy CMP0175" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Error at tools/clang/tools/extra/SC-CL/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.5 has been removed from CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+
+  Or, add -DCMAKE_POLICY_VERSION_MINIMUM=3.5 to try configuring anyway.
 
 
 
@@ -206,11 +270,12 @@ CMake Error at CMakeLists.txt:63 (add_clang_executable):
 
 ## Warnings
 
-- SC-CL.exe was not produced. Check the build output log and install Visual Studio Build Tools/CMake if needed.
+- Generated/example solutions were skipped. The previous LLVM.sln failure was stale and should not be retried as-is.
+- SC-CL.exe was not produced. A full LLVM source root or a prebuilt SC-CL.exe is still needed.
 
 ## Next Steps
 
-- Install Visual Studio Build Tools 2022 with Desktop development with C++ if MSBuild is missing.
-- Install CMake if the source uses CMakeLists.txt.
-- Run this helper again with --adopt after the build succeeds.
-- If the repo only contains source and no build system, obtain a prebuilt SC-CL.exe matching this source family.
+- Check whether SC-CL-master contains llvm-14.0.0.src. If it does not, this is probably a partial/tool-only source tree.
+- If you have a full SC-CL source archive, extract it so llvm-14.0.0.src is inside SC-CL-master.
+- If you only have the partial source, obtain a prebuilt SC-CL.exe matching the GTAResources/SC-CL RDR-capable family.
+- After SC-CL.exe exists, run: py -3 tools\codered_sccl_easy_setup.py adopt --sccl resources\SC-CL_DROP_HERE\SC-CL.exe --run-validator
