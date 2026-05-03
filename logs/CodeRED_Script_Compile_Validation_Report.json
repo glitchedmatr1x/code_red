@@ -1,19 +1,12 @@
 {
   "version": "1.0.0-script-compile-lab-proof",
-  "generated_utc": "2026-05-03T11:35:25Z",
+  "generated_utc": "2026-05-03T12:17:42Z",
   "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
-  "ok": false,
+  "ok": true,
   "lab_root": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1",
   "kit_root": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1",
   "missing_lab_files": [],
-  "missing_kit_files": [
-    "related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\build_sccl_windows.bat",
-    "related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\build_sccl_windows.ps1",
-    "related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\compile_vehicle_menu_probe_windows.bat",
-    "related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\compile_vehicle_menu_probe_windows.ps1",
-    "related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\run_build_then_compile_vehicle_menu_probe.bat",
-    "related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1\\README_SCCL_DETECTION_V3.txt"
-  ],
+  "missing_kit_files": [],
   "validator_exit_code": 0,
   "validator_stdout": "source_exists: True\nbrace_balance: True\nparen_balance: True\nhas_main_loop: True\nhas_visible_menu: True\nhas_vehicle_spawn: True\nhas_live_tune: True\nmissing_symbols: []\nRESULT: PASS\n",
   "validator_stderr": "",

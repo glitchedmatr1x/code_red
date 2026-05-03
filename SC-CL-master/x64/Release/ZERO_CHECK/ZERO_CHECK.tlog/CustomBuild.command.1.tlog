@@ -1,0 +1,10 @@
+^D:\GAMES\RED DEAD REDEMPTION\CODE RED\CODE_RED\DATA\CODE_RED_SCCL_ATTEMPT_BUNDLE_V1\CODE_RED_SCCL_WINDOWS_BUILD_KIT_V1\OUTPUT\SCCL_CMAKE_BUILD\CMAKEFILES\6BC23DC81E49BF9A725F5F3346984C3B\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SD:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src" "-BD:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/LLVM.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

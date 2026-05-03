@@ -15,12 +15,12 @@ Validated files:
 - related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\natives.h : present
 - related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\natives32.h : present
 - related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\consts32.h : present
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.bat : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.ps1 : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.bat : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.ps1 : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\run_build_then_compile_vehicle_menu_probe.bat : missing
-- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\README_SCCL_DETECTION_V3.txt : missing
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.bat : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.ps1 : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.bat : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.ps1 : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\run_build_then_compile_vehicle_menu_probe.bat : present
+- related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\README_SCCL_DETECTION_V3.txt : present
 
 Windows commands:
 cd /d D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1
@@ -36,6 +36,6 @@ Proof expectations:
 - output/vehicle_menu_probe_build contains the compiled result if SC-CL succeeds.
 
 Current local proof:
-- Static/validator proof: FAIL
+- Static/validator proof: PASS
 - SC-CL executable detected here: no
 - Windows host here: True

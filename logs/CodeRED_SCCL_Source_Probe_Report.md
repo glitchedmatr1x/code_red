@@ -1,6 +1,6 @@
 # Code RED SC-CL Source Probe Report
 
-Generated UTC: `2026-05-03T12:03:26Z`
+Generated UTC: `2026-05-03T12:17:20Z`
 RDR-ready source detected: **True**
 SC-CL.exe detected: `None`
 Best source: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master`
@@ -9,10 +9,10 @@ Best source: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master`
 
 ### `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master`
 - exists: `True`
-- score: `21`
+- score: `22`
 - exe_found: `None`
 - readme: `D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\readme.md`
-- markers: `README.md, llvm-14.0.0.src, include`
+- markers: `README.md, CMakeLists.txt, llvm-14.0.0.src, include`
 - rdr_tokens: `Red Dead Redemption, RDR_SCO, RDR_#SC, SCO format, XSC format, CSC format`
 
 ### `D:\Games\Red Dead Redemption\Code_RED\SC-CL`

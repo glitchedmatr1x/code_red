@@ -1,14 +1,14 @@
 # Code RED Script Compile Validation Report
 
-Generated UTC: `2026-05-03T11:35:25Z`
-Result: **FAIL**
+Generated UTC: `2026-05-03T12:17:42Z`
+Result: **PASS**
 
 ## Summary
 
 - Lab root: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1`
 - Build kit root: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1`
 - Missing lab files: 0
-- Missing build-kit files: 6
+- Missing build-kit files: 0
 - Bundled validator exit: 0
 - Missing native symbols: 0
 - Missing constants: 0
@@ -34,15 +34,6 @@ Result: **FAIL**
 - has_script_registration: `True`
 - native_requirements: `24`
 - constant_requirements: `3`
-
-## Missing Build Kit Files
-
-- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.bat`
-- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.ps1`
-- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.bat`
-- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.ps1`
-- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\run_build_then_compile_vehicle_menu_probe.bat`
-- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\README_SCCL_DETECTION_V3.txt`
 
 ## Bundled Validator Output
 

@@ -1,0 +1,166 @@
+## MSBuild Release x64 exit=1 skipped=
+
+COMMAND: C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln /m /p:Configuration=Release /p:Platform=x64
+
+STDOUT:
+ The project "PACKAGE" is not selected for building in solution configuration "Release|x64".
+         The project "PowerPC" is not selected for building in solution configuration "Release|x64".
+         The project "RISCV" is not selected for building in solution configuration "Release|x64".
+         The project "Sparc" is not selected for building in solution configuration "Release|x64".
+         The project "SystemZ" is not selected for building in solution configuration "Release|x64".
+         The project "VE" is not selected for building in solution configuration "Release|x64".
+         The project "WebAssembly" is not selected for building in solution configuration "Release|x64".
+         The project "X86" is not selected for building in solution configuration "Release|x64".
+         The project "XCore" is not selected for building in solution configuration "Release|x64".
+         The project "all-targets" is not selected for building in solution configuration "Release|x64".
+         The project "bash-autocomplete" is not selected for building in solution configuration "Release|x64".
+         The project "clang-headers" is not selected for building in solution configuration "Release|x64".
+         The project "clang-libraries" is not selected for building in solution configuration "Release|x64".
+         The project "clang-tidy-headers" is not selected for building in solution configuration "Release|x64".
+         The project "distribution" is not selected for building in solution configuration "Release|x64".
+         The project "install-distribution" is not selected for building in solution configuration "Release|x64".
+         The project "install-distribution-stripped" is not selected for building in solution configuration "Release|x64".
+         The project "install-scan-build-py" is not selected for building in solution configuration "Release|x64".
+         The project "install-scan-build-py-stripped" is not selected for building in solution configuration "Release|x64".
+         The project "libclang-headers" is not selected for building in solution configuration "Release|x64".
+         The project "llvm-headers" is not selected for building in solution configuration "Release|x64".
+         The project "llvm-libraries" is not selected for building in solution configuration "Release|x64".
+         The project "ocaml_all" is not selected for building in solution configuration "Release|x64".
+         The project "ocaml_make_directory" is not selected for building in solution configuration "Release|x64".
+         The project "opt-viewer" is not selected for building in solution configuration "Release|x64".
+         The project "run-ast-api-dump-tool" is not selected for building in solution configuration "Release|x64".
+         The project "run-ast-api-generate-tool" is not selected for building in solution configuration "Release|x64".
+         The project "srpm" is not selected for building in solution configuration "Release|x64".
+     1>Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (1) is building "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj" (3) on node 2 (default targets).
+     3>PrepareForBuild:
+         Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+       InitializeBuildStatus:
+         Touching "x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild".
+       CustomBuild:
+         1>Checking Build System
+         CMake is re-running because D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/sccl_cmake_build/CMakeFiles/generate.stamp dependency file is missing.
+     3>CUSTOMBUILD : CMake error : The source directory "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src" does not exist. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj]
+         Specify --help for usage, or press the help button on the CMake GUI.
+         The system cannot find the batch label specified - VCEnd
+     3>C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(237,5): error MSB8066: Custom build for 'D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\CMakeFiles\6bc23dc81e49bf9a725f5f3346984c3b\generate.stamp.rule' exited with code 1. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj]
+     3>Done Building Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj" (default targets) -- FAILED.
+     1>Done Building Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default targets) -- FAILED.
+
+Build FAILED.
+
+       "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default target) (1) ->
+       "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj" (default target) (3) ->
+       (CustomBuild target) -> 
+         CUSTOMBUILD : CMake error : The source directory "D:/Games/Red Dead Redemption/Code Red/Code_RED/data/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/SC-CL-master/llvm-14.0.0.src" does not exist. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj]
+         C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(237,5): error MSB8066: Custom build for 'D:\Games\Red Dead Redemption\Code Red\Code_RED\data\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\sccl_cmake_build\CMakeFiles\6bc23dc81e49bf9a725f5f3346984c3b\generate.stamp.rule' exited with code 1. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\ZERO_CHECK.vcxproj]
+
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:14.67
+
+
+STDERR:
+
+
+## MSBuild Release Win32 exit=1 skipped=
+
+COMMAND: C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln /m /p:Configuration=Release /p:Platform=Win32
+
+STDOUT:
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+Build started 5/3/2026 5:24:35 AM.
+
+     1>Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" on node 1 (default targets).
+     1>D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln.metaproj : error MSB4126: The specified solution configuration "Release|Win32" is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform="Any CPU") or leave those properties blank to use the default solution configuration. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln]
+     1>Done Building Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default targets) -- FAILED.
+
+Build FAILED.
+
+       "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default target) (1) ->
+       (ValidateSolutionConfiguration target) -> 
+         D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln.metaproj : error MSB4126: The specified solution configuration "Release|Win32" is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform="Any CPU") or leave those properties blank to use the default solution configuration. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:00.60
+
+
+STDERR:
+
+
+## MSBuild Release Any CPU exit=1 skipped=
+
+COMMAND: C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln /m /p:Configuration=Release /p:Platform=Any CPU
+
+STDOUT:
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+Build started 5/3/2026 5:24:37 AM.
+
+     1>Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" on node 1 (default targets).
+     1>D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln.metaproj : error MSB4126: The specified solution configuration "Release|Any CPU" is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform="Any CPU") or leave those properties blank to use the default solution configuration. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln]
+     1>Done Building Project "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default targets) -- FAILED.
+
+Build FAILED.
+
+       "D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln" (default target) (1) ->
+       (ValidateSolutionConfiguration target) -> 
+         D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln.metaproj : error MSB4126: The specified solution configuration "Release|Any CPU" is invalid. Please specify a valid solution configuration using the Configuration and Platform properties (e.g. MSBuild.exe Solution.sln /p:Configuration=Debug /p:Platform="Any CPU") or leave those properties blank to use the default solution configuration. [D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\LLVM.sln]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:00.57
+
+
+STDERR:
+
+
+## CMake configure exit=1 skipped=
+
+COMMAND: C:\Program Files\CMake\bin\cmake.EXE -S D:\Games\Red Dead Redemption\Code_RED\SC-CL-master -B D:\Games\Red Dead Redemption\Code_RED\SC-CL-master\codered_build -A x64
+
+STDOUT:
+-- Building for: Visual Studio 17 2022
+-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.19045.
+-- The C compiler identification is MSVC 19.44.35225.0
+-- The CXX compiler identification is MSVC 19.44.35225.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring incomplete, errors occurred!
+
+
+STDERR:
+CMake Warning (dev) in CMakeLists.txt:
+  No project() command is present.  The top-level CMakeLists.txt file must
+  contain a literal, direct call to the project() command.  Add a line of
+  code such as
+
+    project(ProjectName)
+
+  near the top of the file, but after cmake_minimum_required().
+
+  CMake is pretending there is a "project(Project)" command on the first
+  line.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) in CMakeLists.txt:
+  cmake_minimum_required() should be called prior to this top-level project()
+  call.  Please see the cmake-commands(7) manual for usage documentation of
+  both commands.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Error at CMakeLists.txt:63 (add_clang_executable):
+  Unknown CMake command "add_clang_executable".
+
+
+
