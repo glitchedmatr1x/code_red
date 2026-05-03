@@ -1,0 +1,22 @@
+native_or_wrapper,hash_or_source,status,menu_use,verification_plan,notes
+GIVE_WEAPON_TO_ACTOR,0x6AA0EAF2,candidate_runtime_proof_needed,give weapon to player/companion,prove with one safe weapon enum and log actor/weapon/ammo/result,Wrapper lead from local research/menu resources/natives.h
+ACTOR_PUT_WEAPON_IN_HAND,0x8F4B473D,candidate_runtime_proof_needed,equip selected weapon,call only after actor has weapon,Wrapper lead from local natives.h
+ACTOR_HAS_WEAPON,0x0D47CFBD,candidate_runtime_proof_needed,check loadout before give/equip,prove with player actor and selected enum,Wrapper lead from local natives.h
+DELETE_WEAPON_FROM_ACTOR,0xCB017277,candidate_runtime_proof_needed,remove selected weapon,prove on non-critical weapon after backup state log,Wrapper lead from local natives.h
+GET_WEAPON_IN_HAND,0xA4B2016D,candidate_runtime_proof_needed,show current weapon,first safe read-only proof,Wrapper lead from local natives.h
+ACTOR_SET_WEAPON_AMMO,0x8266C617,candidate_runtime_proof_needed,set weapon ammo amount,prove after has-weapon check,Wrapper lead from local natives.h
+ACTOR_ADD_WEAPON_AMMO,0xCC69DCC1,candidate_runtime_proof_needed,add/refill ammo,prove with small ammo increment first,Wrapper lead from local natives.h
+ACTOR_GET_WEAPON_AMMO,0x43DEDFAE,candidate_runtime_proof_needed,read current weapon ammo,read-only proof before write calls,Wrapper lead from local natives.h
+GET_AMMOENUM_FOR_WEAPONENUM,0x17883570,candidate_runtime_proof_needed,map weapon enum to ammo enum,read-only proof,Wrapper lead from local natives.h
+ACTOR_ADD_INV_AMMO,0x98B3ABFA,candidate_runtime_proof_needed,inventory ammo refill,prove after ammo enum mapping,Wrapper lead from local natives.h
+SET_WEAPON_GOLD,0xAE44869D,candidate_runtime_proof_needed,toggle gold weapon look,visual toggle proof after selected weapon known,Wrapper lead from local natives.h
+GET_WEAPON_GOLD,0x6DBD1DDB,candidate_runtime_proof_needed,read gold weapon state,read-only proof,Wrapper lead from local natives.h
+SET_GLOBAL_ACTOR_WEAPON_BIAS,0xAB8A1C15,candidate_experimental,global weapon selection behavior,prove only in experimental submenu and add reset command,Broad behavior change
+RESET_GLOBAL_ACTOR_WEAPON_BIAS,0xDAD46FAB,candidate_experimental,restore global weapon bias,prove paired with bias command,Required safety reset
+AI_SET_WEAPON_MAX_RANGE,0xD2BFA6E4,candidate_experimental,AI weapon range tuning,prove on spawned companion only,May affect AI behavior unexpectedly
+AI_SET_WEAPON_MIN_RANGE,0xE067A925,candidate_experimental,AI weapon range tuning,prove on spawned companion only,May affect AI behavior unexpectedly
+AI_SET_WEAPON_DESIRED_RANGE,0xDA005857,candidate_experimental,AI weapon range tuning,prove on spawned companion only,May affect AI behavior unexpectedly
+SET_FACTION_TO_FACTION_DAMAGE_SCALE_FACTOR,0xA9A18E5A,candidate_experimental,damage scale preset,requires reset profile and narrow test,Broad world effect
+_DLC_SHOTGUN_SPREAD_OVERRIDE,0x8062BD74,candidate_blocked,spread modifier,do not use until signature and behavior proven,High-risk unknown params
+SET_PHOSPHORUS_AMMO_ACTIVE,0xCA840DBB,candidate_experimental,special ammo toggle,prove on/off behavior and reset,May require DLC/context
+FIRE_SET_GUNS_BLAZING_ACTIVE,0x3F67DEDB,candidate_experimental,guns blazing toggle,prove on/off behavior and reset,Mode/state-sensitive
