@@ -1,10 +1,12 @@
 # Code RED SC-CL Safe Compile Probe Report
 
-Generated UTC: `2026-05-03T16:58:39Z`
+Generated UTC: `2026-05-03T17:16:08Z`
 Result: **NEEDS ATTENTION**
+Project: `codered_menu_v1`
 SC-CL.exe: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe`
-Source: `related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c`
-Output dir: `related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/vehicle_menu_probe_build`
+Source: `resources/SC-CL_bitbucket_source/bin/projects/CodeREDMenu/CodeREDMenu.c`
+Include dir: `resources/SC-CL_bitbucket_source/bin/include`
+Output dir: `related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1/output/codered_menu_v1`
 
 ## Output Files
 
@@ -93,24 +95,30 @@ Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1
 - exit: `1`
 - exit_hex: `0x00000001`
 - timed_out: `False`
-- command: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe -target=RDR_#SC -platform=X360 -out-dir D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\vehicle_menu_probe_build -name=vehicle_menu_probe D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c`
-
-stdout:
-```text
-error: Function Prototype Implementation missing on referenced function: _CLEAR_PRINTS
-
-Press ENTER to exit...
-```
+- command: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe -target=RDR_#SC -platform=X360 -out-dir D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\codered_menu_v1 -name=codered_menu_v1 -extra-arg=-ID:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\include D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c`
 
 stderr:
 ```text
 Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1
 Error while trying to load a compilation database:
-Could not auto-detect compilation database for file "D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c"
-No compilation database found in D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src or any parent directory
+Could not auto-detect compilation database for file "D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c"
+No compilation database found in D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu or any parent directory
 json-compilation-database: Error while opening JSON database: no such file or directory
 Running without flags.
-Compiling: D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c
+Compiling: D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c
+D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c:62:40: error: too few arguments to function call, expected 8, have 5
+    _PRINT_SUBTITLE(text, 3000, 1, 1, 1);
+    ~~~~~~~~~~~~~~~                    ^
+D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\include/RDR/natives32.h:531:1: note: '_PRINT_SUBTITLE' declared here
+extern _native32(0x32394BB6) void _PRINT_SUBTITLE(const char* txt, float time, bool isStringLiteral, int printType, int pram4, int pram5, int pram6, int pram7)l
+^
+D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c:164:103: error: too many arguments to function call, expected 5, have 7
+    g_vehicle = CREATE_ACTOR_IN_LAYOUT(g_codeRedLayout, "CodeREDMenuVehicle", actorModel, 0.0f, 0.0f, 0.0f, 0.0f);
+                ~~~~~~~~~~~~~~~~~~~~~~                                                                ^~~~~~~~~~
+D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\include/RDR/natives32.h:370:1: note: 'CREATE_ACTOR_IN_LAYOUT' declared here
+extern _native Actor CREATE_ACTOR_IN_LAYOUT(Layout Layout, const char* ActorName, eActor ActorID, vector3 Position, vector3 Rotation)l
+^
+2 errors generated.
 
 ```
 
@@ -118,50 +126,30 @@ Compiling: D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_atte
 - exit: `1`
 - exit_hex: `0x00000001`
 - timed_out: `False`
-- command: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe -target=RDR_SCO -platform=X360 -out-dir D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\vehicle_menu_probe_build -name=vehicle_menu_probe D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c`
-
-stdout:
-```text
-error: Function Prototype Implementation missing on referenced function: _CLEAR_PRINTS
-
-Press ENTER to exit...
-```
+- command: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe -target=RDR_SCO -platform=X360 -out-dir D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\codered_menu_v1 -name=codered_menu_v1 -extra-arg=-ID:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\include D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c`
 
 stderr:
 ```text
 Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1
 Error while trying to load a compilation database:
-Could not auto-detect compilation database for file "D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c"
-No compilation database found in D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src or any parent directory
+Could not auto-detect compilation database for file "D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c"
+No compilation database found in D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu or any parent directory
 json-compilation-database: Error while opening JSON database: no such file or directory
 Running without flags.
-Compiling: D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c
-
-```
-
-### compile attempt 3
-- exit: `1`
-- exit_hex: `0x00000001`
-- timed_out: `False`
-- command: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe -target=RDR_#SC -out-dir D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\vehicle_menu_probe_build -name=vehicle_menu_probe D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c`
-
-stderr:
-```text
-Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1
-SC-CL.exe: for the -platform option: must be specified at least once!
-
-```
-
-### compile attempt 4
-- exit: `1`
-- exit_hex: `0x00000001`
-- timed_out: `False`
-- command: `D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe -target=RDR_SCO -out-dir D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\output\vehicle_menu_probe_build -name=vehicle_menu_probe D:\Games\Red Dead Redemption\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c`
-
-stderr:
-```text
-Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1
-SC-CL.exe: for the -platform option: must be specified at least once!
+Compiling: D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c
+D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c:62:40: error: too few arguments to function call, expected 8, have 5
+    _PRINT_SUBTITLE(text, 3000, 1, 1, 1);
+    ~~~~~~~~~~~~~~~                    ^
+D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\include/RDR/natives32.h:531:1: note: '_PRINT_SUBTITLE' declared here
+extern _native32(0x32394BB6) void _PRINT_SUBTITLE(const char* txt, float time, bool isStringLiteral, int printType, int pram4, int pram5, int pram6, int pram7)l
+^
+D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\projects\CodeREDMenu\CodeREDMenu.c:164:103: error: too many arguments to function call, expected 5, have 7
+    g_vehicle = CREATE_ACTOR_IN_LAYOUT(g_codeRedLayout, "CodeREDMenuVehicle", actorModel, 0.0f, 0.0f, 0.0f, 0.0f);
+                ~~~~~~~~~~~~~~~~~~~~~~                                                                ^~~~~~~~~~
+D:\Games\Red Dead Redemption\Code_RED\resources\SC-CL_bitbucket_source\bin\include/RDR/natives32.h:370:1: note: 'CREATE_ACTOR_IN_LAYOUT' declared here
+extern _native Actor CREATE_ACTOR_IN_LAYOUT(Layout Layout, const char* ActorName, eActor ActorID, vector3 Position, vector3 Rotation)l
+^
+2 errors generated.
 
 ```
 
@@ -173,5 +161,4 @@ SC-CL.exe: for the -platform option: must be specified at least once!
 ## Next Steps
 
 - Open logs\CodeRED_SCCL_Safe_Compile_Probe_Output.txt and inspect the first compile error.
-- If SC-CL opens a GUI or hangs, rerun with a shorter timeout: py -3 tools\codered_sccl_safe_compile_probe.py --timeout 20
 - Do not install/promote any compiled output until this probe passes.

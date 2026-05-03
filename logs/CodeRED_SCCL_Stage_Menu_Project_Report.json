@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0-sccl-stage-menu-project",
+  "generated_utc": "2026-05-03T17:15:51Z",
+  "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
+  "ok": true,
+  "lab_source": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
+  "staged_source": "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\bin\\projects\\CodeREDMenu\\CodeREDMenu.c",
+  "sccl_source": "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source",
+  "include_dir": "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\bin\\include",
+  "project_dir": "D:\\Games\\Red Dead Redemption\\Code_RED\\resources\\SC-CL_bitbucket_source\\bin\\projects\\CodeREDMenu",
+  "missing_files": [],
+  "missing_real_header_tokens": [],
+  "actions": [
+    "Staged Code RED menu project source: resources/SC-CL_bitbucket_source/bin/projects/CodeREDMenu/CodeREDMenu.c",
+    "Mirrored staged source for review: related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/CodeREDMenu.sccl_project.c"
+  ],
+  "warnings": [],
+  "next_steps": [
+    "Run: py -3 tools\\codered_sccl_safe_compile_probe.py --project codered_menu_v1 --timeout 30",
+    "If the probe passes, verify output file hashes before any archive import."
+  ]
+}
