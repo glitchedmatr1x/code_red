@@ -14,7 +14,8 @@ Then compile:
 
 param(
     [string]$RepoRoot = ".",
-    [string]$PreferredSource = ""
+    [string]$PreferredSource = "",
+    [switch]$SkipDiagnostic
 )
 
 $ErrorActionPreference = "Stop"
@@ -23,8 +24,31 @@ $SccLRoot = Join-Path $RepoRoot "script_compiling\sccl"
 $Dest = Join-Path $SccLRoot "output"
 New-Item -ItemType Directory -Force -Path $Dest | Out-Null
 
+function Test-ScclFolder($Folder) {
+    return ($Folder -and (Test-Path (Join-Path $Folder "SC-CL.exe")))
+}
+
+function Get-BestFromDiagnostic() {
+    $diag = Join-Path $SccLRoot "diagnose_sccl_runtime_windows.ps1"
+    $report = Join-Path $Dest "SC_CL_RUNTIME_DIAGNOSTIC_REPORT.json"
+    if (-not (Test-Path $diag)) { return $null }
+    if (-not $SkipDiagnostic) {
+        & powershell -ExecutionPolicy Bypass -File $diag -RepoRoot $RepoRoot -SkipLaunchTest | Out-Host
+    }
+    if (-not (Test-Path $report)) { return $null }
+    try {
+        $json = Get-Content $report -Raw | ConvertFrom-Json
+        if ($json.best_candidate -and $json.best_candidate.folder) {
+            return [string]$json.best_candidate.folder
+        }
+    } catch {}
+    return $null
+}
+
 $candidates = @()
 if ($PreferredSource) { $candidates += $PreferredSource }
+$diagBest = Get-BestFromDiagnostic
+if ($diagBest) { $candidates += $diagBest }
 $candidates += @(
     (Join-Path $RepoRoot "SC-CL-master\bin"),
     (Join-Path $RepoRoot "SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\bin"),
@@ -38,7 +62,7 @@ foreach ($candidate in $candidates) {
     $candidatePath = Resolve-Path $candidate -ErrorAction SilentlyContinue
     if (-not $candidatePath) { continue }
     $candidatePath = $candidatePath.Path
-    if (Test-Path (Join-Path $candidatePath "SC-CL.exe")) {
+    if (Test-ScclFolder $candidatePath) {
         $source = $candidatePath
         break
     }
@@ -81,5 +105,9 @@ $report | ConvertTo-Json -Depth 5 | Set-Content -Path $reportPath -Encoding UTF8
 
 Write-Host "[CodeRED] Staged SC-CL.exe to:" (Join-Path $Dest "SC-CL.exe")
 Write-Host "[CodeRED] Copied files:"
-($report.copied) | ForEach-Object { Write-Host "  $_" }
+if ($report.copied.Count -gt 0) {
+    ($report.copied) | ForEach-Object { Write-Host "  $_" }
+} else {
+    Write-Host "  none"
+}
 Write-Host "[CodeRED] Report:" $reportPath
