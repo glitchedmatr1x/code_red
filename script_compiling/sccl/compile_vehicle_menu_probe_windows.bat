@@ -10,15 +10,44 @@ set "PROJECT=%SCCL_ROOT%projects\vehicle_menu_probe"
 set "SRC=%PROJECT%\src\main.c"
 set "INCLUDE=%PROJECT%\include"
 set "OUT=%SCCL_ROOT%output\vehicle_menu_probe"
+set "HEADER=%INCLUDE%\RDR\natives32.h"
+set "PROMOTE=%SCCL_ROOT%promote_real_sccl_headers_windows.ps1"
 
 if not exist "%SRC%" (
   echo [CodeRED] Missing source: %SRC%
   exit /b 2
 )
 
-if not exist "%INCLUDE%\RDR\natives32.h" (
-  echo [CodeRED] Missing include: %INCLUDE%\RDR\natives32.h
+if not exist "%HEADER%" (
+  echo [CodeRED] Missing include: %HEADER%
+  if exist "%PROMOTE%" (
+    echo [CodeRED] Attempting real-header promotion...
+    powershell -ExecutionPolicy Bypass -File "%PROMOTE%" -RepoRoot "%REPO_ROOT%"
+  )
+)
+
+if not exist "%HEADER%" (
+  echo [CodeRED] Missing include after promotion attempt: %HEADER%
   exit /b 2
+)
+
+findstr /i /c:"Minimal Code RED proof natives" /c:"source-proof shims" "%HEADER%" >nul 2>nul
+if not errorlevel 1 (
+  echo [CodeRED] Fake/proof shim header detected: %HEADER%
+  if exist "%PROMOTE%" (
+    echo [CodeRED] Promoting real SC-CL headers before compile...
+    powershell -ExecutionPolicy Bypass -File "%PROMOTE%" -RepoRoot "%REPO_ROOT%"
+  ) else (
+    echo [CodeRED] Missing promotion script: %PROMOTE%
+    exit /b 4
+  )
+)
+
+findstr /i /c:"Minimal Code RED proof natives" /c:"source-proof shims" "%HEADER%" >nul 2>nul
+if not errorlevel 1 (
+  echo [CodeRED] Project header is still fake after promotion. Stopping.
+  echo [CodeRED] Header: %HEADER%
+  exit /b 4
 )
 
 rem Prefer complete bin folders over drop-only EXE folders. The drop folder may contain SC-CL.exe without required DLLs.
