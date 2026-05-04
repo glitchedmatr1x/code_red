@@ -3,7 +3,7 @@ Inspect Code RED SC-CL vehicle menu compile outputs.
 
 Purpose:
 SC-CL can return exit 0 while writing output somewhere unexpected when output paths are malformed.
-This inspector searches the active output area for vehicle_menu_probe artifacts and records hashes.
+This inspector searches the active output area for real .xsc/.sco artifacts and records hashes.
 
 Run from repo root:
   powershell -ExecutionPolicy Bypass -File script_compiling\sccl\inspect_vehicle_menu_output_windows.ps1
@@ -18,17 +18,9 @@ $OutRoot = Join-Path $Lane "output"
 $ProbeOut = Join-Path $OutRoot "vehicle_menu_probe"
 New-Item -ItemType Directory -Force -Path $ProbeOut | Out-Null
 
-$patterns = @(
-    "vehicle_menu_probe*",
-    "*vehicle_menu_probe*",
-    "*.xsc",
-    "*.sco"
-)
-
 $files = @()
-foreach ($pattern in $patterns) {
-    $files += Get-ChildItem -Path $OutRoot -Recurse -File -Filter $pattern -ErrorAction SilentlyContinue
-}
+$files += Get-ChildItem -Path $OutRoot -Recurse -File -Filter "*.xsc" -ErrorAction SilentlyContinue
+$files += Get-ChildItem -Path $OutRoot -Recurse -File -Filter "*.sco" -ErrorAction SilentlyContinue
 $files = @($files | Sort-Object FullName -Unique)
 
 $rows = @()
@@ -49,7 +41,7 @@ $report = [ordered]@{
     expected_folder = $ProbeOut
     artifact_count = $rows.Count
     artifacts = $rows
-    note = "If artifact_count is 0 after SC-CL exit 0, check whether SC-CL wrote to a concatenated path or requires a different target/output name."
+    note = "Only .xsc and .sco files are counted as compiled artifacts. JSON/MD reports are intentionally excluded."
 }
 
 $jsonPath = Join-Path $OutRoot "vehicle_menu_probe_output_report.json"
@@ -73,9 +65,9 @@ foreach ($row in $rows) {
     Add-Line ""
 }
 if ($rows.Count -eq 0) {
-    Add-Line "No compiled artifacts were found under the SC-CL output root."
+    Add-Line "No .xsc or .sco artifacts were found under the SC-CL output root."
     Add-Line ""
-    Add-Line "Try rerunning compile after confirming the batch passes a trailing slash to -out-dir."
+    Add-Line "Try rerunning compile after confirming the batch passes a doubled trailing slash to -out-dir."
 }
 $lines -join "`n" | Set-Content -Path $mdPath -Encoding UTF8
 
