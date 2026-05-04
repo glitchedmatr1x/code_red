@@ -50,14 +50,18 @@ function Test-RealScclIncludeFolder($Folder) {
 
 function Find-IncludeNearExe($ExePath) {
     $dir = Split-Path -Parent $ExePath
+    $parent1 = Split-Path -Parent $dir
+    $parent2 = if ($parent1) { Split-Path -Parent $parent1 } else { $null }
     $checks = @(
         (Join-Path $dir "include"),
         (Join-Path $dir "Include"),
-        (Join-Path (Split-Path -Parent $dir) "include"),
-        (Join-Path (Split-Path -Parent $dir) "Include"),
-        (Join-Path (Split-Path -Parent (Split-Path -Parent $dir)) "include"),
-        (Join-Path (Split-Path -Parent (Split-Path -Parent $dir)) "Include")
+        (Join-Path $parent1 "include"),
+        (Join-Path $parent1 "Include")
     )
+    if ($parent2) {
+        $checks += (Join-Path $parent2 "include")
+        $checks += (Join-Path $parent2 "Include")
+    }
     foreach ($c in $checks) {
         if (Test-RealScclIncludeFolder $c) { return $c }
     }
@@ -181,35 +185,37 @@ $jsonPath = Join-Path $OutDir "SC_CL_RUNTIME_DIAGNOSTIC_REPORT.json"
 $mdPath = Join-Path $OutDir "SC_CL_RUNTIME_DIAGNOSTIC_REPORT.md"
 $report | ConvertTo-Json -Depth 10 | Set-Content -Path $jsonPath -Encoding UTF8
 
-$md = New-Object System.Collections.Generic.List[string]
-$md.Add("# Code RED SC-CL Runtime Diagnostic")
-$md.Add("")
-$md.Add("Search root: `$SearchRoot`")
-$md.Add("Candidates: $($ranked.Count)")
-$md.Add("")
+$lines = New-Object System.Collections.Generic.List[string]
+function Add-Line([string]$Text = "") { [void]$lines.Add($Text) }
+
+Add-Line "# Code RED SC-CL Runtime Diagnostic"
+Add-Line ""
+Add-Line ("Search root: {0}" -f $SearchRoot)
+Add-Line ("Candidates: {0}" -f $ranked.Count)
+Add-Line ""
 if ($best) {
-    $md.Add("## Best candidate")
-    $md.Add("")
-    $md.Add("```text")
-    $md.Add($best.exe)
-    $md.Add("score=$($best.score) dll_count=$($best.dll_count) launch=$($best.launch_test.status)")
-    $md.Add("```")
-    $md.Add("")
+    Add-Line "## Best candidate"
+    Add-Line ""
+    Add-Line "~~~text"
+    Add-Line $best.exe
+    Add-Line ("score={0} dll_count={1} launch={2}" -f $best.score, $best.dll_count, $best.launch_test.status)
+    Add-Line "~~~"
+    Add-Line ""
 }
-$md.Add("## Candidates")
-$md.Add("")
+Add-Line "## Candidates"
+Add-Line ""
 foreach ($c in $ranked) {
-    $md.Add("### $($c.exe)")
-    $md.Add("- score: $($c.score)")
-    $md.Add("- dll count: $($c.dll_count)")
-    $md.Add("- include folder: $($c.include_folder)")
-    $md.Add("- launch status: $($c.launch_test.status)")
+    Add-Line ("### {0}" -f $c.exe)
+    Add-Line ("- score: {0}" -f $c.score)
+    Add-Line ("- dll count: {0}" -f $c.dll_count)
+    Add-Line ("- include folder: {0}" -f $c.include_folder)
+    Add-Line ("- launch status: {0}" -f $c.launch_test.status)
     if ($c.likely_imported_dlls.Count) {
-        $md.Add("- likely imported DLLs: $([string]::Join(', ', $c.likely_imported_dlls))")
+        Add-Line ("- likely imported DLLs: {0}" -f ([string]::Join(', ', $c.likely_imported_dlls)))
     }
-    $md.Add("")
+    Add-Line ""
 }
-$md -join "`n" | Set-Content -Path $mdPath -Encoding UTF8
+$lines -join "`n" | Set-Content -Path $mdPath -Encoding UTF8
 
 Write-Host "# Code RED SC-CL Runtime Diagnostic"
 Write-Host "Search root:" $SearchRoot
