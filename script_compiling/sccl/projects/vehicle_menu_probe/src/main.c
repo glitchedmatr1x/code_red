@@ -6,7 +6,7 @@
    probe. It is intentionally conservative:
    - no archive installation
    - no compiled-output promotion
-   - no unproven native calls beyond the current proof header
+   - no guessed native signatures
    - function-key navigation only
 
    Controls:
@@ -45,7 +45,7 @@
 static Layout g_codeRedLayout = 0;
 static Actor g_player = 0;
 static Actor g_vehicle = 0;
-static int g_selectedVehicle = ACTOR_VEHICLE_Car01;
+static eActor g_selectedVehicle = ACTOR_VEHICLE_Car01;
 static float g_speedCap = 18.0f;
 static int g_menuVisible = 1;
 static int g_section = CR_SECTION_VEHICLES;
@@ -60,7 +60,7 @@ static int g_lastF8 = 0;
 static void CR_Print(const char* text)
 {
     _CLEAR_PRINTS();
-    _PRINT_SUBTITLE(text, 3000, 1, 1, 1);
+    _PRINT_SUBTITLE(text, 3000.0f, true, 1, 0, 0, 0, 0);
 }
 
 static int CR_KeyPressedOnce(int key, int* previous)
@@ -83,7 +83,7 @@ static void CR_EnsureLayout(void)
     }
 }
 
-static void CR_SetVehicleModel(int actorModel)
+static void CR_SetVehicleModel(eActor actorModel)
 {
     g_selectedVehicle = actorModel;
     if (actorModel == ACTOR_VEHICLE_Truck01)
@@ -155,14 +155,33 @@ static void CR_PutPlayerInVehicle(void)
     }
 }
 
-static void CR_SpawnVehicle(int actorModel)
+static void CR_ZeroVector(vector3* value)
 {
+    value->x = 0.0f;
+    value->y = 0.0f;
+    value->z = 0.0f;
+}
+
+static void CR_SpawnVehicle(eActor actorModel)
+{
+    vector3 spawnPos;
+    vector3 spawnRot;
+
     CR_EnsureLayout();
     CR_DestroyVehicle();
 
+    CR_ZeroVector(&spawnPos);
+    CR_ZeroVector(&spawnRot);
+
     g_player = GET_PLAYER_ACTOR(0);
+    if (IS_ACTOR_VALID(g_player))
+    {
+        GET_POSITION(g_player, &spawnPos);
+        spawnPos.x = spawnPos.x + 3.0f;
+    }
+
     STREAMING_REQUEST_ACTOR(actorModel, 1, 1);
-    g_vehicle = CREATE_ACTOR_IN_LAYOUT(g_codeRedLayout, "CodeREDMenuVehicle", actorModel, 0.0f, 0.0f, 0.0f, 0.0f);
+    g_vehicle = CREATE_ACTOR_IN_LAYOUT(g_codeRedLayout, "CodeREDMenuVehicle", actorModel, spawnPos, spawnRot);
 
     if (IS_ACTOR_VALID(g_vehicle))
     {
