@@ -29,7 +29,7 @@ $ZipPath = "$ProofDir.zip"
 
 function Require-File($Path, $Label) {
     if (-not (Test-Path $Path)) {
-        throw "Missing $Label: $Path"
+        throw ("Missing {0}: {1}" -f $Label, $Path)
     }
 }
 
@@ -115,11 +115,11 @@ This package is proof-only.
 
 ## Compiled artifact
 
-```text
+~~~text
 artifact/vehicle_menu_probe.xsc
 sha1: $($manifest.artifact.sha1)
 length: $($manifest.artifact.length)
-```
+~~~
 
 ## Boundary
 
@@ -129,13 +129,13 @@ This proves the SC-CL compile lane only. Archive install/import behavior is stil
 
 ## Included
 
-```text
+~~~text
 artifact/vehicle_menu_probe.xsc
 source/main.c
 headers/include/
 reports/
 COMPILE_PROOF_MANIFEST.json
-```
+~~~
 "@
 $readme | Set-Content -Path (Join-Path $ProofDir "README.md") -Encoding UTF8
 
