@@ -1,9 +1,11 @@
 @echo off
-setlocal
+setlocal EnableExtensions
 
 echo [CodeRED] Direct SC-CL vehicle menu compile probe...
 
 set "SCCL_ROOT=%~dp0"
+set "REPO_ROOT=%SCCL_ROOT%..\..\"
+for %%I in ("%REPO_ROOT%") do set "REPO_ROOT=%%~fI\"
 set "PROJECT=%SCCL_ROOT%projects\vehicle_menu_probe"
 set "SRC=%PROJECT%\src\main.c"
 set "INCLUDE=%PROJECT%\include"
@@ -19,17 +21,24 @@ if not exist "%INCLUDE%\RDR\natives32.h" (
   exit /b 2
 )
 
-if "%SCCL_EXE%"=="" (
-  set "SCCL_EXE=%SCCL_ROOT%output\SC-CL.exe"
-)
+rem PowerShell environment variables should pass through, but if not, use common repo locations.
+if "%SCCL_EXE%"=="" if exist "%SCCL_ROOT%output\SC-CL.exe" set "SCCL_EXE=%SCCL_ROOT%output\SC-CL.exe"
+if "%SCCL_EXE%"=="" if exist "%REPO_ROOT%resources\SC-CL_DROP_HERE\SC-CL.exe" set "SCCL_EXE=%REPO_ROOT%resources\SC-CL_DROP_HERE\SC-CL.exe"
+if "%SCCL_EXE%"=="" if exist "%REPO_ROOT%SC-CL-master\bin\SC-CL.exe" set "SCCL_EXE=%REPO_ROOT%SC-CL-master\bin\SC-CL.exe"
+if "%SCCL_EXE%"=="" if exist "%REPO_ROOT%SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\bin\SC-CL.exe" set "SCCL_EXE=%REPO_ROOT%SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\bin\SC-CL.exe"
+if "%SCCL_EXE%"=="" if exist "%SCCL_ROOT%obsolete\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe" set "SCCL_EXE=%SCCL_ROOT%obsolete\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe"
 
 if not exist "%SCCL_EXE%" (
   echo [CodeRED] SC-CL.exe not found.
-  echo [CodeRED] Put SC-CL.exe at:
+  echo [CodeRED] Checked:
   echo   %SCCL_ROOT%output\SC-CL.exe
+  echo   %REPO_ROOT%resources\SC-CL_DROP_HERE\SC-CL.exe
+  echo   %REPO_ROOT%SC-CL-master\bin\SC-CL.exe
+  echo   %REPO_ROOT%SC-CL-master\llvm-14.0.0.src\tools\clang\tools\extra\SC-CL\bin\SC-CL.exe
+  echo   %SCCL_ROOT%obsolete\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\SC-CL.exe
   echo.
-  echo [CodeRED] Or set:
-  echo   set SCCL_EXE=C:\path\to\SC-CL.exe
+  echo [CodeRED] Or set in PowerShell:
+  echo   $env:SCCL_EXE="C:\path\to\SC-CL.exe"
   exit /b 3
 )
 
