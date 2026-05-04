@@ -9,9 +9,12 @@ for %%I in ("%REPO_ROOT%") do set "REPO_ROOT=%%~fI\"
 set "PROJECT=%SCCL_ROOT%projects\vehicle_menu_probe"
 set "SRC=%PROJECT%\src\main.c"
 set "INCLUDE=%PROJECT%\include"
-set "OUT=%SCCL_ROOT%output\vehicle_menu_probe"
+set "OUT_ROOT=%SCCL_ROOT%output"
+set "OUT=%OUT_ROOT%\vehicle_menu_probe"
+set "OUT_ARG=%OUT%\"
 set "HEADER=%INCLUDE%\RDR\natives32.h"
 set "PROMOTE=%SCCL_ROOT%promote_real_sccl_headers_windows.ps1"
+set "INSPECT=%SCCL_ROOT%inspect_vehicle_menu_output_windows.ps1"
 
 if not exist "%SRC%" (
   echo [CodeRED] Missing source: %SRC%
@@ -79,12 +82,12 @@ if not exist "%OUT%" mkdir "%OUT%"
 echo [CodeRED] Compiler: %SCCL_EXE%
 echo [CodeRED] Source:   %SRC%
 echo [CodeRED] Include:  %INCLUDE%
-echo [CodeRED] Output:   %OUT%
+echo [CodeRED] Output:   %OUT_ARG%
 
 "%SCCL_EXE%" ^
   -target=RDR_#SC ^
   -platform=X360 ^
-  -out-dir="%OUT%" ^
+  -out-dir="%OUT_ARG%" ^
   -name=vehicle_menu_probe ^
   -extra-arg=-I"%INCLUDE%" ^
   "%SRC%"
@@ -97,6 +100,11 @@ if "%EXITCODE%"=="-1073741515" (
   echo [CodeRED] Run:
   echo   powershell -ExecutionPolicy Bypass -File script_compiling\sccl\stage_sccl_runtime_windows.ps1
   echo [CodeRED] If that still fails, install/repair Microsoft Visual C++ Redistributable 2015-2022 x64.
+)
+
+if exist "%INSPECT%" (
+  echo [CodeRED] Inspecting compile outputs...
+  powershell -ExecutionPolicy Bypass -File "%INSPECT%" -RepoRoot "%REPO_ROOT%"
 )
 
 exit /b %EXITCODE%
