@@ -1,0 +1,23 @@
+﻿{
+    "repo_root":  "D:\\Games\\Red Dead Redemption\\Code_RED\\",
+    "output_root":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output",
+    "expected_folder":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\vehicle_menu_probe",
+    "artifact_count":  2,
+    "artifacts":  [
+                      {
+                          "full_name":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\vehicle_menu_probe\\vehicle_menu_probe.xsc",
+                          "relative_path":  "script_compiling\\sccl\\output\\vehicle_menu_probe\\vehicle_menu_probe.xsc",
+                          "length":  1462,
+                          "last_write_time":  "2026-05-04T16:32:29",
+                          "sha1":  "F6BDB733B54EAAAE757984008A7804F489471A5D"
+                      },
+                      {
+                          "full_name":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\vehicle_menu_probevehicle_menu_probe.xsc",
+                          "relative_path":  "script_compiling\\sccl\\output\\vehicle_menu_probevehicle_menu_probe.xsc",
+                          "length":  1462,
+                          "last_write_time":  "2026-05-04T16:21:09",
+                          "sha1":  "F6BDB733B54EAAAE757984008A7804F489471A5D"
+                      }
+                  ],
+    "note":  "Only .xsc and .sco files are counted as compiled artifacts. JSON/MD reports are intentionally excluded."
+}
