@@ -1,15 +1,9 @@
 <#
 Repair Code RED SC-CL project include layout.
 
-Why this exists:
-The first SC-CL lane sorter copied headers to:
-  script_compiling/sccl/include
-
-The existing validator expects headers at:
-  script_compiling/sccl/projects/vehicle_menu_probe/include
-
-This repair copies the active include folder into the project-local include folder.
-It does not delete or move source files.
+This repair now refuses to preserve fake/proof shim headers. If the active
+include folder contains the old "Minimal Code RED proof natives" marker, it
+runs the real-header promotion script first.
 
 Run from the Code_RED repo root:
   powershell -ExecutionPolicy Bypass -File tools\Repair_CodeRED_SCCL_Project_Include.ps1
@@ -20,17 +14,41 @@ param([string]$RepoRoot = ".")
 $ErrorActionPreference = "Stop"
 $RepoRoot = (Resolve-Path $RepoRoot).Path
 
-$from = Join-Path $RepoRoot "script_compiling\sccl\include"
-$to = Join-Path $RepoRoot "script_compiling\sccl\projects\vehicle_menu_probe\include"
+$lane = Join-Path $RepoRoot "script_compiling\sccl"
+$from = Join-Path $lane "include"
+$to = Join-Path $lane "projects\vehicle_menu_probe\include"
+$promote = Join-Path $lane "promote_real_sccl_headers_windows.ps1"
+
+function Test-FakeHeader($Folder) {
+    $native = Join-Path $Folder "RDR\natives32.h"
+    if (-not (Test-Path $native)) { return $true }
+    $txt = Get-Content $native -Raw -ErrorAction SilentlyContinue
+    return ($txt -match "Minimal Code RED proof natives" -or $txt -match "source-proof shims")
+}
+
+if ((Test-FakeHeader $from) -or (Test-FakeHeader $to)) {
+    if (-not (Test-Path $promote)) {
+        throw "Fake/proof headers detected, but promotion script is missing: $promote"
+    }
+    Write-Host "[CodeRED] Fake/proof headers detected. Promoting real SC-CL headers first."
+    & powershell -ExecutionPolicy Bypass -File $promote -RepoRoot $RepoRoot
+}
 
 if (-not (Test-Path $from)) {
     throw "Missing active include folder: $from"
 }
 
+if (Test-Path $to) {
+    Remove-Item $to -Recurse -Force
+}
 New-Item -ItemType Directory -Force -Path $to | Out-Null
 Copy-Item -Path (Join-Path $from "*") -Destination $to -Recurse -Force
 
-Write-Host "Copied SC-CL active include folder into project-local include folder."
+if (Test-FakeHeader $to) {
+    throw "Project include is still fake after repair: $to"
+}
+
+Write-Host "Copied real SC-CL active include folder into project-local include folder."
 Write-Host "From: $from"
 Write-Host "To:   $to"
 Write-Host ""
