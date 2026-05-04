@@ -1,0 +1,11 @@
+﻿{
+  "pass": "CodeRED SC-CL lane sort",
+  "date": "2026-05-04",
+  "active_lane": "script_compiling/sccl",
+  "obsolete_lane": "script_compiling/sccl/obsolete",
+  "source_policy": "preserve old files; do not delete proof material",
+  "next_commands": [
+    "py -3 script_compiling\\sccl\\projects\\vehicle_menu_probe\\scripts\\validate_vehicle_menu_probe.py",
+    "script_compiling\\sccl\\compile_vehicle_menu_probe_windows.bat"
+  ]
+}
