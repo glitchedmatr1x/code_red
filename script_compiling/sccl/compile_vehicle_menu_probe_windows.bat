@@ -17,7 +17,6 @@ set "OUT_ARG=%OUT%\\"
 set "HEADER=%INCLUDE%\RDR\natives32.h"
 set "PROMOTE=%SCCL_ROOT%promote_real_sccl_headers_windows.ps1"
 set "INSPECT=%SCCL_ROOT%inspect_vehicle_menu_output_windows.ps1"
-set "ARCHIVE=%OUT_ROOT%\archive_previous_vehicle_menu_probe_outputs.ps1"
 
 if not exist "%SRC%" (
   echo [CodeRED] Missing source: %SRC%
@@ -83,9 +82,7 @@ if not exist "%SCCL_EXE%" (
 if not exist "%OUT%" mkdir "%OUT%"
 
 rem Remove stale artifacts from previous probes so inspector cannot mistake old output for this run.
-for %%F in ("%OUT_ROOT%\vehicle_menu_probe*.xsc" "%OUT_ROOT%\vehicle_menu_probe*.sco" "%OUT%\vehicle_menu_probe*.xsc" "%OUT%\vehicle_menu_probe*.sco") do (
-  if exist %%~F del /q %%~F
-)
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Remove-Item -LiteralPath '%OUT_ROOT%\vehicle_menu_probevehicle_menu_probe.xsc','%OUT_ROOT%\vehicle_menu_probevehicle_menu_probe.sco','%OUT%\vehicle_menu_probe.xsc','%OUT%\vehicle_menu_probe.sco' -Force -ErrorAction SilentlyContinue"
 
 echo [CodeRED] Compiler: %SCCL_EXE%
 echo [CodeRED] Source:   %SRC%
