@@ -1,0 +1,22 @@
+{
+  "version": "0.3.0-lite",
+  "strip_prefixes": [],
+  "blocked_extensions": [
+    ".bak",
+    ".tmp",
+    ".log"
+  ],
+  "exclude_names": [
+    ".DS_Store",
+    "Thumbs.db",
+    "desktop.ini"
+  ],
+  "writer": {
+    "enabled": false,
+    "executable": "",
+    "command_template": "{writer} -replace {rpf} {internal_dir} {import_dir} -current",
+    "timeout_seconds_per_directory": 300,
+    "hide_console_window": true,
+    "verify_archive_changed": true
+  }
+}

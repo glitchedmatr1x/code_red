@@ -1,0 +1,254 @@
+
+program Main
+{
+	CanConverseContinue(x)										->	ConverseContinue(x);
+	HostileFromConversation(x) && CanCombatShoot(x)				->	CombatShoot(x);
+	InitiatingConversation(x) && CanConverseRespond(x)			->	ConverseRespond(x);
+	CanDealWithSuspiciousPersons								->	DealWithSuspiciousPersons;
+}
+
+
+// This ruleset contains preconditions for various actions. The precondition
+// for action X(<args) is named CanX(<args>), and the user of any action
+// is responsible for checking that the precondition is fulfilled. Note that
+// the precondition is different from the goal - it should be valid to use
+// an action even if it's goal is already fulfilled.
+rules Preconditions
+{
+// NEW:
+	TRUE													->	CanCombatShoot(x);
+	TRUE													->	CanConverseRespond(x);
+	InConversationWith(x)									->	CanConverseContinue(x);
+//
+
+	// These are all elementary actions (defined in code), and the preconditions
+	// for those should probably be defined in code as well.
+	TRUE													->	CanConverse(x);		// Elementary action.
+	TRUE													->	CanMoveTowards(x);	// Elementary action.
+	TRUE													->	CanSearch;			// Elementary action.
+	LastKnownPositionExists(x)									->	CanSearch(x);		// Elementary action.
+	TRUE													->	CanLookAt(x);		// Elementary action.
+
+	// These are preconditions for TR programs.
+	CanFind(x) || (KnowsWhereIs(x) && CanMoveTowards(x))				->	CanFindAndMoveTowards(x);
+	KnowsWhereIs(x) || (CanObserveLastKnownPosition(x) && !NotAtLastKnownPosition(x))	->	CanMoveTowardsWithoutSearch(x);
+	TRUE													->	CanFind(x);
+	LastKnownPositionExists(x)								->	CanObserveLastKnownPosition(x);
+}
+
+// Rules about who we consider to be our friends and foes.  The elementary predicates 
+// PersonalAlly, PersonalEnemy and PersonalNeutral form our basis for this, but we 
+// also add further rules, like treating unidentified characters as possible enemies,
+// or attacking neutrals if our allies are attacking them.
+rules AlliesAndEnemies
+{
+	// Ally(a) && Attacking(a, x)	// attacking doesn't exist			->	AttackedByMyAllies(x);
+	FALSE												->	AttackedByMyAllies(x);
+	PersonalAlly(x) 										->	Ally(x);
+	PersonalEnemy(x) OR PersonalNeutral(x) AND AttackedByMyAllies(x)		->	Enemy(x);
+	PersonalNeutral(x) AND NOT Enemy(x)							->	Neutral(x);
+	Enemy(x) OR NOT Identified(x)								->	PossibleEnemy(x);
+}
+
+
+rules Misc
+{
+	KnowsWhereIs(x) && At(x)								->	RequestingConversation(x);
+	SaidConversationLineRecently(x)							->	WantsConversation(x);
+	NOT Identified(x) AND FiredRecently(x) 						->	UnknownWeaponFired(x);
+	Enemy(x) AND NOT SeenAfterFiring(x) AND FiredRecently(x) 			->	HiddenEnemyWeaponFired(x);
+}
+
+
+// This program moves towards a target object if its position is known, if
+// it is not it starts searching for the target.
+// Goal:			KnowsWhereIs(x) && At(x)	- Get to the target.
+// Precondition:	CanFindAndMoveTowards(x)
+program FindAndMoveTowards(x)
+{
+	KnowsWhereIs(x) && At(x)							->	NIL;
+	KnowsWhereIs(x)										->	MoveTowards(x);
+	TRUE												->	Find(x);
+}
+
+
+// MoveTowardsWithoutSearch(x) moves towards the last known position of
+// object x, assuming that its still there. If it is realized that the
+// object is not at that location (or found somewhere else during the
+// process), no search is activated (instead, the precondition
+// of the program goes false).
+// Goal:			KnowsWhereIs(x) && At(x)	- Get to the target.
+// Precondition:	CanMoveTowardsWithoutSearch(x)
+program MoveTowardsWithoutSearch(x)
+{
+	KnowsWhereIs(x) && At(x)										->	NIL;
+	KnowsWhereIs(x)													->	MoveTowards(x);
+
+	// This is TRUE assuming that the precondition
+	//	CanObserveLastKnownPosition(x) && !NotAtLastKnownPosition(x)
+	// is fulfilled.
+	TRUE															->	ObserveLastKnownPosition(x);
+}
+
+
+// This program searches for the target until its found.
+// Goal:			KnowsWhereIs(x)				- Find out for sure where x is.
+// Precondition:	CanFind(x)
+program Find(x)
+{
+	// Check if the goal is fulfilled.
+	KnowsWhereIs(x)														-> NIL;
+
+	// If we know a position where the target has been and that we can get to, check that position first.
+	CanObserveLastKnownPosition(x) && !NotAtLastKnownPosition(x)		-> ObserveLastKnownPosition(x);
+
+	// If we know a position where the target has been, but has seen that the target is no longer there, search around that position.
+	CanSearch(x) && NotAtLastKnownPosition(x)							-> Search(x);
+
+	// The remaining case is for when either we don't have any last known
+	// position, or when we have a last known position but has no way of
+	// making it visible or otherwise observable.	
+	TRUE																-> Search;
+}
+
+
+// ObserveLastKnownPosition(x) moves to a position from which the last known position
+// of actor x can be observed (seen).
+// Goal:			Observe the last known position.
+// Precondition:	CanObserveLastKnownPosition(x)		- Last known position exists and we may be able to get to a location from where it can be seen.
+program ObserveLastKnownPosition(x)
+{
+//	ObservingLastKnownPosition(x)								-> NIL;
+	CanLookAt(x)												-> LookAt(x) && MoveTowards(x);
+	TRUE														-> MoveTowards(x);
+}
+
+// InvestigateBody(x) takes care of finding out the status of a 
+// body, x:  is it dead, unconscious, or what?
+// Goal:		BodyStatusKnown(x)
+// Precondition:	Body(x) && NOT BodyStatusKnown(x)
+program InvestigateBody(x)
+{
+	BodyStatusKnown(x)	->	NIL;
+	TRUE				->	MoveTowards(x);
+}
+
+
+//-----------------------------------------------------------------------------
+// Programs and rules related to keeping your eyes on somebody.
+
+// This program makes the actor look after actor x to see what he/she is
+// up to. It involves staying reasonably close and keeping the target
+// within sight. This program does not itself react to what the target
+// is up to (besides from moving). When this program has reached its
+// goal, the actor will look at x but not move.
+program KeepEyesOn(x)
+{
+	CanStayCloseTo(x) && CanMaintainLineOfSight(x)	->	MaintainLineOfSight(x), StayCloseTo(x);
+
+	// Not sure about the order between these:
+	CanStayCloseTo(x)								->	StayCloseTo(x);
+	TRUE											->	MaintainLineOfSight(x);
+}
+
+
+// Try to maintain line of sight by looking at the target or
+// searching for it if lost. This program may have to be extended to really
+// try harder to look for the target if it wasn't seen already. That way
+// it will probably work better if used together with other behaviors or
+// with multiple targets.
+program MaintainLineOfSight(x)
+{
+	// If we know where the target is and can look at it, do so.
+	KnowsWhereIs(x) && CanLookAt(x)				->	LookAt(x);
+
+	// If we don't know where the target is, try to find it.
+	!KnowsWhereIs(x) && CanFind(x)				->	Find(x);
+}
+
+
+// This small program tries to keep the target within a somewhat close distance.
+// It does not invoke a full search action if the target goes out of sight,
+// but will move towards the last seen position unless it has been perceived
+// that the target is no longer there (in which case the preconditions goes
+// false). This program does not care about maintaining visibility, as long
+// as the actor thinks or knows that the target is close the goal is considered
+// to be achieved.
+program StayCloseTo(x)
+{
+	// If already close, do nothing.
+	Close(x)									->	NIL;
+
+	// Otherwise, move towards the target if it can be done without searching.
+	TRUE										->	MoveTowardsWithoutSearch(x);
+}
+
+
+// Preconditions for actions related to keeping track of somebody.
+rules Preconditions_KeepEyesOn
+{
+	// KeepEyesOn(x) basically needs MaintainLineOfSight(x), while
+	// StayCloseTo(x) is probably neither sufficient by itself
+	// nor required in combination with MaintainLineOfSight(x).
+Player(x) &&	CanMaintainLineOfSight(x)								->	CanKeepEyesOn(x);
+
+	// If we know where the target is or if we know how to search for it,
+	// we can use MaintainLineOfSight(x).
+
+Player(x) && (KnowsWhereIs(x) || CanFind(x))							->	CanMaintainLineOfSight(x);
+
+	// StayCloseTo() works as long as you know where the target is or if you
+	// are already close.
+	CanMoveTowardsWithoutSearch(x) || Close(x)				->	CanStayCloseTo(x);
+}
+
+//-----------------------------------------------------------------------------
+// Programs and rules related to guards dealing with suspicious persons.
+
+// Program that guards can use for dealing with suspicious persons. It can
+// be considered a way of realizing the goal of "make sure there are no
+// suspicious persons around". This is done by questioning them, and if they
+// still seem suspicious we look after them to see what they do.
+program DealWithSuspiciousPersons
+{
+	// Question suspicious people that you haven't already questioned.
+	Suspicious(x) && !QuestionedSuspicious(x) && CanMoveToAndQuestionSuspicious(x) && Close(x)	->	MoveToAndQuestionSuspicious(x);
+
+	// Keep track of suspicious people that have already been questioned.
+	Suspicious(x) && CanKeepEyesOn(x)												->	KeepEyesOn(x);
+}
+
+
+// Move to some suspicious person and start questioning them.
+program MoveToAndQuestionSuspicious(x)
+{
+//	KnowsWhereIs(x) && At(x)								->	ConverseQuestionSuspicious(x), MoveTowardsWithoutSearch(x);
+
+	// CanMoveTowardsAndSearch(x) is a part of the precondition.
+//	TRUE													->	MoveTowardsWithoutSearch(x);
+
+	TRUE													->	ConverseQuestionSuspicious(x);
+}
+
+
+// Preconditions for suspiciousness-related actions.
+rules Preconditions_Suspicious
+{
+	// TODO?
+	TRUE													->	CanDealWithSuspiciousPersons;
+
+	// At least for now, only the player can be questioned.
+	Player(x) && CanMoveTowardsWithoutSearch(x)				->	CanMoveToAndQuestionSuspicious(x);
+}
+
+
+// Rules dealing with suspicious persons.
+rules Rules_Suspicious
+{
+	// This makes us suspicious of anybody that we have talked that
+	// seemed suspicious during the conversation.
+	Player(x) && SuspiciousFromConversation(x)				->	Suspicious(x);
+}
+
+//-----------------------------------------------------------------------------
+

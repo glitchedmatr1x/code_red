@@ -1,0 +1,206 @@
+type: a
+PlayerData {
+  # CodeRED WarCommand Pass: stronger player response, mount control, combat accuracy, and interaction radius
+  NavStand2WalkStick 0.020000000 
+  NavWalk2JogStick 0.35000000 
+  NavJog2RunStick 0.50000000 
+  NavGaitLockTime 0 
+  NavTurnEffort 0.020000000 
+  NavOrientationChange 0.25000000 
+  CrouchActivationDeadZone 0.65000000 
+  YawGamma 1.2500000 
+  YawGammeMax 0.78539819 
+  FindDoorR 3.0000000 
+  PadDeadZone 0.10000000 
+  SprintPumpTimeout 0.080000000 
+  RunTimeout 0 
+  GringoMeleeSlowMoTime 0.050000000 
+  SpecialMeleeSlowMoTime 0.050000000 
+  AttackDenyGringoUseTimeOut 0.50000000 
+  MeleeAttackTimeout 0.30000000 
+  Hrs_SpurTimeMin 0.080000000 
+  Hrs_FindVehicleRadius 14.000000 
+  Hrs_NavOrientationChange 0.090000000 
+  Hrs_AutoDecreaseGaitTime 60.000000 
+  Hrs_TemperYaw 1.5000000 
+  Hrs_MaxYaw 2.4000000 
+  Hrs_StandingYaw 2.0000000 
+  Hrs_TurnStickMedium 0.64999998 
+  Hrs_InputScaling 1.3500000 
+  Hrs_YawChangeWhileStanding 16.000000 
+  Hrs_YawAnimLookAhead 3 
+  Hrs_MaxYawChange 16.000000 
+  Hrs_MaxYawChangeAccel 32.000000 
+  Hrs_MaxRecoveryYawChange 6.1700001 
+  Hrs_PreWindTime 1 
+  Hrs_PreWindTimeTolerance 0.30000001 
+  Hrs_PreWindTransEffect 1.21 
+  Hrs_PreWindTurnEffect 1.41 
+  Hrs_PreWindStick 0.80000001 
+  Hrs_PreWindRequired 0.22 
+  Hrs_VelBasedClampingOn 0 
+  Hrs_VelBasedClampingMinSpeed 4 
+  Hrs_VelBasedClampingScaling 120 
+  Hrs_RunGaitSpeedTweakRate 2.1900001 
+  Hrs_RunGaitMaxSpeedTweak 0.15000001 
+  Hrs_SpeedTweakTurnAdjust 0.30000001 
+  Hrs_TurnOnSpotStick 0.99000001 
+  SpurControl {
+    DoubleSpurThresh 0.10000000 
+    BadSpurLockout 0.10000000 
+    SpurSpeedBonusPct 0.45000000 
+    SpurTransition {
+      WalkingBackwards {
+        NumSpursToTransition 1 
+        GaitDriftDistance 0 
+        GaitDriftTransPct 0.89999998 
+        GaitDriftTransTime 0 
+      }
+      Standing {
+        NumSpursToTransition 1 
+        GaitDriftDistance 0 
+        GaitDriftTransPct 0.89999998 
+        GaitDriftTransTime 0 
+      }
+      Walking {
+        NumSpursToTransition 1 
+        GaitDriftDistance 0 
+        GaitDriftTransPct 0.89999998 
+        GaitDriftTransTime 1 
+      }
+      Jogging {
+        NumSpursToTransition 1 
+        GaitDriftDistance 2 
+        GaitDriftTransPct 0.89999998 
+        GaitDriftTransTime 1 
+      }
+      Running {
+        NumSpursToTransition 2 
+        GaitDriftDistance 5 
+        GaitDriftTransPct 0.89999998 
+        GaitDriftTransTime 1 
+      }
+      Sprinting {
+        NumSpursToTransition 3 
+        GaitDriftDistance 11 
+        GaitDriftTransPct 0.89999998 
+        GaitDriftTransTime 1 
+      }
+      OverSprinting1 {
+        NumSpursToTransition 4 
+        GaitDriftDistance 18 
+        GaitDriftTransPct 0.89999998 
+        GaitDriftTransTime 1 
+      }
+      OverSprinting2 {
+        NumSpursToTransition 5 
+        GaitDriftDistance 25 
+        GaitDriftTransPct 0.89999998 
+        GaitDriftTransTime 1 
+      }
+    }
+    FinalSpurBoost 6.0000000 
+    SpurInterval {
+      WalkingBackwards {
+        SpurCounterResetTime 2 
+        SpurIntervalIdeal 1 
+        SpurIntervalAttackPct 0.15000001 
+        SpurIntervalSustainPct 0.64999998 
+      }
+      Standing {
+        SpurCounterResetTime 2 
+        SpurIntervalIdeal 1 
+        SpurIntervalAttackPct 0.15000001 
+        SpurIntervalSustainPct 0.64999998 
+      }
+      Walking {
+        SpurCounterResetTime 2 
+        SpurIntervalIdeal 1 
+        SpurIntervalAttackPct 0.15000001 
+        SpurIntervalSustainPct 0.64999998 
+      }
+      Jogging {
+        SpurCounterResetTime 3 
+        SpurIntervalIdeal 2 
+        SpurIntervalAttackPct 0.15000001 
+        SpurIntervalSustainPct 0.64999998 
+      }
+      Running {
+        SpurCounterResetTime 2.5 
+        SpurIntervalIdeal 2 
+        SpurIntervalAttackPct 0.15000001 
+        SpurIntervalSustainPct 0.64999998 
+      }
+      Sprinting {
+        SpurCounterResetTime 1.8 
+        SpurIntervalIdeal 1.5 
+        SpurIntervalAttackPct 0.15000001 
+        SpurIntervalSustainPct 0.64999998 
+      }
+      OverSprinting1 {
+        SpurCounterResetTime 1.3 
+        SpurIntervalIdeal 1 
+        SpurIntervalAttackPct 0.15000001 
+        SpurIntervalSustainPct 0.64999998 
+      }
+      OverSprinting2 {
+        SpurCounterResetTime 1.3 
+        SpurIntervalIdeal 1 
+        SpurIntervalAttackPct 0.15000001 
+        SpurIntervalSustainPct 0.64999998 
+      }
+    }
+    GaitSpeedupPct {
+      WalkingBackwards 0 
+      Standing 0 
+      Walking 0 
+      Jogging 0.1 
+      Running 0 
+      Sprinting -0.050000001 
+      OverSprinting1 0.1 
+      OverSprinting2 0.2 
+    }
+  }
+  Hrs_SlideEntryTurnScale 1.5 
+  Hrs_SlideRotationScale 1.345 
+  Hrs_MinSlideFriction 0.072999999 
+  Hrs_ContinueSlideFriction 0.51099998 
+  Hrs_ConsiderAsSliding 0.5 
+  Hrs_AutoSlideEntryTime 0.5 
+  Hrs_AutoSlopeSlideEntryTime 2.7720001 
+  Hrs_AutoSlopeSlideEntryTimeDown 0.82499999 
+  Hrs_UnSlideRate 1 
+  FindDoorR 3.0000000 
+  Wgn_GaitInputTime 0.25000000 
+  Wgn_DownshiftInputTime 1.0000000 
+  Wgn_FindJackVehicleRadius 14.000000 
+  Wgn_AutopilotEnableTimer 0.10000000 
+  Wgn_Reins_IncreasingPeakThreshold 0.40000000 
+  Wgn_Reins_m_DecreasingPeakThreshold 0.080000000 
+  Wgn_Reins_VelocityThreshold 2.0000000 
+  Wgn_Reins_CancelTime 0.050000000 
+  Wgn_Reins_DirectionAngleTolerance 0 
+  WallHugCornerProbeDepth 0.12000000 
+  WallHugCornerProbeWidth 1.6000000 
+  WallHugCornerSwitchDistance 2 
+  WallHugMinCornerDetectionAngle 37 
+  WallHugEdgeObstacleLookAheadOffset 0.75 
+  WallHugEdgeObstacleLookAheadRadius 0.25 
+  ProxCoverWallDepth 8.0000000 
+  LadderAcquireDistance 1.5000000 
+  LadderMinAcquireSpeed 0.050000001 
+  LadderMaxAcquireSpeed 5.5 
+  LadderRungsFromTop 5 
+  LadderRungsFromBottom 1 
+  DeepWallHeight 0.375 
+  DeepWallDepth 2.5 
+  CliffTimer 5.0000000 
+  ThrowingKnifeBackDamageScale 5.0000000 
+  AccuracyFocusRate 3.0000000 
+  AccuracyDefocusRate 0.15000000 
+  STAND_AccuracyModifier 0.50000000 
+  WALK_AccuracyModifier 0.60000000 
+  JOG_AccuracyModifier 0.70000000 
+  RUN_AccuracyModifier 0.80000000 
+  SPRINT_AccuracyModifier 0.90000000 
+}

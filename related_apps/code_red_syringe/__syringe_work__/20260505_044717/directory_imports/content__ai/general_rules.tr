@@ -1,0 +1,166 @@
+//-----------------------------------------------------------------------------
+// Rules and debug groups for spatial relationships.
+
+// These are rules processing the raw predicates about the spatial relation between this
+// actor and an object x. The predicates on the right-hand side are more refined and suitable
+// for general use than the raw predicates (left side) are.
+rules Spatial
+{
+	// Rules for distance predicates with uncertainty:
+	SpatialLastObservedDistanceExtremelyClose(x) && PositionKnownVeryRecently(x) -> SpatialDistanceExtremelyClose(x);
+	SpatialLastObservedDistanceVeryClose(x) && PositionKnownVeryRecently(x)		-> SpatialDistanceVeryClose(x);
+	SpatialLastObservedDistanceClose(x) && PositionKnownRecently(x)				-> SpatialDistanceClose(x);
+	SpatialLastObservedDistanceSomewhatClose(x) && PositionKnownRecently(x)		-> SpatialDistanceSomewhatClose(x);
+	SpatialLastObservedDistanceFar(x) && PositionKnownRecently(x)				-> SpatialDistanceFar(x);
+	SpatialLastObservedDistanceVeryFar(x) && PositionKnownRecently(x)			-> SpatialDistanceVeryFar(x);
+
+	// This is a helper predicate for determining whether we know the direction to object x reliably or not:
+	PositionKnownVeryRecently(x) || (PositionKnownRecently(x) && !SpatialLastObservedDistanceClose(x))	-> SpatialDirectionToKnown(x);
+
+	// Predicates for the direction to object x relative to us.
+	SpatialLastObservedDirectionBehindMe(x) && SpatialDirectionToKnown(x)		-> SpatialDirectionBehindMe(x);
+	SpatialLastObservedDirectionAheadOfMe(x) && SpatialDirectionToKnown(x)		-> SpatialDirectionAheadOfMe(x);
+	SpatialLastObservedDirectionLeftOfMe(x) && SpatialDirectionToKnown(x)		-> SpatialDirectionLeftOfMe(x);
+	SpatialLastObservedDirectionRightOfMe(x) && SpatialDirectionToKnown(x)		-> SpatialDirectionRightOfMe(x);
+	SpatialLastObservedDirectionAboveMe(x) && SpatialDirectionToKnown(x)		-> SpatialDirectionAboveMe(x);
+	SpatialLastObservedDirectionBelowMe(x) && SpatialDirectionToKnown(x)		-> SpatialDirectionBelowMe(x);
+	SpatialLastObservedDirBoolLeftOfMe(x) && SpatialDirectionToKnown(x)			-> SpatialDirBoolLeftOfMe(x);
+	SpatialLastObservedDirBoolRightOfMe(x) && SpatialDirectionToKnown(x)		-> SpatialDirBoolRightOfMe(x);
+
+	// Helper predicate for the certainty of the position and direction of x combined:
+	SpatialDirectionToKnown(x) && DirectionKnownVeryRecently(x)					-> SpatialPositionAndDirectionKnown(x);
+
+	// These are predicates for the this actor's position compared to object x.
+	SpatialLastObservedMeBehindObject(x) && SpatialPositionAndDirectionKnown(x)	-> SpatialMeBehindObject(x);
+	SpatialLastObservedMeAheadOfObject(x) && SpatialPositionAndDirectionKnown(x)-> SpatialMeAheadOfObject(x);
+	SpatialLastObservedMeLeftOfObject(x) && SpatialPositionAndDirectionKnown(x)	-> SpatialMeLeftOfObject(x);
+	SpatialLastObservedMeRightOfObject(x) && SpatialPositionAndDirectionKnown(x)-> SpatialMeRightOfObject(x);
+	SpatialLastObservedFacingAgainstMe(x) && SpatialPositionAndDirectionKnown(x)-> SpatialFacingAgainstMe(x);
+
+	// Helper predicate for the certainty of object x' position and velocity.
+	SpatialDirectionToKnown(x) && VelocityKnownVeryRecently(x)					-> SpatialPositionAndVelocityKnown(x);
+
+	// Predicates for object x' movement relative to us.
+	SpatialLastObservedMovingTowardsMe(x) && SpatialPositionAndVelocityKnown(x)	-> SpatialMovingTowardsMe(x);
+	SpatialLastObservedMovingAwayFromMe(x) && SpatialPositionAndVelocityKnown(x)-> SpatialMovingAwayFromMe(x);
+	SpatialLastObservedMovingCW(x) && SpatialPositionAndVelocityKnown(x)		-> SpatialMovingCW(x);
+	SpatialLastObservedMovingCCW(x) && SpatialPositionAndVelocityKnown(x)		-> SpatialMovingCCW(x);
+
+	// Predicates for object x' movement speed.
+	SpatialLastObservedMovingSpeedWalking(x) && VelocityKnownVeryRecently(x)	-> SpatialWalking(x);
+	SpatialLastObservedMovingSpeedJogging(x) && VelocityKnownVeryRecently(x)	-> SpatialJogging(x);
+	SpatialLastObservedMovingSpeedRunning(x) && VelocityKnownVeryRecently(x)	-> SpatialRunning(x);
+	SpatialLastObservedMovingSpeedSprinting(x) && VelocityKnownVeryRecently(x)	-> SpatialSprinting(x);
+}
+
+
+// Debug group including processed spatial predicates.
+debuggroup SpatialPredicateProcessed
+{
+	filter Player(x), predicate SpatialDistanceVeryClose(x),					label "VeryClose";
+	filter Player(x), predicate SpatialDistanceClose(x),						label "Close";
+	filter Player(x), predicate SpatialDistanceSomewhatClose(x),				label "SomewhatClose";
+	filter Player(x), predicate SpatialDistanceFar(x),							label "Far";
+	filter Player(x), predicate SpatialDistanceVeryFar(x),						label "VeryFar";
+
+	filter Player(x), predicate SpatialDirectionToKnown(x),						label "DirectionKnown";
+	filter Player(x), predicate SpatialDirectionBehindMe(x),					label "BehindMe";
+	filter Player(x), predicate SpatialDirectionAheadOfMe(x),					label "AheadOfMe";
+	filter Player(x), predicate SpatialDirectionLeftOfMe(x),					label "LeftOfMe";
+	filter Player(x), predicate SpatialDirectionRightOfMe(x),					label "RightOfMe";
+	filter Player(x), predicate SpatialDirectionAboveMe(x),						label "AboveMe";
+	filter Player(x), predicate SpatialDirectionBelowMe(x),						label "BelowMe";
+
+	filter Player(x), predicate SpatialMeBehindObject(x),						label "BehindObject";
+	filter Player(x), predicate SpatialMeAheadOfObject(x),						label "AheadOfObject";
+	filter Player(x), predicate SpatialMeLeftOfObject(x),						label "LeftOfObject";
+	filter Player(x), predicate SpatialMeRightOfObject(x),						label "RightOfObject";
+	filter Player(x), predicate SpatialFacingAgainstMe(x),						label "FacingAgainstMe";
+
+	filter Player(x), predicate SpatialMovingTowardsMe(x),						label "MovingTowardsMe";
+	filter Player(x), predicate SpatialMovingAwayFromMe(x),						label "MovingAwayFromMe";
+	filter Player(x), predicate SpatialMovingCW(x),								label "MovingCW";
+	filter Player(x), predicate SpatialMovingCCW(x),							label "MovingCCW";
+
+	filter Player(x), predicate SpatialWalking(x),								label "Walking";
+	filter Player(x), predicate SpatialJogging(x),								label "Jogging";
+	filter Player(x), predicate SpatialRunning(x),								label "Running";
+	filter Player(x), predicate SpatialSprinting(x),							label "Sprinting";
+}
+
+
+// Debug group including raw spatial predicates. These are very sensitive to changes
+// and don't take uncertainty of observations into account, so please use the processed
+// versions instead whenever possible.
+debuggroup SpatialPredicatesRaw
+{
+	filter Player(x), predicate SpatialLastObservedDistanceVeryClose(x),		label "VeryClose";
+	filter Player(x), predicate SpatialLastObservedDistanceClose(x),			label "Close";
+	filter Player(x), predicate SpatialLastObservedDistanceFar(x),				label "Far";
+	filter Player(x), predicate SpatialLastObservedDistanceVeryFar(x),			label "VeryFar";
+	filter Player(x), predicate SpatialLastObservedDirectionBehindMe(x),		label "BehindMe";
+	filter Player(x), predicate SpatialLastObservedDirectionAheadOfMe(x),		label "AheadOfMe";
+	filter Player(x), predicate SpatialLastObservedDirectionLeftOfMe(x),		label "LeftOfMe";
+	filter Player(x), predicate SpatialLastObservedDirectionRightOfMe(x),		label "RightOfMe";
+	filter Player(x), predicate SpatialLastObservedDirectionAboveMe(x),			label "AboveMe";
+	filter Player(x), predicate SpatialLastObservedDirectionBelowMe(x),			label "BelowMe";
+
+	filter Player(x), predicate SpatialLastObservedMeBehindObject(x),			label "BehindObject";
+	filter Player(x), predicate SpatialLastObservedMeAheadOfObject(x),			label "AheadOfObject";
+	filter Player(x), predicate SpatialLastObservedMeLeftOfObject(x),			label "LeftOfObject";
+	filter Player(x), predicate SpatialLastObservedMeRightOfObject(x),			label "RightOfObject";
+	filter Player(x), predicate SpatialLastObservedFacingAgainstMe(x),			label "FacingAgainstMe";
+
+	filter Player(x), predicate SpatialLastObservedMovingTowardsMe(x),			label "MovingTowardsMe";
+	filter Player(x), predicate SpatialLastObservedMovingAwayFromMe(x),			label "MovingAwayFromMe";
+	filter Player(x), predicate SpatialLastObservedMovingCW(x),					label "MovingCW";
+	filter Player(x), predicate SpatialLastObservedMovingCCW(x),				label "MovingCCW";
+
+	filter Player(x), predicate SpatialLastObservedMovingSpeedWalking(x),		label "Walking";
+	filter Player(x), predicate SpatialLastObservedMovingSpeedJogging(x),		label "Jogging";
+	filter Player(x), predicate SpatialLastObservedMovingSpeedSprinting(x),		label "Sprinting";
+
+	filter Player(x), predicate SpatialLastObservedMovingSpeedCrouchSlow(x),	label "CrouchSlow";
+	filter Player(x), predicate SpatialLastObservedMovingSpeedCrouchWalk(x),	label "CrouchWalk";
+	filter Player(x), predicate SpatialLastObservedMovingSpeedCrouchFast(x),	label "CrouchFast";
+}
+
+//-----------------------------------------------------------------------------
+
+// This gives you a list of all objects of various classes that
+// the actor knows about.
+debuggroup ObjectClasses
+{
+	filter ObjectClassTypeCreature(x),		label "Creature $x";
+	filter ObjectClassGenderFemale(x),		label "GenderFemale $x";
+	filter ObjectClassGenderMale(x),		label "GenderMale $x";
+	filter ObjectClassCreatureRaceHorse(x),	label "Horse $x";
+	filter ObjectClassCreatureRaceHuman(x),	label "Human $x";
+	filter ObjectClassTypeLocation(x),		label "Location $x";
+	filter ObjectClassObjectiveDestroy(x),	label "ObjectiveDestroy $x";
+	filter ObjectClassObjectiveGuard(x),	label "ObjectiveGuard $x";
+	filter ObjectClassObjectiveMoveTo(x),	label "ObjectiveMoveTo $x";
+	filter ObjectClassObjectiveSeekCoverFrom(x),label "ObjectiveSeekCoverFrom $x";
+	filter ObjectClassTypeSound(x),			label "Sound $x";
+	filter ObjectClassTypeTrain(x),			label "Train $x";
+	filter ObjectClassTypeVehicle(x),		label "Vehicle $x";
+	filter ObjectClassTypeWeapon(x),		label "Weapon $x";
+	filter ObjectClassTypeDangerousCreature(x), label "Dangerous Creature $x";
+	filter ObjectClassCreatureRaceWolf(x),	label "Wolf $x";
+}
+
+//-----------------------------------------------------------------------------
+
+// This lists all known sound objects together with what they are and when they were heard.
+debuggroup SoundTimes
+{
+	filter ObjectClassTypeSound(x), predicate RecentExplosion(x),					label "RecentExplosion $x";
+	filter ObjectClassTypeSound(x), predicate RecentLoudNoise(x),					label "RecentLoudNoise $x";
+	filter ObjectClassTypeSound(x), predicate RecentProjectileImpact(x),			label "RecentProjectileImpact $x";
+	filter ObjectClassTypeSound(x), predicate SomewhatRecentExplosion(x),			label "SomewhatRecentExplosion $x";
+	filter ObjectClassTypeSound(x), predicate SomewhatRecentLoudNoise(x),			label "SomewhatRecentLoudNoise $x";
+	filter ObjectClassTypeSound(x), predicate SomewhatRecentProjectileImpact(x),	label "SomewhatRecentProjectileImpact $x";
+	filter ObjectClassTypeSound(x), predicate VeryRecentExplosion(x),				label "VeryRecentExplosion $x";
+	filter ObjectClassTypeSound(x), predicate VeryRecentLoudNoise(x),				label "VeryRecentLoudNoise $x";
+	filter ObjectClassTypeSound(x), predicate VeryRecentProjectileImpact(x),		label "VeryRecentProjectileImpact $x";
+}

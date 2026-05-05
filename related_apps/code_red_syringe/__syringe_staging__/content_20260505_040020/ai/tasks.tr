@@ -1,0 +1,941 @@
+//-----------------------------------------------------------------------------
+
+program GetToCoverAndStay
+{
+	TRUE	->	GetToCoverAndStay_Move;
+}
+
+
+program PerformTaskShootEnemiesFromAnyCover
+{
+	// Run the new combat state machine if we have at least one enemy, if enabled
+	// through AI_COMBAT_SET_NEW_STATE_MACHINE_ENABLED. /FF
+	NewCombatStateMachineEnabled			->	CombatBehavior, trLookAroundIfPossible;
+
+	TRUE		->	GetToCoverAndStay, PerformTaskShootEnemiesFromAnyCover_Seek;
+}
+
+
+program PerformTaskShootEnemiesFromAnyCover_Seek
+{
+	// This used to be
+	//	WantToHurt(x)		->	CombatSeekCoverToShootAt(x), CombatSeekCoverToProtectFrom(x);
+	// but it was changed to work better when there are no known threats/targets.
+	// In that case, the actors can now just find any cover. /FF
+	NewCombatStateMachineEnabled						->	CombatBehavior, trLookAroundIfPossible;
+	WantToHurt(x) && PositionKnownSomewhatRecently(x)	->	CombatSeekCoverToShootAt(x), CombatSeekCoverToProtectFrom(x);
+	TRUE												->	CombatSeekCoverAnywhere;
+}
+
+
+debuggroup TaskShootEnemiesFromAnyCover
+{
+	filter TRUE, predicate CombatAtCover, label "CombatAtCover";
+	filter TRUE, predicate CombatAtCoverGood, label "CombatAtCoverGood";
+	filter TRUE, predicate CanCombatMoveToCover, label "CanCombatMoveToCover";
+	filter WantToHurt(x), predicate CombatClassCoverWaitTargetPosUnknown(x), label "CombatClassCoverWaitTargetPosUnknown $x";
+	filter TRUE, predicate InjuredWhileAtThisNoGoodCover, label "InjuredWhileAtThisNoGoodCover";
+}
+
+
+program RetreatFromPossibleThreat(x)
+{
+	!CombatRangeWeaponReadied && CanCombatReadyRangeWeapon		->	MoveRetreatFrom(x), SpeedJog, CombatReadyRangeWeapon, LookAtIfPossible(x), trLookAroundIfPossible;
+	TRUE														->	MoveRetreatFrom(x), SpeedJog, AutonomousFireIfAllowed, LookAtIfPossible(x), trLookAroundIfPossible;
+}
+
+
+program GetToCoverAndStay_Move
+{
+	// TODO: Improve and clean up this stuff! /FF
+
+	// This used to be:
+	//	CombatAtCover && (!CombatAtCoverGood && InjuredWhileAtThisNoGoodCover)	->	Stay, AutonomousFireIfAllowed;	//->	CombatHideAtCover, LookAround;	//CombatStayAtCover;
+	// but I changed it to use StayAwayFromDangerMoveGetBehindCover(x), which includes a 
+	CombatAtCover && WantToHurt(x) && !StayAwayFromDangerMoveGetBehindCover(x)	->	/*Stay,*/ AutonomousFireIfAllowed;	//->	CombatHideAtCover, LookAround;	//CombatStayAtCover;
+
+	WantToHurt(x) &&  CanCombatUseWeaponsAgainstFromCover(x) && (WasVisibleJustNow(x) || CombatClassCoverWaitTargetPosUnknown(x))	->	CombatUseWeaponsAgainstFromCover(x), CombatSeekCoverToShootAt(x), CombatSeekCoverToProtectFrom(x);
+
+	CombatAtCover && CombatAtCoverGood && CanCombatPeekFromCover				->	CombatPeekFromCover, LookAtEnemiesOrAroundIfPossible;
+
+	!Riding && CanGetBehindCover									->	GetBehindCover, AutonomousFireIfAllowed;
+
+	// Note: It's tempting to add a !PrefersRiding here, to prevent the risk of a mount/dismount
+	// cycle being triggered. However, that would change how TASK_SHOOT_ENEMIES_FROM_ANY_COVER
+	// behaves in combination with MEMORY_PREFERS_RIDING, in a way that's possibly undesirable. /FF
+	Riding && CanRideDismount										->	RideDismount;
+
+	// I added these three rules so that we can use normal combat movement if we can't run for cover.
+	// Note that x here can be anybody, not necessarily the person that made us execute
+	// GetToCoverAndStay_Move, which I'm not sure if I really like. /FF
+	WantToHurt(x) && CanCombatShootOrDrawWeapon(x) && SpatialDistanceVeryClose(x) 		->	CombatShootOrDrawWeapon(x);
+	WantToHurt(x) && CanCombatShootOrDrawWeapon(x) && SpatialDistanceClose(x)	 		->	CombatShootOrDrawWeapon(x);
+	WantToHurt(x) && CanCombatShootOrDrawWeapon(x)										->	CombatShootOrDrawWeapon(x);
+
+	// These were added for cases where cover isn't available. I don't really like them, as for example
+	// if this program gets executed because the player is aiming at them, x below isn't necessarily the player,
+	// but they seem to work fairly well in practice so far. /FF
+	ObjectClassCreatureRaceHuman(x) && Alive(x) && (!Ally(x) && !Amicable(x) && !Neutral(x)) && CanRetreatFromPossibleThreat(x) && AimingAtMe(x) && SpatialDistanceClose(x)						->	RetreatFromPossibleThreat(x), SpeedJog, LookAtIfPossible(x), AutonomousFireIfAllowed;
+	ObjectClassCreatureRaceHuman(x) && Alive(x) && (!Ally(x) && !Amicable(x)) && CanRetreatFromPossibleThreat(x) && FiredRecently(x) && SpatialDistanceClose(x)					->	RetreatFromPossibleThreat(x), SpeedJog, LookAtIfPossible(x), AutonomousFireIfAllowed;
+	ObjectClassCreatureRaceHuman(x) && Alive(x) && (!Ally(x) && !Amicable(x) && !Neutral(x)) && CanRetreatFromPossibleThreat(x) && CombatRangeWeaponDrawn(x) && SpatialDistanceVeryClose(x)		->	RetreatFromPossibleThreat(x), SpeedJog, LookAtIfPossible(x), AutonomousFireIfAllowed;
+	ObjectClassCreatureRaceHuman(x) && Alive(x) && (!Ally(x) && !Amicable(x) && !Neutral(x)) && CanRetreatFromPossibleThreat(x) && CombatRangeWeaponDrawn(x) && SpatialDistanceClose(x)			->	RetreatFromPossibleThreat(x), SpeedJog, LookAtIfPossible(x), AutonomousFireIfAllowed;
+
+	// This used to be done further up, but the rules above already include drawing the weapon, while moving. /FF
+	CanCombatReadyRangeWeapon && !CombatRangeWeaponReadied								->	CombatReadyRangeWeapon;
+
+	TRUE		->	Stay, AutonomousFireIfAllowed;
+}
+
+//-----------------------------------------------------------------------------
+
+// PURPOSE:	Used to implement FLEESTYLE_RETREAT for TASK_FLEE_ACTOR.
+program PerformTaskFleeActorStyleRetreat(x)
+{
+	HasSimpleTask				->	PerformSimpleTask, PerformTaskFleeActorStyleRetreat_Shoot(x);
+	TRUE						->	PerformTaskFleeActorStyleRetreat_Shoot(x);
+}
+
+
+// PURPOSE:	Used to implement FLEESTYLE_RETREAT for TASK_FLEE_ACTOR.
+program PerformTaskFleeActorStyleRetreat_Shoot(x)
+{
+	CanCombatUseWeaponsAgainst(x) && CombatRangeWeaponReadied		->	CombatUseWeaponsAgainst(x), LookAtIfPossible(x);
+	!CombatRangeWeaponReadied && CanCombatReadyRangeWeapon			->	CombatReadyRangeWeapon, LookAtIfPossible(x);
+	TRUE															->	LookAtIfPossible(x);
+}
+
+//-----------------------------------------------------------------------------
+
+program PerformTaskLookAtObject(x)
+{
+	TRUE	->	LookAtIfPossible(x);
+}
+
+//-----------------------------------------------------------------------------
+
+rules TaskPreconditions
+{
+	CanSearch				->	CanPerformTaskSearchArmed, CanPerformTaskSearchUnarmed;
+	CanFindAndMoveTo(x)		->	CanPerformTaskSearchForObjectArmed(x), CanPerformTaskSearchForObjectUnarmed(x);
+	CanMoveRetreatFrom(x)	->	CanRetreatFromPossibleThreat(x);
+
+	// This was added to deal with a problem where actors using
+	// TASK_SHOOT_ENEMIES_FROM_ANY_COVER and related tasks would do nothing (at all, not
+	// even shooting while standing still or executing Stay) if pathfinding failed to get
+	// to the scripted cover location.
+	// TODO: I believe the current rule defines a condition that's "required but not sufficient",
+	// so we may need to add stuff like CanCombatHideAtCover in the CombatAtCoverExternal case. /FF
+	CombatAtCoverExternal || (!Riding && CanCombatMoveToCoverExternal) || (Riding && CanRideDismount)	->	CanPerformTaskUseCover;
+}
+
+program PerformTaskSearchUnarmed
+{
+	// Make sure to not try to do anything if the precondition isn't fulfilled.
+	// I'd like for the code (or other user) to do this instead, really. /FF
+	!CanPerformTaskSearchUnarmed								->	Stay;	// Don't really like this one. /FF
+
+	CombatWeaponDrawn && CanCombatWeaponHolster					-> CombatWeaponHolster, Search, SpeedWalk;
+
+	// Use the undirected Search program.
+	TRUE														->	Search, SpeedWalk;
+}
+
+// PURPOSE:	This can be used to control the speed during a search,
+//			so that the actor will walk once the search behavior has
+//			gone past the stage of examining the last known position.
+//			Should be safe to execute in parallel with programs such
+//			as FindAndMoveTo(x) and Find(x).
+// TODO:	Ensure that this gets used also during non-scripted searches,
+//			if that's desirable (probably is). /FF
+program PerformTaskSearchAdjustSpeed
+{
+	!MoveSearchInActualProgress									->	SpeedJog;
+	TRUE														->	SpeedWalk;
+}
+
+program PerformTaskSearchForObjectUnarmed(x)
+{
+	// Make sure to not try to do anything if the precondition isn't fulfilled.
+	// I'd like for the code (or other user) to do this instead, really. /FF
+	!CanPerformTaskSearchForObjectUnarmed(x)					->	Stay;
+
+	CombatWeaponDrawn && CanCombatWeaponHolster					-> CombatWeaponHolster, FindAndMoveTo(x), PerformTaskSearchAdjustSpeed;
+
+	// Use the FindAndMoveTo(x) program at walk speed to find and walk
+	// towards the target. /FF
+	TRUE														->	FindAndMoveTo(x), PerformTaskSearchAdjustSpeed;
+}
+
+program PerformTaskSearchArmed
+{
+	TRUE	->	PerformTaskSearchArmed1, CancelPlannedActivity(4);
+}
+
+program PerformTaskSearchArmed1
+{
+	// Make sure to not try to do anything if the precondition isn't fulfilled.
+	// I'd like for the code (or other user) to do this instead, really. /FF
+	!CanPerformTaskSearchArmed									->	Stay;	// Don't really like this one. /FF
+
+	// TODO: Make this optional, determined by task input parameters? /FF
+	!CombatRangeWeaponReadied && CanCombatReadyRangeWeapon		->	CombatReadyRangeWeapon, Search, SpeedWalk;
+
+	// Use the undirected Search program.
+	TRUE														->	Search, SpeedWalk;
+}
+
+program PerformTaskSearchForObjectArmed(x)
+{
+	TRUE	->	PerformTaskSearchForObjectArmed1(x), CancelPlannedActivity(4);
+}
+
+program PerformTaskSearchForObjectArmed1(x)
+{
+	// Make sure to not try to do anything if the precondition isn't fulfilled.
+	// I'd like for the code (or other user) to do this instead, really. /FF
+	!CanPerformTaskSearchForObjectArmed(x)						->	Stay;
+
+	// TODO: Make this optional, determined by task input parameters? /FF
+	!CombatRangeWeaponReadied && CanCombatReadyRangeWeapon		->	CombatReadyRangeWeapon, FindAndMoveTo(x), PerformTaskSearchAdjustSpeed;
+
+	// Use the FindAndMoveTo(x) program at walk speed to find and walk
+	// towards the target. /FF
+	TRUE														->	FindAndMoveTo(x), PerformTaskSearchAdjustSpeed;
+}
+
+//-----------------------------------------------------------------------------
+// These were moved out from 'game_main.tr'.
+
+// Try to perform various scripted "goals" in parallel to other
+// activities. Currently only used for looking at stuff. /FF
+program PerformExternalGoals
+{
+	TRUE		->	PerformExternalGoalLookAt;
+}
+
+// Look at positions or actors that this actor has been scripted to look at.
+// Note that this is currently not an actual task, but something that can
+// be done in parallel to carrying out tasks. /FF
+program PerformExternalGoalLookAt
+{
+	ObjectClassObjectiveLookAt(x) && CanLookAt(x)	->	LookAt(x) WITH 2.0;	// Wonder if this strength is enough to override other uses? /FF
+}
+
+program PerformTaskActionWithoutTarget
+{
+	TRUE && CanActionPerform											->	ActionPerform;
+}
+
+program PerformTaskActionWithTarget(x)
+{
+	At(x) && (SpatialLastObservedFacingSameDirection(x) || !ObjectClassTypeLocation(x)) && CanActionPerform(x)	->	ActionPerform(x);
+	At(x) && ObjectClassTypeLocation(x) && CanFaceInSameDirection(x)											->	FaceInSameDirection(x);
+	CanMoveTo(x) /* should be part of precondition? */													->	MoveTo(x);
+}
+
+// TODO: Clean this up a bit. Implemented while short on time.
+program PerformTaskMove
+{
+	// If ordered to follow somebody, do so if possible.
+	ObjectClassObjectiveFollow(x) && CanFindAndFollow(x)							->	FindAndFollow(x);
+
+	// Used to be for the TASK_FOLLOW_PATH command.
+	//	HasPathToFollow && CanMoveFollowPath											->	MoveFollowPath, SpeedMatchExternal;
+
+	// Used for TASK_FLEE_ACTOR.
+	// Has a different implementation now. /FF
+	//ObjectClassObjectiveRetreatFrom(x) && CanMoveRetreatFrom(x)						->	MoveRetreatFrom(x):(SpeechEvent("DisallowShootAndFace")) /*:(SpeechEvent("Retreating"))*/, SpeedSprint, trLookAroundIfPossible;
+
+	// Used for TASK_GO_TO_COORD script command.
+	ObjectClassTypeLocation(x) && ObjectClassObjectiveMoveTo(x) && !At(x) && CanMoveTo(x)	->	MoveTo(x):(SpeechEvent("DisallowShootAndFace")), SpeedMatchExternal;
+
+	// Used for TASK_GO_TO_COORD script command.
+	ObjectClassTypeLocation(x) && ObjectClassObjectiveMoveTo(x) && At(x)				->	Stay;
+}
+
+
+// TODO: Clean this up a bit. Implemented while short on time.
+program PerformTaskDestroyWhileMoving
+{
+	NewCombatStateMachineEnabled && CombatRangeWeaponReadied && ObjectClassObjectiveDestroy(x)		->	CombatBehaviorFireOnly;
+	
+	CombatRangeWeaponReadied && ObjectClassObjectiveDestroy(x)						->	CombatShootNoCoverB(x), CombatShootNoCoverC(x);
+	!CombatRangeWeaponReadied && CanCombatReadyRangeWeapon							->	CombatReadyRangeWeapon;
+}
+
+
+// TODO: Clean this up a bit. Implemented while short on time.
+program PerformTaskDestroy
+{
+	HasMoveObjective		->	PerformTaskDestroyWhileMoving;	
+	
+	NewCombatStateMachineEnabled && ObjectClassObjectiveDestroy(x) && CanCombatSearchAndAttack(x) && 
+			(Alive(x) || ObjectClassTypeLocation(x))																		->	CombatBehavior, trLookAroundIfPossible;
+	ObjectClassObjectiveDestroy(x) && CanCombatSearchAndAttack(x) && (Alive(x) || ObjectClassTypeLocation(x))				->	CombatSearchAndAttack(x);
+}
+
+
+// Used by TASK_USE_GRINGO script command.
+program PerformTaskMoveToAndUseHotspot
+{
+	// We are in position and able to use the hotspot, and it is ready
+	CanHotspotUseExternal && HotspotExternalReadyForUse			->	HotspotUseExternal, trLookAroundIfPossible, trAllowGringoConversationsIfReasonable;
+	
+	// We are able to move to the hotspot, and not in position yet
+	CanHotspotMoveToExternal && !CanHotspotUseExternal &&
+		(!EventActive("AtUnreadyHotspot") || HotspotExternalReadyForUse)
+			->	HotspotMoveToExternal, trLookAroundIfPossible;
+	
+	// If we are at our hotspot, and it is not ready
+	//		we may have been bumped and dropped a prop, so face our bumper
+	!HotspotExternalReadyForUse && Player(x) && Within(x, 6.0) && BumpedIntoMeInTheLastThreeMinutes(x)
+			->	FaceInPlace(x):(SpeechEvent("AtUnreadyHotspot")), PlaySpeechAtPeriodic(x,"GENERIC_GOODBYE", 8.0), LookAtIfPossible(x);
+	//		we are waiting for player to look away and let the prop reset, greet and face
+	!HotspotExternalReadyForUse && Player(x) && Within(x, 6.0)	
+			->	FaceInPlace(x):(SpeechEvent("AtUnreadyHotspot")), PlaySpeechAtPeriodic(x,"GREET", 8.0), LookAtIfPossible(x);
+	
+	//		we have to wait for prop reset, just idle in place
+	TRUE					->	Stay:(SpeechEvent("AtUnreadyHotspot")), trLookAroundIfPossible;
+}
+
+// Used for TASK_USE_TURRET script command.
+program PerformTaskUseTurret(x)
+{
+	MyTurret(x) && CanCombatUseWeaponsAgainst(y) && CanTurretRemain && ObjectClassObjectiveDestroy(y)		-> CombatUseWeaponsAgainst(y), TurretRemain;
+	MyTurret(x) && CanCombatUseWeaponsAgainst(y) && CanTurretRemain && WantToHurt(y)						-> CombatUseWeaponsAgainst(y), TurretRemain;
+
+	MyTurret(x) && CanAimAtLastKnownPos(y) && CanTurretRemain && ObjectClassObjectiveDestroy(y)				-> CombatAimAtLastKnownPos(y), TurretRemain;
+	MyTurret(x) && CanAimAtLastKnownPos(y) && CanTurretRemain && WantToHurt(y)								-> CombatAimAtLastKnownPos(y), TurretRemain;
+
+	MyTurret(x) && CanTurretRemain																		-> TurretRemain;
+
+// Not sure:
+//	At(x) AND !MyTurret(x) AND 
+//		CombatWeaponDrawn AND CanCombatWeaponHolster	-> CombatWeaponHolster;
+
+	SpatialDistanceVeryClose(x) && CanTurretAttach(x)		-> TurretAttach(x);
+	CanMoveTo(x)											-> MoveTo(x), SpeedJog;
+}
+
+
+program PerformTaskMount
+{
+	// Note: If you make changes here, please remember to keep CanPerformTaskMount up to date. /FF
+
+	RidingOn(x) && ObjectClassObjectiveMount(x)							-> NIL;
+	OnFoot && ObjectClassObjectiveMount(x) && CanMoveToAndMount(x)		-> MoveToAndMount(x), SpeedMatchExternal;
+	OnFoot && ObjectClassObjectiveJack(x) && CanMoveToAndJack(x)		-> MoveToAndJack(x), SpeedMatchExternal;
+	!OnFoot && CanGetOnFoot && HasValidTaskMountTarget					-> GetOnFoot;
+
+	// We should only get here in the !CanPerformTaskMount case, i.e. task failure.
+	TRUE																-> Stay;
+}
+
+
+program PerformTaskDismount
+{
+	NOT Riding												-> NIL;
+	HasDismountObjective AND CanRideDismount				-> RideDismount;
+}
+
+
+// Debug group.
+debuggroup Turret
+{
+	filter ObjectClassCreatureRaceHuman(x), predicate WantToHurt(x), label "WantToHurt $x";
+	filter TRUE, predicate HasTurret, label "HasTurret";
+	filter ObjectClassTypeTurret(x), predicate 	MyTurret(x), label "MyTurret $x";
+	filter ObjectClassTypeTurret(x), predicate 	HasTurretObjective(x), label "HasTurretObjective $x";
+	filter ObjectClassTypeTurret(x), predicate 	PropInUse(x), label "PropInUse $x";
+}
+
+
+// Debug group for tasks
+debuggroup Task
+{
+	filter TRUE, predicate HasMountObjective, label "HasMountObjective";
+	filter TRUE, predicate HasDismountObjective, label "HasDismountObjective";
+	filter TRUE, predicate TaskDisallowsHolstering, label "TaskDisallowsHolstering";
+	filter TRUE, predicate TaskDisallowsMounting, label "TaskDisallowsMounting";
+	filter TRUE, predicate TaskRequestsWeaponPickupIfDisarmed, label "TaskRequestsWeaponPickupIfDisarmed";
+}
+
+
+// This program executes the TASK_SHOOT_ENEMIES_FROM_POSITION. It's basically autonomous
+// shooting coupled with movement to a particular location (x), but with some extra
+// details regarding face direction, weapon draw/load, etc.
+program PerformTaskShootFrom(x)
+{
+	NewCombatStateMachineEnabled	->	CombatBehavior, trLookAroundIfPossible;
+	
+	// If we're in place, have a target, and can use weapons right now, proceed with that while facing the
+	// target. The WantToHurt(y) && CanCombatUseWeaponsAgainst(y) part is basically what AutonomousFire
+	// would've done, we're just adding the facing here.
+	At(x) && WantToHurt(y) && CanCombatUseWeaponsAgainst(y)				->	Face(y), CombatUseWeaponsAgainst(y), Stay;
+
+	// If we're in position but don't have a loaded weapon, load/draw it. AutonomousFire would do
+	// that automatically, but in this rule, as opposed to the next, we don't face any particular
+	// direction. This means that if we're firing at a target and run out of ammo, we will not
+	// turn back to the direction of the point while we reload.
+	// Note: (CombatRangeWeaponReadied || CanCombatReadyRangeWeapon) are a part of the
+	// precondition, so !CombatRangeWeaponReadied -> implies CombatReadyRangeWeapon
+	// (at least assuming no fuzziness here).
+	At(x) && !CombatRangeWeaponReadied 
+		/*&& CanCombatReadyRangeWeapon*/					->	CombatReadyRangeWeapon, Stay;
+
+	// I added these to address a problem that I observed after Chris P. reported
+	// some weirdness. Basically, make sure that we look at recent/nearby enemies even
+	// if we can't shoot them right now, rather than facing the scripted direction.  /FF
+	At(x) && WantToHurt(y) && SpatialDistanceVeryClose(y) && CanLookAt(y)		->	LookAt(y), Stay;
+	At(x) && WantToHurt(y) && SpatialDistanceClose(y) && CanLookAt(y)			->	LookAt(y), Stay;
+
+
+	// We're in position but don't seem to have any particular target, stay here and
+	// face in the desired direction.
+	// TODO: Replace LookAround by some sort of look-for-enemies program, which can
+	// be more intelligent in looking at unidentified actors etc.
+	At(x) && CanFaceInSameDirection(x) && CanLookAround			->	Stay, FaceInSameDirection(x), LookAround;
+	At(x) && CanFaceInSameDirection(x)							->	Stay, FaceInSameDirection(x);
+
+	// We're in position, but can't face in a particular direction. This probably
+	// just means that x doesn't have any directional information.
+	// TODO: Replace LookAround by some sort of look-for-enemies program. Unlike in the previous
+	// case where we've got a face direction, we wouldn't mind if this one turned the whole
+	// body to cover 360 degrees.
+	At(x) && CanLookAround										->	Stay, LookAround;
+	At(x)														->	Stay;
+
+	// We are not at the position, but we've got the weapon drawn. Jog towards our
+	// desired shooting location and fire at will.
+	// Note that CanMoveTo(x) is implied from the precondition and !At(x).
+	/*CanMoveTo(x) && */ CombatRangeWeaponReadied										->	MoveTo(x), SpeedJog, AutonomousFire;
+
+	// We are not in position and we don't have a drawn/loaded weapon, move towards
+	// the destination and draw/load. Note that this and the previous rule couldn't
+	// simply be replaced to use AutonomousFire, because of the subtle difference that
+	// now we draw/load our gun even if we don't know of any target.
+	// Also note that CanMoveTo(x) && CanCombatReadyRangeWeapon are implied by
+	// the precondition and previous rules.
+	//CanMoveTo(x) && !CombatRangeWeaponReadied && CanCombatReadyRangeWeapon		->	MoveTo(x), SpeedJog, CombatReadyRangeWeapon;
+	TRUE																						->	MoveTo(x), SpeedJog, CombatReadyRangeWeapon;
+}
+
+
+// PURPOSE:	Carry out tasks involving a specific cover location, by first moving there and then hiding or shooting from there
+//			depending on what the task was.
+// TODO:	Work a bit more on this, add preconditions and stuff. /FF
+program PerformTaskUseCover
+{
+	NewCombatStateMachineEnabled	->	CombatBehavior, trLookAroundIfPossible;
+	
+	// These rules were added, because CanCombatUseWeaponsAgainstFromCover(x) can currently be true even for
+	// objects that we won't actually be able to shoot. Now we're first trying to shoot at a scripted target
+	// if possible, then shooting at any enemy, then (by the rules further down) try just aiming at the scripted
+	// target, or aiming at any enemy.
+	// Note: Currently, this includes shooting towards the last known position of an enemy for a certain amount
+	// of time, which is questionable. We may want to add another set of rules before this that make sure
+	// we prioritize anybody we can truly shoot. /FF
+	EffectiveCombatUseWeaponsAgainstFromCover(x) && !CombatCoverExternalHide && CombatAtCoverExternal && ObjectClassObjectiveDestroy(x) && CanCombatUseWeaponsAgainstFromCover(x)	->	CombatUseWeaponsAgainstFromCover(x);
+	EffectiveCombatUseWeaponsAgainstFromCover(x) && !CombatCoverExternalHide && CombatAtCoverExternal && WantToHurt(x) && CanCombatUseWeaponsAgainstFromCover(x)					->	CombatUseWeaponsAgainstFromCover(x);
+
+	// If not scripted to only hide, once we are at the cover location try to destroy specific targets.
+	!CombatCoverExternalHide && CombatAtCoverExternal && ObjectClassObjectiveDestroy(x) && CanCombatUseWeaponsAgainstFromCover(x)	->	CombatUseWeaponsAgainstFromCover(x);
+
+	// If not scripted to only hide, once we are at the cover location try to destroy enemy targets.
+	!CombatCoverExternalHide && CombatAtCoverExternal && WantToHurt(x) && CanCombatUseWeaponsAgainstFromCover(x)					->	CombatUseWeaponsAgainstFromCover(x);
+
+	// If not scripted to only hide (but no valid enemies were found), try to peek from cover and wait for those enemies to arrive.
+	!CombatCoverExternalHide && CombatAtCoverExternal && CanCombatPeekFromCover														->	CombatPeekFromCover, LookAtEnemiesOrAroundIfPossible;
+
+	// If at cover and none of the above applied, hide. This would be the typical case when TASK_HIDE_AT_COVER was used.
+	CombatAtCoverExternal && CanCombatHideAtCover																					->	CombatHideAtCover, LookAtEnemiesOrAroundIfPossible;
+	
+	// Ready our weapon if we can. CombatReadyRangeWeapon already involves hiding if at a cover location. /FF
+	HasDestroyObjective && !CombatRangeWeaponReadied && CanCombatReadyRangeWeapon													->	CombatReadyRangeWeapon;
+
+	// If not at the desired cover location, move there and try to eliminate scripted targets.
+	!Riding && CanCombatMoveToCoverExternal && HasDestroyObjective																	->	PerformTaskDestroyWhileMoving, CombatMoveToCoverExternal;
+
+	// Move to the desired cover location.
+	// Note: I added the AutonomousFireIfAllowed here, I think it makes sense the way other tasks work.
+	!Riding && CanCombatMoveToCoverExternal																							->	CombatMoveToCoverExternal, AutonomousFireIfAllowed;
+
+	// Dismount if we're on a horse, since the cover stuff doesn't work on horseback.
+	// TODO: Work more on this. It would be nice to still be able to use a horse to get closer to the destination, if far away.
+	Riding && CanRideDismount																										->	RideDismount;
+}
+
+debuggroup TaskShootFromCover
+{
+	filter ObjectClassObjectiveDestroy(x), predicate EffectiveCombatUseWeaponsAgainstFromCover(x), label "EffectiveCombatUseWeaponsAgainstFromCover $x";
+	filter ObjectClassObjectiveDestroy(x), predicate CanCombatUseWeaponsAgainstFromCover(x), label "CanCombatUseWeaponsAgainstFromCover $x";
+	filter ObjectClassObjectiveDestroy(x), predicate CombatAtCoverExternal, label "CombatAtCoverExternal";
+	filter ObjectClassObjectiveDestroy(x), predicate CanCombatMoveToCoverExternal, label "CanCombatMoveToCoverExternal";
+	filter ObjectClassObjectiveDestroy(x), predicate WantToHurt(x), label "WantToHurt $x";
+	filter ObjectClassObjectiveDestroy(x), predicate ObjectClassObjectiveDestroy(x), label "ObjectClassObjectiveDestroy $x";
+	filter ObjectClassObjectiveDestroy(x), predicate ObjectClassObjectiveShootAt(x), label "ObjectClassObjectiveShootAt $x";
+	filter ObjectClassObjectiveDestroy(x), predicate CombatCoverExternalHide, label "CombatCoverExternalHide";
+	filter ObjectClassObjectiveDestroy(x), predicate WasVisibleJustNow(x), label "WasVisibleJustNow $x";
+	filter ObjectClassObjectiveDestroy(x), predicate CombatClassCoverShouldShootAtLastKnown(x), label "CombatClassCoverShouldShootAtLastKnown $x";
+	filter ObjectClassObjectiveDestroy(x), predicate CanShootFromCover(x), label "CanShootFromCover $x";
+	filter ObjectClassObjectiveDestroy(x), predicate AllowedToShoot, label "AllowedToShoot";
+	filter ObjectClassObjectiveDestroy(x), predicate AllowedToRangeAttack(x), label "AllowedToRangeAttack $x";
+	filter ObjectClassObjectiveDestroy(x), predicate CanCombatShootFromCover(x), label "CanCombatShootFromCover $x";
+}
+
+// PURPOSE:	This program is used to implement TASK_MELEE_ACTOR, and tries to locate the
+//			target and get to a position from which melee attacks can be performed.
+// NOTES:	Use CanPerformTaskMelee(x) as the precondition.
+program PerformTaskMelee(x)
+{
+	// This is where we want to be, the target close and possible to fight. /FF
+	SpatialDistanceClose(x) && CanCombatFightOrTakeDown(x)							->	CombatFightOrTakeDown(x), LookAtIfPossible(x);
+
+	// If we're very close and on a horse, dismount.
+	// TODO: Maybe remove this, once we allow melee attacks from horses (not by AI now). /FF
+	SpatialDistanceVeryClose(x) && Riding && CanRideDismount						->	RideDismount, LookAtIfPossible(x);
+
+	// If we are at a position where we just saw the actor, stay for a while. /FF
+	PositionKnownRecently(x) && At(x)												->	Stay, LookAtIfPossible(x);
+
+	// If we know where the actor was very recently and we can get there, do so. /FF
+	PositionKnownRecently(x) && CanMoveTo(x)										->	MoveTo(x), SpeedJog, LookAtIfPossible(x);
+
+	// Another dismount condition: we know where the target is but can't get there - possibly,
+	// dismounting will allow us to go there! /FF
+	KnowsWhereIs(x) && Riding && CanRideDismount									->	RideDismount, LookAtIfPossible(x);
+
+	// Lost track of the target, look for it if possible. CanFindAndMoveTo(x) may go
+	// false once we see where the target is, but we can't get there. /FF
+	CanFindAndMoveTo(x)																->	FindAndMoveTo(x), SpeedJog;
+
+	// This last rule basically picks up if we're unable to get to the target. If we know
+	// where the target is, it's far away, and we can't move there, CanPerformTaskMelee(x)
+	// may go false and a task failure be reported to the designers. /FF
+	/*SpatialDistanceClose(x) - implied by precondition */ TRUE						->	Stay, LookAtIfPossible(x);
+
+	// TODO: Deal with holstering weapons?
+	// TODO: Deal/fail if target is on horse?
+}
+
+rules Test1
+{
+	// Note: This precondition is actually used by the code, so don't rip it out even if
+	// it doesn't seem to be used from here! /FF
+	// These are basically the current rules in the PerformTaskMelee(x) TR program:
+	//	(SpatialDistanceClose(x) && CanCombatFight(x)) || (SpatialDistanceVeryClose(x) && Riding && CanRideDismount) || At(x) || CanMoveTo(x) || CanFindAndMoveTo(x) || SpatialDistanceClose(x) || (KnowsWhereIs(x) && Riding && CanRideDismount)
+	// but I believe this can be simplified to
+	//	CanFindAndMoveTo(x) || SpatialDistanceClose(x)
+	// to which we also add the requirement of needing fight capabilities so we can punch them
+	// in the face once we get there. /FF
+	HasFightCapabilities && (CanFindAndMoveTo(x) || SpatialDistanceClose(x) || (KnowsWhereIs(x) && Riding && CanRideDismount))		->	CanPerformTaskMelee(x);
+
+	// These rules provide the HasReasonableCombatCoverUseObjective predicate, which is
+	// the same as HasCombatCoverUseObjective except that it goes false if the desired
+	// cover location is "hot" (enemies too close). /FF
+	WantToHurt(x) && PositionKnownRecently(x) && CombatOtherCloseToCoverExternal(x)		->	CombatEnemiesAtExternalCover;
+	HasCombatCoverUseObjective && !CombatEnemiesAtExternalCover							->	HasReasonableCombatCoverUseObjective;
+}
+
+
+// This program performs the current task, whatever it is. This used to be much
+// more distributed, but doing it this way allows us to use any priority for
+// any task.
+// Precondition:	CanPerformTask
+program PerformTask
+{
+	// Perform tasks while constraining the space if the task has an associated constraint.
+	TRUE	->	PerformTask1, ConstrainSpaceAllowedByTask, ReportState(kReportStatePerformingTask);
+}
+
+program PerformTask1
+{
+	// This rule makes aiTaskTrActionBase-derived tasks work, which invoke
+	// some other TR program (or elementary action). /FF
+	HasTrTask && CanPerformTrTask											->	PerformTrTask;
+
+	// Move to and then hide at or shoot from a specific location, for TASK_SHOOT_FROM_COVER etc.
+	HasReasonableCombatCoverUseObjective									->	PerformTaskUseCover;
+
+	HasActionObjectiveWithoutTarget											->	PerformTaskActionWithoutTarget;
+	HasActionObjectiveWithTarget && ObjectClassObjectivePerformActionOn(x)	->	PerformTaskActionWithTarget(x);
+
+	ObjectClassObjectiveSeekCoverFrom(x) && CanStayAwayFromDanger(x)		->	StayAwayFromDanger(x);
+
+	ObjectClassObjectiveMelee(x) && CanPerformTaskMelee(x)					->	PerformTaskMelee(x);
+	ObjectClassObjectiveMelee(x) && !HasFightCapabilities					->	MoveRetreatFrom(x), SpeedJog;
+
+	// This is for TASK_USE_GRINGO.
+	HasHotspotUseObjective && CanPerformTaskMoveToAndUseHotspot				->	PerformTaskMoveToAndUseHotspot, AutonomousFireIfAllowed;
+
+	ObjectClassObjectiveShootFrom(x) && CanPerformTaskShootFrom(x)			->	PerformTaskShootFrom(x);
+
+	//MyTurret(x) OR CanFulfillTurretObjective(x)		->	PerformTaskUseTurret(x);
+	DesiredTurret(x)							->	PerformTaskUseTurret(x);
+	HasDismountObjective							->	PerformTaskDismount;
+	HasMountObjective								->	PerformTaskMount;
+	
+	// I moved this up here, it used to be further down. The reason is that I want
+	// its AutonomousFireIfAllowed to be used on objects marked as ObjectClassObjectiveDestroy(x),
+	// without PerformTaskDestroy being called. TASK_FOLLOW_AND_ATTACK_OBJECT needs this. /FF
+	HasSimpleTask									->	PerformSimpleTask, AutonomousFireIfAllowed, trLookAroundIfPossible;
+	
+	HasMoveObjective && HasDestroyObjective			->	PerformTaskMove, PerformTaskDestroy;
+	HasMoveObjective								->	PerformTaskMove, AutonomousFireIfAllowed;
+
+	HasDestroyObjective								->	PerformTaskDestroy;
+	ObjectClassObjectiveFace(x)	&& CanFace(x)		->	FaceAnimated(x);
+
+	// If we're at a position we are supposed to guard, stand guard at the position.
+	ObjectClassObjectiveGuard(x) && At(x) && CanGuard(x)							->	Guard(x);
+
+	// If we are close to a position we are supposed to guard, walk towards it.
+	ObjectClassObjectiveGuard(x) && SpatialDistanceClose(x) && CanMoveTo(x)			->	MoveTo(x), SpeedWalk;
+
+	// If we are far away from a position we are supposed to guard, jog towards it.
+	ObjectClassObjectiveGuard(x) && CanMoveTo(x)									->	MoveTo(x), SpeedJog;
+
+	// If we're set up to patrol, walk along the patrol path.
+	// No longer done this way. Instead, this task is carried out through the PerformSimpleTask action.
+	//	HasPatrolPath										->	Patrol:(SpeechEvent("AudioEventPatrol")), SpeedWalk;
+
+	// HACK: Future Activity #0 = idle
+	//	ObjectiveWander && CanMoveWander					->	MoveWander, PlanActivity(0, 5.0, 7.0), PrepareForActivity(0), AllowTalkIfWilling;
+	// These days, "wander" basically means perform unalerted behavior. /FF
+	ObjectiveWander	->	PerformUnalertedHuman;
+
+	HasCrouchObjective							->	Stay, PostureCrouch, AutonomousFireIfAllowed;
+
+	// This is a bit odd, as TASK_STAND_STILL does not result in any particular
+	// predicate value, just a lack of other things to do. Because of this the
+	// user of PerformTask will need to use the external priority to determine
+	// whether to call PerformTask or not.
+	// - Not quite true anymore, since there is a HasTask predicate now. /FF
+	TRUE												->	Stay, AutonomousFireIfAllowed, trLookAroundIfPossible;
+}
+
+
+rules Preconditions_External
+{
+	ObjectClassObjectiveDestroy(x)								->	HasDestroyObjective;
+
+	HasCombatCoverUseObjective									->	HasMoveObjective;
+	ObjectClassTypeLocation(x) && ObjectClassObjectiveMoveTo(x)	->	HasMoveObjective;
+	//	HasPathToFollow											->	HasMoveObjective;
+	ObjectClassObjectiveFollow(x)								->	HasMoveObjective;
+	//ObjectClassObjectiveRetreatFrom(x)						->	HasMoveObjective;
+	ObjectClassObjectiveJack(x)									->	HasMountObjective;
+	ObjectClassObjectiveMount(x)								->	HasMountObjective;
+	
+	ShouldCombatSearchAndAttack(x)								->	ShouldCombatSearchAndAttackAnybody;
+	// For TASK_USE_GRINGO.
+	CanHotspotUseExternal || CanHotspotMoveToExternal			->	CanPerformTaskMoveToAndUseHotspot;
+
+	ObjectClassTypeTurret(x) AND ObjectClassObjectiveMoveTo(x)		->	DesiredTurret(x);
+
+	MyTurret(x) OR (DesiredTurret(x) AND NOT PropInUse(x))		->	CanFulfillTurretObjective(x), CanFulfillTurretObjective, HasMoveObjective;
+
+	MyTurret(x) OR DesiredTurret(x)								->	HasTurretObjective(x), HasTurretObjective;
+
+	// To shoot from a position, we need to be able to get to the position, and we need to be able to shoot.
+	(At(x) || CanMoveTo(x)) && (CombatRangeWeaponReadied || CanCombatReadyRangeWeapon)	->	CanPerformTaskShootFrom(x);
+
+/*
+	(ObjectClassObjectiveFollow(x) && CanFindAndFollow(x))
+	|| (ObjectClassTypeLocation(x) && ObjectClassObjectiveMoveTo(x) && At(x))
+	|| (ObjectClassTypeLocation(x) && ObjectClassObjectiveMoveTo(x) && CanMoveTo(x))
+	|| (ObjectClassObjectiveGuard(x) && At(x) && CanGuard(x))
+	|| (ObjectClassObjectiveGuard(x) && SpatialDistanceClose(x) && CanMoveTo(x))
+	|| (ObjectClassObjectiveGuard(x) && CanMoveTo(x))
+	|| (ObjectClassObjectiveDestroy(x) && CanCombatSearchAndAttack(x) && Alive(x))
+	|| HasPatrolPath
+	|| TRUE	// TASK_STAND_STILL: TODO?
+	->	CanPerformTask;
+*/
+	// The priority should be set if and only if we currently have a task.
+	// If we had something that indicate that a TASK_STAND_STILL is in
+	// progress, the precondition should be something like the disabled but
+	// awkward expression above this - in that case, maybe a new language
+	// feature would be in order. /FF
+//	ExternalPriorityHighest || ExternalPriorityCombat || ExternalPriorityUnalerted	->	CanPerformTask;
+	HasTask && (ExternalPriorityHighest || ExternalPriorityCombat || ExternalPriorityUnalerted || ExternalPriorityDefaultBehavior) &&
+		(!HasTurretObjective || CanFulfillTurretObjective) &&
+		(!HasCombatCoverUseObjective || (HasReasonableCombatCoverUseObjective && CanPerformTaskUseCover))
+		->	CanPerformTask;
+
+	ObjectClassObjectiveMount(x)
+			&& Rideable(x)
+			&& !ObjectClassAttribHitchedToWagon(x)
+			&& (!HasRider(x) || ObjectClassObjectiveJack(x))
+			-> HasValidTaskMountTarget;
+
+	// Note: This precondition predicate is checked by code. /FF
+	HasValidTaskMountTarget
+	 && (	(RidingOn(x) && ObjectClassObjectiveMount(x))
+			|| (ObjectClassObjectiveMount(x) && CanMoveToAndMount(x))
+			|| (ObjectClassObjectiveJack(x) && CanMoveToAndJack(x))
+			|| (!OnFoot && CanGetOnFoot)
+		)
+			->	CanPerformTaskMount;
+}
+
+
+// PURPOSE:	This is currently used by PerformTaskMount, to dismount if on the wrong horse.
+program GetOnFoot
+{
+	Riding && CanRideDismount				->	RideDismount;
+	TRUE /* && RidingVehicle */				->	VehicleExit;
+}
+
+
+// PURPOSE:	Rules to support the GetOnFoot program.
+rules OnFootRules
+{
+	!Riding && !RidingVehicle				->	OnFoot;
+	Riding && CanRideDismount				->	CanGetOnFoot;
+
+	// This is currently not working all that well - the actors seem to have a tendency
+	// to start moving during the exit animation, so I'm leaving it out for now. /FF
+	//	RidingVehicle /* && CanVehicleExit */	->	CanGetOnFoot;
+}
+
+
+debuggroup ExternalPriorities
+{
+	filter TRUE, predicate ExternalPriorityHighest, label "Priority Highest";
+	filter TRUE, predicate ExternalPriorityCombat, label "Priority Combat";
+	filter TRUE, predicate ExternalPriorityUnalerted, label "Priority Unalerted";
+	filter TRUE, predicate ExternalPriorityDefaultBehavior, label "Priority Default Behavior";
+}
+
+
+debuggroup Mount
+{
+	filter TRUE, predicate CanPerformTaskMount, label "CanPerformTaskMount";
+	filter TRUE, predicate CanMountNearbyHorse, label "CanMountNearbyHorse";
+	filter TRUE, predicate TaskDisallowsMounting, label "TaskDisallowsMounting";
+	filter TRUE, predicate RidingVehicle, label "RidingVehicle";
+	filter ObjectClassCreatureRaceHorse(x), predicate Rideable(x), label "Rideable $x";
+	filter ObjectClassCreatureRaceHorse(x), predicate HasRider(x), label "HasRider $x";
+	filter ObjectClassCreatureRaceHorse(x), predicate ObjectClassAttribHitchedToWagon(x), label "HitchedToWagon $x";
+	filter ObjectClassObjectiveMount(x), predicate ObjectClassObjectiveMount(x), label "ObjectiveMount $x";
+	filter ObjectClassCreatureRaceHorse(x), predicate AllowedToRide(x), label "AllowedToRide $x";
+	filter ObjectClassCreatureRaceHorse(x), predicate CanMoveToAndMount(x), label "CanMoveToAndMount $x";
+	filter ObjectClassCreatureRaceHorse(x), predicate CanFindAndMoveTo(x), label "CanFindAndMoveTo $x";
+	filter TRUE, predicate OnFoot, label "OnFoot";
+	filter TRUE, predicate CanGetOnFoot, label "CanGetOnFoot";
+}
+
+//-----------------------------------------------------------------------------
+// Programs and preconditions related to the TASK_FOLLOW_ACTOR script command,
+// i.e. following somebody without being a part of the squad/posse.
+
+rules Preconditions_Follow
+{
+	// FollowMove(x) is really the only part of FindAndFollow(x) that we
+	// need to care about for the precondition.
+	CanFollowMove(x)		->	CanFindAndFollow(x);
+
+	// FollowMove(x) can be executed if we lost x but know how to find him,
+	// if we're not where we want to be but are able to get there, or if
+	// we're already where we're supposed to be.
+	(!PositionKnownRecently(x) && CanFind(x))
+	||	(SpatialMovingAwayFromMe(x) || !SquadMemberAt(x)) && CanMoveTo(x)
+	||	SquadMemberAt(x)	->	CanFollowMove(x);
+}
+
+
+// Follow x if we know where he/she is, or find him/her if not. This program
+// adaps speeds and makes sure to look at the person being followed.
+// Precondition:	CanFindAndFollow(x)
+program FindAndFollow(x)
+{
+	TRUE				->	FollowMatchSpeed(x), FollowLookAt(x), FollowMove(x);
+}
+
+
+// Called by FindAndFollow(x) mainly for deciding where to move to.
+// Precondition: CanFollowMove(x)
+program FollowMove(x)
+{
+	!PositionKnownRecently(x) && CanFind(x)											->	Find(x);
+	(SpatialMovingAwayFromMe(x) || !SquadMemberAt(x)) && CanMoveTo(x)				->	MoveTo(x);
+	CanLookAt(x)																	->	LookAt(x), Stay;
+	TRUE																			->	Stay;
+}
+
+
+// This is a helper program that makes sure to look at the person
+// we're supposed to follow, if we can.
+program FollowLookAt(x)
+{
+	CanLookAt(x)					->	LookAt(x);
+}
+
+
+// Helper program for controlling the movement speed when
+// following somebody.
+program FollowMatchSpeed(x)
+{
+	// Handle the case when we're riding and x is not.
+	Riding && !Riding(x)		->	FollowMatchSpeedHorseToFoot(x);
+
+	// Handle the case when x is riding and we are not.
+	!Riding && Riding(x)		->	FollowMatchSpeedFootToHorse(x);
+
+	// If getting here, we're either both on horses, or both walking.
+
+	// If x is sprinting, sprint.
+	// Note: the 2.0 strength here is mostly because SpatialSprinting(x)
+	// isn't perfect at determining the speed. /FF
+	SpatialSprinting(x)				->	SpeedSprint WITH 2.0;
+
+	// If x is running, run. This is only valid if we're riding,
+	// since this speed doesn't really exist when on foot.
+	Riding && SpatialRunning(x)		->	SpeedRun;
+
+	// If riding (both of us), use run speed unless very close to the target.
+	Riding && !SpatialDistanceVeryClose(x)		->	SpeedRun;
+
+	// If we're not very close, don't bother trying to walk, better
+	// start jogging.
+	!SpatialDistanceVeryClose(x)	->	SpeedJog;
+
+	// Even if we're close, if the target is jogging we probably should too,
+	// to not get behind wherever he's going.
+	SpatialJogging(x)				->	SpeedJog;
+
+	// If here, we're very close to x, and x isn't moving faster than
+	// at walk speed.
+	TRUE							->	SpeedWalk;
+}
+
+
+// Used by FollowMatchSpeed(x) when riding and following
+// somebody that's on foot.
+program FollowMatchSpeedHorseToFoot(x)
+{
+	// If we're somewhat far off, catch up.
+	!SpatialDistanceClose(x)		->	SpeedRun;
+
+	// If x is sprinting (on foot), we can use the run
+	// speed. No need to sprint.
+	SpatialSprinting(x)				->	SpeedRun;
+
+	// Unless x is very close, jog to get to him.
+	!SpatialDistanceVeryClose(x)	->	SpeedJog;
+
+	// x is jogging but is very close. A horse "jog" isn't currently
+	// much faster than an on-foot jog, so let's keep up with his speed.
+	SpatialJogging(x)				->	SpeedJog;
+
+	// x is very close, and not moving fast. Let's walk.
+	TRUE							->	SpeedWalk;
+}
+
+
+program FollowMatchSpeedFootToHorse(x)
+{
+	// Unless really close to the horse, better make sure to get there quickly.
+	!SpatialDistanceVeryClose(x)	->	SpeedSprint;
+
+	// The horse is walking and very close, so we can keep up by walking.
+	SpatialWalking(x)				->	SpeedWalk;
+
+	// The horse is jogging. Our jog speed is at least to being quick enough.
+	SpatialJogging(x)				->	SpeedJog;
+
+	// The horse is very close but sprinting or running.
+	TRUE							->	SpeedSprint;
+}
+
+//-----------------------------------------------------------------------------
+
+// TR program for TASK_USE_LASSO with USELASSOACTION_LASSO_AND_HOGTIE, referenced from code.
+program PerformTaskUseLasso_LassoAndHogtie(x)
+{
+	// Code RED Pass2: if lasso/hogtie is available, force progress instead of passive hold.
+	CanCombatLassoHogtie(x)											->	CombatLassoHogtie(x);
+	CombatLassoed(x) && CanCombatLassoHogtie(x)							->	CombatLassoHogtie(x);
+
+	Hogtied(x)												->	Stay;
+	CanCombatLassoHogtie(x)									->	CombatLassoHogtie(x);
+
+	// If we have lassoed the target and we are riding, dismount.
+	// TODO: Maybe add a precondition for CombatLassoHold, but that action
+	// is extremely simple so arguably it's not really needed. /FF
+	CombatLassoed(x) && Riding && CanRideDismount			->	RideDismount, LookAtIfPossible(x), CombatLassoHold;
+
+	TRUE													->	PerformTaskUseLasso(x);
+}
+
+
+// TR program for TASK_USE_LASSO with USELASSOACTION_LASSO_AND_HOLD, referenced from code.
+program PerformTaskUseLasso(x)
+{
+	HasSimpleTask && CanCombatMove(x) && IsPreLassoProbeFailing		->	MoveTo(x), SpeedJog, PerformSimpleTask;
+	HasSimpleTask && CanCombatMove(x)						->	CombatMove(x), PerformSimpleTask;
+/*	SpatialDistanceVeryClose(x) &&*/ HasSimpleTask			->	Stay, PerformSimpleTask;
+//	CanMoveCloserTo(x) && HasSimpleTask						->	MoveCloserTo(x), SpeedJog, PerformSimpleTask;
+//	CanMoveCloserTo(x)										->	MoveCloserTo(x), SpeedJog;
+	TRUE													->	Stay;
+}
+
+// TR program for TASK_USE_LASSO with USELASSOACTION_LASSO_AND_FINISH_ATTACHED.
+// This is currently no different than the USELASSOACTION_LASSO_AND_HOLD TR
+// program, except with a different finish condition.
+// Referenced from code.
+program PerformTaskUseLasso_LassoAndFinishAttached(x)
+{
+	TRUE	->	PerformTaskUseLasso(x);
+}
+
+
+rules TaskUseLassoRules
+{
+	// Goal condition for USELASSOACTION_LASSO_AND_HOGTIE, referenced from code.
+	Hogtied(x)																->	DonePerformTaskUseLasso_LassoAndHogtie(x);
+
+	// Precondition for USELASSOACTION_LASSO_AND_HOGTIE.
+	TRUE																	->	CanPerformTaskUseLasso_LassoAndHogtie(x);
+
+	// Precondition for USELASSOACTION_LASSO_AND_HOLD.
+	TRUE																	->	CanPerformTaskUseLasso(x);
+
+	// Precondition for USELASSOACTION_LASSO_AND_FINISH_ATTACHED, same as USELASSOACTION_LASSO_AND_HOLD.
+	CanPerformTaskUseLasso(x)												->	CanPerformTaskUseLasso_LassoAndFinishAttached(x);
+
+	// Goal condition for USELASSOACTION_LASSO_AND_FINISH_ATTACHED.
+	// Referenced from code.
+	CombatLassoed(x)														->	DonePerformTaskUseLasso_LassoAndFinishAttached(x);
+}
+
+//-----------------------------------------------------------------------------
+
+program PerformTaskStealthAttack(x)
+{
+	CanCombatStealthAttack(x)																	->	CombatStealthAttack(x);
+	CanMoveSneakBehind(x) && CombatWeaponDrawnMeleeStealth										->	MoveSneakBehind(x);
+	!CombatWeaponDrawnMeleeStealth && CanCombatWeaponDrawMeleeStealth && CanMoveSneakBehind(x)	->	CombatWeaponDrawMeleeStealth, MoveSneakBehind(x);
+	!CombatWeaponDrawnMeleeStealth && CanCombatWeaponDrawMeleeStealth							->	CombatWeaponDrawMeleeStealth;
+	TRUE																						->	Stay;
+}
+
+
+rules TaskStealthAttackRules
+{
+	(CombatWeaponDrawnMeleeStealth && (CanCombatStealthAttack(x) || CanMoveSneakBehind(x))) ||
+		(!CombatWeaponDrawnMeleeStealth && CanCombatWeaponDrawMeleeStealth)		->	CanPerformTaskStealthAttack(x);
+}
+
+debuggroup TaskStealthAttack
+{
+	filter ObjectClassTypeCreature(x), predicate CanPerformTaskStealthAttack(x), label "CanPerformTaskStealthAttack $x";
+	filter TRUE, predicate CombatWeaponDrawnMeleeStealth, label "CombatWeaponDrawnMeleeStealth";
+	filter TRUE, predicate CanCombatWeaponDrawMeleeStealth, label "CanCombatWeaponDrawMeleeStealth";
+	filter ObjectClassTypeCreature(x), predicate CanMoveSneakBehind (x), label "CanMoveSneakBehind $x";
+	filter ObjectClassTypeCreature(x), predicate CanCombatStealthAttack(x), label "CanCombatStealthAttack $x";
+	filter ObjectClassTypeCreature(x), predicate CanPerformTaskStealthAttack(x), label "CanPerformTaskStealthAttack $x";
+}
+
+//-----------------------------------------------------------------------------

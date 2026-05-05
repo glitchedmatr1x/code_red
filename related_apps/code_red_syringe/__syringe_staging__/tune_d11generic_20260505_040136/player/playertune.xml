@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PlayerTuneData>
+	<DeadEyeTuneData>
+		<DeadEyeRegenPerSecond value="0.250000"/>
+		<DeadEyeKillPoints value="5.000000"/>
+		<DeadEyeHeadShotPoints value="10.000000"/>
+		<DeadEyeCrippleBonusPoints value="10.000000"/>
+		<DeadEyeDisarmBonusPoints value="25.000000"/>
+		<DeadEyeMinTimeToActivate value="5.000000"/>
+		<DeadEyeSlowMoCostPerSecond value="5.000000"/>
+		<SlowMoDuration value="1025.000000"/>
+		<DeadEyeMultiLockCost value="5.000000"/>
+		<DeadEyeMultiLockCostPerSecond value="5.000000"/>
+		<MultiLockTimeBetweenLocks value="0.400000"/>
+		<MultiLockAutoFireDelay value="0.1000000"/>
+		<MultiLockDuration value="1025.000000"/>
+		<MultiLockDeathTimer value="2.000000"/>
+		<InitialSlowMoTimeScale value="0.100000"/>
+		<InitialMultiLockTimeScale value="0.100000"/>
+	</DeadEyeTuneData>
+	<MPDeadEyeTuneData>
+		<DeadEyeRegenPerSecond value="0.500000"/>
+		<DeadEyeKillPoints value="5.000000"/>
+		<DeadEyeHeadShotPoints value="10.000000"/>
+		<DeadEyeCrippleBonusPoints value="10.000000"/>
+		<DeadEyeDisarmBonusPoints value="25.000000"/>
+		<DeadEyeMinTimeToActivate value="5.000000"/>
+		<DeadEyeSlowMoCostPerSecond value="5.000000"/>
+		<SlowMoDuration value="1025.000000"/>
+		<DeadEyeMultiLockCost value="5.000000"/>
+		<DeadEyeMultiLockCostPerSecond value="5.000000"/>
+		<MultiLockTimeBetweenLocks value="0.100000"/>
+		<MultiLockAutoFireDelay value="0.1000000"/>
+		<MultiLockDuration value="1025.000000"/>
+		<MultiLockDeathTimer value="2.000000"/>
+		<InitialSlowMoTimeScale value="1.000000"/>
+		<InitialMultiLockTimeScale value="1.000000"/>
+	</MPDeadEyeTuneData>
+	<HorseInputTuning>
+		<CameraRelativeControl value="true"/>
+	</HorseInputTuning>
+	<TapHoldCombinerTuning>
+		<IncreasingPeakThreshold value="0.800000"/>
+		<DecreasingPeakThreshold value="0.230000"/>
+		<VelocityThreshold value="5.000000"/>
+		<CancelTime value="0.400000"/>
+		<DirectionAngleTolerance value="0.000000"/>
+	</TapHoldCombinerTuning>
+	<ControlVectorTuneData>
+		<bEnableLocking value="false"/>
+		<fLockedControlReleaseAngle value="0.260000"/>
+		<fLockedControlReleaseMag value="0.250000"/>
+	</ControlVectorTuneData>
+	<ReticleAlphaApproachRate value="8.000000"/>
+	<WeaponSelectionTimeTune value="0.300000"/>
+	<TriggerSensitivity value="5"/>
+	<FireReticleAlpha value="0.250000"/>
+	<WhistleDelayTime value="0.000000"/>
+	<DuelHitZonePoints content="int_array">
+		100
+		50
+		100
+		75
+		50
+		15
+		15
+		15
+		15
+	</DuelHitZonePoints>
+	<HitsBreakTargeting value="false"/>
+</PlayerTuneData>

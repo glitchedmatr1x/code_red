@@ -1,0 +1,3772 @@
+<?xml version='1.0' encoding='utf-8'?>
+<facFactionMgrLoaded>
+	<Factions>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">NoFaction</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">Neutral</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">Player</FactionName>
+			<LawEnforcement value="true" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">Bystander</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">USBystander</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">IndianBystander</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">MexicanBystander</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">LawEnforcement</FactionName>
+			<LawEnforcement value="true" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">USLawEnforcement</FactionName>
+			<LawEnforcement value="true" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">IndianLawEnforcement</FactionName>
+			<LawEnforcement value="true" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">MexicanLawEnforcement</FactionName>
+			<LawEnforcement value="true" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">BountyHunter</FactionName>
+			<LawEnforcement value="true" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">MexicanBandito</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">GenericCriminal</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">CattleRustler</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">IndianRaider</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">MexicanSoldier</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">AnimalBystander</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">AnimalPredator</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">NoFaction</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Neutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">PlayerEnemy</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">PlayerAlly</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">PlayerNeutral</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">PlayerHostile</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">PlayerFriendly</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="false" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Hostile</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">TreasureHunter</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">DrunkNDirty</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">Smugglers</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">MexicanRebel</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">PlayerMpTeam1</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">PlayerMpTeam2</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">PlayerMpTeamFfa</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">PlayerMpTeamCoop</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Friendly</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Neutral</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+		<Item type="ParsableFaction">
+			<FactionName content="ascii">Zombie</FactionName>
+			<LawEnforcement value="false" />
+			<LawfulToAttack value="true" />
+			<DefinedRelations>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Player</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam1</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeam2</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamFfa</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerMpTeamCoop</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Bystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">USLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanLawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">BountyHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanBandito</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">GenericCriminal</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">CattleRustler</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">IndianRaider</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanSoldier</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalBystander</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">AnimalPredator</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Zombie</OtherFaction>
+					<Relationship content="ascii">Ally</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">NoFaction</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Neutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">LawEnforcement</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerEnemy</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerAlly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerNeutral</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerHostile</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">PlayerFriendly</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">TreasureHunter</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">DrunkNDirty</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">Smugglers</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+				<Item type="facFactionRelatesTo">
+					<OtherFaction content="ascii">MexicanRebel</OtherFaction>
+					<Relationship content="ascii">Enemy</Relationship>
+				</Item>
+			</DefinedRelations>
+		</Item>
+	</Factions>
+</facFactionMgrLoaded>

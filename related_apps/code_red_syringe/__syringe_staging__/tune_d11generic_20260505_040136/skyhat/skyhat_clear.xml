@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rage__SkyDomeProceduralControl>
+	<sky>
+		<gNightSkyColor x="0.000000" y="0.039216" z="0.078431"/>
+		<gDaySkyColor x="0.470588" y="0.784314" z="1.000000"/>
+		<gSunsetColor x="1.000000" y="0.509804" z="0.364706"/>
+	</sky>
+	<cloud>
+		<gCloudColor x="0.930000" y="1.000000" z="1.000000"/>
+		<NightBounceColor x="0.200000" y="0.100000" z="0.000000"/>
+		<gCloudShadowStrength value="0.000000"/>
+		<CloudThreshold value="0.000000"/>
+		<CloudBias value="0.000000"/>
+		<CloudShadowOffset value="0.000000"/>
+		<CloudInscatteringRange value="0.010000"/>
+		<CloudEdgeSmooth value="0.000000"/>
+		<CloudThickness value="0.000000"/>
+		<DetailScale value="0.000000"/>
+		<DetailStrength value="0.000000"/>
+		<CloudSpeed value="0.000000"/>
+		<CloudWarp value="0.000000"/>
+		<top>
+			<TopCloudBias value="0.000000"/>
+			<TopCloudDetail value="0.000000"/>
+			<TopCloudThreshold value="0.000000"/>
+			<TopCloudHeight value="0.000000"/>
+		</top>
+	</cloud>
+	<night>
+		<StarBlinkFrequency value="100.000000"/>
+		<StarBlinkIntensity value="0.000000"/>
+		<StarIntensity value="1.055000"/>
+		<StarFieldThreshold value="0.000000"/>
+		<MoonBrightness value="0.700000"/>
+		<MoonGlow value="2.420000"/>
+		<MoonColor x="0.058824" y="0.078431" z="0.078431"/>
+	</night>
+	<light>
+		<LightingPulseFrequency value="0.000000"/>
+		<LightingPulseIntensity value="0.000000"/>
+	</light>
+</rage__SkyDomeProceduralControl>

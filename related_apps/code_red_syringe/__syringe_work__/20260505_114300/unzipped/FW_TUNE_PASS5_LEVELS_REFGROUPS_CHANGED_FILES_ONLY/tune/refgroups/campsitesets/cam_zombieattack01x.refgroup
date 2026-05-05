@@ -1,0 +1,75 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood06x.mb
+transform 1.863257604 0 1.952339154 0 200.8479929 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood06x.mb
+transform 1.198743472 0 -1.272546806 0 200.8479929 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood06x.mb
+transform -1.723695572 0 -1.205509589 0 122.4870109 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood06x.mb
+transform 1.198743472 0 -1.272546806 0 200.8479929 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform 0.3407773227 0 2.086579599 0 79.34198475 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform -0.1607617321 0 -1.341365856 0 79.34198475 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform -1.12917366 0 2.029026089 0 -1.09120701 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform 0.4235657507 0 0.2332729611 0 217.8719959 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform -0.7521674575 0 0.9040694151 0 79.34198475 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform 0.4235657507 0 0.2332729611 0 217.8719959 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bodyPartArm01x.mb
+transform -1.009636339 0 1.540161879 0 443.1762683 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bodyPartArm01x.mb
+transform 1.85982972 0.0009881685148 1.499522263 0 229.7828543 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bodyPartArm01x.mb
+transform 0.8956335273 0 -1.61845041 0 -20.25161596 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bodyPartHead01x.mb
+transform 2.21090402 0.04854808472 2.248917884 0 179.7547067 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse01x.mb
+transform -1.777673197 0 -1.02376838 0 -33.65265961 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse02x.mb
+transform -1.52200202 0 2.136134554 0 -98.47992544 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse03x.mb
+transform 1.445975445 0 -1.412197305 0 152.2408742 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse04x.mb
+transform -0.9237849282 0 0.439055493 0 -146.8839516 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse05x.mb
+transform 1.648778832 0 1.924909748 0 217.0379692 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse06x.mb
+transform 0.6463082578 0 0.2748286223 0 -67.64182813 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_femur02x.mb
+transform 1.029573724 0 -0.3538775739 0 186.0096443 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_dynamiteCrate01x.mb
+transform -1.70 0 1.45 0 17 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_molotovCrate01x.mb
+transform 1.85 0 -1.55 0 -31 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate06x.mb
+transform 2.75 0 1.20 0 68 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_brokenBarrel01x.mb
+transform -2.80 0 -1.25 0 12 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align

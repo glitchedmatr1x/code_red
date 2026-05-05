@@ -1,0 +1,24 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform 0.2711435305 0 -0.1847941289 0 -1.09120701 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bodyPartArm01x.mb
+transform -0.0671505884 0 -0.6037142638 0 443.1762683 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse02x.mb
+transform -0.06849969445 0 0.03327038568 0 -81.60653918 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_femur02x.mb
+transform -0.03792845441 0 0.4540038518 0 144.4085598 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_dynamiteCrate01x.mb
+transform -1.70 0 1.45 0 17 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_molotovCrate01x.mb
+transform 1.85 0 -1.55 0 -31 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate06x.mb
+transform 2.75 0 1.20 0 68 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_brokenBarrel01x.mb
+transform -2.80 0 -1.25 0 12 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align

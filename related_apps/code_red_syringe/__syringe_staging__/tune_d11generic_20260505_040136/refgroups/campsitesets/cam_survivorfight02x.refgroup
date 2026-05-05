@@ -1,0 +1,75 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_barrel02x.mb
+transform -1.510160289 0 1.859143735 0 8.966074024 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_barrel04x.mb
+transform 1.949390274 0 1.610240754 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_barrel05x.mb
+transform 2.814583393 0 -1.221267519 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_barrel05x.mb
+transform -0.9126077732 0 -2.781336939 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate01x.mb
+transform 0.2523381967 0 2.678256399 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate01x.mb
+transform -2.628443806 0 -1.837181646 0 2.064229593 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate02x.mb
+transform -0.4762753542 0 -2.605736857 0 1.511597502 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate03x.mb
+transform -1.154025128 0 2.022384056 0 -10.50191522 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate04x.mb
+transform 2.502412398 0 0 0 -14.41129915 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate07x.mb
+transform -3.078234138 0 -0.89689478 0 -98.76857785 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bedRollClosed01x.mb
+transform 0.605800166 8.881784197e-016 1.248149519 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bedRollClosed01x.mb
+transform 0.6735797299 8.881784197e-016 1.553743124 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bedRollOpen01x.mb
+transform -0.119317072 0 1.073186733 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bedRollOpen02x.mb
+transform 1.322190218 0 0.2139821726 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_crate01x.mb
+transform 1.644109944 0 -3.839988494 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_crateMultiplayerAmmoFull01x.mb
+transform 1.354986664 0 -2.494854827 0 -86.96675342 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_crateMultiplayerAmmoFull01x.mb
+transform -1.969503559 0 -1.220022883 0 -16.84501934 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_crateMultiplayerAmmoFull01x.mb
+transform -2.12027118 0 -0.3298158185 0 -4.719395406 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_crateMultiplayerAmmoFull01x.mb
+transform -0.5349350107 0 0.6591632658 0 84.10746518 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_debrisPile01ax.mb
+transform -0.9828982622 0 0.4945259015 0 -50.17652786 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_debrisPile01ax.mb
+transform -1.978655599 0 0.1032469336 0 147.9028868 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_debrisPile02ax.mb
+transform 0.9217645311 0.09246533364 -2.091432299 0 -40.31556249 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_debrisPile02ax.mb
+transform -0.2805557745 0 -0.8479095885 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_debrisPile03x.mb
+transform -0.875083679 0.01065010391 -2.024716541 0 167.8850436 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_debrisPile03x.mb
+transform 2.088894259 0 -1.31203739 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align

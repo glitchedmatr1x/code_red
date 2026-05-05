@@ -1,0 +1,15 @@
+<!-- Code RED WarStrength Pass: tougher actors, wider awareness, fearless dogs, bigger chaos convergence. -->
+<HotSpotLocationSet>
+	<attributes />
+	<contents>
+		<HotSpotLocator>
+			<attributes>
+				<Position type="double3" value="0.0 0.0 0.0"/>
+				<DirectionXZDegrees type="double" value="0.0" min="-360" max="360" step="5"/>
+				<UseRadius type="double" value="30.0" min="0" max="100" step="0.1"/>
+				<ActivationRadius type="double" value="90.0" min="0" max="100" step="0.1"/>
+			</attributes>
+			<contents/>
+		</HotSpotLocator>
+	</contents>
+</HotSpotLocationSet>

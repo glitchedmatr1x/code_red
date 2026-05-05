@@ -1,0 +1,10 @@
+reference T:/rdr2/Art/Worlds/territory/sw/models/props/p_uti_woodPlaner01x.mb
+transform 0 0 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_woodPlane01x.mb
+transform 0.0697 0.7845 -0.6671 0 36.0356 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_sawHorse02x.mb
+transform -0.6636 0 -0.9196 0 86.4817 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_sawHorse02x.mb
+transform 0.511 0 -0.9409 0 93.041 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_debrisBoard11x.mb
+transform -1.018517288 0.7714 -0.7083899111 0.2064336948 -4.998173107 -0.002201788924

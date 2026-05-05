@@ -1,0 +1,1281 @@
+//-----------------------------------------------------------------------------
+// Combat-related programs and rules:
+
+program CombatEngageEnemies
+{
+
+	// CodeRED Pass3 lasso/takedown pressure: armed NPCs close distance and attempt restraint/takedown before pure gunfire.
+	!RidingVehicle && WantToHurt(x) && SpatialDistanceClose(x) && CanCombatFightOrTakeDown(x)										->	CombatFightOrTakeDown(x), LookAtIfPossible(x);
+	!RidingVehicle && WantToHurt(x) && !CombatRangeWeaponReadied && CanCombatReadyRangeWeapon							->	CombatReadyRangeWeapon, LookAtIfPossible(x);
+
+	// If somebody hit us just now, make them the preferred target. This was originally added to
+	// make melee combat a little bit more interesting, consider taking it out if you suspect it's
+	// causing problems. On the other hand, we may actually want this to go beyond just melee damage. /FF
+	ShouldCombatSearchAndAttack(x) && DamagedMeByMeleeVeryRecently(x)											->	CombatSearchAndAttack(x);
+
+	// Basic weapon pickup rules. Probably will need some polish. /FF
+	!Riding && !HasRangeCapabilities && CanMoveToAndPickUpNearbyWeapon		->	MoveToAndPickUpNearbyWeapon;
+
+	// If we are unarmed and can't pickup a nearby gun and enemy draws a gun, retreat
+	!Riding && !HasRangeCapabilities && Player(x) && WantToHurt(x) && (CombatRangeWeaponDrawn(x) || IsHoldingKnife(x)) && CanMoveRetreatFrom(x)		
+			->	MoveRetreatFrom(x), SpeedSprint, RememberWasRetreating(x);
+	!Riding && !HasRangeCapabilities && WantToHurt(x) && CombatRangeWeaponDrawn(x) && CanMoveRetreatFrom(x)		
+			->	MoveRetreatFrom(x), SpeedSprint;
+			
+	// This is here 3 times to give a preference to close targets, unless already attacked by others.
+	// Note that this relies on this being a TR program that's applied to all targets at once,
+	// the effect would be different if this was turned into a program EngageEnemy(x).
+	WantToHurt(x) && SpatialDistanceVeryClose(x) && CanCombatFightOrTakeDown(x)							->	CombatFightOrTakeDown(x), LookAtIfPossible(x);
+	ShouldCombatSearchAndAttack(x) && (SpatialDistanceVeryClose(x) && !ManyOthersAreAttacking(x))	 		->	CombatSearchAndAttack(x);
+	ShouldCombatSearchAndAttack(x) && (SpatialDistanceClose(x) && !OthersAreAttacking(x))		 			->	CombatSearchAndAttack(x);
+	ShouldCombatSearchAndAttack(x)																			->	CombatSearchAndAttack(x);
+
+	// Get on a horse if possible if an enemy is riding.
+	!Riding && WantToHurt(x) && Riding(x) && !PrefersWalking && CanMountNearbyHorse							->	MountNearbyHorse, SpeedJog;
+
+	// Jog towards enemies that are far enough away to not be attacked by the CombatSearchAndAttack(x)
+	// above, but that nobody else is attacking. This (and the SpeedWalk version of the rule) takes
+	// care of this situation:
+	// 1. Get close enough to the actor for him to identify you as an enemy.
+	// 2. Move far away, but within vision range. Before, the actor would search,
+	//    now he should move towards you.
+	// Note that this assumes that the actor will be able to attack once he gets close.
+	!RidingVehicle && WantToHurt(x) && CanFindAndMoveTo(x) && !OthersAreAttacking(x)			->	FindAndMoveTo(x), SpeedJog;
+
+	// If others are already attacking, walk towards distant enemies.
+	!RidingVehicle && WantToHurt(x) && CanFindAndMoveTo(x)									->	FindAndMoveTo(x), SpeedWalk;
+}
+
+
+// This program involves shooting at target x. If losing sight with the target
+// the actor enters a quick search mode. If losing sight of the target for
+// an extended period of time, it is intended that the user of this program
+// enters a more thorough long-term search or takes other action (such as
+// alerting allies directly or setting off an alarm).
+// Precondition:	CanCombatSearchAndAttack(x).
+program CombatSearchAndAttack(x)
+{
+	// If we aren't using ranged attacks, go into the search attack intending to melee. (dmorales)
+	!AllowedToRangeAttack(x)	->	CombatSearchAndAttack1(x);
+
+	// I changed this a bit, to make sure that the intended target is always considered a cover objective.
+	// Before, grunts turned out to be very indecisive in some cases. /FF
+	TRUE	->	CombatSearchAndAttack1(x), CombatSeekCoverToShootAt(x), CombatSeekCoverToProtectFrom(x);
+}
+
+
+program CombatSearchAndAttack1(x)
+{
+	// Since we can't do much in terms of attacking yet while on
+	// a horse, dismount for the attack. The exception is if the target
+	// is on a horse too, in which case we'll just stay on.
+	// TODO:  Resolve the conflict between this autonomous dismount and a TASK_MOUNT
+	// SpatialDistanceClose(x) && !Riding(x) && Riding && CanRideDismount								->	RideDismount;
+
+	// If the intended target is riding and we have the opportunity to
+	// mount a horse, do so.
+	!Riding && Riding(x) && !PrefersWalking && CanMountNearbyHorse										->	MountNearbyHorse, SpeedJog;
+
+	// Fight hand-to-hand under certain conditions (typically if close to x).
+	ShouldFightInsteadOfShoot(x) && CanCombatFightOrTakeDown(x)											->	CombatFightOrTakeDown(x);
+
+	// Shoot etc from cover. /FF
+	CombatClassShouldStayAtCover && CanCombatUseWeaponsAgainstFromCover(x) && (WasVisibleJustNow(x) || CombatClassCoverWaitTargetPosUnknown(x))	->	CombatUseWeaponsAgainstFromCover(x);
+
+	// Move and shoot, without using cover. /FF
+	// - I added the AllowedToRangeAttack(x) here, so that if they are not allowed to shoot, they don't try to do any combat movement stuff. /FF
+	AllowedToRangeAttack(x) && (KnowsWhereIs(x) || (LastKnownPositionExists(x) && !NotAtLastKnownPosition(x))) && CanCombatShootOrDrawWeapon(x)		->	CombatShootOrDrawWeapon(x);
+
+	// This rule is here to make actors that are not willing to use their weapons holster it.
+	// I'm not completely sure about this one - for one, we probably wouldn't want it for
+	// melee weapons, and I'm also not sure if this is the right place. /FF
+	!AllowedToRangeAttack(x) && !TaskDisallowsHolstering && CombatWeaponDrawn && CanCombatWeaponHolster	->	CombatWeaponHolster;
+
+	// This was added, honoring an old comment. This makes fighting more reliable for actors that don't shoot,
+	// as before they would only fight on ShouldFightInsteadOfShoot(x) and instead run FindAndMoveTo(x) otherwise.
+	(KnowsWhereIs(x) || (LastKnownPositionExists(x) && !NotAtLastKnownPosition(x))) && CanCombatFightOrTakeDown(x)		->	CombatFightOrTakeDown(x), LookAtIfPossible(x);
+
+	// CanFindAndMoveTo(x) is a part of CanCombatSearchAndAttack(x). Note that
+	// this used to be a Find(x) instead of FindAndMoveTo(x), but in that case an
+	// actor that can't shoot would not move close to engage in close combat.
+	!RidingVehicle && CanFindAndMoveTo(x) && !CombatOutsideDefendVolume(x)			->	FindAndMoveTo(x), SpeedJog, LookAtIfPossible(x);
+
+	TRUE										->	LookAtIfPossible(x);
+}
+
+debuggroup NewCombat
+{
+	
+	filter TRUE, predicate NewCombatStateMachineEnabled, label "NewCombatStateMachineEnabled";
+	filter TRUE, predicate HasRangeCapabilities, label "HasRangeCapabilities";
+	filter Player(x), predicate WantToHurt(x), label "WantToHurt($x)";
+	filter Player(x), predicate AllowedToRangeAttack(x), label "AllowedToRangeAttack($x)";
+	
+	filter TRUE, predicate EnableCombatEngageEnemies, label "EnableCombatEngageEnemies";
+	filter TRUE, predicate CanCombatEngageEnemies, label "CanCombatEngageEnemies";
+}
+
+// Useful debug values for combat. They are all shown with the player as the
+// intended target.
+debuggroup Combat
+{
+	//filter Player(x), predicate AllowedToFireAt(x),			label "AllowedToFireAt";
+	filter Player(x), predicate BaseWantToHurt(x),				label "BaseWantToHurt";
+	filter Player(x), predicate CanCombatSearchAndAttack(x),	label "CanCombatSearchAndAttack";
+	filter Player(x), predicate CanFind(x),						label "CanFind";
+	filter Player(x), predicate CombatTargetFurtherThanWeaponMax(x), label "CombatTargetFurtherThanWeaponMax";
+	filter Player(x), predicate CombatTargetFurtherThanWeaponDesired(x),  label "CombatTargetFurtherThanWeaponDesired";
+	filter Player(x), predicate Enemy(x),						label "Enemy";
+	filter Player(x), predicate KnowsWhereIs(x),				label "KnowsWhereIs";
+	filter Player(x), predicate ManyOthersAreAttacking(x),		label "ManyOthersAreAttacking";
+	filter Player(x), predicate OthersAreAttacking(x),			label "OthersAreAttacking";
+	filter Player(x), predicate NotAtLastKnownPosition(x),		label "NotAtLastKnownPosition";
+	filter Player(x), predicate PositionKnownRecently(x),		label "PositionKnownRecently";
+	filter Player(x), predicate ShouldCombatSearchAndAttack(x),	label "ShouldCombatSearchAndAttack";
+	filter Player(x), predicate SpatialDistanceClose(x),		label "SpatialDistanceClose";
+	filter Player(x), predicate SpatialDistanceVeryClose(x),	label "SpatialDistanceVeryClose";
+	filter Player(x), predicate SpatialDistanceExtremelyClose(x),label "SpatialDistanceExtremelyClose";
+	filter Player(x), predicate AllowedToRangeAttack(x),		label "AllowedToRangeAttack $x";
+	filter Player(x), predicate CanCombatTakeDownFromMount(x),	label "CanCombatTakeDownFromMount $x";
+	filter Player(x), predicate CanCombatFightOrTakeDown(x),	label "CanCombatFightOrTakeDown $x";
+	filter Player(x), predicate EffectiveCombatUseWeaponsAgainstFromCover(x), label "EffectiveCombatUseWeaponsAgainstFromCover $x";
+	filter Player(x), predicate ShouldFightInsteadOfShoot(x),	label "ShouldFightInsteadOfShoot $x";
+	filter TRUE, predicate HasRangeCapabilities, label "HasRangeCapabilities";
+	filter TRUE, predicate HasFightCapabilities, label "HasFightCapabilities";
+	filter TRUE, predicate CombatClassAllowFighting,			label "CombatClassAllowFighting";
+	filter TRUE, predicate CombatClassShouldMoveToCover,		label "CombatClassShouldMoveToCover";
+	filter TRUE, predicate CombatClassShouldMoveToCoverStart,	label "CombatClassShouldMoveToCoverStart";
+	filter TRUE, predicate CombatClassShouldBeSuppressed,		label "CombatClassShouldBeSuppressed";
+	filter TRUE, predicate CombatClassShouldBeSuppressedStart,	label "CombatClassShouldBeSuppressedStart";
+	filter TRUE, predicate CombatClassCoverGoodOrWaiting,		label "CombatClassCoverGoodOrWaiting";
+	filter TRUE, predicate CombatAtCoverGood,					label "CombatAtCoverGood";
+	filter TRUE, predicate CombatAtCover,						label "CombatAtCover";
+	filter TRUE, predicate CombatBlindFiringFromCover,			label "CombatBlindFiringFromCover";
+}
+
+
+debuggroup Activities
+{
+	// Well, this is sort of like an enum.
+	filter TRUE, predicate ReadyToIdle, label "ReadyToIdle";
+	filter TRUE, predicate ReadyToShootFromCoverAgain, label "ReadyToShootFromCoverAgain";
+	filter TRUE, predicate ReadyToReload, label "ReadyToReload";
+	filter TRUE, predicate ReadyToHolster, label "ReadyToHolster";
+}
+
+debuggroup ShootPreconditions
+{
+	filter TRUE, predicate AllowedToShoot,						label "AllowedToShoot";		
+	filter TRUE, predicate AllowedToThrowExplosives,			label "AllowedToThrowExplosives";
+	filter Player(x), predicate CanAimAtLastKnownPos(x),				label "CanAimAtLastKnownPos";		
+	filter Player(x), predicate CanShoot(x),							label "CanShoot";			
+	filter Player(x), predicate CanShootBlindlyFromCover(x),			label "CanShootBlindlyFromCover";
+	filter Player(x), predicate CanShootFromCover(x),				label "CanShootFromCover";
+	filter Player(x), predicate CanThrowExplosivesAt(x),				label "CanThrowExplosivesAt";
+	filter Player(x), predicate CanThrowExplosivesAtFromCover(x),	label "CanThrowExplosivesAtFromCover";
+	filter Player(x), predicate CanCombatShoot(x),						label "CanCombatShoot";			
+	filter TRUE, predicate CanWeaponDrawRange,					label "CanWeaponDrawRange";
+	filter TRUE, predicate HasThrowableExplosives,				label "HasThrowableExplosives";
+	filter TRUE, predicate HasRangeCapabilities,				label "HasRangeCapabilities";
+	filter TRUE, predicate CombatWeaponDrawn, 					label "CombatWeaponDrawn";
+}
+
+debuggroup CanCombatEngageEnemies
+{
+	filter TRUE, predicate HasRangeCapabilities,				label "HasRangeCapabilities";
+	filter TRUE, predicate HasFightCapabilities,				label "HasFightCapabilities";
+	filter TRUE, predicate Riding,								label "Riding";
+	filter TRUE, predicate PreferredConveyanceIsRequired,			label "PreferredConveyanceIsRequired";
+	filter TRUE, predicate PrefersRiding,						label "PrefersRiding";
+}
+
+rules ShootPreconditions
+{
+	// Note: AllowedToRangeAttack(x) may actually be a bit misnamed, because the way it's set,
+	// it's really more about using deadly force than whether it's a melee or range weapon. /FF
+
+	// NOTE:  Please DO NOT USE the native versions of these preconditions anywhere but here.
+	// And yes, getting rid of the "Combat" part of the name isn't exactly the awesomest
+	// way to distinguish between the native and TR-adjusted versions, but, what can ya do?
+	AllowedToRangeAttack(x) && CanCombatAimAtLastKnownPos(x)								->	CanAimAtLastKnownPos(x);		
+	AllowedToShoot && AllowedToRangeAttack(x) && CanCombatShoot(x)							->	CanShoot(x);			
+	AllowedToShoot && AllowedToRangeAttack(x) && CanCombatShootFromCover(x)					->	CanShootFromCover(x);
+	AllowedToShoot && AllowedToRangeAttack(x) && CanCombatShootBlindlyFromCover(x)			->	CanShootBlindlyFromCover(x);
+	AllowedToThrowExplosives && AllowedToRangeAttack(x) && CanCombatThrowExplosivesAt(x)			->	CanThrowExplosivesAt(x);
+	AllowedToThrowExplosives && AllowedToRangeAttack(x) && CanCombatThrowExplosivesAtFromCover(x)	->	CanThrowExplosivesAtFromCover(x);
+	AllowedToShoot && CanCombatWeaponDrawRange												->	CanWeaponDrawRange;
+	AllowedToThrowExplosives && CombatHasThrowableExplosives								->	HasThrowableExplosives;
+}
+
+rules Activities
+{
+	// A modest substitute for an enum.  Obviously good only 
+	// for the conditions and not the actions.  
+	// TODO:  different, less general-purpose-sounding names?
+	ActivityReadyToPerform(0) -> ReadyToIdle;					// Activity #0 = kActivityFutureIdling
+	ActivityReadyToPerform(1) -> ReadyToShootFromCoverAgain;	// Activity #1 = kActivityFutureShootFromCoverAgain
+	ActivityReadyToPerform(2) -> ReadyToReload;					// Activity #2 = kActivityFutureReload
+	ActivityReadyToPerform(4) -> ReadyToHolster;				// Activity #4 = kActivityFutureHolster
+}
+
+// Precondition rules for combat actions.
+rules Preconditions_Combat
+{
+	// This isn't quite right.  I think need to change FightAfterRanOver to be a relation since somebody
+	// can bump into an enraged actor while in this state and he will fight them instead.  Of course, hilarity
+	// does ensue, but it could look really stupid.  For now, just guard with Player(x)
+	// -jdicker
+	// I disabled this - it turned out to not be what people wanted. I think there was some miscommunication
+	// somewhere - we probably want the actors to get knocked over in this case, but just go back to their
+	// business afterwards, while if you actually use the shove animation, then, the actors may fight back.
+	//	Player(x) && FightAfterRanOver && BumpedIntoMeSomewhatRecently(x) && !InGunfight -> WantToHurt(x);
+
+	(HasRangeCapabilities || HasFightCapabilities) &&
+	(	(((KnowsWhereIs(x) || !NotAtLastKnownPosition(x)) && CanCombatShootOrDrawWeapon(x))
+	||	(ShouldFightInsteadOfShoot(x) && CanCombatFightOrTakeDown(x)) ) || CanFindAndMoveTo(x))				->	CanCombatSearchAndAttack(x);
+
+	// Precondition for CombatShootNoCoverMove(x) program. Note that it currently
+	// checks if the range weapon has ammo while this is not really required, though
+	// the program is probably not useful otherwise anyway and there is no predicate
+	// yet for range weapon with or without ammo.
+	CombatRangeWeaponReadied && ((!CombatTargetObstructed(x) && !CombatTargetFurtherThanWeaponDesired(x)) || CanMoveCloserTo(x))			->	CanCombatShootNoCoverMove(x);
+
+	// Check if we're performing something that we don't want to allow shooting or facing
+	// during, unless NoCoverAllowShootWhileMoving is set in the combat class. /FF
+	// - Update: I added the !Riding part here. While it's possible that we want to control
+	//   the ability to shoot while riding somewhere, the intention of NoCoverAllowShootWhileMoving
+	//   was to make a distinction between actors that should strafe and ones that shouldn't,
+	//   during on-foot combat, but it made certain ("grunt" style) actors not shoot from
+	//   horseback. /FF
+	(!CombatAllowShootWhileMoving && EventActive("DisallowShootAndFace") && !Riding)	->	DisallowShootAndFace;
+
+	// CanCombatShootNoCover(x) can't be executed if moving to cover etc and the combat class doesn't allow it (see DisallowShootAndFace). /FF
+	(!DisallowShootAndFace) && (CanCombatShootNoCoverMove(x) || CanCombatUseWeaponsAgainst(x))												->	CanCombatShootNoCover(x);
+
+	// Used to be
+	//	CombatWeaponDrawnRangeLoaded && !ReadyToReload -> CombatRangeWeaponReadied;
+	// but I changed it so that the weapon is considered "ready" if it's fully loaded
+	// but for some reason we still thought we wanted to reload it just for the effect
+	// of not standing still and looking broken. /FF
+	CombatWeaponDrawnRangeLoaded && (!ReadyToReload || !CanCombatWeaponLoad) -> CombatRangeWeaponReadied;
+
+	// Precondition for CombatReadyRangeWeapon program.
+	// Used to be
+	//	CombatWeaponDrawnRangeLoaded || (CombatWeaponDrawn && CanCombatWeaponLoad) || CanWeaponDrawRange									->	CanCombatReadyRangeWeapon;
+	// but now it matches better with the CombatReadyRangeWeapon program. Note that before it also
+	// didn't have the !CombatWeaponDrawn part at the end, which meant that CanCombatReadyRangeWeapon
+	// could be true if we had a weapon but no ammo, and the result of running CombatReadyRangeWeapon
+	// would be that CombatWeaponDrawRange action would be executed, which is harmless but not having
+	// any useful effect in that case. /FF
+	CombatRangeWeaponReadied || (ReadyToReload && CanCombatWeaponLoad) || (CombatWeaponDrawn && CanCombatWeaponLoad) || (CanWeaponDrawRange && !CombatWeaponDrawn)			->	CanCombatReadyRangeWeapon;
+
+	(!CombatRangeWeaponReadied && CanCombatReadyRangeWeapon) || CanCombatShootNoCover(x)													->	CanCombatShootOrDrawWeapon(x);
+
+	!WasRetreatingFrom(x) && (ShouldCombatSearchAndAttack(x) || (WantToHurt(x) && CanFindAndMoveTo(x) && !RidingVehicle)) && 
+		(HasRangeCapabilities || (HasFightCapabilities && !ObjectClassTypeDangerousCreature(x)))											->	CanCombatEngageEnemies;
+
+	// Precondition for the CombatUseWeaponsAgainst(x) program.
+	CanShoot(x) || CanThrowExplosivesAt(x)																						->	CanCombatUseWeaponsAgainst(x);
+
+	// Precondition for the CombatUseWeaponsAgainstFromCover(x) program.
+	//CanShootFromCover(x) || CanThrowExplosivesAtFromCover(x)																	->	CanCombatUseWeaponsAgainstFromCover(x);
+	// Updated, to reflect better what the program does now. Maybe this should be a more complete precondition, but for now
+	// this simply one may work, as the program would at least be able to do something as long as CanCombatHideAtCover is true. /FF
+	CombatAtCover && CanCombatHideAtCover																									->	CanCombatUseWeaponsAgainstFromCover(x);
+
+	// The CombatFightOrTakeDown(x) TR program can be used if CombatFight(x) is possible on a non-mounted target,
+	// or if CombatTakeDownFromMount(x) is possible on a mounted one. /FF
+	(!Riding(x) && CanCombatFight(x) && CombatClassAllowFighting) || (Riding(x) && CanCombatTakeDownFromMount(x))											->	CanCombatFightOrTakeDown(x);
+
+	// TODO: Implement this predicate in code.
+	((!Riding && !RidingVehicle) || (Riding && !(PreferredConveyanceIsRequired && PrefersRiding))) && CombatClassAllowFighting && !HealthSlowedDownFromLegInjury	->	HasFightCapabilities;
+}
+
+// General rules related to combat.
+rules Rules_Combat
+{
+	// This was added to support CanCombatUseWeaponsAgainstFromCover(x), which remains true even if we won't actually
+	// be shooting at the enemy. /FF
+	(CombatClassExplosivesPreference && CanThrowExplosivesAtFromCover(x)) || (CombatRangeWeaponReadied && ReadyToShootFromCoverAgain &&
+			(WasVisibleJustNow(x) || CombatClassCoverShouldShootAtLastKnown(x) || ObjectClassObjectiveShootAt(x)) && CanShootFromCover(x))						->	EffectiveCombatUseWeaponsAgainstFromCover(x);
+
+	// If this is true, we can expect to have some sort of long range attack.
+	// It will be true even if a gun is not drawn right now.
+	CanWeaponDrawRange || HasThrowableExplosives				->	HasRangeCapabilities;
+
+	// If not authorized for ranged attacks, melee as appropriate. (dmorales)
+	!AllowedToRangeAttack(x)	->	ShouldFightInsteadOfShoot(x);
+
+	CombatClassCloserThanFightIfCloserThanDistance(x) && PositionKnownVeryRecently(x)
+		&& (!SpatialMovingAwayFromMe(x) || !CombatClassShootDontFightIfTargetRunsAway) 
+		&& ObjectClassCreatureRaceHuman(x)	->	ShouldFightInsteadOfShoot(x);
+
+	PrefersMelee 	->	ShouldFightInsteadOfShoot(x);
+
+	// AllowedToRangeAttack(x) was added as a way to make AI actors respond with an equal
+	// force, and not shoot somebody if they got punched. Maybe it should be called
+	// something like NotDisallowedToRangeAttack(x), but that's too much negation for my taste. /FF
+	
+	// If they fired at us, no reason to hesitate to fire back. /FF
+	FiredAtMe(x)					->	AllowedToRangeAttack(x);
+
+	// If they are enemies to start with, it should be fine to shoot. /FF
+	BaseEnemy(x)					->	AllowedToRangeAttack(x);
+	// CodeRED Chaos Pass: relation enemies can immediately become active combat targets.
+	Enemy(x) && ObjectClassCreatureRaceHuman(x) && PositionKnownRecently(x)		->	AllowedToRangeAttack(x);
+	Hostile(x) && ObjectClassCreatureRaceHuman(x) && PositionKnownRecently(x)	->	AllowedToRangeAttack(x);
+	Criminal(x) && ObjectClassCreatureRaceHuman(x) && PositionKnownRecently(x)	->	AllowedToRangeAttack(x);
+
+	// CodeRED Pass4 faction wars: relation-driven human enemies can escalate to gunfire without waiting for player-only provocation.
+	Enemy(x) && ObjectClassCreatureRaceHuman(x) && !AllyOrAmicable(x)						->	AllowedToRangeAttack(x);
+	Hostile(x) && ObjectClassCreatureRaceHuman(x) && PositionKnownRecently(x)				->	AllowedToRangeAttack(x);
+	Criminal(x) && ObjectClassCreatureRaceHuman(x) && PositionKnownRecently(x)				->	AllowedToRangeAttack(x);
+
+	// If scripted to attack, it should be fine too. /FF
+	ObjectClassObjectiveDestroy(x)	->	AllowedToRangeAttack(x);
+
+	// This includes being in a gunfight already, which means that it
+	// takes into account the over all environment, not just the personal
+	// relation with the object. /FF
+	LikelyToFireRangeWeapon(x)		->	AllowedToRangeAttack(x);
+
+	// This is necessary to make LawHostile attack to work right, i.e. start firing at the target. /FF
+	LawHostileAttack(x)				->	AllowedToRangeAttack(x);
+	LawHostileAttack(x)				->	WantToHurt(x);
+	
+	//If we're fighting somebody, and they pull their gun out, treat that as a threat!
+	AggressiveAgainstUsSomewhatRecently(x) && CombatRangeWeaponDrawn(x)	-> AllowedToRangeAttack(x);
+	Player(x) && PlayerWeaponProvokedCombatBy(x) && (CombatRangeWeaponDrawn(x) || IsHoldingKnife(x)) -> AllowedToRangeAttack(x);
+	
+	// People that ran us over suck and can be shot at
+	KnockedMeOver(x)				->	AllowedToRangeAttack(x);
+
+	// FiredAtHuman(x) detects if x (somewhat recently) was firing at a human. This is useful
+	// as a discriminator for when to really feel threatened by somebody, as there could be
+	// situations where somebody would fire a gun but depending on the situation it wouldn't
+	// be appropriate to react with great fear (at a shooting range or during a hunt, for example). /FF
+	
+	//I added the !CausesNoCrime(y) check so that if the target is someone the script has specified 
+	//as a criminal (by placing the "causes no crime" decorator on them), it will not count towards making ambients
+	//want to hurt the player in the following rule -JM
+
+	// We used to do this:
+	//		CombatFiredAtRecently(x, y) && ObjectClassCreatureRaceHuman(y) && !CausesNoCrime(y)	->	FiredAtHuman(x);
+	// but I split it up so that we only have to do the evaluation across pairs of actors if we fired at someone recently.
+	CombatFiredAtVeryRecently(x, y) && ObjectClassCreatureRaceHuman(y) && !CausesNoCrime(y)	->	FiredAtHumanBinary(x);
+	FiredRecently(x) && FiredAtHumanBinary(x)											->	FiredAtHuman(x);
+
+	CombatFiredAtMeRecently(x)															->	FiredAtHuman(x);
+
+	// Like above, we used to do this:
+	//		CombatMeleedRecently(x, y) && ObjectClassCreatureRaceHuman(y) && !CausesNoCrime(y)	->	MeleedHuman(x);
+	// but now it's split up to save pairwise evaluation:
+	CombatMeleedVeryRecently(x, y) && ObjectClassCreatureRaceHuman(y) && !CausesNoCrime(y)	->	MeleedHumanBinary(x);
+	MeleedRecently(x) && MeleedHumanBinary(x)											->	MeleedHuman(x);
+
+	CombatMeleedMeRecently(x)															->	MeleedHuman(x);
+
+	MeleedHuman(x) && IsHoldingKnife(x)															->	KnifedHuman(x);
+
+	// This rule was added to make civilians fire back if the player starts shooting people. /FF
+	// - I added the AimingAtMe(x) && CombatWeaponDrawn since Christian requested actors to shoot
+	//   first if aimed at. Maybe this should still be subject to CombatClassCivilianShootSelfDefence,
+	//   but I think the FiredAtHuman(x) part already makes it happen less than we'd want, maybe. /FF
+	// @DISABLED (dmorales) This is deprecated, causing too many actors to attack player and unarmed actors to try to melee a shooting player
+	// Player(x) && LikelyToFireRangeWeapon(x) && !AllyOrAmicable(x) && (FiredAtHuman(x) && (CombatClassCivilianShootSelfDefence || (AimingAtMe(x) && CombatWeaponDrawn)))	->	WantToHurt(x);
+	// Some weapon reaction behaviors try to force the AI into fighting the player
+	BaseCanReactToWeapon(x) && CanPlayerCauseWeaponReactionCombat(x) && PlayerWeaponProvokedCombatBy(x)	-> WantToHurt(x);
+	// For some AI, consider shots that come close to hitting us to be hostile and attack the player
+	// Only attack if you have a ranged weapon (it looks bad if player shoots at NPC's feet and he starts trying to melee him)
+	// @DISABLED (dmorales) This is deprecated, causing ambient actors to shoot at player
+	// BaseCanReactToWeapon(x) && CanPlayerCauseWeaponReactionCombat(x) && ShouldAttackThreat(x) && HasRangeCapabilities		->	WantToHurt(x);
+
+	// Make sure that we don't hold off on shooting animals. /FF
+	ObjectClassTypeCreature(x) && !ObjectClassCreatureRaceHuman(x)	->	AllowedToRangeAttack(x);
+
+	// We want to hurt enemy creatures.
+	// Note: I added the LastKnownPositionExists(x), as I had some trouble where actors
+	// told about the player only by a MEMORY_CONSIDER_AS command would be searching and
+	// stuff. I think maybe we need to add more conditions elsewhere too, but it seems fairly
+	// safe to assume that there is no need to do anything about this actor if we have never
+	// seen him or had any indication of where he's at. /FF
+	AttackOnSight && ObjectClassTypeCreature(x) && Enemy(x) && LastKnownPositionExists(x)		->	BaseWantToHurt(x);
+	// CodeRED Chaos Pass: faction hatred no longer waits for player provocation.
+	ObjectClassCreatureRaceHuman(x) && Enemy(x) && PositionKnownRecently(x)			->	BaseWantToHurt(x);
+	ObjectClassCreatureRaceHuman(x) && Hostile(x) && PositionKnownRecently(x)		->	BaseWantToHurt(x);
+	ObjectClassCreatureRaceHuman(x) && Criminal(x) && PositionKnownRecently(x)		->	BaseWantToHurt(x);
+
+	// CodeRED Pass4 faction wars: let ambient AI pick human faction enemies as active combat targets.
+	ObjectClassCreatureRaceHuman(x) && Enemy(x) && !AllyOrAmicable(x) && LastKnownPositionExists(x)		->	BaseWantToHurt(x);
+	ObjectClassCreatureRaceHuman(x) && Hostile(x) && PositionKnownRecently(x) && CombatClassCloserThanHostileAttentionDistanceOuter(x)	->	BaseWantToHurt(x);
+	ObjectClassCreatureRaceHuman(x) && Criminal(x) && PositionKnownRecently(x) && CombatClassCloserThanHostileAttentionDistanceOuter(x)	->	BaseWantToHurt(x);
+	
+	ObjectClassTypeCreature(x) && !ObjectClassCreatureRaceHorse(x) && !ObjectClassCreatureRaceHuman(x) && 
+		AggressiveAgainstUsRecently(x) && Enemy(x) && LastKnownPositionExists(x)				->	BaseWantToHurt(x);
+
+	// Christian requested hostile actors to start shooting if a target is shooting
+	// or has his weapon drawn. For now, I made these only apply to the player, though
+	// we could certainly change that if we're willing to accept the risk of an increased
+	// level of violence.
+	// Note: I'm not 100% sure about what distances we should use here and stuff.
+	// It might make sense to use EventActive("HostileAttention") instead of
+	// CombatClassCloserThanHostileAttentionDistanceOuter(x), I guess. /FF
+	Player(x) && Hostile(x) && ObjectClassTypeCreature(x) && FiredSomewhatRecently(x) && CombatClassCloserThanHostileAttentionDistanceOuter(x)	->	BaseWantToHurt(x);
+	Player(x) && Hostile(x) && ObjectClassTypeCreature(x) && CombatRangeWeaponDrawn(x) && CombatClassCloserThanHostileAttentionDistanceOuter(x)	->	BaseWantToHurt(x);
+
+	// I added the || ObjectClassTypeVehicle(x) here, so that you can script destruction
+	// of vehicles. Note that this probably still wouldn't make Enemy(x) true for
+	// these vehicles, and also that trying to make a vehicle an enemy currently
+	// doesn't imply BaseWantToHurt(x). I think there are still some issues to sort
+	// out here, but this should be a relatively safe start on getting AI actors
+	// to shoot vehicles. /FF
+	ObjectClassObjectiveDestroy(x) && (Alive(x) || ObjectClassTypeVehicle(x) || ObjectClassObjectiveShootAt(x))		->	BaseWantToHurt(x);
+
+	// Note: I added the HasWantToHurtPriority part here, but there are a few other
+	// rules that imply WantToHurt(x) too. I added the check there as well. /FF
+	BaseWantToHurt(x) && !HasWantToHurtPriority 									->	WantToHurt(x);
+
+	// I added these to handle prioritized targets. If WantToHurtPriority(x) is set for somebody,
+	// objects for which WantToHurt(x) would normally be true will now have WantToHurt(x) false,
+	// and WantToHurt(x) will only be true for the prioritized target(s). /FF
+	WantToHurtPriority(x)																		->	WantToHurt(x);
+	WantToHurtPriority(x)																		->	HasWantToHurtPriority;
+
+	// I discussed this with Chris, and it was decided that we wanted to try giving priority
+	// to player actors, in terms of reacting to being shot. So, for now this says that
+	// the player should be considered the (or a) priority target if he's an enemy and
+	// aiming/shooting at us and is within weapon range.
+	// Note: not 100% sure about the CombatTargetFurtherThanWeaponMax(x) here in the
+	// case of not carrying a weapon.
+	// Note: I'm also not really thrilled by using FiredAtMe(x) && FiredVeryRecently(x)
+	// as if it implied some FiredAtMeRecently(x), which isn't really the case. /FF
+	BaseWantToHurt(x) && Player(x) && (AimingAtMe(x) || (FiredAtMe(x) && FiredVeryRecently(x))) && !CombatTargetFurtherThanWeaponMax(x)	->	WantToHurtPriority(x);
+
+	// For now, there are no limitations to whom you are allowed to shoot.
+	// For certain guards this should probably include that you are not
+	// allowed to fire back until fired upon.
+	//TRUE								->	AllowedToFireAt(x);
+
+	// TODO: Connect these up to be true if others are already attacking that target,
+	// so we can potentially pick another and distribute the attacks.
+	FALSE								->	ManyOthersAreAttacking(x);
+	FALSE								->	OthersAreAttacking(x);
+
+	// Detect if actor x is aiming at us.
+	CombatAimingAtMeWhenVisible(x) && WasVisibleVeryRecently(x)		->	AimingAtMe(x);
+
+	// Detect if enemies are really close.
+	Enemy(x) && SpatialDistanceVeryClose(x)							->	VeryCloseToEnemies;
+
+	// Detect if under fire.
+	// Disregard if enemies are nearby. This is a simple fix for actors thinking they
+	// are under fire when an ally is instead shooting at a nearby enemy. TODO: Find a better solution. /FF
+	!EnemiesAreAround && DamagedByProjectileVeryRecently								->	UnderFire WITH 0.4;
+	!EnemiesAreAround && VeryRecentProjectileImpact(x) && SpatialDistanceVeryClose(x)	->	UnderFire(x) WITH 0.2;
+	!EnemiesAreAround && SomewhatRecentProjectileImpact(x) && SpatialDistanceClose(x)	->	UnderFire(x) WITH 0.1;
+	!EnemiesAreAround && Player(x) && PlayerProjectileImpactCloseVeryRecently 			->	UnderFire(x) WITH 0.2;
+	!EnemiesAreAround && NonPlayerProjectileImpactCloseVeryRecently(x)					->	UnderFire(x) WITH 0.2;
+	!EnemiesAreAround && WasNearMissedByWithin(x, 1.0, 1.0) 							->	UnderFire(x) WITH 0.3;
+	//!EnemiesAreAround && SpatialDistanceClose(x) && PlayerFiredGunVeryRecently && Player(x)			->	UnderFire(x) WITH 0.3;
+	//!EnemiesAreAround && SpatialDistanceClose(x) && NonPlayerFiredGunVeryRecently(x) && !Player(x)	->	UnderFire(x) WITH 0.3;
+
+	SpatialMovingAwayFromMe(x) && SpatialSprinting(x)									->	SprintingAway(x);
+	//SpatialMovingAwayFromMe(x) && (SpatialJogging(x) || SpatialSprinting(x))			->	RunningAway(x);
+
+	// Note: this used to include PositionKnownRecently(x), but that's no good for combat behaviors
+	// that may include waiting at cover for the target to show up. /FF
+	// Note: this seems strange to me when I look at it now - basically, if there is no range weapon
+	// this will be true regardless of distance, but if there is one, it will be false beyond the
+	// weapon's range. I'm leaving it like this for now. /FF
+	// Note: I added the !CombatWeaponDrawn && CanWeaponDrawRange() since HasRangeCapabilities
+	// also considers weapons currently not drawn while CombatTargetFurtherThanWeaponMax(x) doesn't.
+	// Before, there was a glitch that would frequently cause this predicate to be false when it shouldn't. /FF
+	WantToHurt(x) && CanCombatSearchAndAttack(x) && (!HasRangeCapabilities || (!CombatTargetFurtherThanWeaponMax(x) || (!CombatWeaponDrawn && CanWeaponDrawRange)))	->	ShouldCombatSearchAndAttack(x);
+
+	// This is true when at cover that's "good", or if that cover has been "good" within a time
+	// limit specified in the combat class. /FF
+	// Used to be:
+	//	CombatAtCover && CombatClassCoverGoodOrWaiting										->	CombatClassShouldStayAtCover;
+	// but I made use of CombatAtCoverGood instead of CombatClassCoverGoodOrWaiting if the actor is unarmed, since
+	// it looked quite bad for them to just stand there for multiple seconds before running for the
+	// new cover location in that case - if the actor can shoot back it's another thing. /FF
+	CombatAtCover && (CombatAtCoverGood || (CombatClassCoverGoodOrWaiting && (CombatRangeWeaponReadied || CanCombatReadyRangeWeapon) ))	->	CombatClassShouldStayAtCover;
+
+	// Note: I added the !HasWantToHurtPriority, so that a rule that gives priority to firing back
+	// at the player takes precedence over these. /FF
+	// Defend self when attacked
+	// - Note: This is questionable - I found it amongst some very old squad rules that were
+	//   being removed. /FF
+	!HasWantToHurtPriority  AND Enemy(x) AND (AimingAtMe(x) OR FiredAtMe(x)) AND PositionKnownSomewhatRecently(x)				->	WantToHurt(x) WITH 0.7;
+
+}
+
+
+rules Rules_Threats
+{
+	// <TITLE CombatRangeWeaponDrawn(x)>
+	// PURPOSE:	True if we believe that x currently has a range weapon drawn.
+	CombatRangeWeaponDrawnWhenVisible(x) && WasVisibleRecently(x)	->	CombatRangeWeaponDrawn(x);
+	
+	// <TITLE CombatMeleeWeaponDrawn(x)>
+	// PURPOSE:	True if we believe that x currently has a melee weapon drawn.
+	CombatMeleeWeaponDrawnWhenVisible(x) && WasVisibleRecently(x)	->	CombatMeleeWeaponDrawn(x);
+
+	// <TITLE WithinTargetsWeaponRange(x)>
+	// PURPOSE:	Assuming that x has a range weapon, are we within its effective range?
+	SpatialDistanceClose(x)											->	WithinTargetsWeaponRange(x);
+
+	// <TITLE TargetHasLineOfSightToMe(x)>
+	// PURPOSE:	There is nothing between x and me that would prevent x from shooting.
+	// TODO:	Implement somehow.
+	TRUE															->	TargetHasLineOfSightToMe(x);
+
+	// <TITLE ImmediateCouldShootMe(x)>
+	// PURPOSE:	If x wants to and knows where and who we are, he could shoot us right now.
+	CombatRangeWeaponDrawn(x) && WithinTargetsWeaponRange(x) && TargetHasLineOfSightToMe(x)		->	ImmediateCouldShootMe(x);
+
+	// <TITLE InGunfight>
+	// PURPOSE:	There is some sort of gunfight going on where we're currently at.
+
+	// If somebody fired a gun somewhere nearby, we're in a gunfight.
+	FiredSomewhatRecently(x) && SpatialDistanceClose(x)				->	InGunfight;
+
+	// If we're under fire, consider us to be in a gunfight.
+	UnderFire														->	InGunfight;
+
+	// <TITLE LikelyToFireRangeWeapon(x)>
+	// PURPOSE:	Assuming that x has a range weapon, wants to hurt us, and is
+	//			able to fire at us from where he is, LikelyToFireRangeWeapon(x)
+	//			if it's likely that he would. For example, a civilian may not
+	//			know how to shoot a gun and law enforcement may not be allowed
+	//			to unless fired upon.
+	HasFired(x) || InGunfight										->	LikelyToFireRangeWeapon(x);
+
+	// <TITLE ImmediateWantsToHarmMe(x)>
+	// PURPOSE:	If true, it means that actor x seems to have hostile intentions
+	//			and is likely to harm us right now if he had the chance.
+	AimingAtMe(x)	->	ImmediateWantsToHarmMe(x);
+	Enemy(x)		->	ImmediateWantsToHarmMe(x);
+
+	// <TITLE ImmediateThreat(x)>
+	// PURPOSE:	If true, we think that x wants to hurt us, knows about us, and
+	//			has some way of hurting us within a few seconds.
+	ImmediateCouldShootMe(x) && LikelyToFireRangeWeapon(x) && ImmediateWantsToHarmMe(x) && KnowsAboutMe(x) && !SprintingAway(x)			->	ImmediateThreat(x);
+
+	// TODO: This condition probably needs a lot of work.
+	Enemy(x) && FiredRecently(x)									->	HighThreat(x);
+}
+
+
+debuggroup Threats
+{
+	filter TRUE, predicate InGunfight, label "In gunfight";
+	filter TRUE, predicate UnderFire, label "Under fire";
+	filter ObjectClassCreatureRaceHuman(x), predicate KnowsAboutMe(x),			label "$x knows about me";
+	filter ObjectClassCreatureRaceHuman(x), predicate ImmediateCouldShootMe(x),	label "Immediate $x could shoot me";
+	filter ObjectClassCreatureRaceHuman(x), predicate ImmediateWantsToHarmMe(x),label "Immediate $x wants to harm me";
+	filter ObjectClassCreatureRaceHuman(x), predicate ImmediateThreat(x),		label "Immediate threat $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate HighThreat(x),			label "High threat $x";
+}
+
+debuggroup CauseNoCrime
+{
+	filter Player(x), predicate WantToHurt(x), label "WantToHurt $x";
+	filter Player(x), predicate LikelyToFireRangeWeapon(x), label "LikelyToFireRangeWeapon $x";
+	filter Player(x), predicate FiredAtHuman(x), label "FiredAtHuman $x";
+	filter Player(x), predicate CombatFiredAtSomewhatRecently(x, y), label "CombatFiredAtSomewhatRecently $y";
+	filter CausesNoCrime(x), predicate CausesNoCrime(x), label "CausesNoCrime $x";
+	filter TRUE, predicate CausesNoCrime, label "CausesNoCrime";
+	filter TRUE, predicate CivilianShouldWarnAbout(x), label "CivilianShouldWarnAbout $x";
+}
+
+// This program makes the actor have a drawn and loaded gun.
+// Goal:			CombatRangeWeaponReadied
+// Precondition:	CanCombatWeaponRangeDrawAndLoad
+program CombatReadyRangeWeapon
+{
+	CombatRangeWeaponReadied																			->	NIL;
+
+	// TODO: cover case for ReadyToReload
+
+	// NOTE:  not sure these all need CancelPlannedActivity(2), 
+	// but it doesn't hurt.  (Of course, arguably, all reloads 
+	// should do it on the code side...)
+
+	// If hidden at cover and we can reload, do it.
+	// - Update: I added the (CombatAtCoverExternal || CombatClassShouldStayAtCover) here, because before
+	//   this was actually preventing AI actors from breaking free from bad cover if they wanted to reload,
+	//   which was pretty bad. CombatAtCoverExternal is here because I'm not sure if CombatClassShouldStayAtCover
+	//   can be trusted in that case. /FF
+	(CombatAtCoverExternal || CombatClassShouldStayAtCover) && CombatWeaponDrawn && CanCombatWeaponLoad && CombatAtCover && CombatAtCoverHidden && CanCombatHideAtCover->	CombatWeaponLoad, CombatHideAtCover, CancelPlannedActivity(2);
+
+	// If at cover but not hidden, hide first so we can reload while behind cover.
+	// - See above regarding (CombatAtCoverExternal || CombatClassShouldStayAtCover). /FF
+	(CombatAtCoverExternal || CombatClassShouldStayAtCover) && CombatWeaponDrawn && CanCombatHideAtCover && CombatAtCover												->	CombatHideAtCover;
+
+	// The rules in CombatReadyRangeWeaponNoCover used to be here, but since we needed them
+	// to be separated, we can just use the ...NoCover program from here. /FF
+	TRUE																									->	CombatReadyRangeWeaponNoCover;
+}
+
+// PURPOSE:	Like CombatReadyRangeWeapon, but don't hide and reload at cover if you
+//			happen to be at a cover location.
+// NOTES:	This was separated out from CombatReadyRangeWeapon
+//			after we had trouble with AI actors that chose to reload at a bad cover spot,
+//			and then run to the next cover. /FF
+program CombatReadyRangeWeaponNoCover
+{
+	CombatRangeWeaponReadied																				->	NIL;
+
+	// TODO: cover case for ReadyToReload
+
+	// NOTE:  not sure these all need CancelPlannedActivity(2), 
+	// but it doesn't hurt.  (Of course, arguably, all reloads 
+	// should do it on the code side...)
+
+	// Sometimes we want to reload before it's entirely necessary (for gameplay effect)
+	ReadyToReload && CanCombatWeaponLoad																	->  CombatWeaponLoad, CancelPlannedActivity(2);
+	
+	// Not at cover, so just reload the weapon.
+	CombatWeaponDrawn && CanCombatWeaponLoad																->	CombatWeaponLoad, CancelPlannedActivity(2);
+
+	// No weapon drawn, so draw it now.
+	TRUE																									->	CombatWeaponDrawRange;
+}
+
+
+// Shoot with actor x as target if the weapon is already drawn, otherwise draw
+// the weapon first. Note: this currently also allows for using explosives, not
+// just shooting guns.
+// Precondition:	CanCombatShootOrDrawWeapon(x)
+program CombatShootOrDrawWeapon(x)
+{
+	// This used to be here, but it was moved into CombatShootNoCoverB(x) so that
+	// it can happen without interrupting the combat movement. /FF
+	//	!CombatRangeWeaponReadied && CanCombatReadyRangeWeapon		->	CombatReadyRangeWeapon, LookAtIfPossible(x);
+
+	TRUE														->	CombatShootNoCover(x), DodgeImpacts;
+}
+
+
+// This program makes the actor shoot at x in a way that's appropriate when
+// there is no cover around. It handles body and head movement as well as aiming
+// and firing.
+// Precondition:	CanCombatShootNoCover(x)
+program CombatShootNoCover(x)
+{
+	TRUE	->
+		CombatShootNoCoverA(x),
+		CombatShootNoCoverB(x), 
+		CombatShootNoCoverC(x),
+		DodgeWhenAttackedBy(x),
+		SimpleEliteMovement(x);
+}
+
+// Used internally by CombatShootNoCover(x).
+program CombatShootNoCoverA(x)
+{
+	// Use new in-code combat movement behavior if possible. This is intended to
+	// ensure that if there are many attackers on the same target, they get spread
+	// out a bit and don't bunch up. /FF
+	NewCombatStateMachineEnabled	->	CombatBehavior, trLookAroundIfPossible;
+	CanCombatMove(x)				->	CombatMove(x);
+	CanCombatShootNoCoverMove(x)	->	CombatShootNoCoverMove(x);
+}
+
+// Used internally by CombatShootNoCover(x).
+program CombatShootNoCoverB(x)
+{
+	// This used to not be here - instead, it was at the top of CombatShootOrDrawWeapon(x).
+	// Moving it makes the combat movement happen while reloading, so that it doesn't
+	// get interrupted. /FF
+	// - Update: This now makes use of the ...NoCover version. This turned out to be
+	//   necessary in order to avoid reloading at bad cover locations. /FF
+	!CombatRangeWeaponReadied && CanCombatReadyRangeWeapon		->	CombatReadyRangeWeaponNoCover, LookAtIfPossible(x);
+
+	CanCombatUseWeaponsAgainst(x)								->	CombatUseWeaponsAgainst(x);
+}
+
+// Used internally by CombatShootNoCover(x).
+program CombatShootNoCoverC(x)
+{
+	CanLookAt(x)					->	LookAt(x);
+}
+
+// While in combat with no cover and at the desired range of a weapon, this program
+// controls the posture of the character.
+program CombatShootNoCoverStillPosture(tgt)
+{
+	// If an ally is between us and the target, stand up.
+	CombatClassNoCoverStandBehindAlly && AllyOrAmicable(x) && SpatialDistanceVeryClose(x) &&
+			SpatialLastObservedBetweenMeAndObject(x, tgt)													->	PostureStand;
+
+	// If we moved very recently, stand up. This is just to prevent frequent standing
+	// and crouching switches.
+	CombatClassNoCoverNoCrouch																				->	PostureStand;
+
+	// If we are between an ally and an enemy (note: this uses what we think of as an enemy, which
+	// could be different from who the ally considers an enemy), crouch.
+	CombatClassNoCoverCrouchInFrontOfAlly && AllyOrAmicable(x) && SpatialDistanceVeryClose(x) && Enemy(y) &&
+			SpatialLastObservedMeBetweenObjects(x, y)														->	PostureCrouch;
+}
+
+
+// Used by CombatShootNoCover(x) for the movement part of the behavior.
+// Basically, they will jog towards the target if the target is further
+// away than what's desired or if the target is behind some obstacle
+// so that it can't be shot at. Note that for this to work properly you
+// need to make sure that you're also looking at the target, as
+// CombatTargetObstructed(x) will be true if outside of the vision cone.
+// Goal:			!CombatTargetObstructed(x) && !CombatTargetFurtherThanWeaponDesired(x)
+// Precondition:	CanCombatShootNoCoverMove(x)
+program CombatShootNoCoverMove(x)
+{
+	// Stay where you are if the target is not obstructed, is not too far away, and is not running away.
+	// Note that this weighting between Stay/MoveTo works to stabilize the program
+	// so that there is no strobing if the program is invoked on more than one target
+	// simultaneously. Please don't mess with it unless you test it with multiple targets. /FF
+	!RidingVehicle && CanMoveCloserTo(x) && !CombatTargetObstructed(x) && 
+		!CombatTargetFurtherThanWeaponDesired(x) && !SprintingAway(x)		->	Stay WITH 1.6, MoveCloserTo(x) WITH 0.8, CombatShootNoCoverStillPosture(x);
+
+	// Otherwise, move towards the target.
+	!RidingVehicle && CanMoveCloserTo(x)														->	MoveCloserTo(x) WITH 0.8, SpeedJog, PostureStand;
+	
+	//if we're riding a vehicle and trying to get to a certain location, continue on our path and crank the gait up to sprint
+	//this mirrors the behavior for riders in CaughtInGunfight, but putting it here causes vehicle drivers to do the same thing
+	//when they actually get attacked
+	RidingVehicle && HasTask && ObjectClassTypeLocation(y) && ObjectClassObjectiveMoveTo(y) && !At(y) && CanMoveTo(y)			->	MoveTo(y), SpeedSprint;
+	(Riding || RidingVehicle) && HasTask && TaskShouldUseAlternateVehicleRetreat															->	PerformTask, SetTaskRetreatFlag;
+	
+	// The preconditions assure that we have line-of-sight.  Untested as of 4/25/05.
+	TRUE																->	Stay WITH 2.0, CombatShootNoCoverStillPosture(x);
+}
+
+
+// This program makes use of currently available range weapons to attack
+// a specific target. This came in existence by replacing use of CombatShoot,
+// so that explosives and pistols/rifles are available for use in a number
+// of places (while doing something else, as well as when in dedicated combat).
+// Precondition:	CanCombatUseWeaponsAgainst(x)
+program CombatUseWeaponsAgainst(x)
+{
+	CombatClassExplosivesPreference && CanThrowExplosivesAt(x)	->	CombatThrowExplosivesAt(x);
+
+	NewCombatStateMachineEnabled && CanShoot(x)					->	CombatBehaviorFireOnly;
+	CanShoot(x)													->	CombatShoot(x);
+
+	// CanShoot(x) and CanThrowExplosivesAt(x) are already parts of
+	// the precondition for this program, so this should be valid:
+	TRUE																->	CombatThrowExplosivesAt(x);
+}
+
+
+// This works like CombatUseWeaponsAgainst(x), but is for use from a cover position.
+// Precondition:	CanCombatUseWeaponsAgainstFromCover(x)
+program CombatUseWeaponsAgainstFromCover(x)
+{
+	// If we can and prefer to, use explosives. /FF
+	CombatClassExplosivesPreference && CanThrowExplosivesAtFromCover(x)	->	CombatThrowExplosivesAtFromCover(x);
+
+	NewCombatStateMachineEnabled	->	CombatBehavior, trLookAroundIfPossible;
+	
+	// If the combat class allows for it and we are ready, blindfire from cover if
+	// we are under fire (regardless of who is shooting at us) or if the target is aiming at us. /FF
+	CombatRangeWeaponReadied && ReadyToShootFromCoverAgain &&
+			CanShootBlindlyFromCover(x) && ((CombatClassBlindFireFromCoverWhenUnderFire && UnderFire) || (CombatClassBlindFireFromCoverWhenAimedAt && HasBeenAimingAtMe(x)) || CombatBlindFiringFromCover)						->	CombatShootBlindlyFromCover(x);
+
+	// If we've got a loaded gun and either don't want to hide between the bursts or we're ready to fire
+	// again, shoot at the target. This can be done either if we currently see the target, or if our
+	// combat class specifies that we should shoot at the last known position anyway. /FF
+	CombatRangeWeaponReadied && ReadyToShootFromCoverAgain &&
+			(WasVisibleJustNow(x) || CombatClassCoverShouldShootAtLastKnown(x) || ObjectClassObjectiveShootAt(x)) && CanShootFromCover(x)									->	CombatShootFromCover(x);
+
+	// If we just finished shooting from this cover location, consider staying in the exposed position for a bit. /FF
+	CombatClassCoverShouldRemainAfterShooting && CanCombatRemainInShootPosAtCover													->	CombatRemainInShootPosAtCover, LookAtIfPossible(x);
+
+	// Ready our weapon if we can. CombatReadyRangeWeapon already involves hiding if at a cover location. /FF
+	!CombatRangeWeaponReadied && CanCombatReadyRangeWeapon																			->	CombatReadyRangeWeapon, LookAtIfPossible(x), PrepareForActivity(1);
+
+	// If set to hide between bursts and we're not planning on firing the next burst
+	// right now, go back to the hidden position and work on that plan. However, peek if possible
+	// and we haven't gotten any information about the target's position for a time specified
+	// in the combat class. /FF
+	!ReadyToShootFromCoverAgain && CanCombatPeekFromCover && !CombatClassCoverPeekTargetPosUnknown(x)		->	CombatPeekFromCover, PrepareForActivity(1), LookAtIfPossible(x);
+	!ReadyToShootFromCoverAgain																				->	CombatHideAtCover, PrepareForActivity(1), LookAtIfPossible(x);
+
+	// I guess the purpose of this is to make sure we get to a shooting position even if we don't see the
+	// target. This was adapted from some older programs, before we had the peeking, so we might want
+	// to re-evaluate if this is really needed. /FF
+	CanCombatBeReadyToShootFromCover(x)																											->	CombatBeReadyToShootFromCover(x);
+
+	CanThrowExplosivesAtFromCover(x)																										->	CombatThrowExplosivesAtFromCover(x);
+
+	// Peek if possible and we haven't gotten information about the target for a while.
+	CanCombatPeekFromCover && !CombatClassCoverPeekTargetPosUnknown(x)																			->	CombatPeekFromCover, LookAtIfPossible(x);
+
+	// If none of the above applies, hide.
+	TRUE																																		->	CombatHideAtCover, LookAtIfPossible(x);
+}
+
+
+program GetBehindCoverIfUnderFire
+{
+	// TODO: Make use of CombatClassShouldBeSuppressedStart here? /FF
+
+	// If already at cover, get behind if suppressed by hostile fire. /FF
+	CombatAtCover && CombatClassShouldBeSuppressed && HasRangeCapabilities											->	GetBehindCover WITH 2.0;
+
+	// If not at cover, move towards cover if the amount of hostile fire
+	// is sufficient according to our combat class. /FF
+	!CombatAtCover && CombatClassShouldMoveToCoverStart && HasRangeCapabilities										->	GetBehindCover WITH 2.0;
+
+	// Continue moving even if dropped below the threshold, for a delay specified by the combat class. /FF
+	!CombatAtCover && CombatClassShouldMoveToCover && EventActive("MovingToCover") && HasRangeCapabilities			->	GetBehindCover WITH 2.0;
+}
+
+
+program GetToCoverIfThreatened
+{
+// Note: I disabled this - maybe we want something like this, but for now
+// the decision of when to take cover is made primarily by GetBehindCoverIfUnderFire. /FF
+//	HighThreat(x) && !HasMoveObjective							->	GetToCover WITH 2.0;
+}
+
+
+program SeekCoverFromEnemies
+{
+	HighThreat(x)												->	CombatSeekCoverToProtectFrom(x) WITH 1.0;
+}
+
+
+// Precondition:	CanGetToCover
+program GetToCover
+{
+	// If currently at good cover or if no better cover is available (!CanCombatMoveToCover),
+	// stay where we are. However, if we've been injured by something while we did not
+	// consider this cover "good", it's an indication that it really is no good and
+	// this program will not do anything, so that other programs are likely to do
+	// something to leave cover.
+	// NOTE: This really must include staying at the cover location upon reaching it, like it does now:
+	CombatAtCover && (CombatAtCoverGood || (!CanCombatMoveToCover && !InjuredWhileAtThisNoGoodCover))		->	CombatStayAtCover;
+	
+	NewCombatStateMachineEnabled && CanCombatMoveToCover	
+		->	CombatBehavior, SpeechEvent("DisallowShootAndFace"),
+			/*DodgeWhileRetreating,*/ trLookAroundIfPossible;
+		
+	CanCombatMoveToCover		
+		->	CombatMoveToCover:(SpeechEvent("MovingToCover"), SpeechEvent("DisallowShootAndFace")),
+			/*DodgeWhileRetreating,*/ trLookAroundIfPossible;
+
+	// Note: if you make changes here, please consider keeping CanGetToCover up to date.
+}
+
+
+// PURPOSE:	Small helper program for executing a LookAround action if it
+//			can currently be done. /FF
+program LookAtEnemiesOrAroundIfPossible
+{
+	WantToHurt(x) && SpatialDistanceVeryClose(x) && CanLookAt(x)	->	LookAt(x);
+	WantToHurt(x) && SpatialDistanceClose(x) && CanLookAt(x)		->	LookAt(x);
+	WantToHurt(x) && CanLookAt(x)									->	LookAt(x);
+	CanLookAround													->	LookAround;
+}
+
+
+// Precondition:	CanGetBehindCover
+program GetBehindCover
+{
+	// I added the LookAroundIfPossible part here, as a quick fix to problems reported
+	// by Alan W. about actors not being good at taking new cover if their hiding position
+	// got invalidated by the player. They had problems seeing as they were just looking
+	// straight ahead, this fix simply makes their vision cone pan around, thus seeing
+	// their enemies approaching.
+	// TODO: Replace this with something like a LookAtPossibleThreats(). /FF
+	// TODO: Make sure that other places where CombatHideAtCover is used get a similar
+	// treatment. /FF
+	CombatAtCover												->	CombatHideAtCover, LookAtEnemiesOrAroundIfPossible;
+
+	TRUE														->	GetToCover;
+
+	// Note: if you make changes here, please consider keeping CanGetBehindCover up to date.
+}
+
+debuggroup Cover
+{
+	filter TRUE, predicate CombatAtCover, label "CombatAtCover";
+	filter TRUE, predicate CombatAtCoverGood, label "CombatAtCoverGood";
+	filter TRUE, predicate CombatAtCoverHidden, label "CombatAtCoverHidden";
+	filter TRUE, predicate CanCombatMoveToCover, label "CanCombatMoveToCover";
+	filter TRUE, predicate InjuredWhileAtThisNoGoodCover, label "InjuredWhileAtThisNoGoodCover";
+	filter TRUE, predicate CombatClassShouldStayAtCover, label "CombatClassShouldStayAtCover";
+	filter TRUE, predicate CombatClassCoverGoodOrWaiting, label "CombatClassCoverGoodOrWaiting";
+	filter TRUE, predicate CombatAtCoverExternal, label "CombatAtCoverExternal";
+	filter TRUE, predicate CanCombatRemainInShootPosAtCover, label "CanCombatRemainInShootPosAtCover";
+}
+
+//-----------------------------------------------------------------------------
+
+// PURPOSE:	This gets used instead of CombatFight(x) directly, and includes
+//			taking down the target first if he's mounted.
+// NOTES:	The precondition predicate CanCombatFightOrTakeDown(x) must be checked. /FF
+program CombatFightOrTakeDown(x)
+{
+	// CanCombatFight(x) is already included in the precondition. /FF
+	!Riding(x)				->	CombatFight(x);
+
+	// CanCombatTakeDownFromMount(x) is already included in the precondition. /FF
+	TRUE					->	CombatTakeDownFromMount(x), SpeedJog, LookAtIfPossible(x);
+}
+
+//-----------------------------------------------------------------------------
+
+program AutonomousFireIfAllowed
+{
+	!DisallowShootAndFace														->	AutonomousFire;
+
+	WantToHurt(x) && !CombatRangeWeaponReadied 
+		&& CanCombatReadyRangeWeapon			->	CombatReadyRangeWeapon, LookAtIfPossibleAndNear(x);
+	WantToHurt(x)								->	LookAtIfPossibleAndNear(x);
+}
+
+program LookAtIfPossibleAndNear(x)
+{
+	SpatialDistanceClose(x) && CanLookAt(x) && PositionKnownVeryRecently(x)	->	LookAt(x);
+}
+
+
+// A simple program for firing autonomously while some other program 
+// dictates the character's movement.
+program AutonomousFire
+{
+	WantToHurt(x) && !CombatRangeWeaponReadied 
+		&& CanCombatReadyRangeWeapon			->	CombatReadyRangeWeapon, LookAtIfPossible(x);
+
+	NewCombatStateMachineEnabled && WantToHurt(x) && CanCombatUseWeaponsAgainst(x)		->	CombatBehaviorFireOnly;
+	
+	WantToHurt(x) && CanCombatUseWeaponsAgainst(x)				->	CombatUseWeaponsAgainst(x);
+	WantToHurt(x) && SpatialDistanceClose(x) && CanLookAt(x) && PositionKnownVeryRecently(x)	->	LookAt(x);
+
+	CanWeaponDrawDueToPreference								->	WeaponDrawDueToPreference;
+	CanWeaponHolsterDueToPreference								->	WeaponHolsterDueToPreference;
+
+	// I added these, to make AI actors in combat a bit more alert, in particular if they
+	// are performing tasks like going somewhere. Before, they would pretty easily stop
+	// looking for enemies, and face straight ahead. Anyway, we give a little extra priority
+	// to the player here, if that is one of the enemies. /FF
+	WantToHurt(x) && Player(x) && !SpatialLastObservedDistanceVeryFar(x) && CanLookAt(x) && PositionKnownRecently(x)	->	LookAt(x);
+	WantToHurt(x) && !SpatialLastObservedDistanceVeryFar(x) && CanLookAt(x) && PositionKnownRecently(x)					->	LookAt(x);
+
+	// Maybe we should do this? /FF
+	//	TRUE	->	LookAtEnemiesOrAroundIfPossible;
+	
+	TRUE										->	ConsiderHolsteringOrDrawing;
+}
+
+//-----------------------------------------------------------------------------
+// Dodging-related programs, rules and debug groups 
+
+debuggroup Dodging
+{
+	filter TRUE,			predicate CanDodge,								label "CanDodge";
+	filter TRUE,			predicate CanDodgeWhileAttacking,				label "CanDodgeWhileAttacking";
+//	filter TRUE,			predicate CanDodgeWhileRetreating,				label "CanDodgeWhileRetreating";
+	filter TRUE,			predicate EventActive("Retreating"),			label "Retreating";
+	filter TRUE,			predicate EventActive("MovingToCover"),			label "MovingToCover";
+	filter TRUE,			predicate DodgedTooRecently,					label "DodgedTooRecently";
+	filter TRUE,			predicate DamagedRecently,						label "DamagedRecently";
+	filter TRUE,			predicate MovementClearLeftOfMe,				label "MovementClearLeftOfMe";
+	filter TRUE,			predicate MovementClearRightOfMe,				label "MovementClearRightOfMe";
+	filter TRUE,			predicate MovementClearAheadOfMe,				label "MovementClearAheadOfMe";
+	filter Player(x),		predicate FiredAtMe(x),							label "FiredAtMe";
+	filter Player(x),		predicate AimingAtMe(x),						label "AimingAtMe";
+	filter Player(x),		predicate FiredVeryRecently(x),					label "FiredVeryRecently";
+	filter Player(x),		predicate ShouldDodgeAttacker(x),				label "ShouldDodgeAttacker";
+//	filter Player(x),		predicate ShouldDodgeWhileRetreatingFrom(x),	label "ShouldDodgeWhileRetreatingFrom";
+	filter Player(x),		predicate SpatialDirectionAheadOfMe(x),			label "AheadOfMe";
+	filter Player(x),		predicate SpatialDirBoolLeftOfMe(x),			label "LeftOfMe";
+	filter Player(x),		predicate SpatialDirBoolRightOfMe(x),			label "RightOfMe";
+	
+	filter Player(x),		predicate SpatialLastObservedDirectionBehindMe(x),	label "LastObservedBehindMe";
+	filter NewProjectileImpact(x),	predicate SpatialDistanceVeryClose(x),	label "CloseProjectileImpact";
+	filter ShouldDodgeImpact(x),	predicate ShouldDodgeImpact(x),			label "ShouldDodgeImpact";
+}
+
+
+rules DodgeWhenUnderFireRules
+{
+	// Must be an elite (or otherwise allowed via combaat class) to dodge.
+	// Can't dodge too often, or if at cover.
+	CombatClassDodgeWhenUnderFire AND !DodgedTooRecently		->	CanDodge;
+
+	EventActive("MovingToCover") OR EventActive("Retreating") OR EventActive("FleeingToDistance")	->  RunningAway;
+
+	CombatClassDodgeWhenUnderFire AND !CombatAtCover			->	CanDoSimpleEliteMovement;
+
+
+	// Must be an elite (or otherwise allowed via combaat class) to dodge.
+	// Can't dodge too often, or if at cover.
+	CanDodge AND !RunningAway AND !CombatAtCover				->	CanDodgeWhileAttacking;
+
+//	CanDodge AND RunningAway AND !CombatAtCover					->	CanDodgeWhileRetreating;
+
+	SpatialDirectionAheadOfMe(x) 
+		AND (FiredAtMe(x) OR AimingAtMe(x)) 
+		AND FiredVeryRecently(x)								->	ShouldDodgeAttacker(x);
+
+//	SpatialLastObservedDirectionBehindMe(x) 
+//		AND (FiredAtMe(x) OR AimingAtMe(x)) 
+//		AND FiredVeryRecently(x)								->	ShouldDodgeWhileRetreatingFrom(x);
+	
+	!DamagedRecently &&		
+		NewProjectileImpact(x) && SpatialDistanceClose(x)		->	ShouldDodgeImpact(x);	
+}
+
+program DodgeImpacts
+{
+	!CanDodgeWhileAttacking							->	NIL;
+	
+	// Perform a dodge.  Note that this will always result in some dodging
+	// happening, so we must be sure that we want to dodge by this point.
+	// And anything that ought to happen each time we perform a dodge can happen
+	// in parallel here.
+	ShouldDodgeImpact(x)							->	DodgeAwayFrom(x) WITH 2.0;
+}
+
+program SimpleEliteMovement(x)
+{
+// This has been disabled - during reviews, people have recently said that they see
+// too much annoying sideways movement, in particular when aiming at and trying
+// to shoot somebody. I don't think this program was responsible for all of that,
+// but, disabling it eliminates one possible source. /FF
+//	!CanDoSimpleEliteMovement			->	NIL;
+//	TRUE								->	GoLeftIfClear(x), GoRightIfClear(x);
+}
+
+program GoLeftIfClear(x)
+{
+	CanMoveDirectional(2) AND SpatialDirBoolRightOfMe(x)
+		AND (AimingAtMe(x) OR (FiredAtMe(x) AND FiredVeryRecently(x)))
+		AND MovementClearLeftOfMe				->	SpeedJog, MoveDirectional(2) WITH 1.7;
+}
+
+program GoRightIfClear(x)
+{
+	CanMoveDirectional(3) AND SpatialDirBoolLeftOfMe(x) 
+		AND (AimingAtMe(x) OR (FiredAtMe(x) AND FiredVeryRecently(x)))
+		AND MovementClearRightOfMe				->	SpeedJog, MoveDirectional(3) WITH 1.7;
+}
+
+
+// Disabled for now, didn't work well. /FF
+/*
+// For considering dodging from anyone/anything while retreating
+program DodgeWhileRetreating
+{
+	!CanDodgeWhileRetreating						->	NIL;
+	
+	// Perform a dodge.  Note that this will always result in some dodging
+	// happening, so we must be sure that we want to dodge by this point.
+	// And anything that ought to happen each time we perform a dodge can happen
+	// in parallel here.
+	ShouldDodgeWhileRetreatingFrom(x)
+		AND MovementClearAheadOfMe					->	Dodge("DIVE_F") WITH 5.0;
+}
+*/
+
+// Disabled for now, didn't work well. /FF
+/*
+// For considering dodging a particular actor while retreating from them.
+program DodgeWhileRetreatingFrom(x)
+{
+	!CanDodgeWhileRetreating						->	NIL;
+	
+	// Perform a dodge.  Note that this will always result in some dodging
+	// happening, so we must be sure that we want to dodge by this point.
+	// And anything that ought to happen each time we perform a dodge can happen
+	// in parallel here.
+	ShouldDodgeWhileRetreatingFrom(x)
+		AND MovementClearAheadOfMe					->	Dodge("DIVE_F") WITH 5.0;
+}
+*/
+
+
+// For considering dodging a particular actor
+program DodgeWhenAttackedBy(x)
+{
+	!CanDodgeWhileAttacking							->	NIL;
+	
+	// Perform a dodge.  Note that this will always result in some dodging
+	// happening, so we must be sure that we want to dodge by this point.
+	// And anything that ought to happen each time we perform a dodge can happen
+	// in parallel here.
+	ShouldDodgeAttacker(x)							->	DodgeAwayFrom(x);
+}
+
+
+program DodgeAwayFrom(x)
+{
+// Disabled for now. The animation used for this has too much translation and
+// doesn't seem to fit well with the style of the game. /FF
+/*
+	// Dive-rolls.  The huge action strength is because the value of
+	// SpatialDistanceExtremelyClose will most likely be very very low.
+	SpatialDistanceExtremelyClose(x) 
+		AND SpatialDirBoolLeftOfMe(x)
+		AND MovementClearRightOfMe			->	Dodge("DIVE_R") WITH 250.0;
+	SpatialDistanceExtremelyClose(x)
+		AND SpatialDirBoolRightOfMe(x)
+		AND MovementClearLeftOfMe			->	Dodge("DIVE_L") WITH 250.0;
+*/
+	
+	// Dodge ("sidestep").  Again, the huge action strength is because 
+	// the value of SpatialDistanceExtremelyClose will most likely be very low.
+	//
+	// NOTE: The "_L" and "_R" sense seems backwards here, but produces the 
+	// right results.  That's probably because it's also backwards in Dr. V.
+	// TODO:  check that out and flip in both places.
+	SpatialDirBoolLeftOfMe(x)	
+		AND MovementClearRightOfMe			->	Dodge("DODGE_L") WITH 250.0;
+	SpatialDirBoolRightOfMe(x)
+		AND MovementClearLeftOfMe			->	Dodge("DODGE_R") WITH 250.0;
+	
+	// We should always know whether to go left or right -- but 
+	// in case we don't, the default is to go in our current
+	// direction of motion.
+	MovementClearLeftOfMe AND MovementClearRightOfMe	->	Dodge("DODGE") WITH 1.8;
+}
+
+// End of dodging stuff
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Some stuff related to taking cover if aimed at by the player. /FF
+
+rules PlayerAim
+{
+	Player(x) && (!Ally(x) && !Amicable(x) && !Neutral(x))																	->	PlayerToBeConcernedWithAiming(x);
+	PlayerToBeConcernedWithAiming(x) && AimingAtMe(x) && CombatClassCloserThanPlayerAimingAtMeTakeCoverIfWithinDistance(x)	->	NeedToGetToCover;
+
+	// This used to just be
+	//	!Riding		->	CanGetToCoverBecauseAimedAt;
+	// but the CombatClassCoverGoodOrWaiting was added to prevent this mechanism from overriding
+	// the effects of CCF_COVER_WAIT_IF_COVER_NO_GOOD_TIME when the player invalidates
+	// the AI actor's cover. The CombatAtCover and CombatAtCoverGood parts before are also
+	// necessary now as we don't want CombatClassCoverGoodOrWaiting to prevent things from
+	// working when the cover has not been invalidated. /FF
+	!Riding && !RidingVehicle && (!CombatAtCover || CombatAtCoverGood || !CombatClassCoverGoodOrWaiting)			->	CanGetToCoverBecauseAimedAt;
+}
+
+debuggroup PlayerAimTakeCover
+{
+	filter PlayerToBeConcernedWithAiming(x), predicate CombatClassCloserThanPlayerAimingAtMeTakeCoverIfWithinDistance(x), label "Within distance $x";
+	filter TRUE, predicate NeedToGetToCover, label "ShouldTakeCoverForPlayerAim";
+	filter TRUE, predicate CanGetToCoverBecauseAimedAt, label "CanGetToCoverBecauseAimedAt";
+	filter TRUE, predicate CombatClassCoverGoodOrWaiting, label "CombatClassCoverGoodOrWaiting";
+	filter TRUE, predicate CombatAtCoverGood, label "CombatAtCoverGood";
+	filter TRUE, predicate CombatAtCover, label "CombatAtCover";
+}
+
+program GetToCoverBecauseAimedAt
+{
+	// I added this, to make sure to detach when the player is aiming and we're at bad cover, even
+	// if he's not an enemy. Wouldn't want to include PlayerToBeConcernedWithAiming(x) inside
+	// GetToCoverAndStay. /FF
+	CombatAtCover && PlayerToBeConcernedWithAiming(x) && !StayAwayFromDangerMoveGetBehindCover(x)	->	/*Stay,*/ AutonomousFireIfAllowed, CombatSeekCoverToProtectFrom(x);
+
+	PlayerToBeConcernedWithAiming(x)	->	CombatSeekCoverToProtectFrom(x), GetToCoverAndStay;
+	TRUE								->	GetToCoverAndStay;
+}
+
+//-----------------------------------------------------------------------------
+// Weapon pick-up stuff
+
+rules Preconditions_Pickup
+{
+	WasVisibleRecently(x) && ((At(x) && CanPickUp(x)) || (!At(x) && CanMoveTo(x) && WouldBeAbleToPickUp(x))) && !RidingVehicle && (TaskRequestsWeaponPickupIfDisarmed || !PreferredConveyanceIsRequired || !Riding)					->	CanMoveToAndPickUp(x);
+
+	ObjectClassTypeWeapon(x) && CanMoveToAndPickUp(x) && SpatialDistanceClose(x)												->	CanMoveToAndPickUpNearbyWeapon;
+	ObjectClassTypeWeapon(x) && CanMoveToAndPickUp(x) && CombatClassCloserThanPickUpWeaponIfDisarmedInsteadOfCoverDistance(x)	->	CanMoveToAndPickUpNearbyWeaponInsteadOfCover;
+}
+
+// Move to and pick up an object, such as a weapon.
+// Precondition:	CanMoveToAndPickUp(x)
+program MoveToAndPickUp(x)
+{
+	At(x) && CanPickUp(x) && WasVisibleRecently(x) && Riding && CanRideDismount 	-> RideDismount;
+	At(x) && CanPickUp(x) && WasVisibleRecently(x) 									->	PickUp(x);
+	TRUE																			->	MoveTo(x), SpeedJog;
+}
+
+// Move to and pick up any nearby weapon.
+// Precondition:	CanMoveToAndPickUpNearbyWeapon
+program MoveToAndPickUpNearbyWeapon
+{
+	ObjectClassTypeWeapon(x) && CanMoveToAndPickUp(x) && SpatialDistanceVeryClose(x)	->	MoveToAndPickUp(x);
+	ObjectClassTypeWeapon(x) && CanMoveToAndPickUp(x) && SpatialDistanceClose(x)		->	MoveToAndPickUp(x);
+}
+
+
+// Move to and pick up any weapon closer than a combat class parameter threshold.
+// This is used to pick up weapons at a high priority, typically instead of running for cover
+// in a combat situation.
+// Precondition:	CanMoveToAndPickUpNearbyWeaponInsteadOfCover
+program MoveToAndPickUpNearbyWeaponInsteadOfCover
+{
+	ObjectClassTypeWeapon(x) && CombatClassCloserThanPickUpWeaponIfDisarmedInsteadOfCoverDistance(x) && CanMoveToAndPickUp(x) && SpatialDistanceVeryClose(x)	->	MoveToAndPickUp(x);
+	ObjectClassTypeWeapon(x) && CombatClassCloserThanPickUpWeaponIfDisarmedInsteadOfCoverDistance(x) && CanMoveToAndPickUp(x) && SpatialDistanceClose(x)		->	MoveToAndPickUp(x);
+	ObjectClassTypeWeapon(x) && CombatClassCloserThanPickUpWeaponIfDisarmedInsteadOfCoverDistance(x) && CanMoveToAndPickUp(x)									->	MoveToAndPickUp(x);
+}
+
+//-----------------------------------------------------------------------------
+
+constants
+{
+	int kWeapDrawPrefAuto = -1;
+	int	kWeapDrawPrefPreferDrawn = 0;
+	int	kWeapDrawPrefPreferHolstered = 1;
+}
+
+debuggroup WeaponDrawPreference
+{
+	filter TRUE, predicate ExternalWeaponDrawPreference(kWeapDrawPrefAuto), label "Auto";
+	filter TRUE, predicate ExternalWeaponDrawPreference(kWeapDrawPrefPreferDrawn), label "PreferDrawn";
+	filter TRUE, predicate ExternalWeaponDrawPreference(kWeapDrawPrefPreferHolstered), label "PreferHolstered";
+	filter TRUE, predicate CanWeaponHolsterDueToPreference, label "CanWeaponHolsterDueToPreference";
+	filter TRUE, predicate CanWeaponDrawDueToPreference, label "CanWeaponDrawDueToPreference";
+}
+
+program WeaponDrawDueToPreference
+{
+	TRUE				->	CombatWeaponDrawRange;
+}
+
+
+program WeaponHolsterDueToPreference
+{
+	TRUE				->	CombatWeaponHolster;
+}
+
+debuggroup AllowedToRangeAttack
+{
+	filter AllowedToRangeAttack(x), predicate AllowedToRangeAttack(x), label "AllowedToRangeAttack $x";
+	filter ShouldFightInsteadOfShoot(x), predicate ShouldFightInsteadOfShoot(x), label "ShouldFightInsteadOfShoot $x";
+}
+
+rules WeaponDrawPreconditions
+{
+	ExternalWeaponDrawPreference(kWeapDrawPrefPreferDrawn) && !CombatWeaponDrawn && CanWeaponDrawRange										->	CanWeaponDrawDueToPreference;
+	ExternalWeaponDrawPreference(kWeapDrawPrefPreferHolstered) && CombatWeaponDrawn && CanCombatWeaponHolster && !TaskDisallowsHolstering	->	CanWeaponHolsterDueToPreference;
+}
+
+debuggroup CombatGunshot
+{
+	filter Player(x), predicate Player(x), label "Player $x";
+	filter Player(x), predicate AllyOrAmicable(x), label "AllyOrAmicable $x";
+	filter TRUE, predicate PlayerProjectileImpactJustNow, label "PlayerProjectileImpactJustNow";
+	filter TRUE, predicate PlayerProjectileImpactSomewhatRecently, label "PlayerProjectileImpactSomewhatRecently";
+	filter VeryRecentProjectileImpact(y), predicate VeryRecentProjectileImpact(y), label "VeryRecentProjectileImpact $y";
+	filter SomewhatRecentProjectileImpact(y), predicate SomewhatRecentProjectileImpact(y), label "SomewhatRecentProjectileImpact $y";
+}
+
+//-----------------------------------------------------------------------------

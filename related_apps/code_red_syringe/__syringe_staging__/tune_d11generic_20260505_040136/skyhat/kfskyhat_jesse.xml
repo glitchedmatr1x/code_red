@@ -1,0 +1,1733 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rmwSkydome>
+	<SkyColorKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				1.000000
+				1.000000
+				1.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</SkyColorKF>
+	<AzimuthColorKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				1.000000
+				1.000000
+				1.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</AzimuthColorKF>
+	<AzimuthColorEastKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				1.000000
+				1.000000
+				1.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</AzimuthColorEastKF>
+	<SunsetColorKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				1.000000
+				1.000000
+				1.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</SunsetColorKF>
+	<CloudColorKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="14"/>
+			<KeyData content="float_array">
+				0.000000
+				0.058824
+				0.067059
+				0.066667
+				0.000000
+				4.000000
+				0.058823
+				0.067059
+				0.066667
+				0.000000
+				5.000000
+				0.039492
+				0.039691
+				0.036340
+				0.000000
+				6.000000
+				0.020162
+				0.018761
+				0.015408
+				0.000000
+				7.000000
+				0.387331
+				0.396913
+				0.363403
+				0.000000
+				8.000000
+				0.588235
+				0.670588
+				0.666667
+				0.000000
+				16.000000
+				0.588235
+				0.670588
+				0.666667
+				0.000000
+				17.000000
+				0.387331
+				0.396913
+				0.363402
+				0.000000
+				17.051020
+				0.689655
+				0.688254
+				0.684901
+				0.000000
+				17.988621
+				0.607759
+				0.376248
+				0.372896
+				0.000000
+				18.306120
+				0.254310
+				0.270594
+				0.267242
+				0.000000
+				18.948980
+				0.043103
+				0.056669
+				0.053318
+				0.000000
+				19.000000
+				0.043866
+				0.039691
+				0.036340
+				0.000000
+				20.000000
+				0.058824
+				0.067059
+				0.066667
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudColorKF>
+	<CloudThresholdThruCloudShadowStrengthKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="8"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.800000
+				0.350000
+				0.000000
+				4.744898
+				0.000000
+				0.800000
+				0.350000
+				0.000001
+				6.000000
+				1.397586
+				0.800000
+				0.350000
+				0.000001
+				7.000000
+				1.397586
+				0.800000
+				0.350000
+				1.000000
+				17.000000
+				1.397586
+				0.800000
+				0.350000
+				1.000000
+				17.969391
+				1.397586
+				0.800000
+				0.350000
+				0.030609
+				18.000000
+				1.364313
+				0.800000
+				0.350000
+				0.000000
+				19.255102
+				0.000000
+				0.800000
+				0.350000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudThresholdThruCloudShadowStrengthKF>
+	<CloudShadowOffsetThruAzymuthStrengthKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.120000
+				1.000000
+				0.100000
+				0.500000
+			</KeyData>
+		</KFData>
+	</CloudShadowOffsetThruAzymuthStrengthKF>
+	<DetailScaleThruDetailStrengthWithEdgeSmoothThicknessKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				12.288000
+				0.095000
+				1.660000
+				0.000000
+			</KeyData>
+		</KFData>
+	</DetailScaleThruDetailStrengthWithEdgeSmoothThicknessKF>
+	<CloudFadeoutrateKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				1.000000
+				1.000000
+				1.000000
+				1.000000
+			</KeyData>
+		</KFData>
+	</CloudFadeoutrateKF>
+	<TopCloudColorKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</TopCloudColorKF>
+	<TBiasThruTDetailThruThresholdThruHeightKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				-0.383276
+				-0.725690
+				-0.443276
+				-0.542414
+			</KeyData>
+		</KFData>
+	</TBiasThruTDetailThruThresholdThruHeightKF>
+	<SunColorKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				1.000000
+				1.000000
+				1.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</SunColorKF>
+	<SunCentreKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.999000
+				1.000000
+				1.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</SunCentreKF>
+	<UnStrengthThruCSpeedThruStarBrightnessKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</UnStrengthThruCSpeedThruStarBrightnessKF>
+	<m_MoonColorKFAndBrightness>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="25"/>
+			<KeyData content="float_array">
+				0.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				1.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				2.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				3.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				4.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				5.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				6.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				7.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				8.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				9.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				10.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				11.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				12.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				13.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				14.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				15.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				16.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				17.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				18.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				19.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				20.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				21.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				22.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				23.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+				24.000000
+				0.890196
+				0.941176
+				0.937255
+				0.000000
+			</KeyData>
+		</KFData>
+	</m_MoonColorKFAndBrightness>
+	<m_MoonBrightnessGlowStarBrightnessKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				3.208578
+				0.400000
+				1.450000
+				1.575000
+			</KeyData>
+		</KFData>
+	</m_MoonBrightnessGlowStarBrightnessKF>
+	<SunAxias x="1.000000" y="0.000000"/>
+	<StarBlinkFrequency value="0.000000"/>
+	<StarBlinkIntensity value="0.000000"/>
+	<MoonOrbit>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				-0.030000
+				0.024000
+				0.080000
+				0.000000
+			</KeyData>
+		</KFData>
+	</MoonOrbit>
+	<GalaxyOrbit>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</GalaxyOrbit>
+	<SunOrbit>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</SunOrbit>
+	<HDRKF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="6"/>
+			<KeyData content="float_array">
+				0.000000
+				2.333793
+				0.000000
+				0.900000
+				1.800000
+				6.000000
+				2.333793
+				0.000000
+				0.900000
+				1.800000
+				7.000000
+				2.833060
+				0.000000
+				0.900000
+				1.800000
+				12.000000
+				7.100000
+				0.000000
+				0.900000
+				1.800000
+				17.000000
+				2.818965
+				0.000000
+				0.900000
+				1.800000
+				18.000000
+				2.334000
+				0.000000
+				0.900000
+				1.800000
+			</KeyData>
+		</KFData>
+	</HDRKF>
+	<CloudList>
+		<mProbability content="int_array">
+			1
+			1
+			1
+			1
+			1
+			1
+			1
+			1
+			1
+			1
+			1
+			1
+			1
+		</mProbability>
+		<mBits>
+			<mParserArray content="int_array">
+				0
+			</mParserArray>
+			<Size value="1"/>
+			<BitSize value="13"/>
+		</mBits>
+	</CloudList>
+	<CloudSunColor>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudSunColor>
+	<CloudColor>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudColor>
+	<CloudAmbientColor>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudAmbientColor>
+	<CloudSkyColor>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudSkyColor>
+	<CloudBounceColor>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudBounceColor>
+	<CloudEastColor>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudEastColor>
+	<CloudWestColor>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudWestColor>
+	<CloudScaleFillColors>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudScaleFillColors>
+	<CloudDensityShift_Scale_ScatteringConst_Scale>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudDensityShift_Scale_ScatteringConst_Scale>
+	<CloudPiercingLightPower_Strength_NormalStrength_Thickness>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudPiercingLightPower_Strength_NormalStrength_Thickness>
+	<CloudScaleDiffuseFillAmbient_WrapAmount>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudScaleDiffuseFillAmbient_WrapAmount>
+	<RimLighting>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</RimLighting>
+	<Fog>
+		<FarColorKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</FarColorKF>
+		<NearColorKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</NearColorKF>
+		<FogDensityFinalFogOpacityColorBlendStartColorBlendEndKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</FogDensityFinalFogOpacityColorBlendStartColorBlendEndKF>
+		<fogStart value="1000.000000"/>
+		<fogEnd value="1800.000000"/>
+		<autoFar value="0.000000"/>
+	</Fog>
+	<FillLights>
+		<SkyColor>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</SkyColor>
+		<BounceColor>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</BounceColor>
+		<AzimuthEastColor>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</AzimuthEastColor>
+		<AzimuthWestColor>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</AzimuthWestColor>
+		<Thetas>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					0.500000
+					0.500000
+					-0.500000
+					0.000000
+				</KeyData>
+			</KFData>
+		</Thetas>
+	</FillLights>
+	<TODLight>
+		<Name>TODSun</Name>
+		<TextureName>sunglowtexture</TextureName>
+		<Enabled value="true"/>
+		<TimeOfDay value="11.020741"/>
+		<DayOrbitSpeed value="0.000000"/>
+		<DayOrbitSpeed2 value="0.000000"/>
+		<NightOrbitSpeed value="0.000000"/>
+		<RateChangeTime value="2.000000"/>
+		<Draw value="true"/>
+		<KeyClockTime>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="4"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					6.000000
+					6.000000
+					0.000000
+					0.000000
+					0.000000
+					12.000000
+					12.000000
+					0.000000
+					0.000000
+					0.000000
+					18.000000
+					18.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</KeyClockTime>
+		<KeySunSize>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="10"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					4.591837
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					4.775510
+					22.301258
+					0.000000
+					0.000000
+					0.000000
+					6.091837
+					182.127487
+					127.601059
+					0.000000
+					0.000000
+					6.183673
+					193.278061
+					130.251953
+					0.000000
+					0.000000
+					11.877550
+					386.264893
+					294.608307
+					0.000000
+					0.000000
+					11.938772
+					388.339935
+					292.869446
+					0.000000
+					0.000000
+					18.153061
+					290.010864
+					116.367142
+					0.000000
+					0.000000
+					18.183674
+					290.162659
+					115.497643
+					0.000000
+					0.000000
+					24.000000
+					319.002655
+					193.965500
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</KeySunSize>
+		<KeySunColorMod>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="3"/>
+				<KeyData content="float_array">
+					0.000000
+					1.000000
+					0.758621
+					0.258621
+					1.000000
+					5.877551
+					1.448276
+					0.638556
+					-0.135876
+					1.000000
+					5.908163
+					1.448276
+					0.637931
+					-0.137931
+					1.000000
+				</KeyData>
+			</KFData>
+		</KeySunColorMod>
+		<KeyGlowColorMod>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="12"/>
+				<KeyData content="float_array">
+					0.000000
+					1.017241
+					1.017241
+					1.017241
+					1.000000
+					5.632653
+					1.532136
+					0.500000
+					0.224138
+					1.000000
+					5.846939
+					1.551724
+					0.506583
+					0.228527
+					1.000000
+					9.000000
+					1.230378
+					0.603449
+					0.293104
+					1.000000
+					9.061224
+					1.224138
+					0.587644
+					0.272841
+					1.000000
+					11.938774
+					0.667026
+					-0.155172
+					-0.679522
+					1.000000
+					11.969391
+					0.661099
+					-0.152885
+					-0.689655
+					1.000000
+					12.000000
+					0.655173
+					-0.150598
+					-0.687467
+					1.000000
+					17.908157
+					0.948276
+					0.290817
+					-0.265185
+					1.000000
+					17.938770
+					0.948720
+					0.293104
+					-0.262997
+					1.000000
+					17.999996
+					0.949609
+					0.300608
+					-0.258621
+					1.000000
+					23.846935
+					1.034483
+					1.017241
+					1.017241
+					1.000000
+				</KeyData>
+			</KFData>
+		</KeyGlowColorMod>
+		<KeyColor>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					1.000000
+					1.000000
+					1.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</KeyColor>
+		<KeyAmbLight>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="2"/>
+				<KeyData content="float_array">
+					0.000000
+					0.628398
+					0.743550
+					0.860000
+					0.000000
+					24.000000
+					0.628398
+					0.743550
+					0.860000
+					0.000000
+				</KeyData>
+			</KFData>
+		</KeyAmbLight>
+		<KeyOrbit>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					15.800210
+					46.551731
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</KeyOrbit>
+		<KeyDistance>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					1000.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</KeyDistance>
+		<KeyShadowColor>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="2"/>
+				<KeyData content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					24.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</KeyShadowColor>
+	</TODLight>
+	<HDR2KF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.258621
+				0.258621
+				0.258621
+				0.258621
+			</KeyData>
+		</KFData>
+	</HDR2KF>
+	<HDR3KF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				1.000000
+				1.000000
+				1.000000
+				1.000000
+			</KeyData>
+		</KFData>
+	</HDR3KF>
+	<HDR4KF>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				1.000000
+				1.000000
+				1.000000
+				1.000000
+			</KeyData>
+		</KFData>
+	</HDR4KF>
+	<CloudShadows>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</CloudShadows>
+	<CloudShadowsTextureIdx value="0"/>
+	<SunFlare>
+		<colorKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="22"/>
+				<KeyData content="float_array">
+					0.000000
+					0.530172
+					0.461207
+					0.000000
+					1.000000
+					5.153527
+					0.696254
+					0.534209
+					0.000000
+					1.000000
+					6.390000
+					0.736102
+					0.551724
+					0.357593
+					1.000000
+					6.420000
+					0.737069
+					0.549278
+					0.366269
+					1.000000
+					6.480000
+					0.725575
+					0.544385
+					0.383621
+					1.000000
+					7.500000
+					0.530172
+					0.461207
+					0.672414
+					1.000000
+					8.130000
+					0.400862
+					0.492540
+					0.649785
+					1.000000
+					8.280000
+					0.400707
+					0.500000
+					0.644397
+					1.000000
+					8.340000
+					0.400644
+					0.499684
+					0.642241
+					1.000000
+					12.000000
+					0.396852
+					0.480422
+					0.672000
+					1.000000
+					15.270000
+					0.393463
+					0.463212
+					0.655172
+					1.000000
+					16.289999
+					0.392406
+					0.457844
+					0.521552
+					1.000000
+					16.448612
+					0.392241
+					0.457009
+					0.483657
+					1.000000
+					16.469999
+					0.393188
+					0.456897
+					0.478548
+					1.000000
+					17.010000
+					0.417100
+					0.471675
+					0.349536
+					1.000000
+					17.099998
+					0.421085
+					0.474138
+					0.328034
+					0.967460
+					17.129997
+					0.422414
+					0.475796
+					0.320867
+					0.956613
+					17.679207
+					0.621565
+					0.506145
+					0.189655
+					0.758039
+					17.760000
+					0.650862
+					0.510610
+					0.180589
+					0.728827
+					17.880001
+					0.650862
+					0.517241
+					0.167123
+					0.685440
+					18.154455
+					0.650862
+					0.517241
+					0.136324
+					0.586207
+					19.369293
+					0.650862
+					0.517241
+					0.000000
+					0.586207
+				</KeyData>
+			</KFData>
+		</colorKF>
+		<sizeBrightnessReducerKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="18"/>
+				<KeyData content="float_array">
+					0.000000
+					3.922414
+					3.922414
+					1.541915
+					2.931035
+					6.420000
+					1.351047
+					1.351047
+					2.211430
+					3.733056
+					6.450000
+					1.339031
+					1.339031
+					2.194529
+					3.710777
+					7.500000
+					3.922000
+					3.922000
+					1.603000
+					2.931000
+					8.430000
+					7.456896
+					7.304676
+					4.102053
+					3.131681
+					8.460000
+					7.459590
+					7.413793
+					4.182667
+					3.138155
+					8.580000
+					7.470366
+					7.428467
+					4.505126
+					3.164049
+					8.700001
+					7.481142
+					7.443140
+					4.827586
+					3.164479
+					9.840000
+					7.583513
+					7.582539
+					4.870689
+					3.168568
+					9.870000
+					7.586207
+					7.586207
+					4.870689
+					3.168675
+					14.370000
+					7.586207
+					7.586207
+					4.870689
+					3.184813
+					15.510000
+					7.397215
+					7.397215
+					4.870689
+					3.188902
+					15.719999
+					7.362401
+					7.362401
+					4.189657
+					3.189655
+					15.930000
+					7.327586
+					7.327586
+					3.508619
+					3.086206
+					16.530001
+					8.232759
+					8.232759
+					1.562804
+					2.790640
+					16.559999
+					8.358985
+					8.358985
+					1.465517
+					2.775862
+					16.770000
+					9.242610
+					9.242610
+					1.465517
+					2.672414
+					16.950001
+					10.000000
+					10.000000
+					1.465517
+					2.672414
+				</KeyData>
+			</KFData>
+		</sizeBrightnessReducerKF>
+		<raysKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					1.000000
+					1.000000
+					1.000000
+					1.000000
+				</KeyData>
+			</KFData>
+		</raysKF>
+		<shadowKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					1.000000
+					1.000000
+					1.000000
+					1.000000
+				</KeyData>
+			</KFData>
+		</shadowKF>
+		<querySize value="0.030000"/>
+		<queryPixelsExpected value="3051"/>
+	</SunFlare>
+	<SunLightRays>
+		<colorKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="22"/>
+				<KeyData content="float_array">
+					0.000000
+					0.150862
+					0.150862
+					0.000000
+					0.000000
+					5.153527
+					0.206558
+					0.153744
+					0.000000
+					0.000000
+					5.982541
+					0.215517
+					0.154208
+					0.060679
+					0.000000
+					6.210000
+					0.209159
+					0.154335
+					0.077328
+					0.000000
+					6.540000
+					0.199935
+					0.154520
+					0.101482
+					0.715517
+					6.861314
+					0.190954
+					0.154699
+					0.125000
+					0.735638
+					7.503650
+					0.173000
+					0.155059
+					0.167509
+					0.775862
+					7.678832
+					0.168103
+					0.155157
+					0.179103
+					0.775886
+					7.708029
+					0.168103
+					0.155173
+					0.181035
+					0.775890
+					8.500000
+					0.168103
+					0.156655
+					0.263626
+					0.776000
+					8.700001
+					0.168103
+					0.157030
+					0.284483
+					0.775997
+					11.730000
+					0.195350
+					0.162700
+					0.301724
+					0.775943
+					15.450001
+					0.228801
+					0.169663
+					0.314655
+					0.775878
+					16.380001
+					0.237164
+					0.171403
+					0.314655
+					0.775862
+					16.770000
+					0.240671
+					0.172133
+					0.314655
+					0.684294
+					16.848713
+					0.241379
+					0.172280
+					0.301632
+					0.665813
+					16.920000
+					0.253891
+					0.172414
+					0.289838
+					0.649075
+					17.610001
+					0.375000
+					0.216855
+					0.175679
+					0.487069
+					17.760000
+					0.375000
+					0.226516
+					0.150862
+					0.360765
+					17.789999
+					0.375000
+					0.228448
+					0.148050
+					0.335506
+					18.188450
+					0.375000
+					0.228448
+					0.110697
+					0.000000
+					19.369293
+					0.375000
+					0.228448
+					0.000000
+					0.000000
+				</KeyData>
+			</KFData>
+		</colorKF>
+		<sizeBrightnessReducerKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					10.000000
+					10.000000
+					3.836207
+					2.413793
+				</KeyData>
+			</KFData>
+		</sizeBrightnessReducerKF>
+		<raysKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="12"/>
+				<KeyData content="float_array">
+					0.000000
+					5.000000
+					10.000000
+					1.000000
+					1.000000
+					6.480000
+					8.491379
+					4.932866
+					1.000000
+					1.000000
+					6.780000
+					8.491379
+					4.698276
+					1.000000
+					1.000000
+					7.474452
+					8.491379
+					4.410584
+					1.000000
+					1.000000
+					7.500000
+					8.492300
+					4.400000
+					1.000000
+					1.000000
+					8.520000
+					8.529075
+					4.439655
+					1.000000
+					1.000000
+					8.670000
+					8.534483
+					4.677276
+					1.000000
+					1.000000
+					12.030001
+					8.152299
+					10.000000
+					1.000000
+					1.000000
+					15.870000
+					7.715517
+					10.000000
+					1.000000
+					1.000000
+					16.020000
+					8.109395
+					10.000000
+					1.000000
+					1.000000
+					16.410000
+					9.133472
+					5.818965
+					1.000000
+					1.000000
+					16.740000
+					10.000000
+					5.818965
+					1.000000
+					1.000000
+				</KeyData>
+			</KFData>
+		</raysKF>
+		<shadowKF>
+			<KFData>
+				<Channels value="4"/>
+				<Keys value="1"/>
+				<KeyData content="float_array">
+					0.000000
+					1.000000
+					1.000000
+					1.000000
+					1.000000
+				</KeyData>
+			</KFData>
+		</shadowKF>
+		<querySize value="0.030000"/>
+		<queryPixelsExpected value="2700"/>
+	</SunLightRays>
+	<Rain>
+		<KF>
+			<Item>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+					</KeyData>
+				</KFData>
+			</Item>
+			<Item>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+					</KeyData>
+				</KFData>
+			</Item>
+			<Item>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+					</KeyData>
+				</KFData>
+			</Item>
+			<Item>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+					</KeyData>
+				</KFData>
+			</Item>
+			<Item>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+					</KeyData>
+				</KFData>
+			</Item>
+			<Item>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+					</KeyData>
+				</KFData>
+			</Item>
+			<Item>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+						0.000000
+					</KeyData>
+				</KFData>
+			</Item>
+		</KF>
+		<fog>
+			<FarColorKF>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.800000
+						0.800000
+						1.000000
+						0.000000
+					</KeyData>
+				</KFData>
+			</FarColorKF>
+			<NearColorKF>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.700000
+						0.700000
+						0.500000
+						0.000000
+					</KeyData>
+				</KFData>
+			</NearColorKF>
+			<FogDensityFinalFogOpacityColorBlendStartColorBlendEndKF>
+				<KFData>
+					<Channels value="4"/>
+					<Keys value="1"/>
+					<KeyData content="float_array">
+						0.000000
+						0.100000
+						0.900000
+						0.400000
+						0.600000
+					</KeyData>
+				</KFData>
+			</FogDensityFinalFogOpacityColorBlendStartColorBlendEndKF>
+			<fogStart value="-10.000000"/>
+			<fogEnd value="1800.000000"/>
+			<autoFar value="1.000000"/>
+		</fog>
+	</Rain>
+	<ParticlesLowRes>
+		<KFData>
+			<Channels value="4"/>
+			<Keys value="1"/>
+			<KeyData content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</KeyData>
+		</KFData>
+	</ParticlesLowRes>
+</rmwSkydome>

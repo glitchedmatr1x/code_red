@@ -1,0 +1,357 @@
+//-----------------------------------------------------------------------------
+// Behavior for guards who are attempting to detect an enemy presence.
+program GuardRoutine
+{
+	// The rules here were adaped from what used to be an old GuardRoutine program
+	// which performed a number of things in parallel. This wasn't working well
+	// in practice, so I "inlined" everything here. The order of the rules here
+	// should roughly match the strength modifiers used in the old program, but
+	// some changes may be necessary as we go along. /FF
+
+	// Investigate suspicious noises in much the same way as explosions would be investigated. /FF
+	EnableInvestigateAll && SuspiciousNoiseToInvestigate(x) && KnowsWhereIs(x) && Investigating(x) && AllowedToInvestigate(x)	->  MaintainLineOfSight(x), SpeedWalk;
+	EnableInvestigateAll && SuspiciousNoiseToInvestigate(x) && !Investigated(x) && AllowedToInvestigate(x)					->  ObserveLastKnownPosition(x), SpeedSprint;
+
+	// -- Used to be in HelpOthers:
+
+	EnableHelpOthers && MayNeedHelp(x) && ShouldHelpIfNeeded(x) && CanHelp(x)	->	Help(x);
+
+	// -- Used to be in InvestigateAll (and InvestigateBodies, InvestigateExplosions, and InvestigateGunshots):
+
+	// If we encounter a corpse that died recently (but we didn't see it), go check out the body.
+	// - I took this out - until we hook up a proper animation, the body check just doesn't work
+	//   well, and since it's executed in parallel with other things, has a tendency to just cause
+	//   actors to crouch and be confused. /FF
+	//CanInvestigateBody(x) AND ShouldInvestigateBody(x) && AllowedToInvestigate(x)	->	InvestigateBody(x), Display("InvestigatingBody");
+
+	// If we heard an explosion and we're looking at the location where we heard it,
+	// but we are still investigating it, then just keep looking.  No hurry!
+	EnableInvestigateAll && RecentExplosion(x) AND KnowsWhereIs(x) AND Investigating(x) && AllowedToInvestigate(x)	->  MaintainLineOfSight(x), SpeedWalk;
+
+	// If we heard an explosion and we're not finished investigating it, 
+	// hurry over to look at the location where we heard the sound.
+	EnableInvestigateAll && RecentExplosion(x) AND NOT Investigated(x) && AllowedToInvestigate(x)					->  ObserveLastKnownPosition(x), SpeedSprint;
+
+	// If we hear someone unknown to us (or an enemy that we lost track of) firing a weapon,
+	// try going to the location where we heard the weapon.
+	EnableInvestigateAll &&	(UnknownWeaponFired(x) OR HiddenEnemyWeaponFired(x))	
+		AND CanObserveLastKnownPosition(x) && AllowedToInvestigate(x)			->	ObserveLastKnownPosition(x), SpeedJog;
+
+	// -- Used to be in Identification:
+
+	// Identify unknowns with haste if enemies are known or believed to be present.
+	EnableIdentification && EnemiesAreAround && !Identified(x) && CanIdentify(x) && AllowedToInvestigate(x)				->	Identify(x), SpeedJog;
+
+	// If there are unknown persons around, identify them. This isn't done if
+	// we have been assigned a post to stand guard at.
+	EnableIdentification && !Identified(x) && CanIdentify(x) && !HasSomethingToGuard && AllowedToInvestigate(x)			->	Identify(x);
+
+	// If we have something to guard, the presence of this rules makes
+	// the actor at least look towards unidentified persons even if he
+	// won't leave his post.
+	EnableIdentification && PossibleEnemy(x) && SpatialDistanceClose(x) && CanLookAt(x) && AllowedToInvestigate(x) && Alive(x)		->	LookAt(x);
+	
+	// -- Used to be in SearchUndirected:
+
+	// Start an alerted search.
+	CanAlertedSearch && ShouldAlertedSearch				->	AlertedSearch;
+
+	// Start an unalerted search.
+	CanUnalertedSearch && ShouldUnalertedSearch			->	UnalertedSearch;
+
+	TRUE												->	Unalerted, ReportState(kReportStateUnalerted);
+}
+
+//-----------------------------------------------------------------------------
+// Helping others
+
+debuggroup CanLookAtPossibleEnemy
+{
+	filter TRUE, predicate PossibleEnemy(x), label "PossibleEnemy $x";
+	filter TRUE, predicate SpatialDistanceClose(x), label "SpatialDistanceClose $x";
+	filter TRUE, predicate CanLookAt(x), label "CanLookAt $x";
+	filter TRUE, predicate AllowedToInvestigate(x), label "AllowedToInvestigate $x";
+	filter EnableIdentification, predicate EnableIdentification, label "EnableIdentification";
+}
+
+debuggroup Help
+{
+	filter ScreamedSomewhatRecently(x), predicate BecameVisibleVeryRecently(x),		label "BecameVisibleVeryRecently $x";
+	filter ScreamedSomewhatRecently(x), predicate WasVisibleRecently(x),			label "WasVisibleRecently $x";
+	filter ScreamedSomewhatRecently(x), predicate MayNeedHelp(x),					label "MayNeedHelp $x";
+	filter ScreamedSomewhatRecently(x), predicate ScreamedSinceLastClearlyVisible(x),label "ScreamedSinceLastClearlyVisible $x";
+	filter ScreamedSomewhatRecently(x), predicate Ally(x),							label "Ally $x";
+}
+
+
+rules Preconditions_HelpOthers
+{
+	// Precondition for the Help(x) program.
+	(WasVisibleJustNow(x) && SpatialDistanceVeryClose(x)) || CanFindAndMoveTo(x)		->	CanHelp(x);
+}
+
+rules Rules_HelpOthers
+{
+	// Somebody that's screaming and that we haven't looked for after that may need help.
+	ScreamedRecently(x) && ScreamedSinceLastClearlyVisible(x)								->	MayNeedHelp(x);
+
+	// For now, only help allies if they need it. In most cases SpatialDistanceClose(x)
+	// probably doesn't make a difference because our current scream range is smaller than
+	// that, but it would prevent actors from starting to help somebody if they are likely
+	// to not get there before they would decide to stop going there (because ScreamedRecently
+	// would turn to false).
+	Ally(x) && SpatialDistanceClose(x)														->	ShouldHelpIfNeeded(x);
+}
+
+
+// "Help" actor x by going towards him and make sure that he's safe. Note that
+// other programs will need to intervene with any threats to x, this program
+// just makes sure that we get there and look at him for a while.
+// Precondition:	CanHelp(x)
+// Goal:			LookedFor(x)
+program Help(x)
+{
+	// If close and x is in view, stand still and look at him. The perception
+	// system should make LookedFor(x) go true after a while.
+	WasVisibleJustNow(x) && SpatialDistanceVeryClose(x) && CanLookAt(x)					->	LookAt(x), Stay;
+	WasVisibleJustNow(x) && SpatialDistanceVeryClose(x)									->	Stay;
+
+	// If we're not close enough or can't see x, run towards him or
+	// search for him.
+	TRUE																->	FindAndMoveTo(x), SpeedSprint;
+}
+
+//-----------------------------------------------------------------------------
+// Body investigation
+
+// InvestigateBody(x) takes care of finding out the status of a 
+// body, x:  is it dead, unconscious, or what?
+// Goal:			BodyStatusKnown(x)
+// Precondition:	Body(x) AND Close(x)
+program InvestigateBody(x)
+{
+	// Note: I added the Stay action here for stability when invoked in
+	// parallel with other programs. /FF
+	At(x)				-> PostureCrouch, SpeedWalk, Stay;		// CheckBody(x), SpeedWalk;
+	TRUE				-> FindAndMoveTo(x), SpeedJog;
+}
+
+rules Body_Investigation_Rules
+{
+	//Don't allow Dead Body Investigation in Net Games, as we don't sync corpses
+	!IsNetGame && AllowDeadBodyReaction && !Hogtied && !Riding && !RidingVehicle && Body(x) -> CanDoBodyInvestigation(x);
+	
+	CanDoBodyInvestigation(x) && CanFindAndMoveTo(x) && !IsCorpseInsideNoInterventionVolume(x) 	-> CanInvestigateBody(x);
+	
+	NOT BodyStatusKnown(x) && Close(x) && ObjectClassCreatureRaceHuman(x) && !InspectedDeadBodyInTheLastThreeMinutes		-> ShouldInvestigateBody(x);
+	
+	CanDoBodyInvestigation(x) && CanMoveRetreatFrom(x)			-> CanMoveAwayFromBody(x);
+
+	BodyStatusKnown(x) && CheckBody_1Recently																			-> ShouldMoveAwayFromBody(x);
+	//BodyStatusKnown(x) && Within(x, 5.0) && EventActive("DeadBodyReaction")												-> ShouldMoveAwayFromBody(x);
+	//BodyStatusKnown(x) && Within(x, 5.0) && EventActive("MovingAwayFromBody")											-> ShouldMoveAwayFromBody(x);
+}
+
+debuggroup BodyInvestigation
+{
+	filter TRUE, predicate InspectedDeadBodyInTheLastThreeMinutes,		label "InspectedDeadBodyInTheLastThreeMinutes";
+	filter NOT Player(x), predicate Ally(x),							label "Ally $x";
+	filter NOT Player(x), predicate DeadAlly(x),						label "DeadAlly $x";
+	filter NOT Player(x), predicate Body(x),							label "Body $x";
+	filter NOT Player(x), predicate BodyStatusKnown(x),					label "BodyStatusKnown $x";
+	filter NOT Player(x), predicate CanInvestigateBody(x),				label "CanInvestigateBody $x";
+	filter NOT Player(x), predicate ShouldInvestigateBody(x),			label "ShouldInvestigateBody $x";
+	filter NOT Player(x), predicate ShouldAlertedSearch,				label "ShouldAlertedSearch $x";
+	filter NOT Player(x), predicate ShouldUnalertedSearch,				label "ShouldUnalertedSearch $x";
+	filter NOT Player(x), predicate ShouldMoveAwayFromBody(x),			label "ShouldMoveAwayFromBody $x";
+}
+
+//-----------------------------------------------------------------------------
+// Programs and rules related to identifying unknown persons.
+
+// This program identifies an actor. Basically an actor becomes identified
+// by seeing them at a close enough distance for a long enough time.
+// Goal:			Identified(x)
+// Precondition:	CanIdentify(x)
+program Identify(x)
+{
+	Identified(x)						->	NIL;
+	CanLookAt(x)						->	LookAt(x), MoveCloserToWithoutSearch(x);
+	TRUE								->	MoveCloserToWithoutSearch(x);
+}
+
+
+// Preconditions for identification-related programs.
+rules Preconditions_Identification
+{
+	// For now, only alive humans can be identified.
+	CanMoveCloserToWithoutSearch(x) && ObjectClassCreatureRaceHuman(x) && Alive(x)		->	CanIdentify(x);
+
+	TRUE																	->	CanIdentifyUnknownPersons;
+}
+
+//-----------------------------------------------------------------------------
+// Search-related programs and rules:
+
+// This program executes an unalerted undirected search. The actor
+// will be walking. At the moment, it specifies nothing about weapon
+// drawing or holstering.  This program doesn't react to anything that it
+// finds; it's up to the user to do that.
+// Precondition:	CanUnalertedSearch
+program UnalertedSearch
+{
+	// Start a walking search
+	TRUE		->	Search, SpeedWalk;
+}
+
+// This program executes an alerted undirected search. The actor
+// will be jogging and draw his gun if he has one. This program doesn't
+// react to anything that it finds, it's up to the user to do that.
+// Precondition:	CanAlertedSearch
+program AlertedSearch
+{
+	// Start a jogging search with a simultaneous goal of trying
+	// to draw a weapon.
+	TRUE		->	Search, SpeedJog, AlertedSearch_DrawWeaponIfPossible, CancelPlannedActivity(4);
+}
+
+
+// Used internally by AlertedSearch.
+// Precondition:	TRUE
+program AlertedSearch_DrawWeaponIfPossible
+{
+	CombatRangeWeaponReadied	->	NIL;
+	CanCombatReadyRangeWeapon	->	CombatReadyRangeWeapon;
+}
+
+
+// This used to be an elementary action, but isn't anymore. It uses the
+// MoveSearch and LookAround elementary actions together.
+// Precondition:	CanSearch
+program Search
+{
+	TRUE	->	Search1, Mood("SEARCH");
+}
+
+program Search1
+{
+// Disabled LookAround, Mood("SEARCH") might be sufficient. /FF
+//	CanLookAround && CanMoveSearch			->	LookAround, MoveSearch;
+	CanMoveSearch							->	MoveSearch;
+
+// Disabled LookAround, Mood("SEARCH") might be sufficient. /FF
+//	TRUE /* = CanLookAround */				->	LookAround;
+}
+
+
+// This used to be an elementary action, but isn't anymore. It uses the
+// MoveSearch(x) and LookAround elementary actions together.
+// Precondition:	CanSearch(x)
+program Search(x)
+{
+	TRUE	->	Search1(x), Mood("SEARCH");
+}
+
+program Search1(x)
+{
+// Disabled LookAround, Mood("SEARCH") might be sufficient. /FF
+//	CanLookAround && CanMoveSearch(x)		->	LookAround, MoveSearch(x);
+
+	TRUE /* CanMoveSearch(x) */				->	MoveSearch(x);
+}
+
+
+// Search-related action preconditions.
+rules Preconditions_Search
+{
+	// Allow Search program to be used as long as you can look around
+	// or move around.
+	(CanLookAround && !RidingVehicle) || CanMoveSearch							->	CanSearch;
+
+	// Allow Search(x) program MoveSearch(x) can execute. The LookAround
+	// part is optional.
+	CanMoveSearch(x)										->	CanSearch(x);		// Elementary action.
+
+	// To do an alerted search, we need to be able to search. Note that
+	// even though the program will draw a weapon if it's available,
+	// it's not a requirement.
+	CanSearch							->	CanAlertedSearch;
+
+	// To do an unalerted search, we need to be able to search.
+	CanSearch							->	CanUnalertedSearch;
+}
+
+// Search-related action justifications.
+rules Reasons_Alerted_Search
+{
+	// If there are enemies around, start an alerted search.
+	EnemiesAreAround && AttackOnSight && HasRangeCapabilities			-> ShouldAlertedSearch;
+
+	// CodeRED Pass4 faction wars: armed guards/citizens respond to discovered faction enemies even if AttackOnSight is not set.
+	EnemiesAreAround && HasRangeCapabilities							-> ShouldAlertedSearch;
+	Enemy(x) && PositionKnownSomewhatRecently(x) && HasRangeCapabilities		-> ShouldAlertedSearch;
+
+	// If one of our allies got killed, start looking for the culprit
+	DeadAlly(x) AND BodyStatusKnown(x) AND DiedSomewhatRecently(x)		->	ShouldAlertedSearch;
+
+	// Go into "alerted search mode" after taking damage from a projectile.
+	DamagedByProjectileSomewhatRecently		-> ShouldAlertedSearch;
+
+	// Go into "alerted search mode" after hearing a projectile hit something
+	// near us. Since this condition tends to trigger a dive right
+	// when the sound is heard, typically this rule makes sure that
+	// after diving you start an alerted search. This rule used
+	// to start an unalerted search. /FF
+	// Note: I added the !HasTask here, as this was very often getting in the
+	// way of actors performing their task. "SomewhatRecent" is a pretty long
+	// time, and this all currently happens even for actors that are not
+	// set up to be guards. /FF
+	// 9-28 Moved to the top of Unalerted -JM
+	//RecentProjectileImpact(x)											-> ShouldAlertedSearch;
+}
+
+// Search-related action justifications.
+rules Reasons_Unalerted_Search
+{
+	// If one of our allies got damaged, start looking for the culprit
+	TookDamageRecently(x) AND Ally(x)		->	ShouldUnalertedSearch;
+	
+	// Search after suspicious noises like after an explosion. /FF
+	SuspiciousNoiseToInvestigate(x) && Investigated(x)	-> ShouldUnalertedSearch;
+
+	// If we heard an explosion and we have finished investigating it, 
+	// look around to see if we can identify its source.
+	SomewhatRecentExplosion(x) AND Investigated(x)	-> ShouldUnalertedSearch;
+
+	// Go into "unalerted search mode" after being recently injured by an explosion.
+	DamagedByExplosionSomewhatRecently				-> ShouldUnalertedSearch;
+}
+
+//-----------------------------------------------------------------------------
+// Programs and rules related to keeping your eyes on somebody.
+
+// Try to maintain line of sight by looking at the target or
+// searching for it if lost. This program may have to be extended to really
+// try harder to look for the target if it wasn't seen already. That way
+// it will probably work better if used together with other behaviors or
+// with multiple targets.
+program MaintainLineOfSight(x)
+{
+	// If we know where the target is and can look at it, do so.
+	KnowsWhereIs(x) && CanLookAt(x)				->	LookAt(x);
+
+	// If we don't know where the target is, try to find it.
+	!KnowsWhereIs(x) && CanFind(x)				->	Find(x);
+}
+
+
+// Preconditions for actions related to keeping track of somebody.
+rules Preconditions_KeepEyesOn
+{
+	// If we know where the target is or if we know how to search for it,
+	// we can use MaintainLineOfSight(x).
+// TEMP: Only for player for now because I didn't have time to look into how this interacts with multiple targets. /FF
+Player(x) &&	(KnowsWhereIs(x) || CanFind(x))							->	CanMaintainLineOfSight(x);
+}
+
+//-----------------------------------------------------------------------------

@@ -1,0 +1,303 @@
+//
+// PURPOSE:	This file contains TR programs and rules that are only used by birds
+//
+
+program BirdPerformTask
+{
+	// I added this so that tasks derived from aiTaskSimple can be used for
+	// birds. AnimalPerformTask is set up to land first, so that most normal
+	// tasks would just work by first landing, then performing the task on
+	// ground.
+	// TODO: I think aiTaskSimple implementations will need to specify that
+	// they are flight tasks, if they are. The way it is right now, birds won't
+	// land properly first for aiTaskSimple tasks that should be performed on ground. /FF
+	HasSimpleTask										->	PerformSimpleTask;
+
+	TRUE												->	AnimalPerformTask;	
+}
+
+
+program BirdFlee
+{
+	!FlightFlying && !CanMoveFlightTakeOff -> AnimalFleeWithBroadcast, SpeechEvent("AnimalFleeing");
+	!FlightFlying && CanMoveFlightTakeOff -> MoveFlightTakeOff, SpeechEvent("AnimalFleeing");
+
+	TRUE -> MoveFlightSoar, SpeechEvent("AnimalFleeing");
+}
+
+program BirdFlee(x)
+{
+	!FlightFlying && !CanMoveFlightTakeOff -> AnimalFleeWithBroadcast(x), SpeechEvent("AnimalFleeing");
+	!FlightFlying && CanMoveFlightTakeOff -> MoveFlightTakeOff, SpeechEvent("AnimalFleeing");
+
+	TRUE -> MoveFlightSoar, SpeechEvent("AnimalFleeing");
+}
+
+
+//-----------------------------------------------------------------------------
+
+// PURPOSE:	Main program used for birds.
+program BirdMain
+{
+	TRUE			->	BirdMain1, AnimalMaybeStartle_tr, ConstrainValidSpacePriorityHighest;
+}
+
+
+program BirdPerformTask0
+{
+	TRUE			->	BirdPerformTask1, AnimalMaybeStartle_tr, ConstrainSpaceAllowedByTask;
+}
+
+
+program BirdPerformTask1
+{
+	ObjectiveWander							->	BirdPerformUnalerted;
+	TRUE									->	BirdPerformTask;
+}
+
+
+program BirdMoveToValidSpace
+{
+	// For now, just make sure to land if we're constrained to a volume. /FF
+	// TODO: At least, we should probably make sure that we don't take off again
+	// if we're inside the volume we're constrained to. /FF
+	FlightFlying && CanBirdLand					->	BirdLand;
+	// If the bird can't land, but is still in the air, just keep flying
+	FlightFlying 								-> MoveFlightSoar;
+	
+	TRUE										->	MoveToValidSpace;
+}
+
+
+program BirdMain1
+{
+	// Move back to our valid area if we're outside of it.
+	OutsideOfValidSpace && StayInValidSpacePriorityHighest	->	BirdMoveToValidSpace, AutonomousFireIfAllowed;
+
+	// Use the BirdPerformTask0 command to carry out scripted commands.
+	ExternalPriorityHighest && CanBirdPerformTask									->	BirdPerformTask0;
+
+	//Escape if badly injured. Stay still once out of reach so it looks like
+	//we are recovering.
+	// - Disabled for now. I suppose badly wounded birds should still at least _try_ to
+	//   fly away from their enemies. /FF
+	//!FlightFlying &&	EnemyOfMySpecies(x) && SafeDistanceGenericAnimal(x) && CombatClassHealthBelowBreakRetreatHealthPercentageThreshold		->	Stay;
+	//!FlightFlying &&	EnemyOfMySpecies(x) && CombatClassHealthBelowBreakRetreatHealthPercentageThreshold && CanMoveRetreatFrom(x)		->	MoveRetreatFrom(x), SpeedSprint;
+
+
+	// FLEE PRIORITY 1
+	CanAnimalFlee(x) && AnimalPredator(x) && AnimalTuningCloserThanFleePredatorRangeStart(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x) && CanMoveRetreatFrom(x)    	-> BirdFlee(x);
+	CanAnimalFlee(x) && RecentVehicleNoise(x) && AnimalTuningWasCloserThanFleeVehicleNoiseRange(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x) && CanMoveRetreatFrom(x) 	-> BirdFlee(x);
+	CanAnimalFlee(x) && FlockFleeDeadFlockMembers && AnimalTuningHeightCloserThanFleeVerticalRange(x) && CanMoveRetreatFrom(x)											 	-> BirdFlee(x);
+
+
+	TRUE		->	BirdMain2, ConstrainValidSpacePriorityCombat;
+}
+
+
+program BirdMain2
+{
+	// Move back to our valid area if we're outside of it.
+	OutsideOfValidSpace && StayInValidSpacePriorityCombat			->	BirdMoveToValidSpace, AutonomousFireIfAllowed;
+
+	//If there are scripted commands for fighting let the script do it.
+	ExternalPriorityCombat && CanBirdPerformTask									->	BirdPerformTask0;
+
+	//Default combat behavior. Move in quickly, fight.
+	// - Disabled for now. We don't have any fight animations for birds. /FF
+//	!FlightFlying && AnimalCapabilityFighting && EnemyOfMySpecies(x) && SpatialDistanceVeryClose(x) && CanCombatFight(x)			->	CombatFight(x), MoveTo(x), SpeedSprint;
+//	!FlightFlying && AnimalCapabilityFighting && EnemyOfMySpecies(x) && !SpatialDistanceVeryFar(x)									->	MoveTo(x), SpeedSprint;
+
+
+	//
+	// FLEE PRIORITY 3
+	//
+	CanAnimalFlee(x) && SpatialDistanceClose(x) && CombatClassHealthBelowBreakRetreatHealthPercentageThreshold && EnemyOfMySpecies(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x)				-> BirdFlee(x);	
+	CanAnimalFlee && RecentUltrasonicFlee(x) && AnimalTuningWasCloserThanFleeUltrasonicFleeNoiseRange(x) && AnimalOfMySpecies(a) 																		-> BirdFlee(x);	
+	CanAnimalFlee && RecentProjectileImpact(x) && AnimalTuningWasCloserThanFleeProjectileImpactNoiseRange(x)																							-> BirdFlee(x); 
+	CanAnimalFlee && RecentLoudNoise(x) && AnimalTuningWasCloserThanFleeLoudNoiseRange(x)																												-> BirdFlee(x); 
+
+	CanAnimalFlee && ShouldSprintAwayFromVeryCloseAnimals && AnimalOfOtherSpecies(x) && SpatialDistanceExtremelyClose(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x) 							-> BirdFlee(x);
+	CanAnimalFlee && ShouldSprintAwayFromVeryCloseAnimals && AnimalOfOtherSpecies(x) && SpatialMovingTowardsMe(x) && SpatialDistanceVeryClose(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x) 	-> BirdFlee(x);
+	CanAnimalFlee(x) && AnimalTuningShouldFleeWhenTargetted && HasBeenAimingAtMe(x)																														-> BirdFlee(x); 
+	// Flee from nearby humans, no matter what speed they're going
+	Alive(x) && CanAnimalFlee(x) && ObjectClassCreatureRaceHuman(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x) && AnimalTuningCloserThanFleeHumanRangeStart(x)									-> BirdFlee(x);
+	// Otherwise, flee from humans at a further distance only if they're running towards us
+	Alive(x) && CanAnimalFlee(x) && ObjectClassCreatureRaceHuman(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x) && AnimalTuningCloserThanAlertHumanRange(x) && InForwardCone(x) && AnimalIsRunning(x)		-> BirdFlee(x);
+	CanAnimalFlee(x) && SpatialDistanceVeryClose(x) && IsDomesticated(x) && AnimalTuningFearsDomesticated && AnimalOfOtherSpecies(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x)				-> BirdFlee(x); 	
+	CanAnimalFlee && AnimalTuningEventInjuredWithinFleeInjuryTime && (CombatFiredAtMeSomewhatRecently(x) || DamagedMeByMeleeSomewhatRecently(x))															-> BirdFlee(x);
+	CanAnimalFlee && AnimalTuningEventInjuredWithinFleeInjuryTime && FiredAtMe(x)																														-> BirdFlee(x);
+	CanAnimalFlee && AnimalTuningEventInjuredWithinFleeInjuryTime																																		-> BirdFlee;
+	
+	//Birds like to be left alone. If there is a disturbing noise produced
+	//by somebody other than a bird of the same species or if another creature is too close by
+	//move away from it.
+	// 1. If possible, try to take off.
+	!FlightFlying && !SafeDistanceGenericAnimal(x) && AnimalOfOtherSpecies(x) && CloseRecentLoudNoise && AnimalTuningHeightCloserThanFleeVerticalRange(x) && AllowBehaviorRetreat && CanMoveFlightTakeOff	->	MoveFlightTakeOff;
+	!FlightFlying && BirdDisturber(x) && AllowBehaviorRetreat && CanMoveFlightTakeOff																														->	MoveFlightTakeOff;
+
+	// 2. If already airborne, stay in the air.
+	//    - TODO: Fly away from x?
+	FlightFlying && !SafeDistanceGenericAnimal(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x) && AnimalOfOtherSpecies(x) && CanMoveFlightSoar && AllowBehaviorRetreat									->	MoveFlightSoar;
+
+	// 3. If not airborne but somehow unable to take off, retreat. This behavior was adapted from the coyotes.
+	!FlightFlying && !SafeDistanceGenericAnimal(x) && AnimalOfOtherSpecies(x) && CloseRecentLoudNoise && AnimalTuningHeightCloserThanFleeVerticalRange(x) &&  AllowBehaviorRetreat && CanMoveRetreatFrom(x)		->	MoveRetreatFrom(x), SpeedSprint;
+	!FlightFlying && BirdDisturber(x) && AllowBehaviorRetreat && CanMoveRetreatFrom(x)																															->	MoveRetreatFrom(x), SpeedWalk;
+
+
+	TRUE		->	BirdHysteresis_tr;
+}
+
+//
+// This is where we should try to keep doing whatever we were doing.  
+//
+program BirdHysteresis_tr
+{
+	// FLEE HYSTERESIS
+	EventActive("AnimalFleeing") && CanAnimalFlee(x) && EnemyOfMySpecies(x) && !SafeDistanceGenericAnimal(x) && !ObjectClassCreatureRaceHuman(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x) -> BirdFlee(x);
+	EventActive("AnimalFleeing") && CanAnimalFlee && ObjectClassCreatureRaceHuman(x)&& AnimalTuningCloserThanFleeHumanRangeEnd(x) && AnimalTuningHeightCloserThanFleeVerticalRange(x) 				 -> BirdFlee(x);
+
+
+	EventActive("AnimalEating") && CanBirdEat(x) && !AnimalFoodHigh										-> BirdEat(x);	
+	// EventActive("AnimalHunting") && CanBirdHunt && FlightFlying && !AnimalFoodHigh 	-> SpeechEvent("AnimalHunting"), MoveFlightHunt;	
+
+	// if we just took off fly for a few seconds
+	ActionTakeOffIsHot ->	MoveFlightSoar;
+	
+	TRUE	->	BirdMain3, ConstrainValidSpacePriorityUnalerted;
+}
+
+program BirdMain3
+{
+	// Move back to our valid area if we're outside of it.
+	OutsideOfValidSpace && StayInValidSpacePriorityUnalerted	->	BirdMoveToValidSpace, AutonomousFireIfAllowed;
+
+	//Execute low priority scripting commands.
+	ExternalPriorityUnalerted && CanBirdPerformTask				->	BirdPerformTask0;
+
+	TRUE														->	BirdPerformUnalerted;
+}
+
+
+program BirdPerformUnalerted
+{
+	//If we've found a hotspot to use, move to it and use it.
+	!FlightFlying && CanHotspotsMoveToAndUse																	->	HotspotsMoveToAndUse, AnimalHotspotSeekToFulfillMotives_tr;
+
+	!ActionFleeIsWarm && BirdIsHungry && CanBirdEat(x)																												->  BirdEat(x);
+	//!ActionFleeIsWarm && FlightFlying && BirdIsHungry && CanBirdHunt																								->	SpeechEvent("AnimalHunting"), MoveFlightHunt;
+	
+	// For soaring birds, if more than a tiny bit hungry and not very tired, take off.
+	AnimalBehaviorSoaringBird && !FlightFlying && MotiveSatisfactionLessThan("Food", 80.0) && !MotiveSatisfactionLessThan("Energy", 40.0) && CanMoveFlightTakeOff	->	MoveFlightTakeOff;
+	// For non-soaring birds, take off when rested more
+	!FlightFlying && MotiveSatisfactionGreaterThanEqual("Energy", 80.0) && CanMoveFlightTakeOff																	->	MoveFlightTakeOff;
+
+	// If very tired, land.
+	!ActionFleeIsWarm && FlightFlying && MotiveSatisfactionLessThan("Energy", 20.0) && CanBirdLand															->	BirdLand;
+	!ActionFleeIsWarm && !AnimalBehaviorSoaringBird && FlightFlying && MotiveSatisfactionLessThan("Energy", 40.0) && CanBirdLand 							->	BirdLand;
+
+	// If already in the air, keep soaring.
+	//AnimalBehaviorSoaringBird && FlightFlying && CanMoveFlightSoar																								->	MoveFlightSoar;
+	FlightFlying && CanMoveFlightSoar																																->	MoveFlightSoar;
+
+	TRUE		->	BirdMain4, ConstrainValidSpacePriorityDefaultBehavior;
+}
+
+
+program BirdMain4
+{
+	// Move back to our valid area if we're outside of it.
+	OutsideOfValidSpace && StayInValidSpacePriorityDefaultBehavior	->	BirdMoveToValidSpace, AnimalHotspotSeekToFulfillMotives_tr, AutonomousFireIfAllowed;
+
+	//Execute lowest priority scripting commands (mostly intended to be used for the ambient ped default behavior).
+	!ObjectiveWander && ExternalPriorityDefaultBehavior && CanBirdPerformTask		->	BirdPerformTask0, AnimalHotspotSeekToFulfillMotives_tr, FulfillMotive("Energy", 1.0);
+
+	FlightPerched																	->  Stay, Mood("PERCH"), AnimalHotspotSeekToFulfillMotives_tr, FulfillMotive("Energy", 1.0);
+	// If there is nothing else to do just stay or wander around. I made this increase the amount of "energy"
+	// the bird has, so that after a while they will take off (unless really full). /FF
+	TRUE																			->	MoveWanderAnimal, AnimalHotspotSeekToFulfillMotives_tr, FulfillMotive("Energy", 1.0);
+}
+
+program BirdLand
+{
+	RestrictedLandingToPerchPoints		-> MoveFlightLandOnPerch;
+	TRUE								-> MoveFlightLand;
+}
+
+program BirdEat(x)
+{
+	TRUE -> BirdEat_2(x), SpeechEvent("AnimalEating"), AnimalSpawnEatGringoIfNecessary(x), AnimalHotspotSeekToFulfillMotives_tr;
+}
+
+program BirdEat_2(x)
+{
+	!FlightFlying && CanHotspotsMoveToAndUse && !IsHitched		-> HotspotsMoveToAndUse;
+
+	// someones using the gringo just fly around
+	!CanHotspotMoveTo											-> MoveFlightSoarTowards(x);
+
+	TRUE														-> MoveFlightFlyTowards(x);
+}
+
+
+rules BirdRules
+{
+	// PURPOSE:	This rule specifies who is considered to be disturbing the bird so that it has reasons
+	//			to fly off.
+	// NOTES:	I added !SpatialDirectionBelowMe(x), since SpatialDistanceVeryClose(x) uses a flat distance.
+	//			This should help when placing birds at high positions in urban areas. It may make sense
+	//			to add !SpatialDirectionAboveMe(x) here too, but I'm leaving that for now - maybe a bird
+	//			would feel more comfortable above other animals than below them, or something.
+	SpatialDistanceVeryClose(x) && !ObjectClassCreatureRaceHuman(x) && AnimalOfOtherSpecies(x) && !SpatialDirectionBelowMe(x)	->	BirdDisturber(x);
+
+
+	MoveFlightTakeOff_0VeryRecently			-> ActionFleeIsHot;
+	MoveFlightTakeOff_0Recently				-> ActionFleeIsWarm;
+	MoveFlightTakeOff_0SomewhatRecently		-> ActionFleeIsCool;	
+	
+	MoveFlightTakeOff_0VeryRecently			-> ActionTakeOffIsHot;
+	MoveFlightTakeOff_0Recently				-> ActionTakeOffIsWarm;
+	MoveFlightTakeOff_0SomewhatRecently		-> ActionTakeOffIsCool;	
+	
+	!LandingDisabled && CanMoveFlightLand && !MoveFlightLandFailedVeryRecently	-> CanBirdLand;
+	!HuntingDisabled && CanMoveFlightHunt 	-> CanBirdHunt;
+	
+	!Alive(x) && ObjectClassTypeCreature(x) && (At(x) || CanMoveTo(x)) && CanAnimalEat(x)						-> CanBirdEat(x);
+	
+	MotiveSatisfactionGreaterThanEqual("Food", 80.0)															-> BirdIsFull;
+	AnimalTuningMotiveLessThanFoodActiveSearch && (!AnimalTuningPrefersFlock || FlockIsHungry)  				-> BirdIsHungry;
+}
+
+
+debuggroup Birds
+{
+	filter TRUE, predicate ActionFleeIsWarm, label "ActionFleeIsWarm";
+	filter TRUE, predicate CanMoveFlightSoar, label "CanMoveFlightSoar";
+	filter TRUE, predicate FlightFlying, label "FlightFlying";
+
+	filter BirdDisturber(x), predicate BirdDisturber(x), label "Disturber $x";
+	filter ObjectClassTypeSound(x), predicate VeryCloseRecentLoudNoise(x), label "Very close recent loud noise";
+	filter ObjectClassTypeSound(x), predicate CloseRecentLoudNoise(x), label "Close recent loud noise";
+
+	filter EnemyOfMySpecies(x), predicate EnemyOfMySpecies(x), label "Enemy of bird ($x)";
+	filter EnemyOfMySpecies(x), predicate AnimalOfMySpeciesShotAt(y), label "Enemy of ($x), bird shot at ($y)";
+	filter EnemyOfMySpecies(x), predicate EnemyOfOtherAnimalOfMySpecies(x), label "Enemy of other bird ($x)";
+	filter AnimalTuningHeightCloserThanFleeVerticalRange(x), label "$x Closer than vertical flee";
+	
+	filter ObjectClassCreatureRaceHuman(x), predicate AnimalTuningCloserThanFleeHumanRangeStart(x), label "HumanWithinFlee $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate AnimalTuningCloserThanAlertHumanRange(x), label "HumanWithinAlert $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate AnimalIsRunning(x), label "HumanRunning $x";
+
+	filter AnimalOfMySpecies(x), predicate FlightFlying(x), label "Bird flying $x";
+	
+	filter HuntingDisabled, predicate HuntingDisabled, label "HuntingDisabled";
+	filter CanMoveFlightHunt, predicate CanMoveFlightHunt, label "CanMoveFlightHunt";
+	filter CanBirdEat(x), predicate CanBirdEat(x), label "CanBirdEat $x";
+	filter CanBirdLand, predicate CanBirdLand, label "CanBirdLand";
+	filter CanBirdHunt, predicate CanBirdHunt, label "CanBirdHunt";
+	filter BirdIsHungry, predicate BirdIsHungry, label "BirdIsHungry";
+	filter BirdIsFull, predicate BirdIsFull, label "BirdIsFull";
+	filter AnimalFoodHigh, predicate AnimalFoodHigh, label "AnimalFoodHigh";
+	filter !Alive(x), predicate CanAnimalEat(x), label "CanAnimalEat  $x";
+	filter !Alive(x), predicate At(x), label "At  $x";
+}

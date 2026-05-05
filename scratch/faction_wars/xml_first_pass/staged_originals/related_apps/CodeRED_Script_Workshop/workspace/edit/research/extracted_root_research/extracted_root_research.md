@@ -1,0 +1,155 @@
+# Extracted Root Research Inventory
+
+Generated: 2026-04-29T21:34:17
+Root: `D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root`
+
+## Summary
+
+- Files scanned: 5626
+- Matching files logged: 1450
+- Category counts: {"cutscenes": 115, "gringos": 286, "strings": 557, "vehicle_spawning": 666}
+
+## Category Highlights
+
+### vehicle_spawning
+
+- Matches: 666
+- `game directory.txt` (.txt, 418820 bytes) terms: .cst, .stbl, .strtbl, actor_names, ambient
+- `act\0x9A8D126E` (<none>, 239787 bytes) terms: ambient, camera, car, cutscene, gringo
+- `camera\cutscenesfinal\cintraincaboose01.txt` (.txt, 1379 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintraindefault.txt` (.txt, 1296 bytes) terms: camera, cinematic, cutscene, train
+- `camera\cutscenesfinal\cintrainright.txt` (.txt, 1373 bytes) terms: camera, cinematic, cutscene, train
+- `camera\cutscenesfinal\cintrainroof01.txt` (.txt, 1649 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintrainside01.txt` (.txt, 1651 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintrainside02.txt` (.txt, 1653 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintrainside04.txt` (.txt, 3056 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintrainside05.txt` (.txt, 1650 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cinvehiclefronttobackjb.txt` (.txt, 3545 bytes) terms: camera, cinematic, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\cinvehiclepassengers.txt` (.txt, 1936 bytes) terms: camera, cinematic, cinvehicle, cutscene, passenger
+- `camera\cutscenesfinal\cinvehicleskyleft.txt` (.txt, 1941 bytes) terms: camera, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\cinvehicleskyright.txt` (.txt, 1938 bytes) terms: camera, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\cinvehiclestaticground.txt` (.txt, 1626 bytes) terms: camera, cinematic, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\cinvehiclestaticgroundfast.txt` (.txt, 1634 bytes) terms: camera, cinematic, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\cinvehicletracking.txt` (.txt, 3560 bytes) terms: camera, cinematic, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\cinvehiclewheel.txt` (.txt, 3522 bytes) terms: camera, cinematic, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\cinvehiclewindowleft.txt` (.txt, 1781 bytes) terms: camera, cinematic, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\cinvehiclewindowright.txt` (.txt, 1783 bytes) terms: camera, cinematic, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\deathcamspmodified.txt` (.txt, 3149 bytes) terms: camera, cinematic, cutscene, vehicle
+- `camera\cutscenesfinal\gun03traincam01.txt` (.txt, 1432 bytes) terms: camera, cutscene, train, vehicle
+- `camera\cutscenesfinal\gun03traincam02.txt` (.txt, 1431 bytes) terms: camera, cutscene, train, vehicle
+- `camera\cutscenesfinal\gun03traincam03.txt` (.txt, 1653 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\gun03traincam04.txt` (.txt, 3911 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\mountwagon02left.txt` (.txt, 1854 bytes) terms: camera, cutscene, vehicle, wagon
+- `camera\cutscenesfinal\mountwagon02right.txt` (.txt, 1722 bytes) terms: camera, cutscene, vehicle, wagon
+- `camera\cutscenesfinal\mountwagondriver.txt` (.txt, 3719 bytes) terms: camera, cinematic, cutscene, vehicle, wagon
+- `camera\cutscenesfinal\mountwagonshotgun.txt` (.txt, 3719 bytes) terms: camera, cinematic, cutscene, vehicle, wagon
+- `camera\cutscenesfinal\sittrain_left.txt` (.txt, 1543 bytes) terms: camera, cinematic, cutscene, train, vehicle
+
+### cutscenes
+
+- Matches: 115
+- `act\actres\act\custom\cutscene_intro01.cat` (.cat, 309 bytes) terms: cutscene
+- `act\actres\act\custom\cutscene_marshal03.cat` (.cat, 804 bytes) terms: cutscene
+- `act\actres\act\custom\cutscene_outlaw03.cat` (.cat, 291 bytes) terms: cutscene
+- `camera\0x6E967836` (<none>, 1264 bytes) terms: camera
+- `camera\0x9318D091` (<none>, 8557 bytes) terms: camera
+- `camera\0xB78A0DEF` (<none>, 4419 bytes) terms: camera
+- `camera\0xB98FBEEE` (<none>, 666 bytes) terms: camera
+- `camera\skeltontraveral\0xE871DCDD` (<none>, 1127 bytes) terms: camera
+- `cutscene\intro_01\0x07C8F8A9` (<none>, 750662 bytes) terms: cutscene, intro_01
+- `cutscene\intro_01\intro_01.cutbin` (.cutbin, 9011 bytes) terms: cutbin, cutscene, intro_01
+- `cutscene\intro_sequence_1\0x07C8F8A9` (<none>, 515438 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_1\0x07D8B276` (<none>, 167251 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_1\0x37662ED5` (<none>, 357359 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_1\0x57D4E47B` (<none>, 539247 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_1\0x59939AFB` (<none>, 565609 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_1\0xC01B9D88` (<none>, 306659 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_1\0xEE5E8FAF` (<none>, 182527 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_1\intro_sequence_1.cutbin` (.cutbin, 28594 bytes) terms: cutbin, cutscene, intro_sequence
+- `cutscene\intro_sequence_2\0x07C8F8A9` (<none>, 866935 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_2\0x57D4E47B` (<none>, 556520 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_2\0x59939AFB` (<none>, 358147 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_2\intro_sequence_2.cutbin` (.cutbin, 31515 bytes) terms: cutbin, cutscene, intro_sequence
+- `cutscene\intro_sequence_3\0x07C8F8A9` (<none>, 559799 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_3\0x07D8B276` (<none>, 645889 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_3\0x194A5C34` (<none>, 477681 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_3\0x1BB21EC4` (<none>, 181076 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_3\0x2AA49328` (<none>, 660480 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_3\0x2B43688A` (<none>, 422621 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_3\0x335AA6B1` (<none>, 574430 bytes) terms: cutscene, intro_sequence
+- `cutscene\intro_sequence_3\0x37662ED5` (<none>, 677887 bytes) terms: cutscene, intro_sequence
+
+### gringos
+
+- Matches: 286
+- `game directory.txt` (.txt, 418820 bytes) terms: .cst, .stbl, .strtbl, actor_names, ambient
+- `act\0x9A8D126E` (<none>, 239787 bytes) terms: ambient, camera, car, cutscene, gringo
+- `content\debug\scripting\gringo\commonscripts\0x145E0F34` (<none>, 11451 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\campfire02_gringo.csc` (.csc, 16373 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\campfire03_gringo.csc` (.csc, 16290 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\campfire04_gringo.csc` (.csc, 16247 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\campfire05_gringo.csc` (.csc, 16234 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\chair_weaponkill.csc` (.csc, 11143 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\clockgringo.csc` (.csc, 637 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\genericgringo.csc` (.csc, 11500 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\lean_rail.csc` (.csc, 11098 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\locatorattachengineer.csc` (.csc, 11187 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\musicgringo.csc` (.csc, 11233 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\pitch_hay.csc` (.csc, 11140 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\player_chairlook.csc` (.csc, 11123 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\player_herb.csc` (.csc, 15705 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\stand_sellpaper.csc` (.csc, 16647 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\commonscripts\wall_phone.csc` (.csc, 11322 bytes) terms: commonscripts, gringo
+- `content\debug\scripting\gringo\gringobrains\gringobrainscripts\0x822921F1` (<none>, 24120 bytes) terms: gringo, gringobrains
+- `content\debug\scripting\gringo\gringobrains\gringobrainscripts\0x98B7F641` (<none>, 6476 bytes) terms: gringo, gringobrains
+- `content\debug\scripting\gringo\gringobrains\gringobrainscripts\0xAB5B538B` (<none>, 6109 bytes) terms: gringo, gringobrains
+- `content\debug\scripting\gringo\gringobrains\gringobrainscripts\gen_brain.csc` (.csc, 6331 bytes) terms: gringo, gringobrains
+- `content\debug\scripting\gringo\multistagegringo\multistage_movecorn.csc` (.csc, 13514 bytes) terms: gringo, multistagegringo
+- `content\release\scripting\gringo\0x0FBC2F77\0x78F303BC` (<none>, 9489 bytes) terms: gringo
+- `content\release\scripting\gringo\commonscripts\0x0A102115` (<none>, 8758 bytes) terms: commonscripts, gringo
+- `content\release\scripting\gringo\commonscripts\0x0BFAD5E4` (<none>, 8766 bytes) terms: commonscripts, gringo
+- `content\release\scripting\gringo\commonscripts\0x121D4938` (<none>, 139 bytes) terms: commonscripts, gringo
+- `content\release\scripting\gringo\commonscripts\0x14112326` (<none>, 9005 bytes) terms: commonscripts, gringo
+- `content\release\scripting\gringo\commonscripts\0x145E0F34` (<none>, 8994 bytes) terms: commonscripts, gringo
+- `content\release\scripting\gringo\commonscripts\0x1AC5CC1C` (<none>, 8901 bytes) terms: commonscripts, gringo
+
+### strings
+
+- Matches: 557
+- `game directory.txt` (.txt, 418820 bytes) terms: .cst, .stbl, .strtbl, actor_names, ambient
+- `camera\cutscenesfinal\defaultfocus.txt` (.txt, 1160 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\dueling_tell_sequence_hostage.txt` (.txt, 6041 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\dueling_tell_sequence_tutorial.txt` (.txt, 6045 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\horsedriverovershoulder.txt` (.txt, 2562 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\horseface.txt` (.txt, 1199 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\horselowerleft.txt` (.txt, 1247 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\horselowerright.txt` (.txt, 1247 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\horselowhigh.txt` (.txt, 2272 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\horserider.txt` (.txt, 2304 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\horseupperleft.txt` (.txt, 1246 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\horseupperright.txt` (.txt, 1246 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\newlassocameracut.txt` (.txt, 1615 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\newlassocameracutmounted.txt` (.txt, 1630 bytes) terms: camera, cinematic, cutscene
+- `camera\cutscenesfinal\wantedposter.txt` (.txt, 1418 bytes) terms: camera, cinematic, cutscene
+- `content\ui\cutscenes.sc.xml` (.xml, 6841 bytes) terms: cutscene, subtitle
+- `content\ui\generalmenus.sc.xml` (.xml, 45235 bytes) terms: cutscene, subtitle
+- `cutscene\intro_01\intro_01_b_en.cst` (.cst, 398 bytes) terms: .cst, cutscene, intro_01
+- `cutscene\intro_sequence_2\intro_p2_dock_en.cst` (.cst, 335 bytes) terms: .cst, cutscene, intro_sequence
+- `camera\cutscenesfinal\cintraincaboose01.txt` (.txt, 1379 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintraindefault.txt` (.txt, 1296 bytes) terms: camera, cinematic, cutscene, train
+- `camera\cutscenesfinal\cintrainright.txt` (.txt, 1373 bytes) terms: camera, cinematic, cutscene, train
+- `camera\cutscenesfinal\cintrainroof01.txt` (.txt, 1649 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintrainside01.txt` (.txt, 1651 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintrainside02.txt` (.txt, 1653 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintrainside04.txt` (.txt, 3056 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cintrainside05.txt` (.txt, 1650 bytes) terms: camera, cinematic, cutscene, train, vehicle
+- `camera\cutscenesfinal\cinvehiclefronttobackjb.txt` (.txt, 3545 bytes) terms: camera, cinematic, cinvehicle, cutscene, vehicle
+- `camera\cutscenesfinal\cinvehiclepassengers.txt` (.txt, 1936 bytes) terms: camera, cinematic, cinvehicle, cutscene, passenger
+- `camera\cutscenesfinal\cinvehicleskyleft.txt` (.txt, 1941 bytes) terms: camera, cinvehicle, cutscene, vehicle
+
+## Output Files
+
+- `extracted_root_research.json`: full metadata with line hits and samples.
+- `extracted_root_findings.csv`: flat file-level inventory.
+- `category_counts.csv`: count by category.
+- `extension_counts.csv`: count by extension across the scanned root.

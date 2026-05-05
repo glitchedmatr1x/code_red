@@ -1,0 +1,59 @@
+//
+// PURPOSE:	This file contains TR programs and rules relevant for animals eating 
+//			triggers for food search			
+//
+
+//-----------------------------------------------------------------------------
+
+// PURPOSE:	Preconditions for the TR programs defined in this file.
+rules AnimalEatRules
+{
+	ObjectClassTypeCreature(x) 
+	&& (PositionKnownRecently(x) || (AnimalTuningPrefersFlock && PositionKnownSomewhatRecently(x)))
+	&& (At(x) || CanMoveTo(x)) 																			-> EatPositionKnown(x);
+	
+	ObjectClassTypeCreature(x) && !Alive(x) && CanAnimalEat(x) && EatPositionKnown(x) && !IsInWater(x)	-> CanAnimalHuntDeadPrey(x);	
+
+	!AnimalFoodHigh && CanAnimalHuntDeadPrey(x)    									-> CanAnimalContinueToEat(x);
+	!IsNetGame && (AnimalFoodModerate || AnimalFoodLow) && CanAnimalHuntDeadPrey(x) -> CanAnimalTriggerEat(x);
+}
+
+
+
+// PURPOSE:	Move to and eat a dead animal.
+program AnimalEat_tr(x)
+{
+	TRUE -> AnimalEatBase_tr2(x), AnimalSpawnEatGringoIfNecessary(x), AnimalHotspotSeekToFulfillMotives_tr;
+}
+
+program AnimalEatBase_tr2(x)
+{
+
+	CanHotspotsMoveToAndUse && !IsHitched		-> HotspotsMoveToAndUse;
+
+	SpatialDistanceVeryClose(x) 				-> MoveWanderAnimal, Mood("UNALRTD");
+
+	TRUE										-> MoveTo(x), SpeedRun;	
+}
+
+
+
+//
+// PURPOSE:	Hunt-related debugging stuff.
+//
+debuggroup Animal_Hunt_Scavenge
+{
+	filter !Alive(x), predicate CanAnimalHuntDeadPrey(x), label "CanAnimalHuntDeadPrey $x";
+	filter !Alive(x), predicate CanAnimalEat(x), label "CanAnimalEat $x";	
+	filter !Alive(x), predicate SpatialDistanceClose(x), label "SpatialDistanceClose $x";
+}
+
+
+debuggroup Animal_Eat1_dbg
+{
+	filter !Alive(x), predicate CanAnimalEat(x), label "CanAnimalEat  $x";
+	
+	filter !Alive(x), predicate CanHotspotUse, label "CanHotspotUse";
+	filter !Alive(x), predicate CanHotspotMoveTo, label "CanHotspotMoveTo";
+
+}

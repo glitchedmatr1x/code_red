@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<contents>
+	
+    <rotationX>
+
+    		<default>-10,-5,0,5,10</default>
+
+    </rotationX>
+
+    <rotationY>
+    	
+	    <default>0,0,0</default>
+			<st_beavertailcactus01>0,120,240</st_beavertailcactus01>
+			<st_chollocactus01>0,120,240</st_chollocactus01>
+	    <st_cus_riodeltorotree01>0,120,240</st_cus_riodeltorotree01>
+	    <st_cus_tumbleweedtree01>0,120,240</st_cus_tumbleweedtree01>
+	    <st_giantsaguarocactus01>0,120,240</st_giantsaguarocactus01>
+			<st_mesquite01>0,120,240</st_mesquite01>
+			<st_pricklypearcactus01>0,120,240</st_pricklypearcactus01>
+			<st_russianolivefall01>0,120,240</st_russianolivefall01>
+			<st_russianolivewinter01>0,120,240</st_russianolivewinter01>
+	    <st_saguarocactus01>0,120,240</st_saguarocactus01>
+	    <st_saguarocactus02>0,120,240</st_saguarocactus02>
+	    <st_saguarocactus03>0,120,240</st_saguarocactus03>
+			<st_scruboak01>0,120,240</st_scruboak01>
+			<st_whitebirch01>0,120,240</st_whitebirch01>
+			<st_whitebirchwinter01>0,120,240</st_whitebirchwinter01>
+			<st_cus_blackwatershrub01>0,120,240</st_cus_blackwatershrub01>
+			<st_palmetto01>0,120,240</st_palmetto01>
+			<st_fanpalm01>0,120,240</st_fanpalm01>
+			<st_bottlebrushtree01>0,120,240</st_bottlebrushtree01>
+			<st_gimlet01>0,120,240</st_gimlet01>
+			<st_joshuatree01>0,60,60</st_joshuatree01>
+			<st_joshuatree02>0,120,240</st_joshuatree02>
+			<st_joshuatree03>0,60,60</st_joshuatree03>
+			<st_joshuatree04>0,120,240</st_joshuatree04>
+			<st_joshuatree05>0,120,240</st_joshuatree05>
+			<st_rata01>0,120,240</st_rata01>
+			<st_rata02>0,120,240</st_rata02>
+			<st_cornStalks01>0,120,240</st_cornStalks01>
+    		
+    </rotationY>
+
+    <rotationZ>
+    	
+    		<default>-10,-5,0,5,10</default>
+    		
+    </rotationZ>
+
+     <scaleXZ>
+     	
+     		<default>80, 90, 100, 110, 120</default>
+     		
+     </scaleXZ>
+    
+     <scaleY>
+     	
+     		<default>80, 90, 100, 110, 120</default>
+     	
+     </scaleY>
+     
+</contents>

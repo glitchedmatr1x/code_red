@@ -1,0 +1,159 @@
+{
+	Event PROJ_BULLET
+	{
+		FX
+		{
+			CHUNKEMITTER
+			{
+				ProjectileType	"SparksSmall"
+				NumInitialChunks		6
+				BirthRate			0.000000
+				Duration			0.000000
+				PositionVar			0.100000	0.100000	0.100000 
+				InitialVelocity		0.000000	1.000000	0.000000 
+				InitialVelocityVar	7.000000	3.000000	7.000000 
+			}
+		}
+		FX
+		{
+			Name "sfx_bullet_impact_metal"
+		}
+		FX
+		{
+			Name "sfx_bullet_rico"
+		}
+	}
+
+	Event PROJ_GRENADE
+	{
+		FX
+		{
+			Name "sfx_grenade_impact_vehicle"
+		}
+	}
+
+	Event PROJ_BULLET_XSM
+	{
+		FX
+		{
+			CHUNKEMITTER
+			{
+				ProjectileType	"SparksSmall"
+				NumInitialChunks		5
+				BirthRate			0.000000
+				Duration			0.000000
+				PositionVar			0.050000	0.050000	0.050000  
+				InitialVelocity		0.000000	1.000000	0.000000 
+				InitialVelocityVar	5.000000	2.000000	5.000000 
+			}
+		}
+		FX
+		{
+			Name "sfx_bullet_impact_metal"
+		}
+		FX
+		{
+			Name "sfx_bullet_rico"
+		}
+	}
+
+	Event PROJ_BULLET_SM
+	{
+		FX
+		{
+			CHUNKEMITTER
+			{
+				ProjectileType	"SparksSmall"
+				NumInitialChunks		6
+				BirthRate			0.000000
+				Duration			0.000000
+				PositionVar			0.050000	0.050000	0.050000  
+				InitialVelocity		0.000000	1.000000	0.000000 
+				InitialVelocityVar	6.000000	2.500000	6.000000 
+			}
+		}
+		FX
+		{
+			Name "sfx_bullet_impact_metal"
+		}
+		FX
+		{
+			Name "sfx_bullet_rico"
+		}
+	}
+
+	Event PROJ_BULLET_MD
+	{
+		FX
+		{
+			CHUNKEMITTER
+			{
+				ProjectileType	"Sparks"
+				NumInitialChunks		7
+				BirthRate			0.000000
+				Duration			0.000000
+				PositionVar			0.100000	0.100000	0.100000 
+				InitialVelocity		0.000000	1.000000	0.000000 
+				InitialVelocityVar	7.000000	3.000000	7.000000 
+			}
+		}
+		FX
+		{
+			Name "sfx_bullet_impact_metal"
+		}
+		FX
+		{
+			Name "sfx_bullet_rico"
+		}
+	}
+
+	Event PROJ_BULLET_LG
+	{
+		FX
+		{
+			CHUNKEMITTER
+			{
+				ProjectileType	"Sparks"
+				NumInitialChunks		8
+				BirthRate			0.000000
+				Duration			0.000000
+				PositionVar			0.100000	0.100000	0.100000 
+				InitialVelocity		0.000000	2.000000	0.000000 
+				InitialVelocityVar	8.000000	3.500000	8.000000 
+			}
+		}
+		FX
+		{
+			Name "sfx_bullet_impact_metal"
+		}
+		FX
+		{
+			Name "sfx_bullet_rico"
+		}
+	}
+
+	Event PROJ_BULLET_XLG
+	{
+		FX
+		{
+			CHUNKEMITTER
+			{
+				ProjectileType	"SparksBig"
+				NumInitialChunks		10
+				BirthRate			0.000000
+				Duration			0.000000
+				PositionVar			0.200000	0.200000	0.200000 
+				InitialVelocity		0.000000	2.000000	0.000000 
+				InitialVelocityVar	9.000000	4.000000	9.000000 
+			}
+		}
+		FX
+		{
+			Name "sfx_bullet_impact_metal"
+		}
+		FX
+		{
+			Name "sfx_bullet_rico"
+		}
+	}
+}

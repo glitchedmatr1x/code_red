@@ -1,0 +1,33 @@
+rmptx {
+  NumPoints 100 
+  Life 0.299988 
+  LifeVar 0.000000 
+  PositionVar 0.000000	0.000000	0.000000 
+  Velocity 0.000000	-0.001368	-3.394298 
+  VelocityVar 0.000000	0.000000	1.025483 
+  Rate 10.000000 
+  Recycle 1 
+  UseShadowBox 0 
+  MinShadowMod 0.0
+  NumTextureTilesX 4 
+  NumTextureTilesY 4 
+  StartTextureTile 8 
+  EndTextureTile 9 
+  ;UseLocalSpace 0 
+  ;GlobalAcceleration 0.000000	0.000000	0.000000 
+}
+
+Keyframes= 2 
+Time= 0.000000 
+Size= 3.009245 3.004045 
+Color= 0.059992	0.059992	0.059992	1.000000 
+Accel= 0.000000	0.000000	0.000000 
+Damping= 1.000000	0.000000	2.000000 
+Theta= 0.009535 
+Time= 1.000000 
+Size= 27.006990 27.005624 
+Color= 0.000000	0.000000	0.000000	0.000000 
+Accel= 0.000000	0.000000	0.000000 
+Damping= 0.150312	0.000000	1.279996 
+Theta= -0.006602 
+TuneFrames= 2 0.000000 1.000000 2 0.000000 1.000000 2 0.000000 1.000000 2 0.000000 1.000000 2 0.000000 1.000000 

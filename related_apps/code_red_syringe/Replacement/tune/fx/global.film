@@ -1,0 +1,7 @@
+type: a
+fxFilmGlobalData {
+  FilmGrainTextureName filmgrain	
+  FilmScratchTextureName filmscratch	
+  DustTextureName filmdust	
+  TintmapTextureName filmtintmap
+}

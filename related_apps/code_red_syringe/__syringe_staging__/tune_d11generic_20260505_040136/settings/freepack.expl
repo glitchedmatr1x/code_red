@@ -1,0 +1,75 @@
+{
+		BASICEXPLOSION "ATRifleExplosion"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"ATRIFLE_IMPACT_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		CameraShakeFx
+		{
+			Delay		0.000000
+			FXType		"explosionShakeDynamite"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	5.000000
+			InitialSpeed	15.000000
+			DecayFactor	-3.000000
+			ForceFactor	14.000000
+			Offset	0	0	0
+			MinDamage	30.000000
+			MaxDamage	80.000000
+			InnerDamageRadius	1.600000
+			OuterDamageRadius	4.700000
+			SplashDamageToOwner	1
+			RagdollForceScale	60.000000
+			LowMass	1.000000
+			LowMassForceScale	0.500000
+			HighMass	50.000000
+			HighMassForceScale	0.300000
+			BlastType	VerticalLarge
+		}
+	}
+
+		BASICEXPLOSION "ATRifleExplosion_MP"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"ATRIFLE_IMPACT_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		CameraShakeFx
+		{
+			Delay		0.000000
+			FXType		"explosionShakeDynamite"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	5.000000
+			InitialSpeed	15.000000
+			DecayFactor	-3.000000
+			ForceFactor	13.000000
+			Offset	0	0	0
+			MinDamage	18.000000
+			MaxDamage	55.000000
+			InnerDamageRadius	1.400000
+			OuterDamageRadius	4.200000
+			SplashDamageToOwner	1
+			RagdollForceScale	55.000000
+			LowMass	1.000000
+			LowMassForceScale	0.500000
+			HighMass	50.000000
+			HighMassForceScale	0.300000
+			BlastType	VerticalLarge
+		}
+	}
+}

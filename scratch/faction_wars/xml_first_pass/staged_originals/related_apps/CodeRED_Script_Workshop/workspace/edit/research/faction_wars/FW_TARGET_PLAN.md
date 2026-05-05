@@ -1,0 +1,316 @@
+# Code RED Faction Wars Target Plan
+
+Generated: `2026-05-05T07:04:39Z`
+
+## Rules for this lane
+
+- No in-game menu spawning.
+- No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.
+- No source RPF mutation. Use copied archives only.
+- One changed script/resource/event at a time, with proof JSON and reopen verification.
+- Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.
+
+## Pass order
+
+### FW-1 — Pressure without script install
+
+Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path.
+
+### FW-2 — Existing event/script target discovery
+
+Use this report plus Script Workshop readable exports to identify existing crime, patrol, holdup, posse, ambient, population, camp, and refgroup scripts.
+
+### FW-3 — Copied-archive script/resource override proof
+
+Patch one low-risk existing event or resource in a copied archive. Reopen and verify before install.
+
+### FW-4 — Regional faction-war schedules
+
+Build region-specific daily/random law-vs-gang pressure using existing hosts, one region at a time.
+
+### FW-5 — Advanced escalation
+
+Only after proof: gatling wagon/Maxim truck assault hosts, map/radar markers, weapon-ratio logic, and reinforcements.
+
+## Top faction-war candidates
+
+| Rank | Score | Category | Path | Regions | High-value terms |
+|---:|---:|---|---|---|---|
+| 1 | 34992 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt` | armadillo, macfarlane |  |
+| 2 | 34990 | research/reference | `related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv` | armadillo, macfarlane |  |
+| 3 | 34990 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/read/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.fullread.txt` | armadillo, macfarlane |  |
+| 4 | 34990 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv` | armadillo, macfarlane |  |
+| 5 | 22278 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt` | armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed | ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator |
+| 6 | 22277 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt` | armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed | ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator |
+| 7 | 22277 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json` | armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed | ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator |
+| 8 | 22277 | research/reference | `data/codered/faction_wars_targets.json` | armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed | ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator |
+| 9 | 12671 | research/reference | `research/extracted_root_research/extracted_root_findings.csv` | armadillo, chuparosa, escalera, gaptooth, landing, manzanita, thieves, tumbleweed | commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator |
+| 10 | 12671 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/read/research__extracted_root_research__extracted_root_findings.csv.fullread.txt` | armadillo, chuparosa, escalera, gaptooth, landing, manzanita, thieves, tumbleweed | commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator |
+| 11 | 12671 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/edit/research/extracted_root_research/extracted_root_findings.csv` | armadillo, chuparosa, escalera, gaptooth, landing, manzanita, thieves, tumbleweed | commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator |
+| 12 | 12671 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__extracted_root_findings.csv.decompiled_source.txt` | armadillo, chuparosa, escalera, gaptooth, landing, manzanita, thieves, tumbleweed | commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator |
+| 13 | 9941 | world host / gringo | `research/IMPORTANT_readable_root_index_2026-05-02/file_index.csv` | armadillo, blackwater, chuparosa, escalera, gaptooth, landing, manzanita, mexico, plainview, rathskeller, ridgewood, thieves, tumbleweed | commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator |
+| 14 | 9941 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/read/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.fullread.txt` | armadillo, blackwater, chuparosa, escalera, gaptooth, landing, manzanita, mexico, plainview, rathskeller, ridgewood, thieves, tumbleweed | commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator |
+| 15 | 9941 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/edit/research/IMPORTANT_readable_root_index_2026-05-02/file_index.csv` | armadillo, blackwater, chuparosa, escalera, gaptooth, landing, manzanita, mexico, plainview, rathskeller, ridgewood, thieves, tumbleweed | commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator |
+| 16 | 9941 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt` | armadillo, blackwater, chuparosa, escalera, gaptooth, landing, manzanita, mexico, plainview, rathskeller, ridgewood, thieves, tumbleweed | commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator |
+| 17 | 9621 | world host / gringo | `research/IMPORTANT_readable_root_index_2026-05-02/important_files.csv` | armadillo, blackwater, chuparosa, escalera, gaptooth, manzanita, rathskeller, tumbleweed | commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator |
+| 18 | 9621 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/read/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.fullread.txt` | armadillo, blackwater, chuparosa, escalera, gaptooth, manzanita, rathskeller, tumbleweed | commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator |
+| 19 | 9621 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/edit/research/IMPORTANT_readable_root_index_2026-05-02/important_files.csv` | armadillo, blackwater, chuparosa, escalera, gaptooth, manzanita, rathskeller, tumbleweed | commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator |
+| 20 | 9621 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt` | armadillo, blackwater, chuparosa, escalera, gaptooth, manzanita, rathskeller, tumbleweed | commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator |
+| 21 | 9124 | script/native candidate | `data/codered/script_workshop_extension_manifest.csv` | armadillo, blackwater, tumbleweed | ai_is_hostile, create_actor, get_actor_faction, population, refgroup, set_actor_faction, task_follow, task_kill, task_stand, task_wander |
+| 22 | 8928 | script/native candidate | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__script_workshop_extension_manifest.csv.decompiled_source.txt` | armadillo, blackwater, tumbleweed | ai_is_hostile, create_actor, get_actor_faction, population, refgroup, set_actor_faction, task_follow, task_kill, task_stand, task_wander |
+| 23 | 8927 | script/native candidate | `related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__script_workshop_extension_manifest.csv.fullread.txt` | armadillo, blackwater, tumbleweed | ai_is_hostile, create_actor, get_actor_faction, population, refgroup, set_actor_faction, task_follow, task_kill, task_stand, task_wander |
+| 24 | 8927 | script/native candidate | `related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/script_workshop_extension_manifest.csv` | armadillo, blackwater, tumbleweed | ai_is_hostile, create_actor, get_actor_faction, population, refgroup, set_actor_faction, task_follow, task_kill, task_stand, task_wander |
+| 25 | 8733 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt` | blackwater | gringobrain, vehicle_generator |
+| 26 | 8725 | world host / gringo | `research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv` |  | gringobrain, vehicle_generator |
+| 27 | 8725 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/read/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.fullread.txt` |  | gringobrain, vehicle_generator |
+| 28 | 8725 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/edit/research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv` |  | gringobrain, vehicle_generator |
+| 29 | 8089 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__vehicle_spawning_findings.csv.decompiled_source.txt` | armadillo, chuparosa, escalera, gaptooth, landing, manzanita, tumbleweed | commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator |
+| 30 | 8088 | world host / gringo | `research/extracted_root_research/vehicle_spawning_findings.csv` | armadillo, chuparosa, escalera, gaptooth, landing, manzanita, tumbleweed | commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator |
+| 31 | 8088 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/read/research__extracted_root_research__vehicle_spawning_findings.csv.fullread.txt` | armadillo, chuparosa, escalera, gaptooth, landing, manzanita, tumbleweed | commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator |
+| 32 | 8088 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/edit/research/extracted_root_research/vehicle_spawning_findings.csv` | armadillo, chuparosa, escalera, gaptooth, landing, manzanita, tumbleweed | commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator |
+| 33 | 7021 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.csv.decompiled_source.txt` | armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed | ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator |
+| 34 | 7020 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.csv.fullread.txt` | armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed | ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator |
+| 35 | 7020 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.csv` | armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed | ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator |
+| 36 | 7020 | world host / gringo | `data/codered/faction_wars_targets.csv` | armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed | ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator |
+| 37 | 5432 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__gringos_findings.csv.decompiled_source.txt` | armadillo, chuparosa, gaptooth, landing | commongringos, gringobrain, task_kill, vehicle_generator |
+| 38 | 5431 | world host / gringo | `research/extracted_root_research/gringos_findings.csv` | armadillo, chuparosa, gaptooth, landing | commongringos, gringobrain, task_kill, vehicle_generator |
+| 39 | 5431 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/read/research__extracted_root_research__gringos_findings.csv.fullread.txt` | armadillo, chuparosa, gaptooth, landing | commongringos, gringobrain, task_kill, vehicle_generator |
+| 40 | 5431 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/edit/research/extracted_root_research/gringos_findings.csv` | armadillo, chuparosa, gaptooth, landing | commongringos, gringobrain, task_kill, vehicle_generator |
+
+## Excerpts
+
+### 1. `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt`
+
+Category: `research/reference`  
+Score: `34992`  
+Regions: `armadillo, macfarlane`  
+
+- L2: # Source: related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv
+- L5: # CodeRED actor enum map
+- L7: # Generated/managed by tools/codered_actor_enum_tool.py
+- L11: label,actor_enum,category,source,aliases,notes
+- L13: ACTOR_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L15: invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L17: AE_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L19: ACTOR_player,0,player_like,INI-style [Enum] actor list,ACTOR_PLAYER|actor_player|player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000
+
+### 2. `related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv`
+
+Category: `research/reference`  
+Score: `34990`  
+Regions: `armadillo, macfarlane`  
+
+- L1: # CodeRED actor enum map
+- L2: # Generated/managed by tools/codered_actor_enum_tool.py
+- L4: label,actor_enum,category,source,aliases,notes
+- L5: ACTOR_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L6: invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L7: AE_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L8: ACTOR_player,0,player_like,INI-style [Enum] actor list,ACTOR_PLAYER|actor_player|player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000
+- L9: player,0,player_like,INI-style [Enum] actor list,ACTOR_player|ACTOR_PLAYER|actor_player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000
+
+### 3. `related_apps/CodeRED_Script_Workshop/workspace/read/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.fullread.txt`
+
+Category: `research/reference`  
+Score: `34990`  
+Regions: `armadillo, macfarlane`  
+
+- L1: # CodeRED actor enum map
+- L3: # Generated/managed by tools/codered_actor_enum_tool.py
+- L7: label,actor_enum,category,source,aliases,notes
+- L9: ACTOR_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L11: invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L13: AE_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L15: ACTOR_player,0,player_like,INI-style [Enum] actor list,ACTOR_PLAYER|actor_player|player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000
+- L17: player,0,player_like,INI-style [Enum] actor list,ACTOR_player|ACTOR_PLAYER|actor_player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000
+
+### 4. `related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv`
+
+Category: `research/reference`  
+Score: `34990`  
+Regions: `armadillo, macfarlane`  
+
+- L1: # CodeRED actor enum map
+- L2: # Generated/managed by tools/codered_actor_enum_tool.py
+- L4: label,actor_enum,category,source,aliases,notes
+- L5: ACTOR_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L6: invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L7: AE_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001
+- L8: ACTOR_player,0,player_like,INI-style [Enum] actor list,ACTOR_PLAYER|actor_player|player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000
+- L9: player,0,player_like,INI-style [Enum] actor list,ACTOR_player|ACTOR_PLAYER|actor_player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000
+
+### 5. `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt`
+
+Category: `research/reference`  
+Score: `22278`  
+Regions: `armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed`  
+High-value terms: `ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator`  
+
+- L2: # Source: data/codered/faction_wars_targets.json
+- L9: "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt",
+- L19: "factions": 11907,
+- L21: "spawning": 20509,
+- L25: "weapons_pressure": 702,
+- L27: "scripting": 1
+- L31: "regions": [
+- L33: "armadillo",
+
+### 6. `related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt`
+
+Category: `research/reference`  
+Score: `22277`  
+Regions: `armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed`  
+High-value terms: `ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator`  
+
+- L5: "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt",
+- L15: "factions": 11907,
+- L17: "spawning": 20509,
+- L21: "weapons_pressure": 702,
+- L23: "scripting": 1
+- L27: "regions": [
+- L29: "armadillo",
+- L31: "macfarlane"
+
+### 7. `related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json`
+
+Category: `research/reference`  
+Score: `22277`  
+Regions: `armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed`  
+High-value terms: `ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator`  
+
+- L3: "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt",
+- L8: "factions": 11907,
+- L9: "spawning": 20509,
+- L11: "weapons_pressure": 702,
+- L12: "scripting": 1
+- L14: "regions": [
+- L15: "armadillo",
+- L16: "macfarlane"
+
+### 8. `data/codered/faction_wars_targets.json`
+
+Category: `research/reference`  
+Score: `22277`  
+Regions: `armadillo, blackwater, chuparosa, escalera, fort mercer, gaptooth, henningan, landing, macfarlane, manzanita, mexico, new austin, nuevo paraiso, plainview, rathskeller, ridgewood, rio bravo, tall trees, thieves, tumbleweed`  
+High-value terms: `ai_is_hostile, commongringos, create_actor, get_actor_faction, gringobrain, population, refgroup, set_actor_faction, streaming_request_actor, task_follow, task_kill, task_stand, task_wander, vehicle_generator`  
+
+- L3: "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt",
+- L8: "factions": 11907,
+- L9: "spawning": 20509,
+- L11: "weapons_pressure": 702,
+- L12: "scripting": 1
+- L14: "regions": [
+- L15: "armadillo",
+- L16: "macfarlane"
+
+### 9. `research/extracted_root_research/extracted_root_findings.csv`
+
+Category: `research/reference`  
+Score: `12671`  
+Regions: `armadillo, chuparosa, escalera, gaptooth, landing, manzanita, thieves, tumbleweed`  
+High-value terms: `commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator`  
+
+- L3: cutscenes,act\actres\act\custom\cutscene_marshal03.cat,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\actres\act\custom\cutscene_marshal03.cat,cutscene_marshal03.cat,.cat,804,c867668b75ee5274021f520d91b2a5c5d0449205,cutscenes:cutsce
+- L4: cutscenes,act\actres\act\custom\cutscene_outlaw03.cat,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\actres\act\custom\cutscene_outlaw03.cat,cutscene_outlaw03.cat,.cat,291,7f5e15fbb3b871ee9b4b20fe2fafce226e1f0203,cutscenes:cutscene;
+- L6: cutscenes,camera\0x9318D091,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\0x9318D091,0x9318D091,<none>,8557,445eb95914064285a112cedf2beaf99936b11a99,cutscenes:camera;cutscenes:strong_path_or_extension,camera,"[{""line"": 46, ""t
+- L50: cutscenes,tune\player\input_debugkeyboard.xml,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\tune\player\input_debugkeyboard.xml,input_debugkeyboard.xml,.xml,6371,2077a09787733e1bcb315511418bd8f9619fdbfe,cutscenes:camera;cutscenes:cutsc
+- L51: cutscenes;gringos;strings;vehicle_spawning,game directory.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\game directory.txt,game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,cutscenes:camera;cutscenes:cinvehicl
+- L52: cutscenes;gringos;vehicle_spawning,act\0x9A8D126E,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\0x9A8D126E,0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,cutscenes:camera;cutscenes:cutscene;gringos:gringo;gringos
+- L64: cutscenes;strings,camera\cutscenesfinal\newlassocameracut.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\cutscenesfinal\newlassocameracut.txt,newlassocameracut.txt,.txt,1615,a04d26db420a38318aa8284331b04943fbf1795c,cutscenes:
+- L65: cutscenes;strings,camera\cutscenesfinal\newlassocameracutmounted.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\cutscenesfinal\newlassocameracutmounted.txt,newlassocameracutmounted.txt,.txt,1630,d8ce18676c59f1811586b20c36853d
+
+### 10. `related_apps/CodeRED_Script_Workshop/workspace/read/research__extracted_root_research__extracted_root_findings.csv.fullread.txt`
+
+Category: `research/reference`  
+Score: `12671`  
+Regions: `armadillo, chuparosa, escalera, gaptooth, landing, manzanita, thieves, tumbleweed`  
+High-value terms: `commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator`  
+
+- L5: cutscenes,act\actres\act\custom\cutscene_marshal03.cat,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\actres\act\custom\cutscene_marshal03.cat,cutscene_marshal03.cat,.cat,804,c867668b75ee5274021f520d91b2a5c5d0449205,cutscenes:cutsce
+- L7: cutscenes,act\actres\act\custom\cutscene_outlaw03.cat,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\actres\act\custom\cutscene_outlaw03.cat,cutscene_outlaw03.cat,.cat,291,7f5e15fbb3b871ee9b4b20fe2fafce226e1f0203,cutscenes:cutscene;
+- L11: cutscenes,camera\0x9318D091,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\0x9318D091,0x9318D091,<none>,8557,445eb95914064285a112cedf2beaf99936b11a99,cutscenes:camera;cutscenes:strong_path_or_extension,camera,"[{""line"": 46, ""t
+- L99: cutscenes,tune\player\input_debugkeyboard.xml,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\tune\player\input_debugkeyboard.xml,input_debugkeyboard.xml,.xml,6371,2077a09787733e1bcb315511418bd8f9619fdbfe,cutscenes:camera;cutscenes:cutsc
+- L101: cutscenes;gringos;strings;vehicle_spawning,game directory.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\game directory.txt,game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,cutscenes:camera;cutscenes:cinvehicl
+- L103: cutscenes;gringos;vehicle_spawning,act\0x9A8D126E,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\0x9A8D126E,0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,cutscenes:camera;cutscenes:cutscene;gringos:gringo;gringos
+- L127: cutscenes;strings,camera\cutscenesfinal\newlassocameracut.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\cutscenesfinal\newlassocameracut.txt,newlassocameracut.txt,.txt,1615,a04d26db420a38318aa8284331b04943fbf1795c,cutscenes:
+- L129: cutscenes;strings,camera\cutscenesfinal\newlassocameracutmounted.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\cutscenesfinal\newlassocameracutmounted.txt,newlassocameracutmounted.txt,.txt,1630,d8ce18676c59f1811586b20c36853d
+
+### 11. `related_apps/CodeRED_Script_Workshop/workspace/edit/research/extracted_root_research/extracted_root_findings.csv`
+
+Category: `research/reference`  
+Score: `12671`  
+Regions: `armadillo, chuparosa, escalera, gaptooth, landing, manzanita, thieves, tumbleweed`  
+High-value terms: `commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator`  
+
+- L3: cutscenes,act\actres\act\custom\cutscene_marshal03.cat,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\actres\act\custom\cutscene_marshal03.cat,cutscene_marshal03.cat,.cat,804,c867668b75ee5274021f520d91b2a5c5d0449205,cutscenes:cutsce
+- L4: cutscenes,act\actres\act\custom\cutscene_outlaw03.cat,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\actres\act\custom\cutscene_outlaw03.cat,cutscene_outlaw03.cat,.cat,291,7f5e15fbb3b871ee9b4b20fe2fafce226e1f0203,cutscenes:cutscene;
+- L6: cutscenes,camera\0x9318D091,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\0x9318D091,0x9318D091,<none>,8557,445eb95914064285a112cedf2beaf99936b11a99,cutscenes:camera;cutscenes:strong_path_or_extension,camera,"[{""line"": 46, ""t
+- L50: cutscenes,tune\player\input_debugkeyboard.xml,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\tune\player\input_debugkeyboard.xml,input_debugkeyboard.xml,.xml,6371,2077a09787733e1bcb315511418bd8f9619fdbfe,cutscenes:camera;cutscenes:cutsc
+- L51: cutscenes;gringos;strings;vehicle_spawning,game directory.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\game directory.txt,game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,cutscenes:camera;cutscenes:cinvehicl
+- L52: cutscenes;gringos;vehicle_spawning,act\0x9A8D126E,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\0x9A8D126E,0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,cutscenes:camera;cutscenes:cutscene;gringos:gringo;gringos
+- L64: cutscenes;strings,camera\cutscenesfinal\newlassocameracut.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\cutscenesfinal\newlassocameracut.txt,newlassocameracut.txt,.txt,1615,a04d26db420a38318aa8284331b04943fbf1795c,cutscenes:
+- L65: cutscenes;strings,camera\cutscenesfinal\newlassocameracutmounted.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\cutscenesfinal\newlassocameracutmounted.txt,newlassocameracutmounted.txt,.txt,1630,d8ce18676c59f1811586b20c36853d
+
+### 12. `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__extracted_root_findings.csv.decompiled_source.txt`
+
+Category: `research/reference`  
+Score: `12671`  
+Regions: `armadillo, chuparosa, escalera, gaptooth, landing, manzanita, thieves, tumbleweed`  
+High-value terms: `commongringos, gringobrain, population, refgroup, task_kill, vehicle_generator`  
+
+- L9: cutscenes,act\actres\act\custom\cutscene_marshal03.cat,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\actres\act\custom\cutscene_marshal03.cat,cutscene_marshal03.cat,.cat,804,c867668b75ee5274021f520d91b2a5c5d0449205,cutscenes:cutsce
+- L11: cutscenes,act\actres\act\custom\cutscene_outlaw03.cat,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\actres\act\custom\cutscene_outlaw03.cat,cutscene_outlaw03.cat,.cat,291,7f5e15fbb3b871ee9b4b20fe2fafce226e1f0203,cutscenes:cutscene;
+- L15: cutscenes,camera\0x9318D091,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\0x9318D091,0x9318D091,<none>,8557,445eb95914064285a112cedf2beaf99936b11a99,cutscenes:camera;cutscenes:strong_path_or_extension,camera,"[{""line"": 46, ""t
+- L103: cutscenes,tune\player\input_debugkeyboard.xml,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\tune\player\input_debugkeyboard.xml,input_debugkeyboard.xml,.xml,6371,2077a09787733e1bcb315511418bd8f9619fdbfe,cutscenes:camera;cutscenes:cutsc
+- L105: cutscenes;gringos;strings;vehicle_spawning,game directory.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\game directory.txt,game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,cutscenes:camera;cutscenes:cinvehicl
+- L107: cutscenes;gringos;vehicle_spawning,act\0x9A8D126E,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\0x9A8D126E,0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,cutscenes:camera;cutscenes:cutscene;gringos:gringo;gringos
+- L131: cutscenes;strings,camera\cutscenesfinal\newlassocameracut.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\cutscenesfinal\newlassocameracut.txt,newlassocameracut.txt,.txt,1615,a04d26db420a38318aa8284331b04943fbf1795c,cutscenes:
+- L133: cutscenes;strings,camera\cutscenesfinal\newlassocameracutmounted.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\camera\cutscenesfinal\newlassocameracutmounted.txt,newlassocameracutmounted.txt,.txt,1630,d8ce18676c59f1811586b20c36853d
+
+### 13. `research/IMPORTANT_readable_root_index_2026-05-02/file_index.csv`
+
+Category: `world host / gringo`  
+Score: `9941`  
+Regions: `armadillo, blackwater, chuparosa, escalera, gaptooth, landing, manzanita, mexico, plainview, rathskeller, ridgewood, thieves, tumbleweed`  
+High-value terms: `commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator`  
+
+- L2: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,game directory.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam
+- L3: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\stringtable\global.strtbl,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\stringtable\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d
+- L4: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,act\0x9A8D126E,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g
+- L5: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\ambient\factionrelations.xml,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\ambient\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f
+- L6: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\ai\tasks.tr,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\ai\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam
+- L7: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\stringtable\0x8695F6E3,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\stringtable\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97
+- L8: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,fragments\fragmentslist.bin,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\fragments\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,
+- L9: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\ai\game_main.tr,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\ai\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc
+
+### 14. `related_apps/CodeRED_Script_Workshop/workspace/read/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.fullread.txt`
+
+Category: `world host / gringo`  
+Score: `9941`  
+Regions: `armadillo, blackwater, chuparosa, escalera, gaptooth, landing, manzanita, mexico, plainview, rathskeller, ridgewood, thieves, tumbleweed`  
+High-value terms: `commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator`  
+
+- L3: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,game directory.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam
+- L5: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\stringtable\global.strtbl,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\stringtable\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d
+- L7: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,act\0x9A8D126E,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g
+- L9: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\ambient\factionrelations.xml,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\ambient\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f
+- L11: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\ai\tasks.tr,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\ai\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam
+- L13: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\stringtable\0x8695F6E3,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\stringtable\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97
+- L15: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,fragments\fragmentslist.bin,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\fragments\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,
+- L17: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\ai\game_main.tr,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\ai\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc
+
+### 15. `related_apps/CodeRED_Script_Workshop/workspace/edit/research/IMPORTANT_readable_root_index_2026-05-02/file_index.csv`
+
+Category: `world host / gringo`  
+Score: `9941`  
+Regions: `armadillo, blackwater, chuparosa, escalera, gaptooth, landing, manzanita, mexico, plainview, rathskeller, ridgewood, thieves, tumbleweed`  
+High-value terms: `commongringos, gringobrain, population, refgroup, task_follow, vehicle_generator`  
+
+- L2: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,game directory.txt,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam
+- L3: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\stringtable\global.strtbl,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\stringtable\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d
+- L4: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,act\0x9A8D126E,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\act\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g
+- L5: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\ambient\factionrelations.xml,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\ambient\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f
+- L6: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\ai\tasks.tr,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\ai\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam
+- L7: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\stringtable\0x8695F6E3,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\stringtable\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97
+- L8: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,fragments\fragmentslist.bin,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\fragments\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,
+- L9: root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,content\ai\game_main.tr,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\ai\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc

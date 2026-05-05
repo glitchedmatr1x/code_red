@@ -1,0 +1,582 @@
+//-----------------------------------------------------------------------------
+
+// Standard operating procedure for guards who are not currently aware of an enemy presence.
+// Goal:			<none>
+// Precondition:	NOT Enemy(x)		// We have defeated (or forgotten?) all enemies.
+
+rules UnalertedHelper
+{
+	((EventActive("PlayerBump", x) AND SpatialDistanceVeryClose(x) AND BumpedIntoMeVeryRecently(x)) OR
+		(BumpedIntoMeJustNow(x) AND Player(x))) 
+		AND CanMoveAwayFrom(x)											->	BasePlayerJustBumpedIntoMe(x);
+		
+	RecentProjectileImpact(x)											->	AnyRecentProjectileImpact;
+}
+
+program Unalerted
+{	
+	// If the player bumps us and we consider ourselves dangerous, stare him down for a little -JM
+	//BasePlayerJustBumpedIntoMe(x)						->	Stay, LookIntentlyAtIfPossible(x), SpeechEvent("PlayerBump", x);
+	
+	// Bumping should always be allowed unless disabled in script
+	IsBumpingAllowed && Player(x) && !OnSameVehicleOrMountAsMe(x) && SpatialMovingTowardsMe(x)	&& 	(SpatialDistanceExtremelyClose(x)) && (SpatialRunning(x) || SpatialSprinting(x)) 	-> BeBumped(x);	
+	
+	// If I'm a horse and have a player riding me, and I've bumped somebody just now, play speech audio for it, since the above won't do it
+	IsBumpingAllowed && Player(y) && !OnSameVehicleOrMountAsMe(y) && RidingOn(y, x) && BumpedIntoMeJustNow(x) -> SpeechEvent("BumpedIntoMe", y);
+	
+	// Behavior for the "LAW_HOSTILE" faction relation. /FF
+	// - This was moved to take precedence over the CaughtInGunfight program, which would otherwise
+	//   have a tendency to prevent it from working if there are multiple actors and some start shooting. /FF
+	//	LawHostile(x) && CanBeLawHostileAgainst(x) && SpatialDistanceVeryClose(x)	->	BeLawHostileAgainst(x);
+	//	LawHostile(x) && CanBeLawHostileAgainst(x)									->	BeLawHostileAgainst(x);
+
+	// Act in a hostile fashion against x, if appropriate. The SpatialDistanceVeryClose(x)
+	// here is only to add a preference towards nearby targets, and isn't critical. /FF
+	//	Hostile(x) && CanBeHostileAgainst(x) && SpatialDistanceVeryClose(x)	->	BeHostileAgainst(x);
+	//	Hostile(x) && CanBeHostileAgainst(x)								->	BeHostileAgainst(x);
+	// This "hostile behavior" was disabled, didn't work very well. See #166359: "Ped reactions to dishonorable players is really messy". /FF
+
+	TRUE -> ConstrainValidSpacePriorityUnalerted, RespectStandGoalPriorityUnalerted, Unalerted2, DeadBodyLook;
+}
+
+
+program ConstrainValidSpacePriorityUnalerted
+{
+	StayInValidSpacePriorityUnalerted	->	ConstrainValidSpace;
+}
+
+
+program Unalerted2
+{
+	// Greet people if appropriate (this shouldn't prevent other actions from being taken)
+	TRUE													->	trLookAroundIfPossible, trGreetIfAppropriate, Unalerted3B;
+}
+
+
+rules FiredAtCriminalHelpers
+{
+	// Through this rule, we only have to do the expensive pairwise evaluation to see if the target
+	// was a criminal, if we actually fired at somebody recently. /FF
+	FiredVeryRecently(x) && FiredAtCriminalVeryRecentlyInternal(x)								->	FiredAtCriminalVeryRecently(x);
+
+	CombatFiredAtVeryRecently(x, y) && ObjectClassCreatureRaceHuman(y) && CausesNoCrime(y)		->	FiredAtCriminalVeryRecentlyInternal(x);
+}
+
+rules ConversationWander
+{
+	CanGringoConverseInitiateAmbient || CanGringoConverseContinueAmbient 	-> TryingToConverse;
+}
+
+program Unalerted3B
+{
+	// DEAD BODY
+	// Rules taken from Body_Investigation_Rules
+	// Disable until animations are checked in
+	CanInvestigateBody(x) AND ShouldInvestigateBody(x) && AllowedToInvestigate(x)			->	DeadBodyReaction(x);
+	CanMoveAwayFromBody(x) && ShouldMoveAwayFromBody(x) && CanMoveRetreatFrom(x)			->	MoveAwayFrom(x):(SpeechEvent("MovingAwayFromBody")), SpeedWalk;
+	
+	//If a criminal just got killed, notice it and then get back to business
+
+	// This used to be
+	//	!Riding && CanFace(x) && CombatFiredAtVeryRecently(x, y) && ObjectClassCreatureRaceHuman(y) && CausesNoCrime(y)		->	FaceInPlace(x);
+	// but I split it up to avoid unnecessary pairwise evaluation:
+	!Riding && CanFace(x) && FiredAtCriminalVeryRecently(x)		->	FaceInPlace(x);
+
+
+	// Move back to our valid area if we're outside of it.
+	StandGoalPriorityUnalerted && CanMoveToStandGoal	->	MoveToStandGoal;
+	OutsideOfValidSpace && StayInValidSpacePriorityUnalerted && CanMoveToValidSpaceWithReactions	->	MoveToValidSpace, AutonomousFireIfAllowed;
+
+	// continue a gringo conversation that is in progress - namely campfires!!!
+	CanGringoConverseContinueAmbient							->	Converse, trContinueHotspotUseIfAppropriate, trLookAroundIfPossible;
+	
+	// This is specifically for conversations that will not have our actor walking around
+	CanGringoConverseInitiateAmbient						-> Converse, trContinueHotspotUseIfAppropriate, trLookAroundIfPossible;	
+	
+	// continue a conversation that is in progress
+	IsWandering && CanConverseContinueAmbient -> Converse, trContinueHotspotUseIfAppropriate, trLookAroundIfPossible;
+	
+	// Copy and pasted from Gareth's code
+	TryingToConverse && EventActive("StayConfused4_conv") -> Stay, MOOD("CONFSD");	
+	TryingToConverse && EventActive("StayConfused3_conv") -> Stay, SpeechEvent("StayConfused4_conv"), MOOD("CONFSD");
+	TryingToConverse && EventActive("StayConfused2_conv") -> Stay, SpeechEvent("StayConfused3_conv"), MOOD("CONFSD");
+	TryingToConverse && EventActive("StayConfused1_conv") -> Stay, SpeechEvent("StayConfused2_conv"), MOOD("CONFSD");
+	// This will fail if we don't have a conversation, making the next line kind of redundant, but it should be cheap...
+	IsWandering && TryingToConverse && !NaturalToExitUnalertedBehavior && !ConversationPartnerInForwardCone -> Stay, SpeechEvent("StayConfused1_conv"), MOOD("CONFSD");
+	
+	// If this isn't above perform task, campfire conversations will not work
+	// If the conversation manager has assigned us to a conversation, and we haven't yet joined it, do so.
+	IsWandering && CanConverseInitiateAmbient				-> Converse, trContinueHotspotUseIfAppropriate, trLookAroundIfPossible;	
+	
+	// Perform unalerted task, staying on the lookout for hotspots to use.
+	ExternalPriorityUnalerted && CanPerformTask				->	PerformTask;
+	
+	// continue a conversation that is in progress
+	CanConverseContinueAmbient								->	Converse, trContinueHotspotUseIfAppropriate, trLookAroundIfPossible;
+	
+	// Copy and pasted from Gareth's code
+	TryingToConverse && EventActive("StayConfused4_conv2") -> Stay, MOOD("CONFSD");	
+	TryingToConverse && EventActive("StayConfused3_conv2") -> Stay, SpeechEvent("StayConfused4_conv2"), MOOD("CONFSD");
+	TryingToConverse && EventActive("StayConfused2_conv2") -> Stay, SpeechEvent("StayConfused3_conv2"), MOOD("CONFSD");
+	TryingToConverse && EventActive("StayConfused1_conv2") -> Stay, SpeechEvent("StayConfused2_conv2"), MOOD("CONFSD");
+	// This will fail if we don't have a conversation, making the next line kind of redundant, but it should be cheap...
+	TryingToConverse && !NaturalToExitUnalertedBehavior && !ConversationPartnerInForwardCone -> Stay, SpeechEvent("StayConfused1_conv2"), MOOD("CONFSD");
+	
+	// If this isn't above perform task, campfire conversations will not work
+	// If the conversation manager has assigned us to a conversation, and we haven't yet joined it, do so.
+	CanConverseInitiateAmbient								-> Converse, trContinueHotspotUseIfAppropriate, trLookAroundIfPossible;	
+	
+	ObjectiveWander && ExternalPriorityDefaultBehavior		->	PerformUnalertedHumanWanderDefaultBehavior, ConstrainSpaceAllowedByTask;
+	TRUE													->	PerformUnalertedHuman;
+}
+
+program DeadBodyReaction(x)
+{
+	At(x)				-> CheckBody(x);		// CheckBody(x), SpeedWalk;
+	TRUE				-> FindAndMoveTo(x), SpeedWalk;
+}
+
+// PURPOSE:	This was added to fix problems with TASK_WANDER_IN_BOX not respecting
+//			the box if running at the "default behavior". Since it by passes the
+//			constraint stuff normally done in PerformTask, we have to do it manually
+//			here instead.
+// TODO:	Try to clean this up, I'm not too happy with how messy it is now. /FF 
+program PerformUnalertedHumanWanderDefaultBehavior
+{
+	TRUE												->	PerformUnalertedHuman;
+}
+
+
+program PerformUnalertedHuman
+{
+	// Holster the weapon if we have it drawn and can holster it.
+	// TODO: Maybe move this - I primarily added it as a test for now, to
+	// sort out issues with holstering. /FF
+	// Update: I disabled it for now. Since this program executes in parallel with some
+	// of the alerted search programs which want to draw the weapon, it was very prone
+	// to oscillations - CombatWeaponHolster and CombatWeaponDrawRange are not actions
+	// that are arbitrated between in a way that would be necessary for parallel execution.
+	// Adding a time delay or adding some check against a speech event here might help.
+	// TODO: Fix this. /FF
+//	CombatWeaponDrawn AND CanCombatWeaponHolster	-> CombatWeaponHolster;
+
+	TRUE	->	PerformUnalertedHuman1, ConsiderHolsteringOrDrawing;
+}
+
+// @RSNE @BEGIN CRakowsky
+// Make a program to be able to do a headlook at a dead body while doing other actions as well
+program DeadBodyLook
+{			
+	// If there is a dead body look at it
+	Riding && Body(x) && CanHeadLookAt(x) && (EventActive("VisionBody") || SpatialDistanceClose(x)) -> HeadLookAt(x), trLookAroundIfPossible;	
+}
+// @RSNE @END CRakowsky
+
+program ConsiderHolsteringOrDrawing
+{
+	CanWeaponDrawDueToPreference								->	WeaponDrawDueToPreference;
+	CanWeaponHolsterDueToPreference								->	WeaponHolsterDueToPreference;
+
+	// Holster the weapon if we have it drawn and can holster it. Once upon a time,
+	// this done by simply doing
+	//	CombatWeaponDrawn AND CanCombatWeaponHolster	-> CombatWeaponHolster;
+	// but it didn't work well in practice. Now, there is a delay mechanism in place,
+	// which takes care of at least most of the issues even if it's not all that elegant. /FF
+
+	!CombatWeaponDrawn																->	NIL;
+
+	// I added this. Certain tasks involve drawing weapons, and before if those ran at a
+	// low enough priority (i.e. where this program was invoked first) the actor could
+	// periodically holster his gun and re-draw it again immediately after, which doesn't
+	// look good. /FF
+	TaskDisallowsHolstering															->	NIL;
+
+	ExternalWeaponDrawPreference(kWeapDrawPrefPreferDrawn)							->	NIL;
+
+	EventActive("ConsiderHolstering") && ReadyToHolster && CanCombatWeaponHolster	->	CombatWeaponHolster, SpeechEvent("ConsiderHolstering");
+	TRUE																			->	SpeechEvent("ConsiderHolstering"), PrepareForActivity(4), PlanActivity(4, 3.0, 8.0);
+}
+
+program PerformUnalertedHuman1
+{
+	//If we see a fight going on, go cheer and jeer them, unless we are a cop
+	!IsLawEnforcement && !Riding && !RidingVehicle && IsIndoorsStateMatches(x) &&
+		ObjectClassCreatureRaceHuman(x)	&& ObjectClassCreatureRaceHuman(y) && MeleedEachOtherWithin(x, y, 10.0)
+			-> Taunt(x):(SpeechEvent("Spectate", x));
+	
+	//We need the law enforcment to at least look at what is going on
+	IsLawEnforcement && !Riding && !RidingVehicle && IsIndoorsStateMatches(x) &&
+		ObjectClassCreatureRaceHuman(x)	&& ObjectClassCreatureRaceHuman(y) && MeleedEachOtherWithin(x, y, 10.0)
+			-> FaceInPlace(x);
+
+	// If we bump into something, start looking for something behind us.
+	//CollidedJustNow
+	//	AND NOT NearGoalHotspot(3.0)
+	//	AND NOT SpatialDirectionAheadOfMe(x) 
+	//	AND Close(x)
+	//	AND CanMoveTo(x)			->	WallBump, MoveTo(x):(SpeechEvent("BumpRecovery", x));
+		
+	// If we're recovering from a bump, keep moving until we're close to the thing we picked.
+	//EventActive("BumpRecovery", x)
+	//	AND NOT NearGoalHotspot(3.0)
+	//	AND NOT At(x)
+	//	AND CanMoveTo(x)			->	WallBump, MoveTo(x):(SpeechEvent("BumpRecovery", x));
+
+
+	//
+	// if the hotspot is not in our forward cone then stop and play a
+	// confused anim for a few frames.  
+	//
+	EventActive("StayConfused4") -> Stay, MOOD("CONFSD"), HotspotSeekToFulfillMotives;	
+	EventActive("StayConfused3") -> Stay, SpeechEvent("StayConfused4"), MOOD("CONFSD"), HotspotSeekToFulfillMotives;
+	EventActive("StayConfused2") -> Stay, SpeechEvent("StayConfused3"), MOOD("CONFSD"), HotspotSeekToFulfillMotives;
+	EventActive("StayConfused1") -> Stay, SpeechEvent("StayConfused2"), MOOD("CONFSD"), HotspotSeekToFulfillMotives;
+	CanHotspotsMoveToAndUse && !NaturalToExitUnalertedBehavior && !HotspotInForwardCone -> Stay, SpeechEvent("StayConfused1"), MOOD("CONFSD"), HotspotSeekToFulfillMotives;
+
+	// If we've found a hotspot to use, move to it and use it.
+	CanHotspotsMoveToAndUse  ->	HotspotsMoveToAndUse, HotspotSeekToFulfillMotives, trLookAroundIfPossible, trAllowAmbientConversationsIfReasonable;
+	
+	TRUE -> trAllowAmbientConversationsIfReasonable, ConstrainValidSpacePriorityDefaultBehavior, RespectStandGoalPriorityDefaultBehavior, Unalerted3;
+}
+
+
+program ConstrainValidSpacePriorityDefaultBehavior
+{
+	StayInValidSpacePriorityDefaultBehavior	->	ConstrainValidSpace;
+}
+
+program Unalerted3
+{
+	// Move back to our valid area if we're outside of it.
+	StandGoalPriorityDefaultBehavior && CanMoveToStandGoal						->	MoveToStandGoal;
+	OutsideOfValidSpace && StayInValidSpacePriorityDefaultBehavior && CanMoveToValidSpaceWithReactions	->	MoveToValidSpace, HotspotSeekToFulfillMotives, AutonomousFireIfAllowed;
+
+	// Keep idling if we're in the middle of idling; start idling if we haven't done so in a while.
+	// HACK: Future Activity #0 = idle
+	// KAD - it's not clear to me what this is doing, but it is being called.  I moved it down 
+	//	quite a bit, since idling seems like something we should only do when we have nothing
+	//	better to do.
+	!ActivityFinishedIdlingRecently AND ReadyToIdle	->	Idle, PlanActivity(0, 15.0, 17.0);
+
+	//Execute lowest priority scripting commands (mostly intended to be used for the ambient ped default behavior).
+	// The !ObjectiveWander here is necessary to prevent recursion when TASK_WANDER is
+	// used at the "default behavior" priority. /FF
+	!ObjectiveWander && ExternalPriorityDefaultBehavior && CanPerformTask		->	PerformTask, HotspotSeekToFulfillMotives;
+
+	ObjectiveWander && CanMoveWander													->	MoveWander, HotspotSeekToFulfillMotives;
+	
+	//ShouldFaceAttentionTarget(x) && CanFaceInPlace(x)		->		FaceInPlace(x), trLookAroundIfPossible;
+	// @TODO: CanFaceInPlace(x) needs modification from CanFace(x); it is returning false too strictly
+	// Don't face our target if they bumped into us recently -JM
+	!Riding && ShouldFaceAttentionTarget(x) && !BumpedIntoMeSomewhatRecently(x) 	->		FaceInPlace(x), HotspotSeekToFulfillMotives;
+	
+	// The default action:  don't move, do nothing, except seeking
+	// hotspots in the background.
+	TRUE													->	Stay, HotspotSeekToFulfillMotives;
+}
+
+
+// It is *not* safe to call LookAround without checking CanLookAround, so use this TR program
+//	to combine the two.
+program trLookAroundIfPossible
+{
+	CanLookAround				-> LookAround;
+}
+
+debuggroup LookAround
+{
+	filter TRUE, predicate CanLookAround,					label "CanLookAround";
+	filter ObjectClassObjectiveLookAt(x), predicate ObjectClassObjectiveLookAt(x), label "ObjectClassObjectiveLookAt $x";
+	filter ObjectClassObjectiveLookAt(x), predicate CanLookAt(x), label "CanLookAt $x";
+}
+
+debuggroup Wander
+{
+	filter TRUE, predicate ObjectiveWander, label "ObjectiveWander";
+	filter TRUE, predicate CanMoveWander, label "CanMoveWander";
+	filter TRUE, predicate NaturalToExitUnalertedBehavior, label "NaturalToExitUnalertedBehavior";
+}
+
+debuggroup StayInValidSpace
+{
+	filter TRUE, predicate OutsideOfValidSpace,						label "OutsideOfValidSpace";
+	filter TRUE, predicate InsideAvoidanceVolume,					label "InsideAvoidanceVolume";
+	filter TRUE, predicate StayInValidSpacePriorityHighest,			label "Priority Highest";
+	filter TRUE, predicate StayInValidSpacePriorityCombat,			label "Priority Combat";
+	filter TRUE, predicate StayInValidSpacePriorityUnalerted,		label "Priority Unalerted";
+	filter TRUE, predicate StayInValidSpacePriorityDefaultBehavior,	label "Priority Default Behavior";
+	filter TRUE, predicate OnInvalidMaterial,						label "On Invalid Material";
+}
+
+debuggroup Idle
+{
+	filter TRUE,			predicate ActivityIdledJustNow,				label "ActivityIdledJustNow";
+	filter TRUE,			predicate ActivityStartedIdlingRecently,	label "ActivityStartedIdlingRecently";
+	filter TRUE,			predicate ActivityFinishedIdlingRecently,	label "ActivityFinishedIdlingRecently";
+	filter TRUE,			predicate ReadyToIdle,						label "ReadyToIdle";
+}
+
+
+debuggroup Bump
+{
+	filter TRUE,							predicate CollidedVeryRecently,				label "CollidedVeryRecently";
+	filter TRUE,							predicate CollidedJustNow,					label "CollidedJustNow";
+// 	filter TRUE,							predicate trShouldStartBumpOrGringoTalk,	label "trShouldStartBumpOrGringoTalk";
+	filter BumpedIntoMeVeryRecently(x),		predicate BumpedIntoMeVeryRecently(x),		label "BumpedIntoMeVeryRecently $x";
+	filter Player(x),						predicate BumpedIntoMeJustNow(x),			label "BumpedIntoMeJustNow $x";
+	filter EventActive("BumpRecovery", x),	predicate EventActive("BumpRecovery", x),	label "BumpRecovery $x";
+	filter EventActive("PlayerBump", x),	predicate EventActive("PlayerBump", x),		label "PlayerBump $x";
+}
+
+program trAllowAmbientConversationsIfReasonable
+{
+	!RidingVehicle && !Riding && !NonCombatSpeechIsDisabled && ShouldAllowAmbientConversation		-> AllowAmbientConversation;
+}
+
+program trAllowGringoConversationsIfReasonable
+{
+	// Removed the allowambientconverastion clause from here, since that only checks for mobility, which we don't need
+	// in this case
+	!NonCombatSpeechIsDisabled			->	AllowGringoConversation;	
+}
+
+program trGreetIfAppropriate
+{
+	CanGreetingContinue && !NonCombatSpeechIsDisabled		->	GreetingContinue;
+	ShouldGreet && !NonCombatSpeechIsDisabled				->	Greet;
+}
+
+debuggroup Conversation
+{
+// 	filter TRUE,							predicate trShouldStartBumpOrGringoTalk,	label "trShouldStartBumpOrGringoTalk";
+	//filter BumpedIntoMeVeryRecently(x),		predicate BumpedIntoMeVeryRecently(x),		label "BumpedIntoMeVeryRecently $x";
+	filter TRUE,		predicate CanConverseInitiateAmbient,		label "CanConverseInitiateAmbient";
+	filter TRUE,		predicate NonCombatSpeechIsDisabled,		label "NonCombatSpeechIsDisabled";
+	filter TRUE,		predicate ShouldAllowAmbientConversation,	label "ShouldAllowAmbientConversation";
+}
+
+// This program moves to the "current" hotspot and uses it. It does not care
+// about how this current hotspot was found, and doesn't by itself look for
+// any hotspots.
+// Precondition:	CanHotspotsMoveToAndUse
+program HotspotsMoveToAndUse
+{
+	CanHotspotUse 					->	HotspotUse, trAllowGringoConversationsIfReasonable;
+	TRUE /*CanHotspotMoveTo*/		->	HotspotMoveTo, trAllowAmbientConversationsIfReasonable;
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup HotspotsAmbient
+{
+	filter TRUE, predicate CanHotspotMoveTo,					label "CanHotspotMoveTo";
+	filter TRUE, predicate CanHotspotUse,						label "CanHotspotUse";
+}
+
+
+debuggroup HotspotsTasked
+{
+	filter TRUE, predicate HasHotspotUseObjective,				label "HasHotspotUseObjective";
+	filter TRUE, predicate CanPerformTaskMoveToAndUseHotspot,	label "CanPerformTaskMoveToAndUseHotspot";
+	filter TRUE, predicate CanHotspotMoveToExternal,			label "CanHotspotMoveToExternal";
+	filter TRUE, predicate CanHotspotUseExternal,				label "CanHotspotUseExternal";
+	filter TRUE, predicate HotspotExternalReadyForUse,			label "HotspotExternalReadyForUse";
+}
+
+//-----------------------------------------------------------------------------
+// Rules and programs mainly related to civilians avoiding danger that doesn't
+// directly concern them, such as some guy firing his weapon at nobody or at
+// somebody else.
+
+// Stay away from x. The primary use for this is for a civilian to
+// escape some dangerous situation that they have no reason to get
+// involved in, for example a gunfight unrelated to them.
+// Currently this basically includes seeking cover to protect from x, looking
+// at x if close, and retreating if no good cover can be found.
+// Precondition:	CanStayAwayFromDanger(x)
+program StayAwayFromDanger(x)
+{
+	TRUE	->	StayAwayFromDangerMove(x), StayAwayFromDangerLook(x);
+	//TRUE	->	StayAwayFromDangerMove(x), CombatSeekCoverToProtectFrom(x), StayAwayFromDangerLook(x);
+}
+
+
+// Subprogram used by StayAwayFromDanger(x) to look at the
+// dangerous object if it's close.
+// Precondition:	none at the moment, it's intended to always be usable and
+//					typically executed in parallel with other programs.
+program StayAwayFromDangerLook(x)
+{
+	// If x is very close, look at it. This primary uses head movement,
+	// though if nothing else is going on LookAt(x) can probably make
+	// the actor turn as well.
+	SpatialDistanceVeryClose(x) && CanLookAt(x)			->	LookAt(x);
+}
+
+
+// Subprogram used by StayAwayFromDanger(x) taking care of the movement part.
+// It currently involves getting behind cover if available, or retreating.
+// Precondition:	CanStayAwayFromDangerMove(x)
+program StayAwayFromDangerMove(x)
+{
+	StayAwayFromDangerKeepMoving									->	PerformTask, SetTaskRetreatFlag;
+
+	// If we can get behind cover (incl. staying at cover you're already at),
+	// do so. StayAwayFromDangerMoveGetBehindCover controls if it's
+	// worthwhile to stay behind cover or if a new cover location should
+	// be found instead.
+	//CanGetBehindCover && StayAwayFromDangerMoveGetBehindCover(x)	->	GetBehindCover;
+
+	// Retreat if possible, if we could not find cover.
+	AllowBehaviorRetreat && CanMoveRetreatFrom(x)
+		->	MoveRetreatFrom(x):(SpeechEvent("Retreating"), SpeechEvent("DisallowShootAndFace")),
+			/*DodgeWhileRetreatingFrom(x),*/ SpeedSprint, 
+			LookAtIfPossible(x), trLookAroundIfPossible, RememberWasRetreating(x);
+
+	// TODO: Maybe cower here, without moving?
+
+	// Note: please remember to update the precondition if you add or change something.
+	//TRUE			->	Display("falling through StayAwayFromDangerMove");
+}
+
+program trContinueHotspotUseIfAppropriate
+{
+	CanHotspotUse && DoingHotspot		-> HotspotUse;
+	CanHotspotUseExternal  && DoingHotspot  	-> HotspotUseExternal;
+}
+
+rules StayAwayFromDangerNewRules
+{
+	ObjectClassTypeLocation(x) && ObjectClassObjectiveMoveTo(x)														->	StayAwayFromDangerGetAwayDestination(x);
+	StayAwayFromDangerGetAwayDestination(x) && CivilianDanger(y) && SpatialLastObservedDistanceClose(x, y)			->	StayAwayFromDangerGetAwayDestinationUnsafe(x);
+	StayAwayFromDangerGetAwayDestination(x) && !StayAwayFromDangerGetAwayDestinationUnsafe(x)						->	StayAwayFromDangerGetAwayDestinationSafe(x);
+
+	// TODO: We may want to consider also doing this for actors on foot, but at least their behavior
+	// is probably better already since they can actually run to cover. /FF
+	(Riding || RidingVehicle) && HasTask && HasMoveObjective && StayAwayFromDangerGetAwayDestinationSafe(x) && CanPerformTask		->	StayAwayFromDangerKeepMoving;
+	HasTask && (Riding || RidingVehicle) && TaskShouldUseAlternateVehicleRetreat																->	StayAwayFromDangerKeepMoving;
+}
+
+
+// Not done like this anymore: /FF
+//	// Subprogram used by StayAwayFromDanger(x) to warn allies and neutral characters 
+//	// of the danger posed by object x.  No preconditions.
+//	program WarnOthersAboutDanger(x)
+//	{
+//		//	// Note that WarnedAboutDangerRecently(a,x) is 100% pure psychic voodoo, allowing any character
+//		//	// to determine whether actor-relation a has been made aware of the danger of relation x.
+//		//	//	WillingToWarn(a) AND NOT WarnedAboutDangerRecently(a, x)	->	LookAt(a), WarnAboutDanger(a, x);
+//	}
+
+
+rules StayAwayFromDangerRules
+{
+	// CivilianShouldWarnAbout(x) is a part of a mechanism for actors in the civilian
+	// population warning other actors in the population about some danger.
+
+	FiredAtHuman(x)	|| KnifedHuman(x)							->	CivilianShouldWarnAbout(x);
+
+	// CivilianDanger(x) is true for objects that may be of danger to us
+	// so that we should stay away from them. This includes only indirectly
+	// knowing about the danger, by somebody else warning about it. /FF
+
+	(FiredAtHuman(x) || KnifedHuman(x)) && 
+		(SpatialDistanceClose(x) || SpatialDistanceVeryClose(x) || SpatialDistanceExtremelyClose(x))		->	CivilianDanger(x);
+
+	// Heed warnings of danger from those we trust.
+	OthersWarnedMeAboutRecently(x)					->	CivilianDanger(x);
+
+	// The main purpose of this is to simplify CanStayAwayFromDangerMove(x), to
+	// not have to duplicate the whole expression.
+	// Note: this is now also used by GetToCoverAndStay_Move, as a condition to not
+	// detach from existing cover. TODO: Maybe rename, and think more about how
+	// to consolidate various "get to cover" programs. /FF
+	(!InjuredWhileAtThisNoGoodCover) && ((!CombatAtCover) || CombatAtCoverGood || (!SpatialDistanceClose(x) ))	->	StayAwayFromDangerMoveGetBehindCover(x);
+
+	// Precondition for StayAwayFromDangerMove(x).
+	//CanMoveRetreatFrom(x) || (CanGetBehindCover && StayAwayFromDangerMoveGetBehindCover(x))					->	CanStayAwayFromDangerMove(x);
+	(CanMoveRetreatFrom(x) && AllowBehaviorRetreat) || StayAwayFromDangerKeepMoving								->	CanStayAwayFromDangerMove(x);
+
+	// Precondition for StayAwayFromDanger(x). Only the movement part is crucial
+	// for the program to have a useful effect.
+	CanStayAwayFromDangerMove(x)					->	CanStayAwayFromDanger(x);
+}
+
+
+debuggroup Civilians
+{
+	filter CivilianDanger(x), predicate CivilianDanger(x), label "CivilianDanger $x";
+	filter ObjectClassTypeCreature(x), predicate FiredSomewhatRecently(x), label "$x fired recently";
+	filter ObjectClassTypeCreature(x), predicate CanMoveRetreatFrom(x), label "Can retreat from $x";
+	filter TRUE, predicate CombatAtCover, label "At cover";
+	filter TRUE, predicate CombatAtCoverGood, label "At good cover";
+	filter TRUE, predicate InjuredWhileAtThisNoGoodCover, label "Injured at no good cover";
+	filter HasBeenHitByProjectile(x), predicate HitByProjectileRecently(x), label "$x hit by projectile recently";
+	filter ObjectClassTypeCreature(x), predicate StayAwayFromDangerMoveGetBehindCover(x), label "StayAwayFromDangerMoveGetBehindCover $x";
+	filter Player(x), predicate AimingAtMe(x), label "AimingAtMe $x";
+	filter WantToHurt(x), predicate WantToHurt(x), label "WantToHurt $x";
+	filter Player(x), predicate LikelyToFireRangeWeapon(x), label "LikelyToFireRangeWeapon $x";
+	filter Player(x), predicate FiredAtHuman(x), label "FiredAtHuman $x";
+	filter StayAwayFromDangerGetAwayDestination(x), predicate StayAwayFromDangerGetAwayDestinationUnsafe(x), label "StayAwayFromDangerGetAwayDestinationUnsafe $x";
+	filter StayAwayFromDangerGetAwayDestination(x), predicate StayAwayFromDangerGetAwayDestinationSafe(x), label "StayAwayFromDangerGetAwayDestinationSafe $x";
+	filter TRUE, predicate HasTask, label "HasTask";
+	filter TRUE, predicate HasMoveObjective, label "HasMoveObjective";
+	filter TRUE, predicate CanPerformTask, label "CanPerformTask";
+	filter TRUE, predicate StayAwayFromDangerKeepMoving, label "StayAwayFromDangerKeepMoving";
+	filter Player(x), predicate CanMoveAwayFrom(x), label "CanMoveAwayFrom $x";
+}
+
+debuggroup Fistfights
+{
+	filter WasMeleedByOthersRecently(x), predicate WasMeleedByOthersRecently(x), label "WasMeleedByOthersRecently $x";
+	filter HitByProjectileRecently(x), predicate HitByProjectileRecently(x), label "HitByProjectileRecently $x";
+}
+
+debuggroup Unalerted
+{
+    filter TRUE, predicate DoingHotspot, label "DoingHotspot";
+    filter TRUE, predicate NaturalToExitUnalertedBehavior, label "NaturalToExitUnalertedBehavior";
+    filter BaseCanReactToWeapon(x), predicate BaseCanReactToWeapon(x), label "BaseCanReactToWeapon $x";
+	filter TRUE, predicate HasRetreated, label "HasRetreated";
+	filter TRUE, predicate Within(x, 60.0), label "$x Closer than 60 ";
+	filter Player(x), predicate Player(x), label "Player $x";
+	filter Player(x), predicate PlayerAimedAtMeWithin(x, 5.0, 0.5), label "AimedAtMe within 5 seconds $x";
+}
+
+debuggroup Gunshots
+{
+	filter Player(x), predicate Player(x), label "Player $x";
+	filter FiredRecently(x), predicate FiredRecently(x), label "Fired recently $x";
+	filter PlayerFiredGunRecently, predicate PlayerFiredGunRecently, label "Player Fired recently";
+	filter PlayerFiredGunCloseRecently, predicate PlayerFiredGunCloseRecently, label "Player Fired Close recently";
+	filter PlayerProjectileImpactRecently, predicate PlayerProjectileImpactRecently, label "PlayerProjectile recently";
+	filter PlayerProjectileImpactCloseRecently, predicate PlayerProjectileImpactCloseRecently, label "PlayerProjectileClose recently";
+	filter NonPlayerFiredGunRecently(x), predicate NonPlayerFiredGunRecently(x), label "NonPlayer Fired recently $x";
+	filter NonPlayerFiredGunCloseRecently(x), predicate NonPlayerFiredGunCloseRecently(x), label "NonPlayer Fired Close recently $x";
+	filter NonPlayerProjectileImpactRecently(x), predicate NonPlayerProjectileImpactRecently(x), label "NonPlayerProjectile recently $x";
+	filter NonPlayerProjectileImpactCloseRecently(x), predicate NonPlayerProjectileImpactCloseRecently(x), label "NonPlayerProjectileClose recently $x";
+	filter TRUE, predicate ShotAtShouldAttackPlayer, label "ShotAtShouldAttackPlayer";
+	filter Within(x, 10.0), predicate Within(x,10.0), label "Within 10 meters $x";
+	filter Within(x, 30.0), predicate Within(x,30.0), label "Within 30 meters $x";
+	filter Player(x), predicate IsIndoorsStateMatches(x), label "IsIndoorsStateMatches $x";
+}
+
+debuggroup WeaponReaction
+{
+	filter TRUE, predicate IsWeaponReactionAllowed, label "IsWeaponReactionAllowed";
+	filter TRUE, predicate Hogtied, label "Hogtied";
+	filter TRUE, predicate Riding, label "Riding";
+	filter TRUE, predicate RidingVehicle, label "RidingVehicle";
+	filter Player(x), predicate Player(x), label "Player $x";
+	filter Player(x), predicate Ally(x), label "Player Ally $x";
+	filter Player(x), predicate Friendly(x), label "Player Friendly $x";
+	filter Player(x), predicate WasRetreatingFrom(x), label "WasRetreatingFrom $x";
+	filter BaseCanReactToWeapon(x), predicate BaseCanReactToWeapon(x), label "BaseCanReactToWeapon $x";
+	filter BaseCanReactToNPCWeapon(x), predicate BaseCanReactToNPCWeapon(x), label "BaseCanReactToNPCWeapon $x";
+	filter Player(x), predicate IsIndoorsStateMatches(x), label "IsIndoorsStateMatches $x";
+	filter ShotAtShouldAttackPlayer, predicate ShotAtShouldAttackPlayer, label "ShotAtShouldAttackPlayer";
+	filter HasRetreated, predicate HasRetreated, label "HasRetreated";
+}
+
+
+//-----------------------------------------------------------------------------

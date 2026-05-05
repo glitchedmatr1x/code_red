@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sagPlayerInputFile>
+  <sagPlayerInput Name="Config1">
+    <sagPlayerMapper Name="Boat">
+      <Map Value="Steer"          Source="IOMS_ANALOGUE_GAME_ACTION"  Parameter="@GENERIC.MOVE_X"         Port="-1" Inverted="F"/>
+	  <Map Value="PaddleBackward" Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.BRAKE"          Port="-1" Inverted="F"/>
+      <Map Value="PaddleForward"  Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@HORSE.SPUR"             Port="-1" Inverted="F"/>
+	  <Map Value="Exit"           Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.USE"            Port="-1" Inverted="F"/>
+      <Map Value="Target"         Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.TARGET"         Port="-1" Inverted="F"/>
+      <Map Value="WeaponFire"     Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.FIRE"           Port="-1" Inverted="F"/>
+      <Map Value="WeaponMenu"     Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@RADIAL_MENU.SHOW_HIDE"  Port="-1" Inverted="F"/>
+      <Map Value="WeaponReload"   Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.RELOAD"         Port="-1" Inverted="F"/>
+      <Map Value="WeaponSpecial"  Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.DEADEYE"        Port="-1" Inverted="F"/>
+	  <Map Value="Whistle"        Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.WHISTLE"        Port="-1" Inverted="F"/>
+    </sagPlayerMapper>
+  </sagPlayerInput>
+</sagPlayerInputFile>

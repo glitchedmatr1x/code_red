@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rage__rmlShadowMap>
+	<Tiles>
+		<Item type="rage__CShadowMapTile">
+			<WhichTile value="0"/>
+			<NearSlice value="0.500000"/>
+			<FarSlice value="6.500000"/>
+			<LightDepthScale value="100.000000"/>
+			<DepthBias value="0.000050"/>
+			<BiasSlope value="3.000000"/>
+			<ViewportZShift value="1.000000"/>
+			<FovYDiv value="0.400000"/>
+		</Item>
+		<Item type="rage__CShadowMapTile">
+			<WhichTile value="1"/>
+			<NearSlice value="5.500000"/>
+			<FarSlice value="17.000000"/>
+			<LightDepthScale value="40.060001"/>
+			<DepthBias value="0.000150"/>
+			<BiasSlope value="2.500000"/>
+			<ViewportZShift value="1.000000"/>
+			<FovYDiv value="0.300000"/>
+		</Item>
+		<Item type="rage__CShadowMapTile">
+			<WhichTile value="2"/>
+			<NearSlice value="16.000000"/>
+			<FarSlice value="45.000000"/>
+			<LightDepthScale value="10.000000"/>
+			<DepthBias value="0.000300"/>
+			<BiasSlope value="1.500000"/>
+			<ViewportZShift value="1.000000"/>
+			<FovYDiv value="0.380000"/>
+		</Item>
+		<Item type="rage__CShadowMapTile">
+			<WhichTile value="3"/>
+			<NearSlice value="44.000000"/>
+			<FarSlice value="130.000000"/> 
+			<LightDepthScale value="5.000000"/>
+			<DepthBias value="0.003500"/>
+			<BiasSlope value="1.500000"/>
+			<ViewportZShift value="1.000000"/>
+			<FovYDiv value="0.300000"/>
+		</Item>
+	</Tiles>
+	<FadeOutSMap value="25.000000"/>
+	<ShowShadowMap value="false"/>
+</rage__rmlShadowMap>

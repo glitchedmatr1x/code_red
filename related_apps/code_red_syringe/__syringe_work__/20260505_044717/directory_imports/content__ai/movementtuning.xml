@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bhMovementTuningArray>
+	<TuningArray>
+		<Item type="bhMovementTuning">
+			<SpeedTuning>
+				<DistSprintToJogSlowDown value="1.330000"/>
+				<DistSprintToWalkSlowDown value="1.900000"/>
+				<DistSprintToStandSlowDown value="0.600000"/>
+				<DistJogToWalkSlowDown value="0.500000"/>
+				<DistJogToStandSlowDown value="0.250000"/>
+				<DistWalkSlowDown value="0.100000"/>
+				<DistSprintSpeedUp value="1.000000"/>
+				<DistJogSpeedUp value="1.000000"/>
+				<DistWalkSpeedUp value="0.000000"/>
+				<DistSprintToRunSlowDown value="100000000.000000"/>
+				<DistRunToJogSlowDown value="100000000.000000"/>
+				<DistRunToWalkSlowDown value="100000000.000000"/>
+				<DistRunToStandSlowDown value="100000000.000000"/>
+				<DistRunSpeedUp value="100000000.000000"/>
+				<EnableSprint value="true"/>
+				<EnableRun value="false"/>
+				<EnableJog value="true"/>
+				<EnableWalk value="true"/>
+			</SpeedTuning>
+			<Name content="ascii">StandardHuman</Name>
+			<BehaviorMoveGotoTuning>
+				<ExtraCompletionDistanceThresholdXZ value="1.000000"/>
+				<ExtraCompletionDistanceThresholdY value="1.000000"/>
+				<UseGoalHeadingIfNotStrafing value="false"/>
+			</BehaviorMoveGotoTuning>
+			<BehaviorUseMoveTuning>
+				<NavCloseDistThreshold value="0.200000"/>
+				<NavFarDistThreshold value="0.500000"/>
+			</BehaviorUseMoveTuning>
+		</Item>
+		<Item type="bhMovementTuning">
+			<SpeedTuning>
+				<DistSprintToJogSlowDown value="100000000.000000"/>
+				<DistSprintToWalkSlowDown value="100000000.000000"/>
+				<DistSprintToStandSlowDown value="100000000.000000"/>
+				<DistJogToWalkSlowDown value="3.000000"/>
+				<DistJogToStandSlowDown value="100000000.000000"/>
+				<DistWalkSlowDown value="0.20000"/>
+				<DistSprintSpeedUp value="6.000000"/>
+				<DistJogSpeedUp value="6.000000"/>
+				<DistWalkSpeedUp value="3.000000"/>
+				<DistSprintToRunSlowDown value="3.000000"/>
+				<DistRunToJogSlowDown value="5.000000"/>
+				<DistRunToWalkSlowDown value="100000000.000000"/>
+				<DistRunToStandSlowDown value="100000000.000000"/>
+				<DistRunSpeedUp value="6.000000"/>
+				<EnableSprint value="true"/>
+				<EnableRun value="true"/>
+				<EnableJog value="true"/>
+				<EnableWalk value="true"/>
+			</SpeedTuning>
+			<Name content="ascii">StandardHorse</Name>
+			<BehaviorMoveGotoTuning>
+				<ExtraCompletionDistanceThresholdXZ value="2.500000"/>
+				<ExtraCompletionDistanceThresholdY value="1.000000"/>
+				<UseGoalHeadingIfNotStrafing value="false"/>
+			</BehaviorMoveGotoTuning>
+			<BehaviorUseMoveTuning>
+				<NavCloseDistThreshold value="0.400000"/>
+				<NavFarDistThreshold value="1.000000"/>
+			</BehaviorUseMoveTuning>
+		</Item>
+		<Item type="bhMovementTuning">
+			<SpeedTuning>
+				<DistSprintToJogSlowDown value="100000000.000000"/>
+				<DistSprintToWalkSlowDown value="100000000.000000"/>
+				<DistSprintToStandSlowDown value="100000000.000000"/>
+				<DistJogToWalkSlowDown value="1.000000"/>
+				<DistJogToStandSlowDown value="100000000.000000"/>
+				<DistWalkSlowDown value="0.100000"/>
+				<DistSprintSpeedUp value="3.000000"/>
+				<DistJogSpeedUp value="1.000000"/>
+				<DistWalkSpeedUp value="0.000000"/>
+				<DistSprintToRunSlowDown value="1.500000"/>
+				<DistRunToJogSlowDown value="1.000000"/>
+				<DistRunToWalkSlowDown value="100000000.000000"/>
+				<DistRunToStandSlowDown value="100000000.000000"/>
+				<DistRunSpeedUp value="2.000000"/>
+				<EnableSprint value="true"/>
+				<EnableRun value="true"/>
+				<EnableJog value="true"/>
+				<EnableWalk value="true"/>
+			</SpeedTuning>
+			<Name content="ascii">StandardAnimal</Name>
+			<BehaviorMoveGotoTuning>
+				<ExtraCompletionDistanceThresholdXZ value="1.000000"/>
+				<ExtraCompletionDistanceThresholdY value="1.000000"/>
+				<UseGoalHeadingIfNotStrafing value="false"/>
+			</BehaviorMoveGotoTuning>
+			<BehaviorUseMoveTuning>
+				<NavCloseDistThreshold value="0.200000"/>
+				<NavFarDistThreshold value="0.500000"/>
+			</BehaviorUseMoveTuning>
+		</Item>
+		<Item type="bhMovementTuning">
+			<SpeedTuning>
+				<DistSprintToJogSlowDown value="100000000.000000"/>
+				<DistSprintToWalkSlowDown value="100000000.000000"/>
+				<DistSprintToStandSlowDown value="100000000.000000"/>
+				<DistJogToWalkSlowDown value="100000000.000000"/>
+				<DistJogToStandSlowDown value="100000000.000000"/>
+				<DistWalkSlowDown value="0.100000"/>
+				<DistSprintSpeedUp value="100000000.000000"/>
+				<DistJogSpeedUp value="100000000.000000"/>
+				<DistWalkSpeedUp value="0.000000"/>
+				<DistSprintToRunSlowDown value="100000000.000000"/>
+				<DistRunToJogSlowDown value="100000000.000000"/>
+				<DistRunToWalkSlowDown value="1.500000"/>
+				<DistRunToStandSlowDown value="1.500000"/>
+				<DistRunSpeedUp value="2.000000"/>
+				<EnableSprint value="false"/>
+				<EnableRun value="true"/>
+				<EnableJog value="false"/>
+				<EnableWalk value="true"/>
+			</SpeedTuning>
+			<Name content="ascii">AnimalBear</Name>
+			<BehaviorMoveGotoTuning>
+				<ExtraCompletionDistanceThresholdXZ value="1.000000"/>
+				<ExtraCompletionDistanceThresholdY value="1.000000"/>
+				<UseGoalHeadingIfNotStrafing value="false"/>
+			</BehaviorMoveGotoTuning>
+			<BehaviorUseMoveTuning>
+				<NavCloseDistThreshold value="0.200000"/>
+				<NavFarDistThreshold value="0.500000"/>
+			</BehaviorUseMoveTuning>
+		</Item>
+	</TuningArray>
+</bhMovementTuningArray>

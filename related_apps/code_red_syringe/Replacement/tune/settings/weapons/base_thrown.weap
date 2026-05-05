@@ -1,0 +1,208 @@
+BASEWEAPON "base_thrown"
+{
+	OpMode
+	{
+		AmmoStart	1000.000000
+		AmmoPerClip	2.150000
+		MPAmmoPerClip	2.150000
+		AmmoPerReloadAnim	1.000000
+		AmmoUsePerFire	1.000000
+		AudioCategory	WEAPONS_PISTOL_DEFAULT
+		ChamberTime	0.675000
+		MPChamberTime	0.900000
+		ReloadTimeScale	0.920000
+		MPReloadTimeScale	0.920000
+		AutoFireDelay	1.188000
+		MPAutoFireDelay	2.200000
+		Throw	1
+		Aimer	"AIMER_BALLISTIC"
+		AIParameters
+		{
+			MinimumRange			1.000000
+			MaximumRange			110.200000
+			DesiredRange			35.840000
+			BurstDuration			0.944000
+			BurstDurationRandomness	0.000000
+			MinAimTime				0.287000
+			MaximumDamageRange		125.000000
+			DamageConeAngle			1.000000
+			FireDelay				0.533000
+			FireDelayRandomness		0.240000
+			ShooterStandardRange	53.100000
+		}
+		ChargeState
+		{
+			MinChargeTime 0.000000
+			NoiseRange 0.000000
+			Projectile
+			{
+				Speed		36.040000
+				AmmoUse		1.000000
+				ProjectileCount		1
+				ProjectileSpreadAngle		9.200000
+				MPProjectileSpreadAngle		9.200000
+				ForceOneNonAngledShot		1
+				PHYSICALPROJECTILE "firebottle"
+				{
+					LifeTime		8.500000
+					ImpactLifeTime		1.500000
+					GravityFactor	2.000000
+					ProjectileMatrix "No alignment"
+					Damage 
+					{
+						HitPoints	0.000000
+						MPHitPoints	0.000000
+						BangerHitPoints	9.120000
+						Impulse	161.200000
+						BangerImpulse	161.200000
+						RagdollImpulse	166.400000
+						TranquilizeStrength	0.000000
+					}
+					ImpactEvent "PROJ_GRENADE"
+					ImpactSoundAIRange	33.750000
+					ExplosionMatrix "Flat"
+					EnableCollisions	1
+					ExplodeOnImpact	0
+					ExplodeOnTimeOut	0
+					ExplodeOnWaterImpact	0
+					DefuseOnWaterImpact	0
+					MinMassAffect	1.000000
+					MinMassSpeed	3.300000
+					MaxMassAffect	30.000000
+					MaxMassSpeed	1.100000
+					CreateBulletTrail 0
+					GlassCrackType "Pistol"
+					ModelName		"throw_molotov01x"
+					RotationSpeed	0.000000 0.000000 0.000000
+					Mass			0.500000
+					AngularInertia	-0.100000
+					VisibleForAI	1
+					StickOnImpact	0
+				}
+			}
+			ShootBlipFx
+			{
+				Delay		0.000000
+				FXType		"ENM_SHOOT_BLIP_RED"
+				Offset		0.000000 0.000000 0.000000
+				Attached		0
+			}
+		}
+	}
+	HudIcon	"ICON_DEFAULT_WEAPON"
+	NormalizedReticlePosition	 0.500000 0.500000
+	NormalizedReticlePositionZoom	 0.500000 0.500000
+	AnimType	 dyn
+	TrigHoldMode	"Single"
+	ReticleType	"Thrown"
+	ACTFileName	donothing
+	ACTRoot	DoNothing
+	AnimSet	<none>
+	IKOffset	0	0	0
+	IKOffsetHold	0	0	0
+	MuzzleOffset	0	0.029988	-0.1
+	Cost	1
+	ZoomTime	0.30000001
+	HardLockRangeStart	1.50000
+	HardLockRangeEnd	200
+	BumpTargetRangeStart	0.80000001
+	BumpTargetRangeEnd	200
+	InaccuracyRangeStart	50
+	InaccuracyRangeEnd	70
+	InaccuracyRangeZoomedStart	50
+	InaccuracyRangeZoomedEnd	70
+	MaxInaccuracyPenalty	0.60000002
+	MaxInaccuracyPenaltyZoomed	0.60000002
+	CameraSpeedScalar	1
+	CameraSpeedScalarZoomed	1
+	ProbeCheckDistance	1.75
+	ExplodeAfterWeaponChangeTime	-1
+	CategoryColumn	Special
+	WeaponArcGroupName	ThrowingKnife
+	CanShootFromCamera	0
+	CanBeFired	1
+	RenderWhenHolstered	1
+	IsNotWeaponUntilUsed	0
+	DrawEnabled	1
+	IsGringoControlled	0
+	CanTargetLock	1
+	UsableOnFootOnly	0
+	DoProbeCheck	1
+	MeleeDamage	10
+	MPMeleeDamage	10
+	SoftLockTuningZoomed
+	{
+		CloseDist		2.000000
+		FarDist		30.000000
+		CloseScaleAimRamp		0.500000
+		FarScaleAimRamp		0.400000
+		ParallelExponent		0.500000
+		CloseScale		0.075000
+		FarScale		0.225000
+		RangeStartOut		1.000000
+		RangeStartIn		2.000000
+		RangeEndIn		170.000000
+		RangeEndOut		175.000000
+		SoftLockOuterRadius		0.010000
+		SoftLockInnerRadius		0.010000
+		SoftLockFarOuterRadius		0.020000
+		SoftLockFarInnerRadius		0.020000
+		SoftLockThetaApproachRate		3.250000
+		SoftLockThetaExitRate		0.300000
+		AimRampDecelerationRate		3.000000
+		AimRampAccelerationRate		20.000000
+		AccuracyCloseRadius		0.018000
+		AccuracyFarRadius		0.014000
+		AccuracyHelpMovePenalty		0.800000
+	}
+	MountedSoftLockTuningZoomed
+	{
+		CloseDist		2.000000
+		FarDist		30.000000
+		CloseScaleAimRamp		0.500000
+		FarScaleAimRamp		0.400000
+		ParallelExponent		0.500000
+		CloseScale		0.075000
+		FarScale		0.225000
+		RangeStartOut		1.000000
+		RangeStartIn		2.000000
+		RangeEndIn		170.000000
+		RangeEndOut		175.000000
+		SoftLockOuterRadius		0.010000
+		SoftLockInnerRadius		0.010000
+		SoftLockFarOuterRadius		0.020000
+		SoftLockFarInnerRadius		0.020000
+		SoftLockThetaApproachRate		3.250000
+		SoftLockThetaExitRate		0.300000
+		AimRampDecelerationRate		3.000000
+		AimRampAccelerationRate		20.000000
+		AccuracyCloseRadius		0.018000
+		AccuracyFarRadius		0.014000
+		AccuracyHelpMovePenalty		0.800000
+	}
+	VehicleSoftLockTuningZoomed
+	{
+		CloseDist		2.000000
+		FarDist		30.000000
+		CloseScaleAimRamp		0.500000
+		FarScaleAimRamp		0.400000
+		ParallelExponent		0.500000
+		CloseScale		0.075000
+		FarScale		0.225000
+		RangeStartOut		1.000000
+		RangeStartIn		2.000000
+		RangeEndIn		170.000000
+		RangeEndOut		175.000000
+		SoftLockOuterRadius		0.010000
+		SoftLockInnerRadius		0.010000
+		SoftLockFarOuterRadius		0.020000
+		SoftLockFarInnerRadius		0.020000
+		SoftLockThetaApproachRate		3.250000
+		SoftLockThetaExitRate		0.300000
+		AimRampDecelerationRate		3.000000
+		AimRampAccelerationRate		20.000000
+		AccuracyCloseRadius		0.018000
+		AccuracyFarRadius		0.014000
+		AccuracyHelpMovePenalty		0.800000
+	}
+}

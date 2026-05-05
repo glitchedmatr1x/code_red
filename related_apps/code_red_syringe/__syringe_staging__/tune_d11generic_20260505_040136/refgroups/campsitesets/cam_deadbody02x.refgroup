@@ -1,0 +1,33 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood06x.mb
+transform 0.8154578829 0 -0.814450472 0 200.8479929 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood06x.mb
+transform 0.2819391576 0 0.009945513475 0 122.4870109 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood06x.mb
+transform 1.368113969 0 -0.3398089875 0 200.8479929 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform 0.7031157935 0 0.6211317666 0 112.4947772 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform -0.3165764311 0 0.5593117126 0 79.34198475 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bodyPartArm01x.mb
+transform -0.3172896827 0 0.08046708671 0 -90.38502299 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bodyPartHead01x.mb
+transform 0.5487333648 0.01936501456 -0.08802725825 0 -39.85291869 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse03x.mb
+transform 0.9589547623 0 0.2359357154 0 152.2408742 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse04x.mb
+transform 0.3143112229 0 -0.5944675057 0 -249.551915 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse05x.mb
+transform 0.07242868708 0 0.3393724929 0 -78.59095964 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_femur02x.mb
+transform 0.4595058608 0 -0.4363383839 0 186.0096443 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align

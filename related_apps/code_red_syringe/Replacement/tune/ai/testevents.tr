@@ -1,0 +1,34 @@
+// Misc tests for AI speech events.
+
+program Main
+{
+	//PositionKnownSomewhatRecently(x) -> MoveTowards(x):(SpeechEvent("AudioEventMoveTowards", x)), HeadLookAt(x), Face(x);
+	TRUE	 -> RunTests, DisplayTestResults;
+}
+
+program RunTests
+{
+	PositionKnownSomewhatRecently(x) -> MoveTowards(x):(SpeechEvent("AudioEventMoveTowards", x));
+	TRUE	 -> Patrol:(SpeechEvent("AudioEventPatrol"));
+}
+
+program DisplayTestResults
+{
+	ActivityMoveTowards(x)	-> Display("MoveTowards is active!");
+	ActivityPatrol			-> Display("Patrol is active!");
+	TRUE					-> Display("No events active yet...");
+}
+
+rules Misc
+{
+	EventActive("AudioEventPatrol")			-> ActivityPatrol;
+	EventActive("AudioEventMoveTowards", x)	-> ActivityMoveTowards(x);
+}
+
+debuggroup TestStuff
+{
+	filter Player(x),	predicate ActivityPatrol,							label "ActivityPatrol";
+	filter Player(x),	predicate EventActive("AudioEventPatrol"),			label "AudioEventPatrol";
+	filter TRUE,		predicate ActivityMoveTowards(x),					label "ActivityMoveTowards";
+	filter TRUE,		predicate EventActive("AudioEventMoveTowards",x),	label "AudioEventMoveTowards";
+}	

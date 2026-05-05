@@ -1,0 +1,328 @@
+// CodeRED Chaos Pass: predator/livestock side uses harsher factionrelations from ambient/factionrelations.xml.
+// PURPOSE:	This file contains TR programs and rules for animals fighting
+
+// 
+// Animal Fight Rules
+//
+rules AnimalFightRules
+{
+	
+	AnimalIsInAttackBehaviorForwardFacingThreshold(x)												-> MeleeSpatialAllow(x);	
+	SpatialDistanceClose(x) && MeleeSpatialAllow(x) && !SpatialMeBehindObject(x)					-> MeleeSpatialReady(x);
+
+	
+
+	MeleeSpatialReady(x) && !SpatialMeBehindObject(x)	 -> MeleeSpatialPreferred(x);
+	!WasMeleedByMeRecently(x) && !WasMeleedByOthersRecently(x)		-> MeleeAttackCold(x);
+	!AnimalTuningEventMeleedByMeWithinMeleedByMeAttackDelay(x) && !AnimalTuningEventMeleedByOthersWithinMeleedByOthersAttackDelay(x) 						-> MeleeAttackReady(x);
+
+	// i'm facing the wrong way then don't worry about attack pathing
+	SpatialDistanceVeryClose(x) || (!SpatialDirectionAheadOfMe(x) && !AnimalFlockingFailedRecently) -> IgnoreAttackPathing(x);
+
+	
+	MeleeAttackReady(x) && !MeleeSpatialAllow(x) && EventActive("AnimalGettingSpaceToTurnAround")	-> AnimalShouldContinueLineupForAttack(x);			
+
+}
+
+program AnimalMoveAggressive_tr(x)
+{
+	// WARN while moving aggressively
+	CanAnimalWarn(x) 
+	&& !WarnedSomeoneSomewhatRecently 
+	&& EnemyOfMySpeciesOrMyFriends(x) 
+	&& AnimalTuningCloserThanAttackEnemiesRangeStartWithTrigger(x) 
+	&& !SpatialDistanceExtremelyClose(x)  -> AnimalWarn_tr(x);				
+	
+	
+	TRUE -> AnimalMoveAggressive(x), Mood("ALERTED"), HeadLookAt(x), BroadcastSoundEvent("kUltrasonicAlert", 20.0);
+}
+
+program AnimalFight_tr(x)
+{
+	(FlockICanCircleFlock(x) || ObjectClassObjectiveDestroy(x)) && !IsInWater(x) /*&& FlockClusterCanAttack(x)*/ -> AnimalFightWithMood_tr(x), Mood("FIGHT"), HeadLookAt(x), AnimalClusterMarkAttacking(x);
+	
+	TRUE -> AnimalMoveAggressive_tr(x);
+}
+
+program AnimalFightWithMood_tr(x)
+{
+
+	// MELEE HYSTERESIS MOUNT ATTACK
+	EventActive("AnimalPrimaryMelee") && Riding(x) && RidingOn(x, a) && FlockIAmTheCurrentAttacker(a) && !WasMeleedByMeVeryRecently(a) -> AnimalPrimaryMelee(a);
+	EventActive("AnimalSecondaryMelee") && Riding(x) && RidingOn(x, a) && FlockIAmTheCurrentAttacker(a) && !WasMeleedByMeVeryRecently(a) -> AnimalSecondaryMelee(a);
+
+	// MELEE HYSTERESIS
+	EventActive("AnimalPrimaryMelee") && !Riding(x) && FlockIAmTheCurrentAttacker(x) && !WasMeleedByMeVeryRecently(x) -> AnimalPrimaryMelee(x);
+	EventActive("AnimalSecondaryMelee") && !Riding(x) && FlockIAmTheCurrentAttacker(x) && !WasMeleedByMeVeryRecently(x) -> AnimalSecondaryMelee(x);
+
+	// pathing hysteris
+	EventActive("AttackPathing") && !SpatialDistanceClose(x) -> FindAndMoveTo(x), SpeedSprint, SpeechEvent("AttackPathing");
+	
+	// if we're obstructed then path find to target
+	(AnimalAttackObstructed(x) || AnimalFlockingFailedRecently) && !IgnoreAttackPathing(x) -> FindAndMoveTo(x), SpeedRun, SpeechEvent("AttackPathing");
+	
+	// kill the mount
+	Riding(x) && RidingOn(x, a) && AnimalTuningAllowChargeAttack 	-> ChargeFight_tr(a);
+	Riding(x) && RidingOn(x, a) && AnimalTuningPrefersFlockAttack 	-> PackFight_tr(a);			
+	Riding(x) && RidingOn(x, a)										-> SoloFight_tr(a);
+	
+	// normal attacks
+	AnimalTuningAllowChargeAttack 		-> ChargeFight_tr(x);
+	AnimalTuningPrefersFlockAttack 		-> PackFight_tr(x);
+
+		
+	TRUE -> SoloFight_tr(x);
+}
+
+
+//
+// for charge
+//
+program ChargeFight_tr(x)
+{
+
+	FlockTargetReadyForAttacker(x) && WarnedSomeoneRecently && MeleeAttackReady(x) && MeleeSpatialAllow(x) -> AnimalPrimaryMelee(x);	
+	FlockTargetReadyForAttacker(x) && !WarnedSomeoneRecently && !Within(x,12.0)  -> AnimalWarn_tr(x);
+
+	//
+	// a few special melee conditions
+	//	
+	MeleeSpatialReady(x) && MeleeAttackReady(x) && AnimalPreyFleeing(x) && SpatialDistanceVeryClose(x) -> AnimalPrimaryMelee(x);
+	MeleeSpatialReady(x) && SpatialDistanceExtremelyClose(x) && DamagedMeByMeleeVeryRecently(x) -> AnimalPrimaryMelee(x);
+	MeleeSpatialReady(x) && FiredVeryRecently(x) -> AnimalPrimaryMelee(x);	
+	MeleeSpatialReady(x) && MeleeAttackReady(x) && Within(x, 12.0) -> AnimalPrimaryMelee(x);	
+	
+					
+	// move towards target
+	EventActive("AnimalGettingSpaceToTurnAround") && Within(x, 12.0)	-> AnimalMoveAvoiding(x), SpeechEvent("AnimalGettingSpaceToTurnAround");		
+	FlockTargetNeedsAnAttacker(x) && MeleeAttackReady(x) && Within(x, 5.0)	-> AnimalMoveAvoiding(x), SpeechEvent("AnimalGettingSpaceToTurnAround");			
+
+		
+	FlockTargetNeedsAnAttacker(x) && !Within(x,5.0)  -> Face(x);				
+			
+	TRUE -> AnimalCircleFight(x);
+	
+}
+
+program AnimalLineupForAttack_tr(x)
+{
+	EventActive("AnimalGettingSpaceToTurnAround") && Within(x, 12.0) -> AnimalMoveAvoiding(x), AnimalSetMeleeTarget_tr(x), SpeechEvent("AnimalGettingSpaceToTurnAround");	
+	
+	Within(x, 2.0)		-> AnimalMoveAvoiding(x), AnimalSetMeleeTarget_tr(x), SpeechEvent("AnimalGettingSpaceToTurnAround");	
+
+	TRUE 	-> AnimalMoveAttacking(x);		
+}
+
+
+//
+// for solo animals cougars bears etc
+//
+program SoloFight_tr(x)
+{
+
+	//
+	// trigger melees
+	//
+	FlockTargetNeedsAnAttacker(x) && MeleeAttackReady(x)  && MeleeSpatialAllow(x)	-> AnimalPrimaryMelee(x);
+	FlockTargetReadyForAttacker(x) && (MeleeAttackReady(x) && MeleeSpatialReady(x)) -> AnimalPrimaryMelee(x);
+	
+	// move towards target
+	AnimalShouldContinueLineupForAttack(x) 											-> AnimalLineupForAttack_tr(x);
+	(FlockTargetNeedsAnAttacker(x) || DamagedRecently) && MeleeAttackReady(x) && !MeleeSpatialAllow(x) 	-> AnimalLineupForAttack_tr(x);		
+	
+	AnimalPreyFleeing(x) && SpatialDistanceVeryClose(x) && MeleeAttackReady(x) && MeleeSpatialAllow(x) -> AnimalPrimaryMelee(x);
+	AnimalPreyFleeing(x) -> AnimalMoveAttacking(x), SpeechEvent("AnimalAttackChasing");
+
+	//
+	// a few special melee conditions
+	//
+	MeleeSpatialReady(x) && DamagedVeryRecently -> AnimalPrimaryMelee(x);
+	MeleeSpatialReady(x) && FiredVeryRecently(x) -> AnimalPrimaryMelee(x);	
+	MeleeSpatialReady(x) && AnimalCircleFailedVeryRecently -> AnimalPrimaryMelee(x);
+	
+	SpatialDistanceExtremelyClose(x) && DamagedMeByMeleeVeryRecently(x) -> AnimalLineupForAttack_tr(x);
+	FiredVeryRecently(x) -> AnimalLineupForAttack_tr(x);	
+	AnimalCircleFailedVeryRecently -> AnimalLineupForAttack_tr(x);	
+	
+	
+	//
+	// circle fight check	
+	//
+	AnimalTuningPrefersToCircleStalk && SpatialDistanceClose(x) -> AnimalCircleFight(x); //CircleAttack_tr(x); //AnimalCircleFight(x);
+	
+	// circle flock this guy
+	SpatialDistanceVeryClose(x) -> AnimalCircleFlock(x);	
+	SpatialDistanceClose(x)		-> AnimalMoveAttacking(x);	
+			
+	TRUE ->	FindAndMoveTo(x), SpeedRun;
+}
+
+//
+// for wolf packs and the like
+//
+program PackFight_tr(x)
+{
+
+	//
+	// trigger melees
+	//
+	FlockTargetNeedsAnAttacker(x) && MeleeAttackReady(x) && MeleeSpatialAllow(x) -> AnimalPrimaryMelee(x);
+	FlockTargetReadyForAttacker(x) && MeleeAttackReady(x) && MeleeSpatialReady(x) -> AnimalPrimaryMelee(x);
+	
+	// move towards target
+	//FlockTargetNeedsAnAttacker(x) && MeleeAttackReady(x) && !MeleeSpatialAllow(x) && SpatialDistanceVeryClose(x) 	-> Face(x);		
+	FlockTargetNeedsAnAttacker(x) && MeleeAttackReady(x) && !MeleeSpatialAllow(x) && !Within(x, 20.0)	-> AnimalMoveAttacking(x);			
+		
+	AnimalPreyFleeing(x) && SpatialDistanceVeryClose(x) && MeleeAttackReady(x) -> AnimalPrimaryMelee(x);
+	AnimalPreyFleeing(x) -> AnimalMoveAttacking(x), SpeechEvent("AnimalAttackChasing");
+
+	// 
+	// chase hysteresis
+	//
+	EventActive("AnimalAttackChasing") && SpatialMeBehindObject(x) && !SpatialDistanceVeryClose(x) -> AnimalMoveAttacking(x), SpeechEvent("AnimalAttackChasing");
+
+	//
+	// use circle attack behavior
+	//
+	!AnimalPreyFleeing(x) && SpatialDistanceVeryClose(x) && PositionKnownRecently(x) && FlockICanCircleFlock(x)	-> CircleAttack_tr(x);
+
+	//
+	// trigger chase
+	//
+	PositionKnownRecently(x) && SpatialDistanceClose(x)										-> AnimalMoveAttacking(x), SpeechEvent("AnimalAttackChasing");
+
+	//
+	// move to actor stuff below here
+	//
+	
+	// I added this rule to make sure that if an animal is scripted to attack something, it does its best to
+	// keep up. The "WITH 10" part of the sprint action is there because I found some cases where the action
+	// arbitration didn't pick a sprint speed in the end, not sure exactly why but there may have been some
+	// fuzzyiness in some of the predicates involved here. /FF
+	ObjectClassObjectiveDestroy(x) && PositionKnownRecently(x) && CanMoveTo(x)								-> FindAndMoveTo(x), SpeedSprint WITH 10;
+
+	PositionKnownRecently(x) && CanMoveTo(x) 																-> FindAndMoveTo(x), SpeedRun;
+
+	// Lost track of the target, look for it if possible. CanFindAndMoveTo(x) may go
+	// false once we see where the target is, but we can't get there. /FF
+	TRUE /* CanFindAndMoveTo(x) */																			-> FindAndMoveTo(x), SpeedRun /* NOT SURE */;
+}
+
+//
+// for controlling how animals circle attack target
+//
+program CircleAttack_tr(x)
+{
+	TRUE -> AnimalCircleAttack(x);
+}
+
+
+program AnimalPrimaryMelee(x)
+{
+	TRUE -> AnimalAttackPrimary(x), AnimalMarkAttacking(x), SpeechEvent("AnimalPrimaryMelee"), LookAt(x);
+}
+
+program AnimalSecondaryMelee(x)
+{
+	TRUE -> AnimalAttackSecondary(x), AnimalMarkAttacking(x), SpeechEvent("AnimalSecondaryMelee"), LookAt(x);
+}
+
+
+////
+//
+// special case coyote chicken attack
+//
+///
+program AnimalFightGrabAttack_tr(x)
+{
+	// coyotes killing chickens in ranch01
+	// not alot of other animals grabbing prey
+	// may need custom scripted rule to turn this off and on
+	SpatialDirectionAheadOfMe(x) &&	AnimalTuningAllowGrabPrey && CanAnimalTaskAttack(x) && Alive(x) && CanAnimalAttackGrab(x) && CanAnimalGrab(x) 
+	&& SpatialDistanceVeryClose(x) && PositionKnownRecently(x) 	-> AnimalAttackGrab(x);	
+
+	AnimalTuningAllowGrabPrey && CanAnimalTaskAttack(x) && Alive(x) && CanAnimalAttackGrab(x) && CanAnimalGrab(x) 
+	&& SpatialDistanceVeryClose(x) && PositionKnownRecently(x)  -> AnimalAttackGrab(x), SpeedJog;	
+	
+	// move towards target
+	AnimalShouldContinueLineupForAttack(x) 											-> AnimalLineupForAttack_tr(x);
+	SpatialDistanceClose(x)														 	-> AnimalLineupForAttack_tr(x);			
+	
+
+	// Lost track of the target, look for it if possible. CanFindAndMoveTo(x) may go
+	// false once we see where the target is, but we can't get there. /FF
+	TRUE /* CanFindAndMoveTo(x) */																			-> FindAndMoveTo(x), SpeedRun /* NOT SURE */;	
+}
+
+debuggroup Animal_Fight_GrabAttack
+{
+	filter CanAnimalAttackGrab(x), predicate CanAnimalTaskAttack(x), label "CanAnimalTaskAttack $x";
+	filter CanAnimalAttackGrab(x), predicate Alive(x), label "Alive $x";	
+	filter CanAnimalAttackGrab(x), predicate CanAnimalGrab(x), label "CanAnimalGrab $x";
+	filter CanAnimalAttackGrab(x), predicate SpatialDistanceVeryClose(x), label "SpatialDistanceVeryClose $x";	
+
+}
+
+debuggroup Animal_Fight_Player
+{
+	filter Player(x), predicate Riding(x), label "Riding(x)";
+	filter Player(x), predicate AnimalAttackObstructed(x), label "AnimalAttackObstructed $x";	
+	filter Player(x), predicate EventActive("AttackPathing"), label "EventActive AttackPathing";
+	filter Player(x), predicate SpatialDistanceClose(x), label "SpatialDistanceClose $x";	
+	filter Player(x), predicate FlockICanCircleFlock(x), label "FlockICanCircleFlock $x";
+
+}
+
+debuggroup Animal_Fight_MovementInfo
+{
+	filter Player(x), predicate AnimalIsInAttackBehaviorForwardFacingThreshold(x), label "AnimalIsInAttackBehaviorForwardFacingThreshold $x";
+	filter Player(x), predicate AnimalAttackObstructed(x), label "AnimalAttackObstructed $x";
+	filter TRUE, predicate MovementClearAheadOfMe, label "MovementClearAheadOfMe";
+	filter TRUE, predicate MovementClearBehindMe, label "MovementClearBehindMe";
+	filter TRUE, predicate MovementClearLeftOfMe, label "MovementClearLeftOfMe";
+	filter TRUE, predicate MovementClearRightOfMe, label "MovementClearRightOfMe";
+}
+
+//
+// PURPOSE:	AnimalFight-related debugging stuff.
+//
+debuggroup Animal_Fight_SoloFight
+{
+
+	filter TRUE, predicate WasMeleedByMeVeryRecently(x), label "WasMeleedByMeVeryRecently $x";
+	filter TRUE, predicate WasMeleedByMeRecently(x), label "WasMeleedByMeRecently $x";
+	filter TRUE, predicate WasMeleedByMeSomewhatRecently(x), label "WasMeleedByMeSomewhatRecently $x";
+}
+
+//
+// PURPOSE:	AnimalFight-related debugging stuff.
+//
+debuggroup Animal_Fight_Charge
+{
+	filter TRUE, predicate WarnedSomeoneRecently, label "WarnedSomeoneRecently";
+	filter TRUE, predicate AnimalStaminaLow, label "AnimalStaminaLow";
+	filter TRUE, predicate EventActive("AnimalAttacking"), label "EventActive(AnimalAttacking)";
+	
+	filter Player(x), predicate FlockTargetReadyForAttacker(x), label "FlockTargetReadyForAttacker $x";
+	filter Player(x), predicate SpatialDistanceVeryClose(x), label "SpatialDistanceVeryClose $x";
+	filter Player(x), predicate MeleeAttackReady(x), label "MeleeAttackReady $x";
+	filter Player(x), predicate MeleeSpatialAllow(x), label "MeleeSpatialAllow $x";
+	
+	filter Player(x), predicate CanAnimalContinueToAttack(x), label "CanAnimalContinueToAttack $x";
+	filter Player(x), predicate AnimalTuningCloserThanAttackEnemiesRangeEnd(x), label "AnimalTuningCloserThanAttackEnemiesRangeEnd $x";
+	
+}
+
+
+debuggroup Animal_Fight_MeleeReady
+{
+
+	filter CanAnimalAttack(x), predicate MeleeAttackReady(x), label "MeleeAttackReady $x";
+	filter CanAnimalAttack(x), predicate AnimalTuningEventMeleedByMeWithinMeleedByMeAttackDelay(x), label "AnimalTuningEventMeleedByMeWithinMeleedByMeAttackDelay $x";
+	filter CanAnimalAttack(x), predicate AnimalTuningEventMeleedByOthersWithinMeleedByOthersAttackDelay(x), label "AnimalTuningEventMeleedByOthersWithinMeleedByOthersAttackDelay $x";
+	
+	filter CanAnimalAttack(x), predicate FlockTargetReadyForAttacker(x), label "FlockTargetReadyForAttacker $x";	
+	filter CanAnimalAttack(x), predicate FlockIAmTheCurrentAttacker(x), label "FlockIAmTheCurrentAttacker $x";	
+	
+	filter CanAnimalAttack(x), predicate FlockTargetNeedsAnAttacker(x), label "FlockTargetNeedsAnAttacker $x";
+}

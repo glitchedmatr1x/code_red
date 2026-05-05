@@ -1,0 +1,24 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_tent03x.mb
+transform -2.529325016 0 1.291559508 0 -186.5195704 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_table36x.mb
+transform -0.06387286 0 1.754519011 0 95.88463114 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_gliderHidePile01x.mb
+transform 6.265940532 0 -4.945047624 0 -34.82280536 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_glider01x.mb
+transform 4.094650599 0 -10.72620939 -7.466848813 -118.1344031 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_crateSit01x.mb
+transform -3.606325609 0 2.603055933 0 -5.132826657 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_cart01x.mb
+transform 1.334070121 0 1.55673638 0 13.83848914 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_campfireCombined01x.mb
+transform -5.629184836 0 -5.092573872 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bedRollClosed01x.mb
+transform -7.232500736 0 0.7766085388 0 -86.94961497 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align

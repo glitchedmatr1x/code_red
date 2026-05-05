@@ -1,0 +1,33 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood06x.mb
+transform -0.2150499265 0 0.02262621175 0 122.4870109 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform -0.229309188 0 0.9689526261 0 217.8719959 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_blood07x.mb
+transform -1.083924524 0 0.2160683493 0 79.34198475 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bodyPartArm01x.mb
+transform -1.223400433 0 0.8995169339 0 20.38774016 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse01x.mb
+transform -0.1800090212 0 0.4219297382 0 8.234649415 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_corpse04x.mb
+transform -0.9237849282 0 0.439055493 0 -146.8839516 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_femur02x.mb
+transform -0.48645605 0 1.441542728 0 186.0096443 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_dynamiteCrate01x.mb
+transform -1.70 0 1.45 0 17 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_molotovCrate01x.mb
+transform 1.85 0 -1.55 0 -31 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_crate06x.mb
+transform 2.75 0 1.20 0 68 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/battleSets/p_bat_brokenBarrel01x.mb
+transform -2.80 0 -1.25 0 12 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align

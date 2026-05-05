@@ -1,0 +1,17 @@
+
+<actor name="template_base_train" abstract="1" updatestate="Asleep" spawnlater="0" base="template_Vehicle" proxy="Stagecoach.mb">
+	<contents>
+		<Vehicle>
+			<attributes>
+				<VehicleType value="Rail"/>
+				<LocationSetName type="string" value="locSet_none"/>
+				<VehicleFaction value="Player"/>
+			</attributes>
+		</Vehicle>
+		<Target>
+ 			<attributes>
+				<m_TargetOffset value="0 0.85 0"/>
+ 			</attributes>
+		</Target>
+  </contents>
+</actor>

@@ -1,0 +1,1118 @@
+//
+// Rules and programs for human reactions
+//
+
+// -------------------------------------------------------------------------------------------------------------
+//		RULES
+// -------------------------------------------------------------------------------------------------------------
+
+rules MountedChargeReactionRules
+{
+	// Note: BaseShouldMountedChargeReact(x, y) used to include !IsIndoors && !Riding && !RidingVehicle.
+	// This is now included where it's used from instead, for performance reasons - we branch on those
+	// early to bypass pairwise evaluation, and we don't reevaluate them if we do need the pairwise stuff.
+	// This is done as an optimization. /FF
+
+	ObjectClassCreatureRaceHorse(x) && WithinFOV(x, 180.0) &&
+	Player(y) && RidingOn(y, x)
+		-> BaseShouldMountedChargeReact(x,y);
+			
+	ObjectClassTypeVehicle(x) && !ObjectClassTypeTrain(x) && WithinFOV(x, 180.0) &&
+	Player(y) && RidingOnVehicle(y, x) && DrivingVehicle(y)
+		-> BaseShouldMountedChargeReact(x,y);
+
+	// This was added as a necessary condition to evaluate BaseShouldMountedChargeReact(x, y)
+	// for performance reasons. /FF
+	Player(x) && (Riding(x) || DrivingVehicle(x))		->	PlayerRidingOrDrivingVehicle;
+}
+
+//-----------------------------------------------------------------------------
+
+rules WeaponReactionGeneralRules
+{
+	// Code RED Pass2: witnessing lasso/holdup activity makes bystanders and hostiles react harder.
+	BaseCanReactToWeapon(x) && (IsHoldingSomeoneUp(x) || HasALassoVictim(x))		-> TreatAsEnemy(x);
+	// CodeRED Pass4: NPC lasso/holdup incidents now propagate hostility between ambient factions.
+	BaseCanReactToNPCWeapon(x) && (IsHoldingSomeoneUp(x) || HasALassoVictim(x))		-> TreatAsEnemy(x);
+	
+	IsWeaponReactionAllowed && !Hogtied && Player(x) && CanPlayerCauseWeaponReactions(x) && !Ally(x) && !Friendly(x)
+			-> BaseCanReactToWeapon(x);
+			
+	IsWeaponReactionAllowed && !UseReducedWeaponReaction && !Hogtied && !Player(x) && !Ally(x) && !Friendly(x)
+			-> BaseCanReactToNPCWeapon(x);
+	
+	// Need a concept of the direction to face based on last known position
+	// without requiring that the position was known recently.
+	// This is used for actors that flee away from some actor, then need to face the last known position
+	// (dmorales)
+	SpatialLastObservedDirectionAheadOfMe(x) && !(SpatialLastObservedDirectionLeftOfMe(x) || SpatialLastObservedDirectionRightOfMe(x))
+			-> SpatialLastObservedDirectionDirectlyAheadOfMe(x);
+	
+	// Adding a condition for being indoors/outdoors when a given actor is indoors/outdoors, respectively. 
+	// (dmorales)
+	((IsIndoors && IsIndoors(x)) || (!IsIndoors && !IsIndoors(x)))
+			-> IsIndoorsStateMatches(x);
+	
+	// Swiped knife recently?
+	// Only care if knifed a human (noone cares about chickens or horses)
+	MeleedRecently(x) && LastMeleedHuman(x) && IsHoldingKnife(x) 
+			-> KnifedRecently(x);
+
+	// A person is considered in front of us if within a real large arc if close by
+	// or just a half circle if farther away.
+	(Within(x, 6.0) && WithinFOV(x, 270.0)) || WithinFOV(x, 180.0)
+			-> WeaponReactionInFrontOfMe(x);
+	
+	// Is an actor to be considered behind us?
+	!WeaponReactionInFrontOfMe(x)
+			-> WeaponReactionBehindMe(x);
+			
+	// If an actor isn't in the 45 degree arc ahead of us, and has also moved a somewhat considerable distance
+	// from when we first saw him when he started making us react
+	!WithinFOV(x, 45.0) && !WithinInitialFOV(x, 30.0)
+			-> WeaponReactionMovedBehindMe(x);
+	
+	// Should retreat after relaxing
+	IsWeaponReactionTypeFemale || IsWeaponReactionTypeCoward || IsWeaponReactionTypeBluffer
+			-> ShouldRetreatFromWeaponRelax;
+			
+	// Should attack player if shot at
+	IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal
+			-> ShotAtShouldAttackPlayer;
+
+	// Should we retreat from observed danger?
+	!Guard && Within(x, 45.0)
+			-> ShouldRetreatFromObservedDanger(x);
+
+	// Can we retreat from observed danger?
+	AllowBehaviorRetreat && CanMoveRetreatFrom(x)
+			-> CanRetreatFromDanger(x);
+	
+	// Have we observed danger?
+	OthersWarnedMeAboutRecently(x) && Alive(x) && WasVisibleVeryRecently(x)
+			-> ObservedDanger(x);
+	// NOTE: FiredAtHuman already checks that actor x fired at some actor y where !CausesNoCrime(y). (dmorales)
+	(FiredAtHuman(x) || KnifedHuman(x)) && SpatialDistanceVeryClose(x) && Alive(x)
+			-> ObservedDanger(x);
+	HitByProjectileVeryRecently(x) && ObjectClassTypeCreature(x) && SpatialDistanceVeryClose(x) && !CausesNoCrime(x) && Alive(x)
+			-> ObservedDanger(x);
+	
+	MeleedHumanBinary(x)
+			-> MildDanger(x);
+			
+	// Should we retreat from mild danger?
+	!Guard && Within(x, 2.5)
+			-> ShouldRetreatFromMildDanger(x);
+			
+	MildDanger(x) && ShouldRetreatFromMildDanger(x) && CanRetreatFromDanger(x)
+			-> BaseCanReactToDanger(x);
+			
+	ObservedDanger(x) && ShouldRetreatFromObservedDanger(x) && CanRetreatFromDanger(x)
+			-> BaseCanReactToDanger(x);
+
+	ObservedDanger(x) && ShouldRetreatFromObservedDanger(x) && AllowBehaviorRetreat
+			-> BaseMountedCanReactToDanger(x);
+			
+	WasNearMissedByWithin(x, 1.0, 10.0)
+			-> ShootingAtMeGround(x);
+
+	(IsIndoorsStateMatches(x) || Within(x, 3.0)) &&
+		( Within(x, 15.0) || (WithinFOV(x, 120.0) && Within(x, 25.0)))
+			-> ShouldReactToObserving(x);
+			
+	IsReactingToWeaponTargeted(y, x) &&
+		(ShouldReactToObserving(x) || ShouldReactToObserving(y))
+			-> IsHoldingSomeoneUp(x);
+}
+
+//-----------------------------------------------------------------------------
+
+rules WeaponReactionRidingRules
+{
+	// Is our mount-mate getting held up?
+	// NOTE:	This is used in case there is a rider with a passenger on one horse
+	//			For vehicles we need to use IsVehicleAlerted and NotifyVehicleAlerted
+	Player(x) && ObjectClassCreatureRaceHuman(y) && OnSameVehicleOrMountAsMe(y) && IsAimZoomingAt(y, x)
+			-> AllyOnSameMountAimZoomedAt(x, y);
+			
+	// Is our mount-mate or squad member in combat?
+	( PlayerWeaponProvokedCombat(y) && (SquadMember(y) || OnSameVehicleOrMountAsMe(y)) )
+			-> RidingAllyProvokedIntoCombat(y);
+			
+	// Was our mount-mate or squad member provoked to flee?
+	( HasRetreated(y) && (SquadMember(y) || OnSameVehicleOrMountAsMe(y)) )
+			-> RidingAllyProvokedIntoFlight(y);
+			
+	// Am I cooling down from being threatened?
+	BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && !WeaponReactionBehindMe(x) &&
+		PlayerAimZoomedAtMeWithin(x, 3.0, 0.1)
+			-> WeaponReactionRiderThreatCooldown(x);
+
+	// Have I been mildly threatened?
+	BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && !WeaponReactionBehindMe(x) &&
+		// Player is aiming at me a non-trivial amount of time
+		HasBeenAimZoomingAtMe(x, 0.1)
+			-> WeaponReactionRiderMildThreat(x);
+			
+	// Have I been moderately threatened?
+	BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && !WeaponReactionBehindMe(x) &&
+		// Player is aiming at me a non-trivial amount of time
+		HasBeenAimZoomingAtMe(x, 0.1)
+			-> WeaponReactionRiderModerateThreat(x);
+			
+	// Have I been severely threatened?
+	BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && !WeaponReactionBehindMe(x) &&
+		// Player is aiming at somebody on our mount long enough
+		(HasBeenAimZoomingAtMe(x, 0.1)) || (AllyOnSameMountAimZoomedAt(x,y) && HasBeenAimZoomingAt(x, y, 0.1))
+			-> WeaponReactionRiderSevereThreat(x);
+	
+	BaseCanReactToWeapon(x) && 
+	( RidingAllyProvokedIntoCombat(y) || RidingAllyProvokedIntoFlight(y) )
+			-> WeaponReactionRiderSevereThreat(x);
+			
+	WasNearMissedByWithin(x, 1.0, 5.0) && Within(x, 5.0) ||
+	WasNearMissedByWithin(x, 2.0, 5.0) && !Within(x, 5.0)
+			-> ShootingAtMeRiding(x);
+	
+	BaseCanReactToWeapon(x) && ShootingAtMeRiding(x)
+			-> WeaponReactionRiderSevereThreat(x);
+			
+	(BaseCanReactToWeapon(x) && PlayerFiredGunJustNow || BaseCanReactToNPCWeapon(x) && NonPlayerFiredGunJustNow(x)) &&
+		InTownVolume && Within(x, 20.0)
+			-> WeaponReactionRiderHeardGunshot(x);
+			
+	BaseCanReactToWeapon(x) &&
+		( PlayerProjectileImpactCloseInTheLastThreeMinutes	|| ShootingAtMeRiding(x) ||
+		( PlayerProjectileImpactRecently && Within(y, 40.0) && ObjectClassTypeSound(y) && RecentExplosion(y)))
+			-> WeaponReactionRidingShouldImpactReact(x);
+	
+	BaseCanReactToWeapon(x) && LassoedMyMount(x)
+			-> WeaponReactionRidingLassoedMount(x);
+}
+
+//-----------------------------------------------------------------------------
+
+rules WeaponReactionVehicleRules
+{
+	WasNearMissedByWithin(x, 1.0, 5.0) && Within(x, 5.0) ||
+	WasNearMissedByWithin(x, 2.0, 5.0) && !Within(x, 5.0)
+			-> ShootingAtMeVehicle(x);
+		
+	// Should a vehicle occupant react to bullet impact?
+	BaseCanReactToWeapon(x) &&
+		( PlayerProjectileImpactCloseInTheLastThreeMinutes	|| ShootingAtMeVehicle(x) ||
+		( PlayerProjectileImpactRecently && Within(y, 40.0) && ObjectClassTypeSound(y) && RecentExplosion(y)))
+			-> WeaponReactionVehicleShouldImpactReact(x);
+	
+	// Am I cooling down from being threatened?
+	BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) &&  !WeaponReactionBehindMe(x) &&
+		PlayerAimZoomedAtMeWithin(x, 3.0, 0.1)
+			-> WeaponReactionVehicleThreatCooldown(x);
+
+	// Have I been mildly threatened?
+	BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) &&  !WeaponReactionBehindMe(x) &&
+		// Player is aiming at us long enough
+		HasBeenAimZoomingAtMe(x, 0.1)
+			-> WeaponReactionVehicleMildThreat(x);
+					
+	// Have I been moderately threatened?
+	BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) &&  !WeaponReactionBehindMe(x) &&
+		// Player is aiming at us long enough
+		HasBeenAimZoomingAtMe(x, 0.1)
+			-> WeaponReactionVehicleModerateThreat(x);
+					
+	// Have I been severely threatened?
+	BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) &&  !WeaponReactionBehindMe(x) &&
+		// Player is aiming at us long enough
+		( HasBeenAimZoomingAtMe(x, 0.1) )
+			-> WeaponReactionVehicleSevereThreat(x);
+			
+	(BaseCanReactToWeapon(x) && PlayerFiredGunJustNow || BaseCanReactToNPCWeapon(x) && NonPlayerFiredGunJustNow(x)) &&
+		InTownVolume && Within(x, 20.0)
+			-> WeaponReactionVehicleHeardGunshot(x);
+			
+	// Has a vehicle occupant been provoked into combat?
+	(IsWeaponReactionTypeAggressive && (IsVehicleAlerted(x) || WeaponReactionVehicleShouldImpactReact(x) || WeaponReactionVehicleSevereThreat(x))) ||
+	(IsWeaponReactionTypeNormal && WeaponReactionVehicleShouldImpactReact(x))
+			-> WeaponReactionVehicleShouldReactWithCombat(x);
+}
+
+// -------------------------------------------------------------------------------------------------------------
+//		FLOW PROGRAMS
+// -------------------------------------------------------------------------------------------------------------
+
+program trWeaponReactionMain
+{
+	Riding				->	trWeaponReactionRiding, ReportState(kReportStateInvestigatingOrUnalerted);
+	RidingVehicle		->  trWeaponReactionVehicle, ReportState(kReportStateInvestigatingOrUnalerted);
+	IsShopkeeper		->  trWeaponReactionGroundShopkeeper, ReportState(kReportStateInvestigatingOrUnalerted);
+	TRUE				->	trWeaponReactionGround, ReportState(kReportStateInvestigatingOrUnalerted);
+}
+
+//-----------------------------------------------------------------------------
+
+program trWeaponReactionRiding
+{	
+	// RIDING FLEE CONTINUATION
+	// This program makes an actor that is riding continue to flee
+	BaseCanReactToWeapon(x) && EventActive("FleeingToDistance", x) 
+			-> trWeaponReactionRiderFlee(x);
+	
+	// IMPACT CLOSE/FAR
+	// Aggressive/Normal types fight
+	(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) &&
+		(WeaponReactionRidingShouldImpactReact(x) || WeaponReactionRidingLassoedMount(x))
+			-> RememberPlayerWeaponProvokedCombat(x):(SpeechEvent("RidingFleeWhileFiring", x)), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	
+	// other types flee
+	!IsWeaponReactionTypeAggressive &&
+		(WeaponReactionRidingShouldImpactReact(x) || WeaponReactionRidingLassoedMount(x))
+			-> trWeaponReactionRiderFlee(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+			
+	WeaponReactionRiderHeardGunshot(x)
+			-> trWeaponReactionRiderFlee(x), trMaybeClearIgnoreAimResetLook;
+	
+	// RIDING RANGED WEAPON TARGETED
+	// Aggressive type - severe threat
+	IsWeaponReactionTypeAggressive && WeaponReactionRiderSevereThreat(x)
+			-> RememberPlayerWeaponProvokedCombat(x):(SpeechEvent("RidingFleeWhileFiring", x)), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	// Aggressive type - mild threat or cooldown
+	IsWeaponReactionTypeAggressive && (WeaponReactionRiderMildThreat(x) || WeaponReactionRiderThreatCooldown(x))
+			-> PlaySpeechAt(x,"TOUGH"), SetIgnoreAimResetLook(1), LookAtIfPossible(x);
+	
+	// Non-Aggressive type - moderate or greater threat
+	!IsWeaponReactionTypeAggressive && (WeaponReactionRiderModerateThreat(x) || WeaponReactionRiderSevereThreat(x))
+			-> trWeaponReactionRiderFlee(x), PlayVocalEffectShock, trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	// Non-Aggressive type - mild threat or cooldown
+	!IsWeaponReactionTypeAggressive && (WeaponReactionRiderMildThreat(x) || WeaponReactionRiderThreatCooldown(x))
+			-> SetIgnoreAimResetLook(1), LookAtIfPossible(x);
+
+	// RIDING OBSERVED DANGER INDIRECTLY
+	BaseMountedCanReactToDanger(x)
+			-> trWeaponReactionRiderFlee(x), trMaybeClearIgnoreAimResetLook;
+			
+	TRUE	-> Main4, trMaybeClearIgnoreAimResetLook;
+}
+
+//-----------------------------------------------------------------------------
+
+program trWeaponReactionVehicle
+{
+	DrivingVehicle
+			-> trWeaponReactionVehicleDriver;
+
+	!DrivingVehicle
+			-> trWeaponReactionVehiclePassenger;
+}
+
+//-----------------------------------------------------------------------------
+
+program trWeaponReactionVehicleDriver
+{
+	// DRIVER FLEE CONTINUATION
+	BaseCanReactToWeapon(x) && EventActive("FleeingToDistance",x)
+			-> trWeaponReactionDriverFlee(x);
+	
+	// DRIVER IMPACT/TARGETED
+	//		Aggressive/Normal driver
+	BaseCanReactToWeapon(x) && WeaponReactionVehicleShouldReactWithCombat(x)
+			-> RememberPlayerWeaponProvokedCombat(x), NotifyVehicleAlerted(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	//		Non-Aggressive driver
+	BaseCanReactToWeapon(x) && 
+		!IsWeaponReactionTypeAggressive &&
+		(IsVehicleAlerted(x) || WeaponReactionVehicleShouldImpactReact(x) || WeaponReactionVehicleModerateThreat(x) || WeaponReactionVehicleSevereThreat(x))
+			-> trWeaponReactionDriverFlee(x), PlayVocalEffectShock, NotifyVehicleAlerted(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+			
+	WeaponReactionVehicleHeardGunshot(x)
+			-> trWeaponReactionDriverFlee(x), PlayVocalEffectShock, NotifyVehicleAlerted(x), trMaybeClearIgnoreAimResetLook;
+	
+	// If aggressive and threat mild/cooldown
+	IsWeaponReactionTypeAggressive &&
+		(WeaponReactionVehicleMildThreat(x) || WeaponReactionVehicleThreatCooldown(x))
+			-> PlaySpeechAt(x, "TOUGH"), SetIgnoreAimResetLook(1), LookAtIfPossible(x), RememberPlayerWeaponThreatened(x);
+	// If non-aggressive and threat mild/cooldown
+	!IsWeaponReactionTypeAggressive &&
+		(WeaponReactionVehicleMildThreat(x) || WeaponReactionVehicleThreatCooldown(x))
+			-> SetIgnoreAimResetLook(1), LookAtIfPossible(x), RememberPlayerWeaponThreatened(x);
+
+	// DRIVER OBSERVED DANGER INDIRECTLY
+	BaseMountedCanReactToDanger(x)
+			-> trWeaponReactionDriverFlee(x), trMaybeClearIgnoreAimResetLook; // Intentionally omit NotifyVehicleAlerted to prevent aggros from shooting
+	
+	TRUE	->	Main4, trMaybeClearIgnoreAimResetLook;
+}
+
+//-----------------------------------------------------------------------------
+
+program trWeaponReactionVehiclePassenger
+{
+	// PASSENGER COWER CONTINUATION
+	// Normal/Aggro guys get into combat and don't need additional handling here
+	// Others need to cower while the vehicle moves away
+	EventActive("Panicked",x)
+			-> ReactToWeaponTargeted(x, 0):(SpeechEvent("Panicked",x)), LookAtIfPossible(x), PlayScreamPeriodic(10.0, x);
+
+	// PASSENGER IMPACT CLOSE/FAR
+	// Aggressive/Normal type
+	WeaponReactionVehicleShouldImpactReact(x) && 
+		(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal)
+			-> RememberPlayerWeaponProvokedCombatDelayed(x), NotifyVehicleAlerted(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	// All other types panick
+	WeaponReactionVehicleShouldImpactReact(x) &&
+		!(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal)
+			-> ReactToWeaponTargeted(x, 0):(SpeechEvent("Panicked",x)), NotifyVehicleAlerted(x), LookAtIfPossible(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	
+	// VEHICLE RANGED WEAPON TARGETED
+	// Aggressive type - aimed at
+	IsWeaponReactionTypeAggressive && WeaponReactionVehicleSevereThreat(x)
+			-> RememberPlayerWeaponProvokedCombat(x), NotifyVehicleAlerted(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	// Aggressive type - severe threat (vehicle alerted)
+	IsWeaponReactionTypeAggressive && IsVehicleAlerted(x) && BaseCanReactToWeapon(x)
+			-> RememberPlayerWeaponProvokedCombatDelayed(x), NotifyVehicleAlerted(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	// Aggressive type - mild threat or cooldown
+	IsWeaponReactionTypeAggressive && 
+		(WeaponReactionVehicleMildThreat(x) || WeaponReactionVehicleThreatCooldown(x))
+			-> PlaySpeechAt(x,"TOUGH"), SetIgnoreAimResetLook(1), LookAtIfPossible(x), RememberPlayerWeaponThreatened(x);
+	
+	// Non-Aggressive type - moderate or greater threat
+	!IsWeaponReactionTypeAggressive && 
+		(IsVehicleAlerted(x) || WeaponReactionVehicleModerateThreat(x) || WeaponReactionVehicleSevereThreat(x))
+			-> ReactToWeaponTargeted(x, 0):(SpeechEvent("Panicked",x)), PlayVocalEffectShock, NotifyVehicleAlerted(x), LookAtIfPossible(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	// Non-Aggressive type - mild threat or cooldown
+	!IsWeaponReactionTypeAggressive && 
+		(WeaponReactionVehicleMildThreat(x) || WeaponReactionVehicleThreatCooldown(x))
+			-> SetIgnoreAimResetLook(1):(LookAtIfPossible(x)), RememberPlayerWeaponThreatened(x);
+
+	// PASSENGER OBSERVED DANGER INDIRECTLY
+	!(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) &&
+		BaseMountedCanReactToDanger(x)
+			-> ReactToWeaponTargeted(x, 0):(SpeechEvent("Panicked",x)), PlayVocalEffectShock, LookAtIfPossible(x), SetIgnoreAimResetLook(1), trMaybeRememberPlayerWeaponThreatened(x);
+	(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) &&
+		BaseMountedCanReactToDanger(x)
+			-> PlayVocalEffectShock, LookAtIfPossible(x), SetIgnoreAimResetLook(1), trMaybeRememberPlayerWeaponThreatened(x);
+			
+	TRUE	->	Main4, trMaybeClearIgnoreAimResetLook;
+}
+
+//-----------------------------------------------------------------------------
+
+program trWeaponReactionGround
+{
+	// FLEE CONTINUATION FROM PLAYER
+	BaseCanReactToWeapon(x) && WasRetreatingFrom(x)
+			-> MoveRetreatFrom(x):(SpeechEvent("FleeingToDistance")), LookAtIfPossible(x), SpeedSprint, trMaybeActivatePlayerAvoidance(x), PlayScreamPeriodic(10.0, x);
+	
+	// FLEE CONTINUATION FROM NPC
+	WasRetreatingFrom(x)
+			-> MoveRetreatFrom(x):(SpeechEvent("FleeingToDistance")), LookAtIfPossible(x), SpeedSprint, PlayScreamPeriodic(10.0, x);
+	
+	// FLEE INDOORS
+	WasRetreatingIndoorsFrom(x)
+			-> ReactToWeaponTargeted(x, 0):(SpeechEvent("FleeingToDistance"));
+	
+	// FLEE FROM FLAMES
+	// If the player has exploded a projectile recently
+	BaseCanReactToWeapon(x) && PlayerProjectileImpactSomewhatRecently && ObjectClassTypeSound(y) && RecentExplosion(y) && 
+		// Within 40m for people who are actually fleeing
+		ShouldRetreatFromWeaponRelax && Within(y, 40.0)
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToExplosion(x, y), PlayScreamPeriodic(10.0, x);
+			
+	BaseCanReactToWeapon(x) && PlayerProjectileImpactSomewhatRecently && ObjectClassTypeSound(y) && RecentExplosion(y) && 
+		// Within 10m for everybody else (we want tough guys to fight!)
+		Within(y, 10.0)
+			-> ReactToExplosion(x, y);
+
+	// REACT TO BEING KNOCKED OVER
+	BaseCanReactToWeapon(x) && KnockedMeOver(x)
+			-> trReactToKnockedOver(x);
+
+	// IMPACT CLOSE / NEAR MISS
+	// Handle case where player's gunshot nearly hits us
+	BaseCanReactToWeapon(x) &&
+		(ShootingAtMeGround(x) || PlayerProjectileImpactCloseRecently || KnifedHuman(x))
+			-> trProcessCloseBulletImpactShotBy(x), RememberPlayerWeaponThreatened(x);
+
+	// RECOVERY INTERRUPT
+	// if a player points his gun at us when we're recovering from being stuck up
+	// 	Armed Aggressive/Normal actors fight
+	!ShouldRetreatFromWeaponRelax && EventActive("RelaxFromWeapon") && IsWeaponReactionArmed &&
+		BaseCanReactToWeapon(x) && !WeaponReactionBehindMe(x) &&  (PlayerAimZoomed(x)) && BaseCanBeStuckUpBy(x) && CanHandsUp(x)
+			-> RememberPlayerWeaponProvokedCombat(x), RememberPlayerWeaponThreatened(x);
+	//	Unarmed Aggressive/Normal actors flee
+	!ShouldRetreatFromWeaponRelax && EventActive("RelaxFromWeapon") && !PlayerWeaponBluffCalledSomewhatRecently &&
+		BaseCanReactToWeapon(x) && !WeaponReactionBehindMe(x) &&  (PlayerAimZoomed(x)) && BaseCanBeStuckUpBy(x) && CanHandsUp(x)
+			-> MoveRetreatFrom(x):(SpeechEvent("FleeingToDistance")), LookAtIfPossible(x), SpeedSprint, RememberWasRetreating(x), trMaybeActivatePlayerAvoidance(x), RememberPlayerWeaponThreatened(x);
+	// 	Female/Coward/Bluffer actors flee
+	ShouldRetreatFromWeaponRelax && EventActive("RelaxFromWeapon") && !PlayerWeaponBluffCalledSomewhatRecently &&
+		BaseCanReactToWeapon(x) && !WeaponReactionBehindMe(x) &&  (PlayerAimZoomed(x)) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && CanMoveRetreatFrom(x)
+			-> MoveRetreatFrom(x):(SpeechEvent("FleeingToDistance")), LookAtIfPossible(x), SpeedSprint, RememberWasRetreating(x), trMaybeActivatePlayerAvoidance(x), RememberPlayerWeaponThreatened(x);
+		
+	// IMPACT FAR
+	// Player fired a gun and we saw the impact (but not close)
+	//	Initial triggering of behavior:
+	BaseCanReactToWeapon(x) && PlayerProjectileImpactJustNow && !UseReducedWeaponReaction &&
+		(IsIndoorsStateMatches(x) || Within(x, 3.0))
+			-> trProcessFarBulletImpactShotBy(x), RememberPlayerWeaponThreatened(x);
+	//	Continuation of triggered behavior:
+	BaseCanReactToWeapon(x) && PlayerProjectileImpactRecently && EventActive("ReactToImpactFar")
+			-> trProcessFarBulletImpactShotBy(x), RememberPlayerWeaponThreatened(x);
+
+	// RANGED WEAPON THREAT REAR
+	// Once started into reaction, if aggressor moves behind us, escalate
+	EventActive("HandsUp",x) && (IsWeaponReactionTypeFemale || IsWeaponReactionTypeCoward) &&
+		PlayerWeaponThreatened(x) && WeaponReactionMovedBehindMe(x)
+			-> MoveRetreatFrom(x):(SpeechEvent("FleeingToDistance")), LookAtIfPossible(x), SpeedSprint, RememberWasRetreating(x), trMaybeActivatePlayerAvoidance(x), RememberPlayerWeaponThreatened(x);
+			
+	// RANGED WEAPON THREAT
+	// First check if we had called the player's bluff and were walking away
+	( IsWeaponReactionTypeBluffer || ((IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) && !IsWeaponReactionArmed) ) &&
+		((HasPlayerWeaponBluffCalled && !PlayerWeaponBluffCalledRecently) || (HasPlayerMeleeBluffCalled && !PlayerMeleeBluffCalledRecently) ) &&
+		BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && !WeaponReactionBehindMe(x) &&
+		// gun
+		(PlayerAimZoomed(x) && HasBeenAimZoomingAtMe(x, 0.1))
+			-> MoveRetreatFrom(x):(SpeechEvent("FleeingToDistance")), LookAtIfPossible(x), SpeedSprint, RememberWasRetreating(x), trMaybeActivatePlayerAvoidance(x), RememberPlayerWeaponThreatened(x);
+	//if there's a player in close proximity aiming at us, put our hands up
+	!PlayerWeaponBluffCalledSomewhatRecently &&
+		BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && !WeaponReactionBehindMe(x) &&
+		// gun
+		(PlayerAimZoomed(x) && HasBeenAimZoomingAtMe(x, 0.1))
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToWeaponTargeted(x, 1):(SpeechEvent("HandsUp",x)), LookAtIfPossible(x), RememberPlayerWeaponThreatened(x);
+
+	// MELEE [WEAPON] THREAT
+	//if there's a player in close proximity aiming at us, put our hands up
+	!PlayerWeaponBluffCalledSomewhatRecently && !PlayerMeleeBluffCalledSomewhatRecently && 
+		BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && (IsSitting || !WeaponReactionBehindMe(x)) &&
+		// melee
+		(ShouldReactToMeleeThreat(x) && BasePlayerIsMeleeTargetingMe(x))
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToWeaponTargeted(x, 1):(SpeechEvent("HandsUp",x)), LookAtIfPossible(x);
+	
+	// RANGED THREAT STICKYNESS
+	// If playing the targeted reaction, keep playing if we just got finished being aimed at
+	(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) && IsWeaponReactionArmed &&
+		EventActive("HandsUp",x) && BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && PlayerAimZoomedAtMeWithin(x, 3.0, 0.0) && !PlayerWeaponBluffCalledSomewhatRecently
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToWeaponAimedCooldown(x):(SpeechEvent("HandsUp",x)), LookAtIfPossible(x);
+	( IsWeaponReactionTypeBluffer || ((IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) && !IsWeaponReactionArmed) ) &&
+		EventActive("HandsUp",x) && BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && PlayerAimZoomedAtMeWithin(x, 3.0, 0.0) && !PlayerWeaponBluffCalledSomewhatRecently
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToWeaponAimedCooldown(x):(SpeechEvent("HandsUp",x)), LookAtIfPossible(x);
+	// Other types need to stay in stickyness until they escalate, using much larger time value
+	(IsWeaponReactionTypeFemale || IsWeaponReactionTypeCoward) &&
+		EventActive("HandsUp",x) && BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && PlayerAimZoomedAtMeWithin(x, 30.0, 0.0) && !PlayerWeaponBluffCalledSomewhatRecently
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToWeaponAimedCooldown(x):(SpeechEvent("HandsUp",x)), LookAtIfPossible(x);
+	
+	// MELEE THREAT STICKYNESS
+	// Should only apply to actors that will escalate to flee, others are going to melee combat
+	EventActive("HandsUp",x) && BaseCanReactToWeapon(x) && BaseCanBeStuckUpBy(x) && CanHandsUp(x) && PlayerMeleeTargetedMeWithin(x, 6.0) && !PlayerWeaponBluffCalledSomewhatRecently
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToWeaponAimedCooldown(x):(SpeechEvent("HandsUp",x)), LookAtIfPossible(x);
+
+	// RECOVERY
+	// Slowly relax after being held up
+	(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal || IsWeaponReactionTypeBluffer) &&
+		BaseCanReactToWeapon(x) &&  BaseCanBeStuckUpBy(x) && (EventActive("HandsUp",x) || IsPlayingRelaxAnim)
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), RelaxFromWeaponAimed(x) :(SpeechEvent("RelaxFromWeapon")), LookAtIfPossible(x);
+
+	// PLAYER WEAPON DISMISSED WALK AWAY
+	(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal || IsWeaponReactionTypeBluffer) &&
+		HasPlayerWeaponBluffCalled && PlayerWeaponThreatenedBy(x)
+			-> MoveRetreatFrom(x), SpeedWalk;
+	// PLAYER MELEE DISMISSED WALK AWAY
+	(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal || IsWeaponReactionTypeBluffer) &&
+		HasPlayerMeleeBluffCalled && Player(x)
+			->MoveRetreatFrom(x), SpeedWalk;
+
+	// OBSERVED DANGER INDIRECTLY
+	// Witness a human attacked by another actor
+	//		Cowardly actor types flee from all danger
+	( IsWeaponReactionTypeFemale || IsWeaponReactionTypeCoward || IsWeaponReactionTypeBluffer) &&
+		BaseCanReactToDanger(x)
+			-> MoveRetreatFrom(x):(SpeechEvent("FleeingToDistance")), PlayVocalEffectShock, LookAtIfPossible(x), SpeedSprint, RememberWasRetreating(x), trMaybeActivatePlayerAvoidance(x);
+	//		Aggro/Normal actors have a few cases:
+	//			unarmed or the danger is a law officer
+	( IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) &&
+		(!IsWeaponReactionArmed || IsLawEnforcement(x)) &&
+		BaseCanReactToDanger(x)
+			-> MoveRetreatFrom(x):(SpeechEvent("FleeingToDistance")), PlayVocalEffectShock, LookAtIfPossible(x), SpeedSprint, RememberWasRetreating(x), trMaybeActivatePlayerAvoidance(x);
+		// DISABLED: Risks "everyone is shooting the player" complaints, keeping it here in case we do need it (dmorales)
+		//			armed and somewhat close to a player danger
+		//( IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) &&
+		//	BaseCanReactToWeapon(x) && CanPlayerCauseWeaponReactionCombat(x) && Within(x, 15.0) && 
+		//	BaseCanReactToDanger(x)
+		//		-> RememberPlayerWeaponProvokedCombat(x), RememberPlayerWeaponThreatened(x);
+	//			armed and reacting to observed player weapon target, close to the danger
+	//			if the player provokes the actor y into shooting, go to combat with player
+	( IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) &&
+		EventActive("ObservingWeaponTarget", x) && CanPlayerCauseWeaponReactionCombat(x) && Within(y, 4.0) && 
+		BaseCanReactToDanger(y)
+			-> RememberPlayerWeaponProvokedCombat(x), RememberPlayerWeaponThreatened(x);
+	// 			armed, player targeted someone and is a danger case
+	( IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) &&
+		BaseCanReactToDanger(x) && 
+		Player(x) && PlayerTargetedSomeoneWithin(x, 4.0)
+			-> ReactToObserveWeaponTargetedContinue(x), LookAt(x);
+	//			armed, general non-player danger case
+	( IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) &&
+		BaseCanReactToDanger(x) && 
+		!Player(x)
+			-> ReactToObserveWeaponTargeted(x), LookAt(x);
+
+	// DISCHARGE FAR - WILDERNESS
+	// Player fires a gun and all we do is hear the shot from far away:
+	// For out in the wilderness, just flinch and look at the instigator for a couple seconds
+	(BaseCanReactToWeapon(x) && PlayerFiredGunVeryRecently|| BaseCanReactToNPCWeapon(x) && NonPlayerFiredGunVeryRecently(x)) && !InTownVolume &&
+		(IsIndoorsStateMatches(x) || Within(x, 10.0))
+			-> trReactToHeardGunshotMinor(x);
+	
+	// DISCHARGE FAR - TOWN
+	//		For in town, want a bigger reaction
+	//		INDOORS Initial triggering of behavior:
+	BaseCanReactToWeapon(x) && PlayerFiredGunJustNow &&
+		( Within(x, 3.0) || (IsIndoors && IsIndoors(x) && Within(x, 20.0)) )
+			-> trReactToHeardGunshotMajor(x);
+	!IsLawEnforcement(x) && BaseCanReactToNPCWeapon(x) && NonPlayerFiredGunJustNow(x) &&
+		( Within(x, 3.0) || (IsIndoors && IsIndoors(x) && Within(x, 20.0)) )
+			-> trReactToHeardGunshotMajor(x);
+
+	//		OUTDOORS Initial triggering of behavior:
+	BaseCanReactToWeapon(x) && PlayerFiredGunJustNow &&
+		( !IsIndoors && !IsIndoors(x) && Within(x, 25.0) )
+			-> trReactToHeardGunshotMajor(x);
+	!IsLawEnforcement(x) && BaseCanReactToNPCWeapon(x) && NonPlayerFiredGunJustNow(x) &&
+		( !IsIndoors && !IsIndoors(x) && Within(x, 25.0) )
+			-> trReactToHeardGunshotMajor(x);
+			
+	//		Continuation of triggered behavior:
+	//			Actors who will escalate to fleeing or calming down
+	(IsWeaponReactionTypeFemale || IsWeaponReactionTypeCoward || IsWeaponReactionTypeBluffer) &&
+		EventActive("ReactToGunshotFar",x) && !PlayerWeaponBluffCalledRecently
+			-> trReactToHeardGunshotMajor(x);	
+			
+	//		Continuation of triggered behavior:
+	//			Actors who may not escalate
+	BaseCanReactToWeapon(x) && (!IsWeaponReactionTypeAggressive && PlayerFiredGunRecently || PlayerFiredGunVeryRecently) &&
+		EventActive("ReactToGunshotFar",x)
+			-> trReactToHeardGunshotMajor(x);
+	!IsLawEnforcement(x) && BaseCanReactToNPCWeapon(x) && (!IsWeaponReactionTypeAggressive && NonPlayerFiredGunRecently(x) || NonPlayerFiredGunVeryRecently(x)) &&
+		EventActive("ReactToGunshotFar",x)
+			-> trReactToHeardGunshotMajor(x);
+
+	//		INDOORS LAW
+	IsLawEnforcement(x) && BaseCanReactToNPCWeapon(x) && NonPlayerFiredGunVeryRecently(x) &&
+		( Within(x, 3.0) || (IsIndoors && IsIndoors(x) && Within(x, 20.0)) )
+			-> trReactToHeardGunshotMinor(x);
+			
+	//		OUTDOORS LAW
+	IsLawEnforcement(x) && BaseCanReactToNPCWeapon(x) && NonPlayerFiredGunVeryRecently(x) &&
+		( !IsIndoors && !IsIndoors(x) && Within(x, 25.0) )
+			-> trReactToHeardGunshotMinor(x);
+	
+	//		OUTDOORS DISTANT
+	//		This is for actors in town but outside and farther away, so reduced reaction
+	(BaseCanReactToWeapon(x) && PlayerFiredGunVeryRecently || BaseCanReactToNPCWeapon(x) && NonPlayerFiredGunVeryRecently(x)) &&
+		( !IsIndoors && !IsIndoors(x) && !Within(x, 25.0) )
+			-> trReactToHeardGunshotMinor(x);
+			
+	// OBSERVE TARGETED
+	//if we observe someone (y) being targeted by someone (x), react to it
+	//	Initial conditions to schedule reaction
+	!EventActive("ObservingWeaponTarget",x) && 
+		BaseCanReactToWeapon(x) && ObservedTargetedReactionAllowed && (IsHoldingSomeoneUp(x) || HasALassoVictim(x))
+			-> ReactToObserveWeaponTargeted(x):(SpeechEvent("ObservingWeaponTarget",x)), RememberPlayerWeaponThreatened(x), LookAt(x);
+
+	//	Continuation of observe reaction
+	EventActive("ObservingWeaponTarget",x) && PlayerTargetedSomeoneWithin(x, 4.0)
+			-> ReactToObserveWeaponTargetedContinue(x):(SpeechEvent("ObservingWeaponTarget",x)), LookAt(x);
+
+	TRUE	-> trGeneralShockReaction;
+}
+
+//-----------------------------------------------------------------------------
+
+rules trGeneralShockReactionHelpers
+{
+	// I added this, used for an optimization of ReactToObserveRanOverByMounted below. /FF
+	ObservedRanOverByMountedWithin(x, y, 6.0)	->	ObservedRanOverSomebody(y);
+}
+
+program trGeneralShockReaction
+{
+	// PERSON ON FIRE
+	IsOnFire(x) && Within(x, 8.0) && WasVisibleVeryRecently(x)
+			-> ReactToPersonOnFire(x);
+
+	// RAN OVER BY MOUNTED THREAT
+	// If an actor charged but did not make contact
+	WasRanOverByMountedThreatWithin(x, 6.0) && !WasRanOverByMountedRider(x)
+			-> ReactToRanOverByMountedThreat(x);
+			
+	// OBSERVE MOUNTED RAN OVER
+	// React to the shocking event of a nearby human actor being hit by a rider or vehicle
+	//	!IsIndoors && Within(y, 10.0) && ObservedRanOverByMountedWithin(x, y, 6.0)
+	//			-> ReactToObserveRanOverByMounted(y);
+	// Optimization: instead of the rule above, we make use of the ObservedRanOverSomebody
+	// helper predicate. This means that instead of checking all combinations of objects
+	// (x, y), only if we are !IsIndoors() and for an object y that's inside of 10 m
+	// do we have to check against all objects x. /FF
+	!IsIndoors && Within(y, 10.0) && ObservedRanOverSomebody(y)		-> ReactToObserveRanOverByMounted(y);
+
+	// OBSERVE VANDALISM
+	// Breaking objects (glass, pottery)
+	IsWeaponReactionAllowed && BreakingObjectNoiseWithin(x, 5.0)
+			-> ReactToBreakingObjectNoise(x);
+	
+	TRUE	-> Main4;
+}
+
+// -------------------------------------------------------------------------------------------------------------
+//		AUXILIARY PROGRAMS
+// -------------------------------------------------------------------------------------------------------------
+
+program trReactToHeardGunshotMinor(x)
+{
+	TRUE -> UnderFireReaction, LookAtIfPossible(x), FaceInPlace(x), PlaySpeechAt(x, "MINOR_SHOCK");
+}
+
+program trReactToHeardGunshotMajor(x)
+{
+	TRUE -> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToHeardGunshot(x):(SpeechEvent("ReactToGunshotFar",x)), LookAtIfPossible(x);
+}
+
+// This program handles close bullet impacts
+program trProcessCloseBulletImpactShotBy(x)
+{
+	HasTask && TaskDisallowsRetreat
+			-> PerformTask;
+
+	TRUE 
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToNearMissGunshot(x):(SpeechEvent("ReactToImpactClose")), LookAtIfPossible(x);
+}
+
+// This program handles distant bullet impacts
+program trProcessFarBulletImpactShotBy(x)
+{
+	HasTask && TaskDisallowsRetreat
+			-> PerformTask;
+			
+	TRUE
+			-> HotspotSeekToFlee, CombatSeekCoverToProtectFrom(x), ReactToHeardGunshot(x):(SpeechEvent("ReactToImpactFar")), LookAtIfPossible(x);
+}
+
+program trReactToKnockedOver(x)
+{
+	(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal)
+			-> RememberPlayerWeaponProvokedCombat(x);
+	
+	TRUE	-> MoveRetreatFrom(x):(SpeechEvent("FleeingToDistance")), LookAtIfPossible(x), SpeedSprint, RememberWasRetreating(x), trMaybeActivatePlayerAvoidance(x);
+}
+
+//-----------------------------------------------------------------------------
+
+// Common mounted fleeing, using traffic task if possible
+program trWeaponReactionMountedFlee(x)
+{
+	// RETREATING
+	//	Continue tasked behavior (traffic actors)
+	
+	//If our task disallows retreat, continue doing it.  This is generally true for actors in
+	//MoveFollowObject, as the assumption is that the leader is fleeing and they should stay with him
+	HasTask && TaskDisallowsRetreat
+			->	PerformTask, SetTaskRetreatFlag, Mood("FLEE"), Consider(x);
+	
+	//If our task has defined its own way to retreat, keep doing the task and set the flag that tells it to do
+	//its own retreat behavior.  Generally true for MoveSequence-based tasks
+	HasTask && TaskShouldUseAlternateVehicleRetreat
+			-> PerformTask, SetTaskRetreatFlag, Mood("FLEE"), Consider(x);
+
+	//	Continue behavior (general case):
+	CanMoveRetreatFrom(x)
+			-> MoveRetreatFrom(x), Mood("FLEE"), LookAtIfPossible(x);
+			
+	TRUE
+			-> Stay, Mood("FLEE"), Consider(x);
+}
+
+// If near to x, look at x
+// Used on riders and vehicle drivers
+program trLookAtWhileNear(x)
+{
+	Within(x, 8.0)	->	LookAt(x);
+}
+
+// Rider specific fleeing
+program trWeaponReactionRiderFlee(x)
+{
+	TRUE	-> trWeaponReactionMountedFlee(x), SpeedSprint, RememberWasRetreating(x):(SpeechEvent("FleeingToDistance",x)), trLookAtWhileNear(x), Mood("FLEE");
+}
+
+// Rider specific flee while firing
+program trWeaponReactionRiderFleeWhileFiring(x)
+{
+	TRUE	-> CombatBehaviorFireOnly, trWeaponReactionMountedFlee(x), SpeedSprint, RememberWasRetreating(x):(SpeechEvent("RidingFleeWhileFiring",x)), Mood("FLEE");
+}
+
+// Driver specific fleeing
+program trWeaponReactionDriverFlee(x)
+{
+	IsStopped && NoFleeDriverHack -> VehicleExit:(SpeechEvent("DriverAbandonFlee",x)), RememberWasRetreating(x), trLookAtWhileNear(x);
+	TRUE	-> trWeaponReactionMountedFlee(x), ReleaseToTraffic, SpeedRun, RememberWasRetreating(x):(SpeechEvent("FleeingToDistance",x)), trLookAtWhileNear(x), Mood("FLEE");
+}
+
+// Driver specific flee while firing
+program trWeaponReactionDriverFleeWhileFiring(x)
+{
+	IsStopped && NoFleeDriverHack -> VehicleExit:(SpeechEvent("DriverAbandonFlee",x)), RememberWasRetreating(x), trLookAtWhileNear(x);
+	TRUE	-> CombatBehaviorFireOnly, trWeaponReactionMountedFlee(x), ReleaseToTraffic, SpeedRun, RememberWasRetreating(x):(SpeechEvent("RidingFleeWhileFiring",x)), Mood("FLEE");
+}
+
+//-----------------------------------------------------------------------------
+
+program trMaybeRetreatFromPlayerMelee
+{
+	!WasRetreatingFrom(x) && 
+		(IsWeaponReactionTypeFemale || IsWeaponReactionTypeCoward || IsWeaponReactionTypeBluffer) &&
+		DamagedMeByMeleeRecently(x) && Player(x)
+			-> RememberWasRetreating(x);
+}
+
+//-----------------------------------------------------------------------------
+
+program trMaybeRememberPlayerWeaponThreatened(x)
+{
+	Player(x) && !PlayerWeaponThreatenedBy(x)
+			-> RememberPlayerWeaponThreatened(x);
+}
+
+//-----------------------------------------------------------------------------
+
+program trMaybeRememberPlayerWeaponProvokedCombat
+{
+	Player(x) && AggressiveAgainstUsSomewhatRecently(x) && CombatRangeWeaponDrawn(x)
+			-> RememberPlayerWeaponProvokedCombat(x);
+}
+
+//-----------------------------------------------------------------------------
+
+program trMaybeClearIgnoreAimResetLook
+{
+	IsIgnoringAimResetLookFromTR
+			-> SetIgnoreAimResetLook(0);
+}
+
+//-----------------------------------------------------------------------------
+
+program trMaybeActivatePlayerAvoidance(x) 
+{
+	// Keep this Within value smaller than the box size of the player avoidance obstacle in \sagplayer\player.cpp // Yes, I know. Awful. (dmorales)
+	!IsPlayerAvoidanceActive && Player(x) && Within(x, 8.0)
+			-> ActivatePlayerAvoidance;
+}
+
+//-----------------------------------------------------------------------------
+
+program trMaybeDeactivatePlayerAvoidance
+{
+	// If player avoidance is armed and we have escaped all evade space, disarm player avoidance
+	IsPlayerAvoidanceActive && !InsideEvadeObjectSpace
+			-> DeactivatePlayerAvoidance;
+}
+
+// -------------------------------------------------------------------------------------------------------------
+//		DEBUGGROUPS
+// -------------------------------------------------------------------------------------------------------------
+
+debuggroup WeaponReactionActorType
+{
+	filter TRUE, predicate IsWeaponReactionTypeFemale,		label "IsWeaponReactionTypeFemale";
+	filter TRUE, predicate IsWeaponReactionTypeCoward,		label "IsWeaponReactionTypeCoward";
+	filter TRUE, predicate IsWeaponReactionTypeBluffer,		label "IsWeaponReactionTypeBluffer";
+	filter TRUE, predicate IsWeaponReactionTypeNormal,		label "IsWeaponReactionTypeNormal";
+	filter TRUE, predicate IsWeaponReactionTypeAggressive,	label "IsWeaponReactionTypeAggressive";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WeaponReactionGeneralRules
+{
+	filter Player(x), predicate BaseCanReactToWeapon(x), label "BaseCanReactToWeapon $x";
+	filter Player(x), predicate BaseCanBeStuckUpBy(x), label "BaseCanBeStuckUpBy $x";
+	filter Player(x), predicate CanHandsUp(x), label "CanHandsUp $x";
+	filter Player(x), predicate KnifedHuman(x), label "KnifedHuman $x";
+	filter Player(x), predicate WeaponReactionBehindMe(x), label "WeaponReactionBehindMe $x";
+	filter Player(x), predicate WasRetreatingFrom(x), label "WasRetreatingFrom $x";
+	filter Player(x), predicate PlayerWeaponThreatenedBy(x), label "PlayerWeaponThreatenedBy $x";
+	filter Player(x), predicate PlayerWeaponProvokedCombatBy(x), label "PlayerWeaponProvokedCombatBy $x";
+	
+	filter TRUE, predicate HasPlayerWeaponThreatened, label "HasPlayerWeaponThreatened";
+	filter TRUE, predicate PlayerWeaponThreatenedRecently, label "PlayerWeaponThreatenedRecently";
+	filter TRUE, predicate PlayerWeaponBluffCalledSomewhatRecently, label "PlayerWeaponBluffCalledSomewhatRecently";
+	filter TRUE, predicate HasRetreated, label "HasRetreated";
+	filter TRUE, predicate HasPlayerWeaponProvokedCombat, label "HasPlayerWeaponProvokedCombat";
+	filter Player(x), predicate KnockedMeOver(x), label "KnockedMeOver $x";
+	filter TRUE, predicate ObservedTargetedReactionAllowed, label "ObservedTargetedReactionAllowed";
+	filter Player(x), predicate IsHoldingSomeoneUp(x), label "IsHoldingSomeoneUp $x";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WeaponReactionMildDanger
+{
+	filter TRUE, predicate ShouldRetreatFromMildDanger(x), label "ShouldRetreatFromMildDanger $x";
+	filter TRUE, predicate CanRetreatFromDanger(x), label "CanRetreatFromDanger $x";
+	filter TRUE, predicate MildDanger(x), label "MildDanger $x";
+	filter TRUE, predicate BaseCanReactToDanger(x), label "BaseCanReactToDanger $x";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WeaponReactionObservedDanger
+{
+	filter TRUE, predicate OthersWarnedMeAboutRecently(x), label "OthersWarnedMeAboutRecently $x";
+	filter TRUE, predicate ShouldRetreatFromObservedDanger(x), label "ShouldRetreatFromObservedDanger $x";
+	filter TRUE, predicate CanRetreatFromDanger(x), label "CanRetreatFromDanger $x";
+	filter TRUE, predicate ObservedDanger(x), label "ObservedDanger $x";
+	filter TRUE, predicate BaseCanReactToDanger(x), label "BaseCanReactToDanger $x";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup GeneralShockReaction
+{
+	filter TRUE, predicate RanOverByMountedRecently, label "RanOverByMountedRecently";
+	filter WasRanOverByMountedRider(x), predicate WasRanOverByMountedRider(x), label "WasRanOverByMountedRider $x";
+	filter ObservedRanOverByMountedWithin(x, y, 5.0), predicate ObservedRanOverByMountedWithin(x, y, 5.0), label "ObservedRanOverByMountedWithin($x, $y, 5.0)";
+	filter Player(x), predicate HasALassoVictim(x), label "HasALassoVictim $x";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WeaponReactionRidingRules
+{
+	filter Player(x), predicate WeaponReactionRiderThreatCooldown(x), label "WeaponReactionRiderThreatCooldown $x";
+	filter Player(x), predicate WeaponReactionRiderMildThreat(x), label "WeaponReactionRiderMildThreat $x";
+	filter Player(x), predicate WeaponReactionRiderModerateThreat(x), label "WeaponReactionRiderModerateThreat $x";
+	filter Player(x), predicate WeaponReactionRiderSevereThreat(x), label "WeaponReactionRiderSevereThreat $x";
+	filter Player(x), predicate EventActive("FleeingToDistance", x), label "EventActive(FleeingToDistance, $x)";
+	filter Player(x), predicate WeaponReactionRidingShouldImpactReact(x), label "WeaponReactionRidingShouldImpactReact $x";
+	filter Player(x), predicate WeaponReactionRiderHeardGunshot(x), label "WeaponReactionRiderHeardGunshot $x";
+	filter TRUE, predicate HasTask, label "HasTask";
+	filter TRUE, predicate TaskShouldUseAlternateVehicleRetreat, label "TaskShouldUseAlternateVehicleRetreat";
+	filter (SquadMember(x) || OnSameVehicleOrMountAsMe(x)) , predicate RidingAllyProvokedIntoCombat(x), label "RidingAllyProvokedIntoCombat $x";
+	filter (SquadMember(x) || OnSameVehicleOrMountAsMe(x)), predicate RidingAllyProvokedIntoFlight(x), label "RidingAllyProvokedIntoFlight $x";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WeaponReactionVehicleRules
+{
+	filter TRUE, predicate RidingHaltedAndDriverlessVehicle, label "RidingHaltedAndDriverlessVehicle";
+	filter Player(x), predicate IsVehicleAlerted(x), label "IsVehicleAlerted $x";
+	filter Player(x), predicate AllyOnSameMountAimZoomedAt(x, y), label "AllyOnSameMountAimZoomedAt $x $y";
+	filter Player(x), predicate WeaponReactionVehicleShouldImpactReact(x), label "WeaponReactionVehicleShouldImpactReact $x";
+	filter Player(x), predicate WeaponReactionVehicleThreatCooldown(x), label "WeaponReactionVehicleThreatCooldown $x";
+	filter Player(x), predicate WeaponReactionVehicleMildThreat(x), label "WeaponReactionVehicleMildThreat $x";
+	filter Player(x), predicate WeaponReactionVehicleModerateThreat(x), label "WeaponReactionVehicleModerateThreat $x";
+	filter Player(x), predicate WeaponReactionVehicleSevereThreat(x), label "WeaponReactionVehicleSevereThreat $x";
+	filter Player(x), predicate WeaponReactionVehicleShouldReactWithCombat(x), label "WeaponReactionVehicleShouldReactWithCombat $x";
+	filter Player(x), predicate WeaponReactionVehicleHeardGunshot(x), label "WeaponReactionVehicleHeardGunshot $x";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WithinFOV
+{
+	filter Player(x), predicate WithinFOV(x, 10.0), label "WithinFOV($x, 10.0)";
+	filter Player(x), predicate WithinFOV(x,30.0), label "WithinFOV($x, 30.0)";
+	filter Player(x), predicate WithinFOV(x,60.0), label "WithinFOV($x, 60.0)";
+	filter Player(x), predicate WithinFOV(x,90.0), label "WithinFOV($x, 90.0)";
+	filter Player(x), predicate WithinFOV(x,140.0), label "WithinFOV($x, 140.0)";
+	filter Player(x), predicate WithinFOV(x,180.0), label "WithinFOV($x, 180.0)";
+	filter Player(x), predicate WithinFOV(x,225.0), label "WithinFOV($x, 225.0)";
+	filter Player(x), predicate WithinFOV(x,270.0), label "WithinFOV($x, 270.0)";
+	filter Player(x), predicate WithinFOV(x,360.0), label "WithinFOV($x, 360.0)";
+}
+
+debuggroup WithinInitialFOV
+{
+	filter Player(x), predicate WithinInitialFOV(x, 10.0), label "WithinInitialFOV($x, 10.0)";
+	filter Player(x), predicate WithinInitialFOV(x,30.0), label "WithinInitialFOV($x, 30.0)";
+	filter Player(x), predicate WithinInitialFOV(x,60.0), label "WithinInitialFOV($x, 60.0)";
+	filter Player(x), predicate WithinInitialFOV(x,90.0), label "WithinInitialFOV($x, 90.0)";
+	filter Player(x), predicate WithinInitialFOV(x,140.0), label "WithinInitialFOV($x, 140.0)";
+	filter Player(x), predicate WithinInitialFOV(x,180.0), label "WithinInitialFOV($x, 180.0)";
+	filter Player(x), predicate WithinInitialFOV(x,225.0), label "WithinInitialFOV($x, 225.0)";
+	filter Player(x), predicate WithinInitialFOV(x,270.0), label "WithinInitialFOV($x, 270.0)";
+	filter Player(x), predicate WithinInitialFOV(x,360.0), label "WithinInitialFOV($x, 360.0)";
+	filter Player(x), predicate WeaponReactionMovedBehindMe(x), label "WeaponReactionMovedBehindMe $x";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup PlayerAimAtMeTimers
+{
+	filter Player(x), predicate HasBeenAimingAtMe(x, 1.0), label "HasBeenAimingAtMe($x, 1.0)";
+	filter Player(x), predicate HasBeenAimingAtMe(x, 2.0), label "HasBeenAimingAtMe($x, 2.0)";
+	filter Player(x), predicate HasBeenAimingAtMe(x, 3.0), label "HasBeenAimingAtMe($x, 3.0)";
+	filter Player(x), predicate PlayerAimedAtMeWithin(x, 1.0, 0.0), label "PlayerAimedAtMeWithin($x, 1.0, 0.0)";
+	filter Player(x), predicate PlayerAimedAtMeWithin(x, 2.0, 0.0), label "PlayerAimedAtMeWithin($x, 2.0, 0.0)";
+	filter Player(x), predicate PlayerAimedAtMeWithin(x, 3.0, 0.0), label "PlayerAimedAtMeWithin($x, 3.0, 0.0)";
+	filter Player(x), predicate HasBeenAimingAtMeByAngle(x, 1.0, 2.0), label "HasBeenAimingAtMeByAngle($x, 1.0, 2.0)";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup PlayerAimAtOtherTimers
+{
+	filter Player(x), predicate IsAimingAt(x, y), label "IsAimingAt($x, $y)";
+	filter Player(x), predicate HasBeenAimingAt(x, y, 1.0), label "HasBeenAimingAt($x, $y, 1.0)";
+	filter Player(x), predicate HasBeenAimingAt(x, y, 2.0), label "HasBeenAimingAt($x, $y, 2.0)";
+	filter Player(x), predicate HasBeenAimingAt(x, y, 3.0), label "HasBeenAimingAt($x, $y, 3.0)";
+	filter Player(x), predicate PlayerAimedAtWithin(x, y, 1.0), label "PlayerAimedAtWithin($x, $y, 1.0)";
+	filter Player(x), predicate PlayerAimedAtWithin(x, y, 2.0), label "PlayerAimedAtWithin($x, $y, 2.0)";
+	filter Player(x), predicate PlayerAimedAtWithin(x, y, 3.0), label "PlayerAimedAtWithin($x, $y, 3.0)";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup PlayerAimZoomAtMeTimers
+{
+	filter Player(x), predicate HasBeenAimZoomingAtMe(x, 0.1), label "HasBeenAimZoomingAtMe($x, 0.1)";
+	filter Player(x), predicate HasBeenAimZoomingAtMe(x, 2.0), label "HasBeenAimZoomingAtMe($x, 2.0)";
+	filter Player(x), predicate HasBeenAimZoomingAtMe(x, 3.0), label "HasBeenAimZoomingAtMe($x, 3.0)";
+	filter Player(x), predicate PlayerAimZoomedAtMeWithin(x, 1.0, 0.0), label "PlayerAimZoomedAtMeWithin($x, 1.0, 0.0)";
+	filter Player(x), predicate PlayerAimZoomedAtMeWithin(x, 2.0, 0.0), label "PlayerAimZoomedAtMeWithin($x, 2.0, 0.0)";
+	filter Player(x), predicate PlayerAimZoomedAtMeWithin(x, 3.0, 0.0), label "PlayerAimZoomedAtMeWithin($x, 3.0, 0.0)";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup PlayerAimZoomAtOtherTimers
+{
+	filter Player(x), predicate IsAimZoomingAt(x, y), label "IsAimZoomingAt($x, $y)";
+	filter Player(x), predicate HasBeenAimZoomingAt(x, y, 1.0), label "HasBeenAimZoomingAt($x, $y, 1.0)";
+	filter Player(x), predicate HasBeenAimZoomingAt(x, y, 2.0), label "HasBeenAimZoomingAt($x, $y, 2.0)";
+	filter Player(x), predicate HasBeenAimZoomingAt(x, y, 3.0), label "HasBeenAimZoomingAt($x, $y, 3.0)";
+	filter Player(x), predicate PlayerAimZoomedAtWithin(x, y, 1.0), label "PlayerAimZoomedAtWithin($x, $y, 1.0)";
+	filter Player(x), predicate PlayerAimZoomedAtWithin(x, y, 2.0), label "PlayerAimZoomedAtWithin($x, $y, 2.0)";
+	filter Player(x), predicate PlayerAimZoomedAtWithin(x, y, 3.0), label "PlayerAimZoomedAtWithin($x, $y, 3.0)";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WeaponReactionsNonPlayer
+{
+	filter NonPlayerProjectileImpactCloseInTheLastThreeMinutes(x), predicate NonPlayerProjectileImpactCloseInTheLastThreeMinutes(x), label "NonPlayerProjectileImpactCloseInTheLastThreeMinutes $x";
+	filter NonPlayerProjectileImpactInTheLastThreeMinutes(x), predicate NonPlayerProjectileImpactInTheLastThreeMinutes(x), label "NonPlayerProjectileImpactInTheLastThreeMinutes $x";
+	filter NonPlayerFiredGunCloseInTheLastThreeMinutes(x), predicate NonPlayerFiredGunCloseInTheLastThreeMinutes(x), label "NonPlayerFiredGunCloseInTheLastThreeMinutes $x";
+	filter NonPlayerFiredGunInTheLastThreeMinutes(x), predicate NonPlayerFiredGunInTheLastThreeMinutes(x), label "NonPlayerFiredGunInTheLastThreeMinutes $x";
+	filter NonPlayerProjectileImpactCloseRecently(x), predicate NonPlayerProjectileImpactCloseRecently(x), label "NonPlayerProjectileImpactCloseRecently $x";
+	filter NonPlayerProjectileImpactRecently(x), predicate NonPlayerProjectileImpactRecently(x), label "NonPlayerProjectileImpactRecently $x";
+	filter NonPlayerFiredGunCloseRecently(x), predicate NonPlayerFiredGunCloseRecently(x), label "NonPlayerFiredGunCloseRecently $x";
+	filter NonPlayerFiredGunRecently(x), predicate NonPlayerFiredGunRecently(x), label "NonPlayerFiredGunRecently $x";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup PlayerHadKnifeOut
+{
+	filter TRUE, predicate PlayerHadKnifeOutJustNow,				label "PlayerHadKnifeOutJustNow";
+	filter TRUE, predicate PlayerHadKnifeOutVeryRecently,			label "PlayerHadKnifeOutVeryRecently";
+	filter TRUE, predicate PlayerHadKnifeOutRecently,				label "PlayerHadKnifeOutRecently";
+	filter TRUE, predicate PlayerHadKnifeOutSomewhatRecently,		label "PlayerHadKnifeOutSomewhatRecently";
+	filter TRUE, predicate PlayerHadKnifeOutInTheLastMinute,		label "PlayerHadKnifeOutInTheLastMinute";
+	filter TRUE, predicate PlayerHadKnifeOutInTheLastTwoMinutes,	label "PlayerHadKnifeOutInTheLastTwoMinutes";
+	filter TRUE, predicate PlayerHadKnifeOutInTheLastThreeMinutes,	label "PlayerHadKnifeOutInTheLastThreeMinutes";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WasNearMissedByWithin
+{
+	// Projectiles must pass within range set in projectile.cpp code
+	filter Player(x), predicate WasNearMissedByWithin(x, 1.0, 0.1), label "WasNearMissedByWithin($x, 1.0, 0.1)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 1.0, 1.0), label "WasNearMissedByWithin($x, 1.0, 1.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 1.0, 2.0), label "WasNearMissedByWithin($x, 1.0, 2.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 1.0, 3.0), label "WasNearMissedByWithin($x, 1.0, 3.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 1.0, 10.0), label "WasNearMissedByWithin($x, 1.0, 10.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 1.0, 20.0), label "WasNearMissedByWithin($x, 1.0, 20.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 1.0, 30.0), label "WasNearMissedByWithin($x, 1.0, 30.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 2.0, 0.1), label "WasNearMissedByWithin($x, 2.0, 0.1)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 2.0, 1.0), label "WasNearMissedByWithin($x, 2.0, 1.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 2.0, 2.0), label "WasNearMissedByWithin($x, 2.0, 2.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 2.0, 3.0), label "WasNearMissedByWithin($x, 2.0, 3.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 2.0, 10.0), label "WasNearMissedByWithin($x, 2.0, 10.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 2.0, 20.0), label "WasNearMissedByWithin($x, 2.0, 20.0)";
+	filter Player(x), predicate WasNearMissedByWithin(x, 2.0, 30.0), label "WasNearMissedByWithin($x, 2.0, 30.0)";
+	// anything greater than 30s is forgotten currently (dmorales) (see aimind/memory.cpp, s_BulletNearMissExpireTime)
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup PlayerProjectileImpact
+{
+	// Projectile impact sound ranges are controlled by weapon tuning data (WeaponEnum.xls)
+	// For example, pistol weapon impacts are audible within 5.0 currently (dmorales) 01.25.2010
+	filter TRUE, predicate HasPlayerProjectileImpact, label "HasPlayerProjectileImpact";
+	filter TRUE, predicate PlayerProjectileImpactRecently, label "PlayerProjectileImpactRecently";
+	
+	// Projectile impact close is an impact sound within weapon tuning data range AND additional limit
+	// whose value is set in perceptionmodulehearing.cpp code, currently 3.0 (dmorales) 01.25.2010
+	filter TRUE, predicate HasPlayerProjectileImpactClose, label "HasPlayerProjectileImpactClose";
+	filter TRUE, predicate PlayerProjectileImpactCloseRecently, label "PlayerProjectileImpactCloseRecently";
+	
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup PlayerFiredGun
+{
+	// Fired Gun sound ranges controlled by weapon tuning data
+	// For example, pistol weapon fire is audible within 30.0 currently (dmorales) 01.25.2010
+	filter TRUE, predicate HasPlayerFiredGun, label "HasPlayerFiredGun";
+	filter TRUE, predicate PlayerFiredGunJustNow, label "PlayerFiredGunJustNow";
+	filter TRUE, predicate PlayerFiredGunRecently, label "PlayerFiredGunRecently";
+	filter TRUE, predicate PlayerFiredGunSomewhatRecently, label "PlayerFiredGunSomewhatRecently";
+	
+	// Fired Gun Close is a gun sound within tuning data range AND additional limit
+	// whose value is set in perceptionmodulehearing.cpp code, currently 5.0 (dmorales) 01.25.2010
+	filter TRUE, predicate HasPlayerFiredGunClose, label "HasPlayerFiredGunClose";
+	filter TRUE, predicate PlayerFiredGunCloseJustNow, label "PlayerFiredGunCloseJustNow";
+	filter TRUE, predicate PlayerFiredGunCloseRecently, label "PlayerFiredGunCloseRecently";
+	filter TRUE, predicate PlayerFiredGunCloseSomewhatRecently, label "PlayerFiredGunCloseSomewhatRecently";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup BreakingObjectNoiseWithin
+{
+	filter TRUE, predicate BreakingObjectNoiseWithin(x, 1.0), label "BreakingObjectNoiseWithin(x, 1.0)";
+	filter TRUE, predicate BreakingObjectNoiseWithin(x, 2.0), label "BreakingObjectNoiseWithin(x, 2.0)";
+	filter TRUE, predicate BreakingObjectNoiseWithin(x, 3.0), label "BreakingObjectNoiseWithin(x, 3.0)";
+	filter TRUE, predicate BreakingObjectNoiseWithin(x, 4.0), label "BreakingObjectNoiseWithin(x, 4.0)";
+	filter TRUE, predicate BreakingObjectNoiseWithin(x, 5.0), label "BreakingObjectNoiseWithin(x, 5.0)";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WeaponReactionObserveTargeted
+{
+	filter TRUE, predicate ObservedTargetedReactionAllowed, label "ObservedTargetedReactionAllowed";
+	filter BaseCanReactToWeapon(x), predicate BaseCanReactToWeapon(x), label "BaseCanReactToWeapon $x";
+	
+	// NOTE: The *WeaponDrawn(x) predicates weren't coming up true for actors that weren't already
+	// facing the player, so not using them anymore (dmorales)
+	filter BaseCanReactToWeapon(x), predicate CombatRangeWeaponDrawn(x), label "CombatRangeWeaponDrawn $x";
+	filter BaseCanReactToWeapon(x), predicate CombatMeleeWeaponDrawn(x), label "CombatMeleeWeaponDrawn $x";
+	
+	filter BaseCanReactToWeapon(x), predicate IsReactingToWeaponTargeted(y, x), label "IsReactingToWeaponTargeted($y, $x)";
+	
+	filter BaseCanReactToWeapon(x), predicate IsIndoorsStateMatches(x), label "IsIndoorsStateMatches $x";
+	filter BaseCanReactToWeapon(x), predicate Within(x, 3.0), label "Within($x, 3.0)";
+	filter BaseCanReactToWeapon(x), predicate Within(x, 15.0), label "Within($x, 15.0)";
+	filter BaseCanReactToWeapon(x), predicate Within(x, 25.0), label "Within($x, 25.0)";
+	filter BaseCanReactToWeapon(x), predicate WithinFOV(x, 120.0), label "WithinFOV($x, 120.0)";
+	filter BaseCanReactToWeapon(x), predicate ShouldReactToObserving(x), label "ShouldReactToObserving $x";
+	
+	filter BaseCanReactToWeapon(x), predicate IsHoldingSomeoneUp(x), label "IsHoldingSomeoneUp $x";
+	
+	filter BaseCanReactToWeapon(x), predicate HasALassoVictim(x), label "HasALassoVictim $x";
+	
+	filter BaseCanReactToWeapon(x), predicate PlayerTargetedSomeoneWithin(x, 4.0), label "PlayerTargetedSomeoneWithin($x, 4.0)";
+}

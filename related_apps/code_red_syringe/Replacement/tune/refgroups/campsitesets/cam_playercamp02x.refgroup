@@ -1,0 +1,27 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bedRollOpen01x.mb
+transform -0.9808821236 0 10.8040496296 0 109.16054 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_boiler01x.mb
+transform -1.542873795 7.450803863e-012 -1.070829315 0 105 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bottleJD01x.mb
+transform -1.903976272 0 -0.5886890495 0 52.52372749 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_can01x.mb
+transform -1.587076625 0.001127922365 -0.6690559828 0 105 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_can02x.mb
+transform -1.83608842 0.02085649939 -0.5784020622 90 77.15194015 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_fire01x.mb
+transform 10.7990031466 0 0.09684090558 0 0 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_panSm01x.mb
+transform -1.354885761 0 -0.8986478645 0 182.4870562 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_spoon01x.mb
+transform -1.547381055 0.0004239386165 -0.8399785065 0 87.23381669 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_tent01x.mb
+transform -12.026409497 0 0.6367469367 0 105 0
+attribute rstarInfoSnapping rstarInfoSnapping_Type string align

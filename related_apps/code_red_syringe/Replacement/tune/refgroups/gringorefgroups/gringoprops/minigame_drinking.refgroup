@@ -1,0 +1,8 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_chair05x.mb
+transform 0.5756027386 2.980232239e-008 -0.665537604 0 360.4824041 0
+attribute rstarGringoGeneric rstarGringoGeneric_Type string sitDrinking
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_chair05x.mb
+transform 1.156431938 2.980232239e-008 -0.2994562661 0 180.5971216 0
+attribute rstarGringoGeneric rstarGringoGeneric_Type string sitDrinking
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/i_gen_table31x.mb
+transform -1.191476713e-007 2.980232239e-008 -3.830336937e-009 0 448.1586444 0

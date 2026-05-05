@@ -1,0 +1,11 @@
+<Grid2D>
+	<attributes>
+		<CellDimX type="double" value="0.000" min="0.000" max="10000.000" step="1.000"/>
+		<CellDimY type="double" value="0.000" min="0.000" max="10000.000" step="1.000"/>
+		<MaxCellX type="int" value="0" min="-10000" max="10000" step="1"/>
+		<MaxCellY type="int" value="0" min="-10000" max="10000" step="1"/>
+		<MinCellX type="int" value="0" min="-10000" max="10000" step="1"/>
+		<MinCellY type="int" value="0" min="-10000" max="10000" step="1"/>
+	</attributes>
+	<contents/>
+</Grid2D>

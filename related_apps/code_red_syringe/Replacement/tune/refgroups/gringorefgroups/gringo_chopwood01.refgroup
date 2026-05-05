@@ -1,0 +1,9 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_stump02x.mb
+transform 0.3041946582 0 -0.7295919103 0 0 0
+attribute rstarGringoGeneric rstarGringoGeneric_Type string chopWood
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_woodPile01x.mb
+transform 0.6223378439 0.001890188454 -0.4752792966 0 223.9203872 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_woodPileChopped01x.mb
+transform 1.21020165 0 -1.182812171 0 -212.5718367 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_woodPileChopped01x.mb
+transform -1.128447856 0 -0.9304647818 0 -340.6985766 0

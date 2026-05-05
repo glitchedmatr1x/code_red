@@ -1,0 +1,965 @@
+// Animal TR programs and rules live in a separate file now. /FF
+#include "animal_main.tr"
+
+// Audio (speech "feedback") stuff has been split off. /FF
+#include "audio.tr"
+
+// Various general rules and stuff.
+#include "general_rules.tr"
+
+// TR programs and rules related to the unalerted behavior of humans. /FF
+#include "human_unalerted.tr"
+
+// Combat-related TR programs and rules. /FF
+#include "human_combat.tr"
+
+// Guard-related stuff. /FF
+#include "human_guard.tr"
+
+// TR programs and rules related to the "hostile state" of humans. /FF
+#include "human_hostile.tr"
+
+// TR programs and rules related to reactions to events for humans (dmorales)
+#include "human_reactions.tr"
+
+// TR programs and rules related to reactions to events for shopkeepers (dmorales)
+#include "shopkeeper_reactions.tr"
+
+// Some task stuff now lives in a separate file. Initially this contains
+// programs used through PerformTrTask, but it would probably make sense
+// to move more stuff in there. /FF
+#include "tasks.tr"
+
+constants
+{
+	//int kReportStateCombat = 0;
+	int kReportStateInvestigatingOrUnalerted = 1;
+	int	kReportStatePerformingTask = 2;
+	int kReportStateUnalerted = 3;
+}
+
+
+constants
+{
+	// Note: These need to match the code. /FF
+
+	int kActivityFutureIdling				= 0;
+	int kActivityFutureShootFromCoverAgain	= 1;
+	int kActivityFutureReload				= 2;
+	int kActivityFutureHostileFight			= 3;
+	int kActivityFutureHolster				= 4;
+	int kActivityFutureLawHostileAttack		= 5;
+}
+
+program HandsUpThenFlee(x)
+{
+	!RetreatingFromCombat && !Riding && CombatRangeWeaponDrawn(x) &&
+		((PlayerAimZoomedAtMeWithin(x, 3.0, 0.0) && SpatialDistanceClose(x)) || SpatialDistanceVeryClose(x)) ->	ArmsUpBrace(x);
+		
+	CanMoveRetreatFrom(x) ->	MoveRetreatFrom(x), SpeedSprint, RetreatFromCombat;
+	
+	TRUE ->	ArmsUpBrace(x);
+}
+
+// Main human program
+program Main
+{
+	RetreatingUnarmed && Player(x) && (Enemy(x) || WantToHurt(x)) -> HandsUpThenFlee(x);
+	RetreatingUnarmed && ObjectClassCreatureRaceHuman(x) && (Enemy(x) || WantToHurt(x)) -> HandsUpThenFlee(x);
+	
+	TRUE	->	Main0, PerformExternalGoals, UpdateHostility, ConstrainValidSpacePriorityHighest, RespectStandGoalPriorityHighest, SeekToEvadeExplosives, CombatIdle, WarnOthers, AudioTestSpeechEvents, trRememberComplexEvents;
+}
+
+
+// PURPOSE:	This is used as a part of a mechanism to ensure that the ambient population
+//			of civilians respond to danger, such as gunshots.
+program WarnOthers
+{
+	//Don't warn others if we ourselves are set to CauseNoCrime -JM
+	/*!Guard &&*/ CivilianShouldWarnAbout(x) && !CausesNoCrime					->	WarnAboutDanger(x);
+}
+
+// PURPOSE:	This somewhat silly program is here to generate the UnderFire action
+//			intention when the actor thinks it's under fire. This gets passed on to
+//			the action tree which may react to it and play animations.
+program CombatIdle
+{
+	// CodeRED Pass3 armed NPC anti-flee: keep active in danger so restraint/combat logic has more chances to fire.
+	WantToHurt(x) && CombatRangeWeaponReadied && PositionKnownRecently(x)								->	LookAtIfPossible(x);
+	// Note: The extra strength is here because UnderFire had a tendency to be
+	// a bit on the weak side to reliably trigger animations otherwise.
+	// Note 2: The CombatIdleSomebodyFiredJustNow was added here to make it just pulse
+	// to true at the instant someone fires a weapon. /FF
+	UnderFire(x) && !EventActive("FleeingToDistance") && CombatIdleSomebodyFiredJustNow	->	UnderFireReaction WITH 3.0, LookAtIfPossible(x), trMaybePlayShockVO(x);
+	UnderFire && !EventActive("FleeingToDistance") && CombatIdleSomebodyFiredJustNow	->	UnderFireReaction WITH 3.0;
+	
+	DroppedHatJustNow && FiredVeryRecently(x) && !EventActive("FleeingToDistance")		->	UnderFireReaction WITH 3.0;
+	
+	// Even after we've pulsed the signal, try to look at the person who caused us to be under fire for a little while
+	UnderFire(x) && !EventActive("FleeingToDistance")									->	LookAtIfPossible(x);
+}
+
+// Causes the person to play some VO, as long as they wouldn't be playing some other normal weapon reaction VO.
+program trMaybePlayShockVO(x)
+{
+	ShouldPlayReactionVO && Player(x) && !BaseCanReactToWeapon(x)									->	PlaySpeechAt(x, "MINOR_SHOCK") WITH 3.0;
+}
+
+debuggroup UnderFire
+{
+	filter TRUE, predicate UnderFire, label "UnderFire";
+	filter Player(x), predicate UnderFire(x), label "UnderFire $x";
+	filter Player(x), predicate FiredJustNow(x), label "FiredJustNow $x";
+	filter TRUE, predicate CombatIdleSomebodyFiredJustNow, label "CombatIdleSomebodyFiredJustNow";
+	
+}
+
+program trRememberComplexEvents
+{
+	// Remember being hit by player riders
+	Player(y) && RidingOn(y, x) && ObjectClassCreatureRaceHorse(x) &&
+		(DamagedMeVeryRecently(x) || DamagedMeVeryRecently(y)) && 
+		( SpatialJogging(x) || SpatialRunning(x) || SpatialSprinting(x) || SpatialJogging(y) || SpatialRunning(y) || SpatialSprinting(y) )
+			-> RememberRanOverByMounted(y);
+
+	// Remember being hit by players driving vehicles
+	Player(y) && DrivingVehicle(y) && RidingOnVehicle(y, x)  &&	ObjectClassTypeVehicle(x) && !ObjectClassTypeTrain(x) &&
+		(DamagedMeVeryRecently(x) || DamagedMeVeryRecently(y)) && 
+		( SpatialJogging(x) || SpatialRunning(x) || SpatialSprinting(x) || SpatialJogging(y) || SpatialRunning(y) || SpatialSprinting(y) )
+			-> RememberRanOverByMounted(y);
+}
+
+program SeekToEvadeExplosives
+{
+	// Stay away from explosives. This doesn't include actually moving, this rule just specifies
+	// which objects should be avoided. /FF
+	// TODO: We can/should probably remove the ObjectClassProjectileLaunchedByMe(x) now. The actual position
+	// used for evading is now the intended target point, so an actor would only try to run away from his
+	// own projectile if he screwed up and risks to harm himself. /FF
+	ObjectClassProjectileExplosive(x) && !ObjectClassProjectileLaunchedByMe(x) && WasVisibleVeryRecently(x) && SpatialLastObservedDistanceClose(x) && CanSeekToEvade(x) 	->	SeekToEvade(x);	//:(SpeechEvent("FleeingDynamite", x)), LookAtIfPossible(x), SpeedSprint;
+}
+
+
+program ConstrainValidSpacePriorityHighest
+{
+	StayInValidSpacePriorityHighest	->	ConstrainValidSpace;
+}
+
+program RespectStandGoalPriorityHighest
+{
+	StandGoalPriorityHighest			->	RespectStandGoal;
+}
+
+program RespectStandGoalPriorityCombat
+{
+	StandGoalPriorityCombat				->	RespectStandGoal;
+}
+
+program RespectStandGoalPriorityUnalerted
+{
+	StandGoalPriorityUnalerted			->	RespectStandGoal;
+}
+
+program RespectStandGoalPriorityDefaultBehavior
+{
+	StandGoalPriorityDefaultBehavior	->	RespectStandGoal;
+}
+
+
+program Main0
+{
+	// Here, we either go straight to Main0NoHorseChargeReact, or we go through
+	// Main0WithHorseChargeReact and do the full checks for horse charge reactions. This is done
+	// as an optimization, as the pairwise evaluation for horse charge reactions is expensive. /FF
+	!IsIndoors && !Riding && !RidingVehicle && PlayerRidingOrDrivingVehicle		->	Main0WithHorseChargeReact;
+	TRUE																		->	Main0NoHorseChargeReact;
+}
+
+program Main0WithHorseChargeReact
+{
+	// Dodge horse or vehicle about to hit us
+	//		Initial random conditions:
+	//		NOTE: Player is y, mount is x
+	BaseShouldMountedChargeReact(x,y) && ShouldDiveAwayFromRand(x)		
+			-> DiveAwayFrom(x), RememberRanOverByMountedThreat(y), PlayVocalEffectShock;
+	
+	// Brace for impact from horse or vehicle about to hit us
+	//		Initial conditions and continuation:
+	//		NOTE: Player is y, mount is x
+	//			  If we are hit that will be recorded in trRememberComplexEvents
+	BaseShouldMountedChargeReact(x,y) && ShouldArmsUpBraceFrom(x)
+			-> ArmsUpBrace(x), RememberRanOverByMountedThreat(y), PlayVocalEffectShock;
+
+	TRUE	->	Main0NoHorseChargeReact;
+}
+
+program Main0NoHorseChargeReact
+{
+	// Pick up a weapon if we happen to be right at it, and we have been disarmed. In this case, it
+	// only happens if the task wants it, as this is at a higher priority than carrying out
+	// the task. That way, tasks that are not related to shooting aren't interrupted if
+	// running at highest priority. A rule further down takes care of the other case. /FF
+	Disarmed && TaskRequestsWeaponPickupIfDisarmed && !HasRangeCapabilities && CanMoveToAndPickUpNearbyWeaponInsteadOfCover	->	MoveToAndPickUpNearbyWeaponInsteadOfCover;
+	AllowBehaviorRetreat && Disarmed && !HasRangeCapabilities && TaskRequestsWeaponPickupIfDisarmed && !CanMoveToAndPickUpNearbyWeapon && !HealthCrawling -> UnarmedRetreat;
+	
+	// If the MEMORY_PREFER_WALKING or MEMORY_PREFER_RIDING command has been used, specifying
+	// the preference as a requirement, we try to mount horses whenever possible, even if
+	// it means putting ourselves at danger or not performing a highest priority task.
+	// I'm not totally sure that it should be _that_ high priority, but I'll give it a try
+	// like this.
+	// TODO: We should probably add an option for specific tasks to say that they
+	// want to be excepted from this - otherwise, something like TASK_MELEE_ATTACK
+	// can lead to infinite mounting/dismounting if used in combination with a
+	// riding requirement. I added something like that for holstering weapons
+	// in the past. /FF
+	PreferredConveyanceIsRequired && !Riding && PrefersRiding && CanMountNearbyHorse					->	MountNearbyHorse, AutonomousFireIfAllowed, SpeedJog;
+	PreferredConveyanceIsRequired && Riding && PrefersWalking && CanRideDismount						->	RideDismount, AutonomousFireIfAllowed;
+
+	// Move back to our valid area if we're outside of it.
+
+	StandGoalPriorityHighest && CanMoveToStandGoal	->	MoveToStandGoal;
+	OutsideOfValidSpace && (StayInValidSpacePriorityHighest || OnInvalidMaterial) && CanMoveToValidSpaceWithReactions	->	MoveToValidSpace, AutonomousFireIfAllowed;
+	InsideAvoidanceVolume && CanMoveToValidSpaceWithReactions									->	MoveToValidSpace, AutonomousFireIfAllowed;
+
+	// Perform highest priority tasks first, if any.
+	ExternalPriorityHighest && CanPerformTask		->	PerformTask;
+	
+	// Riding around on same vehicle as bad guy is a bad idea, so get off
+	!IsCompanion && Player(x) && !Ally(x) && !Friendly(x) &&
+		(RidingVehicle || IsExitingVehicle) && !RidingTrain && OnSameVehicleOrMountAsMe(x) && (PlayerWeaponThreatenedBy(x) || WantToHurt(x) || ObservedDanger(x)) && !Hogtied && !Hogtied(x)
+			-> VehicleExit;
+	
+	// DRIVER ABANDON SHIP
+	// If alerted vehicle driver is abandon fleeing, continue to abandon and flee
+	(RidingVehicle || IsExitingVehicle) && EventActive("DriverAbandonFlee",x)
+			-> VehicleExit:(SpeechEvent("DriverAbandonFlee",x));
+	
+	// PASSENGER ABANDON SHIP
+	// If alerted vehicle is stopped and there is no driver or shotgun actor, we need to bail out
+	// Normal/Aggro guys go to combat on foot
+	(IsWeaponReactionTypeAggressive || IsWeaponReactionTypeNormal) &&
+		(RidingHaltedAndDriverlessVehicle || IsExitingVehicle) && IsVehicleAlerted(x)
+			-> VehicleExit, RememberPlayerWeaponProvokedCombat(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	// Other types flee on foot
+	(IsWeaponReactionTypeFemale || IsWeaponReactionTypeCoward || IsWeaponReactionTypeBluffer) &&
+		(RidingHaltedAndDriverlessVehicle || IsExitingVehicle) && IsVehicleAlerted(x)
+			-> VehicleExit, RememberWasRetreating(x), trMaybeClearIgnoreAimResetLook, RememberPlayerWeaponThreatened(x);
+	
+	// --- Surrender logic ---
+
+	// If immobilized and someone is aiming at us, and we don't have the weapon ready to shoot, surrender.
+	HealthImmobilized && !CombatRangeWeaponReadied && AimingAtMe(x) && !Ally(x) && !Amicable(x) && CanSurrender								->	Surrender, LookAtIfPossible(x), Mood("SCARED"), SpeechEvent("Scared", x);
+
+	// If immobilized and enemies are nearby, and we are either unable to draw/load a weapon, or if we have
+	// already officially surrendered, continue to surrender (hold up arms).
+	HealthImmobilized && ((!CombatRangeWeaponReadied && !CanCombatReadyRangeWeapon) || Surrendered) && EnemiesAreAround && CanSurrender		->	Surrender, trLookAroundIfPossible;
+
+	// If we have already surrendered, do nothing. In this case, we may not be holding up our arms, but if we
+	// wanted that, we could switch the Stay to Surrender.
+	Surrendered																												->	Stay, trLookAroundIfPossible;
+
+	// At this point, AI actors can't shoot while moving if their legs are crippled. This rule makes
+	// them stop to shoot at enemies that get too close. /FF
+	// - No longer valid, we now have animations for shooting during crippled movement, and
+	//   we do not want them to stop. /FF
+	//	HealthSlowedDownFromLegInjury && !Riding && WantToHurt(x) && AllowedToRangeAttack(x) && CanCombatShootOrDrawWeapon(x) && SpatialDistanceVeryClose(x)		->	CombatShootOrDrawWeapon(x), Stay WITH 10;
+
+	// If disarmed, pick up nearby weapons. /FF
+	Disarmed && !HasRangeCapabilities && CanMoveToAndPickUpNearbyWeaponInsteadOfCover	->	MoveToAndPickUpNearbyWeaponInsteadOfCover;
+
+	// Dive away (or stay down) from projectiles that are about to explode. /FF
+	// I got this working again, but they don't correctly dive away from x (it's often NOP?), so it's removed for now -jdicker
+	ObjectClassProjectileExplosive(x) && WasVisibleRecently(x) && CombatClassShouldDiveFromExplosive(x)	->	DiveAwayFrom(x) WITH 8;
+
+	// This is a new explosive projectile evasion rule: /FF
+	InsideEvadeObjectSpace && CanMoveToValidSpace				->	MoveToValidSpace, AutonomousFireIfAllowed;
+
+	// If we're currently riding on a horse we're not allowed to be on, dismount whenever possible.
+	// Note that the target of TASK_MOUNT is excepted.
+	RidingOn(x) && !AllowedToRide(x) && CanRideDismount && (!ObjectClassObjectiveMount(x) && !ObjectClassObjectiveJack(x))			-> RideDismount;
+
+	// Retreat from nearby explosive projectiles (dynamite), if we've seen it recently and we didn't throw it.
+	// TODO: Do this for our own projectiles too, if they aren't moving. In that case we probably screwed up - run like hell!
+	// TODO: Maybe try to find a better place for this. I tried to put it inside the Survival program, but
+	// I think some action arbitration issues made that not work very well.
+	// TODO: Change the distance involved here to match the expected explosion radius.
+// Commented out - new system is in place. /FF
+//	ObjectClassProjectileExplosive(x) && !ObjectClassProjectileLaunchedByMe(x) && WasVisibleVeryRecently(x) && SpatialLastObservedDistanceClose(x) && CanMoveRetreatFrom(x) 	->	MoveRetreatFrom(x):(SpeechEvent("FleeingDynamite", x)), SpeedSprint, LookAtIfPossible(x), trLookAroundIfPossible;
+
+	// CWR - These are being commented out as they are causing issues with fleeing aggressive actors w/ combat priority.
+	// The NE weapon reactions should be taking care of the proper non-combat behavior in these situations right now.
+	// These rules were requested by Christian and Ted, in order to make AI actors being aimed at
+	// by the player take cover and stay there for a little while. /FF
+	//CanGetToCoverBecauseAimedAt && EventActive("DecidedToGetToCover") && CombatClassPlayerAimedAtMeContinueTakingCover	&& !CanHandsUp(x)	->	GetToCoverBecauseAimedAt, SpeechEvent("DecidedToGetToCover");
+	//CanGetToCoverBecauseAimedAt && EventActive("DecidedToGetToCover") && EventActive("MovingToCover")	&& !CanHandsUp(x)					->	GetToCoverBecauseAimedAt, SpeechEvent("DecidedToGetToCover");
+	//CanGetToCoverBecauseAimedAt && NeedToGetToCover	&& !CanHandsUp(x)																		->	GetToCoverBecauseAimedAt, SpeechEvent("DecidedToGetToCover");
+
+	// Explosive projectiles that we've seen recently that are not covered by the above,
+	// sit around and look at until it explodes, while shooting at the enemies if possible.
+	// TODO: Try to find a better place for the rule.
+// Probably no longer needed with the new evade system. /FF
+//	ObjectClassProjectileExplosive(x) && WasVisibleVeryRecently(x) ->	PostureCrouch, LookAtIfPossible(x), Stay, AutonomousFire;
+
+	TRUE		->	Main1, trMaybeDeactivatePlayerAvoidance, trMaybeRetreatFromPlayerMelee, Survival WITH 8.0;
+}
+
+
+program Main1
+{
+	NOT Riding && NOT RidingVehicle	&&	!ShouldAttemptMelee 			->	Main2, SeekCoverFromEnemies, GetBehindCoverIfUnderFire, GetToCoverIfThreatened;
+
+	// If we're riding, we can't do cover stuff.
+	TRUE								->	Main2;
+}
+
+
+rules EnableBehaviors
+{
+	// CodeRED Apocalypse: every human AI gets suspicion, help, identification, investigation, search, and combat pressure.
+
+	HasSomethingToGuard				->	Guard;
+
+	// This predicate no longer exists, but Guard is overriden to TRUE by the
+	// combat class setup for most actors.
+	//	HasPatrolPath				->	Guard;
+
+	// Enable this for everybody.
+	TRUE							->	EnableSurvival;
+
+	// For now, enable everybody to engage enemies. TODO: This needs
+	// some work, we may want characters to attack enemies if they have
+	// the chance, or to simply defend themselves if attacked, but without
+	// trying to actively hunt down enemies.
+	TRUE							->	EnableCombatEngageEnemies;
+
+	Guard							->	EnableHelpOthers;
+	Guard							->	EnableIdentification;
+	Guard							->	EnableInvestigateAll;
+	Guard							->	EnableSearchUndirected;
+	
+	ShouldFightInsteadOfShoot(x) && CanCombatFightOrTakeDown(x)	&& WantToHurt(x)	->	ShouldAttemptMelee;
+	
+	NewCombatStateMachineEnabled && WantToHurt(x) && HasRangeCapabilities && AllowedToRangeAttack(x) ->	CanUseCombatStateMachineAgainst(x);
+}
+
+
+// This is the lower priority part of Main, which is carried out in parallel to
+// programs that make the actor take cover if threatened.
+program Main2
+{	
+	TRUE	-> ConstrainValidSpacePriorityCombat, RespectStandGoalPriorityCombat, trMaybeRememberPlayerWeaponProvokedCombat, Main3;
+}
+
+
+program ConstrainValidSpacePriorityCombat
+{
+	StayInValidSpacePriorityCombat	->	ConstrainValidSpace;
+}
+
+program Main3
+{
+	// Move back to our valid area if we're outside of it.
+	StandGoalPriorityCombat && CanMoveToStandGoal	->	MoveToStandGoal;
+	OutsideOfValidSpace && StayInValidSpacePriorityCombat && CanMoveToValidSpaceWithReactions			->	MoveToValidSpace, AutonomousFireIfAllowed;
+
+	// Mount or dismount horses according to scripted preferences.
+	// This used to be done in parallel with other actions, but that
+	// turned out to be too unreliable. /FF
+	!Riding && PrefersRiding && CanMountNearbyHorse					->	MountNearbyHorse, SpeedJog, AutonomousFireIfAllowed;
+	Riding && PrefersWalking && CanRideDismount						->	RideDismount, AutonomousFireIfAllowed;
+
+	ExternalPriorityCombat && CanPerformTask						->	PerformTask;
+	
+	// Transfer to driver seat if appropriate
+	RidingVehicle && CanTransitionToDriverSeat && ShouldTransitionToDriverSeat		-> TransferToDriverSeat;
+	
+	// RIDING COMBAT FLEE CONTINUATION
+	Riding && BaseCanReactToWeapon(x) && EventActive("RidingFleeWhileFiring", x) && NewCombatStateMachineEnabled
+			-> trWeaponReactionRiderFleeWhileFiring(x);
+	
+	// VEHICLE DRIVER COMBAT FLEE CONTINUATION
+	DrivingVehicle && NewCombatStateMachineEnabled && WantToHurt(x) && HasRangeCapabilities
+			-> trWeaponReactionDriverFleeWhileFiring(x);
+	
+	// RAN OVER BY MOUNTED
+	// Mounted actor charged and hit us
+	IsNMActive && HasBeenRanOverByMounted
+			-> Stay; // First recover from tumble
+	!IsNMActive && WasRanOverByMountedRider(x) && !WasRetreatingFrom(x) && !PlayerWeaponProvokedCombatBy(x)
+			-> ReactToRanOverByMounted(x); // React after standing up
+
+	// Run the new combat state machine if we have at least one enemy, if enabled
+	// through AI_COMBAT_SET_NEW_STATE_MACHINE_ENABLED. /FF
+	(RidingVehicle || StandGoalPriorityCombat || StandGoalPriorityHighest) && NewCombatStateMachineEnabled && WantToHurt(x) && HasRangeCapabilities          ->	CombatBehaviorFireOnly, trLookAroundIfPossible;
+	
+	//Don't take cover for animals
+	CanUseCombatStateMachineAgainst(x) 		&& 	!ObjectClassCreatureRaceHuman(x) 	->	CombatBehaviorFireOnly, trLookAroundIfPossible;
+	
+	CanUseCombatStateMachineAgainst(x)		->	CombatBehavior, trLookAroundIfPossible, trMaybeRememberPlayerWeaponThreatened(x);
+	
+	// If you want to hurt someone (like if they attacked you), but you have no way of actually fighting back, just run away if you're on foot
+	// Otherwise, this'll fall down into the guard routine and you'll start searching for the person you want to hurt
+	!RidingVehicle && !Riding && !WasRetreatingFrom(x) && WantToHurt(x) && !HasRangeCapabilities && 
+		(!HasFightCapabilities || ObjectClassTypeDangerousCreature(x)) && CanMoveRetreatFrom(x)	-> MoveRetreatFrom(x), SpeedRun;
+	
+	EnableCombatEngageEnemies && CanCombatEngageEnemies				->	CombatEngageEnemies;	//, ReportState(kReportStateCombat);
+
+	// This used to be done at the top of the Unalerted program, but the CaughtInGunfight
+	// stuff below made it sometimes work poorly, so it was moved to where it takes precedence over it. /FF
+	LawHostile(x) && CanBeLawHostileAgainst(x) && SpatialDistanceVeryClose(x)	->	BeLawHostileAgainst(x);
+	LawHostile(x) && CanBeLawHostileAgainst(x)									->	BeLawHostileAgainst(x);
+
+	// If there's a duel underway nearby, watch it
+//	IsPlayerInDuelClose && !IsIndoors -> UnderFireReaction WITH 3.0, FaceDuel, trLookAroundIfPossible;
+	IsPlayerInDuelClose && !IsIndoors && !Riding && !RidingVehicle -> FaceDuel, trLookAroundIfPossible;
+
+	// NOTE: All paths fall through to Main4 from trWeaponReactionMain if nothing obtains
+	TRUE	->	trWeaponReactionMain;
+}
+
+program Main4
+{
+	// Invoke a program for taking cover etc, which should be more important than carrying
+	// out the "guard routine" or performing unalerted tasks.
+	// Note: SomeoneFiredWithinGunfightBehaviorTime is here to ensure that we have a reliable way
+	// of ensuring that ambient actors don't freak out for too long time. /FF
+	// AI can now react to NPC gun shots, which works a lot better than this system
+	//SomeoneFiredGunAtHumanRecentlyWithinRetreatDistance && SomeoneFiredWithinGunfightBehaviorTime			->	CaughtInGunfight;
+	
+	TRUE											->	GuardRoutine, ReportState(kReportStateInvestigatingOrUnalerted);
+}
+
+// Survival goal, making the actor run away and diving away from danger.
+// Intended to be used in parallel with other programs.
+program Survival
+{
+	!EnableSurvival						->	NIL;
+
+	// Note: Enemy(x) used to be included in CanRetreatFrom(x), but now
+	// CanMoveRetreatFrom(x) is defined in code and is directly tied to
+	// what the elementary action MoveRetreatFrom(x) can handle.
+	ShouldRetreat AND CanMoveRetreatFrom(x) AND Enemy(x)	
+		->	MoveRetreatFrom(x):(SpeechEvent("Retreating"), SpeechEvent("DisallowShootAndFace")), 
+			/*DodgeWhileRetreatingFrom(x),*/ SpeedSprint, 
+			LookAtIfPossible(x), trLookAroundIfPossible, RememberWasRetreating(x);
+
+	// This rule makes actors dive if they hear a nearby projectile impact but have
+	// not been hit recently. We should consider the following improvements:
+	// - Make it happen only if multiple projectile impacts are heard.
+	// - Reduce the distance.
+	// The VeryCloseToEnemies part is there to prevent actors from diving when close
+	// to an enemy that other allies are likely to fire at. This is a bit of a hack
+	// but seems to work alright in practice.
+// Disabled for now, it really doesn't work well in most situations. /FF
+//	NewProjectileImpact(x) && !VeryCloseToEnemies && !ActivityDoveRecently && !DamagedRecently && SpatialDistanceVeryClose(x)	->	DiveAwayFrom(x)	WITH 0.6;	// ?
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup PreconditionsPlayerOnly
+{
+	filter Player(x),	predicate BaseCanMoveCloserTo(x),			label "BaseCanMoveCloserTo $x";
+	filter Player(x),	predicate BaseCanMoveTo(x),					label "BaseCanMoveTo $x";
+	filter Player(x),	predicate CanFind(x),						label "CanFind $x";
+	filter Player(x),	predicate CanFindAndMoveTo(x),				label "CanFindAndMoveTo $x";
+	filter Player(x),	predicate CanMoveCloserTo(x),				label "CanMoveCloserTo $x";
+	filter Player(x),	predicate CanMoveCloserToWithoutSearch(x),	label "CanMoveCloserToWithoutSearch $x";
+	filter Player(x),	predicate CanMoveTo(x),						label "CanMoveTo $x";
+	filter Player(x),	predicate CanObserveLastKnownPosition(x),	label "CanObserveLastKnownPosition $x";
+}
+
+// This ruleset contains preconditions for various actions. The precondition
+// for action X(<args) is named CanX(<args>), and the user of any action
+// is responsible for checking that the precondition is fulfilled. Note that
+// the precondition is different from the goal - it should be valid to use
+// an action even if it's goal is already fulfilled.
+rules Preconditions
+{
+	BaseCanMoveTo(x)										->	CanMoveTo(x);		// Elementary action.
+
+	// Precondition for the MoveCloserTo(x) action. Currently this is the same
+	// as the precondition for MoveTo(x), except for that it's using BaseCanMoveCloserTo(x),
+	// but I'm not really sure if that's correct - really, you can move closer without
+	// leaving the allowed space even if the actual destination is outside of that space.
+	// For now it seemed like the safest option to leave it like this. /FF
+	BaseCanMoveCloserTo(x)									->	CanMoveCloserTo(x);	// Elementary action.
+
+	// These are preconditions for TR programs.
+	(!KnowsWhereIs(x) && CanFind(x)) OR 
+		(KnowsWhereIs(x) && CanMoveTo(x))					->	CanFindAndMoveTo(x);
+
+	(KnowsWhereIs(x) AND At(x)) OR 
+		(CanMoveCloserTo(x) AND CanObserveLastKnownPosition(x) 
+			AND NOT NotAtLastKnownPosition(x))				->	CanMoveCloserToWithoutSearch(x);
+
+	TRUE													->	CanFind(x);
+
+	// Note: I disabled the CanMoveCloserTo(x) part here. The TR program
+	// looks like it's been specifically designed to handle the
+	// !CanMoveCloserTo(x) case, and it improves the behavior for AI actors
+	// riding shotgun on stagecoaches. /FF
+	//LastKnownPositionExists(x) AND CanMoveCloserTo(x)		->	CanObserveLastKnownPosition(x);
+	LastKnownPositionExists(x)								->	CanObserveLastKnownPosition(x);
+
+	(CombatAtCover && (CombatAtCoverGood || (!CanCombatMoveToCover && !InjuredWhileAtThisNoGoodCover))) || (CanCombatMoveToCover && !Riding)		->	CanGetToCover;
+	CombatAtCover || CanGetToCover																													->	CanGetBehindCover;
+
+	CanHotspotUse || CanHotspotMoveTo						->	CanHotspotsMoveToAndUse;
+	
+	// Move to valid space needs to be guarded by weapon reaction stuff for our fleeing
+	// NOTE: This shouldn't be needed, we need to re-evaulate what's going on with MoveToValidSpace firing when fleeing should be
+	//       be happening.
+	CanMoveToValidSpace && !MoveToValidSpacePlayerIsMeleeTargetingMe && !EventActive("FleeingToDistance") -> CanMoveToValidSpaceWithReactions;
+
+	// This used to be included directly in the CanMoveToValidSpaceWithReactions rule above, but that meant that if
+	// there was no object x, we wouldn't do MoveToValidSpace properly.
+	BasePlayerIsMeleeTargetingMe(x) && ShouldReactToMeleeThreat(x)		->	MoveToValidSpacePlayerIsMeleeTargetingMe;
+}
+
+// Rules about who we consider to be our friends and foes.  The elementary predicates 
+// BaseAlly, BaseEnemy and BaseNeutral form our basis for this, but we 
+// also add further rules, like treating unidentified characters as possible enemies,
+// or attacking neutrals if our allies are attacking them.
+rules AlliesAndEnemies
+{
+	// Code RED Pass2 apocalypse escalation: hostiles and criminals are treated as full enemies.
+	Alive(x) && BaseHostile(x)									->	TreatAsEnemy(x);
+	Alive(x) && Criminal(x)									->	TreatAsEnemy(x);
+	IsLawEnforcement && Alive(x) && (BaseHostile(x) || Criminal(x) || Hostile(x))		->	TreatAsEnemy(x);
+
+	// CodeRED Pass4 faction-war bridge: relation hostility now drives AI-vs-AI combat, not only player/law cases.
+	Alive(x) && Hostile(x)									->	TreatAsEnemy(x);
+	Alive(x) && BaseLawHostile(x)							->	TreatAsEnemy(x);
+	Alive(x) && LawHostile(x)								->	TreatAsEnemy(x);
+
+	// I added this to replace some logic in the code, so that TR programs can now
+	// start treating hostile and friendly actors differently from neutral. I simply
+	// replaced all old usage of BaseNeutral(x) with BaseSomewhatNeutral(x). It's
+	// quite possible that this rule will go away, but I needed it temporarily
+	// to safely preserve existing behavior. /FF
+	BaseNeutral(x) || BaseHostile(x) || BaseFriendly(x) || BaseLawHostile(x)		->	BaseSomewhatNeutral(x);
+
+	BaseHostile(x) && Alive(x)								->	Hostile(x);
+	BaseLawHostile(x) && Alive(x)							->	LawHostile(x);
+
+	// Ally(a) && Attacking(a, x)							->	AttackedByMyAllies(x);
+	FALSE													->	AttackedByMyAllies(x);
+	Alive(x) AND BaseAlly(x)								->	Ally(x);
+	Alive(x) AND BaseAmicable(x)							->	Amicable(x);
+	Ally(x) || Amicable(x)									->	AllyOrAmicable(x);
+	NOT Alive(x) AND BaseAlly(x)							->	DeadAlly(x);
+	Alive(x) AND (BaseEnemy(x) OR 
+		BaseSomewhatNeutral(x) && AttackedByMyAllies(x))			->	Enemy(x);
+	Alive(x) AND BaseSomewhatNeutral(x) AND NOT Enemy(x) && !TreatAsEnemy(x)		->	Neutral(x);
+
+	Alive(x) AND BaseFriendly(x)							->	Friendly(x);
+
+	FiredAtMe(x)																		->	TreatAsEnemy(x);
+	DamagedMeByMeleeSomewhatRecently(x)	&& !ObjectClassCreatureRaceHorse(x)				->	TreatAsEnemy(x);
+
+	// TODO: Think more about the time here. /FF
+	// - I added ObjectClassCreatureRaceHorse(x) here, so that horses are excluded. This
+	//   is done under the assumption that if a horse causes damage to a human, it's
+	//   more likely to be an accident than an intentional attack on and threat to the
+	//   group of allies. See bug #82580: "Stage 1: Bonnie will kill horses that Drew
+	//   has lassoed if they kick you." /FF
+	// - Added the !IsDomesticated(x) check to prevent actors from killing bulls and dogs around Hennigan's
+	// - Added condition so guys on vehicles will only treat attacker as enemy if they would otherwise shoot the player if shot at. Otherwise, they should
+	//   fall through to weapon reaction handling. /JG
+	AggressiveAgainstUsSomewhatRecently(x) && (!Player(x) || ShotAtShouldAttackPlayer || !(Riding || RidingVehicle)) && !ObjectClassCreatureRaceHorse(x) && !IsDomesticated(x)	->	TreatAsEnemy(x);
+	
+	// I added this, I think it makes sense. If scripted to kill a particular
+	// actor, treat him as en enemy for various purposes. /FF
+	ObjectClassObjectiveDestroy(x)							->	TreatAsEnemy(x);
+	
+	//if a dangerous animal is close to me and getting closer, treat him as an enemy
+	// We're not on safari. Don't automatically attack dangerous animals if we're driving around in a vehicle
+	!RidingVehicle && ObjectClassTypeDangerousCreature(x) && At(x) && Alive(x) && !SpatialMovingAwayFromMe(x)	->	TreatAsEnemy(x);
+
+	// If somebody that would normally be treated as a neutral has
+	// fired at us, consider him an enemy. TODO: Think about this
+	// and make improvements.
+	Alive(x) &&  BaseSomewhatNeutral(x) && TreatAsEnemy(x)			->	Enemy(x);
+	Alive(x) && !Identified(x) && TreatAsEnemy(x)			->	Enemy(x);
+
+	// CodeRED Pass4: criminal/hostile humans become explicit enemies even when the base relation was only hostile/neutral.
+	Alive(x) && ObjectClassCreatureRaceHuman(x) && Criminal(x) && TreatAsEnemy(x)		->	Enemy(x);
+	Alive(x) && ObjectClassCreatureRaceHuman(x) && Hostile(x) && TreatAsEnemy(x)		->	Enemy(x);
+	Alive(x) && ObjectClassCreatureRaceHuman(x) && LawHostile(x) && TreatAsEnemy(x)	->	Enemy(x);
+
+	// If hostile from a conversation, treat as enemy.
+	// - Disabled: HostileFromConversation(x) could never go true these days. /FF
+	//	Alive(x) AND HostileFromConversation(x)					->	Enemy(x);
+
+	// The ObjectClassCreatureRaceHuman(x) used to be ObjectClassTypeCreature(x),
+	// but it was causing problems where guards would treat animals as potential
+	// enemies in an undesirable way. /FF
+	Enemy(x) || (!Identified(x) && ObjectClassCreatureRaceHuman(x))	->	PossibleEnemy(x);
+
+	Enemy(x) && PositionKnownSomewhatRecently(x)							->	EnemiesAreAround;
+	Ally(x) && PositionKnownSomewhatRecently(x)								->	AlliesAreAround;
+	ObjectClassCreatureRaceHuman(x) && Alive(x) && PositionKnownSomewhatRecently(x)		->	AnybodyAround;
+
+	// Specifies whom we're willing to warn of danger.
+	Ally(x) || Amicable(x) || Friendly(x) || Neutral(x)						-> WillingToWarn(x);
+}
+
+
+debuggroup AlliesAndEnemies1
+{
+	filter ObjectClassCreatureRaceHuman(x), predicate BaseAlly(x),		label "Base ally $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate BaseAmicable(x),	label "Base amicable $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate BaseFriendly(x),	label "Base friendly $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate BaseNeutral(x),	label "Base neutral $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate BaseHostile(x),	label "Base hostile $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate BaseEnemy(x),		label "Base enemy $x";
+}
+debuggroup AlliesAndEnemies2
+{
+	filter ObjectClassCreatureRaceHuman(x), predicate Ally(x),			label "Ally $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate Amicable(x),		label "Amicable $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate Enemy(x),			label "Enemy $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate Neutral(x),		label "Neutral $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate Identified(x),	label "Identified $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate TreatAsEnemy(x),	label "Treat as enemy $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate FiredAtMe(x),		label "Fired at me $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate AggressiveAgainstUsRecently(x), label "AggressiveAgainstUsRecently $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate AggressiveAgainstUsSomewhatRecently(x), label "AggressiveAgainstUsSomewhatRecently $x";
+	filter TRUE,				predicate EnemiesAreAround,	label "Enemies are around";
+//	filter TRUE,				predicate IsLawEnforcement,	label "I am law enforcement";
+//	filter ObjectClassCreatureRaceHuman(x), predicate Criminal(x),		label "Criminal $x";
+}
+
+
+rules Misc
+{
+	CombatShooting												->  Shooting;
+	Alive(x) AND NOT Identified(x) AND FiredRecently(x) 		->	UnknownWeaponFired(x);
+	Enemy(x) AND NOT SeenAfterFiring(x) AND FiredRecently(x)	->	HiddenEnemyWeaponFired(x);
+
+	// This is used by the CombatIdle program to generate a pulse right when somebody has fired. /FF
+	FiredJustNow(x)	->	CombatIdleSomebodyFiredJustNow;
+	
+	// If object x is a valid guard objectives, set HasSomethingToGuard, but only
+	// if we have the ability to get there. [old: HACK! At the moment having a patrol
+	// path overrides guard objectives.]
+	ObjectClassObjectiveGuard(x) && (At(x) || CanMoveTo(x)) /* && !HasPatrolPath */	->	HasSomethingToGuard;
+	
+	ShouldCombatSearchAndAttackAnybody || HasDestroyObjective -> BaseIsInCombat;
+	Player(x) && (AimingAtMe(x) && !IsLawEnforcement || HasBeenAimingAtMe(x))	->	BasePlayerIsAimingAtMe(x);
+	Player(x) && CombatMeleeTargetingMe(x)										->	BasePlayerIsMeleeTargetingMe(x);
+	!BaseIsInCombat || IsLawEnforcement && !ShouldCombatSearchAndAttack(x) && !HasDestroyObjective ->	BaseCanBeStuckUpBy(x);
+	
+	Player(x) && Alive(x) && WithinGunfightRetreatDistance(x)  ->	AnyPlayerIsNearby;
+}
+
+
+// This program moves towards a target object if its position is known, if
+// it is not it starts searching for the target.
+// Goal:			KnowsWhereIs(x) && At(x)	- Get to the target.
+// Precondition:	CanFindAndMoveTo(x)
+program FindAndMoveTo(x)
+{
+	KnowsWhereIs(x) && At(x)							->	NIL;
+	KnowsWhereIs(x)	&& CanMoveTo(x)						->	MoveTo(x);
+	TRUE												->	Find(x);
+}
+
+
+// MoveCloserToWithoutSearch(x) moves towards the last known position of
+// object x, assuming that its still there. If it is realized that the
+// object is not at that location (or found somewhere else during the
+// process), no search is activated (instead, the precondition
+// of the program goes false).
+// Goal:			KnowsWhereIs(x) && At(x)	- Get to the target.
+// Precondition:	CanMoveCloserToWithoutSearch(x)
+program MoveCloserToWithoutSearch(x)
+{
+	KnowsWhereIs(x) && At(x)										->	NIL;
+	KnowsWhereIs(x) && CanMoveCloserTo(x)							->	MoveCloserTo(x);
+
+	// This is TRUE assuming that the precondition
+	//	CanObserveLastKnownPosition(x) && !NotAtLastKnownPosition(x)
+	// is fulfilled.
+	TRUE															->	ObserveLastKnownPosition(x);
+}
+
+
+// This program searches for the target until its found.
+// Goal:			KnowsWhereIs(x)				- Find out for sure where x is.
+// Precondition:	CanFind(x)
+program Find(x)
+{
+	// Check if the goal is fulfilled.
+	KnowsWhereIs(x)														-> NIL;
+
+	// If we know a position where the target has been and that we can get to, check that position first.
+	CanObserveLastKnownPosition(x) && !NotAtLastKnownPosition(x)		-> ObserveLastKnownPosition(x);
+
+	// If we know a position where the target has been, but has seen that the target is no longer there, search around that position.
+	CanSearch(x) && NotAtLastKnownPosition(x)							-> Search(x);
+
+	// The remaining case is for when either we don't have any last known
+	// position, or when we have a last known position but has no way of
+	// making it visible or otherwise observable.	
+	TRUE																-> Search;
+}
+
+
+// ObserveLastKnownPosition(x) moves to a position from which the last known position
+// of actor x can be observed (seen).
+// Goal:			Observe the last known position.
+// Precondition:	CanObserveLastKnownPosition(x)		- Last known position exists and we may be able to get to a location from where it can be seen.
+program ObserveLastKnownPosition(x)
+{
+//	ObservingLastKnownPosition(x)								-> NIL;
+	!CanMoveCloserTo(x)											-> LookAt(x):(SpeechEvent("MovingToLastKnown", x));
+
+	CanLookAt(x)												-> LookAt(x), MoveCloserTo(x):(SpeechEvent("MovingToLastKnown", x));
+
+	// TODO: Think about if it's possible to be at the last known position
+	// without seeing it, and what the effects would be. /FF
+	TRUE														-> MoveCloserTo(x):(SpeechEvent("MovingToLastKnown", x));
+}
+
+//-----------------------------------------------------------------------------
+// Programs and rules for retreating.
+
+// A "reason" is the negation of a goal.
+rules Reasons_Retreat
+{
+	CombatClassHealthBelowBreakRetreatHealthPercentageThreshold
+		&& CombatClassDamagedWithinBreakRetreatRecoverTime
+		&& AllowBehaviorRetreat									->	ShouldRetreat;
+}
+
+// Some debugging stuff for retreating.
+debuggroup Retreat
+{
+	filter TRUE, predicate CombatClassHealthBelowBreakRetreatHealthPercentageThreshold, label "CombatClassHealthBelowBreakRetreatHealthPercentageThreshold";
+	filter TRUE, predicate CombatClassDamagedWithinBreakRetreatRecoverTime, label "CombatClassDamagedWithinBreakRetreatRecoverTime";
+	filter TRUE, predicate AllowBehaviorRetreat, label "AllowBehaviorRetreat";
+	filter TRUE, predicate ShouldRetreat, label "ShouldRetreat";
+
+	// Maybe a bit misplaced, but at least related to giving up: /FF
+	filter TRUE, predicate Surrendered, label "Surrendered";
+}
+
+//-----------------------------------------------------------------------------
+// Programs and rules related to how to look at something, involving head
+// movement and body turning.
+
+// Convenience program for using HeadLookAt(x) whenever it's possible, useful
+// if executing things in parallel.
+program LookAtIfPossible(x)
+{
+	CanHeadLookAt(x)		->	HeadLookAt(x);
+}
+
+// Precondition:	CanLookAt(x)
+program LookAt(x)
+{
+	TRUE			->	HeadLookAt(x);
+}
+
+/* No longer in use, but kept around for reference for now. In particular, the
+// Riding... and RidingVehicle... rules might end up being useful, though I doubt it. /FF
+
+program LookAtInternal(x)
+{
+	CanHeadLookAt(x) && CanFace(x) && !DisallowShootAndFace					->	HeadLookAt(x), Face(x);
+
+	// When riding, LookAtInternal extends its angle of usefulness by aiming if the target is behind,
+	// which allows the head to turn more than otherwise possible (by turning more of the body).
+	Riding && CanAimAtLastKnownPos(x) && SpatialDirectionBehindMe(x) ->	CombatAimAtLastKnownPos(x) WITH 4.0;
+
+	// I added this, for AI actors on vehicles. They tend to have a hard time looking around
+	// otherwise, so by allowing them to aim to look for their enemies they can be
+	// more observant. /FF
+	RidingVehicle && CanAimAtLastKnownPos(x)	->	CombatAimAtLastKnownPos(x) WITH 4.0;
+
+	CanHeadLookAt(x)								->	HeadLookAt(x);
+	CanFace(x) && !DisallowShootAndFace				->	Face(x);
+}
+
+*/
+
+// Preconditions for "look at"-related actions.
+rules Preconditions_LookAt
+{
+	// The LookAt(x) program uses HeadLookAt(x) and nothing else.
+	CanHeadLookAt(x)										->	CanLookAt(x);
+}
+
+//-----------------------------------------------------------------------------
+
+rules Rules_BecameVisible
+{
+	// If x is visible right now and very recently was not visible, x became visible
+	// very recently.
+	WasVisibleJustNow(x) && WasNotVisibleVeryRecently(x)		->	BecameVisibleVeryRecently(x);
+
+	// If x is not visible right now but was visible a short time ago, x became
+	// not visible very recently.
+	WasNotVisibleJustNow(x) && WasVisibleVeryRecently(x)		->	BecameNotVisibleVeryRecently(x);
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup WantToHurt
+{
+	filter ObjectClassCreatureRaceHuman(x), predicate BaseWantToHurt(x), label "BaseWantToHurt $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate WantToHurt(x), label "WantToHurt $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate WantToHurtPriority(x), label "WantToHurtPriority $x";
+	filter TRUE, predicate AttackOnSight, label "AttackOnSight";
+}
+
+//-----------------------------------------------------------------------------
+// Stuff related to riding.
+
+// Mount a horse if one is nearby.
+// Goal:			Riding
+// Precondition:	CanMountNearbyHorse
+program MountNearbyHorse
+{
+	// Check if goal achieved.
+	Riding																		->	NIL;
+
+	ObjectClassCreatureRaceHorse(y) && ObjectClassOwned(y) && CanMoveToAndMount(y) && AllowedToRide(y) && IsDomesticated(y)				->	MoveToAndMount(y);
+
+	// Prefer horses that are very close.
+	ObjectClassCreatureRaceHorse(y) && SpatialDistanceVeryClose(y) && CanMoveToAndMount(y) && AllowedToRide(y) && IsDomesticated(y)		->	MoveToAndMount(y);
+
+	// Pick a horse that's further away if we have to. Note that some sort
+	// of proximity is already included in the precondition.
+	ObjectClassCreatureRaceHorse(y) && CanMoveToAndMount(y) && AllowedToRide(y)	&& IsDomesticated(y)									->	MoveToAndMount(y);
+}
+
+
+// Move to a specific horse and mount it.
+// Goal:			RidingOn(x)
+// Precondition:	CanMoveToAndMount(x)
+program MoveToAndMount(x)
+{
+	// I took out the At(x) here, because we should be getting a smoother
+	// approach if RideMount(x) can do the movement the whole way, going
+	// straight to the desired position and stuff like that. /FF
+	/*At(x) &&*/ CanRideMount(x)					->	RideMount(x);
+
+	// TODO: Think about the At(x) && !CanRideMount(x) case
+
+	TRUE										->	FindAndMoveTo(x);
+}
+
+
+program MoveToAndJack(x)
+{
+	At(x) && CanRideJack(x)						->	RideJack(x);
+
+	// TODO: Think about the At(x) && !CanRideJack(x) case
+
+	TRUE										->	FindAndMoveTo(x);
+}
+
+
+// Rules related to riding.
+rules Rules_Riding
+{
+	// Precondition for MountNearbyHorse.
+	// Note that this checks AllowedToRide(x), to not mount horses that the
+	// designers want to reserve for the player.
+	Riding || (ObjectClassCreatureRaceHorse(x) && CanMoveToAndMount(x) && SpatialDistanceClose(x) && AllowedToRide(x))			->	CanMountNearbyHorse;
+
+	// Note: Intentionally doesn't include AllowedToRide(x), see comment for CanMoveToAndMount. /FF
+	ObjectClassAttribRideable(x) && Alive(x)																					->	Rideable(x);
+
+	// Precondition for MoveToAndMount(x).
+	// Note that this does NOT include AllowedToRide(x), since we want to be
+	// able to use this action to mount a horse targeted by TASK_MOUNT() even
+	// if that horse is otherwise reserved.
+	// - Update 1: I added !ObjectClassAttribHitchedToWagon(x) so we don't have AI actors that try to
+	//   mount draft horses. This could probably be hooked up to AllowedToRide(x), but
+	//   I think it's better this way as we probably wouldn't want even an actor
+	//   with a TASK_MOUNT to attempt this.
+	// - Update 2: I added the !RidingVehicle here, as in that case the MoveToAndMount(x) program
+	//   won't work. It would probably be preferable to change this to exit the vehicle first,
+	//   but currently I don't think we have TR program actions for that. /FF
+	Rideable(x) && !HasRider(x) && !ObjectClassAttribHitchedToWagon(x) && (/*At(x) &&*/ CanRideMount(x) || CanFindAndMoveTo(x)) && !TaskDisallowsMounting && !RidingVehicle	->	CanMoveToAndMount(x);
+	Rideable(x) &&  HasRider(x) && !ObjectClassAttribHitchedToWagon(x) && (At(x) && CanRideJack(x)  || CanFindAndMoveTo(x)) && !TaskDisallowsMounting && !RidingVehicle	->	CanMoveToAndJack(x);
+}
+
+
+// Debug group.
+debuggroup Riding
+{
+	filter TRUE, predicate CanMountNearbyHorse, label "CanMountNearbyHorse";
+	filter TRUE, predicate ObjectClassCreatureRaceHorse(x), label "Horse $x";
+	filter TRUE, predicate Riding, label "Riding";
+	filter TRUE, predicate RidingVehicle, label "Riding vehicle";
+	filter TRUE, predicate PrefersRiding, label "Prefers riding";
+	filter TRUE, predicate PrefersWalking, label "Prefers walking";
+	filter ObjectClassCreatureRaceHorse(x), predicate RidingOn(x), label "Riding on $x";
+	filter ObjectClassTypeVehicle(x), predicate RidingOnVehicle(x), label "Riding on vehicle $x";
+	filter ObjectClassAttribRideable(x), predicate ObjectClassAttribRideable(x), label "$x rideable (attrib)";
+	filter Rideable(x), predicate Rideable(x), label "$x rideable";
+	filter ObjectClassCreatureRaceHuman(x), predicate Riding(x), label "$x riding";
+	filter ObjectClassCreatureRaceHuman(x), predicate RidingVehicle(x), label "$x riding vehicle";
+	filter ObjectClassCreatureRaceHuman(x) && ObjectClassCreatureRaceHorse(y), predicate RidingOn(x, y), label "$x riding on $y";
+	filter ObjectClassCreatureRaceHuman(x) && ObjectClassTypeVehicle(y), predicate RidingOnVehicle(x, y), label "$x riding on vehicle $y";
+	filter ObjectClassAttribRideable(x), predicate AllowedToRide(x), label "Allowed to ride $x";
+	filter TRUE, predicate IsDomesticated(x), label "$x Is Domesticated";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup Health
+{
+	filter TRUE, predicate HealthCrawling, label "HealthCrawling";
+	filter TRUE, predicate HealthDying, label "HealthDying";
+	filter TRUE, predicate HealthImmobilized, label "HealthImmobilized";
+	filter TRUE, predicate HealthSlowedDownFromLegInjury, label "HealthSlowedDownFromLegInjury";
+}
+
+//-----------------------------------------------------------------------------
+
+debuggroup CoachHijack
+{
+	filter RidingVehicle, predicate RidingShotgun, label "Riding Shotgun";
+	filter RidingVehicle, predicate VehicleDriverIsHandsUp, label "Vehicle Driver is Hands Up";
+	filter RidingVehicle, predicate VehicleShotgunIsHandsUp, label "Vehicle Shotgun is Hands Up";
+}
+//-----------------------------------------------------------------------------
+debuggroup HandsUp
+{
+	filter Player(x), predicate CanHandsUp(x), label "CanHandsUp $x";
+}
+//-----------------------------------------------------------------------------
+
+debuggroup Vehicles
+{
+	filter TRUE, predicate RidingVehicle, label "RidingVehicle";
+	filter TRUE, predicate CanTransitionToDriverSeat, label "CanTransitionToDriverSeat";
+	filter TRUE, predicate ShouldTransitionToDriverSeat, label "ShouldTransitionToDriverSeat";
+}
+
+debuggroup ExternalPriority
+{
+	filter TRUE, predicate ExternalPriorityHighest, label "ExternalPriorityHighest";
+	filter TRUE, predicate ExternalPriorityCombat, label "ExternalPriorityCombat";
+	filter TRUE, predicate ExternalPriorityUnalerted, label "ExternalPriorityUnalerted";
+	filter TRUE, predicate ExternalPriorityDefaultBehavior, label "ExternalPriorityDefaultBehavior";
+}
+
+debuggroup InDuel
+{
+	filter TRUE, predicate Player(x), label "Player";
+	filter TRUE, predicate IsPlayerInDuelClose, label "IsPlayerInDuelClose";
+}
+
+debuggroup BaseCanBeStuckUpBy
+{
+	filter TRUE, predicate BaseIsInCombat, label "BaseIsInCombat";
+	filter TRUE, predicate IsLawEnforcement, label "IsLawEnforcement";
+	filter Player(x), predicate ShouldCombatSearchAndAttack(x), label "ShouldCombatSearchAndAttack $x";
+	filter TRUE, predicate HasDestroyObjective, label "HasDestroyObjective";
+}

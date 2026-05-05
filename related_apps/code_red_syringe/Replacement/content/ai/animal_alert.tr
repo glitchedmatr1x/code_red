@@ -1,0 +1,48 @@
+// CodeRED Chaos Pass: predator/livestock side uses harsher factionrelations from ambient/factionrelations.xml.
+// PURPOSE:	This file contains TR programs and rules for animals when they are alerted
+// basically they are going to move alerted unless otherwise smart enough to do something else
+//
+
+// 
+// Animal alert Rules
+//
+rules AnimalAlertedRules
+{
+
+}
+
+program AnimalAlertedMain(x)
+{
+	TRUE						-> Stay, Mood("UNALRTD");
+}
+
+program AnimalAlertedMain
+{
+	TRUE						-> Stay, Mood("UNALRTD");
+}
+
+//
+// PURPOSE:	Static animal debug groups
+//
+debuggroup Animal_Alerted_Main
+{
+	filter TRUE, predicate WasMeleedByMeVeryRecently(x), label "WasMeleedByMeVeryRecently $x";
+}
+
+//
+// PURPOSE:	Static animal debug groups
+//
+debuggroup Animal_Alert_Human
+{
+	// human specific
+	filter ObjectClassCreatureRaceHuman(x), predicate CanStaticAnimalAttack(x), label "CanStaticAnimalAttack $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate CanAnimalMelee(x), label "CanAnimalMelee $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate AnimalSpeciesCanAttack(x), label "AnimalSpeciesCanAttack $x";
+	
+	filter ObjectClassCreatureRaceHuman(x), predicate SpatialDistanceVeryClose(x), label "SpatialDistanceVeryClose $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate SpatialDirectionAheadOfMe(x), label "SpatialDirectionAheadOfMe $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate SpatialMeBehindObject(x), label "SpatialMeBehindObject $x";
+	
+	filter ObjectClassCreatureRaceHuman(x), predicate CanStaticTriggerWarn(x), label "CanStaticTriggerWarn $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate CanStaticTriggerMelee(x), label "CanStaticTriggerMelee $x";
+}

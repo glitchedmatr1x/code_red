@@ -1,0 +1,26 @@
+
+<actor name="template_VehicleStagecoachGatling01" abstract="0" updatestate="Asleep" spawnlater="0" base="template_DraftVehicle" proxy="Stagecoach.mb">
+	<contents>
+		<DraftVehicle>
+			<attributes>
+				<VehicleType value="Stagecoach"/>
+				<LocationSetName type="string" value="locSet_StageCoach"/>
+				<VehicleFaction value="Neutral"/>
+				<DraftLocationSetName value="draftSet_StageCoach"/>
+				<DraftAttachmentBoneName value="spine02"/>
+				<CreateDraftActors value="1"/>
+				<DraftActorTypeName value="template_horse"/>
+			</attributes>
+		</DraftVehicle>
+		<VehicleAudio name="VehicleAudio">
+			<attributes>
+			</attributes>
+			<contents/>
+		</VehicleAudio>
+		<Target>
+ 			<attributes>
+				<m_TargetOffset value="0 0.85 0"/>
+ 			</attributes>
+		</Target>
+	</contents>
+</actor>

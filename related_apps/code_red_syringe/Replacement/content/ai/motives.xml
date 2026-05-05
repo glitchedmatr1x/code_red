@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<motMotiveTuning>
+	<MotiveInfo>
+		<Item>
+			<FullSatisfaction value="90.000000"/>
+			<ZeroSatisfaction value="10.000000"/>
+		</Item>
+		<Item>
+			<FullSatisfaction value="90.000000"/>
+			<ZeroSatisfaction value="10.000000"/>
+		</Item>
+		<Item>
+			<FullSatisfaction value="90.000000"/>
+			<ZeroSatisfaction value="10.000000"/>
+		</Item>
+		<Item>
+			<FullSatisfaction value="90.000000"/>
+			<ZeroSatisfaction value="10.000000"/>
+		</Item>
+		<Item>
+			<FullSatisfaction value="90.000000"/>
+			<ZeroSatisfaction value="10.000000"/>
+		</Item>
+		<Item>
+			<FullSatisfaction value="90.000000"/>
+			<ZeroSatisfaction value="10.000000"/>
+		</Item>
+		<Item>
+			<FullSatisfaction value="90.000000"/>
+			<ZeroSatisfaction value="10.000000"/>
+		</Item>
+		<Item>
+			<FullSatisfaction value="90.000000"/>
+			<ZeroSatisfaction value="10.000000"/>
+		</Item>			
+	</MotiveInfo>
+</motMotiveTuning>

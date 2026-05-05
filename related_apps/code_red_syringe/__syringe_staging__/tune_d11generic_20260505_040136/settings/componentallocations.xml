@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sagActorResourceUseFile>
+	<Resources>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Mind</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">AIObstacle</mp_ResourceName>
+			<iAllocCount value="20"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Animator</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Behavior</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">BehaviorAnimal</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Camera</mp_ResourceName>
+			<iAllocCount value="1"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Ear</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Entity</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Eye</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Health</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Inventory</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">MoverSim</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Net</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Creature</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Reticle</mp_ResourceName>
+			<iAllocCount value="1"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Target</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Vehicle</mp_ResourceName>
+			<iAllocCount value="20"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">CreatureAudio</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">VehicleAudio</mp_ResourceName>
+			<iAllocCount value="20"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">VehicleAnimator</mp_ResourceName>
+			<iAllocCount value="16"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">DraftVehicle</mp_ResourceName>
+			<iAllocCount value="9"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Motives</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Capabilities</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">Horse</mp_ResourceName>
+			<iAllocCount value="32"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">QuadIK</mp_ResourceName>
+			<iAllocCount value="32"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">BipedIK</mp_ResourceName>
+			<iAllocCount value="80"/>
+		</Item>
+		<Item type="sagActorResourceUse">
+			<mp_ResourceName content="ascii">SecondaryMotion</mp_ResourceName>
+			<iAllocCount value="2"/>
+		</Item>
+	</Resources>
+</sagActorResourceUseFile>

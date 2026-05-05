@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sagPlayerInputFile>
+	<sagPlayerInput Name="Config1">
+		<sagPlayerMapper Name="Camera">
+			<Map Value="QuickTakedownInput" Source="IOMS_PAD_DIGITALBUTTON" Parameter="R2" Port="-1" Inverted="F" History="TRUE"/>
+    </sagPlayerMapper>
+	</sagPlayerInput>
+</sagPlayerInputFile>
+

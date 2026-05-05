@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sagPlayerInputFile>
+	<sagPlayerInput Name="Wagon">
+		<sagPlayerMapper Name="Config1">
+			<Map Value="Accept"        Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@UI.ACCEPT"         Port="-1" Inverted="F"/>
+			<Map Value="Cancel"        Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@UI.CANCEL"         Port="-1" Inverted="F"/>
+			<Map Value="DeadEyePaint"  Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.DEADEYE_PAINT"  Port="-1" Inverted="F"/>
+			<Map Value="Exit"          Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.USE"       Port="-1" Inverted="F"/>
+			<Map Value="Fire"          Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.FIRE"           Port="-1" Inverted="F"/>
+			<Map Value="FootBrake"     Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.BRAKE"          Port="-1" Inverted="F"/>
+			<Map Value="ReinsBack"     Source="IOMS_ANALOGUE_GAME_ACTION"  Parameter="@GENERIC.MOVE_Y"         Port="-1" Inverted="F"/>
+			<Map Value="Reload"        Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.RELOAD"         Port="-1" Inverted="F"/>
+			<Map Value="Steer"         Source="IOMS_ANALOGUE_GAME_ACTION"  Parameter="@GENERIC.MOVE_X"         Port="-1" Inverted="F"/>
+			<Map Value="Target"        Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.TARGET"         Port="-1" Inverted="F"/>
+			<Map Value="Whip"          Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@HORSE.SPUR"             Port="-1" Inverted="F"/>
+			<Map Value="Whistle"       Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.WHISTLE"        Port="-1" Inverted="F"/>
+			<Map Value="WpnSpecial"    Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.DEADEYE"        Port="-1" Inverted="F"/>
+			<Map Value="SwitchSeat"    Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@WAGON.SWITCH_SEAT"      Port="-1" Inverted="F"/>
+		</sagPlayerMapper>
+	</sagPlayerInput>
+</sagPlayerInputFile>
+

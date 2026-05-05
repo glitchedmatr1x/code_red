@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE actor>
+<actor name="template_player" abstract="0" proxy="GoodGuyProxy.mb">
+	<attributes/>
+	<contents>
+		<Animator name="Animator">
+			<attributes>
+				<ASDTypeName type="string" value="gent" maxlength="64"/>
+				<AnimSetName type="string" value="gent" maxlength="64"/>
+			</attributes>
+			<contents>
+			</contents>
+		</Animator>
+		
+		<Behavior name="Behavior">
+			<attributes>
+			</attributes>
+			<contents>
+			</contents>
+		</Behavior>
+
+		<Capabilities name="Capabilities">
+			<attributes>
+				<CapabilitiesString value="Player"/>
+			</attributes>
+			<contents/>
+		</Capabilities>
+
+		<Creature name="ActorSpecific">
+			<attributes>
+				<Faction type="string" value="LawEnforcement"/>
+				<Player type="bool" value="1"/>
+				<ACTFileName type="string" value="default_character" maxlength="32"/>
+				<ACTRoot type="string" value="default_character_Main" maxlength="32"/>
+				<CullCenterBone type="string" value="pelvis" maxlength="32"/>
+			</attributes>
+			<contents>
+			</contents>
+		</Creature>
+
+		<CreatureAudio name="CreatureAudio">
+			<attributes>
+			</attributes>
+			<contents>
+			</contents>
+		</CreatureAudio>
+
+		<Entity>
+			<attributes>
+			</attributes>
+			<contents>
+			</contents>
+		</Entity>
+
+		<BipedIK>
+			<attributes>
+			</attributes>
+		</BipedIK>
+
+		<SecondaryMotion>
+			<attributes>
+			</attributes>
+		</SecondaryMotion>
+		
+		<Health name="Health">
+			<attributes>
+				<MaxHitPoints type="double" value="100.000"/>
+        <KnockOutTime type="double" value="2" min="0" max="10000"/>
+				<DamageScaleHead type="double" value="1.000"/>
+				<DamageScaleTorso type="double" value="1.0000"/>
+				<DamageScaleArm type="double" value="0.5"/>
+				<DamageScaleLeg type="double" value="0.5"/>
+				<DamageScaleBack type="double" value="1.0000"/>
+				<DamageScaleFleshWound type="double" value="1.000"/>
+				<LowDropDistance value="4"/>
+				<LowDropDamage value="20"/>
+				<MediumDropDistance value="7"/>
+				<MediumDropDamage value="60"/>
+				<HighDropDistance value="10"/>
+				<HighDropDamage value="90"/>
+				<DeathDropDistance value="15"/>
+			</attributes>
+			<contents>
+			</contents>
+		</Health>
+
+		<Inventory name="Inventory">
+			<attributes>
+				<m_PickupCenterOffset type="double3" value="0 0.325 0"/>
+				<m_WeaponString type="string" value="base_lasso base_pistol base_repeater base_shotgun base_thrown_exploding"/>
+				<m_ItemString type="string" value="base_lasso base_pistol base_repeater base_shotgun base_thrown_exploding" maxlength="127"/>
+				<m_StartingItem type="string" value="base_pistol"/>
+				<m_DropItemsOnDeath type="bool" value="0" comment="Spawn actors from inventory items if this is set"/>
+				<m_MaxInventorySlots type="int" value="30"/>
+				<m_PickUpRange type="double" value="25"/>
+			</attributes>
+			<contents>
+			</contents>
+		</Inventory>
+
+		<MoverSim name="Mover">
+			<attributes>
+			</attributes>
+			<contents>
+			</contents>
+		</MoverSim>
+
+	</contents>
+</actor>

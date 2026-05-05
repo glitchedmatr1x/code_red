@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aniActionSetData>
+	<AimData type="aniAimData">
+		<Data>
+			<AimInSpeed value="2.000000"/>
+			<AimOutSpeed value="3.000000"/>
+			<AimToAimBlendSpeed value="4.000000"/>
+			<FireDecayTime value="0.500000"/>
+			<ReadyDecayTime value="0.500000"/>
+			<AimPopDecayTime value="0.500000"/>
+			<LookApproachRate value="3.500000"/>
+			<MaxHorizLookAngle value="70.000000"/>
+			<MaxVertUpLookAngle value="30.000000"/>
+			<MaxVertDownLookAngle value="15.000000"/>
+			<NuetralDownTilt value="15.000000"/>
+			<LookHeadBoneCompensationAngle value="0.000000"/>
+			<LookLimitBuffAngle value="25.000000"/>
+			<LookExtraNeckVertAngle content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</LookExtraNeckVertAngle>
+			<LookExtraHeadVertAngle content="float_array">
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+				0.000000
+			</LookExtraHeadVertAngle>
+			<AimTMinTolerance value="0.900000"/>
+			<AimTApproachRate value="3.000000"/>
+			<AimTApproachRateMin value="0.500000"/>
+			<AARApproachRate value="1.000000"/>
+			<AimBlockRange value="5.000000"/>
+		</Data>
+	</AimData>
+	<AnimPropData type="aniAnimPropData">
+		<Data/>
+	</AnimPropData>
+	<CoverData type="aniCoverData">
+		<Data>
+			<AllowMoverSuspend value="true"/>
+			<CoverRadius value="0.305000"/>
+			<LowCoverHeight value="1.400000"/>
+			<AttachTime value="0.350000"/>
+			<TgtCornerDistance value="0.450000"/>
+			<TgtCornerWallDistance value="0.500000"/>
+			<CornerApproachRate value="11.000000"/>
+			<DetachAnimRate value="0.750000"/>
+			<DetachCancelPhase value="0.200000"/>
+		</Data>
+	</CoverData>
+	<DuelData type="aniDuelData">
+		<Data>
+			<DrawTimeScale value="0.100000"/>
+			<TargetApproachRate value="3.600000"/>
+			<DrawDeltaTolerance value="0.000000"/>
+			<XReticleAdjustRate value="2.000000"/>
+			<YReticleAdjustRate value="2.000000"/>
+			<DoFEffect value="1"/>
+			<DoFFalloffNear value="1.000000"/>
+			<DoFFalloffOn value="1.000000"/>
+			<DoFFalloffFar value="1.000000"/>
+			<DoFDistanceCutoff value="100.000000"/>
+			<DoFMinNearDistance value="3.000000"/>
+			<PerfectAccuracyPhase value="0.700000"/>
+			<MaxAimOffset value="12.000000"/>
+			<ChamberTime value="0.100000"/>
+			<WobbleAmount value="1.500000"/>
+			<HorizontalFocusOn value="6.000000"/>
+			<HorizontalFocusOff value="4.000000"/>
+			<HorizFocusApproachRate value="1000.000000"/>
+			<LeadTime value="0.000000"/>
+			<InitialDrawTime value="2.500000"/>
+			<DepthWobble value="1.000000"/>
+			<DepthOffset value="1.500000"/>
+		</Data>
+	</DuelData>
+	<GatlingData type="aniGatlingData">
+		<Data>
+			<AttachRange value="5.000000"/>
+			<AttachAngleRange value="90.000000"/>
+			<HorizMaxDegrees value="60.000000"/>
+			<VertMaxDegrees value="30.000000"/>
+			<AttachDistance value="0.900000"/>
+			<CrankRate value="13.000000"/>
+			<IKEnable value="1.000000"/>
+			<CrankOffset x="-0.181000" y="0.165000" z="0.000000"/>
+			<LeftHandOffset x="-0.000000" y="0.000000" z="0.000000"/>
+		</Data>
+	</GatlingData>
+	<JumpData type="aniJumpData">
+		<Data>
+			<StaminaCost value="10.000000"/>
+			<OOJumpMaxSpeedDelta value="2.000000"/>
+			<OOJumpMaxAngleDelta value="20.000000"/>
+			<OOTargetDelta value="0.100000"/>
+			<OOFlightSpeed value="8.500000"/>
+		</Data>
+	</JumpData>
+	<LadderData type="aniLadderData">
+		<Data>
+			<LadderOffset value="0.000000"/>
+			<TopOffset value="-0.550000"/>
+			<TopAttachPhase value="0.400000"/>
+			<SlideGravityScale value="1.000000"/>
+		</Data>
+	</LadderData>
+	<LassoData type="aniLassoData">
+		<Data>
+			<YankImpulseMagnitude value="100.000000"/>
+			<TugWarAutoReleaseTime value="1.000000"/>
+			<TugWarExitTime value="2.000000"/>
+			<TugWarStartDelay value="0.000000"/>
+			<TugWarDuration value="3.000000"/>
+			<FastTugWarDuration value="1.000000"/>
+			<FastTugWarDismountSpeed value="-1.000000"/>
+			<FastTugWarDismountBelow value="true"/>
+			<InstantTakedownAgainstAI value="true"/>
+			<FastTugWarRandomBtn value="true"/>
+			<ForceAttractor value="false"/>
+			<TugWarCountForWin value="5"/>
+			<TugWarInputReenableTime value="1.000000"/>
+			<BreakoutDragSpdResetThresh value="2.000000"/>
+			<LassoBreakoutTime value="5.000000"/>
+			<LassoBreakDamageThreshold value="25.000000"/>
+			<BendStrength value="0.000000"/>
+			<TimeBeforeTakedownTug value="0.150000"/>
+			<ReelInRate value="0.050000"/>
+			<ReelStopTime value="1.500000"/>
+			<MinConstarintLen value="1.000000"/>
+			<MinMountedConstraintLen value="4.500000"/>
+			<GroundAttackDist2 value="6.000000"/>
+			<LaunchVelocity value="20.000000"/>
+			<WinningScaleFactor value="3.000000"/>
+			<MoveScaleFactor value="0.010000"/>
+			<RandomRng value="0.025000"/>
+			<ProbeCapsulseRadius value="0.500000"/>
+			<LoopSize value="4"/>
+			<LoopHandSeperation value="3"/>
+			<CoilLoopSize value="5"/>
+		</Data>
+	</LassoData>
+	<LedgeData type="aniLedgeData">
+		<Data>
+			<LedgeGrabRadius value="1.000000"/>
+			<LedgeProbeDepth value="0.750000"/>
+			<LedgeClimbeProbeDepth value="0.750000"/>
+			<MedLedgeHeight value="2.200000"/>
+			<BoxHeight value="1.300000"/>
+			<HalfBoxHeight value="0.500000"/>
+			<LedgeAttachPhase value="0.010000"/>
+			<MedLedgeAttachPhase value="0.010000"/>
+			<LedgeDropHoldPhase value="0.180000"/>
+			<LedgeDropGravityScale value="1.000000"/>
+			<LedgeTraversalSpeed value="0.380000"/>
+			<TraversalEdgeProbeLength value="0.400000"/>
+			<CrnrTraverseEdgeOffset value="0.400000"/>
+			<FenceDepthLimit value="0.310000"/>
+			<FenceDropGroundProbePhase value="0.540000"/>
+			<FenceDropAnimHoldPhase value="0.700000"/>
+			<FenceVaultGroundProbePhase value="0.540000"/>
+			<FenceVaultAnimHoldPhase value="0.700000"/>
+			<SideClearanceDepth value="1.000000"/>
+			<CliffRadius value="0.250000"/>
+			<CliffGrabRadius value="2.000000"/>
+			<CliffMaxStopDistance value="0.500000"/>
+			<BoxGrabRadius value="1.200000"/>
+		</Data>
+	</LedgeData>
+	<LinkedData type="aniLinkedData">
+		<Data/>
+	</LinkedData>
+	<NavigationData type="aniNavigationData">
+		<Data>
+			<MaxTurnRate>
+				<Item content="float_array">
+					400.000000
+					200.000000
+					300.000000
+					300.000000
+					90.000000
+				</Item>
+				<Item content="float_array">
+					400.000000
+					400.000000
+					400.000000
+					400.000000
+					400.000000
+				</Item>
+				<Item content="float_array">
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+					0.000000
+				</Item>
+			</MaxTurnRate>
+			<TurnRateDecayTime value="1.500000"/>
+			<BumpTime value="0.350000"/>
+			<IntroTurnRate value="4.000000"/>
+			<IntroReversePhase value="0.000000"/>
+			<IntroTurnActivationPhase value="0.900000"/>
+			<TurnApproachRate value="3.000000"/>
+			<WeaponTurnApproachRate value="3.000000"/>
+			<InclineApproachRate value="3.000000"/>
+			<SlideBlendRate value="5.000000"/>
+			<MaxTurnBlendRate value="5.000000"/>
+			<PlayerOrientToCameraTimer value="0.500000"/>
+			<FootstepDustFXDistance value="25.000000"/>
+			<SprintStaminaThreshold value="25.000000"/>
+			<DefaultStamina value="50.000000"/>
+			<DefaultStaminaRegenRate value="10.000000"/>
+			<DefaultRunStaminaRegenRate value="7.500000"/>
+			<DefaultStaminaDecayRate value="7.500000"/>
+			<SpeedOverride>
+				<Item content="float_array">
+					-1.000000
+					1.250000
+					-1.000000
+					1.500000
+					6.000000
+				</Item>
+				<Item content="float_array">
+					-1.000000
+					4.000000
+					-1.000000
+					-1.000000
+					-1.000000
+				</Item>
+			</SpeedOverride>
+			<RateOverride>
+				<Item content="float_array">
+					-1.000000
+					-1.000000
+					-1.000000
+					-1.000000
+					-1.000000
+				</Item>
+				<Item content="float_array">
+					-1.000000
+					-1.000000
+					-1.000000
+					-1.000000
+					-1.000000
+				</Item>
+			</RateOverride>
+			<GaitMaxDecreasePct content="float_array">
+				0.250000
+				0.250000
+				0.250000
+				0.250000
+				0.250000
+			</GaitMaxDecreasePct>
+			<GaitMaxIncreasePct content="float_array">
+				0.250000
+				0.250000
+				0.250000
+				0.250000
+				1.000000
+			</GaitMaxIncreasePct>
+		</Data>
+	</NavigationData>
+	<RideData type="aniRideData">
+		<Data>
+			<MountRange value="1.000000"/>
+			<MountFromVehRange value="3.000000"/>
+			<MountFromHorseRange value="1.700000"/>
+			<MountZOffset value="0.000000"/>
+			<MountVelLookAheadSec value="0.000000"/>
+			<SaddleTuningOffset x="0.000000" y="-0.050000" z="0.000000"/>
+		</Data>
+	</RideData>
+	<VehicleData type="aniVehicleData">
+		<Data>
+			<VehicleAnimRate value="1.400000"/>
+			<SteerModifier value="0.150000"/>
+		</Data>
+	</VehicleData>
+	<ToughArmourData type="aniToughArmourData">
+		<Data>
+			<RegenerationRate value="10.000000"/>
+			<PadArmour value="0.000000"/>
+			<HitDeductions content="float_array">
+				-100.000000
+				-100.000000
+				-100.000000
+				-100.000000
+				-100.000000
+				-100.000000
+				-100.000000
+				-100.000000
+				-100.000000
+			</HitDeductions>
+		</Data>
+	</ToughArmourData>
+	<MeleeData type="aniMeleeData">
+		<Data>
+			<SliceOne>
+				<LocalApexOffset value="0.000000"/>
+				<NearRadius value="0.000000"/>
+				<FarRadius value="1.850000"/>
+				<SpreadAngle value="59.250000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceOne>
+			<SliceTwo>
+				<LocalApexOffset value="-1.550000"/>
+				<NearRadius value="1.650000"/>
+				<FarRadius value="2.875000"/>
+				<SpreadAngle value="36.000000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceTwo>
+			<SliceThree>
+				<LocalApexOffset value="1.225000"/>
+				<NearRadius value="0.000000"/>
+				<FarRadius value="1.150000"/>
+				<SpreadAngle value="360.000000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceThree>
+			<SliceFour>
+				<LocalApexOffset value="0.000000"/>
+				<NearRadius value="0.000000"/>
+				<FarRadius value="1.000000"/>
+				<SpreadAngle value="90.000000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceFour>
+			<SliceFive>
+				<LocalApexOffset value="0.000000"/>
+				<NearRadius value="0.000000"/>
+				<FarRadius value="1.000000"/>
+				<SpreadAngle value="90.000000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceFive>
+			<SliceSix>
+				<LocalApexOffset value="0.000000"/>
+				<NearRadius value="0.000000"/>
+				<FarRadius value="1.000000"/>
+				<SpreadAngle value="90.000000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceSix>
+			<SliceSeven>
+				<LocalApexOffset value="0.000000"/>
+				<NearRadius value="0.000000"/>
+				<FarRadius value="1.000000"/>
+				<SpreadAngle value="90.000000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceSeven>
+			<SliceEight>
+				<LocalApexOffset value="0.000000"/>
+				<NearRadius value="0.000000"/>
+				<FarRadius value="1.000000"/>
+				<SpreadAngle value="90.000000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceEight>
+			<SliceNine>
+				<LocalApexOffset value="0.000000"/>
+				<NearRadius value="0.000000"/>
+				<FarRadius value="1.000000"/>
+				<SpreadAngle value="90.000000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceNine>
+			<SliceTen>
+				<LocalApexOffset value="0.000000"/>
+				<NearRadius value="0.000000"/>
+				<FarRadius value="1.000000"/>
+				<SpreadAngle value="90.000000"/>
+				<RotationAngle value="0.000000"/>
+			</SliceTen>
+			<StrikeRange value="2.000000"/>
+			<KnockBackDist value="3.000000"/>
+			<KillHitImpulse value="75.000000"/>
+			<SpecialMeleeTimeScale value="1.000000"/>
+			<SteerDist value="4.500000"/>
+			<FindMeleeTargetAlwaysIncludeRadius value="6.000000"/>
+			<FindMeleeTargetFactionWeight value="2.200000"/>
+			<FindMeleeTargetDistanceWeight value="0.800000"/>
+			<FindMeleeTargetCameraAngleWeight value="0.400000"/>
+			<FindMeleeTargetActorAngleWeight value="0.300000"/>
+			<FindMeleeTargetMoveStickDistanceWeight value="0.050000"/>
+			<FindMeleeTargetMoveStickCameraAngleWeight value="0.000000"/>
+			<FindMeleeTargetMoveStickActorAngleWeight value="0.000000"/>
+			<FindMeleeTargetMoveStickWeight value="0.850000"/>
+			<MaxReticleSkeletonSearches value="6"/>
+		</Data>
+	</MeleeData>
+	<NMAnimData type="aniNMAnimData">
+		<Data/>
+	</NMAnimData>
+	<FaceData type="aniFaceData">
+		<Data>
+			<FaceActFileID value="0"/>
+		</Data>
+	</FaceData>
+	<AiCoverEntryData type="aniAiCoverEntryData">
+		<Data/>
+	</AiCoverEntryData>
+	<Data>
+		<CharOffset x="0.000000" y="0.000000" z="0.000000"/>
+	</Data>
+</aniActionSetData>

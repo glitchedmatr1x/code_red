@@ -1,0 +1,602 @@
+{
+		BASICEXPLOSION "DefaultFire"
+	{
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	5.400000
+			InitialSpeed	9.200000
+			DecayFactor	-1.000000
+			ForceFactor	12.400000
+			Offset	0	0	0
+			MinDamage	0.000000
+			MaxDamage	116.000000
+			InnerDamageRadius	2.280000
+			OuterDamageRadius	3.660000
+			SplashDamageToOwner	0
+			RagdollForceScale	12.800000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	Fire
+		}
+	}
+
+		BASICEXPLOSION "GrenadeExplosion"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"DYNAMITE_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	51.750000
+			DecayFactor	-5.000000
+			ForceFactor	29.760000
+			Offset	0	0	0
+			MinDamage	16.800000
+			MaxDamage	133.400000
+			InnerDamageRadius	2.964000
+			OuterDamageRadius	7.930000
+			SplashDamageToOwner	0
+			RagdollForceScale	23.040000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	UNDEFINED
+		}
+	}
+
+		BASICEXPLOSION "KeroseneLampExplosion"
+	{
+		ExplosionFireFx
+		{
+			Delay		0.000000
+			FXType		"KEROSENELAMP_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+			FXMaxLifetime		6.750000
+		}
+		CameraShakeFx
+		{
+			Delay		0.000000
+			FXType		"explosionShakeMolotov"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	5.400000
+			InitialSpeed	6.900000
+			DecayFactor	-1.000000
+			ForceFactor	3.720000
+			Offset	0	0	0
+			MinDamage	0.000000
+			MaxDamage	40.600000
+			InnerDamageRadius	1.710000
+			OuterDamageRadius	5.490000
+			SplashDamageToOwner	0
+			RagdollForceScale	7.680000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	Fire
+		}
+		Fire
+		{
+			SpawnRadius		1.875000
+			MaxFires		17
+			MinInitalFires		6
+			MaxInitalFires		12
+		}
+	}
+
+		BASICEXPLOSION "FireBottleExplosion"
+	{
+		ExplosionFireFx
+		{
+			Delay		0.000000
+			FXType		"FIREBOTTLE_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+			FXMaxLifetime		6.750000
+		}
+		CameraShakeFx
+		{
+			Delay		0.000000
+			FXType		"explosionShakeMolotov"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	5.400000
+			InitialSpeed	9.200000
+			DecayFactor	-1.000000
+			ForceFactor	3.968000
+			Offset	0	0	0
+			MinDamage	0.000000
+			MaxDamage	25.520000
+			InnerDamageRadius	2.280000
+			OuterDamageRadius	7.930000
+			SplashDamageToOwner	0
+			RagdollForceScale	11.520000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	Fire
+		}
+		Fire
+		{
+			SpawnRadius		2.187500
+			MaxFires		20
+			MinInitalFires		7
+			MaxInitalFires		14
+		}
+	}
+
+		BASICEXPLOSION "ManureExplosion"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"DYNAMITE_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	115.000000
+			DecayFactor	-5.500000
+			ForceFactor	6.448000
+			Offset	0	0	0
+			MinDamage	0.000000
+			MaxDamage	116.000000
+			InnerDamageRadius	9.120000
+			OuterDamageRadius	15.860000
+			SplashDamageToOwner	0
+			RagdollForceScale	6.400000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	RadialLarge
+		}
+	}
+
+		BASICEXPLOSION "Grave02_Wagon_Fire"
+	{
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	310.500000
+			DecayFactor	-3.500000
+			ForceFactor	2.480000
+			Offset	0	0	0
+			MinDamage	0.000000
+			MaxDamage	116.000000
+			InnerDamageRadius	2.280000
+			OuterDamageRadius	3.660000
+			SplashDamageToOwner	0
+			RagdollForceScale	2.560000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	UNDEFINED
+		}
+	}
+
+		BASICEXPLOSION "ExplosionMedium"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"DYNAMITE_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	57.500000
+			DecayFactor	-4.500000
+			ForceFactor	16.120000
+			Offset	0	0	0
+			MinDamage	11.200000
+			MaxDamage	127.600000
+			InnerDamageRadius	2.850000
+			OuterDamageRadius	6.710000
+			SplashDamageToOwner	0
+			RagdollForceScale	17.920000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	UNDEFINED
+		}
+	}
+
+		BASICEXPLOSION "ExplosionLarge"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"DYNAMITE_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	57.500000
+			DecayFactor	-3.800000
+			ForceFactor	22.320000
+			Offset	0	0	0
+			MinDamage	16.800000
+			MaxDamage	145.000000
+			InnerDamageRadius	3.648000
+			OuterDamageRadius	9.150000
+			SplashDamageToOwner	0
+			RagdollForceScale	23.040000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	UNDEFINED
+		}
+	}
+
+		BASICEXPLOSION "ExplosionLargeNoFx"
+	{
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	57.500000
+			DecayFactor	-3.800000
+			ForceFactor	8.680000
+			Offset	0	0	0
+			MinDamage	0.000000
+			MaxDamage	116.000000
+			InnerDamageRadius	2.280000
+			OuterDamageRadius	3.660000
+			SplashDamageToOwner	0
+			RagdollForceScale	12.800000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	UNDEFINED
+		}
+	}
+
+		BASICEXPLOSION "DynamiteExplosion"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"DYNAMITE_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		CameraShakeFx
+		{
+			Delay		0.000000
+			FXType		"explosionShakeDynamite"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	21.600000
+			InitialSpeed	57.500000
+			DecayFactor	-3.000000
+			ForceFactor	1.736000
+			Offset	0	0	0
+			MinDamage	20.160000
+			MaxDamage	145.000000
+			InnerDamageRadius	3.192000
+			OuterDamageRadius	10.370000
+			SplashDamageToOwner	0
+			RagdollForceScale	76.800000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	200.000000
+			HighMassForceScale	0.324000
+			BlastType	RadialLarge
+		}
+	}
+
+
+		BASICEXPLOSION "DynamiteCrateExp"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"DYNAMITE_CRATEEXP"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		CameraShakeFx
+		{
+			Delay		0.000000
+			FXType		"explosionShakeDynamite"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	21.600000
+			InitialSpeed	57.500000
+			DecayFactor	-3.000000
+			ForceFactor	1.860000
+			Offset	0	0	0
+			MinDamage	20.160000
+			MaxDamage	150.800000
+			InnerDamageRadius	3.420000
+			OuterDamageRadius	10.980000
+			SplashDamageToOwner	0
+			RagdollForceScale	83.200000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	200.000000
+			HighMassForceScale	0.324000
+			BlastType	RadialLarge
+		}
+	}
+
+		BASICEXPLOSION "CannonballExplosion"
+	{
+		ExplosionCannonFx
+		{
+			Delay		0.000000
+			FXType		"CANNON_EXPLOSION"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	21.600000
+			InitialSpeed	80.500000
+			DecayFactor	-4.000000
+			ForceFactor	1.116000
+			Offset	0	0	0
+			MinDamage	16.800000
+			MaxDamage	168.200000
+			InnerDamageRadius	4.560000
+			OuterDamageRadius	15.860000
+			SplashDamageToOwner	0
+			RagdollForceScale	147.200000
+			LowMass	1.000000
+			LowMassForceScale	0.540000
+			HighMass	1000.000000
+			HighMassForceScale	0.324000
+			BlastType	VerticalLarge
+		}
+	}
+
+		BASICEXPLOSION "BuriedDynamiteExplosion"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"DYNAMITE_GRND"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	46.000000
+			DecayFactor	-5.000000
+			ForceFactor	6.510000
+			Offset	0	0	0
+			MinDamage	560.000000
+			MaxDamage	1160.000000
+			InnerDamageRadius	1.140000
+			OuterDamageRadius	24.400000
+			SplashDamageToOwner	0
+			RagdollForceScale	25.600000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	VerticalLarge
+		}
+		Fire
+		{
+			SpawnRadius		1.250000
+			MaxFires		22
+			MinInitalFires		1
+			MaxInitalFires		3
+		}
+	}
+
+		BASICEXPLOSION "FakeButterBridgeDemo"
+	{
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	46.000000
+			DecayFactor	-5.000000
+			ForceFactor	6.510000
+			Offset	0	0	0
+			MinDamage	560.000000
+			MaxDamage	1160.000000
+			InnerDamageRadius	1.140000
+			OuterDamageRadius	24.400000
+			SplashDamageToOwner	0
+			RagdollForceScale	2.560000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	VerticalLarge
+		}
+	}
+
+		BASICEXPLOSION "Merchant03BlockadeExplosion"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"DYNAMITE_MERCHANT03"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	57.500000
+			DecayFactor	-3.000000
+			ForceFactor	6.510000
+			Offset	0	0	0
+			MinDamage	560.000000
+			MaxDamage	1160.000000
+			InnerDamageRadius	1.140000
+			OuterDamageRadius	36.600000
+			SplashDamageToOwner	0
+			RagdollForceScale	12.800000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	VerticalLarge
+		}
+	}
+
+		BASICEXPLOSION "Rebel06WagonExplosion"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"TNT_WAGON_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	57.500000
+			DecayFactor	-3.000000
+			ForceFactor	6.510000
+			Offset	0	0	0
+			MinDamage	560.000000
+			MaxDamage	1160.000000
+			InnerDamageRadius	1.140000
+			OuterDamageRadius	36.600000
+			SplashDamageToOwner	0
+			RagdollForceScale	12.800000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	100.000000
+			HighMassForceScale	0.540000
+			BlastType	VerticalLarge
+		}
+	}
+
+		BASICEXPLOSION "TrainBoilerExplosion"
+	{
+		ExplosionTrainFx
+		{
+			Delay		0.000000
+			FXType		"TRAIN_BOILER_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	21.600000
+			InitialSpeed	92.000000
+			DecayFactor	-4.000000
+			ForceFactor	0.620000
+			Offset	0	0	0
+			MinDamage	10.080000
+			MaxDamage	127.600000
+			InnerDamageRadius	3.420000
+			OuterDamageRadius	12.200000
+			SplashDamageToOwner	0
+			RagdollForceScale	32.000000
+			LowMass	1.000000
+			LowMassForceScale	0.540000
+			HighMass	1000.000000
+			HighMassForceScale	0.324000
+			BlastType	VerticalLarge
+		}
+	}
+
+		BASICEXPLOSION "CaveExplosion"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"CAVE_TREMOR"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	10.800000
+			InitialSpeed	57.500000
+			DecayFactor	-3.500000
+			ForceFactor	0.000000
+			Offset	0	0	0
+			MinDamage	0.000000
+			MaxDamage	0.000000
+			InnerDamageRadius	0.570000
+			OuterDamageRadius	2.440000
+			SplashDamageToOwner	0
+			RagdollForceScale	0.000000
+			LowMass	10.000000
+			LowMassForceScale	1.080000
+			HighMass	1000.000000
+			HighMassForceScale	0.540000
+			BlastType	RadialLarge
+		}
+	}
+
+	BASICEXPLOSION "ExplosionFallback"
+	{
+		ExplosionFx
+		{
+			Delay		0.000000
+			FXType		"DYNAMITE_EXPLODE"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		CameraShakeFx
+		{
+			Delay		0.000000
+			FXType		"explosionShakeDynamite"
+			Offset		0.000000 0.000000 0.000000
+			Attached		0
+		}
+		ELLIPSOID
+		{
+			DeactivationRadiusSpeed	5.400000
+			InitialSpeed	17.250000
+			DecayFactor	-3.000000
+			ForceFactor	17.360000
+			Offset	0	0	0
+			MinDamage	20.160000
+			MaxDamage	75.400000
+			InnerDamageRadius	1.938000
+			OuterDamageRadius	5.490000
+			SplashDamageToOwner	1
+			RagdollForceScale	76.800000
+			LowMass	1.000000
+			LowMassForceScale	0.540000
+			HighMass	50.000000
+			HighMassForceScale	0.324000
+			BlastType	VerticalLarge
+		}
+	}
+}

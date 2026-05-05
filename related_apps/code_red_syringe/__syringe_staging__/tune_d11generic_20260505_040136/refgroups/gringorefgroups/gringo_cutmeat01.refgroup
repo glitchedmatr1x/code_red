@@ -1,0 +1,11 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_meatStrip01x.mb
+transform 0.5113930972 -0.002715118229 -0.09932787436 0 31.64970727 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_meatPile01x.mb
+transform 0.7434740365 -0.004865052179 -0.1055496335 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_meatFilet01x.mb
+transform 0.3873867244 0.009610168825 -0.03318974376 -1.52257739 22.20246496 0.5485319953
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_knife02x.mb
+transform 0.8539517915 0.02194640124 -0.04312171909 71.75919418 -60.27026231 105.9707187
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_bark01x.mb
+transform 0 0 0 0 0 0
+attribute rstarGringoGeneric rstarGringoGeneric_Type string cutMeat

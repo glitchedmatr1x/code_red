@@ -1,0 +1,45 @@
+swptx {
+  NumPoints 100 
+  ;BlendSet 1 
+  Life 0.8 
+  LifeVar 0.2
+  PositionVar 0.5	0.0	0.5 
+  Velocity 0.000000	1.0000	0.000000 
+  VelocityVar 0.053996	0.4	0.068996 
+  Rate 125.000000 
+  Recycle 0 
+  ;FogEnable 0 
+  UseShadowBox 0 
+  MinShadowMod 0.000000 
+  ;Ortho 0 
+  ;TextureName null	
+  NumTextureTilesX 2 
+  NumTextureTilesY 2 
+  StartTextureTile 0 
+  EndTextureTile 3 
+}
+
+Keyframes= 3 
+
+Time= 0.00000 
+Size= 0.101998 0.072000 
+Color= 0.950000	0.900000	0.200000	1.000000 
+Accel= 0.000000	0.100000	0.000000 
+Damping= 0.000000	0.000000	0.000000 
+Theta= 3.000000 
+
+Time= 0.400000 
+Size= 0.186998 0.456998 
+Color= 0.703998	0.256998	0.136998	1.000000 
+Accel= 0.000000	0.3	0.000000 
+Damping= 0.000000	0.000000	0.000000 
+Theta= 3.000000
+
+Time= 1.000000 
+Size= 0.443998 0.560998 
+Color= 0.000000	0.000000	0.000000	0.000000 
+Accel= 0.000000	2.0	0.000000 
+Damping= 0.000000	0.3000000	0.000000 
+Theta= 3.000000
+
+TuneFrames= 3 0.000000 0.500000 1.000000 3 0.000000 0.500000 1.000000 2 0.000000 1.000000 2 0.000000 1.000000 3 0.000000 0.500000 1.000000 

@@ -1,0 +1,16 @@
+Version 1
+{
+	GridDef
+	{
+		GridCells	2949120
+		GridDimX	8.0
+		GridDimY	8.0
+
+		GridMinX	-959
+		GridMaxX	960
+		GridMinY	-767
+		GridMaxY	768
+	}
+
+	ColorMap territory
+}

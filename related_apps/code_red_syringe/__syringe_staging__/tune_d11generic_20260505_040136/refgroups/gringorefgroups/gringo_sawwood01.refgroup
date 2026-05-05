@@ -1,0 +1,20 @@
+reference T:/rdr2/Art/Worlds/territory/sw/models/props/p_uti_sawWood01x.mb
+transform 0 0 0 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_sawHorse01x.mb
+transform -0.3400261611 0 -1.703901977 0 265 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_sawHorse01x.mb
+transform -1.847342222 0 -1.596972763 0 270 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_sawHand01x.mb
+transform -0.0895 0.8977 -0.6437 0.5431 -59.1349 -0.493
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_lumber07x.mb
+transform -1.413201866 0.9029262222 -0.8780150944 0 -81.1 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_lumber07x.mb
+transform -1.43386402 0.903823185 -0.974460639 0 279.1 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_lumber07x.mb
+transform -1.476820058 0.9758271053 -0.9638534476 0 -77.65579689 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_lumber07x.mb
+transform -1.445269277 0.9015365344 -1.057633414 0 279.1 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/i_gen_woodBoard01x.mb
+transform 0.2546 0.864 -0.4781 0 90 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/i_gen_woodBin01x.mb
+transform 0.5225936572 0 -0.19590927 0 -5 0

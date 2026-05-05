@@ -1,0 +1,577 @@
+//-----------------------------------------------------------------------------
+//
+// PURPOSE:	This file contains TR programs and rules relevant for dogs playing
+//			
+// NOTES:	All programs and predicates defined here use CanAnimalPlay 
+//		
+//-----------------------------------------------------------------------------
+
+////////////////////////////////////
+//
+//
+// PLAYING RULES
+//
+//
+///////////////////////////////////
+
+// PURPOSE:	Preconditions for the TR programs defined in this file.
+rules AnimalPlayRules
+{
+	// i'm facing the wrong way then don't worry about attack pathing
+	SpatialDistanceVeryClose(x) || !SpatialDirectionAheadOfMe(x) 	-> IgnorePlayPathing(x);
+	CanAnimalPlayChase(x) && AnimalWorkModerate 					-> CanPlayChaseGunFire(x);
+
+	IsMovingFast(x) && WasVisibleJustNow(x) -> CurrentlyMovingFast(x);
+
+	FriendOfMine(x) || CanAnimalMakeNewFriend(x) || (AnimalTuningCanChaseVehicles && ObjectClassTypeVehicle(x))  -> CanAnimalPlayWithTarget(x);
+
+	ObjectClassTypeCreature(x) 
+	&& !IsHitched(x)
+	&& !FlightFlying(x)
+	&& Alive(x)			
+	&& (PositionKnownRecently(x) || IsActorWhistling(x)) -> CanAnimalPlayReqs(x);
+
+	ObjectClassTypeCreature(x) 
+	&& !RidingVehicle(x) 
+	&& !RidingOnVehicle(x) 
+	&& !Riding(x)
+	&& !CurrentlyMovingFast(x) -> CanAnimalPlayOnFootRestrictions(x);
+	
+	
+	SpatialMeAheadOfObject(x) && SpatialDistanceVeryClose(x) && !IsMovingFast(x) && !AnimalToldToStayCloseSomewhatRecently -> ShouldStopPlayFollow(x);
+
+	SpatialDistanceExtremelyClose(x) || At(x) -> BegCloseEnough(x);
+	
+	BegCloseEnough(a) && (AnimalHealthHigh || (CanAnimalTriggerAttackMediumPriority(x) && FriendOfMine(a) && NeedToDefendMyFriendFrom(a, x)))  -> ShouldStopPlayBeg(a);
+
+	TimeOfDayMorning || TimeOfDayEvening 		-> ActiveTimeOfDay;
+	TimeOfDayAfternoon || !ActiveTimeOfDay		-> LazyTimeOfDay;
+	AnimalSpeciesCanPlayBeg(x) || TheBeastMaster(x)	->	AnimalCanPlayBegWith(x);
+
+	ActiveTimeOfDay && ObjectClassTypeCreature(x) && AnimalSpeciesCanPlayHunt(x) && CanAnimalPlayReqs(x)&& SpatialDistanceClose(x) && CanAnimalPlayWithTarget(x)  							-> CanAnimalPlayHunt(x);
+	!ActionFleeIsHot && ObjectClassTypeCreature(x) && AnimalCanPlayBegWith(x) && CanAnimalPlayWithTarget(x)  																				-> CanAnimalPlayFollow(x);	
+	ActiveTimeOfDay && ObjectClassTypeCreature(x) && AnimalSpeciesCanPlayChase(x) && CanAnimalPlayReqs(x) && CanAnimalPlayWithTarget(x) 													-> CanAnimalPlayChase(x);
+	ActiveTimeOfDay && ObjectClassTypeVehicle(x) && AnimalTuningCanChaseVehicles && ObjectClassTypeVehicle(x) && SpatialDistanceClose(x) && CanAnimalPlayWithTarget(x) 						-> CanAnimalPlayChase(x);
+	(ActiveTimeOfDay || TimeOfDayDarkOut) && ObjectClassTypeCreature(x) && AnimalSpeciesCanPlaySniff(x) && CanAnimalPlayReqs(x) && SpatialDistanceClose(x) && CanAnimalPlayWithTarget(x)	-> CanAnimalPlaySniff(x);
+	
+	!IsNetGame && ObjectClassTypeCreature(x) && AnimalCanPlayBegWith(x) && CanAnimalPlayReqs(x) && SpatialDistanceClose(x) 
+	&& CanAnimalPlayWithTarget(x) && CanAnimalPlayOnFootRestrictions(x) && !EnemyOfMySpecies(x)				 													-> CanAnimalPlayBeg(x);
+	
+	!IsNetGame && CanAnimalSleep 																																-> CanAnimalPlaySleep;
+	!IsNetGame && CanAnimalPee 																																	-> CanAnimalPlayPee;
+	!IsNetGame && CanAnimalGraze  																																-> CanAnimalPlayGraze;
+
+	CanAnimalPlayFollow(x) && WasVisibleSomewhatRecently(x) && FriendOfMine(x) && !EnemyOfMySpecies(x)	-> CanAnimalTriggerPlayFollow(x);	
+	
+	!BadWeather && AnimalFoodExtremelyLow && CanAnimalPlayHunt(x) && AnimalIsInAttackBehaviorForwardFacingThreshold(x)		-> CanAnimalTriggerPlayHunt(x);
+	!BadWeather && AnimalSocialExtremelyLow && CanAnimalPlayBeg(x) 															-> CanAnimalTriggerPlayBeg(x);
+	!BadWeather && AnimalWorkExtremelyLow && CanAnimalPlayChase(x) 															-> CanAnimalTriggerPlayChase(x);
+	!BadWeather && AnimalWorkExtremelyLow && CanAnimalPlaySniff(x) 															-> CanAnimalTriggerPlaySniff(x);
+			
+			
+	ObjectClassTypeCreature(x) && CanAnimalPlayFollow(x)		-> CanAnimalPlayWith(x);
+	ObjectClassTypeCreature(x) && CanAnimalPlayHunt(x) 			-> CanAnimalPlayWith(x);
+	ObjectClassTypeCreature(x) && CanAnimalPlayBeg(x)			-> CanAnimalPlayWith(x);
+	ObjectClassTypeCreature(x) && CanAnimalPlayChase(x)			-> CanAnimalPlayWith(x);
+	ObjectClassTypeCreature(x) && CanAnimalPlaySniff(x)			-> CanAnimalPlayWith(x);
+	AnimalTuningCanChaseVehicles && ObjectClassTypeVehicle(x)	-> CanAnimalPlayWith(x);
+
+	ObjectClassTypeCreature(x) && AnimalSpeciesCanPlayHunt(x)	-> CanAnimalPlayActiveWith(x);
+	ObjectClassTypeCreature(x) && AnimalCanPlayBegWith(x)		-> CanAnimalPlayActiveWith(x);
+	ObjectClassTypeCreature(x) && AnimalSpeciesCanPlayChase(x)	-> CanAnimalPlayActiveWith(x);
+	ObjectClassTypeCreature(x) && AnimalSpeciesCanPlaySniff(x)	-> CanAnimalPlayActiveWith(x);
+	ObjectClassTypeCreature(x) && CanAnimalPlayFollow(x)			-> CanAnimalPlayActiveWith(x);
+	ObjectClassTypeCreature(x) && CanAnimalPlayChase(x)			-> CanAnimalPlayActiveWith(x);
+	AnimalTuningCanChaseVehicles && ObjectClassTypeVehicle(x)	-> CanAnimalPlayActiveWith(x);	
+	
+	CanAnimalPlaySleep											-> CanAnimalPlayChill;
+	CanAnimalPlayGraze											-> CanAnimalPlayChill;
+	CanAnimalPlayPee											-> CanAnimalPlayChill;
+	AnimalTuningCanSniffEnvironment								-> CanAnimalPlayChill;		
+		
+	!OnHorsePath && !OnVehiclePath && !OnTrainTracks ->	OnSniffyMaterial;
+	!OnHorsePath && !OnVehiclePath && !OnTrainTracks /*&& !OnSunnyMaterial*/ ->	OnSleepyMaterial;	
+	!OnHorsePath && !OnVehiclePath && !OnTrainTracks  ->	OnGrazeyMaterial;	
+
+}
+
+// PURPOSE:	Preconditions for the TR programs defined in this file.
+rules AnimalPlayPriorityRules
+{
+	EventActive("AnimalPlayHunting") 
+	|| EventActive("AnimalPlayBegging") 
+	|| EventActive("AnimalPlayChasing") -> PlayHighPriorityHysteresis;
+	
+	EventActive("AnimalPlayPeeing")
+	|| EventActive("AnimalPlaySleeping") 
+	|| EventActive("AnimalPlaySniffing") 
+	|| EventActive("AnimalPlayGrazing")  -> PlayLowPriorityHysteresis;
+	
+	
+	AnimalFoodLow && ObjectClassTypeCreature(x) && SpatialDistanceClose(x) && !WasMeleedByMeSomewhatRecently(x) && CanAnimalPlayHunt(x)  						-> PlayHighPriorityWith(x);
+	AnimalWorkModerate && ObjectClassTypeCreature(x) && SpatialDistanceClose(x) && WasMeleedByOthersRecently(x) && CanAnimalPlayChase(x)  						-> PlayHighPriorityWith(x);
+	AnimalWorkModerate && CanAnimalPlayChase(x) && SpatialDistanceClose(x) && IsMovingFast(x)																	-> PlayHighPriorityWith(x);
+	SpatialDistanceClose(x) && FiredVeryRecently(x) && CanAnimalPlayChase(x) && AnimalWorkModerate																-> PlayHighPriorityWith(x);
+	SpatialDistanceClose(x) && AnimalTuningCanChaseVehicles && IsMoving(x) && ObjectClassTypeVehicle(x) && AnimalWorkModerate 									-> PlayHighPriorityWith(x);
+	FriendOfMine(x) && WasVisibleSomewhatRecently(x) && CanAnimalPlayFollow(x) && !EnemyOfMySpecies(x) && !SpatialDistanceVeryClose(x)  						-> PlayHighPriorityWith(x);
+	FriendOfMine(x) && WasVisibleSomewhatRecently(x) && CanAnimalPlayFollow(x) && !EnemyOfMySpecies(x) && !SpatialDistanceClose(x) && IsMovingFast(x)			-> PlayHighPriorityWith(x);	
+	
+	FALSE -> PlayHighPriorityAlone;
+	
+	//
+	// high priority play targets
+	//
+	(WasTargetedByMeRecently(x) && SpatialDistanceClose(x))
+	|| SpatialDistanceVeryClose(x)
+	|| SpatialDistanceClose(x)									-> PickHighPriorityPlayTarget(x);
+	
+	
+}
+
+////////////////////////////////////
+//
+//
+// PLAYING PROGRAMS
+//
+//
+///////////////////////////////////
+
+//
+// PURPOSE:	Low priority Play hysteris
+//
+
+program AnimalPlay_LowPriorityChillHysteresis_tr
+{
+	EventActive("AnimalPlaySleeping") && CanAnimalPlaySleep && !AnimalEnergyHigh								-> AnimalPlaySleep_tr;
+	EventActive("AnimalPlayGrazing") && CanAnimalPlayGraze && !AnimalFoodHigh									-> AnimalPlayGraze_tr;
+
+	EventActive("AnimalPlaySniffing") && CanAnimalPlaySniff(x) && !AnimalWorkHigh && WasTargetedByMeRecently(x)	-> AnimalPlaySniff_tr(x), AnimalMarkTarget(x);	
+	EventActive("AnimalPlaySniffing") && AnimalTuningCanSniffEnvironment && !AnimalWorkHigh 					-> AnimalPlaySniff_tr;
+	EventActive("AnimalPlayPeeing") && CanAnimalPlayPee && !AnimalBladderHigh									-> AnimalPlayPee_tr;
+	
+	TRUE -> AnimalPlaySolo_tr;	
+}
+
+//
+// PURPOSE:	high priority play program triggers
+//
+program AnimalPlay_HighPriorityWith_tr(x)
+{
+
+	PickHighPriorityPlayTarget(x) && WasMeleedByOthersRecently(x) && CanAnimalTriggerPlayChase(x)											-> AnimalPlayChase_tr(x), AnimalMarkTarget(x), HeadLookAt(x); 
+	PickHighPriorityPlayTarget(x) && IsMovingFast(x) && CanAnimalTriggerPlayChase(x)														-> AnimalPlayChase_tr(x), AnimalMarkTarget(x), HeadLookAt(x); 				
+	PickHighPriorityPlayTarget(x) && AnimalTuningCanChaseVehicles && IsMoving(x) && ObjectClassTypeVehicle(x) && AnimalWorkModerate			-> AnimalPlayChase_tr(x), AnimalMarkTarget(x), HeadLookAt(x);	
+	PickHighPriorityPlayTarget(x) && WasVisibleVeryRecently(x) && CanAnimalTriggerPlayHunt(x)												-> AnimalPlayHunt_tr(x), AnimalMarkTarget(x), HeadLookAt(x);
+	
+	// 
+	// PLAY FOLLOW TRIGGER
+	//
+	CanAnimalTriggerPlayFollow(x) && !SpatialDistanceClose(x) && IsMovingFast(x)	-> AnimalPlayFollow_tr(x), SpeechEvent("AnimalMovingToPlayer"), AnimalRememberStayClose, HeadLookAt(x);
+	CanAnimalTriggerPlayFollow(x) && !SpatialDistanceVeryClose(x) 					-> AnimalPlayFollow_tr(x), SpeechEvent("AnimalMovingToPlayer"), AnimalRememberStayClose, HeadLookAt(x);	
+
+	TRUE -> AnimalPlaySolo_tr;
+
+}
+
+//
+// PURPOSE:	low priority play program triggers
+//
+program AnimalPlay_LowPriority_Active_tr
+{
+	// try to play with old friends first
+	FriendOfMine(x) && CanAnimalPlayWith(x) && SpatialDistanceClose(x) 								->	AnimalPlayWith_tr(x), HeadLookAt(x);
+	CanAnimalPlayWith(x) && WasTargetedByMeInTheLastThreeMinutes(x) && SpatialDistanceClose(x) 		->	AnimalPlayWith_tr(x), HeadLookAt(x);
+	CanAnimalPlayWith(x) && CanAnimalMakeNewFriend(x) &&  SpatialDistanceClose(x) 					->	AnimalPlayWith_tr(x), HeadLookAt(x);
+
+	TRUE -> AnimalPlaySolo_tr;
+}
+
+program AnimalPlayWith_tr(x)
+{
+	CanAnimalPlayBeg(x) && SpatialMeAheadOfObject(x) && AnimalHealthLow													-> AnimalPlayBeg_tr(x);	
+	CanAnimalPlaySniff(x) && SpatialDistanceClose(x) && AnimalWorkLow													-> AnimalPlaySniff_tr(x), AnimalMarkTarget(x);		
+	
+	TRUE -> AnimalPlaySolo_tr;
+}
+
+program AnimalPlaySolo_tr
+{
+	//
+	// TRIGGER 
+	//
+	AnimalTuningCanSniffEnvironment && AnimalWorkLow && OnSniffyMaterial 																	-> AnimalPlaySniff_tr;
+	CanAnimalPlayPee && AnimalBladderLow																									-> AnimalPlayPee_tr;
+	
+	// 
+	// LOW
+	// 
+	TRUE -> LowestPriority_tr;	
+}
+
+program AnimalPlay_LowPriority_Chill_tr
+{
+	CanAnimalPlaySleep && AnimalEnergyExtremelyLow && !ActionWarnIsWarm	&&  (!AnimalTuningPrefersFlock || FlockIsSleepy ) 					-> AnimalPlaySleep_tr;
+	CanAnimalPlaySleep && AnimalStaminaLow && !ActionWarnIsWarm &&  (!AnimalTuningPrefersFlock || FlockIsTired ) 							-> AnimalPlaySleep_tr;	
+	CanAnimalPlayGraze && AnimalFoodLow												 														-> AnimalPlayGraze_tr;	
+	
+	// 
+	// LOW
+	// 
+	TRUE -> LowestPriority_tr;		
+}
+
+//////////////////////////////////
+//
+// Play hunt
+//
+//////////////////////////////////
+
+program AnimalPlayHunt_tr(x)
+{
+	SpatialDistanceClose(x) -> AnimalHunt_tr(x), Mood("HUNT"), SpeechEvent("AnimalPlayHunting");
+
+	TRUE -> AnimalHunt_tr(x), Mood("HUNT"), SpeechEvent("AnimalPlayHunting");
+}
+
+//////////////////////////////////
+//
+// Play follow
+//
+//////////////////////////////////
+
+program AnimalPlayFollow_tr(x)
+{
+	// pathing hysteris
+	EventActive("FollowPathing") && !SpatialDistanceClose(x) -> FindAndMoveTo(x), SpeedRun, SpeechEvent("FollowPathing"), Mood("FOLLOW"), SpeechEvent("AnimalPlayFollowing");
+	
+	// if we're obstructed then path find to target
+	AnimalAttackObstructed(x) && !IgnorePlayPathing(x) -> FindAndMoveTo(x), SpeedSprint, SpeechEvent("FollowPathing"), Mood("FOLLOW"), SpeechEvent("AnimalPlayFollowing");
+	
+	SpatialDistanceExtremelyClose(x) && !IsMovingFast(x) -> MoveWander, Mood("FOLLOW"), SpeechEvent("AnimalPlayFollowing");
+
+	TRUE -> AnimalMoveChase(x), Mood("FOLLOW"), SpeechEvent("AnimalPlayFollowing");
+}
+
+
+
+//////////////////////////////////
+//
+// Play chase
+//
+//////////////////////////////////
+
+program AnimalPlayChaseFullfillMotive_tr
+{
+	ObjectClassTypeVehicle(x) -> FulfillMotive("Work", 0.0), FulfillMotive("Energy", 0.5), FulfillMotive("Bladder", 0.5);
+
+	TRUE -> FulfillMotive("Work", 5.0), FulfillMotive("Energy", 0.5), FulfillMotive("Bladder", 0.5);
+}
+
+
+program AnimalPlayChase_tr(x)
+{
+
+	// pathing hysteris
+	EventActive("ChasePathing") && !SpatialDistanceClose(x) -> FindAndMoveTo(x), SpeedRun, SpeechEvent("ChasePathing"), Mood("CHASING"), SpeechEvent("AnimalPlayChasing");
+	
+	// if we're obstructed then path find to target
+	AnimalAttackObstructed(x) && !IgnorePlayPathing(x) -> FindAndMoveTo(x), SpeedSprint, SpeechEvent("ChasePathing"), Mood("CHASING"), SpeechEvent("AnimalPlayChasing");
+
+	SpatialDistanceVeryClose(x) && !IsMovingFast(x) && !ObjectClassTypeVehicle(x) -> AnimalCircleFlock(x), Mood("CHASING"), SpeechEvent("AnimalPlayChasing"), AnimalPlayChaseFullfillMotive_tr;
+
+	TRUE  -> AnimalMoveChase(x), Mood("CHASING"), SpeechEvent("AnimalPlayChasing"), AnimalPlayChaseFullfillMotive_tr;			
+	
+}
+
+//////////////////////////////////
+//
+// Play beg
+//
+//////////////////////////////////
+
+program AnimalPlayBegFullfillMotive_tr
+{
+	TRUE -> FulfillMotive("Health", 3.0), FulfillMotive("Energy", 0.5), FulfillMotive("Bladder", 0.5), FulfillMotive("Social", 3.0);
+}
+
+program AnimalPlayBeg_tr(x)
+{
+
+	// pathing hysteris
+	EventActive("BegPathing") && !SpatialDistanceClose(x) -> FindAndMoveTo(x), SpeedRun, SpeechEvent("BegPathing"), Mood("BEG"), SpeechEvent("AnimalPlayBegging");
+	
+	// if we're obstructed then path find to target
+	AnimalAttackObstructed(x) && !IgnorePlayPathing(x) -> FindAndMoveTo(x), SpeedSprint, SpeechEvent("BegPathing"), Mood("BEG"), SpeechEvent("AnimalPlayBegging");
+
+	At(x) && InForwardCone(x) && (SpatialDirectionAheadOfMe(x) || BumpedIntoMeRecently(x)) -> AnimalBeg(x), AnimalMarkFriend(x), Mood("BEG"), SpeechEvent("AnimalPlayBegging"), AnimalPlayBegFullfillMotive_tr;
+
+	At(x) && InForwardCone(x) -> Face(x), Mood("BEG"), SpeechEvent("AnimalPlayBegging");		
+
+	!SpatialDistanceVeryClose(x) -> AnimalMoveChase(x), Mood("BEG"), SpeechEvent("AnimalPlayBegging");	
+	
+	TRUE -> AnimalCircleFlock(x), Mood("BEG"), SpeechEvent("AnimalPlayBegging");
+	
+}
+
+//////////////////////////////////
+//
+// Play growl
+//
+//////////////////////////////////
+
+program AnimalPlayGrowlFullfillMotive_tr
+{
+	TRUE -> FulfillMotive("Social", 5.0), FulfillMotive("Energy", 0.5), FulfillMotive("Bladder", 0.5), FulfillMotive("Health", 0.5);
+}
+
+program AnimalPlayGrowl_tr(x)
+{
+
+	// hysteresis
+	EventActive("AnimalPlayGrowling_MoveCloser") && !SpatialDistanceExtremelyClose(x) -> AnimalCircleFlock(x), Mood("GROWL"), SpeechEvent("AnimalPlayGrowling"), SpeechEvent("AnimalPlayGrowling_MoveCloser"), AnimalPlayGrowlFullfillMotive_tr, BroadcastSoundEvent("kGrowl", 1.0);	
+
+	// this attack was causeing problems
+	//SpatialDistanceExtremelyClose(x) && WarnedSomeoneRecently -> AnimalAttackPrimary(x), Mood("GROWL"), SpeechEvent("AnimalPlayGrowling"), AnimalPlayGrowlFullfillMotive_tr, BroadcastSoundEvent("kGrowl", 1.0);	
+	
+	SpatialDistanceVeryClose(x) && !IsMovingFast(x) -> AnimalWarnThreat(x), Mood("GROWL"), SpeechEvent("AnimalPlayGrowling"), AnimalPlayGrowlFullfillMotive_tr, BroadcastSoundEvent("kGrowl", 1.0);	
+	SpatialDistanceClose(x) -> AnimalCircleFlock(x), Mood("GROWL"), SpeechEvent("AnimalPlayGrowling"), SpeechEvent("AnimalPlayGrowling_MoveCloser"), AnimalPlayGrowlFullfillMotive_tr, BroadcastSoundEvent("kGrowl", 1.0);	
+	
+	TRUE ->	MoveCloserTo(x), SpeedJog, Mood("GROWL"), SpeechEvent("AnimalPlayGrowling");	
+}
+
+//////////////////////////////////
+//
+// Play sniff
+//
+//////////////////////////////////
+
+program AnimalPlaySniff_tr(x)
+{
+	SpatialDistanceClose(x) -> AnimalStalkFlock(x), SpeedWalk, Mood("SNIFF"), SpeechEvent("AnimalPlaySniffing"), FulfillMotive("Work", 3.0), BroadcastSoundEvent("kSniff", 1.00);	
+
+	TRUE ->	AnimalStalkFlock(x), SpeedWalk, Mood("SNIFF"), SpeechEvent("AnimalPlaySniffing");	
+}
+
+program AnimalPlaySniff_tr
+{
+	TRUE ->	MoveWander, SpeedWalk, Mood("SNIFF"), SpeechEvent("AnimalPlaySniffing"),  SpeechEvent("AnimalPlaying"), FulfillMotive("Work", 3.0), BroadcastSoundEvent("kSniff", 1.00);	
+}
+
+
+//////////////////////////////////
+//
+// Play sleep
+//
+//////////////////////////////////
+
+program AnimalPlaySleep_tr
+{
+	!OnSleepyMaterial -> MoveWander, SpeedWalk, Mood("SLEEP"), SpeechEvent("AnimalPlaySleeping");
+//!OnSleepyMaterial -> AnimalMoveToShade, SpeedWalk, Mood("SLEEP"), SpeechEvent("AnimalPlaySleeping");
+
+	// the gringo should fulfill the motive in this case
+	TRUE ->	AnimalSleep, Mood("SLEEP"), SpeechEvent("AnimalPlaySleeping");
+}
+
+//////////////////////////////////
+//
+// Play pee
+//
+//////////////////////////////////
+
+program AnimalPlayPee_tr
+{
+	!OnSleepyMaterial -> MoveWander, SpeedWalk, Mood("SNIFF"), SpeechEvent("AnimalPlayPeeing");
+
+	// the gringo should fulfill the motive in this case
+	TRUE ->	AnimalPee, Mood("PEE"), SpeechEvent("AnimalPlayPeeing");
+}
+
+
+//////////////////////////////////
+//
+// Play graze
+//
+//////////////////////////////////
+
+program AnimalPlayGraze_tr
+{
+	!OnGrazeyMaterial -> MoveWander, SpeedWalk, Mood("UNALRTD"), SpeechEvent("AnimalPlayGrazing");
+
+	// the gringo should fulfill the motive in this case
+	TRUE ->	AnimalGraze, Mood("UNALRTD"), SpeechEvent("AnimalPlayGrazing");
+}
+
+////////////////////////////////////
+//
+//
+// PLAYING DEBUG GROUPS
+//
+//
+///////////////////////////////////
+
+debuggroup Animal_Play_Reaction
+{
+	filter Player(x), predicate IsActorWhistling(x), label "IsActorWhistling $x";
+	filter SpatialDistanceClose(x), predicate WasMeleedByOthersRecently(x), label "WasMeleedByOthersRecently $x";
+	filter WasVisibleSomewhatRecently(x), predicate WasVisibleSomewhatRecently(x), label "WasVisibleSomewhatRecently $x";
+	
+}
+
+debuggroup Animal_Play_Common
+{
+	filter TRUE, predicate AnimalEntertainmentLow, label "AnimalEntertainmentLow";
+	filter TRUE, predicate AnimalIsRested, label "AnimalIsRested";
+	filter TRUE, predicate AnimalIsHungry, label "AnimalIsHungry";
+	filter TRUE, predicate CanAnimalPlayActiveWith(x), label "CanAnimalPlayActiveWith(x)";	
+	filter TRUE, predicate CanAnimalPlayChill, label "CanAnimalPlayChill";	
+	filter TRUE, predicate CanAnimalPlayWith(x), label "CanAnimalPlayWith $x";
+	filter TRUE, predicate CanAnimalMakeNewFriend(x), label "CanAnimalMakeNewFriend $x";
+	
+	filter CanAnimalPlayActiveWith(x), predicate CanAnimalPlayHunt(x), label "CanAnimalPlayHunt $x";
+	filter CanAnimalPlayActiveWith(x), predicate CanAnimalPlayBeg(x), label "CanAnimalPlayBeg $x";
+	filter CanAnimalPlayActiveWith(x), predicate CanAnimalPlayChase(x), label "CanAnimalPlayChase $x";	
+	filter CanAnimalPlayActiveWith(x), predicate CanAnimalPlaySniff(x), label "CanAnimalPlaySniff $x";	
+}
+
+
+//
+// PURPOSE:	Hunt-related debugging stuff.
+//
+debuggroup Animal_Play_humans
+{
+	// human specific
+	filter ObjectClassCreatureRaceHuman(x), predicate WasFriendToMeInTheLastThreeMinutes(x), label "WasFriendToMeInTheLastThreeMinutes $x";	
+	filter ObjectClassCreatureRaceHuman(x), predicate HasBeenFriendToMe(x), label "HasBeenFriendToMe $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate WasFriendToMeSomewhatRecently(x), label "WasFriendToMeSomewhatRecently $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate WasFriendToMeRecently(x), label "WasFriendToMeRecently $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate CanAnimalPlayWith(x), label "CanAnimalPlayWith $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate SpatialDistanceVeryClose(x), label "SpatialDistanceVeryClose $x";
+}
+
+debuggroup Animal_Play_Hunt
+{
+	filter TRUE, predicate AnimalFoodLow, label "AnimalFoodLow";
+	filter TRUE, predicate AnimalFoodHigh, label "AnimalFoodHigh";
+	filter AnimalSpeciesCanPlayHunt(x), predicate CanAnimalPlayActiveWith(x), label "CanAnimalPlayActiveWith $x";	
+	filter AnimalSpeciesCanPlayHunt(x), predicate CanAnimalPlayWith(x), label "CanAnimalPlayWith $x";
+	filter AnimalSpeciesCanPlayHunt(x), predicate CanAnimalMakeNewFriend(x), label "CanAnimalMakeNewFriend $x";
+	filter AnimalSpeciesCanPlayHunt(x), predicate CanAnimalPlayHunt(x), label "CanAnimalPlayHunt $x";
+	filter CanAnimalPlayHunt(x), predicate SpatialDistanceClose(x), label "SpatialDistanceClose $x";
+	filter CanAnimalPlayHunt(x), predicate WasMeleedByMeRecently(x), label "WasMeleedByMeRecently $x";	
+	filter CanAnimalPlayHunt(x), predicate WasTargetedByMeRecently(x), label "WasTargetedByMeRecently $x";			
+	
+}
+
+debuggroup Animal_Play_Chase_Vehicles
+{
+	filter TRUE, predicate AnimalTuningCanChaseVehicles, label "AnimalTuningCanChaseVehicles";
+	filter ObjectClassTypeVehicle(x), predicate CanAnimalPlayChase(x), label "CanAnimalPlayChase $x";
+	filter ObjectClassTypeVehicle(x), predicate IsMoving(x), label "IsMoving $x";
+	filter ObjectClassTypeVehicle(x), predicate SpatialDistanceVeryClose(x), label "SpatialDistanceVeryClose $x";
+}
+
+debuggroup Animal_Play_Follow
+{
+	filter WasFriendToMeInTheLastThreeMinutes(x), predicate CanAnimalPlayFollow(x), label "CanAnimalPlayFollow $x";
+	filter WasFriendToMeInTheLastThreeMinutes(x), predicate SpatialDistanceClose(x), label "SpatialDistanceClose $x";
+	filter WasFriendToMeInTheLastThreeMinutes(x), predicate SpatialDistanceVeryClose(x), label "SpatialDistanceVeryClose $x";
+	filter WasFriendToMeInTheLastThreeMinutes(x), predicate SpatialMeAheadOfObject(x), label "SpatialMeAheadOfObject $x";	
+	filter WasFriendToMeInTheLastThreeMinutes(x), predicate AnimalToldToStayCloseSomewhatRecently, label "AnimalToldToStayCloseSomewhatRecently";	
+	filter WasFriendToMeInTheLastThreeMinutes(x), predicate IsMovingFast(x), label "IsMovingFast $x";
+	filter WasFriendToMeInTheLastThreeMinutes(x), predicate ShouldStopPlayFollow(x), label "ShouldStopPlayFollow $x";
+	filter WasFriendToMeInTheLastThreeMinutes(x), predicate WasVisibleRecently(x), label "WasVisibleRecently $x";
+}
+
+
+debuggroup Animal_Play_Chase
+{
+	filter TRUE, predicate ActiveTimeOfDay, label "ActiveTimeOfDay";
+	filter AnimalSpeciesCanPlayChase(x), predicate CanAnimalPlayChase(x), label "CanAnimalPlayChase $x";
+	
+	filter AnimalSpeciesCanPlayChase(x), predicate AnimalEntertainmentLow, label "AnimalEntertainmentLow";
+	filter AnimalSpeciesCanPlayChase(x), predicate AnimalIsRested, label "AnimalIsRested";
+	filter AnimalSpeciesCanPlayChase(x), predicate CanAnimalPlayActiveWith(x), label "CanAnimalPlayActiveWith $x";	
+	filter AnimalSpeciesCanPlayChase(x), predicate CanAnimalPlayWith(x), label "CanAnimalPlayWith $x";
+	filter AnimalSpeciesCanPlayChase(x), predicate CanAnimalMakeNewFriend(x), label "CanAnimalMakeNewFriend $x";
+	filter AnimalSpeciesCanPlayChase(x), predicate SpatialDistanceClose(x), label "SpatialDistanceClose $x";
+	filter AnimalSpeciesCanPlayChase(x), predicate IsDomesticated(x), label "IsDomesticated $x";
+	filter AnimalSpeciesCanPlayChase(x), predicate FiredVeryRecently(x), label "FiredVeryRecently $x";
+	
+	
+	
+}
+
+debuggroup Animal_Play_Sleep
+{
+	filter TRUE, predicate CanAnimalSleep, label "CanAnimalSleep";
+	filter CanAnimalSleep, predicate AnimalEnergyExtremelyLow, label "AnimalEnergyLow";
+	filter CanAnimalSleep, predicate ActionWarnIsWarm, label "ActionWarnIsWarm";
+	filter CanAnimalSleep, predicate AnimalTuningPrefersFlock, label "AnimalTuningPrefersFlock";
+	filter CanAnimalSleep, predicate FlockIsSleepy, label "FlockIsSleepy";
+	filter CanAnimalSleep, predicate FlockIsTired, label "FlockIsTired";	
+
+}
+
+
+debuggroup Animal_Play_Graze
+{
+	filter TRUE, predicate CanAnimalGraze, label "CanAnimalGraze";
+	filter CanAnimalGraze, predicate AnimalFoodLow, label "AnimalFoodLow";
+	filter TRUE, predicate OnGrazeyMaterial, label "OnGrazeyMaterial";		
+	filter TRUE, predicate OnHorsePath, label "OnHorsePath";		
+	filter TRUE, predicate OnVehiclePath, label "OnVehiclePath";		
+	filter TRUE, predicate OnTrainTracks, label "OnTrainTracks";		
+	filter TRUE, predicate OnGrassyMaterial, label "OnGrassyMaterial";		
+	
+	filter TRUE, predicate AnimalIsHungry, label "AnimalIsHungry";		
+	filter TRUE, predicate FlockIsHungry, label "FlockIsHungry";
+
+}
+
+
+
+debuggroup Animal_Play_Sniff
+{
+	filter AnimalSpeciesCanPlaySniff(x), predicate AnimalEntertainmentLow, label "AnimalEntertainmentLow";
+	filter AnimalSpeciesCanPlaySniff(x), predicate AnimalIsRested, label "AnimalIsRested";
+	filter AnimalSpeciesCanPlaySniff(x), predicate CanAnimalPlayActiveWith(x), label "CanAnimalPlayActiveWith $x";	
+	filter AnimalSpeciesCanPlaySniff(x), predicate CanAnimalPlayWith(x), label "CanAnimalPlayWith $x";
+	filter AnimalSpeciesCanPlaySniff(x), predicate CanAnimalMakeNewFriend(x), label "CanAnimalMakeNewFriend $x";
+	filter AnimalSpeciesCanPlaySniff(x), predicate AnimalSpeciesCanPlaySniff(x), label "AnimalSpeciesCanPlaySniff $x";		
+	filter VeryRecentSniff(x), predicate VeryRecentSniff(x), label "VeryRecentSniff $x";	
+	
+	filter TRUE, predicate AnimalTuningCanSniffEnvironment, label "AnimalTuningCanSniffEnvironment";		
+	filter TRUE, predicate OnSniffyMaterial, label "OnSniffyMaterial";		
+	
+	
+}
+
+debuggroup Animal_Play_Beg
+{
+	filter AnimalSpeciesCanPlayBeg(x), predicate CanAnimalPlayBeg(x), label "CanAnimalPlayBeg $x";		
+	filter CanAnimalPlayBeg(x), predicate SpatialDistanceClose(x), label "SpatialDistanceClose $x";		
+	filter CanAnimalPlayBeg(x), predicate IsActorWhistling(x), label "IsActorWhistling $x";	
+	filter CanAnimalPlayBeg(x), predicate AnimalHealthModerate, label "AnimalHealthModerate";	
+
+	filter CanAnimalPlayBeg(x), predicate CanAnimalPlayReqs(x), label "CanAnimalPlayReqs $x";	
+	filter CanAnimalPlayBeg(x), predicate CanAnimalPlayWithTarget(x), label "CanAnimalPlayWithTarget $x";		
+	filter CanAnimalPlayBeg(x), predicate CanAnimalPlayOnFootRestrictions(x), label "CanAnimalPlayOnFootRestrictions $x";	
+	filter CanAnimalPlayBeg(x), predicate EnemyOfMySpecies(x), label "EnemyOfMySpecies $x";	
+	
+}
+
+debuggroup Animal_Play_Growl
+{
+	filter AnimalSpeciesCanPlayGrowl(x), predicate AnimalSpeciesCanPlayGrowl(x), label "AnimalSpeciesCanPlayGrowl $x";		
+	filter AnimalSpeciesCanPlayGrowl(x), predicate WasFriendToMeRecently(x), label "WasFriendToMeRecently $x";		
+	
+	filter AnimalSpeciesCanPlayGrowl(x), predicate AnimalSocialLow, label "AnimalSocialLow";		
+	filter AnimalSpeciesCanPlayGrowl(x), predicate AnimalSocialHigh, label "AnimalSocialHigh";			
+	
+	filter VeryRecentSniff(x), predicate VeryRecentSniff(x), label "VeryRecentSniff $x";	
+	filter VeryRecentGrowl(x), predicate VeryRecentGrowl(x), label "VeryRecentGrowl $x";	
+	
+	filter AnimalSpeciesCanPlayGrowl(x), predicate SpatialDirectionBehindMe(x), label "SpatialDirectionBehindMe $x";		
+	filter AnimalSpeciesCanPlayGrowl(x), predicate SpatialDirectionAheadOfMe(x), label "SpatialDirectionAheadOfMe $x";		
+}

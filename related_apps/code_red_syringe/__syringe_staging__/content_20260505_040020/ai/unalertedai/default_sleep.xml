@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiUnalertedBehavior__SleepEvaluatorData>
+  <DecisionHandlerData>
+    <Item type="aiUnalertedBehavior__DecisionHandlerTimeBasedData">
+      <BaseScore value="20.0"/>
+      <StartExecutingEarliestTime value="19.0"/>
+      <StartExecutingLatestTime value="5.5"/>
+      <StopExecutingTime value="6.0"/>
+    </Item>
+  </DecisionHandlerData>
+</aiUnalertedBehavior__SleepEvaluatorData>
+

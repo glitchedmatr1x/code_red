@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiUnalertedBehavior__EatEvaluatorData>
+  <DecisionHandlerData>
+    <Item type="aiUnalertedBehavior__DecisionHandlerTimeBasedData">
+      <BaseScore value="10.0"/>
+      <InertiaBonus value="10.0"/>
+      <InertiaDropoffStart value="20.0"/>
+      <ExtendedPlayTime value="0.0"/>
+      <CooldownRecoveryStart value="20.0"/>
+      <StartExecutingEarliestTime value="7.0"/>
+      <StartExecutingLatestTime value="18.0"/>
+      <StopExecutingTime value="18.5"/>
+    </Item>
+    <Item type="aiUnalertedBehavior__DecisionHandlerMaterialSearchData">
+      <NavQueryCooldown value="10.0"/>
+      <NavQueryRadius value="200.0"/>
+      <bShouldCheckSlope value="true"/>
+      <bRequireUniformNeighbors value="true"/>
+      <MaterialFilter>
+        <bAcceptGrass value="true"/>
+      </MaterialFilter>
+    </Item>
+  </DecisionHandlerData>
+</aiUnalertedBehavior__EatEvaluatorData>
+

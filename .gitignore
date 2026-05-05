@@ -169,3 +169,6 @@ cython_debug/
 # Cursor
 .cursorignore
 .cursorindexingignore
+*.txt
+CodeRED_Peer_Clone_Playable_v0_3.zip
+APPLY_NOTES.txt

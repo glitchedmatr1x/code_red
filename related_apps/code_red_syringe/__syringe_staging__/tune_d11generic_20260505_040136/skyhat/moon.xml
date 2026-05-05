@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rage__SkyhatMiniNoise>
+	<HDRExposure value="3.087500"/>
+	<HDRSunExposure value="0.562500"/>
+	<HDRExposureClamp x="20.000000" y="20.000000" z="20.000000"/>
+	<StarFieldRepeat value="6.700000"/>
+	<MoonSize value="2.25000"/>
+	<MoonPhase value="21"/>
+	<MoonPosition x="-0.367092" y="0.401240" z="0.839196"/>
+	<GalaxyOffset x="-0.035000" y="-0.300000"/>
+	<on value="true"/>
+</rage__SkyhatMiniNoise>

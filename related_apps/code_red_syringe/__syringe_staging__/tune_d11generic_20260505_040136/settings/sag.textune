@@ -1,0 +1,74 @@
+DC_road_blank_as_03.tex {
+	ps2_bias -2
+	ps2_inclination 0
+}
+
+DC_bk_01_grass_detail.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_03_grass_detail.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_04_grass_detail.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_05_grass_detail.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_115DC_bk_17grass_green-01_df_.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_16grass_green-01_df_.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_17grass_green-01_df_.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_18grass_green-01_df_.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_19grass_green-01_df_.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_21DC_bk_17grass_green-01_df_.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_64DC_bk_17grass_green-01_df_.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+grass_green-01_df_.tex {
+	ps2_bias -1.4
+	ps2_inclination 0
+}
+
+DC_bk_76_b2_wall02.tex {
+	ps2_bias -9.0
+	ps2_inclination 0
+}
+
+DC_bk_76_b2_wall01.tex {
+	ps2_bias -9.0
+	ps2_inclination 0
+}

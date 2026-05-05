@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sagPlayerInputFile>
+	<sagPlayerInput Name="Config1">
+		<sagPlayerMapper Name="Car">
+			<Map Value="WpnRadialSelect"               Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@RADIAL_MENU.SHOW_HIDE"  Port="-1" Inverted="F"/>
+			<Map Value="WpnItemMenu"                   Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@RADIAL_MENU.SHOW_HIDE"  Port="-1" Inverted="F"/>
+			<Map Value="InvScrnShow"                   Source="IOMS_DIGITAL_GAME_ACTION"   Parameter="@GENERIC.INVENTORY"      Port="-1" Inverted="F"/>
+		</sagPlayerMapper>
+	</sagPlayerInput>
+</sagPlayerInputFile>

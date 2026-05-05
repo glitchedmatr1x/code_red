@@ -1,0 +1,214 @@
+// CodeRED Chaos Pass: predator/livestock side uses harsher factionrelations from ambient/factionrelations.xml.
+// PURPOSE:	This file contains TR programs and rules relevant for predator
+//			animals hunting for prey.
+// NOTES:	All programs and predicates defined here use AnimalHunt as a prefix
+//			(or CanAnimalHunt in the case of preconditions). Please keep it that way. /FF
+
+//-----------------------------------------------------------------------------
+
+////////////////////////////////////
+//
+//
+// HUNTING RULES
+//
+//
+///////////////////////////////////
+
+// PURPOSE:	Preconditions for the TR programs defined in this file.
+rules AnimalHuntRules
+{
+	//
+	// start here
+	//
+	PositionKnownRecently(x) || (AnimalTuningPrefersFlock && PositionKnownSomewhatRecently(x)) /*&& (At(x) || CanMoveTo(x))*/			-> HuntPositionKnown(x);
+
+	AnimalTuningMotiveLessThanFoodIgnore && (!AnimalTuningPrefersFlock || FlockIsHungry ) 						-> AnimalIsHungry;
+	!AnimalTuningPrefersFlock || FlockCanMarkStalking(x)														-> CanAnimalMarkTarget(x);	
+		
+	Alive(x)  && AnimalPrey(x) && !FlightFlying(x) && HuntPositionKnown(x)										-> CanAnimalHuntPrey(x);
+	CanAnimalTaskAttack(x) 																			 			-> CanAnimalHuntAttack(x);
+	(!AnimalSpeciesThreatning(x) || CanAnimalTriggerAttackHighPriority(x)) 										-> CanAnimalHuntThreats(x);
+	
+	CanAnimalHuntAttack(x)
+	&& CanAnimalMarkTarget(x)
+	&& !HasRider(x)
+	&& CanAnimalHuntPrey(x)																	-> CanAnimalTaskHunt(x);	
+	
+	CanAnimalTaskHunt(x) && CanAnimalHuntThreats(x)	&& HuntPositionKnown(x)					-> CanAnimalHunt(x);
+	
+	CanAnimalHunt(x) && AnimalIsRested && AnimalIsHungry 									-> CanAnimalTriggerHunt(x);
+	CanAnimalHunt(x) && WasTargetedByMeRecently(x) && !AnimalIsTired && !AnimalFoodHigh 	-> CanAnimalContinueToHunt(x);
+
+	
+	CanAnimalHunt(x) && WasTargetedByMeRecently(x) && ObjectClassCreatureRaceHuman(x) 							-> HuntingHumans(x);
+
+	CanAnimalTaskAttack(x) && !WasFriendToMeRecently(x)															-> CanAnimalHuntKill(x);
+	
+	CanAnimalTaskAttack(x) && AnimalSpeciesCanPlayHunt(x)														-> CanAnimalHuntPlayKill(x);		
+
+
+}
+
+rules AnimalHuntPursueRules
+{
+	AnimalTuningCloserThanPredatorStalkPreyWithinPursuitRange(x)
+	|| (AnimalPreyFleeing(x) && AnimalTuningCloserThanPredatorStalkPreyWithinPursuitRangeFleeing(x))			-> PreyIsInPursuitRange(x);	
+	
+
+	HuntPositionKnown(x) && CanMoveCloserTo(x) 																				-> CanAnimalHuntStalk(x);
+	HuntPositionKnown(x) && ( EventActive("AnimalPursuit") || !AnimalTuningPrefersFlock || FlockIsInHuntPosition(x) )		-> CanAnimalHuntPursue(x);
+	
+	
+	AnimalPreyFleeing(x) || HasStalkedForMinTime(x) || SpatialDistanceExtremelyClose(x) || FlockIsInHotPursuit(x) 	-> PreyIsInValidPursuitState(x);
+	!AnimalTuningPrefersFlock || (FlockIsInHuntPosition(x) || FlockIsInHotPursuit(x))								-> PredatorIsInValidPursuitState(x);
+
+	AnimalTuningCloserThanPredatorStalkPreyWithinPursuitRangeFleeing(x) && AnimalPreyFleeing(x) 	-> PreyShouldTriggerPursuit(x);
+	AnimalTuningCloserThanPredatorStalkPreyWithinPursuitRange(x) && SpatialDirectlyInFrontOfMe(x) 	-> PreyShouldTriggerPursuit(x);
+	HasStalkedForMaxTime(x) && SpatialMeBehindObject(x) 											-> PreyShouldTriggerPursuit(x);
+
+	PreyIsInValidPursuitState(x) && PredatorIsInValidPursuitState(x) && PreyShouldTriggerPursuit(x) -> TriggerAnimalHuntPursuit(x);
+
+
+	CanAnimalHuntPursue(x) -> ContinueAnimalHuntPursuit(x);
+
+}
+
+
+////////////////////////////////////
+//
+//
+// HUNTING PROGRAMS
+//
+//
+///////////////////////////////////
+
+// PURPOSE:	Hunt for a particular target.
+program AnimalHunt_tr(x)
+{
+	TRUE -> AnimalHuntWithMood_tr(x), AnimalMarkTarget(x), Mood("HUNT"), HeadLookAt(x);
+}
+
+program AnimalHuntWithMood_tr(x)
+{
+	// 
+	// pursuit hysteresis
+	//
+	EventActive("AnimalPursuit") && ContinueAnimalHuntPursuit(x) 	->	AnimalHuntPursue_tr(x), SpeechEvent("AnimalPursuit"), AnimalMarkPursuing(x);
+	CanAnimalHuntPursue(x) && TriggerAnimalHuntPursuit(x)			->	AnimalHuntPursue_tr(x), SpeechEvent("AnimalPursuit"), AnimalMarkPursuing(x);
+		
+	//
+	// stalk conditions
+	//
+	CanAnimalHuntStalk(x) -> AnimalHuntStalk_tr(x);
+
+
+	// fallback
+	TRUE -> AnimalAlertWithBroadcast(x);
+}
+
+// PURPOSE:	Engage in a pursuit of the target animal.
+program AnimalHuntPursue_tr(x)
+{
+	// actually try to kill
+	//CanAnimalHuntKill(x) && !WasMeleedByMeJustNow(x) -> AnimalPrimaryMelee(x);
+
+	// use non-lethal attack
+	CanAnimalHuntPlayKill(x) && !WasMeleedByMeVeryRecently(x) -> AnimalFightWithBroadcast(x), Mood("PLAY"), FulfillMotive("Food", 50.0);
+		
+	CanAnimalHuntKill(x) -> AnimalFightWithBroadcast(x);
+	
+	TRUE ->	MoveCloserTo(x), SpeedRun;
+}
+
+
+// PURPOSE:	Stalk a hunt target. This involves carefully watching and
+//			getting closer to or waiting for the target.
+program AnimalHuntStalk_tr(x)
+{
+
+	//
+	// creep forward conditions
+	//
+	AnimalTuningCloserThanPredatorStalkPreyWithinMaxStalkRange(x) && ClosestStalkTarget(x) && SpatialMeBehindObject(x) -> AnimalStalkFlock(x), AnimalMarkStalking(x);
+	AnimalTuningCloserThanPredatorStalkPreyWithinMaxStalkRange(x) && ClosestStalkTarget(x) && HasStalkedForMinTime(x) -> AnimalStalkFlock(x), AnimalMarkStalking(x);
+	
+	//
+	// hold conditions
+	//		
+	AnimalTuningCloserThanPredatorStalkPreyWithinMinStalkRange(x) && ClosestStalkTarget(x)  -> Face(x), AnimalMarkStalking(x);
+	
+	//
+	// hunt move closer / spread out if you are a flock
+	//
+	TRUE ->  AnimalHuntFlock(x); 
+	
+}
+
+
+////////////////////////////////////
+//
+//
+// HUNTING DEBUG GROUPS
+//
+//
+///////////////////////////////////
+
+
+
+debuggroup Animal_Hunt_CanHunt
+{
+	filter CanAnimalHuntPrey(x), predicate CanAnimalHuntPrey(x), label "CanAnimalHuntPrey $x";
+	filter CanAnimalHuntPrey(x), predicate AnimalIsHungry, label "AnimalIsHungry";	
+	filter CanAnimalHuntPrey(x), predicate AnimalIsRested, label "AnimalIsRested";
+	filter CanAnimalHuntPrey(x), predicate AnimalTuningPrefersFlock, label "AnimalTuningPrefersFlock";	
+	filter CanAnimalHuntPrey(x), predicate FlockIsHungry, label "FlockIsHungry";	
+	filter CanAnimalHuntPrey(x), predicate FlockIsSmall, label "FlockIsSmall";	
+}
+
+debuggroup Animal_Hunt_Prey
+{
+
+	filter AnimalTuningPrefersFlock, predicate FlockIsHungry, label "FlockIsHungry";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate FlockIsInHuntPosition(x), label "FlockIsInHuntPosition $x";	
+			
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate FlockIsInHotPursuit(x), label "FlockIsInHotPursuit $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate HasStalkedForMinTime(x), label "HasStalkedForMinTime $x";	
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate SpatialMeBehindObject(x), label "SpatialMeBehindObject $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate AnimalPreyFleeing(x), label "Prey Fleeing $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate AnimalTuningCloserThanPredatorStalkPreyWithinPursuitRange(x), label "Prey within pursuit range $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate AnimalTuningCloserThanPredatorStalkPreyWithinPursuitRangeFleeing(x), label "Prey within pursuit range (fleeing) $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate AnimalTuningCloserThanPredatorStalkPreyWithinMaxStalkRange(x), label "Prey within max stalk range $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate AnimalTuningCloserThanPredatorStalkPreyWithinMinStalkRange(x), label "Prey within min stalk range $x";
+
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate SpatialDistanceVeryClose(x), label "Prey very close $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate SpatialDistanceClose(x), label "Prey close $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate SpatialDistanceFar(x), label "Prey far $x";
+
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate CanAnimalHuntStalk(x), label "CanAnimalHuntStalk $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate CanAnimalHuntPursue(x), label "CanAnimalHuntPursue $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate CanAnimalHunt(x), label "CanAnimalHunt $x";
+	filter AnimalSpeciesCanPlayHunt(x) || AnimalPrey(x), predicate HuntingHumans(x), label "HuntingHumans $x";
+}
+
+
+debuggroup Animal_Hunt_Pursuit
+{
+	filter CanAnimalHunt(x), predicate HuntPositionKnown(x), label "HuntPositionKnown $x";	
+	filter CanAnimalHunt(x), predicate CanMoveTo(x), label "CanMoveTo $x";
+	filter CanAnimalHunt(x), predicate AnimalTuningPrefersFlock, label "AnimalTuningPrefersFlock";
+	filter CanAnimalHunt(x), predicate FlockIsInHuntPosition(x), label "FlockIsInHuntPosition $x";
+
+	filter CanAnimalHunt(x), predicate CanAnimalHuntPursue(x), label "CanAnimalHuntPursue $x";	
+	filter CanAnimalHuntPursue(x), predicate AnimalPreyFleeing(x), label "AnimalPreyFleeing $x";	
+	filter CanAnimalHuntPursue(x), predicate HasStalkedForMinTime(x), label "HasStalkedForMinTime $x";
+	filter CanAnimalHuntPursue(x), predicate SpatialDistanceExtremelyClose(x), label "SpatialDistanceExtremelyClose $x";
+	filter CanAnimalHuntPursue(x), predicate FlockIsInHotPursuit(x), label "FlockIsInHotPursuit $x";	
+	filter CanAnimalHuntPursue(x), predicate FlockIsInHuntPosition(x), label "FlockIsInHuntPosition $x";
+	filter CanAnimalHuntPursue(x), predicate AnimalTuningCloserThanPredatorStalkPreyWithinPursuitRangeFleeing(x), label "PreyWithinPursuitRangeFleeing $x";
+	filter CanAnimalHuntPursue(x), predicate AnimalTuningCloserThanPredatorStalkPreyWithinPursuitRange(x), label "PreyWithinPursuitRange $x";
+	filter CanAnimalHuntPursue(x), predicate SpatialDirectlyInFrontOfMe(x), label "SpatialDirectlyInFrontOfMe $x";
+}
+
+
+//-----------------------------------------------------------------------------
+

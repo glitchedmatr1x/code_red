@@ -1,0 +1,14 @@
+reference T:/rdr2/Art/Worlds/territory/sw/models/props/p_uti_eating01x.mb
+transform 0 0 0.316 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_table34x.mb
+transform 0 -0.005334307672 -1.702062304 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_spoon02x.mb
+transform 0.2937 0.7942 -0.9181 0 -0.412 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_knife04x.mb
+transform 0.2424 0.7942 -0.9181 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_fork01x.mb
+transform -0.1932 0.8028 -0.9214 -2.4254 -1.1925 -178.6316
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_food02x.mb
+transform -0.075 0.8 -0.89 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_chair05x.mb
+transform 0.2827 0 -0.8482 0 180 0

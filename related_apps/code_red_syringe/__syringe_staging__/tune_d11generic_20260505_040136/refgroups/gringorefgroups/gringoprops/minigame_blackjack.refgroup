@@ -1,0 +1,11 @@
+reference T:/rdr2/Art/Worlds/territory/shared/models/inst/i_gen_tableBlackjack01x.mb
+transform 0 0 -0.6155118843 0 0 0
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_stool01x.mb
+transform -0.1277969954 0 -0.1127988297 0 0 0
+attribute rstarGringoGeneric rstarGringoGeneric_Type string sitBlackJack
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_stool01x.mb
+transform 0.7717898763 0 -0.4528625343 0 63.87951271 0
+attribute rstarGringoGeneric rstarGringoGeneric_Type string sitBlackJack
+reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_stool01x.mb
+transform -0.9102082762 0 -0.7067194972 0 -61.38978478 0
+attribute rstarGringoGeneric rstarGringoGeneric_Type string sitBlackJack

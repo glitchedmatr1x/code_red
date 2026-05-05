@@ -1,0 +1,31 @@
+
+<actor name="template_Vehicle" abstract="0" updatestate="Asleep">
+	<attributes/>
+	<contents>
+		<Vehicle name="ActorSpecific">
+			<attributes>
+				<DeathExplosionName type="string" value="explosion_car" maxlength="32"/>
+				<DeathExplosionLocatorName type="string" value="car_explode" maxlength="32"/>
+				<SlightlyDamagedEffectName type="string" value="smoke_largemuzzle_up" maxlength="32"/>
+				<HeavilyDamagedEffectName type="string" value="smoketrail2" maxlength="32"/>
+				<FullyDamagedEffectName type="string" value="inferno_human" maxlength="32"/>
+			</attributes>
+			<contents/>
+		</Vehicle>
+
+		<VehicleAudio name="VehicleAudio">
+			<attributes>
+			</attributes>
+			<contents/>
+		</VehicleAudio>
+				
+    <Target>
+      <attributes>
+        <m_TargetOffset value="0 0.85 0"/>
+        <m_CanBeSoftLocked type="bool" value="0" />
+        <m_CanBeHardLocked type="bool" value="0" />
+        <m_CanBeMeleeTargeted type="bool" value="0"/>
+      </attributes>
+    </Target>
+	</contents>
+</actor>

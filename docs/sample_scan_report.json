@@ -1,0 +1,53 @@
+{
+  "app": "Code RED - Main Workbench",
+  "version": "layout-consolidation-pass-2026-05-05",
+  "root_path": "/mnt/data/Code_RED_layout_consolidation_pass/test_workspace",
+  "generated_at": "2026-05-05 18:07:08",
+  "lane_counts": {
+    "Archives": 0,
+    "Textures": 1,
+    "Meshes": 1,
+    "Scripts": 1,
+    "Strings": 0,
+    "Audio": 0,
+    "World": 0,
+    "Other": 0
+  },
+  "records_by_lane": {
+    "Archives": [],
+    "Textures": [
+      {
+        "path": "/mnt/data/Code_RED_layout_consolidation_pass/test_workspace/body.dds",
+        "extension": ".dds",
+        "size": 7,
+        "sha1_prefix": "8ab5cbe29ff8",
+        "source": "filesystem",
+        "notes": []
+      }
+    ],
+    "Meshes": [
+      {
+        "path": "/mnt/data/Code_RED_layout_consolidation_pass/test_workspace/model.wft",
+        "extension": ".wft",
+        "size": 4,
+        "sha1_prefix": "52da7846e396",
+        "source": "filesystem",
+        "notes": []
+      }
+    ],
+    "Scripts": [
+      {
+        "path": "/mnt/data/Code_RED_layout_consolidation_pass/test_workspace/test.wsc",
+        "extension": ".wsc",
+        "size": 12,
+        "sha1_prefix": "21a74fe54a10",
+        "source": "filesystem",
+        "notes": []
+      }
+    ],
+    "Strings": [],
+    "Audio": [],
+    "World": [],
+    "Other": []
+  }
+}

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rdrWeatherSphereManager>
+	<WeatherSpheres>
+		<Item>
+			<OuterSphere x="143.000000" y="96.000000" z="2303.000000" w="374.000000"/>
+			<InnerRadius value="199.000000"/>
+			<Weather value="13"/>
+			<Weather2 value="3"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="0"/>
+			<Weather2IfExcluded value="0"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="3.000000"/>
+			<WeatherProbability2 value="2.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="0.000000"/>
+			<EndTime value="24.000000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="20.000000"/>
+			<WindOverrideVal value="0.000000"/>
+			<IsExclusionSphere value="false"/>
+			<IsEnabled value="true"/>
+			<OverridesWind value="false"/>
+		</Item>
+		<Item>
+			<OuterSphere x="-730.700012" y="180.000000" z="1471.000000" w="540.000000"/>
+			<InnerRadius value="460.000000"/>
+			<Weather value="14"/>
+			<Weather2 value="-1"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="0"/>
+			<Weather2IfExcluded value="0"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="1.000000"/>
+			<WeatherProbability2 value="0.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="18.500000"/>
+			<EndTime value="5.500000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="20.000000"/>
+			<WindOverrideVal value="0.000000"/>
+			<IsExclusionSphere value="false"/>
+			<IsEnabled value="true"/>
+			<OverridesWind value="false"/>
+		</Item>
+		<Item>
+			<OuterSphere x="-730.700012" y="180.000000" z="1471.000000" w="540.000000"/>
+			<InnerRadius value="460.000000"/>
+			<Weather value="0"/>
+			<Weather2 value="1"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="2"/>
+			<Weather2IfExcluded value="2"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="1.000000"/>
+			<WeatherProbability2 value="0.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="5.400000"/>
+			<EndTime value="18.600000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="20.000000"/>
+			<WindOverrideVal value="0.000000"/>
+			<IsExclusionSphere value="true"/>
+			<IsEnabled value="true"/>
+			<OverridesWind value="false"/>
+		</Item>
+		<Item>
+			<OuterSphere x="-841.000000" y="190.000000" z="900.000000" w="241.000000"/>
+			<InnerRadius value="210.000000"/>
+			<Weather value="5"/>
+			<Weather2 value="-1"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="0"/>
+			<Weather2IfExcluded value="0"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="1.000000"/>
+			<WeatherProbability2 value="0.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="0.000000"/>
+			<EndTime value="24.000000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="10.000000"/>
+			<WindOverrideVal value="0.000000"/>
+			<IsExclusionSphere value="false"/>
+			<IsEnabled value="true"/>
+			<OverridesWind value="false"/>
+		</Item>
+		<Item>
+			<OuterSphere x="0.000000" y="0.000000" z="0.000000" w="0.000000"/>
+			<InnerRadius value="0.000000"/>
+			<Weather value="0"/>
+			<Weather2 value="-1"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="0"/>
+			<Weather2IfExcluded value="0"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="1.000000"/>
+			<WeatherProbability2 value="0.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="0.000000"/>
+			<EndTime value="24.000000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="0.000000"/>
+			<WindOverrideVal value="0.000000"/>
+			<IsExclusionSphere value="false"/>
+			<IsEnabled value="false"/>
+			<OverridesWind value="false"/>
+		</Item>
+		<Item>
+			<OuterSphere x="0.000000" y="0.000000" z="0.000000" w="0.000000"/>
+			<InnerRadius value="0.000000"/>
+			<Weather value="0"/>
+			<Weather2 value="-1"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="0"/>
+			<Weather2IfExcluded value="0"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="1.000000"/>
+			<WeatherProbability2 value="0.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="0.000000"/>
+			<EndTime value="24.000000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="0.000000"/>
+			<WindOverrideVal value="0.000000"/>
+			<IsExclusionSphere value="false"/>
+			<IsEnabled value="false"/>
+			<OverridesWind value="false"/>
+		</Item>
+		<Item>
+			<OuterSphere x="0.000000" y="0.000000" z="0.000000" w="0.000000"/>
+			<InnerRadius value="0.000000"/>
+			<Weather value="0"/>
+			<Weather2 value="-1"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="0"/>
+			<Weather2IfExcluded value="0"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="1.000000"/>
+			<WeatherProbability2 value="0.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="0.000000"/>
+			<EndTime value="24.000000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="0.000000"/>
+			<WindOverrideVal value="0.000000"/>
+			<IsExclusionSphere value="false"/>
+			<IsEnabled value="false"/>
+			<OverridesWind value="false"/>
+		</Item>
+		<Item>
+			<OuterSphere x="0.000000" y="0.000000" z="0.000000" w="0.000000"/>
+			<InnerRadius value="0.000000"/>
+			<Weather value="0"/>
+			<Weather2 value="-1"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="0"/>
+			<Weather2IfExcluded value="0"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="1.000000"/>
+			<WeatherProbability2 value="0.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="0.000000"/>
+			<EndTime value="24.000000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="0.000000"/>
+			<WindOverrideVal value="0.000000"/>
+			<IsExclusionSphere value="false"/>
+			<IsEnabled value="false"/>
+			<OverridesWind value="false"/>
+		</Item>
+		<Item>
+			<OuterSphere x="-850.000000" y="100.000000" z="2450.000000" w="450.000000"/>
+			<InnerRadius value="250.000000"/>
+			<Weather value="2"/>
+			<Weather2 value="-1"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="0"/>
+			<Weather2IfExcluded value="0"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="1.000000"/>
+			<WeatherProbability2 value="0.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="0.000000"/>
+			<EndTime value="24.000000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="10.000000"/>
+			<WindOverrideVal value="1.300000"/>
+			<IsExclusionSphere value="false"/>
+			<IsEnabled value="false"/>
+			<OverridesWind value="true"/>
+		</Item>
+		<Item>
+			<OuterSphere x="-500.000000" y="0.000000" z="3020.000000" w="239.000000"/>
+			<InnerRadius value="165.000000"/>
+			<Weather value="2"/>
+			<Weather2 value="-1"/>
+			<Weather3 value="-1"/>
+			<WeatherIfExcluded value="0"/>
+			<Weather2IfExcluded value="0"/>
+			<Weather3IfExcluded value="0"/>
+			<WeatherProbability value="1.000000"/>
+			<WeatherProbability2 value="0.000000"/>
+			<WeatherProbability3 value="0.000000"/>
+			<FillLightFactor value="1.000000"/>
+			<StartTime value="0.000000"/>
+			<EndTime value="24.000000"/>
+			<FadeTime value="0.200000"/>
+			<TransitionTime value="20.000000"/>
+			<WindOverrideVal value="1.300000"/>
+			<IsExclusionSphere value="false"/>
+			<IsEnabled value="false"/>
+			<OverridesWind value="true"/>
+		</Item>
+	</WeatherSpheres>
+</rdrWeatherSphereManager>

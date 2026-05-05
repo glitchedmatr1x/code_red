@@ -1,0 +1,78 @@
+// PURPOSE:	This file contains TR programs and rules for static animals
+// basically Idle -> warn -> strike -> warn -> idle
+//
+
+// 
+// Animal Fight Rules
+//
+rules AnimalStaticRules
+{
+	// melee
+	SpatialDistanceExtremelyClose(x) && SpatialDirectionAheadOfMe(x) && !SpatialMeBehindObject(x) -> CanStaticTriggerMelee(x);
+	
+	// warn
+	SpatialDistanceVeryClose(x)																	 -> CanStaticTriggerWarn(x);	
+
+	CanAnimalMelee(x) 
+	&& AnimalSpeciesCanAttack(x) 
+	&& !RidingVehicle(x) 
+	&& !RidingOnVehicle(x) 
+	&& (!Riding(x) || AnimalTuningAllowAttackMount)
+	&& !IsHitched(x)
+	&& !FlightFlying(x)
+	&& SpatialDistanceExtremelyClose(x) -> CanStaticAnimalAttack(x);	
+	
+	CanAnimalMelee(x) 
+	&& AnimalSpeciesCanAttack(x) 
+	&& !RidingVehicle(x) 
+	&& !RidingOnVehicle(x) 
+	&& (!Riding(x) || AnimalTuningAllowAttackMount)
+	&& !IsHitched(x)
+	&& !FlightFlying(x) 
+	&& Alive(x) -> CanStaticAnimalWarn(x);		
+
+}
+
+
+program AnimalStaticMain
+{
+
+	// testing
+	//ObjectClassCreatureRaceHuman(x)	-> Face(x), Mood("FIGHT");
+
+	// HYSTERESIS
+	EventActive("AnimalPrimaryMelee") && CanStaticAnimalAttack(x) && !WasMeleedByMeVeryRecently(x)   		-> AnimalPrimaryMelee(x), Mood("FIGHT"), HeadLookAt(x);
+	CanStaticTriggerMelee(x) && CanStaticAnimalAttack(x) && MeleeSpatialReady(x) && MeleeAttackReady(x)  	-> AnimalPrimaryMelee(x), Mood("FIGHT"), HeadLookAt(x);	
+	
+	CanStaticTriggerWarn(x)  && CanStaticAnimalWarn(x)	&& !WarnedSomeoneVeryRecently			-> AnimalWarnThreat(x), Mood("FIGHT"), HeadLookAt(x);
+	
+	SpatialDistanceVeryClose(x) && AnimalSpeciesCanAttack(x) -> Face(x), Mood("FIGHT");
+
+	TRUE						-> Stay, Mood("UNALRTD"), LookAround;
+}
+
+//
+// PURPOSE:	Static animal debug groups
+//
+debuggroup Animal_static_main
+{
+	filter TRUE, predicate WasMeleedByMeVeryRecently(x), label "WasMeleedByMeVeryRecently $x";
+}
+
+//
+// PURPOSE:	Static animal debug groups
+//
+debuggroup Animal_static_human
+{
+	// human specific
+	filter ObjectClassCreatureRaceHuman(x), predicate CanStaticAnimalAttack(x), label "CanStaticAnimalAttack $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate CanAnimalMelee(x), label "CanAnimalMelee $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate AnimalSpeciesCanAttack(x), label "AnimalSpeciesCanAttack $x";
+	
+	filter ObjectClassCreatureRaceHuman(x), predicate SpatialDistanceVeryClose(x), label "SpatialDistanceVeryClose $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate SpatialDirectionAheadOfMe(x), label "SpatialDirectionAheadOfMe $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate SpatialMeBehindObject(x), label "SpatialMeBehindObject $x";
+	
+	filter ObjectClassCreatureRaceHuman(x), predicate CanStaticTriggerWarn(x), label "CanStaticTriggerWarn $x";
+	filter ObjectClassCreatureRaceHuman(x), predicate CanStaticTriggerMelee(x), label "CanStaticTriggerMelee $x";
+}
