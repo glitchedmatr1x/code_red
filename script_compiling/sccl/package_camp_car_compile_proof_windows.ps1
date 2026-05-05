@@ -2,12 +2,12 @@
 Package the Code RED SC-CL camp-car runtime proof.
 
 Purpose:
-- Collect compiled camp_car_probe artifacts (.xsc and .sco when present).
+- Collect compiled camp_car_probe artifacts (.xsc, .sco, and experimental .wsc candidate when present).
 - Record hashes for compiled outputs, source, active project headers, and staged compiler.
 - Create a proof-only ZIP package.
 - Do not install/import anything into the game.
 
-Run from repo root after a successful compile:
+Run from repo root after a successful compile/export:
   powershell -ExecutionPolicy Bypass -File script_compiling\sccl\package_camp_car_compile_proof_windows.ps1
 #>
 
@@ -20,6 +20,8 @@ $Project = Join-Path $Lane "projects\camp_car_probe"
 $OutputRoot = Join-Path $Lane "output"
 $ArtifactXsc = Join-Path $OutputRoot "camp_car_probe\camp_car_probe.xsc"
 $ArtifactSco = Join-Path $OutputRoot "camp_car_probe_sco\camp_car_probe.sco"
+$ArtifactWsc = Join-Path $OutputRoot "camp_car_probe_wsc\camp_car_probe.wsc"
+$WscReport = Join-Path $OutputRoot "camp_car_probe_wsc\camp_car_probe_wsc_candidate_report.json"
 $Compiler = Join-Path $OutputRoot "SC-CL.exe"
 $Source = Join-Path $Project "src\main.c"
 $ProjectInclude = Join-Path $Project "include"
@@ -62,6 +64,13 @@ if (Test-Path $ArtifactSco) {
     Copy-Item -Path $ArtifactSco -Destination (Join-Path $ProofDir "artifact\camp_car_probe.sco") -Force
     $compiledArtifacts += $ArtifactSco
 }
+if (Test-Path $ArtifactWsc) {
+    Copy-Item -Path $ArtifactWsc -Destination (Join-Path $ProofDir "artifact\camp_car_probe.wsc") -Force
+    $compiledArtifacts += $ArtifactWsc
+}
+if (Test-Path $WscReport) {
+    Copy-Item -Path $WscReport -Destination (Join-Path $ProofDir "reports\camp_car_probe_wsc_candidate_report.json") -Force
+}
 
 Copy-Item -Path $Source -Destination (Join-Path $ProofDir "source\main.c") -Force
 Copy-Item -Path $ProjectInclude -Destination (Join-Path $ProofDir "headers\include") -Recurse -Force
@@ -85,6 +94,7 @@ foreach ($name in $optionalReports) {
 $filesToHash = @(
     $ArtifactXsc,
     $ArtifactSco,
+    $ArtifactWsc,
     $Compiler,
     $Source,
     (Join-Path $ProjectInclude "RDR\natives32.h"),
@@ -105,6 +115,7 @@ $manifest = [ordered]@{
     artifacts = $artifactRows
     artifact_xsc = Hash-File $ArtifactXsc
     artifact_sco = if (Test-Path $ArtifactSco) { Hash-File $ArtifactSco } else { $null }
+    artifact_wsc_candidate = if (Test-Path $ArtifactWsc) { Hash-File $ArtifactWsc } else { $null }
     compiler = Hash-File $Compiler
     source = Hash-File $Source
     headers = @($hashRows | Where-Object { $_.relative_path -match 'include' })
@@ -113,13 +124,16 @@ $manifest = [ordered]@{
         "F5 = spawn ACTOR_VEHICLE_Car01 near the player",
         "F6 = put player in car",
         "F7 = re-apply vehicle tune",
-        "F8 = delete the probe car"
+        "F8 = delete the probe car",
+        "F9 = delete/re-spawn farther away",
+        "F10 = show help"
     )
-    boundary = "Proof package only. Runtime proof artifact only. Do not install/import into the game yet. Camp/RPF archive install lane is not proven."
+    boundary = "Proof package only. Runtime proof artifact only. Do not install/import into the game yet. Camp/RPF archive install lane is not proven. WSC candidate is experimental."
     next_safe_steps = @(
         "Verify compiled artifact naming and hashes.",
         "Use these only as runtime/camp-car proof artifacts.",
-        "Research archive/import candidates separately before any install attempt."
+        "Use the WSC candidate only for copied-archive experiments after backups are prepared.",
+        "Research archive/import candidates separately before any live install attempt."
     )
 }
 
@@ -137,7 +151,7 @@ $readme = @"
 
 This package is proof-only.
 
-## Compiled artifacts
+## Compiled / candidate artifacts
 
 ~~~text
 $artifactText
@@ -151,6 +165,8 @@ F5 = spawn ACTOR_VEHICLE_Car01 near the player
 F6 = put player in car
 F7 = re-apply vehicle tune
 F8 = delete the probe car
+F9 = delete/re-spawn farther away
+F10 = show help
 ~~~
 
 ## Boundary
@@ -159,11 +175,14 @@ Do not install/import these compiled scripts into the game yet.
 
 This proves the SC-CL camp-car runtime proof compile only. Camp/RPF archive install behavior is still a separate lane.
 
+The `.wsc` artifact is an experimental candidate generated from the compiled `.xsc`; it is not proven game-loadable yet.
+
 ## Included
 
 ~~~text
 artifact/camp_car_probe.xsc
 artifact/camp_car_probe.sco if built
+artifact/camp_car_probe.wsc if exported
 source/main.c
 headers/include/
 reports/
