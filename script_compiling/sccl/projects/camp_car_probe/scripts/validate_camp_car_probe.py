@@ -37,18 +37,14 @@ required_native_names = [
     'SET_ACTOR_SPEED', 'ADD_PERSISTENT_SCRIPT', '_GET_ID_OF_THIS_SCRIPT', 'WAIT',
     'GET_POSITION'
 ]
-optional_native_names = [
-    # v2 uses this only for F9 repositioning. If the real header lacks it, compile will catch it.
-    'SET_ACTOR_POSITION'
-]
 required_constants = ['ACTOR_VEHICLE_Car01', 'KEY_F5', 'KEY_F6', 'KEY_F7', 'KEY_F8']
 optional_constants = ['KEY_F9', 'KEY_F10']
 required_tokens = [
     'CODE RED CAR', 'CR_SpawnCampCarAtOffset', 'CR_DeleteCampCar', 'CR_TuneCar',
-    'CR_PutPlayerInCar', 'CR_MoveProbeCarFarther', 'CodeREDCampCarProbeV2',
+    'CR_PutPlayerInCar', 'CR_RespawnProbeCarFarther', 'CodeREDCampCarProbeV2',
     'CodeREDCampCar01', 'ACTOR_VEHICLE_Car01',
     'spawnPos->x = spawnPos->x + ox', 'spawnPos->y = spawnPos->y + oy',
-    'F5 = spawn Car01', 'F9 = move/reposition farther', 'F10 = show help'
+    'F5 spawn Car01', 'F9 respawn', 'F10 help'
 ]
 
 missing = []
@@ -63,9 +59,6 @@ for token in required_tokens:
         missing.append(token)
 
 optional_missing = []
-for name in optional_native_names:
-    if name in text and name not in natives:
-        optional_missing.append(name)
 for name in optional_constants:
     if name in text and name not in constants:
         optional_missing.append(name)
@@ -77,6 +70,7 @@ create_actor_real_sig = bool(re.search(r'CREATE_ACTOR_IN_LAYOUT\s*\([^\n]*vector
 source_uses_vector3_create_actor = 'CREATE_ACTOR_IN_LAYOUT(g_campCarLayout, "CodeREDCampCar01", ACTOR_VEHICLE_Car01, spawnPos, spawnRot)' in text
 source_uses_loose_create_actor = 'CREATE_ACTOR_IN_LAYOUT(g_campCarLayout, "CodeREDCampCar01", ACTOR_VEHICLE_Car01, 0.0f' in text
 source_uses_unverified_vector_ctor = 'Vector3(' in text
+source_does_not_use_set_actor_position = 'SET_ACTOR_POSITION' not in text
 subtitle_realish_sig = '_PRINT_SUBTITLE(text, 3500.0f, true, 1, 0, 0, 0, 0)' in text
 
 checks = {
@@ -91,6 +85,7 @@ checks = {
     'source_uses_vector3_create_actor_call': source_uses_vector3_create_actor,
     'source_does_not_use_loose_float_create_actor': not source_uses_loose_create_actor,
     'source_does_not_use_unverified_Vector3_constructor': not source_uses_unverified_vector_ctor,
+    'source_does_not_use_unsupported_SET_ACTOR_POSITION': source_does_not_use_set_actor_position,
     'subtitle_call_uses_real_8_arg_shape': subtitle_realish_sig,
     'brace_balance': text.count('{') == text.count('}'),
     'paren_balance': text.count('(') == text.count(')'),
@@ -100,7 +95,7 @@ checks = {
     'has_delete': 'CR_DeleteCampCar' in text and 'DESTROY_ACTOR' in text,
     'has_tune': 'CR_TuneCar' in text and 'SET_ACTOR_MAX_SPEED_ABSOLUTE' in text,
     'has_player_enter': 'CR_PutPlayerInCar' in text and 'SET_ACTOR_IN_VEHICLE' in text,
-    'has_move_or_reposition': 'CR_MoveProbeCarFarther' in text,
+    'has_respawn_farther': 'CR_RespawnProbeCarFarther' in text,
     'has_help_key': 'g_lastF10' in text and 'CR_ShowStatus' in text,
     'has_edge_triggered_keys': 'CR_KeyPressedOnce' in text and 'g_lastF5' in text and 'g_lastF8' in text,
     'missing_symbols': missing,
@@ -114,5 +109,5 @@ print('RESULT:', 'PASS' if ok else 'FAIL')
 if project_header_is_fake or lane_header_is_fake:
     print('ACTION: run script_compiling\\sccl\\promote_real_sccl_headers_windows.ps1 before compiling')
 if optional_missing:
-    print('NOTE: optional symbols are used in source but were not found in headers; real compile will verify them:', optional_missing)
+    print('NOTE: optional key constants are used in source but were not found in headers; real compile will verify them:', optional_missing)
 sys.exit(0 if ok else 1)
