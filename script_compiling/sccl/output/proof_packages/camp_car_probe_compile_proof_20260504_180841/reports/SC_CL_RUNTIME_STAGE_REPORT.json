@@ -1,0 +1,11 @@
+﻿{
+    "source":  "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin",
+    "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output",
+    "copied":  [
+                   "SC-CL.exe",
+                   "xcompress32.dll",
+                   "zlib1.dll"
+               ],
+    "staged_sccl":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\SC-CL.exe",
+    "note":  "If compile still exits -1073741515, install/repair Microsoft Visual C++ Redistributable 2015-2022 x64 or copy missing LLVM/clang runtime DLLs beside SC-CL.exe."
+}

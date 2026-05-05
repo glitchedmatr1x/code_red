@@ -1,7 +1,7 @@
 ﻿{
-    "proof_dir":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180725",
-    "zip_path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180725.zip",
-    "zip_sha1":  "1F613515865A417E1CD63A9FB17B181B4E5808E2",
+    "proof_dir":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180841",
+    "zip_path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180841.zip",
+    "zip_sha1":  "8847227A8152C7CFB1AF88E2F2F503EE772205FD",
     "artifacts":  [
                       {
                           "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe\\camp_car_probe.xsc",
