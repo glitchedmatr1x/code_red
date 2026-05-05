@@ -1,0 +1,116 @@
+CODE RED PEER CLONE SYNC v0.2 - PUBLIC TEST
+============================================
+
+This is the Phase 2 public test for the simplest two-PC Code RED connection layer.
+
+It does NOT restore official multiplayer yet.
+It does NOT go inside the game folder yet.
+It does NOT edit RPF archives.
+
+Goal of this test:
+- prove two PCs can connect
+- prove Player A can send state
+- prove Player B can send state
+- prove both sides can receive the other player's state
+
+After this passes, the next phase is the in-game bridge that spawns and moves clone actors.
+
+WHERE TO FIND THE FILES
+-----------------------
+Use this folder in the repo:
+
+public_tests/CodeRED_Peer_Clone_Sync_v0_2/
+
+If you want the zip package instead, use the generated artifact named:
+
+CodeRED_Peer_Clone_Sync_v0_2.zip
+
+REQUIREMENTS
+------------
+- Windows 10 or newer
+- Python 3.10 or newer
+- Same extracted folder on both PCs
+- LAN or VPN connection between testers
+
+Recommended VPN for remote testers:
+- Radmin VPN
+- ZeroTier
+- Hamachi
+
+WHERE TO PUT IT
+---------------
+Extract or copy the folder anywhere easy, for example:
+
+D:\Games\CodeRED_Peer_Clone_Sync_v0_2\
+
+Do not put it in the Red Dead Redemption game folder yet.
+
+ONE-PC TEST FIRST
+-----------------
+Run this before involving another person:
+
+Run_SelfTest.bat
+
+Expected result:
+
+# Selftest result: PASS
+player_a saw player_b: True
+player_b saw player_a: True
+
+TWO-PC PUBLIC TEST
+------------------
+
+PLAYER A / HOST PC:
+1. Run:
+
+   Run_Doctor.bat
+
+2. Pick your LAN/VPN IP from the list. Do not give 127.0.0.1 to Player B.
+3. Run:
+
+   Run_Relay_Host.bat
+
+4. If Windows Firewall asks, allow Python/private network access.
+5. In a second window, run:
+
+   Run_Mock_Client_A.bat
+
+PLAYER B / CLIENT PC:
+1. Run:
+
+   Run_Client_B_To_Host.bat
+
+2. Type Player A's LAN/VPN IP when asked.
+3. Watch for remote player logs.
+
+SUCCESS LOOKS LIKE
+------------------
+Player A sees lines mentioning:
+
+remote player_b
+
+Player B sees lines mentioning:
+
+remote player_a
+
+Runtime proof logs will appear in:
+
+runtime\
+
+IF IT FAILS
+-----------
+- Player A must keep Run_Relay_Host.bat open.
+- Player B must use Player A's LAN/VPN IP, not 127.0.0.1.
+- Both PCs may need to allow Python through Windows Firewall.
+- Use the same VPN network if not on the same LAN.
+- Default port is 47666/tcp.
+
+WHAT TO SEND BACK
+-----------------
+Send screenshots or copied text from:
+
+- Run_Doctor.bat output from Player A
+- Run_Relay_Host.bat output
+- Run_Mock_Client_A.bat output
+- Run_Client_B_To_Host.bat output
+- runtime\*.jsonl logs if available
