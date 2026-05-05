@@ -1,0 +1,296 @@
+#!/usr/bin/env python3
+"""Create an actionable Faction Wars target shortlist from the broad scan.
+
+The broad scanner intentionally catches a lot. This pass removes Code RED's own
+generated manifests, actor enum maps, and Script Workshop duplicate read/edit
+exports so FW-1 can focus on real tune/template, world-host/gringo, archive, and
+script candidates.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Sequence
+
+VERSION = "1.0.0-actionable-faction-targets"
+TARGETS_CSV = Path("data/codered/faction_wars_targets.csv")
+ACTIONABLE_CSV = Path("data/codered/faction_wars_actionable_targets.csv")
+ACTIONABLE_JSON = Path("data/codered/faction_wars_actionable_targets.json")
+ACTIONABLE_MD = Path("research/faction_wars/FW_ACTIONABLE_TARGETS.md")
+REPORT_JSON = Path("logs/CodeRED_Faction_Wars_Actionable_Targets_Report.json")
+REPORT_MD = Path("logs/CodeRED_Faction_Wars_Actionable_Targets_Report.md")
+
+ACTIONABLE_CATEGORIES = {
+    "tune/template pressure",
+    "world host / gringo",
+    "script/native candidate",
+    "archive patch lane",
+}
+
+NOISE_PATH_PARTS = (
+    "actor_enum_map.csv",
+    "npc_roster.txt",
+    "ai_behavior_actions.csv",
+    "faction_wars_targets.csv",
+    "faction_wars_targets.json",
+    "faction_wars_capabilities.json",
+    "faction_wars_actionable_targets.csv",
+    "faction_wars_actionable_targets.json",
+    "script_workshop_extension_manifest.csv",
+    "script_workshop_extension_manifest.json",
+    "script_workshop_decode_manifest.csv",
+    "script_workshop_decode_manifest.json",
+    "script_workshop_compile_candidates.csv",
+    "script_workshop_compile_candidates.json",
+    "script_pipeline_manifest.csv",
+    "script_pipeline_manifest.json",
+    "file_io_decode_manifest.csv",
+    "native_database.csv",
+    "native_bridge_manifest.csv",
+    "native_bridge_manifest.json",
+    "important_readable_root_index_2026-05-02/file_index.csv",
+    "important_readable_root_index_2026-05-02/important_files.csv",
+    "logs/codered_faction_wars_pipeline_report",
+    "logs/codered_faction_wars_actionable_targets_report",
+)
+
+LOW_VALUE_WORKSPACE_PARTS = (
+    "related_apps/codered_script_workshop/workspace/read/",
+    "related_apps/codered_script_workshop/workspace/edit/",
+)
+
+PREFERRED_TERMS = (
+    "tune", "template", "npc", "sheriff", "law", "gang", "bandit", "bandito",
+    "refgroup", "wgd", "wsi", "gringo", "population", "ambient", "encounter",
+    "holdup", "crime", "patrol", "posse", "camp", "hideout", "weapon", "lasso",
+    "hogtie", "dog", "blackwater", "armadillo", "thieves", "fort mercer",
+)
+
+
+@dataclass
+class ActionableReport:
+    version: str
+    generated_utc: str
+    root: str
+    input_rows: int
+    actionable_rows: int
+    rejected_rows: int
+    outputs: dict[str, str]
+    top_targets: list[dict[str, str]]
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def find_repo_root(start: Path | None = None) -> Path:
+    here = (start or Path(__file__).resolve()).resolve()
+    for candidate in [here, *here.parents]:
+        if (candidate / "main.py").exists() and (candidate / "python_workbench.py").exists():
+            return candidate
+    return Path.cwd().resolve()
+
+
+def rel_to(path: Path, root: Path) -> str:
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except Exception:
+        return path.as_posix()
+
+
+def load_rows(root: Path) -> list[dict[str, str]]:
+    path = root / TARGETS_CSV
+    if not path.exists():
+        raise FileNotFoundError(f"Missing broad target scan: {path}. Run tools/codered_faction_wars_pipeline.py scan first.")
+    with path.open("r", encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def score(row: dict[str, str]) -> int:
+    try:
+        return int(str(row.get("score", "0")).strip() or "0")
+    except ValueError:
+        return 0
+
+
+def is_noise(row: dict[str, str]) -> bool:
+    path = row.get("path", "").replace("\\", "/").lower()
+    category = row.get("category", "")
+    if category not in ACTIONABLE_CATEGORIES:
+        return True
+    if any(part in path for part in NOISE_PATH_PARTS):
+        return True
+    if any(part in path for part in LOW_VALUE_WORKSPACE_PARTS):
+        return True
+    if path.startswith("data/codered/") and not any(term in path for term in ("tune", "wsi", "wgd", "gringo", "script", "archive")):
+        return True
+    return False
+
+
+def preferred_bonus(row: dict[str, str]) -> int:
+    blob = " ".join(str(row.get(key, "")) for key in ("path", "category", "regions", "groups", "high_value_terms")).lower()
+    return sum(25 for term in PREFERRED_TERMS if term in blob)
+
+
+def normalize_rows(rows: Sequence[dict[str, str]]) -> list[dict[str, str]]:
+    out: list[dict[str, str]] = []
+    seen_paths: set[str] = set()
+    for row in rows:
+        path = row.get("path", "").replace("\\", "/")
+        if not path or path.lower() in seen_paths:
+            continue
+        seen_paths.add(path.lower())
+        if is_noise(row):
+            continue
+        item = dict(row)
+        item["actionable_score"] = str(score(row) + preferred_bonus(row))
+        out.append(item)
+    out.sort(key=lambda row: (int(row.get("actionable_score", "0") or "0"), score(row), row.get("path", "")), reverse=True)
+    return out
+
+
+def write_csv(path: Path, rows: Sequence[dict[str, str]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fields = ["actionable_score", "score", "category", "path", "source_kind", "regions", "groups", "high_value_terms", "size"]
+    with path.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({field: row.get(field, "") for field in fields})
+
+
+def build_markdown(rows: Sequence[dict[str, str]], root: Path) -> str:
+    lines = [
+        "# Code RED Faction Wars — Actionable Targets",
+        "",
+        f"Generated: `{utc_now()}`",
+        "",
+        "This shortlist filters out Code RED generated manifests, actor enum maps, index files, and Script Workshop duplicate read/edit exports.",
+        "",
+        "## Next move",
+        "",
+        "Start with one FW-1 tune/template pressure target or one FW-2 world-host/gringo target. Do not start with a source script replacement unless it is the only clean target left.",
+        "",
+        "## Top actionable targets",
+        "",
+        "| Rank | Actionable score | Raw score | Category | Path | Regions | High-value terms |",
+        "|---:|---:|---:|---|---|---|---|",
+    ]
+    for index, row in enumerate(rows[:60], start=1):
+        lines.append(
+            f"| {index} | {row.get('actionable_score', '')} | {row.get('score', '')} | "
+            f"{row.get('category', '')} | `{row.get('path', '')}` | {row.get('regions', '')} | {row.get('high_value_terms', '')} |"
+        )
+    lines.extend([
+        "",
+        "## FW-1 patch rule",
+        "",
+        "Pick one target, patch a copied archive or staged resource only, then reopen/verify. Avoid batch-editing multiple faction-war systems in the same pass.",
+    ])
+    return "\n".join(lines) + "\n"
+
+
+def build_report_markdown(report: ActionableReport) -> str:
+    lines = [
+        "# Code RED Faction Wars Actionable Target Report",
+        "",
+        f"Generated: `{report.generated_utc}`",
+        f"Version: `{report.version}`",
+        "",
+        "## Summary",
+        "",
+        f"- Input rows: `{report.input_rows}`",
+        f"- Actionable rows: `{report.actionable_rows}`",
+        f"- Rejected/noise rows: `{report.rejected_rows}`",
+        "",
+        "## Outputs",
+        "",
+    ]
+    for label, path in report.outputs.items():
+        lines.append(f"- {label}: `{path}`")
+    lines.extend(["", "## Top 15", "", "| Score | Category | Path |", "|---:|---|---|"])
+    for row in report.top_targets[:15]:
+        lines.append(f"| {row.get('actionable_score', '')} | {row.get('category', '')} | `{row.get('path', '')}` |")
+    return "\n".join(lines) + "\n"
+
+
+def run(root: Path) -> ActionableReport:
+    root = root.resolve()
+    rows = load_rows(root)
+    actionable = normalize_rows(rows)
+    rejected = len(rows) - len(actionable)
+
+    out_csv = root / ACTIONABLE_CSV
+    out_json = root / ACTIONABLE_JSON
+    out_md = root / ACTIONABLE_MD
+    report_json = root / REPORT_JSON
+    report_md = root / REPORT_MD
+
+    write_csv(out_csv, actionable)
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    out_json.write_text(json.dumps(actionable, indent=2), encoding="utf-8")
+    out_md.parent.mkdir(parents=True, exist_ok=True)
+    out_md.write_text(build_markdown(actionable, root), encoding="utf-8")
+
+    report = ActionableReport(
+        version=VERSION,
+        generated_utc=utc_now(),
+        root=str(root),
+        input_rows=len(rows),
+        actionable_rows=len(actionable),
+        rejected_rows=rejected,
+        outputs={
+            "actionable_csv": rel_to(out_csv, root),
+            "actionable_json": rel_to(out_json, root),
+            "actionable_markdown": rel_to(out_md, root),
+            "report_json": rel_to(report_json, root),
+            "report_markdown": rel_to(report_md, root),
+        },
+        top_targets=actionable[:25],
+    )
+    report_json.parent.mkdir(parents=True, exist_ok=True)
+    report_json.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
+    report_md.write_text(build_report_markdown(report), encoding="utf-8")
+    return report
+
+
+def print_report(report: ActionableReport, limit: int) -> None:
+    print("# Code RED Faction Wars Actionable Targets")
+    print()
+    print(f"Input rows: {report.input_rows}")
+    print(f"Actionable rows: {report.actionable_rows}")
+    print(f"Rejected/noise rows: {report.rejected_rows}")
+    print()
+    print(f"{'Rank':>4}  {'Score':>6}  {'Category':<25}  Path")
+    print("-" * 100)
+    for index, row in enumerate(report.top_targets[:limit], start=1):
+        print(f"{index:>4}  {row.get('actionable_score', ''):>6}  {row.get('category', '')[:25]:<25}  {row.get('path', '')}")
+    print()
+    print("Review:", report.outputs["actionable_markdown"])
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Filter Code RED Faction Wars broad scan into actionable targets.")
+    parser.add_argument("--root", type=Path, default=None, help="Code RED root folder")
+    parser.add_argument("--limit", type=int, default=25, help="Console target limit")
+    parser.add_argument("--json", action="store_true", help="Print JSON report")
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    root = args.root.resolve() if args.root else find_repo_root()
+    report = run(root)
+    if args.json:
+        print(json.dumps(asdict(report), indent=2))
+    else:
+        print_report(report, max(1, args.limit))
+    return 0 if report.actionable_rows else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

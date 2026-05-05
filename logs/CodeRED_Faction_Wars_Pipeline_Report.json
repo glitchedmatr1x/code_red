@@ -1,9 +1,9 @@
 {
   "version": "1.0.0-faction-wars-pipeline",
-  "generated_utc": "2026-05-05T04:38:13Z",
+  "generated_utc": "2026-05-05T07:04:39Z",
   "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
-  "scanned_files": 1536,
-  "hits": 1158,
+  "scanned_files": 1560,
+  "hits": 1178,
   "top_hits": [
     {
       "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt",
@@ -119,17 +119,143 @@
       "size": 1074090
     },
     {
-      "path": "data/codered/faction_wars_targets.json",
-      "source_kind": "repo/text",
-      "score": 22116,
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt",
+      "source_kind": "manifest/text",
+      "score": 22278,
       "category": "research/reference",
       "groups": {
-        "factions": 2158,
-        "war_behavior": 476,
-        "spawning": 6539,
-        "world_hosts": 5407,
-        "weapons_pressure": 1777,
-        "scripting": 5547
+        "factions": 2187,
+        "war_behavior": 479,
+        "spawning": 6592,
+        "world_hosts": 5426,
+        "weapons_pressure": 1788,
+        "scripting": 5594
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "fort mercer",
+        "gaptooth",
+        "henningan",
+        "landing",
+        "macfarlane",
+        "manzanita",
+        "mexico",
+        "new austin",
+        "nuevo paraiso",
+        "plainview",
+        "rathskeller",
+        "ridgewood",
+        "rio bravo",
+        "tall trees",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "commongringos",
+        "create_actor",
+        "get_actor_faction",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "streaming_request_actor",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L2: # Source: data/codered/faction_wars_targets.json",
+        "L9: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt\",",
+        "L19: \"factions\": 11907,",
+        "L21: \"spawning\": 20509,",
+        "L25: \"weapons_pressure\": 702,",
+        "L27: \"scripting\": 1",
+        "L31: \"regions\": [",
+        "L33: \"armadillo\","
+      ],
+      "size": 1526782
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt",
+      "source_kind": "manifest/text",
+      "score": 22277,
+      "category": "research/reference",
+      "groups": {
+        "factions": 2186,
+        "war_behavior": 479,
+        "spawning": 6592,
+        "world_hosts": 5426,
+        "weapons_pressure": 1788,
+        "scripting": 5594
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "fort mercer",
+        "gaptooth",
+        "henningan",
+        "landing",
+        "macfarlane",
+        "manzanita",
+        "mexico",
+        "new austin",
+        "nuevo paraiso",
+        "plainview",
+        "rathskeller",
+        "ridgewood",
+        "rio bravo",
+        "tall trees",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "commongringos",
+        "create_actor",
+        "get_actor_faction",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "streaming_request_actor",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L5: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt\",",
+        "L15: \"factions\": 11907,",
+        "L17: \"spawning\": 20509,",
+        "L21: \"weapons_pressure\": 702,",
+        "L23: \"scripting\": 1",
+        "L27: \"regions\": [",
+        "L29: \"armadillo\",",
+        "L31: \"macfarlane\""
+      ],
+      "size": 1526643
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json",
+      "source_kind": "manifest/text",
+      "score": 22277,
+      "category": "research/reference",
+      "groups": {
+        "factions": 2186,
+        "war_behavior": 479,
+        "spawning": 6592,
+        "world_hosts": 5426,
+        "weapons_pressure": 1788,
+        "scripting": 5594
       },
       "regions": [
         "armadillo",
@@ -179,7 +305,70 @@
         "L15: \"armadillo\",",
         "L16: \"macfarlane\""
       ],
-      "size": 1489742
+      "size": 1497071
+    },
+    {
+      "path": "data/codered/faction_wars_targets.json",
+      "source_kind": "repo/text",
+      "score": 22277,
+      "category": "research/reference",
+      "groups": {
+        "factions": 2186,
+        "war_behavior": 479,
+        "spawning": 6592,
+        "world_hosts": 5426,
+        "weapons_pressure": 1788,
+        "scripting": 5594
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "fort mercer",
+        "gaptooth",
+        "henningan",
+        "landing",
+        "macfarlane",
+        "manzanita",
+        "mexico",
+        "new austin",
+        "nuevo paraiso",
+        "plainview",
+        "rathskeller",
+        "ridgewood",
+        "rio bravo",
+        "tall trees",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "commongringos",
+        "create_actor",
+        "get_actor_faction",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "streaming_request_actor",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L3: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt\",",
+        "L8: \"factions\": 11907,",
+        "L9: \"spawning\": 20509,",
+        "L11: \"weapons_pressure\": 702,",
+        "L12: \"scripting\": 1",
+        "L14: \"regions\": [",
+        "L15: \"armadillo\",",
+        "L16: \"macfarlane\""
+      ],
+      "size": 1497071
     },
     {
       "path": "research/extracted_root_research/extracted_root_findings.csv",
@@ -720,6 +909,132 @@
     {
       "path": "data/codered/script_workshop_extension_manifest.csv",
       "source_kind": "repo/text",
+      "score": 9124,
+      "category": "script/native candidate",
+      "groups": {
+        "factions": 299,
+        "war_behavior": 509,
+        "spawning": 3320,
+        "world_hosts": 782,
+        "weapons_pressure": 661,
+        "scripting": 3458
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "create_actor",
+        "get_actor_faction",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander"
+      ],
+      "excerpts": [
+        "L2: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+        "L3: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+        "L4: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+        "L5: data/codered/faction_wars_capabilities.json,.json,source_text,editable_source,621,c682d5dabfdaa852c56fbb24404a2cf8ab82b387,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_capabilities.json.fullread.txt,related_apps/CodeRED_Scrip",
+        "L6: data/codered/faction_wars_targets.csv,.csv,source_text,editable_source,268959,575639e20aee4aaed9c596512620ea011c6196b3,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.csv.fullread.txt,related_apps/CodeRED_Script_Workshop",
+        "L7: data/codered/faction_wars_targets.json,.json,source_text,editable_source,1497071,f00364710143ed1c36edde2211ee19c749e2f704,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt,related_apps/CodeRED_Script_Work",
+        "L8: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
+        "L9: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh"
+      ],
+      "size": 1577859
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__script_workshop_extension_manifest.csv.decompiled_source.txt",
+      "source_kind": "manifest/text",
+      "score": 8928,
+      "category": "script/native candidate",
+      "groups": {
+        "factions": 251,
+        "war_behavior": 501,
+        "spawning": 3266,
+        "world_hosts": 781,
+        "weapons_pressure": 660,
+        "scripting": 3374
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "create_actor",
+        "get_actor_faction",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander"
+      ],
+      "excerpts": [
+        "L2: # Source: data/codered/script_workshop_extension_manifest.csv",
+        "L7: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+        "L9: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+        "L11: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+        "L13: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
+        "L15: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
+        "L17: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
+        "L19: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod"
+      ],
+      "size": 1569059
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__script_workshop_extension_manifest.csv.fullread.txt",
+      "source_kind": "manifest/text",
+      "score": 8927,
+      "category": "script/native candidate",
+      "groups": {
+        "factions": 251,
+        "war_behavior": 501,
+        "spawning": 3266,
+        "world_hosts": 781,
+        "weapons_pressure": 660,
+        "scripting": 3373
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "create_actor",
+        "get_actor_faction",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander"
+      ],
+      "excerpts": [
+        "L3: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+        "L5: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+        "L7: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+        "L9: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
+        "L11: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
+        "L13: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
+        "L15: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod",
+        "L17: data/codered/npc_model_roster_v1.json,.json,source_text,editable_source,5985,415c8d05d67fbafb0bb78ef98879a00a0aeffd20,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__npc_model_roster_v1.json.fullread.txt,related_apps/CodeRED_Script_Workshop/"
+      ],
+      "size": 1568907
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/script_workshop_extension_manifest.csv",
+      "source_kind": "manifest/text",
       "score": 8927,
       "category": "script/native candidate",
       "groups": {
@@ -760,132 +1075,6 @@
       "size": 1568561
     },
     {
-      "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__script_workshop_extension_manifest.csv.decompiled_source.txt",
-      "source_kind": "manifest/text",
-      "score": 8880,
-      "category": "script/native candidate",
-      "groups": {
-        "factions": 243,
-        "war_behavior": 500,
-        "spawning": 3246,
-        "world_hosts": 781,
-        "weapons_pressure": 660,
-        "scripting": 3355
-      },
-      "regions": [
-        "armadillo",
-        "blackwater",
-        "tumbleweed"
-      ],
-      "high_value_terms": [
-        "ai_is_hostile",
-        "create_actor",
-        "get_actor_faction",
-        "population",
-        "refgroup",
-        "set_actor_faction",
-        "task_follow",
-        "task_kill",
-        "task_stand",
-        "task_wander"
-      ],
-      "excerpts": [
-        "L2: # Source: data/codered/script_workshop_extension_manifest.csv",
-        "L7: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
-        "L9: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
-        "L11: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
-        "L13: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
-        "L15: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
-        "L17: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
-        "L19: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod"
-      ],
-      "size": 1567478
-    },
-    {
-      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__script_workshop_extension_manifest.csv.fullread.txt",
-      "source_kind": "manifest/text",
-      "score": 8879,
-      "category": "script/native candidate",
-      "groups": {
-        "factions": 243,
-        "war_behavior": 500,
-        "spawning": 3246,
-        "world_hosts": 781,
-        "weapons_pressure": 660,
-        "scripting": 3354
-      },
-      "regions": [
-        "armadillo",
-        "blackwater",
-        "tumbleweed"
-      ],
-      "high_value_terms": [
-        "ai_is_hostile",
-        "create_actor",
-        "get_actor_faction",
-        "population",
-        "refgroup",
-        "set_actor_faction",
-        "task_follow",
-        "task_kill",
-        "task_stand",
-        "task_wander"
-      ],
-      "excerpts": [
-        "L3: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
-        "L5: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
-        "L7: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
-        "L9: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
-        "L11: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
-        "L13: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
-        "L15: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod",
-        "L17: data/codered/npc_model_roster_v1.json,.json,source_text,editable_source,5985,415c8d05d67fbafb0bb78ef98879a00a0aeffd20,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__npc_model_roster_v1.json.fullread.txt,related_apps/CodeRED_Script_Workshop/"
-      ],
-      "size": 1567326
-    },
-    {
-      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/script_workshop_extension_manifest.csv",
-      "source_kind": "manifest/text",
-      "score": 8879,
-      "category": "script/native candidate",
-      "groups": {
-        "factions": 243,
-        "war_behavior": 500,
-        "spawning": 3246,
-        "world_hosts": 781,
-        "weapons_pressure": 660,
-        "scripting": 3354
-      },
-      "regions": [
-        "armadillo",
-        "blackwater",
-        "tumbleweed"
-      ],
-      "high_value_terms": [
-        "ai_is_hostile",
-        "create_actor",
-        "get_actor_faction",
-        "population",
-        "refgroup",
-        "set_actor_faction",
-        "task_follow",
-        "task_kill",
-        "task_stand",
-        "task_wander"
-      ],
-      "excerpts": [
-        "L2: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
-        "L3: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
-        "L4: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
-        "L5: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
-        "L6: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
-        "L7: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
-        "L8: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod",
-        "L9: data/codered/npc_model_roster_v1.json,.json,source_text,editable_source,5985,415c8d05d67fbafb0bb78ef98879a00a0aeffd20,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__npc_model_roster_v1.json.fullread.txt,related_apps/CodeRED_Script_Workshop/"
-      ],
-      "size": 1566981
-    },
-    {
       "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt",
       "source_kind": "manifest/text",
       "score": 8733,
@@ -916,96 +1105,6 @@
         "L45: 0x0003BE84,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,"
       ],
       "size": 175031
-    },
-    {
-      "path": "research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv",
-      "source_kind": "repo/text",
-      "score": 8725,
-      "category": "world host / gringo",
-      "groups": {
-        "factions": 28,
-        "war_behavior": 6,
-        "spawning": 6,
-        "world_hosts": 4720,
-        "weapons_pressure": 98,
-        "scripting": 3851
-      },
-      "regions": [],
-      "high_value_terms": [
-        "gringobrain",
-        "vehicle_generator"
-      ],
-      "excerpts": [
-        "L1: wgd_offset_hex,wgd_component_type,wgd_query_name,wgd_script_name,wgd_gringo_name,wgd_primary_name,wgd_hash_code,wgd_hashed_name,wgd_activation_radius,wgd_child_count,wgd_use_context_count,wgd_instanced_item_count,wgd_instance_slot_count,wgd_critical,wgd_mainta",
-        "L16: 0x0003BD08,ItemGringo,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,0x05B5C16A,0x00000000,2147483648.0,4,0,2,2,1,1,,,,,",
-        "L17: 0x0003BD54,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
-        "L18: 0x0003BDA0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,0x410215CF,0x00000000,0.25,1,1,7,7,0,1,,,,,",
-        "L19: 0x0003BDEC,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
-        "L20: 0x0003BE38,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
-        "L21: 0x0003BE84,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
-        "L22: 0x0003BED0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,0x082A4EBE,0x00000000,200.0,2,0,0,0,0,0,,,,,"
-      ],
-      "size": 173869
-    },
-    {
-      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.fullread.txt",
-      "source_kind": "manifest/text",
-      "score": 8725,
-      "category": "world host / gringo",
-      "groups": {
-        "factions": 28,
-        "war_behavior": 6,
-        "spawning": 6,
-        "world_hosts": 4720,
-        "weapons_pressure": 98,
-        "scripting": 3851
-      },
-      "regions": [],
-      "high_value_terms": [
-        "gringobrain",
-        "vehicle_generator"
-      ],
-      "excerpts": [
-        "L1: wgd_offset_hex,wgd_component_type,wgd_query_name,wgd_script_name,wgd_gringo_name,wgd_primary_name,wgd_hash_code,wgd_hashed_name,wgd_activation_radius,wgd_child_count,wgd_use_context_count,wgd_instanced_item_count,wgd_instance_slot_count,wgd_critical,wgd_mainta",
-        "L31: 0x0003BD08,ItemGringo,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,0x05B5C16A,0x00000000,2147483648.0,4,0,2,2,1,1,,,,,",
-        "L33: 0x0003BD54,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
-        "L35: 0x0003BDA0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,0x410215CF,0x00000000,0.25,1,1,7,7,0,1,,,,,",
-        "L37: 0x0003BDEC,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
-        "L39: 0x0003BE38,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
-        "L41: 0x0003BE84,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
-        "L43: 0x0003BED0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,0x082A4EBE,0x00000000,200.0,2,0,0,0,0,0,,,,,"
-      ],
-      "size": 174853
-    },
-    {
-      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv",
-      "source_kind": "manifest/text",
-      "score": 8725,
-      "category": "world host / gringo",
-      "groups": {
-        "factions": 28,
-        "war_behavior": 6,
-        "spawning": 6,
-        "world_hosts": 4720,
-        "weapons_pressure": 98,
-        "scripting": 3851
-      },
-      "regions": [],
-      "high_value_terms": [
-        "gringobrain",
-        "vehicle_generator"
-      ],
-      "excerpts": [
-        "L1: wgd_offset_hex,wgd_component_type,wgd_query_name,wgd_script_name,wgd_gringo_name,wgd_primary_name,wgd_hash_code,wgd_hashed_name,wgd_activation_radius,wgd_child_count,wgd_use_context_count,wgd_instanced_item_count,wgd_instance_slot_count,wgd_critical,wgd_mainta",
-        "L16: 0x0003BD08,ItemGringo,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,0x05B5C16A,0x00000000,2147483648.0,4,0,2,2,1,1,,,,,",
-        "L17: 0x0003BD54,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
-        "L18: 0x0003BDA0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,0x410215CF,0x00000000,0.25,1,1,7,7,0,1,,,,,",
-        "L19: 0x0003BDEC,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
-        "L20: 0x0003BE38,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
-        "L21: 0x0003BE84,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
-        "L22: 0x0003BED0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,0x082A4EBE,0x00000000,200.0,2,0,0,0,0,0,,,,,"
-      ],
-      "size": 173869
     }
   ],
   "outputs": {

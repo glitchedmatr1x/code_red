@@ -18,6 +18,24 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "data/codered/faction_wars_capabilities.json",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_capabilities.json",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/data/codered/faction_wars_capabilities.json",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "data/codered/faction_wars_targets.csv",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.csv",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/data/codered/faction_wars_targets.csv",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "data/codered/faction_wars_targets.json",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/data/codered/faction_wars_targets.json",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "data/codered/native_bridge_compile_probe.cpp",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/native_bridge_compile_probe.cpp",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/data/codered/native_bridge_compile_probe.cpp",
@@ -1140,6 +1158,18 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "research/faction_wars/FW_ACTIONABLE_TARGETS.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/faction_wars/FW_ACTIONABLE_TARGETS.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/research/faction_wars/FW_ACTIONABLE_TARGETS.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "research/faction_wars/FW_TARGET_PLAN.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/faction_wars/FW_TARGET_PLAN.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/research/faction_wars/FW_TARGET_PLAN.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "research/IMPORTANT_later_rpf_compare_2026-05-02/later_rpf_archive_summary.csv",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/IMPORTANT_later_rpf_compare_2026-05-02/later_rpf_archive_summary.csv",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/research/IMPORTANT_later_rpf_compare_2026-05-02/later_rpf_archive_summary.csv",
@@ -1890,9 +1920,21 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "tools/codered_faction_wars_actionable_targets.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_faction_wars_actionable_targets.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_faction_wars_actionable_targets.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "tools/codered_faction_wars_pipeline.py",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_faction_wars_pipeline.py",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_faction_wars_pipeline.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_faction_wars_report_viewer.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_faction_wars_report_viewer.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_faction_wars_report_viewer.py",
     "state": "safe_text_import_candidate"
   },
   {

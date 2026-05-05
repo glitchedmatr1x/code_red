@@ -1,37 +1,28 @@
 # Code RED source/decompiled export
 # Source: related_apps/Code_RED_ScriptHookRDR_AI_Menu/build_bridge.bat
-# SHA1: ceddf0b8c92726a5229601e8dfade166b238ed3b
+# SHA1: 939b19d3197fcadf5768996877f70caaf1744312
 
 @echo off
 setlocal
 
 rem CodeRED ScriptHookRDR AI Menu build helper.
-rem Run from the repository root in a Visual Studio x64 Native Tools Command Prompt.
+rem This wrapper now delegates to the current PowerShell build script so it
+rem uses CodeRED_AI_Menu.bridge_candidate.cpp instead of the older reference
+rem CodeRED_AI_Menu.cpp source.
 
-set OUTDIR=related_apps\Code_RED_ScriptHookRDR_AI_Menu\build
-set SRC=related_apps\Code_RED_ScriptHookRDR_AI_Menu\CodeRED_AI_Menu.cpp
-set OUT=%OUTDIR%\CodeRED_AI_Menu.asi
-set OBJ=%OUTDIR%\CodeRED_AI_Menu.obj
-set PDB=%OUTDIR%\CodeRED_AI_Menu.pdb
-set IMPLIB=%OUTDIR%\CodeRED_AI_Menu.lib
+set REPO_ROOT=%~dp0..\..
+pushd "%REPO_ROOT%" >nul
 
-if not exist "%OUTDIR%" mkdir "%OUTDIR%"
+powershell -ExecutionPolicy Bypass -File related_apps\Code_RED_ScriptHookRDR_AI_Menu\build_ai_menu_asi_windows.ps1 -RepoRoot "."
+set EXITCODE=%ERRORLEVEL%
 
-where cl >nul 2>nul
-if errorlevel 1 (
-  echo [ERROR] cl.exe was not found.
-  echo Open "x64 Native Tools Command Prompt for VS" or install Visual Studio Build Tools.
-  exit /b 1
-)
-
-cl /std:c++17 /EHsc /LD /nologo "%SRC%" /Fo"%OBJ%" /Fd"%PDB%" /Fe"%OUT%" /link /OUT:"%OUT%" /IMPLIB:"%IMPLIB%"
-if errorlevel 1 (
-  echo [ERROR] Build failed.
-  exit /b 1
+popd >nul
+if not "%EXITCODE%"=="0" (
+  echo [ERROR] CodeRED AI Menu ASI build failed.
+  exit /b %EXITCODE%
 )
 
 echo.
-echo Built: %OUT%
-echo Build side files are contained in: %OUTDIR%
-echo Copy CodeRED_AI_Menu.asi and CodeRED_AI_Menu.ini beside RDR.exe for testing.
-endlocal
+echo Built: related_apps\Code_RED_ScriptHookRDR_AI_Menu\build\CodeRED_AI_Menu.asi
+echo Copy/install with install_ai_menu_asi_windows.ps1 or run the singleplayer host helper.
+endlocal

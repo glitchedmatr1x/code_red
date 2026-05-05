@@ -1,0 +1,4 @@
+# Code RED source/decompiled export
+# Source: research/faction_wars/FW_ACTIONABLE_TARGETS.md
+# SHA1: da39a3ee5e6b4b0d3255bfef95601890afd80709
+
