@@ -1,14 +1,14 @@
 action,label,category,enabled,notes
-status_request,Status / Native Bridge Check,debug,1,Safe diagnostic action only; no actor creation or task native calls
+status_request,Status / Native Bridge Check,debug,1,Safe diagnostic action only; confirmed stable path because it performs no actor creation
 dismiss_ai_guest_request,Dismiss Tracked Actors,cleanup,1,Safe cleanup action for any previously tracked CodeRED actors
-spawn_selected_npc_request,Spawn Selected Actor / Vehicle,spawn,0,DISABLED after repeated crashes; raw CREATE_ACTOR_IN_LAYOUT path is unsafe until guarded in the ASI source
-regroup_near_player_request,Regroup Near Player,behavior,0,Disabled after repeated crashes; requires valid spawned actors and movement/task natives
-idle_spawned_request,Idle Spawned Actors,behavior,0,Disabled after repeated crashes; requires valid spawned actors and task natives
-follow_player_request,Follow Player,behavior,0,Disabled while isolating ASI crash source
-guard_position_request,Stand Guard,behavior,0,Disabled while isolating ASI crash source
-wander_spawned_request,Wander Spawned Actors,behavior,0,Disabled while isolating ASI crash source
-make_spawned_lawmen_request,Make Spawned Actors Lawmen,faction,0,Disabled while isolating ASI crash source
-side_lawman_immunity_request,Join Lawman Side,faction,0,Disabled while isolating ASI crash source
-side_gang_immunity_request,Join Gang Side,faction,0,Disabled while isolating ASI crash source
-restore_player_faction_request,Restore Player Faction,faction,0,Disabled while isolating ASI crash source
-attack_nearest_hostile_request,Attack Nearest Hostile,combat,0,Disabled while isolating ASI crash source
+spawn_selected_npc_request,Spawn Disabled - Raw Native Crashes,spawn,0,CONFIRMED CRASH TRIGGER; do not call raw CREATE_ACTOR_IN_LAYOUT from the menu until ASI source has hard guards and a safer vehicle/gringo lane
+regroup_near_player_request,Regroup Near Player,behavior,0,Disabled because it depends on spawned actor handles after the spawn crash trigger
+idle_spawned_request,Idle Spawned Actors,behavior,0,Disabled because it depends on spawned actor handles after the spawn crash trigger
+follow_player_request,Follow Player,behavior,0,Disabled because spawned actor handles are not trusted yet
+guard_position_request,Stand Guard,behavior,0,Disabled because spawned actor handles are not trusted yet
+wander_spawned_request,Wander Spawned Actors,behavior,0,Disabled because spawned actor handles are not trusted yet
+make_spawned_lawmen_request,Make Spawned Actors Lawmen,faction,0,Disabled because spawned actor handles are not trusted yet
+side_lawman_immunity_request,Join Lawman Side,faction,0,Disabled because spawned actor handles are not trusted yet
+side_gang_immunity_request,Join Gang Side,faction,0,Disabled because spawned actor handles are not trusted yet
+restore_player_faction_request,Restore Player Faction,faction,0,Disabled until spawn/task lane is rebuilt safely
+attack_nearest_hostile_request,Attack Nearest Hostile,combat,0,Disabled because combat/world-scan should not run until safe spawn handles are proven
