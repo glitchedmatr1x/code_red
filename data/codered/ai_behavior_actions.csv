@@ -1,15 +1,14 @@
 action,label,category,enabled,notes
-spawn_selected_npc_request,Spawn Selected NPC,spawn,1,Uses npc_roster label resolved through actor_enum_map.csv and CREATE_ACTOR_IN_LAYOUT
-follow_player_request,Follow Player,behavior,1,Sets spawned actors as companions and sends TASK_FOLLOW_ACTOR
-guard_position_request,Stand Guard,behavior,1,Clears current task and holds position
-defend_player_request,Defend Player,behavior,1,Companion follow behavior; use with lawman faction for hostile response
-attack_nearest_hostile_request,Attack Nearest Hostile,combat,1,Scans world actors and sends spawned actors after nearest actor hostile to player
-idle_spawned_request,Idle Spawned Actors,behavior,1,Clears current task and stands still
-wander_spawned_request,Wander Spawned Actors,behavior,1,Clears current task and sends TASK_WANDER
+spawn_selected_npc_request,Spawn Selected Vehicle / Actor,spawn,1,Uses npc_roster label resolved through actor_enum_map.csv and CREATE_ACTOR_IN_LAYOUT. Default roster is vehicle-first for safer car tests.
 regroup_near_player_request,Regroup Near Player,behavior,1,Sends spawned actors near player
-make_spawned_lawmen_request,Make Spawned Actors Lawmen,faction,1,Sets spawned actors to US law faction and companion follow
-side_lawman_immunity_request,Join Lawman Side,faction,1,Sets player to US law faction until restored
-side_gang_immunity_request,Join Gang Side,faction,1,Sets player to generic criminal/gang faction until restored
-restore_player_faction_request,Restore Player Faction,faction,1,Restores the saved player faction or default player faction
-dismiss_ai_guest_request,Dismiss Spawned Actors,cleanup,1,Releases tracked CodeRED spawned actors
+idle_spawned_request,Idle Spawned Actors,behavior,1,Clears current task and stands still
 status_request,Status,debug,1,Reports native bridge, enum, tracked actors, and optional world scan support
+dismiss_ai_guest_request,Dismiss Spawned Actors,cleanup,1,Releases tracked CodeRED spawned actors
+follow_player_request,Follow Player,behavior,0,Disabled by default for vehicle-first testing; re-enable after safe actor entries are verified
+guard_position_request,Stand Guard,behavior,0,Disabled by default for vehicle-first testing
+wander_spawned_request,Wander Spawned Actors,behavior,0,Disabled by default for vehicle-first testing
+make_spawned_lawmen_request,Make Spawned Actors Lawmen,faction,0,Disabled by default for vehicle-first testing
+side_lawman_immunity_request,Join Lawman Side,faction,0,Disabled by default for vehicle-first testing
+side_gang_immunity_request,Join Gang Side,faction,0,Disabled by default for vehicle-first testing
+restore_player_faction_request,Restore Player Faction,faction,0,Disabled by default for vehicle-first testing
+attack_nearest_hostile_request,Attack Nearest Hostile,combat,0,Disabled by default because unsafe NPC/world-scan use can crash while vehicle testing
