@@ -18,6 +18,18 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "data/codered/faction_wars_actionable_targets.csv",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_actionable_targets.csv",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/data/codered/faction_wars_actionable_targets.csv",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "data/codered/faction_wars_actionable_targets.json",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_actionable_targets.json",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/data/codered/faction_wars_actionable_targets.json",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "data/codered/faction_wars_capabilities.json",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_capabilities.json",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/data/codered/faction_wars_capabilities.json",

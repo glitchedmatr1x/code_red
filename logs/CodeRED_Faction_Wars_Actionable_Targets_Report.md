@@ -1,13 +1,13 @@
 # Code RED Faction Wars Actionable Target Report
 
-Generated: `2026-05-05T07:04:39Z`
-Version: `1.0.0-actionable-faction-targets`
+Generated: `2026-05-05T07:12:26Z`
+Version: `1.1.0-actionable-faction-targets-cleaner`
 
 ## Summary
 
-- Input rows: `1178`
-- Actionable rows: `458`
-- Rejected/noise rows: `720`
+- Input rows: `1190`
+- Actionable rows: `156`
+- Rejected/noise rows: `1034`
 
 ## Outputs
 
@@ -19,20 +19,20 @@ Version: `1.0.0-actionable-faction-targets`
 
 ## Top 15
 
-| Score | Category | Path |
-|---:|---|---|
-| 10116 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt` |
-| 9771 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt` |
-| 8858 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt` |
-| 8850 | world host / gringo | `research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv` |
-| 8214 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__vehicle_spawning_findings.csv.decompiled_source.txt` |
-| 8213 | world host / gringo | `research/extracted_root_research/vehicle_spawning_findings.csv` |
-| 5507 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__gringos_findings.csv.decompiled_source.txt` |
-| 5506 | world host / gringo | `research/extracted_root_research/gringos_findings.csv` |
-| 4097 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__categories__world_nav_placement.csv.decompiled_source.txt` |
-| 4096 | world host / gringo | `research/IMPORTANT_readable_root_index_2026-05-02/categories/world_nav_placement.csv` |
-| 3955 | world host / gringo | `research/IMPORTANT_readable_root_index_2026-05-02/categories/cutscenes_cameras.csv` |
-| 3955 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__categories__cutscenes_cameras.csv.decompiled_source.txt` |
-| 3884 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__categories__gringos_scripts.csv.decompiled_source.txt` |
-| 3882 | world host / gringo | `research/IMPORTANT_readable_root_index_2026-05-02/categories/gringos_scripts.csv` |
-| 3683 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__categories__vehicle_spawning.csv.decompiled_source.txt` |
+| Score | Phase | Category | Path |
+|---:|---|---|---|
+| 8850 | FW-1 tune/content pressure | world host / gringo | `research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv` |
+| 2914 | FW-1 tune/content pressure | tune/template pressure | `research/CodeRED_Cutscene_Placement_Pass15_Build/reports/tune_refgroup_vehicle_cutscene_candidates.csv` |
+| 2495 | FW-1 tune/content pressure | archive patch lane | `scratch/script_workshop_pipeline/scan_index/script_pipeline_scan_index.json` |
+| 2179 | FW-1 tune/content pressure | archive patch lane | `scratch/script_workshop_pipeline/scan_index/script_pipeline_scan_index.csv` |
+| 1982 | FW-1 tune/content pressure | world host / gringo | `research/extracted_root_research/strings_findings.csv` |
+| 1407 | FW-1 tune/content pressure | tune/template pressure | `research/CodeRED_Cutscene_Placement_Pass15_Build/reports/content_cutscene_vehicle_entries.csv` |
+| 1338 | FW-1 tune/content pressure | tune/template pressure | `research/faction_wars/FW_TARGET_PLAN.md` |
+| 1185 | FW-1 tune/content pressure | tune/template pressure | `research/Tune - Mirage Spawner/Prop List.xml` |
+| 1150 | FW-1 tune/content pressure | archive patch lane | `research/wft_wedt_attachment_lab/candidate_transforms.csv` |
+| 1134 | FW-1 tune/content pressure | tune/template pressure | `research/modified_xml/placementglobals_15_50_rival_gang_towns.xml` |
+| 1030 | FW-1 tune/content pressure | tune/template pressure | `research/wft_wedt_attachment_lab/smic_attachment_map.csv` |
+| 985 | FW-1 tune/content pressure | tune/template pressure | `research/wft_wedt_attachment_lab/smic_gunbelt_rows.csv` |
+| 985 | FW-1 tune/content pressure | tune/template pressure | `research/dualgun_left_hand_bypass/smic_gunbelt_rows.csv` |
+| 956 | FW-1 tune/content pressure | tune/template pressure | `research/faction_wars/FW_ACTIONABLE_TARGETS.md` |
+| 856 | FW-1 tune/content pressure | script/native candidate | `related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.bridge_candidate.cpp` |

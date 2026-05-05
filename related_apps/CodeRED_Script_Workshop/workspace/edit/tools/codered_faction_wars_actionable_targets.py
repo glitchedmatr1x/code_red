@@ -2,9 +2,9 @@
 """Create an actionable Faction Wars target shortlist from the broad scan.
 
 The broad scanner intentionally catches a lot. This pass removes Code RED's own
-generated manifests, actor enum maps, and Script Workshop duplicate read/edit
-exports so FW-1 can focus on real tune/template, world-host/gringo, archive, and
-script candidates.
+generated manifests, index catalogs, actor enum maps, SDK headers, and Script
+Workshop duplicate exports so FW-1 can focus on real tune/template, world-host,
+gringo, archive, and script candidates.
 """
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Sequence
 
-VERSION = "1.0.0-actionable-faction-targets"
+VERSION = "1.1.0-actionable-faction-targets-cleaner"
 TARGETS_CSV = Path("data/codered/faction_wars_targets.csv")
 ACTIONABLE_CSV = Path("data/codered/faction_wars_actionable_targets.csv")
 ACTIONABLE_JSON = Path("data/codered/faction_wars_actionable_targets.json")
@@ -31,6 +31,9 @@ ACTIONABLE_CATEGORIES = {
     "archive patch lane",
 }
 
+# Generated bookkeeping, index catalogs, SDK/native headers, and duplicate
+# workspace mirrors are not good first patch targets even when they contain
+# faction/actor/gringo keywords.
 NOISE_PATH_PARTS = (
     "actor_enum_map.csv",
     "npc_roster.txt",
@@ -50,10 +53,19 @@ NOISE_PATH_PARTS = (
     "script_pipeline_manifest.json",
     "file_io_decode_manifest.csv",
     "native_database.csv",
+    "native_database.json",
     "native_bridge_manifest.csv",
     "native_bridge_manifest.json",
-    "important_readable_root_index_2026-05-02/file_index.csv",
-    "important_readable_root_index_2026-05-02/important_files.csv",
+    "native_bridge_selected_wrappers.cpp",
+    "native_bridge_compile_probe.cpp",
+    "native_bridge_prep_stubs.cpp",
+    "research/menu resources/natives.h",
+    "include/rdr/natives32.h",
+    "include/rdr/consts32.h",
+    "research/important_readable_root_index_2026-05-02/",
+    "research/extracted_root_research/extracted_root_findings.csv",
+    "research/extracted_root_research/vehicle_spawning_findings.csv",
+    "research/extracted_root_research/gringos_findings.csv",
     "logs/codered_faction_wars_pipeline_report",
     "logs/codered_faction_wars_actionable_targets_report",
 )
@@ -61,6 +73,13 @@ NOISE_PATH_PARTS = (
 LOW_VALUE_WORKSPACE_PARTS = (
     "related_apps/codered_script_workshop/workspace/read/",
     "related_apps/codered_script_workshop/workspace/edit/",
+    "related_apps/codered_script_workshop/workspace/decompiled_export/",
+    "scratch/script_workshop_pipeline/read_full/",
+    "scratch/script_workshop_pipeline/edit_workspace/",
+    "scratch/script_workshop_pipeline/decompiled_export/",
+    "scratch/script_workshop_pipeline/import_queue/",
+    "scratch/script_workshop_pipeline/recompile_queue/",
+    "scratch/script_workshop_compile/",
 )
 
 PREFERRED_TERMS = (
@@ -68,6 +87,13 @@ PREFERRED_TERMS = (
     "refgroup", "wgd", "wsi", "gringo", "population", "ambient", "encounter",
     "holdup", "crime", "patrol", "posse", "camp", "hideout", "weapon", "lasso",
     "hogtie", "dog", "blackwater", "armadillo", "thieves", "fort mercer",
+)
+
+FW1_TERMS = (
+    "tune", "template", "npc", "sheriff", "law", "gang", "weapon", "lasso", "hogtie", "dog", "refgroup"
+)
+FW2_TERMS = (
+    "wgd", "wsi", "gringo", "population", "ambient", "encounter", "holdup", "crime", "patrol", "camp", "hideout"
 )
 
 
@@ -110,11 +136,15 @@ def load_rows(root: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
-def score(row: dict[str, str]) -> int:
+def int_score(row: dict[str, str], key: str = "score") -> int:
     try:
-        return int(str(row.get("score", "0")).strip() or "0")
+        return int(str(row.get(key, "0")).strip() or "0")
     except ValueError:
         return 0
+
+
+def path_blob(row: dict[str, str]) -> str:
+    return " ".join(str(row.get(key, "")) for key in ("path", "category", "regions", "groups", "high_value_terms")).replace("\\", "/").lower()
 
 
 def is_noise(row: dict[str, str]) -> bool:
@@ -126,14 +156,28 @@ def is_noise(row: dict[str, str]) -> bool:
         return True
     if any(part in path for part in LOW_VALUE_WORKSPACE_PARTS):
         return True
-    if path.startswith("data/codered/") and not any(term in path for term in ("tune", "wsi", "wgd", "gringo", "script", "archive")):
+    if path.startswith("data/codered/"):
+        return True
+    if path.endswith(("/natives.h", "/natives32.h", "/consts32.h")):
         return True
     return False
 
 
 def preferred_bonus(row: dict[str, str]) -> int:
-    blob = " ".join(str(row.get(key, "")) for key in ("path", "category", "regions", "groups", "high_value_terms")).lower()
+    blob = path_blob(row)
     return sum(25 for term in PREFERRED_TERMS if term in blob)
+
+
+def phase_for(row: dict[str, str]) -> str:
+    blob = path_blob(row)
+    category = row.get("category", "")
+    if category == "tune/template pressure" or any(term in blob for term in FW1_TERMS):
+        return "FW-1 tune/content pressure"
+    if category == "world host / gringo" or any(term in blob for term in FW2_TERMS):
+        return "FW-2 world-host discovery"
+    if category == "archive patch lane":
+        return "FW-3 copied-archive proof"
+    return "FW-2 inspect before patch"
 
 
 def normalize_rows(rows: Sequence[dict[str, str]]) -> list[dict[str, str]]:
@@ -147,15 +191,24 @@ def normalize_rows(rows: Sequence[dict[str, str]]) -> list[dict[str, str]]:
         if is_noise(row):
             continue
         item = dict(row)
-        item["actionable_score"] = str(score(row) + preferred_bonus(row))
+        item["phase"] = phase_for(row)
+        item["actionable_score"] = str(int_score(row) + preferred_bonus(row))
         out.append(item)
-    out.sort(key=lambda row: (int(row.get("actionable_score", "0") or "0"), score(row), row.get("path", "")), reverse=True)
+    out.sort(
+        key=lambda row: (
+            1 if row.get("phase", "").startswith("FW-1") else 0,
+            int_score(row, "actionable_score"),
+            int_score(row),
+            row.get("path", ""),
+        ),
+        reverse=True,
+    )
     return out
 
 
 def write_csv(path: Path, rows: Sequence[dict[str, str]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    fields = ["actionable_score", "score", "category", "path", "source_kind", "regions", "groups", "high_value_terms", "size"]
+    fields = ["phase", "actionable_score", "score", "category", "path", "source_kind", "regions", "groups", "high_value_terms", "size"]
     with path.open("w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fields)
         writer.writeheader()
@@ -164,25 +217,26 @@ def write_csv(path: Path, rows: Sequence[dict[str, str]]) -> None:
 
 
 def build_markdown(rows: Sequence[dict[str, str]], root: Path) -> str:
+    del root
     lines = [
         "# Code RED Faction Wars — Actionable Targets",
         "",
         f"Generated: `{utc_now()}`",
         "",
-        "This shortlist filters out Code RED generated manifests, actor enum maps, index files, and Script Workshop duplicate read/edit exports.",
+        "This shortlist filters out Code RED generated manifests, actor enum maps, index catalogs, SDK/native headers, and Script Workshop duplicate exports.",
         "",
         "## Next move",
         "",
-        "Start with one FW-1 tune/template pressure target or one FW-2 world-host/gringo target. Do not start with a source script replacement unless it is the only clean target left.",
+        "Start with one **FW-1 tune/content pressure** target when available. Otherwise inspect one **FW-2 world-host/gringo** target. Do not start with a source script replacement unless it is the only clean target left.",
         "",
         "## Top actionable targets",
         "",
-        "| Rank | Actionable score | Raw score | Category | Path | Regions | High-value terms |",
-        "|---:|---:|---:|---|---|---|---|",
+        "| Rank | Phase | Actionable score | Raw score | Category | Path | Regions | High-value terms |",
+        "|---:|---|---:|---:|---|---|---|---|",
     ]
-    for index, row in enumerate(rows[:60], start=1):
+    for index, row in enumerate(rows[:80], start=1):
         lines.append(
-            f"| {index} | {row.get('actionable_score', '')} | {row.get('score', '')} | "
+            f"| {index} | {row.get('phase', '')} | {row.get('actionable_score', '')} | {row.get('score', '')} | "
             f"{row.get('category', '')} | `{row.get('path', '')}` | {row.get('regions', '')} | {row.get('high_value_terms', '')} |"
         )
     lines.extend([
@@ -212,9 +266,9 @@ def build_report_markdown(report: ActionableReport) -> str:
     ]
     for label, path in report.outputs.items():
         lines.append(f"- {label}: `{path}`")
-    lines.extend(["", "## Top 15", "", "| Score | Category | Path |", "|---:|---|---|"])
+    lines.extend(["", "## Top 15", "", "| Score | Phase | Category | Path |", "|---:|---|---|---|"])
     for row in report.top_targets[:15]:
-        lines.append(f"| {row.get('actionable_score', '')} | {row.get('category', '')} | `{row.get('path', '')}` |")
+        lines.append(f"| {row.get('actionable_score', '')} | {row.get('phase', '')} | {row.get('category', '')} | `{row.get('path', '')}` |")
     return "\n".join(lines) + "\n"
 
 
@@ -265,10 +319,13 @@ def print_report(report: ActionableReport, limit: int) -> None:
     print(f"Actionable rows: {report.actionable_rows}")
     print(f"Rejected/noise rows: {report.rejected_rows}")
     print()
-    print(f"{'Rank':>4}  {'Score':>6}  {'Category':<25}  Path")
-    print("-" * 100)
+    print(f"{'Rank':>4}  {'Score':>6}  {'Phase':<28}  {'Category':<25}  Path")
+    print("-" * 128)
     for index, row in enumerate(report.top_targets[:limit], start=1):
-        print(f"{index:>4}  {row.get('actionable_score', ''):>6}  {row.get('category', '')[:25]:<25}  {row.get('path', '')}")
+        print(
+            f"{index:>4}  {row.get('actionable_score', ''):>6}  "
+            f"{row.get('phase', '')[:28]:<28}  {row.get('category', '')[:25]:<25}  {row.get('path', '')}"
+        )
     print()
     print("Review:", report.outputs["actionable_markdown"])
 

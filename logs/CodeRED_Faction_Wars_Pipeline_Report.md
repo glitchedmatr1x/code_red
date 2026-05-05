@@ -1,12 +1,12 @@
 # Code RED Faction Wars Pipeline Report
 
-Generated: `2026-05-05T07:04:39Z`
+Generated: `2026-05-05T07:12:25Z`
 Version: `1.0.0-faction-wars-pipeline`
 
 ## Summary
 
-- Scanned files: `1560`
-- Hits: `1178`
+- Scanned files: `1568`
+- Hits: `1190`
 
 ## Outputs
 
@@ -25,10 +25,10 @@ Version: `1.0.0-faction-wars-pipeline`
 | 34990 | research/reference | `related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv` |
 | 34990 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/read/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.fullread.txt` |
 | 34990 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv` |
-| 22278 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt` |
-| 22277 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt` |
-| 22277 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json` |
-| 22277 | research/reference | `data/codered/faction_wars_targets.json` |
+| 22912 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt` |
+| 22911 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt` |
+| 22911 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json` |
+| 22911 | research/reference | `data/codered/faction_wars_targets.json` |
 | 12671 | research/reference | `research/extracted_root_research/extracted_root_findings.csv` |
 | 12671 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/read/research__extracted_root_research__extracted_root_findings.csv.fullread.txt` |
 | 12671 | research/reference | `related_apps/CodeRED_Script_Workshop/workspace/edit/research/extracted_root_research/extracted_root_findings.csv` |
