@@ -16,6 +16,7 @@ set "OUT_ARG=%OUT%\\"
 set "HEADER=%INCLUDE%\RDR\natives32.h"
 set "PROMOTE=%SCCL_ROOT%promote_real_sccl_headers_windows.ps1"
 set "INSPECT=%SCCL_ROOT%inspect_camp_car_output_windows.ps1"
+set "VALIDATE=%PROJECT%\scripts\validate_camp_car_probe.py"
 
 if not exist "%SRC%" (
   echo [CodeRED] Missing source: %SRC%
@@ -52,6 +53,15 @@ findstr /i /c:"Minimal Code RED proof natives" /c:"source-proof shims" "%HEADER%
 if not errorlevel 1 (
   echo [CodeRED] Project header is still fake after promotion. Stopping.
   exit /b 4
+)
+
+if exist "%VALIDATE%" (
+  echo [CodeRED] Validating camp car probe after include repair...
+  py -3 "%VALIDATE%"
+  if errorlevel 1 (
+    echo [CodeRED] Camp car probe validation failed after include repair. Stopping before compile.
+    exit /b 5
+  )
 )
 
 if "%SCCL_EXE%"=="" if exist "%SCCL_ROOT%output\SC-CL.exe" set "SCCL_EXE=%SCCL_ROOT%output\SC-CL.exe"
