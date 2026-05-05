@@ -1,14 +1,14 @@
 action,label,category,enabled,notes
-spawn_selected_npc_request,Spawn Selected Vehicle / Actor,spawn,1,Uses npc_roster label resolved through actor_enum_map.csv and CREATE_ACTOR_IN_LAYOUT. Default roster is vehicle-first for safer car tests.
-regroup_near_player_request,Regroup Near Player,behavior,1,Sends spawned actors near player
-idle_spawned_request,Idle Spawned Actors,behavior,1,Clears current task and stands still
-status_request,Status,debug,1,Reports native bridge, enum, tracked actors, and optional world scan support
-dismiss_ai_guest_request,Dismiss Spawned Actors,cleanup,1,Releases tracked CodeRED spawned actors
-follow_player_request,Follow Player,behavior,0,Disabled by default for vehicle-first testing; re-enable after safe actor entries are verified
-guard_position_request,Stand Guard,behavior,0,Disabled by default for vehicle-first testing
-wander_spawned_request,Wander Spawned Actors,behavior,0,Disabled by default for vehicle-first testing
-make_spawned_lawmen_request,Make Spawned Actors Lawmen,faction,0,Disabled by default for vehicle-first testing
-side_lawman_immunity_request,Join Lawman Side,faction,0,Disabled by default for vehicle-first testing
-side_gang_immunity_request,Join Gang Side,faction,0,Disabled by default for vehicle-first testing
-restore_player_faction_request,Restore Player Faction,faction,0,Disabled by default for vehicle-first testing
-attack_nearest_hostile_request,Attack Nearest Hostile,combat,0,Disabled by default because unsafe NPC/world-scan use can crash while vehicle testing
+status_request,Status / Native Bridge Check,debug,1,Safe diagnostic action only; no actor creation or task native calls
+dismiss_ai_guest_request,Dismiss Tracked Actors,cleanup,1,Safe cleanup action for any previously tracked CodeRED actors
+spawn_selected_npc_request,Spawn Selected Actor / Vehicle,spawn,0,DISABLED after repeated crashes; raw CREATE_ACTOR_IN_LAYOUT path is unsafe until guarded in the ASI source
+regroup_near_player_request,Regroup Near Player,behavior,0,Disabled after repeated crashes; requires valid spawned actors and movement/task natives
+idle_spawned_request,Idle Spawned Actors,behavior,0,Disabled after repeated crashes; requires valid spawned actors and task natives
+follow_player_request,Follow Player,behavior,0,Disabled while isolating ASI crash source
+guard_position_request,Stand Guard,behavior,0,Disabled while isolating ASI crash source
+wander_spawned_request,Wander Spawned Actors,behavior,0,Disabled while isolating ASI crash source
+make_spawned_lawmen_request,Make Spawned Actors Lawmen,faction,0,Disabled while isolating ASI crash source
+side_lawman_immunity_request,Join Lawman Side,faction,0,Disabled while isolating ASI crash source
+side_gang_immunity_request,Join Gang Side,faction,0,Disabled while isolating ASI crash source
+restore_player_faction_request,Restore Player Faction,faction,0,Disabled while isolating ASI crash source
+attack_nearest_hostile_request,Attack Nearest Hostile,combat,0,Disabled while isolating ASI crash source
