@@ -1,0 +1,399 @@
+#!/usr/bin/env python3
+"""
+Code RED Camp Car Workbench
+
+One-command, read-only workbench for the camp-car mod research lane.
+
+It scans an extracted RPF workspace for:
+- player camp gringo scripts
+- vehicle/car/playercar gringo scripts
+- readable gringo XML descriptors
+- references that connect descriptors/containers to scripts
+- likely next inspection targets
+
+It does not modify archives, game files, or the extracted workspace.
+
+Usage from repo root:
+  py -3 tools/codered_camp_car_workbench.py --root "C:\\Users\\glitc\\OneDrive\\Desktop\\CodeRED_RPF_Extracts"
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import json
+import os
+import re
+from pathlib import Path
+import xml.etree.ElementTree as ET
+
+SKIP_DIRS = {".git", "__pycache__", ".pytest_cache", "proof_packages", "output"}
+TEXT_EXTS = {
+    ".txt", ".md", ".csv", ".json", ".xml", ".ini", ".cfg", ".log", ".lst",
+    ".wsi", ".wgd", ".dat", ".c", ".h", ".py", ".ps1", ".bat",
+}
+
+NAME_KEYWORDS = [
+    "camp", "playercamp", "player_camp", "cam_player", "campfire", "refgroup", "refgroups",
+    "vehicle", "car", "truck", "wagon", "coach", "gringo", "generator", "wsi", "wgd",
+    "script", "release64", "content", "base", "rpf", "xsc", "wsc", "sco",
+]
+
+SCRIPT_LEADS = [
+    "playercamp01_gringo", "playercamp02_gringo", "playercamp03_gringo", "playercamp04_gringo",
+    "playercampfootlocker", "campfire", "vehicle_generator", "Vehicle_Generator", "car_gringo",
+    "CarCrank_gringo", "carcrank_gringo", "playercar", "PlayerCar", "gen_vehicle_brain",
+    "Gen_Vehicle_Brain", "content\\release64\\scripting\\gringo\\commonscripts",
+    "content\\scripting\\gringo\\CommonScripts",
+]
+
+CONTENT_PATTERNS = [
+    "ACTOR_VEHICLE_Car01", "Car01", "Truck01", "Vehicle_Generator", "vehicle_generator",
+    "car_gringo", "PlayerCar", "playercar", "camp", "playerCamp", "playercamp", "cam_playerCamp",
+    "refgroup", "wsi", "wgd", "gringo", "CREATE_ACTOR_IN_LAYOUT", "GET_ACTORENUM_FROM_STRING",
+    "release64", "scripting", ".xsc", ".wsc", ".sco",
+]
+
+FIELD_PATTERNS = {
+    "mp_QueryName": re.compile(r"<mp_QueryName[^>]*>(.*?)</mp_QueryName>", re.I | re.S),
+    "mp_ScriptName": re.compile(r"<mp_ScriptName[^>]*>(.*?)</mp_ScriptName>", re.I | re.S),
+    "ActivationRadius": re.compile(r"<ActivationRadius[^>]*value=\"([^\"]*)\"", re.I),
+    "bCritical": re.compile(r"<bCritical[^>]*value=\"([^\"]*)\"", re.I),
+    "bMaintainState": re.compile(r"<bMaintainState[^>]*value=\"([^\"]*)\"", re.I),
+    "bLargeScript": re.compile(r"<bLargeScript[^>]*value=\"([^\"]*)\"", re.I),
+}
+
+
+def iter_files(root: Path):
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+        base = Path(dirpath)
+        for filename in filenames:
+            yield base / filename
+
+
+def sha1_head(path: Path, max_bytes: int = 256_000) -> str:
+    h = hashlib.sha1()
+    try:
+        with path.open("rb") as f:
+            remaining = max_bytes
+            while remaining > 0:
+                chunk = f.read(min(1024 * 1024, remaining))
+                if not chunk:
+                    break
+                h.update(chunk)
+                remaining -= len(chunk)
+    except OSError:
+        return ""
+    return h.hexdigest().upper()
+
+
+def decode_for_search(path: Path, max_bytes: int = 3_000_000) -> str:
+    try:
+        data = path.read_bytes()[:max_bytes]
+    except OSError:
+        return ""
+    if path.suffix.lower() in TEXT_EXTS:
+        return data.decode("utf-8", errors="ignore")
+    chunks = re.findall(rb"[\x20-\x7E]{4,}", data)
+    return "\n".join(chunk.decode("ascii", errors="ignore") for chunk in chunks)
+
+
+def printable_strings(path: Path, min_len: int = 4) -> list[str]:
+    try:
+        data = path.read_bytes()
+    except OSError:
+        return []
+    chunks = re.findall(rb"[\x20-\x7E]{%d,}" % min_len, data)
+    return [chunk.decode("ascii", errors="ignore") for chunk in chunks if chunk.strip()]
+
+
+def snippet(text: str, needle: str, width: int = 160) -> str:
+    low = text.lower()
+    idx = low.find(needle.lower())
+    if idx < 0:
+        return ""
+    start = max(0, idx - width)
+    end = min(len(text), idx + len(needle) + width)
+    return text[start:end].replace("\r", " ").replace("\n", " ")[:420]
+
+
+def clean_text(value: str) -> str:
+    return re.sub(r"\s+", " ", value or "").strip()
+
+
+def extract_descriptor_fields(path: Path, text: str) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    for key, pattern in FIELD_PATTERNS.items():
+        match = pattern.search(text)
+        if match:
+            fields[key] = clean_text(match.group(1))
+    try:
+        root = ET.fromstring(text)
+    except Exception:
+        return fields
+    for elem in root.iter():
+        tag = elem.tag.split("}")[-1]
+        if tag in {"mp_QueryName", "mp_ScriptName"} and elem.text:
+            fields[tag] = clean_text(elem.text)
+        if tag in {"ActivationRadius", "bCritical", "bMaintainState", "bLargeScript"}:
+            value = elem.attrib.get("value")
+            if value is not None:
+                fields[tag] = value
+    return fields
+
+
+def classify(rel: str, text: str) -> list[str]:
+    low = (rel + "\n" + text[:12000]).lower()
+    tags: list[str] = []
+    if "playercamp" in low:
+        tags.append("playercamp")
+    if "campfire" in low:
+        tags.append("campfire")
+    if "vehicle_generator" in low or ("vehicle" in low and "generator" in low):
+        tags.append("vehicle_generator")
+    if "car_gringo" in low:
+        tags.append("car_gringo")
+    if "playercar" in low:
+        tags.append("playercar")
+    if "gen_vehicle_brain" in low or "vehicle_brain" in low:
+        tags.append("vehicle_brain")
+    if "wsi" in low:
+        tags.append("wsi")
+    if "wgd" in low:
+        tags.append("wgd")
+    if "zombie" in low or "dlc" in low:
+        tags.append("dlc_or_zombie")
+    return sorted(set(tags))
+
+
+def score_candidate(rel: str, suffix: str, name_hits: list[str], content_hits: list[str], ref_hits: list[str], tags: list[str]) -> int:
+    low = rel.lower()
+    score = len(name_hits) * 4 + len(content_hits) * 10 + len(ref_hits) * 18 + len(tags) * 8
+    if suffix in {".xml", ".wsi", ".wgd"}:
+        score += 25
+    if suffix in {".wsc", ".sco", ".xsc"}:
+        score += 5
+    if "playercamp01" in low:
+        score += 30
+    if "vehicle_generator" in low:
+        score += 25
+    if "car_gringo" in low or "playercar" in low:
+        score += 22
+    if "zombie" in low:
+        score -= 8
+    return score
+
+
+def analyze_file(path: Path, root: Path) -> dict | None:
+    rel = path.relative_to(root).as_posix()
+    suffix = path.suffix.lower()
+    low_rel = rel.lower()
+    name_hits = sorted({kw for kw in NAME_KEYWORDS if kw.lower() in low_rel})
+    text = decode_for_search(path)
+    low_text = text.lower()
+    content_hits = sorted({pat for pat in CONTENT_PATTERNS if pat.lower() in low_text})
+    ref_hits = sorted({needle for needle in SCRIPT_LEADS if needle.lower() in low_text})
+    tags = classify(rel, text)
+    descriptor_fields: dict[str, str] = {}
+    if suffix == ".xml":
+        descriptor_fields = extract_descriptor_fields(path, text)
+        if descriptor_fields:
+            content_hits.append("gringo_descriptor_fields")
+            tags.append("descriptor")
+    if not name_hits and not content_hits and not ref_hits and not tags:
+        return None
+    windows = []
+    for hit in (ref_hits + content_hits)[:10]:
+        snip = snippet(text, hit)
+        if snip:
+            windows.append({"hit": hit, "snippet": snip})
+    row = {
+        "score": score_candidate(rel, suffix, name_hits, content_hits, ref_hits, tags),
+        "relative_path": rel,
+        "suffix": suffix,
+        "size": path.stat().st_size if path.exists() else -1,
+        "sha1_head": sha1_head(path),
+        "tags": sorted(set(tags)),
+        "name_hits": sorted(set(name_hits)),
+        "content_hits": sorted(set(content_hits)),
+        "reference_hits": sorted(set(ref_hits)),
+        "descriptor": descriptor_fields,
+        "windows": windows[:8],
+    }
+    return row
+
+
+def select_priority(rows: list[dict]) -> dict[str, list[dict]]:
+    groups = {
+        "playercamp_hosts": [],
+        "vehicle_script_leads": [],
+        "descriptor_hosts": [],
+        "placement_dictionary_leads": [],
+        "dlc_zombie_examples": [],
+    }
+    for row in rows:
+        tags = set(row.get("tags", []))
+        rel = row.get("relative_path", "").lower()
+        suffix = row.get("suffix", "")
+        if "playercamp" in tags:
+            groups["playercamp_hosts"].append(row)
+        if {"vehicle_generator", "car_gringo", "playercar", "vehicle_brain"} & tags:
+            groups["vehicle_script_leads"].append(row)
+        if row.get("descriptor"):
+            groups["descriptor_hosts"].append(row)
+        if suffix in {".wsi", ".wgd"} or "wsi" in tags or "wgd" in tags:
+            groups["placement_dictionary_leads"].append(row)
+        if "dlc_or_zombie" in tags:
+            groups["dlc_zombie_examples"].append(row)
+    for key in groups:
+        groups[key] = sorted(groups[key], key=lambda r: (-r["score"], r["relative_path"]))[:40]
+    return groups
+
+
+def write_csv(rows: list[dict], csv_path: Path) -> None:
+    fields = ["score", "relative_path", "suffix", "size", "sha1_head", "tags", "name_hits", "content_hits", "reference_hits", "mp_QueryName", "mp_ScriptName", "ActivationRadius"]
+    with csv_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+        for row in rows:
+            desc = row.get("descriptor") or {}
+            writer.writerow({
+                "score": row.get("score"),
+                "relative_path": row.get("relative_path"),
+                "suffix": row.get("suffix"),
+                "size": row.get("size"),
+                "sha1_head": row.get("sha1_head"),
+                "tags": ";".join(row.get("tags") or []),
+                "name_hits": ";".join(row.get("name_hits") or []),
+                "content_hits": ";".join(row.get("content_hits") or []),
+                "reference_hits": ";".join(row.get("reference_hits") or []),
+                "mp_QueryName": desc.get("mp_QueryName", ""),
+                "mp_ScriptName": desc.get("mp_ScriptName", ""),
+                "ActivationRadius": desc.get("ActivationRadius", ""),
+            })
+
+
+def write_markdown(root: Path, rows: list[dict], groups: dict[str, list[dict]], md_path: Path) -> None:
+    lines = [
+        "# Code RED Camp Car Workbench Report",
+        "",
+        f"Root: `{root}`",
+        f"Candidates: `{len(rows)}`",
+        "",
+        "Boundary: read-only. No archives, game files, or extracted files modified.",
+        "",
+        "## Verdict",
+        "",
+        "Code RED can read enough from the extracted workspace to drive this lane internally. The current evidence favors a two-path plan: keep the compiled `camp_car_probe.xsc` as the runtime proof, while using gringo/script/reference scans to identify one safe host or descriptor for a future copied-archive import proof.",
+        "",
+        "## Recommended next move",
+        "",
+        "1. Keep using `camp_car_probe.xsc` for runtime spawn proof.",
+        "2. Do not replace player camp scripts directly.",
+        "3. Use the top `playercamp` and vehicle script leads only to identify host behavior.",
+        "4. Look for XML/WSI/WGD host references before any copied-archive import proof.",
+        "",
+    ]
+    for group, items in groups.items():
+        lines.append(f"## {group} — {len(items)}")
+        lines.append("")
+        for row in items[:20]:
+            desc = row.get("descriptor") or {}
+            lines.append(f"- score `{row['score']}` — `{row['relative_path']}`")
+            if row.get("tags"):
+                lines.append(f"  - tags: {', '.join(row['tags'])}")
+            if row.get("reference_hits"):
+                lines.append(f"  - refs: {', '.join(row['reference_hits'][:6])}")
+            if desc:
+                lines.append(f"  - script: `{desc.get('mp_ScriptName', '')}` query: `{desc.get('mp_QueryName', '')}` radius: `{desc.get('ActivationRadius', '')}`")
+        lines.append("")
+    lines.append("## Top candidates")
+    lines.append("")
+    for row in rows[:60]:
+        lines.append(f"### score {row['score']} — `{row['relative_path']}`")
+        lines.append(f"- suffix: `{row['suffix']}` size: `{row['size']}` sha1_head: `{row['sha1_head']}`")
+        lines.append(f"- tags: {', '.join(row.get('tags') or []) or 'none'}")
+        desc = row.get("descriptor") or {}
+        if desc:
+            lines.append(f"- mp_QueryName: `{desc.get('mp_QueryName', '')}`")
+            lines.append(f"- mp_ScriptName: `{desc.get('mp_ScriptName', '')}`")
+            lines.append(f"- ActivationRadius: `{desc.get('ActivationRadius', '')}`")
+        for win in (row.get("windows") or [])[:3]:
+            lines.append(f"- `{win['hit']}`: {win['snippet']}")
+        lines.append("")
+    md_path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", required=True, help="Extracted RPF root folder")
+    parser.add_argument("--out", default="logs/camp_car_workbench", help="Output prefix")
+    parser.add_argument("--top", type=int, default=300)
+    args = parser.parse_args()
+
+    root = Path(args.root).resolve()
+    if not root.exists():
+        raise SystemExit(f"Missing root: {root}")
+
+    rows = []
+    for path in iter_files(root):
+        try:
+            row = analyze_file(path, root)
+        except Exception as exc:
+            row = {
+                "score": 1,
+                "relative_path": path.relative_to(root).as_posix(),
+                "suffix": path.suffix.lower(),
+                "size": -1,
+                "sha1_head": "",
+                "tags": ["scan_error"],
+                "name_hits": [],
+                "content_hits": [str(exc)],
+                "reference_hits": [],
+                "descriptor": {},
+                "windows": [],
+            }
+        if row:
+            rows.append(row)
+
+    rows.sort(key=lambda r: (-int(r["score"]), str(r["relative_path"])))
+    rows = rows[: args.top]
+    groups = select_priority(rows)
+
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    json_path = out.with_suffix(".json")
+    csv_path = out.with_suffix(".csv")
+    md_path = out.with_suffix(".md")
+    latest_path = out.parent / "camp_car_workbench_latest.json"
+
+    report = {
+        "root": str(root),
+        "boundary": "Read-only workbench. No archives, game files, or extracted files modified.",
+        "candidate_count": len(rows),
+        "groups": groups,
+        "rows": rows,
+        "next_recommendation": "Use camp_car_probe.xsc as runtime proof; use playercamp and vehicle script leads to identify a single copied-archive import target later.",
+    }
+    json_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    latest_path.write_text(json.dumps({"json": str(json_path), "csv": str(csv_path), "md": str(md_path), "root": str(root)}, indent=2), encoding="utf-8")
+    write_csv(rows, csv_path)
+    write_markdown(root, rows, groups, md_path)
+
+    print("# Code RED Camp Car Workbench")
+    print(f"Root: {root}")
+    print(f"Candidates: {len(rows)}")
+    print(f"JSON: {json_path}")
+    print(f"CSV: {csv_path}")
+    print(f"MD: {md_path}")
+    for group, items in groups.items():
+        print(f"{group}: {len(items)}")
+        for row in items[:3]:
+            print(f"  score={row['score']:>3} {row['relative_path']}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
