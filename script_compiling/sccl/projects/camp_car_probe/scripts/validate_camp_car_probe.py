@@ -37,12 +37,18 @@ required_native_names = [
     'SET_ACTOR_SPEED', 'ADD_PERSISTENT_SCRIPT', '_GET_ID_OF_THIS_SCRIPT', 'WAIT',
     'GET_POSITION'
 ]
+optional_native_names = [
+    # v2 uses this only for F9 repositioning. If the real header lacks it, compile will catch it.
+    'SET_ACTOR_POSITION'
+]
 required_constants = ['ACTOR_VEHICLE_Car01', 'KEY_F5', 'KEY_F6', 'KEY_F7', 'KEY_F8']
+optional_constants = ['KEY_F9', 'KEY_F10']
 required_tokens = [
-    'CODE RED CAMP CAR', 'CR_SpawnCampCar', 'CR_DeleteCampCar', 'CR_TuneCar',
-    'CR_PutPlayerInCar', 'CodeREDCampCarProbeV1', 'CodeREDCampCar01',
-    'ACTOR_VEHICLE_Car01', 'spawnPos.x = spawnPos.x + 4.0f',
-    'spawnPos.y = spawnPos.y + 2.0f', 'F5 spawns Car01 nearby'
+    'CODE RED CAR', 'CR_SpawnCampCarAtOffset', 'CR_DeleteCampCar', 'CR_TuneCar',
+    'CR_PutPlayerInCar', 'CR_MoveProbeCarFarther', 'CodeREDCampCarProbeV2',
+    'CodeREDCampCar01', 'ACTOR_VEHICLE_Car01',
+    'spawnPos->x = spawnPos->x + ox', 'spawnPos->y = spawnPos->y + oy',
+    'F5 = spawn Car01', 'F9 = move/reposition farther', 'F10 = show help'
 ]
 
 missing = []
@@ -56,6 +62,14 @@ for token in required_tokens:
     if token not in text:
         missing.append(token)
 
+optional_missing = []
+for name in optional_native_names:
+    if name in text and name not in natives:
+        optional_missing.append(name)
+for name in optional_constants:
+    if name in text and name not in constants:
+        optional_missing.append(name)
+
 project_header_is_fake = any(marker in natives for marker in fake_header_markers)
 lane_header_is_fake = any(marker in lane_natives for marker in fake_header_markers)
 project_header_looks_real = "This file is part of SC-CL's include library" in natives and '_native' in natives
@@ -63,7 +77,7 @@ create_actor_real_sig = bool(re.search(r'CREATE_ACTOR_IN_LAYOUT\s*\([^\n]*vector
 source_uses_vector3_create_actor = 'CREATE_ACTOR_IN_LAYOUT(g_campCarLayout, "CodeREDCampCar01", ACTOR_VEHICLE_Car01, spawnPos, spawnRot)' in text
 source_uses_loose_create_actor = 'CREATE_ACTOR_IN_LAYOUT(g_campCarLayout, "CodeREDCampCar01", ACTOR_VEHICLE_Car01, 0.0f' in text
 source_uses_unverified_vector_ctor = 'Vector3(' in text
-subtitle_realish_sig = '_PRINT_SUBTITLE(text, 3000.0f, true, 1, 0, 0, 0, 0)' in text
+subtitle_realish_sig = '_PRINT_SUBTITLE(text, 3500.0f, true, 1, 0, 0, 0, 0)' in text
 
 checks = {
     'source_exists': src.exists(),
@@ -82,18 +96,23 @@ checks = {
     'paren_balance': text.count('(') == text.count(')'),
     'has_main_loop': 'while (true)' in text and 'WAIT(0)' in text,
     'has_runtime_boundary': 'runtime proof only' in text.lower() and 'does not install into game archives' in text.lower(),
-    'has_spawn': 'CR_SpawnCampCar' in text and 'ACTOR_VEHICLE_Car01' in text,
+    'has_spawn': 'CR_SpawnCampCarAtOffset' in text and 'ACTOR_VEHICLE_Car01' in text,
     'has_delete': 'CR_DeleteCampCar' in text and 'DESTROY_ACTOR' in text,
     'has_tune': 'CR_TuneCar' in text and 'SET_ACTOR_MAX_SPEED_ABSOLUTE' in text,
     'has_player_enter': 'CR_PutPlayerInCar' in text and 'SET_ACTOR_IN_VEHICLE' in text,
+    'has_move_or_reposition': 'CR_MoveProbeCarFarther' in text,
+    'has_help_key': 'g_lastF10' in text and 'CR_ShowStatus' in text,
     'has_edge_triggered_keys': 'CR_KeyPressedOnce' in text and 'g_lastF5' in text and 'g_lastF8' in text,
     'missing_symbols': missing,
+    'optional_missing_symbols_compile_may_catch': optional_missing,
 }
 
-ok = all(v for k, v in checks.items() if k != 'missing_symbols') and not missing
+ok = all(v for k, v in checks.items() if k not in {'missing_symbols', 'optional_missing_symbols_compile_may_catch'}) and not missing
 for k, v in checks.items():
     print(f'{k}: {v}')
 print('RESULT:', 'PASS' if ok else 'FAIL')
 if project_header_is_fake or lane_header_is_fake:
     print('ACTION: run script_compiling\\sccl\\promote_real_sccl_headers_windows.ps1 before compiling')
+if optional_missing:
+    print('NOTE: optional symbols are used in source but were not found in headers; real compile will verify them:', optional_missing)
 sys.exit(0 if ok else 1)
