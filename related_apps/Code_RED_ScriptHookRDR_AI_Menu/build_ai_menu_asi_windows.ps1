@@ -64,13 +64,16 @@ if (-not $vsDevCmd) {
 
 $defineFlags = "/DWIN32 /D_WINDOWS /D_USRDLL /D_CRT_SECURE_NO_WARNINGS"
 $commonFlags = "/nologo /std:c++17 /EHsc /LD /O2 /MT $defineFlags"
-$linkFlags = "/link /DLL /NOLOGO /OUT:`"$OutAsi`""
+# GetAsyncKeyState is provided by User32.lib. Keep the build explicit so plain
+# PowerShell builds behave the same as Developer Command Prompt builds.
+$linkFlags = "/link /DLL /NOLOGO user32.lib /OUT:`"$OutAsi`""
 $cmd = "call `"$vsDevCmd`" -arch=amd64 -host_arch=amd64 >nul && cd /d `"$AppDir`" && cl.exe $commonFlags /Fo`"$ObjDir\\`" /Fe`"$OutAsi`" `"$Source`" $linkFlags"
 
 Write-Host "# Code RED AI Menu ASI Build"
 Write-Host "Source:" $Source
 Write-Host "Output:" $OutAsi
 Write-Host "VsDevCmd:" $vsDevCmd
+Write-Host "Link libs: user32.lib"
 
 cmd.exe /c $cmd
 $exitCode = $LASTEXITCODE
@@ -88,6 +91,7 @@ $report = [ordered]@{
     length = (Get-Item $OutAsi).Length
     sha1 = $hash.Hash
     configuration = $Configuration
+    link_libs = @("user32.lib")
     built = (Get-Date).ToString('s')
 }
 $reportPath = Join-Path $BuildDir "CodeRED_AI_Menu_build_report.json"
