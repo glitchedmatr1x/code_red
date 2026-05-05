@@ -2,21 +2,21 @@
     "repo_root":  "D:\\Games\\Red Dead Redemption\\Code_RED\\",
     "output_root":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output",
     "expected_folder":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe",
-    "artifact_count":  5,
+    "artifact_count":  7,
     "artifacts":  [
                       {
                           "full_name":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe\\camp_car_probe.xsc",
                           "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe\\camp_car_probe.xsc",
-                          "length":  1026,
-                          "last_write_time":  "2026-05-04T18:08:29",
-                          "sha1":  "83823EAD70ECF075EF35AD38A85B910E04CCEAF8"
+                          "length":  1158,
+                          "last_write_time":  "2026-05-04T19:06:08",
+                          "sha1":  "C8DC6821D04A76302C123814A8DCBD507DD6200E"
                       },
                       {
                           "full_name":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe_sco\\camp_car_probe.sco",
                           "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe_sco\\camp_car_probe.sco",
-                          "length":  943,
-                          "last_write_time":  "2026-05-04T18:08:30",
-                          "sha1":  "5B29D89E58E61171B6BAD30DC3B859B234F886DE"
+                          "length":  1075,
+                          "last_write_time":  "2026-05-04T19:06:10",
+                          "sha1":  "0351E47E3B0F5C6BA7C8D75A6C8FDA92A78D8C8B"
                       },
                       {
                           "full_name":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_172711\\artifact\\camp_car_probe.xsc",
@@ -37,6 +37,20 @@
                           "relative_path":  "script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180725\\artifact\\camp_car_probe.xsc",
                           "length":  1026,
                           "last_write_time":  "2026-05-04T18:07:15",
+                          "sha1":  "83823EAD70ECF075EF35AD38A85B910E04CCEAF8"
+                      },
+                      {
+                          "full_name":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180841\\artifact\\camp_car_probe.sco",
+                          "relative_path":  "script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180841\\artifact\\camp_car_probe.sco",
+                          "length":  943,
+                          "last_write_time":  "2026-05-04T18:08:30",
+                          "sha1":  "5B29D89E58E61171B6BAD30DC3B859B234F886DE"
+                      },
+                      {
+                          "full_name":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180841\\artifact\\camp_car_probe.xsc",
+                          "relative_path":  "script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180841\\artifact\\camp_car_probe.xsc",
+                          "length":  1026,
+                          "last_write_time":  "2026-05-04T18:08:29",
                           "sha1":  "83823EAD70ECF075EF35AD38A85B910E04CCEAF8"
                       }
                   ],

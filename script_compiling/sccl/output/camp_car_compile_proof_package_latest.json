@@ -1,19 +1,25 @@
 ﻿{
-    "proof_dir":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180841",
-    "zip_path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_180841.zip",
-    "zip_sha1":  "8847227A8152C7CFB1AF88E2F2F503EE772205FD",
+    "proof_dir":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_191005",
+    "zip_path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\proof_packages\\camp_car_probe_compile_proof_20260504_191005.zip",
+    "zip_sha1":  "4373116056ACE64D6E6BB275A244C014BB0E8908",
     "artifacts":  [
                       {
                           "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe\\camp_car_probe.xsc",
                           "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe\\camp_car_probe.xsc",
-                          "length":  1026,
-                          "sha1":  "83823EAD70ECF075EF35AD38A85B910E04CCEAF8"
+                          "length":  1158,
+                          "sha1":  "C8DC6821D04A76302C123814A8DCBD507DD6200E"
                       },
                       {
                           "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe_sco\\camp_car_probe.sco",
                           "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe_sco\\camp_car_probe.sco",
-                          "length":  943,
-                          "sha1":  "5B29D89E58E61171B6BAD30DC3B859B234F886DE"
+                          "length":  1075,
+                          "sha1":  "0351E47E3B0F5C6BA7C8D75A6C8FDA92A78D8C8B"
+                      },
+                      {
+                          "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe_wsc\\camp_car_probe.wsc",
+                          "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe_wsc\\camp_car_probe.wsc",
+                          "length":  1158,
+                          "sha1":  "2729784CA37478DD22E0CFE8BD52B11793A36E14"
                       }
                   ]
 }

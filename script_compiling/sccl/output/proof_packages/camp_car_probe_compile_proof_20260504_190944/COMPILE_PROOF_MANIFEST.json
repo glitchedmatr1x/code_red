@@ -1,0 +1,109 @@
+﻿{
+    "package":  "camp_car_probe_compile_proof",
+    "created":  "2026-05-04T19:09:44",
+    "repo_root":  "D:\\Games\\Red Dead Redemption\\Code_RED",
+    "artifacts":  [
+                      {
+                          "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe\\camp_car_probe.xsc",
+                          "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe\\camp_car_probe.xsc",
+                          "length":  1158,
+                          "sha1":  "C8DC6821D04A76302C123814A8DCBD507DD6200E"
+                      },
+                      {
+                          "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe_sco\\camp_car_probe.sco",
+                          "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe_sco\\camp_car_probe.sco",
+                          "length":  1075,
+                          "sha1":  "0351E47E3B0F5C6BA7C8D75A6C8FDA92A78D8C8B"
+                      },
+                      {
+                          "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe_wsc\\camp_car_probe.wsc",
+                          "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe_wsc\\camp_car_probe.wsc",
+                          "length":  1158,
+                          "sha1":  "2729784CA37478DD22E0CFE8BD52B11793A36E14"
+                      }
+                  ],
+    "artifact_xsc":  {
+                         "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe\\camp_car_probe.xsc",
+                         "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe\\camp_car_probe.xsc",
+                         "length":  1158,
+                         "sha1":  "C8DC6821D04A76302C123814A8DCBD507DD6200E"
+                     },
+    "artifact_sco":  {
+                         "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe_sco\\camp_car_probe.sco",
+                         "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe_sco\\camp_car_probe.sco",
+                         "length":  1075,
+                         "sha1":  "0351E47E3B0F5C6BA7C8D75A6C8FDA92A78D8C8B"
+                     },
+    "artifact_wsc_candidate":  {
+                                   "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\camp_car_probe_wsc\\camp_car_probe.wsc",
+                                   "relative_path":  "script_compiling\\sccl\\output\\camp_car_probe_wsc\\camp_car_probe.wsc",
+                                   "length":  1158,
+                                   "sha1":  "2729784CA37478DD22E0CFE8BD52B11793A36E14"
+                               },
+    "compiler":  {
+                     "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\SC-CL.exe",
+                     "relative_path":  "script_compiling\\sccl\\output\\SC-CL.exe",
+                     "length":  8887808,
+                     "sha1":  "0D14101AB9D5524CF3BF1AB37C12B8681903632B"
+                 },
+    "source":  {
+                   "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\camp_car_probe\\src\\main.c",
+                   "relative_path":  "script_compiling\\sccl\\projects\\camp_car_probe\\src\\main.c",
+                   "length":  5915,
+                   "sha1":  "862F44DC84A2E53275A1042002185714838F859F"
+               },
+    "headers":  [
+                    {
+                        "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\camp_car_probe\\include\\RDR\\natives32.h",
+                        "relative_path":  "script_compiling\\sccl\\projects\\camp_car_probe\\include\\RDR\\natives32.h",
+                        "length":  203356,
+                        "sha1":  "8B9A1E11B0F5C4A7E24D0DFADA1D6A74FFB3AF0F"
+                    },
+                    {
+                        "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\camp_car_probe\\include\\RDR\\consts32.h",
+                        "relative_path":  "script_compiling\\sccl\\projects\\camp_car_probe\\include\\RDR\\consts32.h",
+                        "length":  66306,
+                        "sha1":  "E512235746DF01410CC490A9B1F036494F6C252E"
+                    },
+                    {
+                        "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\camp_car_probe\\include\\types.h",
+                        "relative_path":  "script_compiling\\sccl\\projects\\camp_car_probe\\include\\types.h",
+                        "length":  5552,
+                        "sha1":  "FE745718BE775988C839CE699DC9E508B8B3F137"
+                    },
+                    {
+                        "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\camp_car_probe\\include\\constants.h",
+                        "relative_path":  "script_compiling\\sccl\\projects\\camp_car_probe\\include\\constants.h",
+                        "length":  2552,
+                        "sha1":  "B397D3714D869A49AA69F525EAD23C08B658F646"
+                    },
+                    {
+                        "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\camp_car_probe\\include\\intrinsics.h",
+                        "relative_path":  "script_compiling\\sccl\\projects\\camp_car_probe\\include\\intrinsics.h",
+                        "length":  53961,
+                        "sha1":  "569EFC14B829DF524BED32C92D6DCD369E96F4F4"
+                    },
+                    {
+                        "path":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\camp_car_probe\\include\\natives.h",
+                        "relative_path":  "script_compiling\\sccl\\projects\\camp_car_probe\\include\\natives.h",
+                        "length":  2324,
+                        "sha1":  "5940BC87A7194C339E4CA5672DA8C48A76AC1FC1"
+                    }
+                ],
+    "runtime_controls":  [
+                             "Stand near/inside camp.",
+                             "F5 = spawn ACTOR_VEHICLE_Car01 near the player",
+                             "F6 = put player in car",
+                             "F7 = re-apply vehicle tune",
+                             "F8 = delete the probe car",
+                             "F9 = delete/re-spawn farther away",
+                             "F10 = show help"
+                         ],
+    "boundary":  "Proof package only. Runtime proof artifact only. Do not install/import into the game yet. Camp/RPF archive install lane is not proven. WSC candidate is experimental.",
+    "next_safe_steps":  [
+                            "Verify compiled artifact naming and hashes.",
+                            "Use these only as runtime/camp-car proof artifacts.",
+                            "Use the WSC candidate only for copied-archive experiments after backups are prepared.",
+                            "Research archive/import candidates separately before any live install attempt."
+                        ]
+}
