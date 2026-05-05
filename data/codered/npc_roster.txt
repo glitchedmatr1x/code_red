@@ -1,17 +1,13 @@
-# CodeRED quick vehicle roster
-# Default safe playtest list.
-# Vehicles are first so the car test is easy to find in-game.
-# Crash-prone NPCs are intentionally not in the default roster.
-# Use a separate full roster only after entries are verified.
+# CodeRED spawn-safe probe roster
+# Default safe playtest list after the direct Car01/Truck01 crash.
+# Raw CREATE_ACTOR_IN_LAYOUT vehicle spawns are not safe for mission cars/trucks.
+# Car01 and Truck01 are intentionally parked for the WGD/gringo vehicle-generator lane.
+# Use this list to verify the ASI menu without crashing the game.
 
-ACTOR_VEHICLE_Car01
-ACTOR_VEHICLE_Truck01
-ACTOR_VEHICLE_Stagecoach
-ACTOR_VEHICLE_Cart01
-ACTOR_VEHICLE_Wagon02
-ACTOR_VEHICLE_Coach01
-ACTOR_VEHICLE_Canoe01
-ACTOR_VEHICLE_Raft01
 ACTOR_RIDEABLE_ANIMAL_Horse01
 ACTOR_RIDEABLE_ANIMAL_MEX_Mule01
 ACTOR_RIDEABLE_ANIMAL_Buffalo
+ACTOR_VEHICLE_Stagecoach
+ACTOR_VEHICLE_Wagon02
+ACTOR_VEHICLE_Coach01
+ACTOR_VEHICLE_Cart01
