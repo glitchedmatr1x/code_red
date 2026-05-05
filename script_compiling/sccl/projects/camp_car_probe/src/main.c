@@ -1,5 +1,5 @@
 /*
-   Code RED Camp Car Probe v2
+   Code RED Camp Car Probe v2.1
    Runtime proof target for spawning cars near camp without replacing the camp.
 
    Purpose:
@@ -8,7 +8,7 @@
    - Press F6 to put the player in the spawned car.
    - Press F7 to re-apply vehicle tuning.
    - Press F8 to delete the spawned probe car.
-   - Press F9 to move the car to a slightly farther offset and re-tune.
+   - Press F9 to delete/re-spawn the car at a slightly farther offset.
    - Press F10 to print the current status/controls again.
 
    Boundary:
@@ -173,32 +173,21 @@ static void CR_SpawnCampCarAtOffset(float ox, float oy)
     }
 }
 
-static void CR_MoveProbeCarFarther(void)
+static void CR_RespawnProbeCarFarther(void)
 {
-    if (IS_ACTOR_VALID(g_campCar))
-    {
-        vector3 spawnPos;
-        vector3 spawnRot;
-        CR_BuildSpawnTransform(&spawnPos, &spawnRot, 9.0f, 5.0f);
-        SET_ACTOR_POSITION(g_campCar, spawnPos);
-        CR_TuneCar(g_campCar);
-        CR_Print("CODE RED CAR > Moved farther from player/camp");
-    }
-    else
-    {
-        CR_SpawnCampCarAtOffset(9.0f, 5.0f);
-    }
+    CR_SpawnCampCarAtOffset(9.0f, 5.0f);
+    CR_Print("CODE RED CAR > Re-spawned farther from player/camp");
 }
 
 static void CR_ShowStatus(void)
 {
     if (g_lastSpawnOk)
     {
-        CR_Print("CODE RED CAR > F5 spawn / F6 enter / F7 tune / F8 delete / F9 move / F10 help");
+        CR_Print("CODE RED CAR > F5 spawn / F6 enter / F7 tune / F8 delete / F9 respawn / F10 help");
     }
     else
     {
-        CR_Print("CODE RED CAR > Stand at camp. F5 spawns Car01 nearby. F10 help.");
+        CR_Print("CODE RED CAR > Stand at camp. F5 spawn Car01 nearby. F10 help.");
     }
 }
 
@@ -222,7 +211,7 @@ static void CR_HandleInput(void)
     }
     if (CR_KeyPressedOnce(KEY_F9, &g_lastF9))
     {
-        CR_MoveProbeCarFarther();
+        CR_RespawnProbeCarFarther();
     }
     if (CR_KeyPressedOnce(KEY_F10, &g_lastF10))
     {
