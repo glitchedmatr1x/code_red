@@ -133,6 +133,22 @@
     ]
   },
   {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp",
+    "compile_state": "source_compile_candidate",
+    "edit_state": "safe_edit_copy",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp",
+    "native_tokens": [],
+    "hash_tokens": []
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_AI_Menu_actor_enum_loader_reference.cpp",
+    "compile_state": "source_compile_candidate",
+    "edit_state": "safe_edit_copy",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_AI_Menu_actor_enum_loader_reference.cpp",
+    "native_tokens": [],
+    "hash_tokens": []
+  },
+  {
     "path": "research/menu resources/natives.h",
     "compile_state": "source_compile_candidate",
     "edit_state": "safe_edit_copy",

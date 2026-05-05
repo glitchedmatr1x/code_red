@@ -1,0 +1,1024 @@
+{
+  "version": "1.0.0-faction-wars-pipeline",
+  "generated_utc": "2026-05-05T04:38:13Z",
+  "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
+  "scanned_files": 1536,
+  "hits": 1158,
+  "top_hits": [
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt",
+      "source_kind": "manifest/text",
+      "score": 34992,
+      "category": "research/reference",
+      "groups": {
+        "factions": 11907,
+        "spawning": 20509,
+        "world_hosts": 1863,
+        "weapons_pressure": 702,
+        "scripting": 1
+      },
+      "regions": [
+        "armadillo",
+        "macfarlane"
+      ],
+      "high_value_terms": [],
+      "excerpts": [
+        "L2: # Source: related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv",
+        "L5: # CodeRED actor enum map",
+        "L7: # Generated/managed by tools/codered_actor_enum_tool.py",
+        "L11: label,actor_enum,category,source,aliases,notes",
+        "L13: ACTOR_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L15: invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L17: AE_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L19: ACTOR_player,0,player_like,INI-style [Enum] actor list,ACTOR_PLAYER|actor_player|player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000"
+      ],
+      "size": 1077894
+    },
+    {
+      "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv",
+      "source_kind": "repo/text",
+      "score": 34990,
+      "category": "research/reference",
+      "groups": {
+        "factions": 11907,
+        "spawning": 20508,
+        "world_hosts": 1863,
+        "weapons_pressure": 702
+      },
+      "regions": [
+        "armadillo",
+        "macfarlane"
+      ],
+      "high_value_terms": [],
+      "excerpts": [
+        "L1: # CodeRED actor enum map",
+        "L2: # Generated/managed by tools/codered_actor_enum_tool.py",
+        "L4: label,actor_enum,category,source,aliases,notes",
+        "L5: ACTOR_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L6: invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L7: AE_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L8: ACTOR_player,0,player_like,INI-style [Enum] actor list,ACTOR_PLAYER|actor_player|player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000",
+        "L9: player,0,player_like,INI-style [Enum] actor list,ACTOR_player|ACTOR_PLAYER|actor_player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000"
+      ],
+      "size": 1074090
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.fullread.txt",
+      "source_kind": "manifest/text",
+      "score": 34990,
+      "category": "research/reference",
+      "groups": {
+        "factions": 11907,
+        "spawning": 20508,
+        "world_hosts": 1863,
+        "weapons_pressure": 702
+      },
+      "regions": [
+        "armadillo",
+        "macfarlane"
+      ],
+      "high_value_terms": [],
+      "excerpts": [
+        "L1: # CodeRED actor enum map",
+        "L3: # Generated/managed by tools/codered_actor_enum_tool.py",
+        "L7: label,actor_enum,category,source,aliases,notes",
+        "L9: ACTOR_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L11: invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L13: AE_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L15: ACTOR_player,0,player_like,INI-style [Enum] actor list,ACTOR_PLAYER|actor_player|player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000",
+        "L17: player,0,player_like,INI-style [Enum] actor list,ACTOR_player|ACTOR_PLAYER|actor_player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000"
+      ],
+      "size": 1077718
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv",
+      "source_kind": "manifest/text",
+      "score": 34990,
+      "category": "research/reference",
+      "groups": {
+        "factions": 11907,
+        "spawning": 20508,
+        "world_hosts": 1863,
+        "weapons_pressure": 702
+      },
+      "regions": [
+        "armadillo",
+        "macfarlane"
+      ],
+      "high_value_terms": [],
+      "excerpts": [
+        "L1: # CodeRED actor enum map",
+        "L2: # Generated/managed by tools/codered_actor_enum_tool.py",
+        "L4: label,actor_enum,category,source,aliases,notes",
+        "L5: ACTOR_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L6: invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|INVALID|AE_invalid|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L7: AE_invalid,-1,actor,INI-style [Enum] actor list,ACTOR_invalid|ACTOR_INVALID|actor_invalid|invalid|INVALID|AE_INVALID|ae_invalid,canonical=ACTOR_invalid; hex=0x-0000001",
+        "L8: ACTOR_player,0,player_like,INI-style [Enum] actor list,ACTOR_PLAYER|actor_player|player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000",
+        "L9: player,0,player_like,INI-style [Enum] actor list,ACTOR_player|ACTOR_PLAYER|actor_player|PLAYER|AE_player|AE_PLAYER|ae_player,canonical=ACTOR_player; hex=0x00000000"
+      ],
+      "size": 1074090
+    },
+    {
+      "path": "data/codered/faction_wars_targets.json",
+      "source_kind": "repo/text",
+      "score": 22116,
+      "category": "research/reference",
+      "groups": {
+        "factions": 2158,
+        "war_behavior": 476,
+        "spawning": 6539,
+        "world_hosts": 5407,
+        "weapons_pressure": 1777,
+        "scripting": 5547
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "fort mercer",
+        "gaptooth",
+        "henningan",
+        "landing",
+        "macfarlane",
+        "manzanita",
+        "mexico",
+        "new austin",
+        "nuevo paraiso",
+        "plainview",
+        "rathskeller",
+        "ridgewood",
+        "rio bravo",
+        "tall trees",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "commongringos",
+        "create_actor",
+        "get_actor_faction",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "streaming_request_actor",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L3: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.decompiled_source.txt\",",
+        "L8: \"factions\": 11907,",
+        "L9: \"spawning\": 20509,",
+        "L11: \"weapons_pressure\": 702,",
+        "L12: \"scripting\": 1",
+        "L14: \"regions\": [",
+        "L15: \"armadillo\",",
+        "L16: \"macfarlane\""
+      ],
+      "size": 1489742
+    },
+    {
+      "path": "research/extracted_root_research/extracted_root_findings.csv",
+      "source_kind": "repo/text",
+      "score": 12671,
+      "category": "research/reference",
+      "groups": {
+        "factions": 548,
+        "war_behavior": 335,
+        "spawning": 3721,
+        "world_hosts": 5362,
+        "weapons_pressure": 976,
+        "scripting": 1641
+      },
+      "regions": [
+        "armadillo",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "landing",
+        "manzanita",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_kill",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L3: cutscenes,act\\actres\\act\\custom\\cutscene_marshal03.cat,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\actres\\act\\custom\\cutscene_marshal03.cat,cutscene_marshal03.cat,.cat,804,c867668b75ee5274021f520d91b2a5c5d0449205,cutscenes:cutsce",
+        "L4: cutscenes,act\\actres\\act\\custom\\cutscene_outlaw03.cat,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\actres\\act\\custom\\cutscene_outlaw03.cat,cutscene_outlaw03.cat,.cat,291,7f5e15fbb3b871ee9b4b20fe2fafce226e1f0203,cutscenes:cutscene;",
+        "L6: cutscenes,camera\\0x9318D091,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\0x9318D091,0x9318D091,<none>,8557,445eb95914064285a112cedf2beaf99936b11a99,cutscenes:camera;cutscenes:strong_path_or_extension,camera,\"[{\"\"line\"\": 46, \"\"t",
+        "L50: cutscenes,tune\\player\\input_debugkeyboard.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\tune\\player\\input_debugkeyboard.xml,input_debugkeyboard.xml,.xml,6371,2077a09787733e1bcb315511418bd8f9619fdbfe,cutscenes:camera;cutscenes:cutsc",
+        "L51: cutscenes;gringos;strings;vehicle_spawning,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,cutscenes:camera;cutscenes:cinvehicl",
+        "L52: cutscenes;gringos;vehicle_spawning,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,cutscenes:camera;cutscenes:cutscene;gringos:gringo;gringos",
+        "L64: cutscenes;strings,camera\\cutscenesfinal\\newlassocameracut.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\cutscenesfinal\\newlassocameracut.txt,newlassocameracut.txt,.txt,1615,a04d26db420a38318aa8284331b04943fbf1795c,cutscenes:",
+        "L65: cutscenes;strings,camera\\cutscenesfinal\\newlassocameracutmounted.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\cutscenesfinal\\newlassocameracutmounted.txt,newlassocameracutmounted.txt,.txt,1630,d8ce18676c59f1811586b20c36853d"
+      ],
+      "size": 1854917
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/research__extracted_root_research__extracted_root_findings.csv.fullread.txt",
+      "source_kind": "manifest/text",
+      "score": 12671,
+      "category": "research/reference",
+      "groups": {
+        "factions": 548,
+        "war_behavior": 335,
+        "spawning": 3721,
+        "world_hosts": 5362,
+        "weapons_pressure": 976,
+        "scripting": 1641
+      },
+      "regions": [
+        "armadillo",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "landing",
+        "manzanita",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_kill",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L5: cutscenes,act\\actres\\act\\custom\\cutscene_marshal03.cat,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\actres\\act\\custom\\cutscene_marshal03.cat,cutscene_marshal03.cat,.cat,804,c867668b75ee5274021f520d91b2a5c5d0449205,cutscenes:cutsce",
+        "L7: cutscenes,act\\actres\\act\\custom\\cutscene_outlaw03.cat,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\actres\\act\\custom\\cutscene_outlaw03.cat,cutscene_outlaw03.cat,.cat,291,7f5e15fbb3b871ee9b4b20fe2fafce226e1f0203,cutscenes:cutscene;",
+        "L11: cutscenes,camera\\0x9318D091,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\0x9318D091,0x9318D091,<none>,8557,445eb95914064285a112cedf2beaf99936b11a99,cutscenes:camera;cutscenes:strong_path_or_extension,camera,\"[{\"\"line\"\": 46, \"\"t",
+        "L99: cutscenes,tune\\player\\input_debugkeyboard.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\tune\\player\\input_debugkeyboard.xml,input_debugkeyboard.xml,.xml,6371,2077a09787733e1bcb315511418bd8f9619fdbfe,cutscenes:camera;cutscenes:cutsc",
+        "L101: cutscenes;gringos;strings;vehicle_spawning,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,cutscenes:camera;cutscenes:cinvehicl",
+        "L103: cutscenes;gringos;vehicle_spawning,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,cutscenes:camera;cutscenes:cutscene;gringos:gringo;gringos",
+        "L127: cutscenes;strings,camera\\cutscenesfinal\\newlassocameracut.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\cutscenesfinal\\newlassocameracut.txt,newlassocameracut.txt,.txt,1615,a04d26db420a38318aa8284331b04943fbf1795c,cutscenes:",
+        "L129: cutscenes;strings,camera\\cutscenesfinal\\newlassocameracutmounted.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\cutscenesfinal\\newlassocameracutmounted.txt,newlassocameracutmounted.txt,.txt,1630,d8ce18676c59f1811586b20c36853d"
+      ],
+      "size": 1856368
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/extracted_root_research/extracted_root_findings.csv",
+      "source_kind": "manifest/text",
+      "score": 12671,
+      "category": "research/reference",
+      "groups": {
+        "factions": 548,
+        "war_behavior": 335,
+        "spawning": 3721,
+        "world_hosts": 5362,
+        "weapons_pressure": 976,
+        "scripting": 1641
+      },
+      "regions": [
+        "armadillo",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "landing",
+        "manzanita",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_kill",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L3: cutscenes,act\\actres\\act\\custom\\cutscene_marshal03.cat,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\actres\\act\\custom\\cutscene_marshal03.cat,cutscene_marshal03.cat,.cat,804,c867668b75ee5274021f520d91b2a5c5d0449205,cutscenes:cutsce",
+        "L4: cutscenes,act\\actres\\act\\custom\\cutscene_outlaw03.cat,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\actres\\act\\custom\\cutscene_outlaw03.cat,cutscene_outlaw03.cat,.cat,291,7f5e15fbb3b871ee9b4b20fe2fafce226e1f0203,cutscenes:cutscene;",
+        "L6: cutscenes,camera\\0x9318D091,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\0x9318D091,0x9318D091,<none>,8557,445eb95914064285a112cedf2beaf99936b11a99,cutscenes:camera;cutscenes:strong_path_or_extension,camera,\"[{\"\"line\"\": 46, \"\"t",
+        "L50: cutscenes,tune\\player\\input_debugkeyboard.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\tune\\player\\input_debugkeyboard.xml,input_debugkeyboard.xml,.xml,6371,2077a09787733e1bcb315511418bd8f9619fdbfe,cutscenes:camera;cutscenes:cutsc",
+        "L51: cutscenes;gringos;strings;vehicle_spawning,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,cutscenes:camera;cutscenes:cinvehicl",
+        "L52: cutscenes;gringos;vehicle_spawning,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,cutscenes:camera;cutscenes:cutscene;gringos:gringo;gringos",
+        "L64: cutscenes;strings,camera\\cutscenesfinal\\newlassocameracut.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\cutscenesfinal\\newlassocameracut.txt,newlassocameracut.txt,.txt,1615,a04d26db420a38318aa8284331b04943fbf1795c,cutscenes:",
+        "L65: cutscenes;strings,camera\\cutscenesfinal\\newlassocameracutmounted.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\cutscenesfinal\\newlassocameracutmounted.txt,newlassocameracutmounted.txt,.txt,1630,d8ce18676c59f1811586b20c36853d"
+      ],
+      "size": 1854917
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__extracted_root_findings.csv.decompiled_source.txt",
+      "source_kind": "manifest/text",
+      "score": 12671,
+      "category": "research/reference",
+      "groups": {
+        "factions": 548,
+        "war_behavior": 335,
+        "spawning": 3721,
+        "world_hosts": 5362,
+        "weapons_pressure": 976,
+        "scripting": 1641
+      },
+      "regions": [
+        "armadillo",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "landing",
+        "manzanita",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_kill",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L9: cutscenes,act\\actres\\act\\custom\\cutscene_marshal03.cat,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\actres\\act\\custom\\cutscene_marshal03.cat,cutscene_marshal03.cat,.cat,804,c867668b75ee5274021f520d91b2a5c5d0449205,cutscenes:cutsce",
+        "L11: cutscenes,act\\actres\\act\\custom\\cutscene_outlaw03.cat,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\actres\\act\\custom\\cutscene_outlaw03.cat,cutscene_outlaw03.cat,.cat,291,7f5e15fbb3b871ee9b4b20fe2fafce226e1f0203,cutscenes:cutscene;",
+        "L15: cutscenes,camera\\0x9318D091,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\0x9318D091,0x9318D091,<none>,8557,445eb95914064285a112cedf2beaf99936b11a99,cutscenes:camera;cutscenes:strong_path_or_extension,camera,\"[{\"\"line\"\": 46, \"\"t",
+        "L103: cutscenes,tune\\player\\input_debugkeyboard.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\tune\\player\\input_debugkeyboard.xml,input_debugkeyboard.xml,.xml,6371,2077a09787733e1bcb315511418bd8f9619fdbfe,cutscenes:camera;cutscenes:cutsc",
+        "L105: cutscenes;gringos;strings;vehicle_spawning,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,cutscenes:camera;cutscenes:cinvehicl",
+        "L107: cutscenes;gringos;vehicle_spawning,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,cutscenes:camera;cutscenes:cutscene;gringos:gringo;gringos",
+        "L131: cutscenes;strings,camera\\cutscenesfinal\\newlassocameracut.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\cutscenesfinal\\newlassocameracut.txt,newlassocameracut.txt,.txt,1615,a04d26db420a38318aa8284331b04943fbf1795c,cutscenes:",
+        "L133: cutscenes;strings,camera\\cutscenesfinal\\newlassocameracutmounted.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\camera\\cutscenesfinal\\newlassocameracutmounted.txt,newlassocameracutmounted.txt,.txt,1630,d8ce18676c59f1811586b20c36853d"
+      ],
+      "size": 1856529
+    },
+    {
+      "path": "research/IMPORTANT_readable_root_index_2026-05-02/file_index.csv",
+      "source_kind": "repo/text",
+      "score": 9941,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 1222,
+        "war_behavior": 277,
+        "spawning": 2468,
+        "world_hosts": 3045,
+        "weapons_pressure": 589,
+        "scripting": 2227
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "landing",
+        "manzanita",
+        "mexico",
+        "plainview",
+        "rathskeller",
+        "ridgewood",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_follow",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L2: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam",
+        "L3: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\global.strtbl,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d",
+        "L4: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g",
+        "L5: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ambient\\factionrelations.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ambient\\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f",
+        "L6: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\tasks.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam",
+        "L7: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\0x8695F6E3,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97",
+        "L8: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,fragments\\fragmentslist.bin,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\fragments\\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,",
+        "L9: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\game_main.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc"
+      ],
+      "size": 1917242
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.fullread.txt",
+      "source_kind": "manifest/text",
+      "score": 9941,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 1222,
+        "war_behavior": 277,
+        "spawning": 2468,
+        "world_hosts": 3045,
+        "weapons_pressure": 589,
+        "scripting": 2227
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "landing",
+        "manzanita",
+        "mexico",
+        "plainview",
+        "rathskeller",
+        "ridgewood",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_follow",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L3: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam",
+        "L5: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\global.strtbl,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d",
+        "L7: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g",
+        "L9: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ambient\\factionrelations.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ambient\\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f",
+        "L11: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\tasks.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam",
+        "L13: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\0x8695F6E3,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97",
+        "L15: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,fragments\\fragmentslist.bin,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\fragments\\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,",
+        "L17: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\game_main.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc"
+      ],
+      "size": 1922863
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/IMPORTANT_readable_root_index_2026-05-02/file_index.csv",
+      "source_kind": "manifest/text",
+      "score": 9941,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 1222,
+        "war_behavior": 277,
+        "spawning": 2468,
+        "world_hosts": 3045,
+        "weapons_pressure": 589,
+        "scripting": 2227
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "landing",
+        "manzanita",
+        "mexico",
+        "plainview",
+        "rathskeller",
+        "ridgewood",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_follow",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L2: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam",
+        "L3: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\global.strtbl,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d",
+        "L4: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g",
+        "L5: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ambient\\factionrelations.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ambient\\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f",
+        "L6: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\tasks.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam",
+        "L7: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\0x8695F6E3,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97",
+        "L8: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,fragments\\fragmentslist.bin,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\fragments\\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,",
+        "L9: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\game_main.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc"
+      ],
+      "size": 1917242
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt",
+      "source_kind": "manifest/text",
+      "score": 9941,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 1222,
+        "war_behavior": 277,
+        "spawning": 2468,
+        "world_hosts": 3045,
+        "weapons_pressure": 589,
+        "scripting": 2227
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "landing",
+        "manzanita",
+        "mexico",
+        "plainview",
+        "rathskeller",
+        "ridgewood",
+        "thieves",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_follow",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L7: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam",
+        "L9: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\global.strtbl,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d",
+        "L11: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g",
+        "L13: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ambient\\factionrelations.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ambient\\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f",
+        "L15: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\tasks.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam",
+        "L17: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\0x8695F6E3,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97",
+        "L19: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,fragments\\fragmentslist.bin,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\fragments\\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,",
+        "L21: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\game_main.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc"
+      ],
+      "size": 1923028
+    },
+    {
+      "path": "research/IMPORTANT_readable_root_index_2026-05-02/important_files.csv",
+      "source_kind": "repo/text",
+      "score": 9621,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 1170,
+        "war_behavior": 271,
+        "spawning": 2455,
+        "world_hosts": 3037,
+        "weapons_pressure": 569,
+        "scripting": 2031
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "manzanita",
+        "rathskeller",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_follow",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L2: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam",
+        "L3: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\global.strtbl,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d",
+        "L4: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g",
+        "L5: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ambient\\factionrelations.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ambient\\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f",
+        "L6: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\tasks.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam",
+        "L7: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\0x8695F6E3,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97",
+        "L8: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,fragments\\fragmentslist.bin,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\fragments\\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,",
+        "L9: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\game_main.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc"
+      ],
+      "size": 1627275
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.fullread.txt",
+      "source_kind": "manifest/text",
+      "score": 9621,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 1170,
+        "war_behavior": 271,
+        "spawning": 2455,
+        "world_hosts": 3037,
+        "weapons_pressure": 569,
+        "scripting": 2031
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "manzanita",
+        "rathskeller",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_follow",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L3: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam",
+        "L5: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\global.strtbl,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d",
+        "L7: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g",
+        "L9: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ambient\\factionrelations.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ambient\\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f",
+        "L11: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\tasks.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam",
+        "L13: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\0x8695F6E3,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97",
+        "L15: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,fragments\\fragmentslist.bin,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\fragments\\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,",
+        "L17: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\game_main.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc"
+      ],
+      "size": 1631935
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/IMPORTANT_readable_root_index_2026-05-02/important_files.csv",
+      "source_kind": "manifest/text",
+      "score": 9621,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 1170,
+        "war_behavior": 271,
+        "spawning": 2455,
+        "world_hosts": 3037,
+        "weapons_pressure": 569,
+        "scripting": 2031
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "manzanita",
+        "rathskeller",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_follow",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L2: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam",
+        "L3: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\global.strtbl,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d",
+        "L4: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g",
+        "L5: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ambient\\factionrelations.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ambient\\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f",
+        "L6: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\tasks.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam",
+        "L7: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\0x8695F6E3,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97",
+        "L8: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,fragments\\fragmentslist.bin,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\fragments\\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,",
+        "L9: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\game_main.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc"
+      ],
+      "size": 1627275
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt",
+      "source_kind": "manifest/text",
+      "score": 9621,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 1170,
+        "war_behavior": 271,
+        "spawning": 2455,
+        "world_hosts": 3037,
+        "weapons_pressure": 569,
+        "scripting": 2031
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "chuparosa",
+        "escalera",
+        "gaptooth",
+        "manzanita",
+        "rathskeller",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "commongringos",
+        "gringobrain",
+        "population",
+        "refgroup",
+        "task_follow",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L7: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,game directory.txt,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\game directory.txt,.txt,418820,d09f1283a6206fdf98d8771b0c59a01a49696b3f,,text,cutscenes_cam",
+        "L9: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\global.strtbl,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\global.strtbl,.strtbl,6558643,0011675618109371d5231c179d",
+        "L11: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,act\\0x9A8D126E,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\act\\0x9A8D126E,<none>,239787,fd591418399448493d6d9faa0bb8b98e87f0580f,,text,cutscenes_cameras;g",
+        "L13: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ambient\\factionrelations.xml,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ambient\\factionrelations.xml,.xml,65259,03747ea0afb09972b4892779f",
+        "L15: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\tasks.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\tasks.tr,.tr,46497,0c43b3ffd109dcac75a57e6e48a9ed028eb87cc0,,text,cutscenes_cam",
+        "L17: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\stringtable\\0x8695F6E3,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\stringtable\\0x8695F6E3,<none>,6560938,58e750753eeeca3fb107ee7432d848f97",
+        "L19: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,fragments\\fragmentslist.bin,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\fragments\\fragmentslist.bin,.bin,133635,5804ef895289ea6066a6dacd599e7bfae5bcc623,,",
+        "L21: root_04,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root,content\\ai\\game_main.tr,D:\\Games\\Red Dead Redemption\\game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root\\content\\ai\\game_main.tr,.tr,47117,4b97281325a6d3ec73d84b153429d18c20da81c7,,text,cutsc"
+      ],
+      "size": 1632105
+    },
+    {
+      "path": "data/codered/script_workshop_extension_manifest.csv",
+      "source_kind": "repo/text",
+      "score": 8927,
+      "category": "script/native candidate",
+      "groups": {
+        "factions": 251,
+        "war_behavior": 501,
+        "spawning": 3266,
+        "world_hosts": 781,
+        "weapons_pressure": 660,
+        "scripting": 3373
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "create_actor",
+        "get_actor_faction",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander"
+      ],
+      "excerpts": [
+        "L2: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+        "L3: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+        "L4: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+        "L5: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
+        "L6: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
+        "L7: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
+        "L8: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod",
+        "L9: data/codered/npc_model_roster_v1.json,.json,source_text,editable_source,5985,415c8d05d67fbafb0bb78ef98879a00a0aeffd20,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__npc_model_roster_v1.json.fullread.txt,related_apps/CodeRED_Script_Workshop/"
+      ],
+      "size": 1568561
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__script_workshop_extension_manifest.csv.decompiled_source.txt",
+      "source_kind": "manifest/text",
+      "score": 8880,
+      "category": "script/native candidate",
+      "groups": {
+        "factions": 243,
+        "war_behavior": 500,
+        "spawning": 3246,
+        "world_hosts": 781,
+        "weapons_pressure": 660,
+        "scripting": 3355
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "create_actor",
+        "get_actor_faction",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander"
+      ],
+      "excerpts": [
+        "L2: # Source: data/codered/script_workshop_extension_manifest.csv",
+        "L7: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+        "L9: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+        "L11: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+        "L13: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
+        "L15: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
+        "L17: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
+        "L19: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod"
+      ],
+      "size": 1567478
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__script_workshop_extension_manifest.csv.fullread.txt",
+      "source_kind": "manifest/text",
+      "score": 8879,
+      "category": "script/native candidate",
+      "groups": {
+        "factions": 243,
+        "war_behavior": 500,
+        "spawning": 3246,
+        "world_hosts": 781,
+        "weapons_pressure": 660,
+        "scripting": 3354
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "create_actor",
+        "get_actor_faction",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander"
+      ],
+      "excerpts": [
+        "L3: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+        "L5: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+        "L7: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+        "L9: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
+        "L11: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
+        "L13: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
+        "L15: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod",
+        "L17: data/codered/npc_model_roster_v1.json,.json,source_text,editable_source,5985,415c8d05d67fbafb0bb78ef98879a00a0aeffd20,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__npc_model_roster_v1.json.fullread.txt,related_apps/CodeRED_Script_Workshop/"
+      ],
+      "size": 1567326
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/script_workshop_extension_manifest.csv",
+      "source_kind": "manifest/text",
+      "score": 8879,
+      "category": "script/native candidate",
+      "groups": {
+        "factions": 243,
+        "war_behavior": 500,
+        "spawning": 3246,
+        "world_hosts": 781,
+        "weapons_pressure": 660,
+        "scripting": 3354
+      },
+      "regions": [
+        "armadillo",
+        "blackwater",
+        "tumbleweed"
+      ],
+      "high_value_terms": [
+        "ai_is_hostile",
+        "create_actor",
+        "get_actor_faction",
+        "population",
+        "refgroup",
+        "set_actor_faction",
+        "task_follow",
+        "task_kill",
+        "task_stand",
+        "task_wander"
+      ],
+      "excerpts": [
+        "L2: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+        "L3: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+        "L4: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+        "L5: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
+        "L6: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
+        "L7: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
+        "L8: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod",
+        "L9: data/codered/npc_model_roster_v1.json,.json,source_text,editable_source,5985,415c8d05d67fbafb0bb78ef98879a00a0aeffd20,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__npc_model_roster_v1.json.fullread.txt,related_apps/CodeRED_Script_Workshop/"
+      ],
+      "size": 1566981
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt",
+      "source_kind": "manifest/text",
+      "score": 8733,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 28,
+        "war_behavior": 6,
+        "spawning": 6,
+        "world_hosts": 4723,
+        "weapons_pressure": 98,
+        "scripting": 3851
+      },
+      "regions": [
+        "blackwater"
+      ],
+      "high_value_terms": [
+        "gringobrain",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L2: # Source: research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv",
+        "L5: wgd_offset_hex,wgd_component_type,wgd_query_name,wgd_script_name,wgd_gringo_name,wgd_primary_name,wgd_hash_code,wgd_hashed_name,wgd_activation_radius,wgd_child_count,wgd_use_context_count,wgd_instanced_item_count,wgd_instance_slot_count,wgd_critical,wgd_mainta",
+        "L35: 0x0003BD08,ItemGringo,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,0x05B5C16A,0x00000000,2147483648.0,4,0,2,2,1,1,,,,,",
+        "L37: 0x0003BD54,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
+        "L39: 0x0003BDA0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,0x410215CF,0x00000000,0.25,1,1,7,7,0,1,,,,,",
+        "L41: 0x0003BDEC,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
+        "L43: 0x0003BE38,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
+        "L45: 0x0003BE84,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,"
+      ],
+      "size": 175031
+    },
+    {
+      "path": "research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv",
+      "source_kind": "repo/text",
+      "score": 8725,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 28,
+        "war_behavior": 6,
+        "spawning": 6,
+        "world_hosts": 4720,
+        "weapons_pressure": 98,
+        "scripting": 3851
+      },
+      "regions": [],
+      "high_value_terms": [
+        "gringobrain",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L1: wgd_offset_hex,wgd_component_type,wgd_query_name,wgd_script_name,wgd_gringo_name,wgd_primary_name,wgd_hash_code,wgd_hashed_name,wgd_activation_radius,wgd_child_count,wgd_use_context_count,wgd_instanced_item_count,wgd_instance_slot_count,wgd_critical,wgd_mainta",
+        "L16: 0x0003BD08,ItemGringo,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,0x05B5C16A,0x00000000,2147483648.0,4,0,2,2,1,1,,,,,",
+        "L17: 0x0003BD54,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
+        "L18: 0x0003BDA0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,0x410215CF,0x00000000,0.25,1,1,7,7,0,1,,,,,",
+        "L19: 0x0003BDEC,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
+        "L20: 0x0003BE38,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
+        "L21: 0x0003BE84,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
+        "L22: 0x0003BED0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,0x082A4EBE,0x00000000,200.0,2,0,0,0,0,0,,,,,"
+      ],
+      "size": 173869
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/read/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.fullread.txt",
+      "source_kind": "manifest/text",
+      "score": 8725,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 28,
+        "war_behavior": 6,
+        "spawning": 6,
+        "world_hosts": 4720,
+        "weapons_pressure": 98,
+        "scripting": 3851
+      },
+      "regions": [],
+      "high_value_terms": [
+        "gringobrain",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L1: wgd_offset_hex,wgd_component_type,wgd_query_name,wgd_script_name,wgd_gringo_name,wgd_primary_name,wgd_hash_code,wgd_hashed_name,wgd_activation_radius,wgd_child_count,wgd_use_context_count,wgd_instanced_item_count,wgd_instance_slot_count,wgd_critical,wgd_mainta",
+        "L31: 0x0003BD08,ItemGringo,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,0x05B5C16A,0x00000000,2147483648.0,4,0,2,2,1,1,,,,,",
+        "L33: 0x0003BD54,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
+        "L35: 0x0003BDA0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,0x410215CF,0x00000000,0.25,1,1,7,7,0,1,,,,,",
+        "L37: 0x0003BDEC,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
+        "L39: 0x0003BE38,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
+        "L41: 0x0003BE84,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
+        "L43: 0x0003BED0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,0x082A4EBE,0x00000000,200.0,2,0,0,0,0,0,,,,,"
+      ],
+      "size": 174853
+    },
+    {
+      "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv",
+      "source_kind": "manifest/text",
+      "score": 8725,
+      "category": "world host / gringo",
+      "groups": {
+        "factions": 28,
+        "war_behavior": 6,
+        "spawning": 6,
+        "world_hosts": 4720,
+        "weapons_pressure": 98,
+        "scripting": 3851
+      },
+      "regions": [],
+      "high_value_terms": [
+        "gringobrain",
+        "vehicle_generator"
+      ],
+      "excerpts": [
+        "L1: wgd_offset_hex,wgd_component_type,wgd_query_name,wgd_script_name,wgd_gringo_name,wgd_primary_name,wgd_hash_code,wgd_hashed_name,wgd_activation_radius,wgd_child_count,wgd_use_context_count,wgd_instanced_item_count,wgd_instance_slot_count,wgd_critical,wgd_mainta",
+        "L16: 0x0003BD08,ItemGringo,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,,content\\scripting\\gringo\\GringoBrains\\GringoBrainScripts\\Gen_Brain,0x05B5C16A,0x00000000,2147483648.0,4,0,2,2,1,1,,,,,",
+        "L17: 0x0003BD54,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,,content\\scripting\\gringo\\CommonScripts\\CannibalFamClue,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
+        "L18: 0x0003BDA0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,,content\\scripting\\gringo\\CommonScripts\\Chair_weaponkill,0x410215CF,0x00000000,0.25,1,1,7,7,0,1,,,,,",
+        "L19: 0x0003BDEC,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,4,4,0,1,,,,,",
+        "L20: 0x0003BE38,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,,content\\scripting\\gringo\\CommonScripts\\GenericGringo,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
+        "L21: 0x0003BE84,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,,content\\scripting\\gringo\\CommonScripts\\AztecGold_Treasure,0x410215CF,0x00000000,0.0,1,1,6,6,0,1,,,,,",
+        "L22: 0x0003BED0,ItemGringo,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,,content\\scripting\\gringo\\CommonScripts\\Vehicle_Generator,0x082A4EBE,0x00000000,200.0,2,0,0,0,0,0,,,,,"
+      ],
+      "size": 173869
+    }
+  ],
+  "outputs": {
+    "targets_json": "data/codered/faction_wars_targets.json",
+    "targets_csv": "data/codered/faction_wars_targets.csv",
+    "capabilities_json": "data/codered/faction_wars_capabilities.json",
+    "target_plan": "research/faction_wars/FW_TARGET_PLAN.md",
+    "report_json": "logs/CodeRED_Faction_Wars_Pipeline_Report.json",
+    "report_markdown": "logs/CodeRED_Faction_Wars_Pipeline_Report.md"
+  },
+  "notes": [
+    "Scanner/planner only; no scripts or RPF archives were modified.",
+    "Use Script Workshop scan/refresh first for best results, then rerun this pipeline.",
+    "Menu/native spawning remains parked after confirmed spawn crashes."
+  ]
+}

@@ -1,15 +1,14 @@
 action,label,category,enabled,notes
-spawn_selected_npc_request,Spawn Selected NPC,spawn,1,Uses npc_roster label resolved through actor_enum_map.csv and CREATE_ACTOR_IN_LAYOUT
-follow_player_request,Follow Player,behavior,1,Sets spawned actors as companions and sends TASK_FOLLOW_ACTOR
-guard_position_request,Stand Guard,behavior,1,Clears current task and holds position
-defend_player_request,Defend Player,behavior,1,Companion follow behavior; use with lawman faction for hostile response
-attack_nearest_hostile_request,Attack Nearest Hostile,combat,1,Scans world actors and sends spawned actors after nearest actor hostile to player
-idle_spawned_request,Idle Spawned Actors,behavior,1,Clears current task and stands still
-wander_spawned_request,Wander Spawned Actors,behavior,1,Clears current task and sends TASK_WANDER
-regroup_near_player_request,Regroup Near Player,behavior,1,Sends spawned actors near player
-make_spawned_lawmen_request,Make Spawned Actors Lawmen,faction,1,Sets spawned actors to US law faction and companion follow
-side_lawman_immunity_request,Join Lawman Side,faction,1,Sets player to US law faction until restored
-side_gang_immunity_request,Join Gang Side,faction,1,Sets player to generic criminal/gang faction until restored
-restore_player_faction_request,Restore Player Faction,faction,1,Restores the saved player faction or default player faction
-dismiss_ai_guest_request,Dismiss Spawned Actors,cleanup,1,Releases tracked CodeRED spawned actors
-status_request,Status,debug,1,Reports native bridge, enum, tracked actors, and optional world scan support
+status_request,Status / Native Bridge Check,debug,1,Safe diagnostic action only; confirmed stable path because it performs no actor creation
+dismiss_ai_guest_request,Dismiss Tracked Actors,cleanup,1,Safe cleanup action for any previously tracked CodeRED actors
+spawn_selected_npc_request,Spawn Disabled - Raw Native Crashes,spawn,0,CONFIRMED CRASH TRIGGER; do not call raw CREATE_ACTOR_IN_LAYOUT from the menu until ASI source has hard guards and a safer vehicle/gringo lane
+regroup_near_player_request,Regroup Near Player,behavior,0,Disabled because it depends on spawned actor handles after the spawn crash trigger
+idle_spawned_request,Idle Spawned Actors,behavior,0,Disabled because it depends on spawned actor handles after the spawn crash trigger
+follow_player_request,Follow Player,behavior,0,Disabled because spawned actor handles are not trusted yet
+guard_position_request,Stand Guard,behavior,0,Disabled because spawned actor handles are not trusted yet
+wander_spawned_request,Wander Spawned Actors,behavior,0,Disabled because spawned actor handles are not trusted yet
+make_spawned_lawmen_request,Make Spawned Actors Lawmen,faction,0,Disabled because spawned actor handles are not trusted yet
+side_lawman_immunity_request,Join Lawman Side,faction,0,Disabled because spawned actor handles are not trusted yet
+side_gang_immunity_request,Join Gang Side,faction,0,Disabled because spawned actor handles are not trusted yet
+restore_player_faction_request,Restore Player Faction,faction,0,Disabled until spawn/task lane is rebuilt safely
+attack_nearest_hostile_request,Attack Nearest Hostile,combat,0,Disabled because combat/world-scan should not run until safe spawn handles are proven

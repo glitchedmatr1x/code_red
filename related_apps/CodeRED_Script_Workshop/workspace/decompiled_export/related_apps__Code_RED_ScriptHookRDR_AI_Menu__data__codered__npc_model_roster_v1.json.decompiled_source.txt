@@ -1,0 +1,229 @@
+# Code RED source/decompiled export
+# Source: related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_model_roster_v1.json
+# SHA1: 415c8d05d67fbafb0bb78ef98879a00a0aeffd20
+
+{
+  "version": 1,
+  "tool": "1.0.0-npc-roster-switcher",
+  "note": "Seed roster from a conservative fragments.rpf visible-string scan. Add/drop the complete ImportedFileNames.txt or run npc-scan to expand this to the full local list.",
+  "count": 42,
+  "categories": {
+    "ambient": 6,
+    "animal_or_mount": 6,
+    "named_fragment": 15,
+    "player_like": 10,
+    "zombie": 5
+  },
+  "models": [
+    {
+      "name": "amb_c_dworker03",
+      "category": "ambient",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "amb_fa_prostitute01",
+      "category": "ambient",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "amb_fa_prosute01",
+      "category": "ambient",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "amb_fc_prosute02",
+      "category": "ambient",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "amb_fh_farmer06",
+      "category": "ambient",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "amb_gore_labr09",
+      "category": "ambient",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "chicken01",
+      "category": "animal_or_mount",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "chicken02",
+      "category": "animal_or_mount",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "chicken03",
+      "category": "animal_or_mount",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "crow01",
+      "category": "animal_or_mount",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "duckfroer02",
+      "category": "animal_or_mount",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "ducknorth02",
+      "category": "animal_or_mount",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "anc_firstoldfriendmp",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "anc_marshaldeputy_cs_hat",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "anc_mexfema02",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "anc_outlaw_01",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "com_mexicangirl_cs",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "com_mexicanrebelleadermp_so1",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "crm_caucasian_h_01_set_hat",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "crm_caucasian_m_02rr",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "crm_hispanic_m_02_cs",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "hispanic_m_02_cs",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "law_caucasianmarshall_06_cs",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "misc_blackwaterman_01_set_com_leadranchworker_hat",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "misc_edwardianwoman_01_set_hat",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "misc_rebelsoldier_05_cs_hat",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "misc_rebelsoldier_06_cs_hat",
+      "category": "named_fragment",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_bandito",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_cattlerus",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_default_wounded01_cs",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_jack_drunkdirty_set",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_jack_fbi",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_jack_fbi_set_hat",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_jack_legend",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_loa_set_hat",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_mexicanrebel_cs",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "player_treasurehunterww",
+      "category": "player_like",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "horsezombie03",
+      "category": "zombie",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "horsezombie04",
+      "category": "zombie",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "wolfzombie01",
+      "category": "zombie",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "zombie_bruiserbandito_01_so1",
+      "category": "zombie",
+      "source": "fragments.rpf string scan"
+    },
+    {
+      "name": "zombie_bruiserprostitute_01",
+      "category": "zombie",
+      "source": "fragments.rpf string scan"
+    }
+  ]
+}

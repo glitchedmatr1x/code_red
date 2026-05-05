@@ -1,0 +1,11 @@
+# Code RED source/decompiled export
+# Source: docs/script_workflow/native_registry/candidate_natives.csv
+# SHA1: db1ee989cab918348cc37189f28174cdb3dc2f9f
+
+native_or_wrapper,source,lane,status,needed_for,verification_plan,notes
+CREATE_ACTOR_IN_LAYOUT,SC-CL real headers,SC-CL proof,candidate_blocked,actor spawn,verify exact vector3 Position and vector3 Rotation signature before any menu use,Old full menu used loose floats and failed
+TASK_GO_TO_COORD_UNKNOWN,trainer/native research,ScriptHook AI Trainer,candidate,actor travel to saved destination,find exact ScriptHook/RedHook wrapper or real header signature before implementation,Do not guess name or args
+TASK_FOLLOW_ACTOR_UNKNOWN,trainer/native research,ScriptHook AI Trainer,candidate,companion follow/regroup,find exact wrapper/header signature and runtime proof,Do not guess name or args
+SET_ACTOR_COORDS_UNKNOWN,trainer/native research,ScriptHook AI Trainer,candidate,teleport selected actor to saved slot,find exact wrapper/header signature and runtime proof,Use as first safe actor movement proof if verified
+GET_PLAYER_COORDS_UNKNOWN,trainer/native research,ScriptHook AI Trainer,candidate,save location slot,find exact wrapper/header signature and runtime proof,Needed before manual actor travel menu
+GET_NEAREST_ACTOR_UNKNOWN,trainer/native research,ScriptHook AI Trainer,candidate,select actor,find exact wrapper/header signature and runtime proof,Menu should log selected actor handle

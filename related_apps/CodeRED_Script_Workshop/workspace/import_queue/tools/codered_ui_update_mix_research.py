@@ -1,0 +1,253 @@
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import json
+import re
+from pathlib import Path
+from typing import Iterable
+
+try:
+    import codered_rpf_utils as rpf
+except Exception as exc:  # pragma: no cover
+    raise SystemExit(f"Could not import codered_rpf_utils.py: {exc}")
+
+SYSTEM_PAIR_KEYS = {
+    "pause": ["pause.wsc", "pause_z.wsc", "pause_z.sco"],
+    "short_update_thread": ["short_update_thread.wsc", "short_update_thread_z.wsc", "short_update_thread_z.sco"],
+    "medium_update_thread": ["medium_update_thread.wsc", "medium_update_thread_z.wsc", "medium_update_thread_z.sco"],
+    "long_update_thread": ["long_update_thread.wsc", "long_update_thread_z.wsc", "long_update_thread_z.sco"],
+    "fuieventmonitor": ["fuieventmonitor.wsc", "fuieventmonitor_z.wsc", "fuieventmonitor_z.sco"],
+    "player": ["player_z.wsc", "player_z.sco"],
+    "fasttravel": ["fasttravel_z.wsc", "fasttravel_z.sco"],
+}
+
+KEYWORDS = [
+    "NORMAL_ZOMBIE", "NORMAL_NOZOMBIE", "STANDALONE", "ULTIMATE", "UIGame.ValidateZombieMode",
+    "UIGame.ValidateNormalMode", "enterSinglePlayer", "mainMenuExit", "rdrExtrasLayer", "CheatsList",
+    "UI_CheatEntered", "UI_OpenCheatsMsgBox", "pauseStart", "pauseEnd", "pause_main_z", "pause_main",
+    "ui_pausezombie", "ui_pause", "zombiepack", "init_zombiepack", "ContentFlags", "Script content\\DLC\\ZombiePack",
+]
+
+
+def sha1(data: bytes) -> str:
+    return hashlib.sha1(data).hexdigest()
+
+
+def decode_text(data: bytes) -> str:
+    for enc in ("utf-8", "utf-16-le", "latin-1"):
+        try:
+            txt = data.decode(enc)
+            if enc != "utf-16-le" or any(word in txt for word in ("identifier", "Zombie", "Undead", "DLC")):
+                return txt
+        except Exception:
+            pass
+    return data.decode("latin-1", "replace")
+
+
+def archive_paths(inputs: list[str]) -> list[Path]:
+    out: list[Path] = []
+    for item in inputs:
+        p = Path(item)
+        if p.is_dir():
+            out.extend(sorted(p.rglob("*.rpf")))
+        elif p.is_file() and p.suffix.lower() == ".rpf":
+            out.append(p)
+    seen = set()
+    uniq = []
+    for p in out:
+        resolved = p.resolve()
+        if resolved not in seen:
+            seen.add(resolved)
+            uniq.append(p)
+    return uniq
+
+
+def classify(path: str) -> str:
+    low = path.lower()
+    name = low.rsplit("/", 1)[-1]
+    if low.startswith("root/content/ui/"):
+        return "ui_xml_router"
+    if low.startswith("root/flash/") and name.endswith(".wsf"):
+        return "flash_ui_movie"
+    if low.startswith("root/tune/ppp/"):
+        return "pause_postfx_profile"
+    if low.startswith("root/content/dlc/") and ("zombie" in low or name.endswith(".strtbl") or name.endswith(".txt")):
+        return "zombie_dlc_metadata_or_strings"
+    if low.startswith("root/content/release64/scripting/0x604b6817"):
+        return "normal_system_script"
+    if low.startswith("root/content/release64/0x06c35575/zombiepack/system"):
+        return "zombie_system_script"
+    if low.startswith("root/content/release64/0x06c35575/zombiepack"):
+        return "zombiepack_script"
+    return "other"
+
+
+def is_relevant(path: str) -> bool:
+    low = path.lower()
+    if classify(path) != "other":
+        return True
+    return any(k in low for k in ("zombie", "pause", "ui", "update_thread", "fuieventmonitor", "debug", "cheat"))
+
+
+def scan_archives(rpfs: list[Path]) -> tuple[list[dict], list[dict]]:
+    entries: list[dict] = []
+    routes: list[dict] = []
+    for archive in rpfs:
+        try:
+            info = rpf.parse(archive, with_debug=True)
+        except Exception as exc:
+            entries.append({"archive": archive.name, "path": "", "class": "parse_error", "notes": str(exc)})
+            continue
+        for ent in info["entries"]:
+            if ent.get("type") != "file":
+                continue
+            path = ent.get("path", "")
+            if not is_relevant(path):
+                continue
+            row = {
+                "archive": archive.name,
+                "path": path,
+                "name": ent.get("name", ""),
+                "extension": ent.get("extension", ""),
+                "class": classify(path),
+                "size_in_archive": ent.get("size_in_archive", ""),
+                "total_size": ent.get("total_size", ""),
+                "is_resource": ent.get("is_resource", False),
+                "sha1": "",
+                "keyword_hits": "",
+                "notes": "",
+            }
+            try:
+                data = rpf.extract(archive, ent)
+                row["sha1"] = sha1(data)
+                hay = (path + "\n" + decode_text(data)).lower()
+                row["keyword_hits"] = ";".join(k for k in KEYWORDS if k.lower() in hay)
+                if row["class"] == "ui_xml_router":
+                    txt = decode_text(data)
+                    for i, line in enumerate(txt.splitlines(), 1):
+                        if any(k in line for k in ("include", "UIGame.Validate", "StartScreen_Zombie", "ExtrasLayer", "CheatsList", "UI_Cheat", "pauseStart", "pauseEnd", "SendEvent")):
+                            routes.append({
+                                "archive": archive.name,
+                                "path": path,
+                                "line": i,
+                                "text": line.strip()[:300],
+                            })
+            except Exception as exc:
+                row["notes"] = f"extract_error: {exc}"
+            entries.append(row)
+    return entries, routes
+
+
+def build_pairs(entries: list[dict]) -> list[dict]:
+    out = []
+    by_name: dict[str, list[dict]] = {}
+    for e in entries:
+        name = str(e.get("path", "")).lower().rsplit("/", 1)[-1]
+        by_name.setdefault(name, []).append(e)
+    for key, names in SYSTEM_PAIR_KEYS.items():
+        found = []
+        for name in names:
+            found.extend(by_name.get(name, []))
+        normal = [x for x in found if x.get("class") == "normal_system_script"]
+        zombie = [x for x in found if x.get("class") in {"zombie_system_script", "zombiepack_script"}]
+        out.append({
+            "pair_key": key,
+            "normal_paths": " | ".join(x.get("path", "") for x in normal),
+            "zombie_paths": " | ".join(x.get("path", "") for x in zombie),
+            "normal_sha1": " | ".join(x.get("sha1", "") for x in normal),
+            "zombie_sha1": " | ".join(x.get("sha1", "") for x in zombie),
+            "copy_safety": "candidate compare-only" if normal and zombie else "one-sided lead only",
+            "notes": "Do not wholesale swap; compare behavior or use ScriptHook bridge first." if normal and zombie else "No direct SP/Z pair in scanned archives.",
+        })
+    return out
+
+
+def write_csv(path: Path, rows: Iterable[dict]) -> None:
+    rows = list(rows)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not rows:
+        path.write_text("", encoding="utf-8")
+        return
+    keys = list(rows[0].keys())
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=keys)
+        w.writeheader()
+        w.writerows(rows)
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Read-only research scanner for mixing Zombie Pack UI/update-thread content into normal SP.")
+    ap.add_argument("inputs", nargs="+", help="RPF file(s) or folder(s) containing RPFs")
+    ap.add_argument("--out", default="reports/ui_update_mix_research")
+    args = ap.parse_args()
+
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    rpfs = archive_paths(args.inputs)
+    entries, routes = scan_archives(rpfs)
+    pairs = build_pairs(entries)
+
+    write_csv(out / "ui_update_entries.csv", entries)
+    write_csv(out / "ui_route_actions.csv", routes)
+    write_csv(out / "sp_z_system_script_pairs.csv", pairs)
+
+    summary = {
+        "archives_scanned": [str(p) for p in rpfs],
+        "entry_count": len(entries),
+        "ui_route_action_count": len(routes),
+        "system_pair_count": len(pairs),
+        "strong_findings": [
+            "UI XML files route menu state and events; they do not contain the full compiled behavior for mode switching or cheat/update code.",
+            "Normal SP and Zombie Pack have parallel update/pause/event monitor scripts in content.rpf.",
+            "boot.sc.xml already exposes NORMAL_ZOMBIE/NORMAL_NOZOMBIE/STANDALONE route logic and calls UIGame.ValidateZombieMode / UIGame.ValidateNormalMode.",
+            "Zombie Pack declares its entry script through content/dlc/0x22398628/0x21572403: Script content\\DLC\\ZombiePack\\init_zombiepack.",
+            "pause_main_z.wsf and ui_pausezombie.ppp exist as Z UI visual support assets, but the visible pause XML found here references pause_main, not pause_main_z.",
+        ],
+        "recommended_next": [
+            "Do not bypass or delete UI update files. Leave the XML router intact and prototype Z-to-normal behavior through a tiny ScriptHook/menu bridge or one copied archive at a time.",
+            "Compare normal vs _z scripts by identity and launch role before trying any swap.",
+            "If a UI mix is tested, start with visual/string assets, not long_update_thread_z wholesale replacement.",
+        ],
+    }
+    (out / "ui_update_mix_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
+    md = [
+        "# Code RED UI Update / Zombie-to-Normal Mix Research",
+        "",
+        "## Main answer",
+        "",
+        "Do not bypass the UI update files by removing them. The safer interpretation is that the UI XML is a router: it sends events and enters layers, while the real mode/update behavior is handled by native UI methods and update-thread scripts.",
+        "",
+        "## Strong findings",
+        "",
+    ]
+    for item in summary["strong_findings"]:
+        md.append(f"- {item}")
+    md.extend(["", "## Important file groups", ""])
+    for pair in pairs:
+        md.append(f"### {pair['pair_key']}")
+        md.append(f"- normal: `{pair['normal_paths'] or 'not found'}`")
+        md.append(f"- zombie: `{pair['zombie_paths'] or 'not found'}`")
+        md.append(f"- safety: {pair['copy_safety']}")
+        md.append("")
+    md.extend([
+        "## Reports",
+        "",
+        "- `ui_update_entries.csv`",
+        "- `ui_route_actions.csv`",
+        "- `sp_z_system_script_pairs.csv`",
+        "- `ui_update_mix_summary.json`",
+        "",
+        "## Rule",
+        "",
+        "This is read-only research. It does not patch archives.",
+    ])
+    (out / "ui_update_mix_research.md").write_text("\n".join(md), encoding="utf-8")
+    print(json.dumps(summary, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

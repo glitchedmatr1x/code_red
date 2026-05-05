@@ -1,0 +1,233 @@
+#!/usr/bin/env python3
+"""
+Code RED camp-car import candidate scanner.
+
+Read-only scanner for local extracted RDR/Code RED workspaces.
+It searches filenames and small text/binary string windows for camp, vehicle,
+WSI/WGD/gringo, and script-slot clues.
+
+This does not modify archives or game files.
+
+Usage from repo root:
+  py -3 tools/codered_scan_camp_car_import_candidates.py --root .
+  py -3 tools/codered_scan_camp_car_import_candidates.py --root "D:\\Games\\Red Dead Redemption\\Code_RED"
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import json
+import os
+import re
+from pathlib import Path
+from typing import Iterable
+
+TEXT_EXTS = {
+    ".txt", ".md", ".csv", ".json", ".xml", ".ini", ".cfg", ".log",
+    ".wsi", ".wgd", ".strtbl", ".ymt", ".dat", ".lst", ".c", ".h", ".py", ".ps1", ".bat",
+}
+
+NAME_KEYWORDS = [
+    "camp", "playercamp", "player_camp", "cam_player", "refgroup", "refgroups",
+    "vehicle", "car", "truck", "wagon", "gringo", "generator", "wsi", "wgd",
+    "script", "release64", "content", "base", "rpf", "xsc", "wsc", "sco",
+]
+
+CONTENT_PATTERNS = [
+    "ACTOR_VEHICLE_Car01", "Car01", "Truck01", "Vehicle_Generator", "vehicle_generator",
+    "car_gringo", "PlayerCar", "camp", "playerCamp", "cam_playerCamp", "refgroup",
+    "wsi", "wgd", "gringo", "CREATE_ACTOR_IN_LAYOUT", "GET_ACTORENUM_FROM_STRING",
+    "release64", "scripting", ".xsc", ".wsc", ".sco",
+]
+
+SKIP_DIRS = {
+    ".git", ".svn", "__pycache__", ".pytest_cache", "node_modules", ".venv", "venv",
+    "proof_packages", "output",
+}
+
+
+def sha1_file(path: Path, max_bytes: int | None = None) -> str:
+    h = hashlib.sha1()
+    with path.open("rb") as f:
+        remaining = max_bytes
+        while True:
+            if remaining is not None and remaining <= 0:
+                break
+            chunk_size = 1024 * 1024 if remaining is None else min(1024 * 1024, remaining)
+            chunk = f.read(chunk_size)
+            if not chunk:
+                break
+            h.update(chunk)
+            if remaining is not None:
+                remaining -= len(chunk)
+    return h.hexdigest().upper()
+
+
+def iter_files(root: Path) -> Iterable[Path]:
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+        base = Path(dirpath)
+        for name in filenames:
+            yield base / name
+
+
+def safe_read_strings(path: Path, max_bytes: int = 512_000) -> str:
+    try:
+        data = path.read_bytes()[:max_bytes]
+    except OSError:
+        return ""
+    if path.suffix.lower() in TEXT_EXTS:
+        return data.decode("utf-8", errors="ignore")
+    # Binary-ish string scrape.
+    chunks = re.findall(rb"[\x20-\x7E]{4,}", data)
+    return "\n".join(chunk.decode("ascii", errors="ignore") for chunk in chunks)
+
+
+def score_file(path: Path, root: Path) -> dict[str, object] | None:
+    rel = path.relative_to(root).as_posix()
+    low_rel = rel.lower()
+    name_hits = [kw for kw in NAME_KEYWORDS if kw.lower() in low_rel]
+    text = ""
+    content_hits: list[str] = []
+    snippets: list[str] = []
+
+    should_scan_content = bool(name_hits) or path.suffix.lower() in TEXT_EXTS or path.stat().st_size <= 2_000_000
+    if should_scan_content:
+        text = safe_read_strings(path)
+        low_text = text.lower()
+        for pat in CONTENT_PATTERNS:
+            if pat.lower() in low_text:
+                content_hits.append(pat)
+                idx = low_text.find(pat.lower())
+                if idx >= 0:
+                    start = max(0, idx - 80)
+                    end = min(len(text), idx + len(pat) + 120)
+                    snippets.append(text[start:end].replace("\r", " ").replace("\n", " ")[:260])
+
+    if not name_hits and not content_hits:
+        return None
+
+    ext_bonus = 10 if path.suffix.lower() in {".wsi", ".wgd", ".xsc", ".wsc", ".sco"} else 0
+    score = len(name_hits) * 5 + len(set(content_hits)) * 12 + ext_bonus
+    if "camp" in low_rel:
+        score += 15
+    if any(x in low_rel for x in ["wsi", "wgd", "gringo", "vehicle"]):
+        score += 10
+    if any(x in content_hits for x in ["ACTOR_VEHICLE_Car01", "Vehicle_Generator", "car_gringo", "PlayerCar"]):
+        score += 25
+
+    try:
+        size = path.stat().st_size
+    except OSError:
+        size = -1
+
+    return {
+        "score": score,
+        "relative_path": rel,
+        "suffix": path.suffix.lower(),
+        "size": size,
+        "sha1_head": sha1_file(path, max_bytes=256_000),
+        "name_hits": sorted(set(name_hits)),
+        "content_hits": sorted(set(content_hits)),
+        "snippets": snippets[:5],
+    }
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--root", default=".", help="Root folder to scan")
+    ap.add_argument("--out", default="logs/camp_car_import_candidate_scan", help="Output prefix without extension")
+    ap.add_argument("--top", type=int, default=200, help="Max rows to keep")
+    args = ap.parse_args()
+
+    root = Path(args.root).resolve()
+    if not root.exists():
+        raise SystemExit(f"Missing root: {root}")
+
+    rows = []
+    for path in iter_files(root):
+        try:
+            row = score_file(path, root)
+        except Exception as exc:  # keep scanner robust
+            row = {
+                "score": 1,
+                "relative_path": path.relative_to(root).as_posix(),
+                "suffix": path.suffix.lower(),
+                "size": -1,
+                "sha1_head": "",
+                "name_hits": [],
+                "content_hits": [f"SCAN_ERROR:{exc}"],
+                "snippets": [],
+            }
+        if row:
+            rows.append(row)
+
+    rows.sort(key=lambda r: (-int(r["score"]), str(r["relative_path"])))
+    rows = rows[: args.top]
+
+    out_prefix = Path(args.out)
+    out_prefix.parent.mkdir(parents=True, exist_ok=True)
+    json_path = out_prefix.with_suffix(".json")
+    csv_path = out_prefix.with_suffix(".csv")
+    md_path = out_prefix.with_suffix(".md")
+
+    report = {
+        "root": str(root),
+        "candidate_count": len(rows),
+        "boundary": "Read-only scan. No archives or game files modified.",
+        "recommended_next_step": "Inspect top WSI/WGD/camp/script candidates before building any copied-archive import proof.",
+        "rows": rows,
+    }
+    json_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+
+    with csv_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=["score", "relative_path", "suffix", "size", "sha1_head", "name_hits", "content_hits", "snippets"],
+        )
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({
+                **row,
+                "name_hits": ";".join(row["name_hits"]),
+                "content_hits": ";".join(row["content_hits"]),
+                "snippets": " || ".join(row["snippets"]),
+            })
+
+    lines = [
+        "# Code RED Camp Car Import Candidate Scan",
+        "",
+        f"Root: `{root}`",
+        f"Candidates: {len(rows)}",
+        "",
+        "Boundary: read-only scan. No archives or game files modified.",
+        "",
+    ]
+    for row in rows[:50]:
+        lines.extend([
+            f"## score {row['score']} — `{row['relative_path']}`",
+            f"- suffix: `{row['suffix']}`",
+            f"- size: `{row['size']}`",
+            f"- name hits: {', '.join(row['name_hits']) if row['name_hits'] else 'none'}",
+            f"- content hits: {', '.join(row['content_hits']) if row['content_hits'] else 'none'}",
+        ])
+        for snippet in row["snippets"][:2]:
+            lines.append(f"- snippet: `{snippet}`")
+        lines.append("")
+    md_path.write_text("\n".join(lines), encoding="utf-8")
+
+    print("# Code RED Camp Car Import Candidate Scan")
+    print(f"Root: {root}")
+    print(f"Candidates: {len(rows)}")
+    print(f"JSON: {json_path}")
+    print(f"CSV: {csv_path}")
+    print(f"MD: {md_path}")
+    for row in rows[:10]:
+        print(f"  score={row['score']:>3} {row['relative_path']}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

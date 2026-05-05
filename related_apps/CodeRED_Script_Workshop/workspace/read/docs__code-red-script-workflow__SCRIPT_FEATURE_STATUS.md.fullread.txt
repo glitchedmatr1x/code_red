@@ -1,0 +1,46 @@
+# Code RED Script Feature Status
+
+This file tracks script/menu features by proof level.
+
+Legend:
+
+- `research`: idea or observed behavior only
+- `verified-native`: native/wrapper/signature evidence found
+- `compile-proof`: tiny compile proof passed
+- `runtime-proof`: tiny runtime proof passed
+- `menu-ready`: safe to wire into the real menu
+- `blocked`: do not use until evidence changes
+
+## Current feature matrix
+
+| Feature | Lane | Status | Evidence needed next | Notes |
+|---|---|---:|---|---|
+| Show player coordinates | Trainer / ScriptHook / RedHook | research | verified coordinate read wrapper/native | First safe debug feature. |
+| Save current location slot | Trainer / ScriptHook / RedHook | research | coordinate read proof + file/log proof | Needed before actor travel. |
+| Select nearest actor | Trainer / ScriptHook / RedHook | research | verified actor scan/handle wrapper/native | Must log selected handle and model/name if available. |
+| Teleport selected actor to saved location | Trainer / ScriptHook / RedHook | research | actor handle + coordinate set proof | Safer first step than pathing. |
+| Command selected actor to travel to location | Trainer / ScriptHook / RedHook | research | verified task/go-to/pathing wrapper/native | Do not guess task signature. |
+| Command selected actor to follow player | Trainer / ScriptHook / RedHook | research | verified follow/task wrapper/native | Companion foundation. |
+| Command selected actor to guard point | Trainer / ScriptHook / RedHook | research | verified guard/task wrapper/native | Useful for posse/defense behavior. |
+| Spawn actor from menu | Trainer / ScriptHook / RedHook | research | verified spawn wrapper/native + model proof | Add after selection/logging works. |
+| Weather/time controls | Trainer / ScriptHook / RedHook | research | verified wrappers/native signatures | Common trainer function, still needs local proof. |
+| Full SC-CL menu | SC-CL | blocked | do not continue from old source | Old source used guessed signatures and is untrusted. |
+| Tiny SC-CL subtitle proof | SC-CL | compile-proof | hash/document outputs | Keep as minimal proof only. |
+| RPF tune patch export | RPF/resource | runtime-proof | continue copied-archive validation | Separate from menu work. |
+| WSI/WGD gringo correlation | RPF/resource | research | correlator proof table | Useful for vehicle/world placement, not menu path. |
+
+## Promotion rule
+
+Move a feature forward only after the evidence exists.
+
+Example path:
+
+```text
+research -> verified-native -> compile-proof or runtime-proof -> menu-ready
+```
+
+A feature can skip compile-proof if it is a live trainer/runtime feature and runtime proof is stronger than compile proof.
+
+## Regression rule
+
+If a menu feature crashes, corrupts state, or needs guessed signatures, move it back to `blocked` or `research`.

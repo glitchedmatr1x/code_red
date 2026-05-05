@@ -66,86 +66,6 @@
     "state": "source_recompile_candidate"
   },
   {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
-    "native_tokens": [],
-    "hash_tokens": [],
-    "state": "source_recompile_candidate"
-  },
-  {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
-    "native_tokens": [],
-    "hash_tokens": [],
-    "state": "source_recompile_candidate"
-  },
-  {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
-    "native_tokens": [],
-    "hash_tokens": [],
-    "state": "source_recompile_candidate"
-  },
-  {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
-    "native_tokens": [],
-    "hash_tokens": [],
-    "state": "source_recompile_candidate"
-  },
-  {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
-    "native_tokens": [
-      "CREATE_ACTOR_IN_LAYOUT",
-      "CREATE_LAYOUT",
-      "GET_PLAYER_ACTOR",
-      "IS_ACTOR_VALID",
-      "IS_ACTOR_VEHICLE",
-      "SET_ACTOR_IN_VEHICLE",
-      "SET_ACTOR_MAX_SPEED",
-      "SET_ACTOR_MAX_SPEED_ABSOLUTE",
-      "SET_ACTOR_SPEED",
-      "SET_VEHICLE_ALLOWED_TO_DRIVE",
-      "SET_VEHICLE_ENGINE_RUNNING"
-    ],
-    "hash_tokens": [],
-    "state": "source_recompile_candidate"
-  },
-  {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/script_api.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/script_api.h",
-    "native_tokens": [],
-    "hash_tokens": [],
-    "state": "source_recompile_candidate"
-  },
-  {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
-    "native_tokens": [],
-    "hash_tokens": [],
-    "state": "source_recompile_candidate"
-  },
-  {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
-    "native_tokens": [
-      "CREATE_ACTOR_IN_LAYOUT",
-      "CREATE_LAYOUT",
-      "GET_PLAYER_ACTOR",
-      "IS_ACTOR_VALID",
-      "IS_ACTOR_VEHICLE",
-      "SET_ACTOR_IN_VEHICLE",
-      "SET_ACTOR_MAX_SPEED",
-      "SET_ACTOR_MAX_SPEED_ABSOLUTE",
-      "SET_ACTOR_SPEED",
-      "SET_VEHICLE_ALLOWED_TO_DRIVE",
-      "SET_VEHICLE_ENGINE_RUNNING"
-    ],
-    "hash_tokens": [],
-    "state": "source_recompile_candidate"
-  },
-  {
     "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.bridge_candidate.cpp",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.bridge_candidate.cpp",
     "native_tokens": [
@@ -207,6 +127,20 @@
       "0XE8CFDD53",
       "0XECE8520B"
     ],
+    "state": "source_recompile_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp",
+    "native_tokens": [],
+    "hash_tokens": [],
+    "state": "source_recompile_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_AI_Menu_actor_enum_loader_reference.cpp",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/recompile_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_AI_Menu_actor_enum_loader_reference.cpp",
+    "native_tokens": [],
+    "hash_tokens": [],
     "state": "source_recompile_candidate"
   },
   {

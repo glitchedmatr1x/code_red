@@ -1,0 +1,12 @@
+feature,lane,native_or_wrapper,signature,source_type,source_path_or_reference,evidence_status,proof_file,proof_result,notes
+show_player_coordinates,Trainer / ScriptHook / RedHook,,,,research,,,,Find exact coordinate read wrapper/native before coding.
+save_location_slot,Trainer / ScriptHook / RedHook,,,,research,,,,Depends on coordinate read proof plus safe file/log proof.
+select_nearest_actor,Trainer / ScriptHook / RedHook,,,,research,,,,Find exact actor scan/handle function.
+teleport_selected_actor,Trainer / ScriptHook / RedHook,,,,research,,,,Find exact coordinate set/teleport function and handle validation.
+actor_travel_to_location,Trainer / ScriptHook / RedHook,,,,research,,,,Find exact task/pathing function. Do not guess.
+actor_follow_player,Trainer / ScriptHook / RedHook,,,,research,,,,Find exact follow/task function.
+actor_guard_point,Trainer / ScriptHook / RedHook,,,,research,,,,Find exact guard/stand/task function.
+spawn_actor_from_menu,Trainer / ScriptHook / RedHook,,,,research,,,,Find exact actor create signature and model validation path.
+weather_time_controls,Trainer / ScriptHook / RedHook,,,,research,,,,Find exact setters and safe ranges.
+tiny_subtitle_proof,SC-CL,_PRINT_SUBTITLE,"verified in minimal proof source",real SC-CL headers,resources/SC-CL_bitbucket_source/bin/include,compile-proof,resources/SC-CL_bitbucket_source/bin/projects/CodeREDProof/CodeREDProof.c,passed,Keep as tiny proof only.
+full_sccl_menu,SC-CL,,,old guessed source,,blocked,,,Do not continue from old full menu source.

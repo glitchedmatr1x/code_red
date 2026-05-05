@@ -1,0 +1,479 @@
+# Code RED source/decompiled export
+# Source: tools/codered_faction_wars_pipeline.py
+# SHA1: cf9a9b13ba6b03961a207c1058fb0f80dd7f29ba
+
+#!/usr/bin/env python3
+"""Code RED Faction Wars pipeline.
+
+Proof-first scanner/planner for faction-war work. This tool does not install
+scripts, does not patch RPF archives, and does not call in-game menu/native
+spawn paths. It organizes existing Code RED script/resource research into a
+ranked target plan for copied-archive patch passes.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import os
+import re
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Iterable, Sequence
+
+VERSION = "1.0.0-faction-wars-pipeline"
+MAX_FILE_BYTES = 2_000_000
+MAX_EXCERPTS_PER_FILE = 8
+TEXT_SUFFIXES = {
+    ".c", ".h", ".hpp", ".cpp", ".cc", ".cxx", ".py", ".bat", ".cmd", ".ps1",
+    ".txt", ".md", ".xml", ".ini", ".csv", ".json", ".toml", ".cfg", ".log"
+}
+SKIP_DIRS = {
+    ".git", ".vs", ".vscode", "__pycache__", "build", "dist", "x64", "x86",
+    "Debug", "Release", "node_modules", ".pytest_cache", "codered_backups"
+}
+
+KEYWORD_GROUPS: dict[str, tuple[str, ...]] = {
+    "factions": (
+        "faction", "gang", "law", "lawman", "lawmen", "sheriff", "marshal", "deputy",
+        "bandit", "bandito", "rustler", "raider", "army", "mexican", "criminal", "posse",
+    ),
+    "war_behavior": (
+        "attack", "defend", "guard", "patrol", "reinforce", "hostile", "enemy", "combat",
+        "ambush", "showdown", "wanted", "bounty", "crime", "holdup", "robbery", "theft",
+    ),
+    "spawning": (
+        "spawn", "population", "ambient", "encounter", "event", "refgroup", "placement",
+        "layout", "create_actor", "create_ped", "actor", "streaming_request_actor",
+    ),
+    "world_hosts": (
+        "wsi", "wgd", "gringo", "use_context", "activation", "radius", "sector", "region",
+        "locset", "camp", "hideout", "town", "road", "train", "wagon",
+    ),
+    "weapons_pressure": (
+        "weapon", "gun", "knife", "explosive", "dynamite", "fire", "molotov", "gatling",
+        "maxim", "turret", "lasso", "hogtie", "mounted",
+    ),
+    "scripting": (
+        "thread", "script", "tick", "mission", "task_", "set_actor_faction", "get_actor_faction",
+        "ai_is_hostile", "wait(", "persistent_script",
+    ),
+}
+
+REGION_KEYWORDS: tuple[str, ...] = (
+    "blackwater", "armadillo", "macfarlane", "thieves", "landing", "chuparosa", "escalera",
+    "mexico", "manzanita", "tall trees", "rio bravo", "gaptooth", "ridgewood", "plainview",
+    "rathskeller", "fort mercer", "tumbleweed", "henningan", "new austin", "nuevo paraiso",
+)
+
+HIGH_VALUE_PATTERNS: tuple[str, ...] = (
+    "create_actor", "streaming_request_actor", "set_actor_faction", "get_actor_faction",
+    "ai_is_hostile", "task_kill", "task_follow", "task_wander", "task_stand",
+    "refgroup", "commongringos", "vehicle_generator", "gringobrain", "population",
+)
+
+
+@dataclass
+class FactionWarHit:
+    path: str
+    source_kind: str
+    score: int
+    category: str
+    groups: dict[str, int] = field(default_factory=dict)
+    regions: list[str] = field(default_factory=list)
+    high_value_terms: list[str] = field(default_factory=list)
+    excerpts: list[str] = field(default_factory=list)
+    size: int = 0
+
+
+@dataclass
+class FactionWarReport:
+    version: str
+    generated_utc: str
+    root: str
+    scanned_files: int
+    hits: int
+    top_hits: list[dict]
+    outputs: dict[str, str]
+    notes: list[str]
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def find_repo_root(start: Path | None = None) -> Path:
+    here = (start or Path(__file__).resolve()).resolve()
+    for candidate in [here, *here.parents]:
+        if (candidate / "main.py").exists() and (candidate / "python_workbench.py").exists():
+            return candidate
+    return Path.cwd().resolve()
+
+
+def rel_to(path: Path, root: Path) -> str:
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except Exception:
+        return path.as_posix()
+
+
+def read_json(path: Path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def safe_read_text(path: Path) -> str:
+    try:
+        if path.stat().st_size > MAX_FILE_BYTES:
+            return ""
+        return path.read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return ""
+
+
+def candidate_manifest_paths(root: Path) -> Iterable[Path]:
+    manifest_paths = [
+        root / "data" / "codered" / "script_workshop_decode_manifest.json",
+        root / "data" / "codered" / "script_workshop_extension_manifest.json",
+        root / "data" / "codered" / "script_pipeline_manifest.json",
+    ]
+    for manifest_path in manifest_paths:
+        data = read_json(manifest_path)
+        if not isinstance(data, list):
+            continue
+        for record in data:
+            if not isinstance(record, dict):
+                continue
+            for key in ("decompiled_export", "full_read_export", "edit_copy", "path"):
+                value = str(record.get(key, "")).strip()
+                if not value:
+                    continue
+                path = root / value
+                if path.exists() and path.is_file() and path.suffix.lower() in TEXT_SUFFIXES:
+                    yield path
+
+
+def candidate_roots(root: Path) -> list[Path]:
+    return [
+        root / "related_apps" / "CodeRED_Script_Workshop" / "workspace" / "decompiled_export",
+        root / "scratch" / "script_workshop_pipeline",
+        root / "scratch" / "script_workshop_compile",
+        root / "research",
+        root / "docs",
+        root / "data" / "codered",
+        root / "tools",
+        root / "related_apps" / "code_red_sccl_attempt_bundle_v1" / "code_red_script_compile_lab_v1",
+        root / "related_apps" / "CodeRED_Tuner" / "Mods" / "Game - Train Spawns Cars",
+    ]
+
+
+def iter_candidate_files(root: Path, extra_roots: Sequence[Path] = ()) -> Iterable[Path]:
+    seen: set[Path] = set()
+    for path in candidate_manifest_paths(root):
+        resolved = path.resolve()
+        if resolved not in seen:
+            seen.add(resolved)
+            yield path
+    for base in [*candidate_roots(root), *extra_roots]:
+        if not base.exists():
+            continue
+        if base.is_file():
+            if base.suffix.lower() in TEXT_SUFFIXES:
+                resolved = base.resolve()
+                if resolved not in seen:
+                    seen.add(resolved)
+                    yield base
+            continue
+        for current, dirnames, filenames in os.walk(base):
+            dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+            for name in filenames:
+                path = Path(current) / name
+                if path.suffix.lower() not in TEXT_SUFFIXES:
+                    continue
+                resolved = path.resolve()
+                if resolved in seen:
+                    continue
+                seen.add(resolved)
+                yield path
+
+
+def classify_path(path: Path, text: str) -> str:
+    blob = (path.as_posix() + "\n" + text[:5000]).lower()
+    if any(token in blob for token in ("tune", "lasso", "npc.xml", "sheriff.xml", "template_base")):
+        return "tune/template pressure"
+    if any(token in blob for token in ("wsi", "wgd", "gringo", "refgroup", "locset")):
+        return "world host / gringo"
+    if path.suffix.lower() in {".c", ".h", ".cpp", ".hpp"} or any(token in blob for token in ("wait(", "task_", "create_actor")):
+        return "script/native candidate"
+    if any(token in blob for token in ("rpf", "archive", "patch", "import_queue")):
+        return "archive patch lane"
+    return "research/reference"
+
+
+def count_terms(text_lower: str, terms: Sequence[str]) -> int:
+    total = 0
+    for term in terms:
+        total += text_lower.count(term.lower())
+    return total
+
+
+def excerpts_for(text: str, terms: Sequence[str]) -> list[str]:
+    out: list[str] = []
+    term_re = re.compile("|".join(re.escape(t) for t in terms if t), re.IGNORECASE)
+    for index, line in enumerate(text.splitlines(), start=1):
+        if not term_re.search(line):
+            continue
+        clean = line.strip()
+        if not clean:
+            continue
+        out.append(f"L{index}: {clean[:260]}")
+        if len(out) >= MAX_EXCERPTS_PER_FILE:
+            break
+    return out
+
+
+def score_file(root: Path, path: Path) -> FactionWarHit | None:
+    text = safe_read_text(path)
+    if not text:
+        return None
+    lower = text.lower()
+    groups = {name: count_terms(lower, terms) for name, terms in KEYWORD_GROUPS.items()}
+    groups = {name: count for name, count in groups.items() if count > 0}
+    regions = sorted({term for term in REGION_KEYWORDS if term.lower() in lower})
+    high_terms = sorted({term for term in HIGH_VALUE_PATTERNS if term.lower() in lower})
+    base_score = sum(groups.values())
+    score = base_score + (len(regions) * 5) + (len(high_terms) * 8)
+    if not groups and not regions and not high_terms:
+        return None
+    if score < 3:
+        return None
+    source_kind = "manifest/text" if "workspace" in path.as_posix().lower() else "repo/text"
+    return FactionWarHit(
+        path=rel_to(path, root),
+        source_kind=source_kind,
+        score=score,
+        category=classify_path(path, text),
+        groups=groups,
+        regions=regions,
+        high_value_terms=high_terms,
+        excerpts=excerpts_for(text, [*sum((list(v) for v in KEYWORD_GROUPS.values()), []), *REGION_KEYWORDS, *HIGH_VALUE_PATTERNS]),
+        size=path.stat().st_size,
+    )
+
+
+def write_csv(path: Path, hits: Sequence[FactionWarHit]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=["score", "category", "path", "source_kind", "regions", "groups", "high_value_terms", "size"],
+        )
+        writer.writeheader()
+        for hit in hits:
+            writer.writerow({
+                "score": hit.score,
+                "category": hit.category,
+                "path": hit.path,
+                "source_kind": hit.source_kind,
+                "regions": "|".join(hit.regions),
+                "groups": "|".join(f"{k}:{v}" for k, v in sorted(hit.groups.items())),
+                "high_value_terms": "|".join(hit.high_value_terms),
+                "size": hit.size,
+            })
+
+
+def build_plan_markdown(hits: Sequence[FactionWarHit]) -> str:
+    lines = [
+        "# Code RED Faction Wars Target Plan",
+        "",
+        f"Generated: `{utc_now()}`",
+        "",
+        "## Rules for this lane",
+        "",
+        "- No in-game menu spawning.",
+        "- No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.",
+        "- No source RPF mutation. Use copied archives only.",
+        "- One changed script/resource/event at a time, with proof JSON and reopen verification.",
+        "- Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.",
+        "",
+        "## Pass order",
+        "",
+        "### FW-1 — Pressure without script install",
+        "",
+        "Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path.",
+        "",
+        "### FW-2 — Existing event/script target discovery",
+        "",
+        "Use this report plus Script Workshop readable exports to identify existing crime, patrol, holdup, posse, ambient, population, camp, and refgroup scripts.",
+        "",
+        "### FW-3 — Copied-archive script/resource override proof",
+        "",
+        "Patch one low-risk existing event or resource in a copied archive. Reopen and verify before install.",
+        "",
+        "### FW-4 — Regional faction-war schedules",
+        "",
+        "Build region-specific daily/random law-vs-gang pressure using existing hosts, one region at a time.",
+        "",
+        "### FW-5 — Advanced escalation",
+        "",
+        "Only after proof: gatling wagon/Maxim truck assault hosts, map/radar markers, weapon-ratio logic, and reinforcements.",
+        "",
+        "## Top faction-war candidates",
+        "",
+        "| Rank | Score | Category | Path | Regions | High-value terms |",
+        "|---:|---:|---|---|---|---|",
+    ]
+    for rank, hit in enumerate(hits[:40], start=1):
+        lines.append(
+            f"| {rank} | {hit.score} | {hit.category} | `{hit.path}` | "
+            f"{', '.join(hit.regions) if hit.regions else ''} | {', '.join(hit.high_value_terms)} |"
+        )
+    lines.extend(["", "## Excerpts", ""])
+    for rank, hit in enumerate(hits[:15], start=1):
+        lines.append(f"### {rank}. `{hit.path}`")
+        lines.append("")
+        lines.append(f"Category: `{hit.category}`  ")
+        lines.append(f"Score: `{hit.score}`  ")
+        if hit.regions:
+            lines.append(f"Regions: `{', '.join(hit.regions)}`  ")
+        if hit.high_value_terms:
+            lines.append(f"High-value terms: `{', '.join(hit.high_value_terms)}`  ")
+        lines.append("")
+        if hit.excerpts:
+            lines.extend(f"- {item}" for item in hit.excerpts)
+        else:
+            lines.append("- No short excerpt captured.")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def run_scan(root: Path, extra_roots: Sequence[Path] = ()) -> FactionWarReport:
+    root = root.resolve()
+    hits: list[FactionWarHit] = []
+    scanned = 0
+    for path in iter_candidate_files(root, extra_roots):
+        scanned += 1
+        hit = score_file(root, path)
+        if hit is not None:
+            hits.append(hit)
+    hits.sort(key=lambda item: (item.score, item.path), reverse=True)
+
+    data_dir = root / "data" / "codered"
+    research_dir = root / "research" / "faction_wars"
+    logs_dir = root / "logs"
+    for folder in (data_dir, research_dir, logs_dir):
+        folder.mkdir(parents=True, exist_ok=True)
+
+    targets_json = data_dir / "faction_wars_targets.json"
+    targets_csv = data_dir / "faction_wars_targets.csv"
+    capabilities_json = data_dir / "faction_wars_capabilities.json"
+    plan_md = research_dir / "FW_TARGET_PLAN.md"
+    report_json = logs_dir / "CodeRED_Faction_Wars_Pipeline_Report.json"
+    report_md = logs_dir / "CodeRED_Faction_Wars_Pipeline_Report.md"
+
+    targets = [asdict(hit) for hit in hits]
+    targets_json.write_text(json.dumps(targets, indent=2), encoding="utf-8")
+    write_csv(targets_csv, hits)
+    capabilities = {
+        "version": VERSION,
+        "safe_now": [
+            "rank faction-war script/resource candidates",
+            "mine Script Workshop readable exports",
+            "plan tune/content pressure patches",
+            "plan copied-archive RPF overrides",
+            "separate WSI/WGD/gringo world-host path from menu/native spawning",
+        ],
+        "blocked_until_proof": [
+            "direct menu/native actor spawning",
+            "bulk script replacement",
+            "existing compiled binary bytecode roundtrip",
+            "source RPF mutation",
+        ],
+        "recommended_next_pass": "FW-1 tune/content pressure plus FW-2 existing event/script target discovery",
+    }
+    capabilities_json.write_text(json.dumps(capabilities, indent=2), encoding="utf-8")
+    plan_md.write_text(build_plan_markdown(hits), encoding="utf-8")
+
+    report = FactionWarReport(
+        version=VERSION,
+        generated_utc=utc_now(),
+        root=str(root),
+        scanned_files=scanned,
+        hits=len(hits),
+        top_hits=[asdict(hit) for hit in hits[:25]],
+        outputs={
+            "targets_json": rel_to(targets_json, root),
+            "targets_csv": rel_to(targets_csv, root),
+            "capabilities_json": rel_to(capabilities_json, root),
+            "target_plan": rel_to(plan_md, root),
+            "report_json": rel_to(report_json, root),
+            "report_markdown": rel_to(report_md, root),
+        },
+        notes=[
+            "Scanner/planner only; no scripts or RPF archives were modified.",
+            "Use Script Workshop scan/refresh first for best results, then rerun this pipeline.",
+            "Menu/native spawning remains parked after confirmed spawn crashes.",
+        ],
+    )
+    report_json.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
+    report_md.write_text(build_report_markdown(report), encoding="utf-8")
+    return report
+
+
+def build_report_markdown(report: FactionWarReport) -> str:
+    lines = [
+        "# Code RED Faction Wars Pipeline Report",
+        "",
+        f"Generated: `{report.generated_utc}`",
+        f"Version: `{report.version}`",
+        "",
+        "## Summary",
+        "",
+        f"- Scanned files: `{report.scanned_files}`",
+        f"- Hits: `{report.hits}`",
+        "",
+        "## Outputs",
+        "",
+    ]
+    for label, path in report.outputs.items():
+        lines.append(f"- {label}: `{path}`")
+    lines.extend(["", "## Top hits", "", "| Score | Category | Path |", "|---:|---|---|"])
+    for item in report.top_hits[:15]:
+        lines.append(f"| {item['score']} | {item['category']} | `{item['path']}` |")
+    lines.extend(["", "## Notes", ""])
+    lines.extend(f"- {note}" for note in report.notes)
+    return "\n".join(lines) + "\n"
+
+
+def print_status(report: FactionWarReport) -> None:
+    print(f"Code RED Faction Wars Pipeline: scanned={report.scanned_files} hits={report.hits}")
+    for label, path in report.outputs.items():
+        print(f"{label}: {path}")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Build Code RED faction-war target plans from script/resource research.")
+    parser.add_argument("command", nargs="?", default="scan", choices=("scan", "status"))
+    parser.add_argument("--root", type=Path, default=None, help="Code RED root folder")
+    parser.add_argument("--extra-root", action="append", default=[], help="Extra folder/file to scan")
+    parser.add_argument("--json", action="store_true", help="Print report JSON")
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    root = args.root.resolve() if args.root else find_repo_root()
+    extras = [Path(item).resolve() for item in args.extra_root]
+    report = run_scan(root, extras)
+    if args.json:
+        print(json.dumps(asdict(report), indent=2))
+    else:
+        print_status(report)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,21 @@
+# Code RED source/decompiled export
+# Source: related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Backups/AI_Menu_20260502_004302/CodeRED_AI_Menu.ini
+# SHA1: b1f783057825184daa4e6f23a721615987fa79a6
+
+; CodeRED AI Menu config
+; Keep this beside CodeRED_AI_Menu.asi unless you modify the plugin source.
+
+[paths]
+actor_enum_map=data/codered/actor_enum_map.csv
+roster=data/codered/npc_roster.txt
+action_plan=scratch/codered_ai_action_plan.json
+state=scratch/codered_ai_state.json
+
+[keys]
+open_menu=F8
+alternate_open_menu=INSERT
+reload_roster=F5
+
+[safety]
+spawn_enabled=false
+native_behavior_enabled=false

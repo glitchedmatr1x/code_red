@@ -1,0 +1,59 @@
+@echo off
+setlocal EnableExtensions EnableDelayedExpansion
+cd /d "%~dp0"
+set PY=python
+set TOOL=tools\codered_trainer_ai_controller_v1.py
+
+:menu
+cls
+echo ============================================================
+echo   CodeRED Trainer AI Menu v1 - NPC Roster Switcher
+echo ============================================================
+echo.
+echo  1. Start interactive AI controller
+echo  2. Spawn selected AI guest
+echo  3. Follow player
+echo  4. Guard position
+echo  5. Defend player
+echo  6. Attack hostiles
+echo  7. Regroup / warp near player
+echo  8. Mount request
+echo  9. Dismount request
+echo 10. Idle / clear tasks
+echo 11. Dismiss AI guest
+echo 12. Status
+echo 13. List NPC models
+echo 14. List NPC models by filter
+echo 15. Next NPC model
+echo 16. Previous NPC model
+echo 17. Set NPC model by index or search
+echo 18. Set persistent NPC filter
+echo 19. Scan RPF/list for gent/gped/amb/special names
+echo 20. Open action plan JSON
+echo 21. Open logs
+echo 22. Exit
+echo.
+set /p CHOICE=Choose: 
+if "%CHOICE%"=="1"  %PY% "%TOOL%" & pause & goto menu
+if "%CHOICE%"=="2"  %PY% "%TOOL%" spawn & pause & goto menu
+if "%CHOICE%"=="3"  %PY% "%TOOL%" follow & pause & goto menu
+if "%CHOICE%"=="4"  %PY% "%TOOL%" guard & pause & goto menu
+if "%CHOICE%"=="5"  %PY% "%TOOL%" defend & pause & goto menu
+if "%CHOICE%"=="6"  %PY% "%TOOL%" attack & pause & goto menu
+if "%CHOICE%"=="7"  %PY% "%TOOL%" regroup & pause & goto menu
+if "%CHOICE%"=="8"  %PY% "%TOOL%" mount & pause & goto menu
+if "%CHOICE%"=="9"  %PY% "%TOOL%" dismount & pause & goto menu
+if "%CHOICE%"=="10" %PY% "%TOOL%" idle & pause & goto menu
+if "%CHOICE%"=="11" %PY% "%TOOL%" dismiss & pause & goto menu
+if "%CHOICE%"=="12" %PY% "%TOOL%" status & pause & goto menu
+if "%CHOICE%"=="13" %PY% "%TOOL%" npc-list & pause & goto menu
+if "%CHOICE%"=="14" set /p F=Filter, e.g. gent/gped/amb/law/player: & %PY% "%TOOL%" npc-list "!F!" & pause & goto menu
+if "%CHOICE%"=="15" %PY% "%TOOL%" npc-next & pause & goto menu
+if "%CHOICE%"=="16" %PY% "%TOOL%" npc-prev & pause & goto menu
+if "%CHOICE%"=="17" set /p M=Index or search text: & %PY% "%TOOL%" npc-set "!M!" & pause & goto menu
+if "%CHOICE%"=="18" set /p F=Persistent filter: & %PY% "%TOOL%" npc-filter "!F!" & pause & goto menu
+if "%CHOICE%"=="19" set /p P=RPF/list path: & %PY% "%TOOL%" npc-scan "!P!" & pause & goto menu
+if "%CHOICE%"=="20" if exist scratch\codered_trainer_ai_action_plan.json start "" scratch\codered_trainer_ai_action_plan.json & goto menu
+if "%CHOICE%"=="21" if exist logs start "" logs & goto menu
+if "%CHOICE%"=="22" exit /b 0
+goto menu

@@ -1,3 +1,0 @@
-#pragma once
-
-#include "RDR/natives32.h"

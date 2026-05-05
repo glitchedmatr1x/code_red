@@ -1,0 +1,223 @@
+# Code RED source/decompiled export
+# Source: tools/codered_sccl_dependency_probe.py
+# SHA1: 8a8e1c0f309ca8a0c44894b65f2e50a2e573e34b
+
+#!/usr/bin/env python3
+"""Diagnose SC-CL.exe launch failures before compile attempts.
+
+Windows exit code 3221225781 / 0xC0000135 means the executable was found but a
+required DLL was missing. This helper records that state and gives the next safe
+steps without repeatedly trying to compile.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Iterable
+
+VERSION = "1.0.0-sccl-dependency-probe"
+KIT = Path("related_apps/code_red_sccl_attempt_bundle_v1/code_red_sccl_windows_build_kit_v1")
+DROP = Path("resources/SC-CL_DROP_HERE")
+REPORT_JSON = Path("logs/CodeRED_SCCL_Dependency_Probe_Report.json")
+REPORT_MD = Path("logs/CodeRED_SCCL_Dependency_Probe_Report.md")
+STATUS_DLL_NOT_FOUND = 0xC0000135
+COMMON_RUNTIME_DLLS = [
+    "VCRUNTIME140.dll",
+    "VCRUNTIME140_1.dll",
+    "MSVCP140.dll",
+    "CONCRT140.dll",
+    "ucrtbase.dll",
+]
+LLVM_DLL_HINTS = [
+    "LLVM.dll",
+    "clang.dll",
+    "libclang.dll",
+    "LLVMSupport.dll",
+    "LLVMCore.dll",
+]
+
+
+@dataclass
+class DependencyReport:
+    version: str
+    generated_utc: str
+    root: str
+    sccl_exe: str | None
+    ok: bool
+    launch_exit: int | None = None
+    launch_exit_hex: str | None = None
+    likely_issue: str = ""
+    exe_folder_files: list[str] = field(default_factory=list)
+    path_hits: dict[str, list[str]] = field(default_factory=dict)
+    warnings: list[str] = field(default_factory=list)
+    next_steps: list[str] = field(default_factory=list)
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def root_from_arg(raw: str | None) -> Path:
+    return Path(raw).resolve() if raw else Path(__file__).resolve().parents[1]
+
+
+def find_sccl(root: Path, explicit: str | None = None) -> Path | None:
+    candidates = []
+    if explicit:
+        candidates.append(Path(explicit))
+    env = os.environ.get("SCCL_EXE")
+    if env:
+        candidates.append(Path(env))
+    candidates.extend([
+        root / KIT / "SC-CL.exe",
+        root / DROP / "SC-CL.exe",
+        root / "SC-CL.exe",
+    ])
+    seen = set()
+    for item in candidates:
+        try:
+            path = item.resolve()
+        except Exception:
+            path = item
+        key = str(path).lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        if path.exists():
+            return path
+    return None
+
+
+def write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8", errors="ignore")
+
+
+def write_json(path: Path, obj) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(obj, indent=2), encoding="utf-8")
+
+
+def search_path_for(name: str) -> list[str]:
+    hits = []
+    for raw in os.environ.get("PATH", "").split(os.pathsep):
+        if not raw:
+            continue
+        candidate = Path(raw) / name
+        if candidate.exists():
+            hits.append(str(candidate))
+    return hits
+
+
+def run_launch(exe: Path) -> tuple[int | None, str, str]:
+    try:
+        proc = subprocess.run([str(exe), "-help"], cwd=str(exe.parent), capture_output=True, text=True, timeout=20, check=False)
+        return proc.returncode, proc.stdout, proc.stderr
+    except subprocess.TimeoutExpired:
+        return None, "", "timeout"
+    except Exception as exc:
+        return None, "", str(exc)
+
+
+def probe(root: Path, explicit: str | None) -> DependencyReport:
+    root = root.resolve()
+    exe = find_sccl(root, explicit)
+    report = DependencyReport(version=VERSION, generated_utc=utc_now(), root=str(root), sccl_exe=str(exe) if exe else None, ok=False)
+    if not exe:
+        report.warnings.append("SC-CL.exe was not found.")
+        report.next_steps = ["Place SC-CL.exe in resources\\SC-CL_DROP_HERE or pass --sccl with the real path."]
+        write_outputs(root, report)
+        return report
+
+    report.exe_folder_files = sorted(p.name for p in exe.parent.iterdir() if p.is_file())[:500]
+    exit_code, stdout, stderr = run_launch(exe)
+    report.launch_exit = exit_code
+    report.launch_exit_hex = f"0x{exit_code & 0xFFFFFFFF:08X}" if exit_code is not None else None
+
+    for dll in COMMON_RUNTIME_DLLS + LLVM_DLL_HINTS:
+        hits = []
+        local = exe.parent / dll
+        if local.exists():
+            hits.append(str(local))
+        hits.extend(search_path_for(dll))
+        if hits:
+            report.path_hits[dll] = hits
+
+    if exit_code == STATUS_DLL_NOT_FOUND or (exit_code is not None and (exit_code & 0xFFFFFFFF) == STATUS_DLL_NOT_FOUND):
+        report.likely_issue = "SC-CL.exe cannot start because a required DLL is missing."
+        report.warnings.append("Windows returned 0xC0000135 / STATUS_DLL_NOT_FOUND.")
+        report.next_steps = [
+            "Install or repair Microsoft Visual C++ Redistributable 2015-2022 x64, then rerun this probe.",
+            "If this SC-CL build came from a build folder, copy SC-CL.exe together with its adjacent LLVM/Clang DLLs into the Code RED build kit folder, not the EXE alone.",
+            "Try launching SC-CL.exe directly from Explorer once; Windows may show the exact missing DLL name.",
+            "After this probe passes, run: py -3 tools\\codered_sccl_safe_compile_probe.py --timeout 30",
+        ]
+    elif exit_code == 0 or stdout or stderr:
+        report.ok = True
+        report.likely_issue = "SC-CL.exe launches. Move to compile probe."
+        report.next_steps = ["Run: py -3 tools\\codered_sccl_safe_compile_probe.py --timeout 30"]
+    else:
+        report.warnings.append("SC-CL.exe returned a nonstandard code. Review launch_exit_hex and try running it directly.")
+        report.next_steps = ["Run SC-CL.exe directly from PowerShell/Explorer and capture the displayed error."]
+    write_outputs(root, report)
+    return report
+
+
+def markdown(report: DependencyReport) -> str:
+    lines = [
+        "# Code RED SC-CL Dependency Probe Report",
+        "",
+        f"Generated UTC: `{report.generated_utc}`",
+        f"Result: **{'PASS' if report.ok else 'NEEDS ATTENTION'}**",
+        f"SC-CL.exe: `{report.sccl_exe}`",
+        f"Launch exit: `{report.launch_exit}`",
+        f"Launch exit hex: `{report.launch_exit_hex}`",
+        f"Likely issue: `{report.likely_issue}`",
+        "",
+        "## DLLs Found Locally / On PATH",
+        "",
+    ]
+    if report.path_hits:
+        for dll, hits in report.path_hits.items():
+            lines.append(f"### {dll}")
+            lines.extend(f"- `{hit}`" for hit in hits[:20])
+    else:
+        lines.append("- none from common runtime/LLVM hints")
+    lines.extend(["", "## Files Beside SC-CL.exe", ""])
+    lines.extend(f"- `{name}`" for name in report.exe_folder_files or ["none"])
+    if report.warnings:
+        lines.extend(["", "## Warnings", ""])
+        lines.extend(f"- {item}" for item in report.warnings)
+    lines.extend(["", "## Next Steps", ""])
+    lines.extend(f"- {item}" for item in report.next_steps)
+    return "\n".join(lines) + "\n"
+
+
+def write_outputs(root: Path, report: DependencyReport) -> None:
+    write_json(root / REPORT_JSON, asdict(report))
+    write_text(root / REPORT_MD, markdown(report))
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Diagnose SC-CL.exe DLL/runtime launch failures.")
+    parser.add_argument("--root", default=None)
+    parser.add_argument("--sccl", default=None)
+    return parser
+
+
+def main(argv: Iterable[str] | None = None) -> int:
+    args = build_parser().parse_args(list(argv) if argv is not None else None)
+    root = root_from_arg(args.root)
+    report = probe(root, args.sccl)
+    print(markdown(report))
+    return 0 if report.ok else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

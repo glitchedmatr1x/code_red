@@ -1,13 +1,13 @@
 {
   "version": "1.1.0-script-workshop-extension-hardening",
-  "generated_utc": "2026-05-03T11:35:25Z",
+  "generated_utc": "2026-05-05T04:28:42Z",
   "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
   "workspace": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\CodeRED_Script_Workshop\\workspace",
-  "records": 295,
-  "editable": 284,
+  "records": 345,
+  "editable": 334,
   "compiled_binary_readonly": 11,
-  "import_queue": 284,
-  "recompile_queue": 12,
+  "import_queue": 334,
+  "recompile_queue": 6,
   "new_script_templates": 3,
   "outputs": {
     "extension_manifest_json": "data/codered/script_workshop_extension_manifest.json",

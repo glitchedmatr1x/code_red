@@ -1,0 +1,179 @@
+# Code RED Realtime Weapon Modifier Menu
+
+## Answer
+
+Yes, Code RED can have realtime weapon modifiers through the ScriptHook / AI Trainer menu lane.
+
+Do not do this by editing `tune_d11generic.rpf` while the game is running. Tune/RPF edits are archive-patch work and are likely loaded/cached by the game. Realtime menu changes should be runtime overrides applied through verified native/wrapper calls.
+
+## Correct lane
+
+```text
+ScriptHook / AI Trainer menu
+  -> verified native/wrapper calls
+  -> small runtime state
+  -> logs every action/result
+```
+
+Not:
+
+```text
+SC-CL full menu
+RPF patch while game is live
+blind memory patches
+```
+
+## Realtime modifier types
+
+### Safe first targets
+
+These are good first menu targets because they are direct actor/weapon actions:
+
+- read current weapon
+- give weapon to player or selected companion
+- put weapon in hand
+- add ammo
+- set ammo
+- remove weapon
+- toggle gold weapon look
+- refill ammo after each shot/tick, if direct infinite ammo is not proven
+
+### Medium-risk targets
+
+These can affect broader behavior and need one-by-one proof:
+
+- weapon draw preference
+- global weapon bias
+- AI weapon range/priority
+- faction-to-faction damage scale
+- NPC-to-actor damage scale
+- weapon reaction/flee behavior
+
+### High-risk / proof-only targets
+
+These should stay out of the real menu until proven:
+
+- fire rate changes
+- spread overrides
+- recoil changes
+- projectile/explosion replacement
+- true per-weapon damage edits
+- direct memory patching
+
+Those may live in tune data or native code and may not be safely realtime unless a verified wrapper or memory address is proven.
+
+## Existing wrapper clues from local Code RED source
+
+The uploaded Code RED source includes `research/menu resources/natives.h` with weapon-related wrappers. Treat these as wrapper leads until runtime proof is logged.
+
+Strong direct leads:
+
+```text
+GIVE_WEAPON_TO_ACTOR(actor, weaponEnum, ammoCount, p3, p4)
+ACTOR_PUT_WEAPON_IN_HAND(actor, weaponEnum, p2)
+ACTOR_HAS_WEAPON(actor, weaponEnum)
+DELETE_WEAPON_FROM_ACTOR(actor, weaponEnum)
+GET_WEAPON_IN_HAND(actor)
+ACTOR_SET_WEAPON_AMMO(actor, weaponEnum, ammo)
+ACTOR_ADD_WEAPON_AMMO(actor, weaponEnum, ammo)
+ACTOR_GET_WEAPON_AMMO(actor, weaponEnum)
+GET_AMMOENUM_FOR_WEAPONENUM(weaponEnum)
+ACTOR_ADD_INV_AMMO(actor, ammoEnum, ammoAmount, p3, usePrintStat)
+SET_WEAPON_GOLD(actor, weaponEnum, toggle)
+GET_WEAPON_GOLD(actor, weaponEnum)
+```
+
+Broader tuning leads:
+
+```text
+SET_GLOBAL_ACTOR_WEAPON_BIAS(value)
+RESET_GLOBAL_ACTOR_WEAPON_BIAS()
+AI_SET_WEAPON_MAX_RANGE(actor_or_ai, value)
+AI_SET_WEAPON_MIN_RANGE(actor_or_ai, value)
+AI_SET_WEAPON_DESIRED_RANGE(actor_or_ai, value)
+SET_FACTION_TO_FACTION_DAMAGE_SCALE_FACTOR(attackerFactionId, targetFactionId, scale)
+SET_NPC_TO_ACTOR_DAMAGE_SCALE_FACTOR(...)
+SET_DAMAGE_SCALE_ENABLE(...)
+_DLC_SHOTGUN_SPREAD_OVERRIDE(...)
+SET_PHOSPHORUS_AMMO_ACTIVE(...)
+FIRE_SET_GUNS_BLAZING_ACTIVE(toggle)
+```
+
+## Menu design
+
+```text
+Code RED Menu
+  Weapon Modifiers
+    Player Weapon
+      Show current weapon
+      Give selected weapon
+      Equip selected weapon
+      Remove selected weapon
+      Refill ammo
+      Set ammo amount
+      Toggle gold weapon
+
+    Companion Weapon
+      Give selected weapon to spawned companion
+      Equip companion weapon
+      Refill companion ammo
+      Remove companion weapon
+
+    Runtime Presets
+      Normal
+      Cinematic gunfighter
+      Chaos ammo
+      Lawman loadout
+      Zombie survival loadout
+
+    Experimental
+      Damage scale
+      AI weapon range
+      Weapon bias
+      Phosphorus / special ammo
+```
+
+## Data layout
+
+```text
+data/codered/realtime_modifiers/weapons/
+  weapon_enum_map.csv
+  weapon_profiles.json
+  runtime_weapon_state.json
+
+scratch/
+  codered_weapon_modifier_log.jsonl
+  codered_weapon_modifier_last_result.json
+```
+
+## Runtime proof order
+
+Do this in small passes:
+
+1. Add a Weapon Modifiers menu page that only logs selected option.
+2. Prove `GET_WEAPON_IN_HAND(player)` and write result to log.
+3. Prove `ACTOR_HAS_WEAPON(player, weaponEnum)`.
+4. Prove `GIVE_WEAPON_TO_ACTOR(player, weaponEnum, ammoCount, ...)` with one safe weapon enum.
+5. Prove `ACTOR_PUT_WEAPON_IN_HAND(player, weaponEnum, ...)`.
+6. Prove `ACTOR_ADD_WEAPON_AMMO` or `ACTOR_SET_WEAPON_AMMO`.
+7. Add companion weapon commands only after player weapon proof passes.
+8. Keep damage/spread/fire-rate controls experimental until exact behavior is proven.
+
+## No-guess rule for weapon modifiers
+
+A weapon modifier is allowed into the real menu only when:
+
+```text
+native/wrapper name is known
+signature is known
+weapon enum source is known
+one tiny runtime proof succeeded
+log records actor, weaponEnum, action, result
+failed call safely does nothing
+```
+
+## Practical recommendation
+
+Start with player/companion loadout and ammo controls. That gets a useful realtime weapon menu without needing fragile tune swaps or memory patches.
+
+Then add experimental damage/range/spread only after runtime proof.

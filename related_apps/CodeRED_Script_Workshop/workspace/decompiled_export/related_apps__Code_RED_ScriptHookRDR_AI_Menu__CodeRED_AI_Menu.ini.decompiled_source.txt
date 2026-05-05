@@ -1,0 +1,22 @@
+# Code RED source/decompiled export
+# Source: related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.ini
+# SHA1: 983e9e8f41e442460b20e8959643e0f48a6b7dcc
+
+; CodeRED AI Menu config
+; Keep this beside CodeRED_AI_Menu.asi unless you modify the plugin source.
+
+[paths]
+actor_enum_map=data/codered/actor_enum_map.csv
+roster=data/codered/rosters/npc_roster_law_gang_companion.txt
+behavior_actions=data/codered/ai_behavior_actions.csv
+action_plan=scratch/codered_ai_action_plan.json
+state=scratch/codered_ai_state.json
+
+[keys]
+open_menu=F8
+alternate_open_menu=INSERT
+reload_roster=F5
+
+[safety]
+spawn_enabled=true
+native_behavior_enabled=true

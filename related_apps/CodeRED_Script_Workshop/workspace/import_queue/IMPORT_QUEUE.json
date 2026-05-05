@@ -144,6 +144,48 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "docs/code-red-script-workflow/ACTOR_TRAVEL_MENU_PLAN.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/code-red-script-workflow/ACTOR_TRAVEL_MENU_PLAN.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/code-red-script-workflow/ACTOR_TRAVEL_MENU_PLAN.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "docs/code-red-script-workflow/CLEANROOM_RESEARCH_RULES.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/code-red-script-workflow/CLEANROOM_RESEARCH_RULES.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/code-red-script-workflow/CLEANROOM_RESEARCH_RULES.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "docs/code-red-script-workflow/LANES.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/code-red-script-workflow/LANES.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/code-red-script-workflow/LANES.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "docs/code-red-script-workflow/NATIVE_VERIFICATION_TEMPLATE.csv",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/code-red-script-workflow/NATIVE_VERIFICATION_TEMPLATE.csv",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/code-red-script-workflow/NATIVE_VERIFICATION_TEMPLATE.csv",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "docs/code-red-script-workflow/PROOF_SCRIPT_TEMPLATE.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/code-red-script-workflow/PROOF_SCRIPT_TEMPLATE.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/code-red-script-workflow/PROOF_SCRIPT_TEMPLATE.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "docs/code-red-script-workflow/README.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/code-red-script-workflow/README.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/code-red-script-workflow/README.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "docs/code-red-script-workflow/SCRIPT_FEATURE_STATUS.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/code-red-script-workflow/SCRIPT_FEATURE_STATUS.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/code-red-script-workflow/SCRIPT_FEATURE_STATUS.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "docs/CodeRED_ACTIVE_FOLDER_IMPORTANCE.md",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/CodeRED_ACTIVE_FOLDER_IMPORTANCE.md",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/CodeRED_ACTIVE_FOLDER_IMPORTANCE.md",
@@ -174,57 +216,51 @@
     "state": "safe_text_import_candidate"
   },
   {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
-    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/constants.h",
+    "path": "docs/script_workflow/DEBUG_CHEAT_MENU_FINDINGS.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/script_workflow/DEBUG_CHEAT_MENU_FINDINGS.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/script_workflow/DEBUG_CHEAT_MENU_FINDINGS.md",
     "state": "safe_text_import_candidate"
   },
   {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
-    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/intrinsics.h",
+    "path": "docs/script_workflow/native_registry/candidate_natives.csv",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/script_workflow/native_registry/candidate_natives.csv",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/script_workflow/native_registry/candidate_natives.csv",
     "state": "safe_text_import_candidate"
   },
   {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
-    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/natives.h",
+    "path": "docs/script_workflow/native_registry/candidate_weapon_runtime_natives.csv",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/script_workflow/native_registry/candidate_weapon_runtime_natives.csv",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/script_workflow/native_registry/candidate_weapon_runtime_natives.csv",
     "state": "safe_text_import_candidate"
   },
   {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
-    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/consts32.h",
+    "path": "docs/script_workflow/native_registry/verified_natives.csv",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/script_workflow/native_registry/verified_natives.csv",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/script_workflow/native_registry/verified_natives.csv",
     "state": "safe_text_import_candidate"
   },
   {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
-    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/RDR/natives32.h",
+    "path": "docs/script_workflow/README.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/script_workflow/README.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/script_workflow/README.md",
     "state": "safe_text_import_candidate"
   },
   {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/script_api.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/script_api.h",
-    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/script_api.h",
+    "path": "docs/script_workflow/REALTIME_WEAPON_MODIFIERS.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/docs/script_workflow/REALTIME_WEAPON_MODIFIERS.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/docs/script_workflow/REALTIME_WEAPON_MODIFIERS.md",
     "state": "safe_text_import_candidate"
   },
   {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
-    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/include/types.h",
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/build_ai_menu_asi_windows.ps1",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/build_ai_menu_asi_windows.ps1",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/build_ai_menu_asi_windows.ps1",
     "state": "safe_text_import_candidate"
   },
   {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/scripts/validate_vehicle_menu_probe.py",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/scripts/validate_vehicle_menu_probe.py",
-    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/scripts/validate_vehicle_menu_probe.py",
-    "state": "safe_text_import_candidate"
-  },
-  {
-    "path": "related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
-    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
-    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/code_red_sccl_attempt_bundle_v1/code_red_script_compile_lab_v1/src/main.c",
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/build_bridge.bat",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/build_bridge.bat",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/build_bridge.bat",
     "state": "safe_text_import_candidate"
   },
   {
@@ -234,9 +270,165 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/car_truck_spawn_recipe_pseudocode.txt",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/car_truck_spawn_recipe_pseudocode.txt",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/car_truck_spawn_recipe_pseudocode.txt",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.bridge_candidate.cpp",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.bridge_candidate.cpp",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.bridge_candidate.cpp",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.ini",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.ini",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.ini",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Backups/AI_Menu_20260502_003234/CodeRED_AI_Menu.ini",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Backups/AI_Menu_20260502_003234/CodeRED_AI_Menu.ini",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Backups/AI_Menu_20260502_003234/CodeRED_AI_Menu.ini",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Backups/AI_Menu_20260502_004302/CodeRED_AI_Menu.ini",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Backups/AI_Menu_20260502_004302/CodeRED_AI_Menu.ini",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Backups/AI_Menu_20260502_004302/CodeRED_AI_Menu.ini",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Trainer_AI_Menu_v1.bat",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Trainer_AI_Menu_v1.bat",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_Trainer_AI_Menu_v1.bat",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/ai_behavior_actions.csv",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/ai_behavior_actions.csv",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/ai_behavior_actions.csv",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_model_roster_v1.json",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_model_roster_v1.json",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_model_roster_v1.json",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_roster.txt",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_roster.txt",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_roster.txt",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_roster_safe_verified.txt",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_roster_safe_verified.txt",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/npc_roster_safe_verified.txt",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_all_spawnable.txt",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_all_spawnable.txt",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_all_spawnable.txt",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_gangs.txt",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_gangs.txt",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_gangs.txt",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_law_gang_companion.txt",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_law_gang_companion.txt",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_law_gang_companion.txt",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_lawmen.txt",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_lawmen.txt",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_lawmen.txt",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_mounts_vehicles.txt",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_mounts_vehicles.txt",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/npc_roster_mounts_vehicles.txt",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/README.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/README.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/rosters/README.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/trainer_ai_profile_v1.json",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/trainer_ai_profile_v1.json",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/trainer_ai_profile_v1.json",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/docs/codered/actor_enum_editing_workflow.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/docs/codered/actor_enum_editing_workflow.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/docs/codered/actor_enum_editing_workflow.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/docs/codered/trainer_ai_control_handoff_v1.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/docs/codered/trainer_ai_control_handoff_v1.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/docs/codered/trainer_ai_control_handoff_v1.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/install_ai_menu_asi_windows.ps1",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/install_ai_menu_asi_windows.ps1",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/install_ai_menu_asi_windows.ps1",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/install_diagnostic_only_menu_data_windows.ps1",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/install_diagnostic_only_menu_data_windows.ps1",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/install_diagnostic_only_menu_data_windows.ps1",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/install_vehicle_first_menu_data_windows.ps1",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/install_vehicle_first_menu_data_windows.ps1",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/install_vehicle_first_menu_data_windows.ps1",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_AI_Menu_actor_enum_loader_reference.cpp",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_AI_Menu_actor_enum_loader_reference.cpp",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_AI_Menu_actor_enum_loader_reference.cpp",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_native_bridge_merge_notes.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_native_bridge_merge_notes.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/patches/CodeRED_native_bridge_merge_notes.md",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "related_apps/Code_RED_ScriptHookRDR_AI_Menu/README.md",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/README.md",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/related_apps/Code_RED_ScriptHookRDR_AI_Menu/README.md",
     "state": "safe_text_import_candidate"
   },
   {
@@ -1632,9 +1824,33 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "tools/Apply_CodeRED_SCCL_Lane_Sort_From_Repo.ps1",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/Apply_CodeRED_SCCL_Lane_Sort_From_Repo.ps1",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/Apply_CodeRED_SCCL_Lane_Sort_From_Repo.ps1",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "tools/codered_ai_menu_bridge_integration.py",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_ai_menu_bridge_integration.py",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_ai_menu_bridge_integration.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_ai_menu_car_spawn_doctor.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_ai_menu_car_spawn_doctor.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_ai_menu_car_spawn_doctor.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_ai_menu_doctor.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_ai_menu_doctor.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_ai_menu_doctor.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_ai_menu_install_doctor.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_ai_menu_install_doctor.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_ai_menu_install_doctor.py",
     "state": "safe_text_import_candidate"
   },
   {
@@ -1644,15 +1860,45 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "tools/codered_analyze_camp_car_scan.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_analyze_camp_car_scan.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_analyze_camp_car_scan.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "tools/codered_archive_lane_validation.py",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_archive_lane_validation.py",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_archive_lane_validation.py",
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "tools/codered_camp_car_workbench.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_camp_car_workbench.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_camp_car_workbench.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_classify_script_artifacts.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_classify_script_artifacts.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_classify_script_artifacts.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "tools/codered_codex_modelxml_validation.py",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_codex_modelxml_validation.py",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_codex_modelxml_validation.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_faction_wars_pipeline.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_faction_wars_pipeline.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_faction_wars_pipeline.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_inspect_camp_vehicle_gringo_scripts.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_inspect_camp_vehicle_gringo_scripts.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_inspect_camp_vehicle_gringo_scripts.py",
     "state": "safe_text_import_candidate"
   },
   {
@@ -1668,9 +1914,45 @@
     "state": "safe_text_import_candidate"
   },
   {
+    "path": "tools/codered_override_menu_finder.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_override_menu_finder.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_override_menu_finder.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_probe_wsc_headers.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_probe_wsc_headers.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_probe_wsc_headers.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
     "path": "tools/codered_regression_guard.py",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_regression_guard.py",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_regression_guard.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_scan_camp_car_import_candidates.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_scan_camp_car_import_candidates.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_scan_camp_car_import_candidates.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_scan_gringo_descriptors.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_scan_gringo_descriptors.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_scan_gringo_descriptors.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_sccl_clean_source.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_sccl_clean_source.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_sccl_clean_source.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_sccl_dependency_probe.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_sccl_dependency_probe.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_sccl_dependency_probe.py",
     "state": "safe_text_import_candidate"
   },
   {
@@ -1701,6 +1983,24 @@
     "path": "tools/codered_terrainboundres_validation.py",
     "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_terrainboundres_validation.py",
     "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_terrainboundres_validation.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_ui_update_mix_research.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_ui_update_mix_research.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_ui_update_mix_research.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/codered_xsc_to_wsc_candidate.py",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_xsc_to_wsc_candidate.py",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/codered_xsc_to_wsc_candidate.py",
+    "state": "safe_text_import_candidate"
+  },
+  {
+    "path": "tools/Repair_CodeRED_SCCL_Project_Include.ps1",
+    "source": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/Repair_CodeRED_SCCL_Project_Include.ps1",
+    "import_queue": "related_apps/CodeRED_Script_Workshop/workspace/import_queue/tools/Repair_CodeRED_SCCL_Project_Include.ps1",
     "state": "safe_text_import_candidate"
   }
 ]
