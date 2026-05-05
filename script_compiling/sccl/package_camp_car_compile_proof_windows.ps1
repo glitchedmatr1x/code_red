@@ -2,8 +2,8 @@
 Package the Code RED SC-CL camp-car runtime proof.
 
 Purpose:
-- Collect the compiled camp_car_probe.xsc artifact.
-- Record hashes for the compiled output, source, active project headers, and staged compiler.
+- Collect compiled camp_car_probe artifacts (.xsc and .sco when present).
+- Record hashes for compiled outputs, source, active project headers, and staged compiler.
 - Create a proof-only ZIP package.
 - Do not install/import anything into the game.
 
@@ -18,7 +18,8 @@ $RepoRoot = (Resolve-Path $RepoRoot).Path
 $Lane = Join-Path $RepoRoot "script_compiling\sccl"
 $Project = Join-Path $Lane "projects\camp_car_probe"
 $OutputRoot = Join-Path $Lane "output"
-$Artifact = Join-Path $OutputRoot "camp_car_probe\camp_car_probe.xsc"
+$ArtifactXsc = Join-Path $OutputRoot "camp_car_probe\camp_car_probe.xsc"
+$ArtifactSco = Join-Path $OutputRoot "camp_car_probe_sco\camp_car_probe.sco"
 $Compiler = Join-Path $OutputRoot "SC-CL.exe"
 $Source = Join-Path $Project "src\main.c"
 $ProjectInclude = Join-Path $Project "include"
@@ -43,7 +44,7 @@ function Hash-File($Path) {
     }
 }
 
-Require-File $Artifact "compiled camp-car artifact"
+Require-File $ArtifactXsc "compiled camp-car XSC artifact"
 Require-File $Compiler "staged compiler"
 Require-File $Source "camp-car source"
 Require-File (Join-Path $ProjectInclude "RDR\natives32.h") "project native header"
@@ -55,7 +56,13 @@ New-Item -ItemType Directory -Force -Path (Join-Path $ProofDir "source") | Out-N
 New-Item -ItemType Directory -Force -Path (Join-Path $ProofDir "headers") | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $ProofDir "reports") | Out-Null
 
-Copy-Item -Path $Artifact -Destination (Join-Path $ProofDir "artifact\camp_car_probe.xsc") -Force
+Copy-Item -Path $ArtifactXsc -Destination (Join-Path $ProofDir "artifact\camp_car_probe.xsc") -Force
+$compiledArtifacts = @($ArtifactXsc)
+if (Test-Path $ArtifactSco) {
+    Copy-Item -Path $ArtifactSco -Destination (Join-Path $ProofDir "artifact\camp_car_probe.sco") -Force
+    $compiledArtifacts += $ArtifactSco
+}
+
 Copy-Item -Path $Source -Destination (Join-Path $ProofDir "source\main.c") -Force
 Copy-Item -Path $ProjectInclude -Destination (Join-Path $ProofDir "headers\include") -Recurse -Force
 
@@ -76,7 +83,8 @@ foreach ($name in $optionalReports) {
 }
 
 $filesToHash = @(
-    $Artifact,
+    $ArtifactXsc,
+    $ArtifactSco,
     $Compiler,
     $Source,
     (Join-Path $ProjectInclude "RDR\natives32.h"),
@@ -88,12 +96,15 @@ $filesToHash = @(
 ) | Where-Object { Test-Path $_ }
 
 $hashRows = @($filesToHash | ForEach-Object { Hash-File $_ })
+$artifactRows = @($compiledArtifacts | ForEach-Object { Hash-File $_ })
 
 $manifest = [ordered]@{
     package = "camp_car_probe_compile_proof"
     created = (Get-Date).ToString('s')
     repo_root = $RepoRoot
-    artifact = Hash-File $Artifact
+    artifacts = $artifactRows
+    artifact_xsc = Hash-File $ArtifactXsc
+    artifact_sco = if (Test-Path $ArtifactSco) { Hash-File $ArtifactSco } else { $null }
     compiler = Hash-File $Compiler
     source = Hash-File $Source
     headers = @($hashRows | Where-Object { $_.relative_path -match 'include' })
@@ -106,8 +117,8 @@ $manifest = [ordered]@{
     )
     boundary = "Proof package only. Runtime proof artifact only. Do not install/import into the game yet. Camp/RPF archive install lane is not proven."
     next_safe_steps = @(
-        "Verify compiled artifact naming and hash.",
-        "Use this only as a runtime/camp-car proof artifact.",
+        "Verify compiled artifact naming and hashes.",
+        "Use these only as runtime/camp-car proof artifacts.",
         "Research archive/import candidates separately before any install attempt."
     )
 }
@@ -115,17 +126,21 @@ $manifest = [ordered]@{
 $manifestPath = Join-Path $ProofDir "COMPILE_PROOF_MANIFEST.json"
 $manifest | ConvertTo-Json -Depth 10 | Set-Content -Path $manifestPath -Encoding UTF8
 
+$artifactBlock = @()
+foreach ($artifact in $artifactRows) {
+    $artifactBlock += "{0}`nsha1: {1}`nlength: {2}`n" -f $artifact.relative_path, $artifact.sha1, $artifact.length
+}
+$artifactText = ($artifactBlock -join "`n")
+
 $readme = @"
 # Code RED Camp Car Runtime Proof
 
 This package is proof-only.
 
-## Compiled artifact
+## Compiled artifacts
 
 ~~~text
-artifact/camp_car_probe.xsc
-sha1: $($manifest.artifact.sha1)
-length: $($manifest.artifact.length)
+$artifactText
 ~~~
 
 ## Runtime controls
@@ -140,7 +155,7 @@ F8 = delete the probe car
 
 ## Boundary
 
-Do not install/import this compiled script into the game yet.
+Do not install/import these compiled scripts into the game yet.
 
 This proves the SC-CL camp-car runtime proof compile only. Camp/RPF archive install behavior is still a separate lane.
 
@@ -148,6 +163,7 @@ This proves the SC-CL camp-car runtime proof compile only. Camp/RPF archive inst
 
 ~~~text
 artifact/camp_car_probe.xsc
+artifact/camp_car_probe.sco if built
 source/main.c
 headers/include/
 reports/
@@ -164,15 +180,15 @@ $summary = [ordered]@{
     proof_dir = $ProofDir
     zip_path = $ZipPath
     zip_sha1 = $packageHash.Hash
-    artifact_sha1 = $manifest.artifact.sha1
-    artifact_length = $manifest.artifact.length
+    artifacts = $artifactRows
 }
-$summary | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $OutputRoot "camp_car_compile_proof_package_latest.json") -Encoding UTF8
+$summary | ConvertTo-Json -Depth 8 | Set-Content -Path (Join-Path $OutputRoot "camp_car_compile_proof_package_latest.json") -Encoding UTF8
 
 Write-Host "# Code RED Camp Car Compile Proof Package"
 Write-Host "Proof dir:" $ProofDir
 Write-Host "ZIP:" $ZipPath
 Write-Host "ZIP SHA1:" $packageHash.Hash
-Write-Host "Artifact SHA1:" $manifest.artifact.sha1
-Write-Host "Artifact length:" $manifest.artifact.length
+foreach ($artifact in $artifactRows) {
+    Write-Host ("Artifact: {0} length={1} sha1={2}" -f $artifact.relative_path, $artifact.length, $artifact.sha1)
+}
 Write-Host "Boundary: proof package only; not installed/imported."
