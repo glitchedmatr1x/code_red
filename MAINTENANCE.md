@@ -8,7 +8,7 @@ Use this launcher from the repository root:
 python run_workbench.py
 ```
 
-The current stable launcher enters the conservative `code_red_main.py` shell. The larger `python_workbench.py` file still contains the deeper research/workbench implementation, including script/toolchain lanes.
+The stable launcher enters `code_red_main.py`. The larger `python_workbench.py` file is the full research/workbench backend and still contains the deeper RPF6, script/toolchain, source-validation, Magic-RDR, SC-CL, and archive-proof lanes.
 
 ## Protected behavior
 
@@ -17,6 +17,17 @@ The current stable launcher enters the conservative `code_red_main.py` shell. Th
 - `.wsc`, `.xsc`, and `.sco` must remain routed to the Scripts lane.
 - Script read/compile code in `python_workbench.py` should not be edited during lightweight UI cleanup.
 - Archive write-back and mutation should stay staged unless a validated backend is attached.
+- The full backend must continue exposing RPF6 audit/export, copied-archive proof, source validation, script tooling detection, Magic-RDR/SC-CL packaging, and safe copied-archive patch application.
+
+## Anti-regression command
+
+Run this before and after launcher, cleanup, archive, or script-lane changes:
+
+```bash
+python tools/codered_anti_regression.py
+```
+
+The guard uses tiny synthetic RPF/ZIP files. It checks stable-shell routing and verifies that `python_workbench.py` still exposes the full backend symbols needed to keep Code RED beyond a basic Magic-RDR/Codex-style browser.
 
 ## Cleanup rules for future commits
 
@@ -33,9 +44,9 @@ Do not commit these to Git:
 1. Drop real game archives into a local ignored folder such as `imports/`.
 2. Launch with `python run_workbench.py`.
 3. Use read-only archive inventory on `.rpf` files.
-4. Run the self-test before committing UI or launcher changes.
+4. Run `python tools/codered_anti_regression.py` before committing UI or launcher changes.
 5. Use the full `python_workbench.py` lane for deeper script/toolchain work until those features are migrated into the stable shell.
 
-## Current regression note
+## Current status
 
-The root shell previously exposed `.rpf` in the Archives lane but only wired member scanning through ZIP. The next code pass should restore an RPF-first reader in the stable shell while preserving script lane routing and avoiding any changes to compile-back logic.
+The stable shell now restores RPF-first archive inventory and the headless `--scan-archive` command. The full backend remains separate and protected by the anti-regression guard so cleanup work does not silently remove deeper reading, proof, and toolchain capabilities.
