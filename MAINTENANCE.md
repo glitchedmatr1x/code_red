@@ -14,10 +14,26 @@ The stable launcher enters `code_red_main.py`. The larger `python_workbench.py` 
 
 - RPF archives must be treated as game archives, not ZIP files.
 - ZIP support is only for package/transport inspection.
-- `.wsc`, `.xsc`, and `.sco` must remain routed to the Scripts lane.
+- `.wsc`, `.xsc`, `.sco`, and script-adjacent `.wsv` resources must remain routed to script/tooling workflows.
 - Script read/compile code in `python_workbench.py` should not be edited during lightweight UI cleanup.
 - Archive write-back and mutation should stay staged unless a validated backend is attached.
 - The full backend must continue exposing RPF6 audit/export, copied-archive proof, source validation, script tooling detection, Magic-RDR/SC-CL packaging, and safe copied-archive patch application.
+
+## Script Workshop
+
+Use this when the compiler/toolchain is present:
+
+```bash
+python tools/codered_script_workshop.py --source scripts --out logs/script_workshop
+```
+
+The workshop is compiler-aware but safe by default. It inventories source/script resources, detects likely SC-CL/Magic-RDR/compiler resources, and writes a compile plan. It only runs compile commands when both `--compile` and an explicit `--compiler-template` are provided, so Code RED does not guess the compiler syntax.
+
+Example explicit compile template:
+
+```bash
+python tools/codered_script_workshop.py --source scripts --out build/scripts --compile --compiler-template '"{compiler}" "{source}" -o "{output}"'
+```
 
 ## Anti-regression command
 
@@ -45,8 +61,9 @@ Do not commit these to Git:
 2. Launch with `python run_workbench.py`.
 3. Use read-only archive inventory on `.rpf` files.
 4. Run `python tools/codered_anti_regression.py` before committing UI or launcher changes.
-5. Use the full `python_workbench.py` lane for deeper script/toolchain work until those features are migrated into the stable shell.
+5. Use `tools/codered_script_workshop.py` for compiler-aware planning and controlled script builds.
+6. Use the full `python_workbench.py` lane for deeper script/toolchain work until those features are migrated into the stable shell.
 
 ## Current status
 
-The stable shell now restores RPF-first archive inventory and the headless `--scan-archive` command. The full backend remains separate and protected by the anti-regression guard so cleanup work does not silently remove deeper reading, proof, and toolchain capabilities.
+The stable shell now restores RPF-first archive inventory and the headless `--scan-archive` command. The full backend remains separate and protected by the anti-regression guard so cleanup work does not silently remove deeper reading, proof, and toolchain capabilities. The Script Workshop now provides a controlled path for compiler-aware script inventory, planning, and explicit build execution.
