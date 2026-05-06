@@ -1,34 +1,49 @@
-# Code RED Layout Consolidation Pass
+# Code RED
 
-This pass provides a stable main-app shell for Code RED with a fixed top toolbar, fixed resource lane rail, workspace table, inspector notebook, and status bar.
-
-## Run
+Code RED is a read-first RDR resource workbench. The current safe launch path is:
 
 ```bash
 python run_workbench.py
 ```
 
-Optional path scan:
+Optional direct launch with an archive or folder:
 
 ```bash
-python run_workbench.py /path/to/resource/or/folder
+python run_workbench.py /path/to/content.rpf
 ```
 
-Headless metadata self-test:
+Headless safety check:
 
 ```bash
 python code_red_main.py --self-test
 ```
 
-## Why this pass exists
+Headless archive inventory check:
 
-The prior Code RED reports showed a useful RDR research/workbench pipeline, but also several staged pieces that should not be exposed as final mutation buttons yet: direct binary injection, full texture dictionary parsing, automatic RPF write-back, and full mesh structural editing. This pass keeps the UI conservative and read-first.
+```bash
+python code_red_main.py --scan-archive /path/to/content.rpf
+```
 
-## Layout rules locked by this pass
+## Launch rules
 
-- Buttons are centralized through one `_button(...)` factory.
-- The shell uses grid-only layout; no absolute placement.
-- Top toolbar actions are limited to five stable actions.
-- Resource lanes are fixed on the left.
-- Resource details, reports, and logs live in the right inspector.
-- Archive/resource mutation remains staged unless a validated backend is attached.
+- `run_workbench.py` is the source launcher.
+- `code_red_main.py` is the conservative stable shell.
+- `python_workbench.py` contains the larger research/workbench implementation and script/toolchain lanes.
+- Do not launch project files, helper captures, generated reports, or archived test data as the app entry point.
+
+## Archive rules
+
+- RPF archives are first-class game archives and are scanned read-only.
+- ZIP files are treated as package/transport archives only.
+- Split ZIP fragments such as `.z01` through `.z09` are tracked as fragments, not game archives.
+- Archive mutation/write-back stays staged unless a validated backend is attached.
+
+## Script safety rules
+
+- `.wsc`, `.xsc`, and `.sco` stay routed to the Scripts lane.
+- The stable shell inventories script entries found inside RPF archives without compiling or mutating them.
+- The heavier script read/compile tooling in `python_workbench.py` is intentionally left untouched by lightweight UI maintenance.
+
+## Repository hygiene
+
+Keep raw game data, generated reports, local imports, copied RPFs, build folders, logs, and packaged ZIP/RAR/7Z outputs out of Git. Use `imports/`, `game/`, `logs/`, and local drop folders at runtime, but do not commit their contents.
