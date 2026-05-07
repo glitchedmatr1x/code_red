@@ -28,6 +28,7 @@ DECOMPILE_ATTEMPT_PATH = REPO_ROOT / "tools" / "codered_script_decompile_attempt
 RPF_DEEP_PROBE_PATH = REPO_ROOT / "tools" / "codered_rpf_deep_probe.py"
 FREEMODE_INIT_INSPECTOR_PATH = REPO_ROOT / "tools" / "codered_freemode_init_inspector.py"
 MAGIC_RDR_BRIDGE_PATH = REPO_ROOT / "tools" / "codered_magic_rdr_bridge.py"
+MENU_WORKSHOP_PATH = REPO_ROOT / "tools" / "codered_menu_workshop.py"
 
 SCRIPT_LANE_EXTENSIONS = (".wsc", ".csc", ".xsc", ".sco", ".wsv")
 ARCHIVE_LANE_EXTENSIONS = (".rpf", ".zip", ".z01")
@@ -50,6 +51,7 @@ REQUIRED_TOOL_FILES = {
     RPF_DEEP_PROBE_PATH: "RPF deep probe",
     FREEMODE_INIT_INSPECTOR_PATH: "Freemode / Init inspector",
     MAGIC_RDR_BRIDGE_PATH: "Magic-RDR parity bridge",
+    MENU_WORKSHOP_PATH: "Menu Workshop",
 }
 
 
@@ -117,6 +119,50 @@ def _write_fake_magic_output(temp: Path) -> Path:
     return root
 
 
+def _write_fake_menu_project(temp: Path) -> tuple[Path, Path]:
+    resources = temp / "fake_menu_resources"
+    script = resources / "root" / "content" / "release64" / "multiplayer" / "freemode" / "freemode.csc"
+    script.parent.mkdir(parents=True, exist_ok=True)
+    script.write_bytes(b"fake freemode csc")
+    project = temp / "fake_menu_project.json"
+    project.write_text(
+        json.dumps(
+            {
+                "id": "synthetic_menu_guard",
+                "title": "Synthetic Menu Guard",
+                "hotkey": "F5",
+                "sections": [
+                    {
+                        "name": "Peds",
+                        "items": [
+                            {"label": "Inline Ped", "actor": "ACTOR_SYNTH_PED|100", "action": "spawn_actor"}
+                        ],
+                    },
+                    {
+                        "name": "Vehicles",
+                        "items": [
+                            {"label": "Blocked Vehicle", "actor": "ACTOR_VEHICLE_CAR01", "action": "spawn_actor"}
+                        ],
+                    },
+                    {
+                        "name": "MP Scripts",
+                        "items": [
+                            {
+                                "label": "Synthetic Freemode",
+                                "script": "root/content/release64/multiplayer/freemode/freemode.csc",
+                                "action": "load_or_probe_script",
+                            }
+                        ],
+                    },
+                ],
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return project, resources
+
+
 def main() -> int:
     failures: list[str] = []
     warnings: list[str] = []
@@ -171,7 +217,7 @@ def main() -> int:
     if self_test.returncode != 0:
         failures.append(f"--self-test failed: {self_test.stderr or self_test.stdout}")
 
-    for tool in (FULL_BACKEND_HARNESS_PATH, SCRIPT_WORKSHOP_PATH, DECOMPILE_ATTEMPT_PATH, RPF_DEEP_PROBE_PATH, FREEMODE_INIT_INSPECTOR_PATH, MAGIC_RDR_BRIDGE_PATH):
+    for tool in (FULL_BACKEND_HARNESS_PATH, SCRIPT_WORKSHOP_PATH, DECOMPILE_ATTEMPT_PATH, RPF_DEEP_PROBE_PATH, FREEMODE_INIT_INSPECTOR_PATH, MAGIC_RDR_BRIDGE_PATH, MENU_WORKSHOP_PATH):
         _check_help(tool, failures)
 
     with tempfile.TemporaryDirectory(prefix="codered_guard_") as temp_dir:
@@ -264,6 +310,40 @@ def main() -> int:
         if scan_stats.get("files_scanned", 0) < 1:
             failures.append("Magic-RDR bridge smoke did not scan fake output files")
 
+        menu_project, menu_resources = _write_fake_menu_project(temp)
+        menu_out = temp / "menu_workshop_out"
+        menu_runtime = temp / "menu_runtime"
+        menu_smoke = _run_command([
+            sys.executable,
+            str(MENU_WORKSHOP_PATH),
+            "--project",
+            str(menu_project),
+            "--resource-root",
+            str(menu_resources),
+            "--out",
+            str(menu_out),
+            "--runtime-dir",
+            str(menu_runtime),
+            "--validate",
+            "--emit-runtime",
+            "--package",
+        ])
+        if menu_smoke.returncode != 0:
+            failures.append(f"Menu Workshop smoke failed: {menu_smoke.stderr or menu_smoke.stdout}")
+        else:
+            try:
+                proof = json.loads((menu_out / "menu_workshop_proof.json").read_text(encoding="utf-8"))
+                if proof.get("items_total") != 3:
+                    failures.append("Menu Workshop smoke did not process all synthetic menu items")
+                if proof.get("items_resolved", 0) < 2:
+                    failures.append("Menu Workshop smoke did not resolve ped and script resource entries")
+                if proof.get("items_blocked", 0) < 1:
+                    failures.append("Menu Workshop smoke did not block unsafe vehicle actor entry")
+                if not (menu_runtime / "synthetic_menu_guard.menu.json").exists():
+                    failures.append("Menu Workshop smoke did not emit runtime menu JSON")
+            except Exception as exc:
+                failures.append(f"Menu Workshop smoke proof unreadable: {exc}")
+
     result = {
         "ok": not failures,
         "failures": failures,
@@ -281,6 +361,7 @@ def main() -> int:
             "Freemode Init Inspector imports and exposes --help",
             "Magic-RDR parity bridge imports and exposes --help",
             "Magic-RDR bridge detects non-z init and MP/freemode signals from synthetic output",
+            "Menu Workshop validates synthetic ped/vehicle/script menu and emits runtime data",
             "Freemode Init Inspector detects synthetic MP/session/init harness output",
             "script lane guard including .csc and .wsv",
             "archive lane guard",

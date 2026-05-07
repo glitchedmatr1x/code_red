@@ -117,6 +117,32 @@ LANES: tuple[AppLane, ...] = (
         optional_paths=("scratch/codered_trainer_ai_state.json", "scratch/codered_trainer_ai_action_plan.json"),
     ),
     AppLane(
+        id="menu_workshop",
+        title="Menu Workshop",
+        category="AI Trainer",
+        description="Validates data-driven spawn/action menus, resolves actors/resources/actions, and emits runtime menu data without hardcoded ASI lists.",
+        command=("py", "-3", "tools/codered_menu_workshop.py", "--project", "data/codered/menu_specs/mp_spawn_menu.json", "--validate", "--emit-runtime", "--package"),
+        required_paths=(
+            "tools/codered_menu_workshop.py",
+            "Run_CodeRED_Menu_Workshop.bat",
+            "data/codered/menu_specs/mp_spawn_menu.json",
+            "data/codered/actor_enum_map.csv",
+            "data/codered/ai_behavior_actions.csv",
+            "data/codered/menus/README.md",
+        ),
+        optional_paths=(
+            "data/codered/menus/generated/mp_spawn_menu.menu.json",
+            "logs/menu_workshop/menu_workshop_proof.json",
+            "logs/menu_workshop/menu_workshop_report.md",
+        ),
+        proof_paths=(
+            "logs/menu_workshop/menu_workshop_proof.json",
+            "logs/menu_workshop/menu_workshop_report.md",
+        ),
+        replaces_external=("hardcoded trainer menu rosters", "manual actor enum checks", "manual menu install data staging"),
+        notes="Use this before expanding the AI Menu. It blocks invalid actor/resource/action entries, splits vehicle/special-case actors from normal peds, and emits generic runtime JSON for the ASI to read later.",
+    ),
+    AppLane(
         id="native_probe",
         title="Native Database / Bridge Prep",
         category="Natives",
