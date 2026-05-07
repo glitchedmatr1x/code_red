@@ -22,6 +22,13 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 MAIN_PATH = REPO_ROOT / "code_red_main.py"
 RUNNER_PATH = REPO_ROOT / "run_workbench.py"
 FULL_WORKBENCH_PATH = REPO_ROOT / "python_workbench.py"
+FULL_BACKEND_HARNESS_PATH = REPO_ROOT / "tools" / "codered_full_backend_rpf6_harness.py"
+SCRIPT_WORKSHOP_PATH = REPO_ROOT / "tools" / "codered_script_workshop.py"
+DECOMPILE_ATTEMPT_PATH = REPO_ROOT / "tools" / "codered_script_decompile_attempt.py"
+RPF_DEEP_PROBE_PATH = REPO_ROOT / "tools" / "codered_rpf_deep_probe.py"
+
+SCRIPT_LANE_EXTENSIONS = (".wsc", ".xsc", ".sco", ".wsv")
+ARCHIVE_LANE_EXTENSIONS = (".rpf", ".zip", ".z01")
 
 FULL_BACKEND_REQUIRED_SYMBOLS = {
     "audit_rpf6_archive": "RPF6 audit / inventory backend",
@@ -32,6 +39,13 @@ FULL_BACKEND_REQUIRED_SYMBOLS = {
     "_codered_detect_script_resource_tooling": "script compiler / Magic-RDR tooling detection",
     "_codered_analyze_source_text": "source/code reading and validation lane",
     "_codered_apply_patch_folder_to_archive_copy": "safe copied-archive patch application",
+}
+
+REQUIRED_TOOL_FILES = {
+    FULL_BACKEND_HARNESS_PATH: "full backend RPF6 extraction harness",
+    SCRIPT_WORKSHOP_PATH: "compiler-aware Script Workshop",
+    DECOMPILE_ATTEMPT_PATH: "script decompile attempt workflow",
+    RPF_DEEP_PROBE_PATH: "RPF deep probe",
 }
 
 
@@ -49,6 +63,12 @@ def _run_command(args: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(args, cwd=str(REPO_ROOT), text=True, capture_output=True, check=False)
 
 
+def _check_help(path: Path, failures: list[str]) -> None:
+    result = _run_command([sys.executable, str(path), "--help"])
+    if result.returncode != 0:
+        failures.append(f"{path.name} --help failed: {result.stderr or result.stdout}")
+
+
 def main() -> int:
     failures: list[str] = []
     warnings: list[str] = []
@@ -58,18 +78,24 @@ def main() -> int:
         failures.append("run_workbench.py is missing")
     if not FULL_WORKBENCH_PATH.exists():
         failures.append("python_workbench.py full backend is missing")
+    for path, label in REQUIRED_TOOL_FILES.items():
+        if not path.exists():
+            failures.append(f"Missing {label}: {path}")
     if failures:
         print(json.dumps({"ok": False, "failures": failures}, indent=2))
         return 1
 
     module = _load_module(MAIN_PATH, "code_red_main")
     full_backend = _load_module(FULL_WORKBENCH_PATH, "python_workbench")
+    _load_module(FULL_BACKEND_HARNESS_PATH, "codered_full_backend_rpf6_harness")
+    _load_module(SCRIPT_WORKSHOP_PATH, "codered_script_workshop")
+    _load_module(DECOMPILE_ATTEMPT_PATH, "codered_script_decompile_attempt")
+    _load_module(RPF_DEEP_PROBE_PATH, "codered_rpf_deep_probe")
 
     for name, label in FULL_BACKEND_REQUIRED_SYMBOLS.items():
         if not hasattr(full_backend, name):
             failures.append(f"Full backend missing {name}: {label}")
 
-    stage_report = None
     if hasattr(full_backend, "_codered_build_stage_report"):
         try:
             stage_report = full_backend._codered_build_stage_report(REPO_ROOT)
@@ -81,12 +107,12 @@ def main() -> int:
         except Exception as exc:
             failures.append(f"Full backend stage report failed: {exc}")
 
-    for ext in (".wsc", ".xsc", ".sco"):
+    for ext in SCRIPT_LANE_EXTENSIONS:
         lane = module.classify_extension(f"guard{ext}")
         if lane != "Scripts":
             failures.append(f"{ext} routed to {lane}, expected Scripts")
 
-    for ext in (".rpf", ".zip", ".z01"):
+    for ext in ARCHIVE_LANE_EXTENSIONS:
         lane = module.classify_extension(f"guard{ext}")
         if lane != "Archives":
             failures.append(f"{ext} routed to {lane}, expected Archives")
@@ -94,6 +120,9 @@ def main() -> int:
     self_test = _run_command([sys.executable, "code_red_main.py", "--self-test"])
     if self_test.returncode != 0:
         failures.append(f"--self-test failed: {self_test.stderr or self_test.stdout}")
+
+    for tool in (FULL_BACKEND_HARNESS_PATH, SCRIPT_WORKSHOP_PATH, DECOMPILE_ATTEMPT_PATH, RPF_DEEP_PROBE_PATH):
+        _check_help(tool, failures)
 
     with tempfile.TemporaryDirectory(prefix="codered_guard_") as temp_dir:
         temp = Path(temp_dir)
@@ -103,6 +132,7 @@ def main() -> int:
             b"scripts/test_guard.wsc\0" +
             b"scripts/test_guard.xsc\0" +
             b"scripts/test_guard.sco\0" +
+            b"scripts/test_guard.wsv\0" +
             b"textures/test_guard.wtd\0" +
             b"textures/test_guard.wtx\0" +
             b"meshes/test_guard.wft\0" +
@@ -117,6 +147,7 @@ def main() -> int:
             ".wsc": "Scripts",
             ".xsc": "Scripts",
             ".sco": "Scripts",
+            ".wsv": "Scripts",
             ".wtd": "Textures",
             ".wtx": "Textures",
             ".wft": "Meshes",
@@ -133,18 +164,21 @@ def main() -> int:
         fake_zip = temp / "package.zip"
         with zipfile.ZipFile(fake_zip, "w") as zf:
             zf.writestr("scripts/from_zip.wsc", "// package sample")
+            zf.writestr("scripts/from_zip.wsv", b"wsv sample")
             zf.writestr("textures/from_zip.wtd", b"texture sample")
         zip_records = module.scan_archive_members(fake_zip)
         if not any(rec.source == "zip" and rec.extension == ".wsc" and rec.lane == "Scripts" for rec in zip_records):
             failures.append("ZIP package scan did not preserve .wsc in Scripts lane")
+        if not any(rec.source == "zip" and rec.extension == ".wsv" and rec.lane == "Scripts" for rec in zip_records):
+            failures.append("ZIP package scan did not preserve .wsv in Scripts lane")
         if not any(rec.source == "zip" and rec.extension == ".wtd" and rec.lane == "Textures" for rec in zip_records):
             failures.append("ZIP package scan did not preserve .wtd in Textures lane")
 
         cli_scan = _run_command([sys.executable, "code_red_main.py", "--scan-archive", str(fake_rpf)])
         if cli_scan.returncode != 0:
             failures.append(f"--scan-archive failed on synthetic RPF: {cli_scan.stderr or cli_scan.stdout}")
-        elif "test_guard.wsc" not in cli_scan.stdout or "test_guard.wtd" not in cli_scan.stdout:
-            failures.append("--scan-archive output did not include synthetic RPF script/texture members")
+        elif "test_guard.wsc" not in cli_scan.stdout or "test_guard.wsv" not in cli_scan.stdout or "test_guard.wtd" not in cli_scan.stdout:
+            failures.append("--scan-archive output did not include synthetic RPF script/WSV/texture members")
 
     result = {
         "ok": not failures,
@@ -156,11 +190,15 @@ def main() -> int:
             "code_red_main.py imports",
             "python_workbench.py full backend imports",
             "full backend RPF6/archive/script/source symbols exist",
-            "script lane guard",
+            "full backend harness imports and exposes --help",
+            "Script Workshop imports and exposes --help",
+            "script decompile attempt imports and exposes --help",
+            "RPF deep probe imports and exposes --help",
+            "script lane guard including .wsv",
             "archive lane guard",
             "headless self-test",
-            "synthetic RPF inventory across scripts/textures/meshes/strings/audio/world",
-            "synthetic ZIP package inventory",
+            "synthetic RPF inventory across scripts/WSV/textures/meshes/strings/audio/world",
+            "synthetic ZIP package inventory including WSV",
             "headless --scan-archive",
         ],
     }
