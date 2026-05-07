@@ -27,6 +27,7 @@ SCRIPT_WORKSHOP_PATH = REPO_ROOT / "tools" / "codered_script_workshop.py"
 DECOMPILE_ATTEMPT_PATH = REPO_ROOT / "tools" / "codered_script_decompile_attempt.py"
 RPF_DEEP_PROBE_PATH = REPO_ROOT / "tools" / "codered_rpf_deep_probe.py"
 FREEMODE_INIT_INSPECTOR_PATH = REPO_ROOT / "tools" / "codered_freemode_init_inspector.py"
+MAGIC_RDR_BRIDGE_PATH = REPO_ROOT / "tools" / "codered_magic_rdr_bridge.py"
 
 SCRIPT_LANE_EXTENSIONS = (".wsc", ".xsc", ".sco", ".wsv")
 ARCHIVE_LANE_EXTENSIONS = (".rpf", ".zip", ".z01")
@@ -48,6 +49,7 @@ REQUIRED_TOOL_FILES = {
     DECOMPILE_ATTEMPT_PATH: "script decompile attempt workflow",
     RPF_DEEP_PROBE_PATH: "RPF deep probe",
     FREEMODE_INIT_INSPECTOR_PATH: "Freemode / Init inspector",
+    MAGIC_RDR_BRIDGE_PATH: "Magic-RDR parity bridge",
 }
 
 
@@ -102,6 +104,19 @@ def _write_fake_freemode_harness(temp: Path) -> Path:
     return harness
 
 
+def _write_fake_magic_output(temp: Path) -> Path:
+    root = temp / "fake_magic_output"
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "inventory.txt").write_text(
+        "scripts/init_session.sco\n"
+        "scripts/zombie_init.sco\n"
+        "scripts/mp_network_session.wsv\n"
+        "strings/freemode_session.csv\n",
+        encoding="utf-8",
+    )
+    return root
+
+
 def main() -> int:
     failures: list[str] = []
     warnings: list[str] = []
@@ -125,6 +140,7 @@ def main() -> int:
     _load_module(DECOMPILE_ATTEMPT_PATH, "codered_script_decompile_attempt")
     _load_module(RPF_DEEP_PROBE_PATH, "codered_rpf_deep_probe")
     _load_module(FREEMODE_INIT_INSPECTOR_PATH, "codered_freemode_init_inspector")
+    magic_bridge = _load_module(MAGIC_RDR_BRIDGE_PATH, "codered_magic_rdr_bridge")
 
     for name, label in FULL_BACKEND_REQUIRED_SYMBOLS.items():
         if not hasattr(full_backend, name):
@@ -155,7 +171,7 @@ def main() -> int:
     if self_test.returncode != 0:
         failures.append(f"--self-test failed: {self_test.stderr or self_test.stdout}")
 
-    for tool in (FULL_BACKEND_HARNESS_PATH, SCRIPT_WORKSHOP_PATH, DECOMPILE_ATTEMPT_PATH, RPF_DEEP_PROBE_PATH, FREEMODE_INIT_INSPECTOR_PATH):
+    for tool in (FULL_BACKEND_HARNESS_PATH, SCRIPT_WORKSHOP_PATH, DECOMPILE_ATTEMPT_PATH, RPF_DEEP_PROBE_PATH, FREEMODE_INIT_INSPECTOR_PATH, MAGIC_RDR_BRIDGE_PATH):
         _check_help(tool, failures)
 
     with tempfile.TemporaryDirectory(prefix="codered_guard_") as temp_dir:
@@ -234,6 +250,15 @@ def main() -> int:
             except Exception as exc:
                 failures.append(f"Freemode inspector smoke summary unreadable: {exc}")
 
+        fake_magic = _write_fake_magic_output(temp)
+        hits, scan_stats = magic_bridge.scan_output(fake_magic)
+        if not any(hit.category == "non_z_init_script" for hit in hits):
+            failures.append("Magic-RDR bridge smoke did not detect non-z init script from fake output")
+        if not any(hit.freemode_signal for hit in hits):
+            failures.append("Magic-RDR bridge smoke did not detect freemode/MP signal from fake output")
+        if scan_stats.get("files_scanned", 0) < 1:
+            failures.append("Magic-RDR bridge smoke did not scan fake output files")
+
     result = {
         "ok": not failures,
         "failures": failures,
@@ -249,6 +274,8 @@ def main() -> int:
             "script decompile attempt imports and exposes --help",
             "RPF deep probe imports and exposes --help",
             "Freemode Init Inspector imports and exposes --help",
+            "Magic-RDR parity bridge imports and exposes --help",
+            "Magic-RDR bridge detects non-z init and MP/freemode signals from synthetic output",
             "Freemode Init Inspector detects synthetic MP/session/init harness output",
             "script lane guard including .wsv",
             "archive lane guard",
