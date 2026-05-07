@@ -1136,7 +1136,18 @@ def _load_imported_name_cache() -> Dict[int, str]:
         return _IMPORTED_NAME_CACHE
     cache: Dict[int, str] = {}
     root = Path(__file__).resolve().parent
-    txt_candidates = [root / 'ImportedFileNames.txt', root / 'resources' / 'Magic-RDR-main' / 'ImportedFileNames.txt', Path.cwd() / 'ImportedFileNames.txt']
+    game_root = root.parent
+    txt_candidates = [
+        root / 'ImportedFileNames.txt',
+        root / 'research' / 'menu resources' / 'ImportedFileNames.txt',
+        root / 'resources' / 'Magic-RDR-main' / 'ImportedFileNames.txt',
+        root / 'resources' / 'Magic-RDR-main' / 'Settings' / 'ImportedFileNames.txt',
+        game_root / 'game' / 'BACKUP BEFORE MODDING' / 'rdr1' / 'mods' / 'Magic-RDR-main' / 'ImportedFileNames.txt',
+        game_root / 'game' / 'BACKUP BEFORE MODDING' / 'rdr1' / 'mods' / 'Magic-RDR-main' / 'Settings' / 'ImportedFileNames.txt',
+        game_root / 'game' / 'BACKUP BEFORE MODDING' / 'rdr1' / 'mods' / 'ImportedFileNames.txt',
+        game_root / 'game' / 'BACKUP BEFORE MODDING' / 'rdr1' / 'mods' / 'Settings' / 'ImportedFileNames.txt',
+        Path.cwd() / 'ImportedFileNames.txt',
+    ]
     lines: List[str] = []
     for candidate in txt_candidates:
         if candidate.exists():
@@ -1146,7 +1157,12 @@ def _load_imported_name_cache() -> Dict[int, str]:
             except Exception:
                 pass
     if not lines:
-        zip_candidates = [root / 'Magic-RDR-main.zip', root / 'resources' / 'Magic-RDR-main.zip', Path.cwd() / 'Magic-RDR-main.zip']
+        zip_candidates = [
+            root / 'Magic-RDR-main.zip',
+            root / 'resources' / 'Magic-RDR-main.zip',
+            game_root / 'game' / 'BACKUP BEFORE MODDING' / 'rdr1' / 'mods' / 'Magic-RDR-main.zip',
+            Path.cwd() / 'Magic-RDR-main.zip',
+        ]
         for candidate in zip_candidates:
             if candidate.exists():
                 try:

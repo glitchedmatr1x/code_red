@@ -61,8 +61,28 @@ def detect_sccl() -> dict:
     }
 
 
+def detect_magic_rdr_name_sources() -> dict:
+    candidates = [
+        ROOT / "research" / "menu resources" / "ImportedFileNames.txt",
+        ROOT.parent / "game" / "BACKUP BEFORE MODDING" / "rdr1" / "mods" / "Magic-RDR-main" / "ImportedFileNames.txt",
+        ROOT.parent / "game" / "BACKUP BEFORE MODDING" / "rdr1" / "mods" / "Magic-RDR-main" / "Settings" / "ImportedFileNames.txt",
+        ROOT.parent / "game" / "BACKUP BEFORE MODDING" / "rdr1" / "mods" / "Magic-RDR-main.zip",
+    ]
+    proof_log = ROOT / "logs" / "IMPORTANT_CodeRED_Magic_RDR_Parity_Extraction_2026-05-06.md"
+    return {
+        "available": any(path.exists() for path in candidates),
+        "candidates": [str(path) for path in candidates if path.exists()],
+        "proof_log": str(proof_log) if proof_log.exists() else "",
+    }
+
+
 def build_report(validate: bool) -> dict:
     lanes = {
+        "magic_rdr_name_recovery": {
+            "state": "ready" if detect_magic_rdr_name_sources()["available"] else "missing",
+            "tool": "python_workbench.py + tools/codered_magic_rdr_bridge.py",
+            "proof": "Magic-RDR imported filename lists restore RPF6 hash-name resolution for inventory/extract",
+        },
         "rpf_inventory_extract": {
             "state": "ready" if exists("tools/codered_rpf_utils.py") and exists("python_workbench.py") else "missing",
             "tool": "tools/codered_rpf_utils.py",
@@ -103,6 +123,7 @@ def build_report(validate: bool) -> dict:
         "root": str(ROOT),
         "lanes": lanes,
         "sccl": detect_sccl(),
+        "magic_rdr_name_sources": detect_magic_rdr_name_sources(),
         "validation": validation,
         "status": "READY_WITH_BLOCKED_SOURCE_DECOMPILER" if all(lane["state"] != "missing" for lane in lanes.values()) else "NEEDS_ATTENTION",
     }
@@ -123,6 +144,10 @@ def write_outputs(report: dict) -> None:
     md += "\n".join(lane_lines)
     md += "\n\n## Important Boundary\n\n"
     md += "Code RED can extract/decode RPF entries, patch supported entries into copied archives, and compile source through SC-CL proof lanes. It still does not have a proven compiled-script bytecode-to-source decompiler, so `.wsc/.csc/.xsc/.sco` binary decompile remains readable/pseudo-decompile only until a real decompiler is found or built.\n"
+    md += "\n## Magic-RDR Parity / Name Recovery\n\n"
+    md += "Code RED now uses local Magic-RDR `ImportedFileNames.txt` resources for RPF6 hash-name recovery. Validated result: live `content.rpf` resolved `1636/1636` entries and extracted `1320/1320` files through the internal RPF6 extractor.\n\n"
+    md += "Primary proof log: `logs\\IMPORTANT_CodeRED_Magic_RDR_Parity_Extraction_2026-05-06.md`\n\n"
+    md += "Important distinction: the live PC `content.rpf` extracted here contains `release64` SP/system/gringo content, while the older extracted root reference under `game\\BACKUP BEFORE MODDING\\rdr1\\mods\\root` contains the `content\\release\\multiplayer` `.csc` branch. Keep those as correlated evidence, not automatically identical archive versions.\n"
     md += "\n## Main Commands\n\n"
     md += "```bat\n"
     md += "Run_CodeRED_RPF_Edit_Lab.bat\n"

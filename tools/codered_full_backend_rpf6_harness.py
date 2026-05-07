@@ -30,7 +30,7 @@ from typing import Any, Iterable
 REPO_ROOT = Path(__file__).resolve().parents[1]
 FULL_BACKEND_PATH = REPO_ROOT / "python_workbench.py"
 DECOMPILE_ATTEMPT = REPO_ROOT / "tools" / "codered_script_decompile_attempt.py"
-SCRIPT_EXTS = {".sco", ".wsc", ".xsc", ".wsv"}
+SCRIPT_EXTS = {".csc", ".sco", ".wsc", ".xsc", ".wsv"}
 WATCH_WORDS = ("init", "startup", "main", "script", "sco", "wsc", "xsc", "wsv", "mp_", "freemode", "network", "graveyard", "zombie")
 DEFAULT_EXCLUDE_PREFIXES = ("z",)
 

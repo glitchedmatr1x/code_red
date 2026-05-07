@@ -42,8 +42,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SCRIPT_EXTS = {".sco", ".wsc", ".xsc", ".wsv"}
-INIT_RE = re.compile(r"(^|[/\\])[^/\\]*init[^/\\]*\.(?:sco|wsc|xsc|wsv)$", re.I)
+SCRIPT_EXTS = {".csc", ".sco", ".wsc", ".xsc", ".wsv"}
+INIT_RE = re.compile(r"(^|[/\\])[^/\\]*init[^/\\]*\.(?:csc|sco|wsc|xsc|wsv)$", re.I)
 FREEMODE_WORDS = ("freemode", "free_mode", "free-mode", "mp_", "network", "session", "lobby", "host", "client", "team", "spawn", "graveyard", "overrun", "wave", "zombie")
 
 
@@ -91,6 +91,8 @@ def detect_magic_rdr(explicit: str = "") -> dict:
         REPO_ROOT / "tools",
         REPO_ROOT / "related_apps",
         REPO_ROOT / "data",
+        REPO_ROOT / "research",
+        REPO_ROOT.parent / "game" / "BACKUP BEFORE MODDING" / "rdr1" / "mods",
         REPO_ROOT,
     ]
     patterns = ["**/MagicRDR*.exe", "**/Magic-RDR*.exe", "**/magic-rdr*", "**/Magic-RDR-main/**", "**/MagicRDR/**"]
@@ -182,7 +184,7 @@ def scan_output(out: Path) -> tuple[list[ResourceHit], dict]:
                 text = path.read_text(encoding="utf-8", errors="ignore")
             except Exception:
                 text = ""
-            for m in re.finditer(r"[A-Za-z0-9_ .$@/\\-]{1,180}\.(?:sco|wsc|xsc|wsv|rpf|wtd|wtx|strtbl|xml|csv|dat)", text, re.I):
+            for m in re.finditer(r"[A-Za-z0-9_ .$@/\\-]{1,180}\.(?:csc|sco|wsc|xsc|wsv|rpf|wtd|wtx|strtbl|xml|csv|dat)", text, re.I):
                 names.add(m.group(0).replace("\\", "/"))
     for name in sorted(names, key=str.lower):
         ext = Path(name).suffix.lower()

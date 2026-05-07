@@ -1,6 +1,6 @@
 # Code RED Archive / RPF Lane Validation Report
 
-Generated UTC: `2026-05-07T05:17:24Z`
+Generated UTC: `2026-05-07T05:37:34Z`
 Root: `D:\Games\Red Dead Redemption\Code_RED`
 Status: **PASS**
 
@@ -20,7 +20,7 @@ Status: **PASS**
 Path: `D:\Games\Red Dead Redemption\game\content.rpf`
 Parsed: yes
 Entries: 1636  Files: 1320  Dirs: 316
-Resolved names: 1/1636
+Resolved names: 1636/1636
 Sample reads: 4/4 ok; failed=0; text-like=4; resource=0
 
 Top storage counts:
@@ -29,34 +29,39 @@ Top storage counts:
 - resource: 886
 
 Top module counts:
-- Unknown: 1320
+- Scripts: 1083
+- Strings: 212
+- Unknown: 25
 
 Sample entries:
-- [ok] root/0x753DB284/0xA57F233C | compressed |  | 20499 bytes text
-- [ok] root/0x753DB284/0xC10D9746 | compressed |  | 6915 bytes text
-- [ok] root/0x753DB284/0x06C35575/0x22398628/0x173D2464 | compressed |  | 8684 bytes text
-- [ok] root/0x753DB284/0x06C35575/0x22398628/0x21572403 | compressed |  | 153 bytes text
+- [ok] root/content/rdr2_achievements.xml | compressed | .xml | 20499 bytes text
+- [ok] root/content/rdr2_challenges.xml | compressed | .xml | 6915 bytes text
+- [ok] root/content/dlc/zombiepack/description.txt | compressed | .txt | 153 bytes text
+- [ok] root/content/dlc/zombiepack/dlctuerrormsg.strtbl | plain | .strtbl | 2422 bytes text
 
 ### tune_d11generic.rpf
 
 Path: `D:\Games\Red Dead Redemption\game\tune_d11generic.rpf`
 Parsed: yes
 Entries: 2017  Files: 1915  Dirs: 102
-Resolved names: 1/2017
-Sample reads: 4/4 ok; failed=0; text-like=2; resource=0
+Resolved names: 2017/2017
+Sample reads: 4/4 ok; failed=0; text-like=4; resource=0
 
 Top storage counts:
 - compressed: 1769
 - plain: 146
 
 Top module counts:
-- Unknown: 1915
+- Unknown: 1489
+- Strings: 337
+- Textures: 88
+- Audio: 1
 
 Sample entries:
-- [ok] root/0xA562A52D/0x8C3BA51D | compressed |  | 8399344 bytes
-- [ok] root/0xA562A52D/0xADFDAAB3 | compressed |  | 8294972 bytes
-- [ok] root/0xA562A52D/0x084275E1/0xE60ADCAC/0x6F128FD7 | compressed |  | 430 bytes text
-- [ok] root/0xA562A52D/0x0ADC283D/0x04CE8507 | compressed |  | 128689 bytes text
+- [ok] root/tune/types/fragments/fragment.xml | compressed | .xml | 430 bytes text
+- [ok] root/tune/ai/motives.xml | compressed | .xml | 847 bytes text
+- [ok] root/tune/physics/liquid.xml | compressed | .xml | 870 bytes text
+- [ok] root/tune/physics/physics.xml | compressed | .xml | 919 bytes text
 
 ### terrainboundres.rpf
 
@@ -85,7 +90,7 @@ Sample entries:
 Path: `D:\Games\Red Dead Redemption\game\camera.rpf`
 Parsed: yes
 Entries: 784  Files: 778  Dirs: 6
-Resolved names: 1/784
+Resolved names: 784/784
 Sample reads: 4/4 ok; failed=0; text-like=4; resource=0
 
 Top storage counts:
@@ -93,13 +98,14 @@ Top storage counts:
 - plain: 1
 
 Top module counts:
-- Unknown: 778
+- Strings: 768
+- Unknown: 10
 
 Sample entries:
-- [ok] root/0x25584DB6/0x0096DFE1 | compressed |  | 7152 bytes text
-- [ok] root/0x25584DB6/0x045E8155 | compressed |  | 22330 bytes text
-- [ok] root/0x25584DB6/0x1AE60DB7 | compressed |  | 62982 bytes text
-- [ok] root/0x25584DB6/0x1CA9CF72 | compressed |  | 28765 bytes text
+- [ok] root/camera/gamecameraarcmachine.txt | compressed | .txt | 28765 bytes text
+- [ok] root/camera/tune.xml | compressed | .xml | 9540 bytes text
+- [ok] root/camera/default_timestamp.txt | plain | .txt | 10 bytes text
+- [ok] root/camera/cameralenspresets.txt | compressed | .txt | 4419 bytes text
 
 ### gringores.rpf
 
@@ -126,29 +132,31 @@ Sample entries:
 Path: `D:\Games\Red Dead Redemption\game\navres.rpf`
 Parsed: yes
 Entries: 986  Files: 978  Dirs: 8
-Resolved names: 1/986
-Sample reads: 4/4 ok; failed=0; text-like=2; resource=3
+Resolved names: 986/986
+Sample reads: 4/4 ok; failed=0; text-like=4; resource=0
 
 Top storage counts:
 - compressed: 6
 - resource: 972
 
 Top module counts:
-- Unknown: 978
+- World: 934
+- Unknown: 38
+- Strings: 6
 
 Sample entries:
-- [ok] root/0x72686CAD/0x6C484837 | compressed |  | 2651 bytes text
-- [ok] root/0x72686CAD/0x02EB4B02/0x01EA9618 | resource |  | 2345 bytes
-- [ok] root/0x72686CAD/0x02EB4B02/0x0417C5F2 | resource |  | 61 bytes text
-- [ok] root/0x72686CAD/0x02EB4B02/0x041FAE82 | resource |  | 326750 bytes
+- [ok] root/navres/battlesets.txt | compressed | .txt | 2651 bytes text
+- [ok] root/navres/territory_zombiepack/minheightgrid.xml | compressed | .xml | 21549 bytes text
+- [ok] root/navres/territory_zombiepack/heightgrid.xml | compressed | .xml | 85045 bytes text
+- [ok] root/navres/territory/minheightgrid.xml | compressed | .xml | 21549 bytes text
 
 ### strings_d11generic.rpf
 
 Path: `D:\Games\Red Dead Redemption\game\strings_d11generic.rpf`
 Parsed: yes
 Entries: 8954  Files: 8939  Dirs: 15
-Resolved names: 1/8954
-Sample reads: 4/4 ok; failed=0; text-like=2; resource=4
+Resolved names: 8954/8954
+Sample reads: 4/4 ok; failed=0; text-like=2; resource=0
 
 Top storage counts:
 - compressed: 4
@@ -156,13 +164,14 @@ Top storage counts:
 - resource: 8294
 
 Top module counts:
-- Unknown: 8939
+- Strings: 8932
+- Unknown: 7
 
 Sample entries:
-- [ok] root/0x560A49F7/0x001260CA | resource |  | 489 bytes
-- [ok] root/0x560A49F7/0x001B491D | resource |  | 1654 bytes
-- [ok] root/0x560A49F7/0x001D6711 | resource |  | 380 bytes text
-- [ok] root/0x560A49F7/0x00216C5A | resource |  | 400 bytes text
+- [ok] root/strings/subtitle_grave03_cs03_win32.strtbl | plain | .strtbl | 20833 bytes
+- [ok] root/strings/subtitle_r4_end_win32.strtbl | plain | .strtbl | 26389 bytes text
+- [ok] root/strings/subtitle_rcm_12_cs01_jack_win32.strtbl | plain | .strtbl | 28360 bytes
+- [ok] root/strings/subtitle_rcm_11_cs02_jack_win32.strtbl | plain | .strtbl | 25286 bytes text
 
 ## Safety
 

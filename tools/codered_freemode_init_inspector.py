@@ -18,7 +18,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable
 
-SCRIPT_EXTS = {".sco", ".wsc", ".xsc", ".wsv", ".txt", ".c", ".h", ".cpp", ".lua", ".scp", ".sc"}
+SCRIPT_EXTS = {".csc", ".sco", ".wsc", ".xsc", ".wsv", ".txt", ".c", ".h", ".cpp", ".lua", ".scp", ".sc"}
 CATEGORY_PATTERNS = {
     "freemode_literal": [r"\bfreemode\b", r"free[_ -]?mode"],
     "mp_network": [r"\bmp_", r"\bnet_", r"network", r"session", r"lobby", r"matchmaking", r"host", r"client"],
@@ -146,6 +146,8 @@ def inspect(sources: list[Path], harnesses: list[Path]) -> tuple[list[SignalHit]
         file_hits = inspect_text(path)
         if not file_hits:
             file_hits = inspect_binary(path)
+        for cat in categories_for(str(path)):
+            file_hits.append(SignalHit(str(path), "path_signal", cat, path.name, clean(str(path)), None, None))
         files.append({
             "path": str(path),
             "extension": path.suffix.lower(),

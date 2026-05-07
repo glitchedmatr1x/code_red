@@ -1,6 +1,6 @@
 # Code RED Decompile / Recompile Hub
 
-Generated UTC: `2026-05-07T05:17:25Z`
+Generated UTC: `2026-05-07T05:38:58Z`
 
 Status: **READY_WITH_BLOCKED_SOURCE_DECOMPILER**
 
@@ -8,6 +8,7 @@ Status: **READY_WITH_BLOCKED_SOURCE_DECOMPILER**
 
 | Lane | State | Tool | Proof / Boundary |
 |---|---|---|---|
+| `magic_rdr_name_recovery` | `ready` | `python_workbench.py + tools/codered_magic_rdr_bridge.py` | Magic-RDR imported filename lists restore RPF6 hash-name resolution for inventory/extract |
 | `rpf_inventory_extract` | `ready` | `tools/codered_rpf_utils.py` | RPF6 parse + extract through python_workbench backend |
 | `rpf_patch_copied_archive` | `ready` | `tools/codered_rpf_utils_patch.py` | Patch-folder apply writes a copied archive, not the source archive |
 | `file_io_full_decode` | `ready` | `tools/codered_file_io_validation.py` | Full-file and RPF sample extraction validation |
@@ -18,6 +19,14 @@ Status: **READY_WITH_BLOCKED_SOURCE_DECOMPILER**
 ## Important Boundary
 
 Code RED can extract/decode RPF entries, patch supported entries into copied archives, and compile source through SC-CL proof lanes. It still does not have a proven compiled-script bytecode-to-source decompiler, so `.wsc/.csc/.xsc/.sco` binary decompile remains readable/pseudo-decompile only until a real decompiler is found or built.
+
+## Magic-RDR Parity / Name Recovery
+
+Code RED now uses local Magic-RDR `ImportedFileNames.txt` resources for RPF6 hash-name recovery. Validated result: live `content.rpf` resolved `1636/1636` entries and extracted `1320/1320` files through the internal RPF6 extractor.
+
+Primary proof log: `logs\IMPORTANT_CodeRED_Magic_RDR_Parity_Extraction_2026-05-06.md`
+
+Important distinction: the live PC `content.rpf` extracted here contains `release64` SP/system/gringo content, while the older extracted root reference under `game\BACKUP BEFORE MODDING\rdr1\mods\root` contains the `content\release\multiplayer` `.csc` branch. Keep those as correlated evidence, not automatically identical archive versions.
 
 ## Main Commands
 

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0-archive-lane-validation",
-  "generated_utc": "2026-05-07T05:17:24Z",
+  "generated_utc": "2026-05-07T05:37:34Z",
   "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
   "status": "PASS",
   "archive_count": 7,
@@ -18,17 +18,24 @@
       "entry_count": 1636,
       "file_count": 1320,
       "dir_count": 316,
-      "resolved_count": 1,
+      "resolved_count": 1636,
       "storage_counts": {
         "compressed": 219,
         "plain": 215,
         "resource": 886
       },
       "extension_counts": {
-        "": 1320
+        ".wsc": 886,
+        ".sco": 197,
+        ".xml": 183,
+        ".tr": 25,
+        ".strtbl": 16,
+        ".txt": 13
       },
       "module_counts": {
-        "Unknown": 1320
+        "Scripts": 1083,
+        "Strings": 212,
+        "Unknown": 25
       },
       "sample_attempts": 4,
       "sample_extract_ok": 4,
@@ -38,80 +45,80 @@
       "largest_entries": [
         {
           "index": 23,
-          "path": "root/0x753DB284/0x06C35575/0x22398628/0x8B4E0980",
-          "extension": "",
+          "path": "root/content/dlc/zombiepack/zombiepack_ps3.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 883688,
           "total_size": 883688
         },
         {
           "index": 16,
-          "path": "root/0x753DB284/0x06C35575/0x22398628/0x47DF250D",
-          "extension": "",
+          "path": "root/content/dlc/zombiepack/zombiepack.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 883572,
           "total_size": 883572
         },
         {
           "index": 25,
-          "path": "root/0x753DB284/0x06C35575/0x22398628/0xAE48D894",
-          "extension": "",
+          "path": "root/content/dlc/zombiepack/zombiepack_mp_ps3.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 160544,
           "total_size": 160544
         },
         {
           "index": 18,
-          "path": "root/0x753DB284/0x06C35575/0x22398628/0x4F98C24D",
-          "extension": "",
+          "path": "root/content/dlc/zombiepack/zombiepack_mp.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 160426,
           "total_size": 160426
         },
         {
           "index": 32,
-          "path": "root/0x753DB284/0x06C35575/0x22398628/0xF7B824EA",
-          "extension": "",
+          "path": "root/content/dlc/zombiepack/zombiepack.txt",
+          "extension": ".txt",
           "storage": "compressed",
           "size_in_archive": 155457,
           "total_size": 1626656
         },
         {
           "index": 754,
-          "path": "root/0x753DB284/0xB2AA5EAC/0x1230F707/0x81E9BBB7",
-          "extension": "",
+          "path": "root/content/release64/init/rdr2init.sco",
+          "extension": ".sco",
           "storage": "plain",
           "size_in_archive": 103080,
           "total_size": 103080
         },
         {
           "index": 1261,
-          "path": "root/0x753DB284/0xB2AA5EAC/0x72440E09/0xDCF649E3/0xF206B19A/0x30D0B2DD",
-          "extension": "",
+          "path": "root/content/release64/north/missions/fbi04/fbi04.wsc",
+          "extension": ".wsc",
           "storage": "resource",
           "size_in_archive": 99608,
           "total_size": 249856
         },
         {
           "index": 1175,
-          "path": "root/0x753DB284/0xB2AA5EAC/0x62D87569/0xDCF649E3/0xFDA7095D/0x738981AA",
-          "extension": "",
+          "path": "root/content/release64/mexico/missions/rebel05/rebel05.wsc",
+          "extension": ".wsc",
           "storage": "resource",
           "size_in_archive": 94564,
           "total_size": 266240
         },
         {
           "index": 1171,
-          "path": "root/0x753DB284/0xB2AA5EAC/0x62D87569/0xDCF649E3/0xD6783B00/0xC6438BD5",
-          "extension": "",
+          "path": "root/content/release64/mexico/missions/rebel06/rebel06.wsc",
+          "extension": ".wsc",
           "storage": "resource",
           "size_in_archive": 88077,
           "total_size": 249856
         },
         {
           "index": 274,
-          "path": "root/0x753DB284/0xB2AA5EAC/0xD8ED5F51",
-          "extension": "",
+          "path": "root/content/release64/main.sco",
+          "extension": ".sco",
           "storage": "plain",
           "size_in_archive": 84437,
           "total_size": 84437
@@ -120,8 +127,8 @@
       "sample_entries": [
         {
           "index": 6,
-          "path": "root/0x753DB284/0xA57F233C",
-          "extension": "",
+          "path": "root/content/rdr2_achievements.xml",
+          "extension": ".xml",
           "storage": "compressed",
           "size_in_archive": 1293,
           "extract_ok": true,
@@ -130,8 +137,8 @@
         },
         {
           "index": 9,
-          "path": "root/0x753DB284/0xC10D9746",
-          "extension": "",
+          "path": "root/content/rdr2_challenges.xml",
+          "extension": ".xml",
           "storage": "compressed",
           "size_in_archive": 604,
           "extract_ok": true,
@@ -139,23 +146,23 @@
           "text_like": true
         },
         {
-          "index": 13,
-          "path": "root/0x753DB284/0x06C35575/0x22398628/0x173D2464",
-          "extension": "",
-          "storage": "compressed",
-          "size_in_archive": 1911,
-          "extract_ok": true,
-          "extracted_size": 8684,
-          "text_like": true
-        },
-        {
           "index": 14,
-          "path": "root/0x753DB284/0x06C35575/0x22398628/0x21572403",
-          "extension": "",
+          "path": "root/content/dlc/zombiepack/description.txt",
+          "extension": ".txt",
           "storage": "compressed",
           "size_in_archive": 142,
           "extract_ok": true,
           "extracted_size": 153,
+          "text_like": true
+        },
+        {
+          "index": 15,
+          "path": "root/content/dlc/zombiepack/dlctuerrormsg.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 2422,
+          "extract_ok": true,
+          "extracted_size": 2422,
           "text_like": true
         }
       ],
@@ -168,99 +175,125 @@
       "entry_count": 2017,
       "file_count": 1915,
       "dir_count": 102,
-      "resolved_count": 1,
+      "resolved_count": 2017,
       "storage_counts": {
         "compressed": 1769,
         "plain": 146
       },
       "extension_counts": {
-        "": 1915
+        ".refgroup": 860,
+        ".xml": 251,
+        ".mtl": 186,
+        ".rmptx": 113,
+        ".dds": 88,
+        ".txt": 80,
+        ".vehmodel": 42,
+        ".vehstuck": 42,
+        ".vehsim": 42,
+        ".vehgyro": 42,
+        ".vehinput": 42,
+        ".vehdraft": 21,
+        ".ppp": 20,
+        ".weap": 14,
+        ".env": 10,
+        ".tr": 5,
+        ".fx": 5,
+        ".fxm": 5,
+        ".list": 4,
+        ".todlight": 4,
+        ".tune": 4,
+        ".expl": 4,
+        ".vehboat": 4,
+        ".streaming": 3
       },
       "module_counts": {
-        "Unknown": 1915
+        "Audio": 1,
+        "Strings": 337,
+        "Textures": 88,
+        "Unknown": 1489
       },
       "sample_attempts": 4,
       "sample_extract_ok": 4,
       "sample_extract_fail": 0,
-      "sample_text_like": 2,
+      "sample_text_like": 4,
       "sample_resource": 0,
       "largest_entries": [
         {
           "index": 14,
-          "path": "root/0xA562A52D/0x8C3BA51D",
-          "extension": "",
+          "path": "root/tune/logo_lowres.bk2",
+          "extension": ".bk2",
           "storage": "compressed",
           "size_in_archive": 8228857,
           "total_size": 8399344
         },
         {
           "index": 17,
-          "path": "root/0xA562A52D/0xADFDAAB3",
-          "extension": "",
+          "path": "root/tune/logo_hires.bk2",
+          "extension": ".bk2",
           "storage": "compressed",
           "size_in_archive": 7734272,
           "total_size": 8294972
         },
         {
           "index": 1221,
-          "path": "root/0xA562A52D/0x6536F8C2/0xA88B65D3",
-          "extension": "",
+          "path": "root/tune/skyhat/noise16_p.dds",
+          "extension": ".dds",
           "storage": "compressed",
           "size_in_archive": 454851,
           "total_size": 699192
         },
         {
           "index": 1446,
-          "path": "root/0xA562A52D/0xD1706AF4/0xE67B6CAE",
-          "extension": "",
+          "path": "root/tune/stringtable/global.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 200874,
           "total_size": 200874
         },
         {
           "index": 1209,
-          "path": "root/0xA562A52D/0x6536F8C2/0x8F135971",
-          "extension": "",
+          "path": "root/tune/skyhat/diffuse_01.dds",
+          "extension": ".dds",
           "storage": "compressed",
           "size_in_archive": 189968,
           "total_size": 349672
         },
         {
           "index": 1909,
-          "path": "root/0xA562A52D/0xECFB7AD2/0x65E0B453",
-          "extension": "",
+          "path": "root/tune/decals/blood_bulletsquib_subgrid.dds",
+          "extension": ".dds",
           "storage": "compressed",
           "size_in_archive": 96319,
           "total_size": 349680
         },
         {
           "index": 1613,
-          "path": "root/0xA562A52D/0xD9F8C9BF/0x41531C40",
-          "extension": "",
+          "path": "root/tune/glass/shotgun_cm.dds",
+          "extension": ".dds",
           "storage": "compressed",
           "size_in_archive": 66652,
           "total_size": 87536
         },
         {
           "index": 1911,
-          "path": "root/0xA562A52D/0xECFB7AD2/0x988642EF",
-          "extension": "",
+          "path": "root/tune/decals/blood_generic_n.dds",
+          "extension": ".dds",
           "storage": "compressed",
           "size_in_archive": 65353,
           "total_size": 87168
         },
         {
           "index": 1576,
-          "path": "root/0xA562A52D/0xD6733A04/0xCFA4211F",
-          "extension": "",
+          "path": "root/tune/fx/flames_03.dds",
+          "extension": ".dds",
           "storage": "compressed",
           "size_in_archive": 61124,
           "total_size": 87168
         },
         {
           "index": 1916,
-          "path": "root/0xA562A52D/0xECFB7AD2/0xCD173A66",
-          "extension": "",
+          "path": "root/tune/decals/gravestonefont_n.dds",
+          "extension": ".dds",
           "storage": "compressed",
           "size_in_archive": 53199,
           "total_size": 349680
@@ -268,29 +301,9 @@
       ],
       "sample_entries": [
         {
-          "index": 14,
-          "path": "root/0xA562A52D/0x8C3BA51D",
-          "extension": "",
-          "storage": "compressed",
-          "size_in_archive": 8228857,
-          "extract_ok": true,
-          "extracted_size": 8399344,
-          "text_like": false
-        },
-        {
-          "index": 17,
-          "path": "root/0xA562A52D/0xADFDAAB3",
-          "extension": "",
-          "storage": "compressed",
-          "size_in_archive": 7734272,
-          "extract_ok": true,
-          "extracted_size": 8294972,
-          "text_like": false
-        },
-        {
           "index": 30,
-          "path": "root/0xA562A52D/0x084275E1/0xE60ADCAC/0x6F128FD7",
-          "extension": "",
+          "path": "root/tune/types/fragments/fragment.xml",
+          "extension": ".xml",
           "storage": "compressed",
           "size_in_archive": 214,
           "extract_ok": true,
@@ -298,13 +311,33 @@
           "text_like": true
         },
         {
-          "index": 31,
-          "path": "root/0xA562A52D/0x0ADC283D/0x04CE8507",
-          "extension": "",
+          "index": 32,
+          "path": "root/tune/ai/motives.xml",
+          "extension": ".xml",
           "storage": "compressed",
-          "size_in_archive": 27878,
+          "size_in_archive": 147,
           "extract_ok": true,
-          "extracted_size": 128689,
+          "extracted_size": 847,
+          "text_like": true
+        },
+        {
+          "index": 37,
+          "path": "root/tune/physics/liquid.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 355,
+          "extract_ok": true,
+          "extracted_size": 870,
+          "text_like": true
+        },
+        {
+          "index": 39,
+          "path": "root/tune/physics/physics.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 309,
+          "extract_ok": true,
+          "extracted_size": 919,
           "text_like": true
         }
       ],
@@ -470,16 +503,23 @@
       "entry_count": 784,
       "file_count": 778,
       "dir_count": 6,
-      "resolved_count": 1,
+      "resolved_count": 784,
       "storage_counts": {
         "compressed": 777,
         "plain": 1
       },
       "extension_counts": {
-        "": 778
+        ".txt": 767,
+        ".cmt": 3,
+        ".cinematiccamerashotcollection": 3,
+        ".cm": 2,
+        ".camdynamicboomtunemanager": 1,
+        ".ccm": 1,
+        ".xml": 1
       },
       "module_counts": {
-        "Unknown": 778
+        "Strings": 768,
+        "Unknown": 10
       },
       "sample_attempts": 4,
       "sample_extract_ok": 4,
@@ -489,80 +529,80 @@
       "largest_entries": [
         {
           "index": 4,
-          "path": "root/0x25584DB6/0x1AE60DB7",
-          "extension": "",
+          "path": "root/camera/default.ccm",
+          "extension": ".ccm",
           "storage": "compressed",
           "size_in_archive": 10434,
           "total_size": 62982
         },
         {
           "index": 13,
-          "path": "root/0x25584DB6/0xA3FE4F18",
-          "extension": "",
+          "path": "root/camera/default_tunables.cm",
+          "extension": ".cm",
           "storage": "compressed",
           "size_in_archive": 2819,
           "total_size": 13869
         },
         {
           "index": 7,
-          "path": "root/0x25584DB6/0x416C8DBE",
-          "extension": "",
+          "path": "root/camera/fovspline.cmt",
+          "extension": ".cmt",
           "storage": "compressed",
           "size_in_archive": 2527,
           "total_size": 57087
         },
         {
           "index": 496,
-          "path": "root/0x25584DB6/0x7F01B626/0xAC802F20",
-          "extension": "",
+          "path": "root/camera/cutscenes/zombie01_intro.txt",
+          "extension": ".txt",
           "storage": "compressed",
           "size_in_archive": 2128,
           "total_size": 34388
         },
         {
           "index": 6,
-          "path": "root/0x25584DB6/0x2BD4A8CD",
-          "extension": "",
+          "path": "root/camera/tune.xml",
+          "extension": ".xml",
           "storage": "compressed",
           "size_in_archive": 1949,
           "total_size": 9540
         },
         {
           "index": 22,
-          "path": "root/0x25584DB6/0x7F01B626/0x00AB423B",
-          "extension": "",
+          "path": "root/camera/cutscenes/zombie02trainexplode.txt",
+          "extension": ".txt",
           "storage": "compressed",
           "size_in_archive": 1640,
           "total_size": 20720
         },
         {
           "index": 2,
-          "path": "root/0x25584DB6/0x0096DFE1",
-          "extension": "",
+          "path": "root/camera/default.cmt",
+          "extension": ".cmt",
           "storage": "compressed",
           "size_in_archive": 1588,
           "total_size": 7152
         },
         {
           "index": 662,
-          "path": "root/0x25584DB6/0x7F01B626/0xE5D8ED92",
-          "extension": "",
+          "path": "root/camera/cutscenes/mp_showdown.txt",
+          "extension": ".txt",
           "storage": "compressed",
           "size_in_archive": 1565,
           "total_size": 17790
         },
         {
           "index": 5,
-          "path": "root/0x25584DB6/0x1CA9CF72",
-          "extension": "",
+          "path": "root/camera/gamecameraarcmachine.txt",
+          "extension": ".txt",
           "storage": "compressed",
           "size_in_archive": 1439,
           "total_size": 28765
         },
         {
           "index": 354,
-          "path": "root/0x25584DB6/0x7F01B626/0x7A939753",
-          "extension": "",
+          "path": "root/camera/cutscenes/mp_showdown2.txt",
+          "extension": ".txt",
           "storage": "compressed",
           "size_in_archive": 1334,
           "total_size": 11893
@@ -570,43 +610,43 @@
       ],
       "sample_entries": [
         {
-          "index": 2,
-          "path": "root/0x25584DB6/0x0096DFE1",
-          "extension": "",
-          "storage": "compressed",
-          "size_in_archive": 1588,
-          "extract_ok": true,
-          "extracted_size": 7152,
-          "text_like": true
-        },
-        {
-          "index": 3,
-          "path": "root/0x25584DB6/0x045E8155",
-          "extension": "",
-          "storage": "compressed",
-          "size_in_archive": 1169,
-          "extract_ok": true,
-          "extracted_size": 22330,
-          "text_like": true
-        },
-        {
-          "index": 4,
-          "path": "root/0x25584DB6/0x1AE60DB7",
-          "extension": "",
-          "storage": "compressed",
-          "size_in_archive": 10434,
-          "extract_ok": true,
-          "extracted_size": 62982,
-          "text_like": true
-        },
-        {
           "index": 5,
-          "path": "root/0x25584DB6/0x1CA9CF72",
-          "extension": "",
+          "path": "root/camera/gamecameraarcmachine.txt",
+          "extension": ".txt",
           "storage": "compressed",
           "size_in_archive": 1439,
           "extract_ok": true,
           "extracted_size": 28765,
+          "text_like": true
+        },
+        {
+          "index": 6,
+          "path": "root/camera/tune.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 1949,
+          "extract_ok": true,
+          "extracted_size": 9540,
+          "text_like": true
+        },
+        {
+          "index": 11,
+          "path": "root/camera/default_timestamp.txt",
+          "extension": ".txt",
+          "storage": "plain",
+          "size_in_archive": 10,
+          "extract_ok": true,
+          "extracted_size": 10,
+          "text_like": true
+        },
+        {
+          "index": 15,
+          "path": "root/camera/cameralenspresets.txt",
+          "extension": ".txt",
+          "storage": "compressed",
+          "size_in_archive": 361,
+          "extract_ok": true,
+          "extracted_size": 4419,
           "text_like": true
         }
       ],
@@ -771,99 +811,106 @@
       "entry_count": 986,
       "file_count": 978,
       "dir_count": 8,
-      "resolved_count": 1,
+      "resolved_count": 986,
       "storage_counts": {
         "compressed": 6,
         "resource": 972
       },
       "extension_counts": {
-        "": 978
+        ".wnm": 692,
+        ".wcg": 242,
+        ".wcs": 37,
+        ".xml": 5,
+        ".txt": 1,
+        ".wprp": 1
       },
       "module_counts": {
-        "Unknown": 978
+        "Strings": 6,
+        "Unknown": 38,
+        "World": 934
       },
       "sample_attempts": 4,
       "sample_extract_ok": 4,
       "sample_extract_fail": 0,
-      "sample_text_like": 2,
-      "sample_resource": 3,
+      "sample_text_like": 4,
+      "sample_resource": 0,
       "largest_entries": [
         {
           "index": 263,
-          "path": "root/0x72686CAD/0x02EB4B02/0xA9AA4652",
-          "extension": "",
+          "path": "root/navres/rsc_territory_zombiepack_w/territory_zombiepack_104.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 1764524,
           "total_size": 155648
         },
         {
           "index": 555,
-          "path": "root/0x72686CAD/0x08F78E67/0x4C4F5F40",
-          "extension": "",
+          "path": "root/navres/rsc_territory_w/territory_104.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 1764524,
           "total_size": 155648
         },
         {
           "index": 269,
-          "path": "root/0x72686CAD/0x02EB4B02/0xAD102C33",
-          "extension": "",
+          "path": "root/navres/rsc_territory_zombiepack_w/territory_zombiepack_085.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 1349599,
           "total_size": 139264
         },
         {
           "index": 449,
-          "path": "root/0x72686CAD/0x08F78E67/0x126A1E40",
-          "extension": "",
+          "path": "root/navres/rsc_territory_w/territory_085.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 1349599,
           "total_size": 139264
         },
         {
           "index": 170,
-          "path": "root/0x72686CAD/0x02EB4B02/0x6E4D10F7",
-          "extension": "",
+          "path": "root/navres/rsc_territory_zombiepack_w/territory_zombiepack_048.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 1283414,
           "total_size": 122880
         },
         {
           "index": 448,
-          "path": "root/0x72686CAD/0x08F78E67/0x10411C11",
-          "extension": "",
+          "path": "root/navres/rsc_territory_w/territory_048.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 1283414,
           "total_size": 122880
         },
         {
           "index": 212,
-          "path": "root/0x72686CAD/0x02EB4B02/0x8EF0231E",
-          "extension": "",
+          "path": "root/navres/rsc_territory_zombiepack_w/territory_zombiepack_066.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 1123686,
           "total_size": 106496
         },
         {
           "index": 792,
-          "path": "root/0x72686CAD/0x08F78E67/0xEC35FD45",
-          "extension": "",
+          "path": "root/navres/rsc_territory_w/territory_066.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 1123686,
           "total_size": 106496
         },
         {
           "index": 349,
-          "path": "root/0x72686CAD/0x02EB4B02/0xDA3B8172",
-          "extension": "",
+          "path": "root/navres/rsc_territory_zombiepack_w/territory_zombiepack.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 985656,
           "total_size": 327680
         },
         {
           "index": 717,
-          "path": "root/0x72686CAD/0x08F78E67/0xBD84D0A7",
-          "extension": "",
+          "path": "root/navres/rsc_territory_w/territory.wnm",
+          "extension": ".wnm",
           "storage": "resource",
           "size_in_archive": 985656,
           "total_size": 327680
@@ -872,8 +919,8 @@
       "sample_entries": [
         {
           "index": 5,
-          "path": "root/0x72686CAD/0x6C484837",
-          "extension": "",
+          "path": "root/navres/battlesets.txt",
+          "extension": ".txt",
           "storage": "compressed",
           "size_in_archive": 241,
           "extract_ok": true,
@@ -881,37 +928,34 @@
           "text_like": true
         },
         {
-          "index": 9,
-          "path": "root/0x72686CAD/0x02EB4B02/0x01EA9618",
-          "extension": "",
-          "storage": "resource",
-          "size_in_archive": 2345,
+          "index": 943,
+          "path": "root/navres/territory_zombiepack/minheightgrid.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 3112,
           "extract_ok": true,
-          "extracted_size": 2345,
-          "resource_type": 26,
-          "text_like": false
-        },
-        {
-          "index": 10,
-          "path": "root/0x72686CAD/0x02EB4B02/0x0417C5F2",
-          "extension": "",
-          "storage": "resource",
-          "size_in_archive": 61,
-          "extract_ok": true,
-          "extracted_size": 61,
-          "resource_type": 26,
+          "extracted_size": 21549,
           "text_like": true
         },
         {
-          "index": 11,
-          "path": "root/0x72686CAD/0x02EB4B02/0x041FAE82",
-          "extension": "",
-          "storage": "resource",
-          "size_in_archive": 326750,
+          "index": 944,
+          "path": "root/navres/territory_zombiepack/heightgrid.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 10051,
           "extract_ok": true,
-          "extracted_size": 326750,
-          "resource_type": 31,
-          "text_like": false
+          "extracted_size": 85045,
+          "text_like": true
+        },
+        {
+          "index": 982,
+          "path": "root/navres/territory/minheightgrid.xml",
+          "extension": ".xml",
+          "storage": "compressed",
+          "size_in_archive": 3111,
+          "extract_ok": true,
+          "extracted_size": 21549,
+          "text_like": true
         }
       ],
       "error": ""
@@ -923,100 +967,103 @@
       "entry_count": 8954,
       "file_count": 8939,
       "dir_count": 15,
-      "resolved_count": 1,
+      "resolved_count": 8954,
       "storage_counts": {
         "compressed": 4,
         "plain": 641,
         "resource": 8294
       },
       "extension_counts": {
-        "": 8939
+        ".wst": 8294,
+        ".strtbl": 638,
+        ".slist": 7
       },
       "module_counts": {
-        "Unknown": 8939
+        "Strings": 8932,
+        "Unknown": 7
       },
       "sample_attempts": 4,
       "sample_extract_ok": 4,
       "sample_extract_fail": 0,
       "sample_text_like": 2,
-      "sample_resource": 4,
+      "sample_resource": 0,
       "largest_entries": [
         {
           "index": 982,
-          "path": "root/0x560A49F7/0x2532B09B",
-          "extension": "",
+          "path": "root/strings/global_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 14448025,
           "total_size": 14448025
         },
         {
           "index": 5569,
-          "path": "root/0x560A49F7/0xCA948EDC",
-          "extension": "",
+          "path": "root/strings/ambient_challenges_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 4246763,
           "total_size": 4246763
         },
         {
           "index": 2924,
-          "path": "root/0x560A49F7/0x6BBF6E2B",
-          "extension": "",
+          "path": "root/strings/interface_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 3183137,
           "total_size": 3183137
         },
         {
           "index": 3804,
-          "path": "root/0x560A49F7/0x8ACD5FAA",
-          "extension": "",
+          "path": "root/strings/beats2_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 2421187,
           "total_size": 2421187
         },
         {
           "index": 7482,
-          "path": "root/0x560A49F7/0x06C35575/0x22398628/0xD1706AF4/0x46BDE260",
-          "extension": "",
+          "path": "root/strings/dlc/zombiepack/stringtable/zombiepack_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 1725150,
           "total_size": 1725150
         },
         {
           "index": 1289,
-          "path": "root/0x560A49F7/0x3111D5A5",
-          "extension": "",
+          "path": "root/strings/general_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 867262,
           "total_size": 867262
         },
         {
           "index": 1859,
-          "path": "root/0x560A49F7/0x4593A1CF",
-          "extension": "",
+          "path": "root/strings/multiplayer_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 806425,
           "total_size": 806425
         },
         {
           "index": 3177,
-          "path": "root/0x560A49F7/0x74657604",
-          "extension": "",
+          "path": "root/strings/speechcontextsubtitles_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 785510,
           "total_size": 785510
         },
         {
           "index": 8906,
-          "path": "root/0x560A49F7/0x06C35575/0xA0AA6CFE/0xD1706AF4/0x93B24081",
-          "extension": "",
+          "path": "root/strings/dlc/mpmodepack/stringtable/mpmodepack_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 748657,
           "total_size": 748657
         },
         {
           "index": 1921,
-          "path": "root/0x560A49F7/0x4778FEE6",
-          "extension": "",
+          "path": "root/strings/randomcharmissions_win32.strtbl",
+          "extension": ".strtbl",
           "storage": "plain",
           "size_in_archive": 708467,
           "total_size": 708467
@@ -1024,47 +1071,43 @@
       ],
       "sample_entries": [
         {
-          "index": 2,
-          "path": "root/0x560A49F7/0x001260CA",
-          "extension": "",
-          "storage": "resource",
-          "size_in_archive": 489,
+          "index": 40,
+          "path": "root/strings/subtitle_grave03_cs03_win32.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 20833,
           "extract_ok": true,
-          "extracted_size": 489,
-          "resource_type": 1,
+          "extracted_size": 20833,
           "text_like": false
         },
         {
-          "index": 3,
-          "path": "root/0x560A49F7/0x001B491D",
-          "extension": "",
-          "storage": "resource",
-          "size_in_archive": 1654,
+          "index": 49,
+          "path": "root/strings/subtitle_r4_end_win32.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 26389,
           "extract_ok": true,
-          "extracted_size": 1654,
-          "resource_type": 1,
-          "text_like": false
-        },
-        {
-          "index": 4,
-          "path": "root/0x560A49F7/0x001D6711",
-          "extension": "",
-          "storage": "resource",
-          "size_in_archive": 380,
-          "extract_ok": true,
-          "extracted_size": 380,
-          "resource_type": 1,
+          "extracted_size": 26389,
           "text_like": true
         },
         {
-          "index": 5,
-          "path": "root/0x560A49F7/0x00216C5A",
-          "extension": "",
-          "storage": "resource",
-          "size_in_archive": 400,
+          "index": 89,
+          "path": "root/strings/subtitle_rcm_12_cs01_jack_win32.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 28360,
           "extract_ok": true,
-          "extracted_size": 400,
-          "resource_type": 1,
+          "extracted_size": 28360,
+          "text_like": false
+        },
+        {
+          "index": 102,
+          "path": "root/strings/subtitle_rcm_11_cs02_jack_win32.strtbl",
+          "extension": ".strtbl",
+          "storage": "plain",
+          "size_in_archive": 25286,
+          "extract_ok": true,
+          "extracted_size": 25286,
           "text_like": true
         }
       ],
