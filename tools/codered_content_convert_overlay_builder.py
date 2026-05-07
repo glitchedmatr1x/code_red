@@ -92,6 +92,86 @@ PROFILES: dict[str, dict[str, object]] = {
         "replace": [],
         "requires_lan_fallback_source": True,
     },
+    "init_add_release_csc": {
+        "description": "Add release init CSC equivalents into release64/init without replacing the live release64 SCO/WSC init files.",
+        "include": [],
+        "replace": [],
+        "overrides": [
+            {"zip_name": "content/release/init/rdr2init.csc", "archive_path": "root/content/release64/init/rdr2init.csc", "operation": "add"},
+            {"zip_name": "content/release/init/rdr2init_each_load.csc", "archive_path": "root/content/release64/init/rdr2init_each_load.csc", "operation": "add"},
+            {"zip_name": "content/release/init/rdr2combatclasses.csc", "archive_path": "root/content/release64/init/rdr2combatclasses.csc", "operation": "add"},
+            {"zip_name": "content/release/init/0xAA1C867F", "archive_path": "root/content/release64/init/initpopulation.csc", "operation": "add"},
+            {"zip_name": "content/release/init/0xDC1B7E60", "archive_path": "root/content/release64/init/rdr2init_gringo_fro.csc", "operation": "add"},
+            {"zip_name": "content/release/init/0x6DF9E3BA", "archive_path": "root/content/release64/init/rdr2init_gringo_mex.csc", "operation": "add"},
+            {"zip_name": "content/release/init/0xD8B4DB48", "archive_path": "root/content/release64/init/rdr2init_gringo_nor.csc", "operation": "add"},
+        ],
+    },
+    "init_release_sco_core": {
+        "description": "Replace release64 core init SCO files with release equivalents from content convert, and add CSC init equivalents.",
+        "include": [],
+        "replace": [],
+        "overrides": [
+            {"zip_name": "content/release/init/rdr2init.sco", "archive_path": "root/content/release64/init/rdr2init.sco", "operation": "replace"},
+            {"zip_name": "content/release/init/rdr2init_each_load.sco", "archive_path": "root/content/release64/init/rdr2init_each_load.sco", "operation": "replace"},
+            {"zip_name": "content/release/init/rdr2combatclasses.sco", "archive_path": "root/content/release64/init/rdr2combatclasses.sco", "operation": "replace"},
+            {"zip_name": "content/release/init/rdr2init.csc", "archive_path": "root/content/release64/init/rdr2init.csc", "operation": "add"},
+            {"zip_name": "content/release/init/rdr2init_each_load.csc", "archive_path": "root/content/release64/init/rdr2init_each_load.csc", "operation": "add"},
+            {"zip_name": "content/release/init/rdr2combatclasses.csc", "archive_path": "root/content/release64/init/rdr2combatclasses.csc", "operation": "add"},
+            {"zip_name": "content/release/init/0xAA1C867F", "archive_path": "root/content/release64/init/initpopulation.csc", "operation": "add"},
+        ],
+    },
+    "init_release_gringo_sco": {
+        "description": "Replace only the small release64 gringo init SCO sidecars with content-convert release equivalents.",
+        "include": [],
+        "replace": [],
+        "overrides": [
+            {"zip_name": "content/release/init/0xB50F6109", "archive_path": "root/content/release64/init/rdr2init_gringo_fro.sco", "operation": "replace"},
+            {"zip_name": "content/release/init/0x30E29994", "archive_path": "root/content/release64/init/rdr2init_gringo_mex.sco", "operation": "replace"},
+            {"zip_name": "content/release/init/0x4CB41C1F", "archive_path": "root/content/release64/init/rdr2init_gringo_nor.sco", "operation": "replace"},
+            {"zip_name": "content/release/init/0xDC1B7E60", "archive_path": "root/content/release64/init/rdr2init_gringo_fro.csc", "operation": "add"},
+            {"zip_name": "content/release/init/0x6DF9E3BA", "archive_path": "root/content/release64/init/rdr2init_gringo_mex.csc", "operation": "add"},
+            {"zip_name": "content/release/init/0xD8B4DB48", "archive_path": "root/content/release64/init/rdr2init_gringo_nor.csc", "operation": "add"},
+        ],
+    },
+    "init_debug_sco_core": {
+        "description": "Riskier debug init probe: replace core release64 init SCO files with debug equivalents where available.",
+        "include": [],
+        "replace": [],
+        "overrides": [
+            {"zip_name": "content/debug/init/rdr2init.sco", "archive_path": "root/content/release64/init/rdr2init.sco", "operation": "replace"},
+            {"zip_name": "content/debug/init/rdr2combatclasses.sco", "archive_path": "root/content/release64/init/rdr2combatclasses.sco", "operation": "replace"},
+            {"zip_name": "content/debug/init/rdr2init_each_load.csc", "archive_path": "root/content/release64/init/rdr2init_each_load.csc", "operation": "add"},
+        ],
+    },
+    "init_wsc_stock_refresh": {
+        "description": "Replace release64 init WSC entries with the Magic-named extracted stock WSC blobs. This should be behavior-neutral and proves WSC/resource replacement.",
+        "include": [],
+        "replace": [],
+        "overrides": [
+            {"local_file": "logs/content_rpf_full_extract_after_magic_names/content/release64/init/rdr2init.wsc", "archive_path": "root/content/release64/init/rdr2init.wsc", "operation": "replace", "allow_resource_replace": True},
+            {"local_file": "logs/content_rpf_full_extract_after_magic_names/content/release64/init/rdr2init_each_load.wsc", "archive_path": "root/content/release64/init/rdr2init_each_load.wsc", "operation": "replace", "allow_resource_replace": True},
+            {"local_file": "logs/content_rpf_full_extract_after_magic_names/content/release64/init/initpopulation.wsc", "archive_path": "root/content/release64/init/initpopulation.wsc", "operation": "replace", "allow_resource_replace": True},
+            {"local_file": "logs/content_rpf_full_extract_after_magic_names/content/release64/init/rdr2init_gringo_fro.wsc", "archive_path": "root/content/release64/init/rdr2init_gringo_fro.wsc", "operation": "replace", "allow_resource_replace": True},
+            {"local_file": "logs/content_rpf_full_extract_after_magic_names/content/release64/init/rdr2init_gringo_mex.wsc", "archive_path": "root/content/release64/init/rdr2init_gringo_mex.wsc", "operation": "replace", "allow_resource_replace": True},
+            {"local_file": "logs/content_rpf_full_extract_after_magic_names/content/release64/init/rdr2init_gringo_nor.wsc", "archive_path": "root/content/release64/init/rdr2init_gringo_nor.wsc", "operation": "replace", "allow_resource_replace": True},
+        ],
+    },
+    "init_wsc_launch_freemode_population": {
+        "description": "Risky WSC hook: replace initpopulation.wsc with a compiled Code RED script that requests MP core threads and freemode.",
+        "include": [],
+        "replace": [],
+        "overrides": [
+            {"local_file": "logs/sccl_wsc_probe/codered_launch_freemode_probe.wsc", "archive_path": "root/content/release64/init/initpopulation.wsc", "operation": "replace", "allow_resource_replace": True},
+        ],
+    },
+    "init_wsc_launch_freemode_each_load": {
+        "description": "Riskier WSC hook: replace rdr2init_each_load.wsc with a compiled Code RED script that requests MP core threads and freemode.",
+        "include": [],
+        "replace": [],
+        "overrides": [
+            {"local_file": "logs/sccl_wsc_probe/codered_launch_freemode_probe.wsc", "archive_path": "root/content/release64/init/rdr2init_each_load.wsc", "operation": "replace", "allow_resource_replace": True},
+        ],
+    },
 }
 
 MP_REQUIRED = [
@@ -119,6 +199,9 @@ class Node:
     new_offset: int = 0
     force_compressed: bool = False
     operation: str = "preserve"
+    resource_replace: bool = False
+    resource_flag1: int = 0
+    resource_flag2: int = 0
 
     def child_dir(self, name: str) -> "Node | None":
         low = name.lower()
@@ -141,6 +224,10 @@ def load_backend():
 
 def align(value: int, boundary: int = 8) -> int:
     return (value + boundary - 1) & ~(boundary - 1)
+
+
+def payload_alignment(node: Node) -> int:
+    return 2048 if node.resource_replace else 8
 
 
 def name_hash(wb, name: str) -> int:
@@ -197,7 +284,14 @@ def payload_for_archive_path(path: str, data: bytes) -> tuple[bytes, int, bool]:
     return data, len(data), False
 
 
-def add_or_replace_file(wb, root: Node, archive_path: str, payload: bytes, operation: str) -> tuple[str, Node]:
+def add_or_replace_file(
+    wb,
+    root: Node,
+    archive_path: str,
+    payload: bytes,
+    operation: str,
+    allow_resource_replace: bool = False,
+) -> tuple[str, Node]:
     parts = [part for part in archive_path.replace("\\", "/").split("/") if part]
     if not parts or parts[0].lower() != "root":
         raise ValueError(f"Archive path must start with root/: {archive_path}")
@@ -219,7 +313,14 @@ def add_or_replace_file(wb, root: Node, archive_path: str, payload: bytes, opera
         if operation != "replace":
             return "skip_existing", existing
         if existing.original and existing.original.get("is_resource"):
-            raise ValueError(f"Refusing to replace resource entry: {archive_path}")
+            if not allow_resource_replace:
+                raise ValueError(f"Refusing to replace resource entry without explicit allow_resource_replace: {archive_path}")
+            if payload[:4] != b"RSC\x85":
+                raise ValueError(f"Resource replacement payload is not a full WSC/RSC85 blob: {archive_path}")
+            if len(payload) < 16:
+                raise ValueError(f"Resource replacement payload is too small: {archive_path}")
+            existing.resource_replace = True
+            existing.resource_flag1, existing.resource_flag2 = struct.unpack_from("<2I", payload, 8)
         existing.source_bytes = stored
         existing.decoded_size = decoded_size
         existing.stored_size = len(stored)
@@ -279,9 +380,13 @@ def pack_toc(wb, nodes: list[Node], encrypted: bool) -> bytes:
         if node.operation in {"add", "replace"}:
             b = node.stored_size & 0x0FFFFFFF
             c = file_offset_raw(wb, node)
-            compression_bit = 0x40000000 if node.force_compressed else 0
-            d = compression_bit | (node.decoded_size & 0x3FFFFFFF)
-            e = 0
+            if node.resource_replace:
+                d = node.resource_flag1
+                e = node.resource_flag2
+            else:
+                compression_bit = 0x40000000 if node.force_compressed else 0
+                d = compression_bit | (node.decoded_size & 0x3FFFFFFF)
+                e = 0
         else:
             ent = node.original or {}
             b = int(ent.get("size_in_archive") or 0) & 0x0FFFFFFF
@@ -319,6 +424,38 @@ def select_zip_members(zip_path: Path, profile: str) -> list[dict]:
     replace = set(str(p).lower().replace("\\", "/") for p in config.get("replace", []))  # type: ignore[arg-type]
     rows: list[dict] = []
     with zipfile.ZipFile(zip_path) as z:
+        for override in config.get("overrides", []):  # type: ignore[union-attr]
+            item = dict(override)
+            local_file = item.get("local_file")
+            if local_file:
+                local_path = Path(str(local_file))
+                if not local_path.is_absolute():
+                    local_path = ROOT / local_path
+                if not local_path.exists():
+                    raise RuntimeError(f"Override local source is missing: {local_path}")
+                rows.append(
+                    {
+                        "local_file": str(local_path),
+                        "archive_path": str(item["archive_path"]).replace("\\", "/"),
+                        "operation": str(item.get("operation") or "add"),
+                        "allow_resource_replace": bool(item.get("allow_resource_replace")),
+                        "size": local_path.stat().st_size,
+                    }
+                )
+                continue
+            zip_name = str(item["zip_name"]).replace("\\", "/")
+            if zip_name not in z.namelist():
+                raise RuntimeError(f"Override source is missing from zip: {zip_name}")
+            info = z.getinfo(zip_name)
+            rows.append(
+                {
+                    "zip_name": zip_name,
+                    "archive_path": str(item["archive_path"]).replace("\\", "/"),
+                    "operation": str(item.get("operation") or "add"),
+                    "allow_resource_replace": bool(item.get("allow_resource_replace")),
+                    "size": info.file_size,
+                }
+            )
         for info in z.infolist():
             if info.is_dir():
                 continue
@@ -359,9 +496,28 @@ def build_overlay(zip_path: Path, source: Path, output: Path, log_dir: Path, pro
     operations: list[dict] = []
     with zipfile.ZipFile(zip_path) as z:
         for row in selected:
-            action, node = add_or_replace_file(wb, root, row["archive_path"], z.read(row["zip_name"]), row["operation"])
+            if row.get("local_file"):
+                payload = Path(str(row["local_file"])).read_bytes()
+            else:
+                payload = z.read(row["zip_name"])
+            action, node = add_or_replace_file(
+                wb,
+                root,
+                row["archive_path"],
+                payload,
+                row["operation"],
+                allow_resource_replace=bool(row.get("allow_resource_replace")),
+            )
             op = dict(row)
-            op.update({"result": action, "compressed": node.force_compressed, "stored_size": node.stored_size, "decoded_size": node.decoded_size})
+            op.update({
+                "result": action,
+                "compressed": node.force_compressed,
+                "stored_size": node.stored_size,
+                "decoded_size": node.decoded_size,
+                "resource_replace": node.resource_replace,
+                "resource_flag1": f"0x{node.resource_flag1:08X}" if node.resource_replace else "",
+                "resource_flag2": f"0x{node.resource_flag2:08X}" if node.resource_replace else "",
+            })
             operations.append(op)
     nodes = flatten_tree(root)
     new_toc_size = align(len(nodes) * 20, 16)
@@ -405,7 +561,7 @@ def build_overlay(zip_path: Path, source: Path, output: Path, log_dir: Path, pro
         if node.operation == "preserve":
             node.new_offset = int((node.original or {}).get("offset") or 0)
             continue
-        node.new_offset = align(len(original), 8)
+        node.new_offset = align(len(original), payload_alignment(node))
         if node.new_offset > len(original):
             original.extend(b"\x00" * (node.new_offset - len(original)))
         payload = node.source_bytes or b""
@@ -446,7 +602,7 @@ def write_reports(report: dict, log_dir: Path) -> None:
     profile = str(report["profile"])
     (log_dir / f"{profile}_overlay_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     with (log_dir / f"{profile}_operations.csv").open("w", newline="", encoding="utf-8") as f:
-        fields = ["zip_name", "archive_path", "operation", "result", "compressed", "size", "stored_size", "decoded_size"]
+        fields = ["zip_name", "local_file", "archive_path", "operation", "result", "compressed", "resource_replace", "resource_flag1", "resource_flag2", "size", "stored_size", "decoded_size"]
         writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(report.get("operations", []))

@@ -108,6 +108,9 @@ static std::string g_rosterPath = "data/codered/npc_roster.txt";
 static std::string g_actorEnumMapPath = "data/codered/actor_enum_map.csv";
 static std::string g_actionsPath = "data/codered/ai_behavior_actions.csv";
 static std::string g_actionPlanPath = "scratch/codered_ai_action_plan.json";
+static std::string g_statePath = "scratch/codered_ai_state.json";
+static std::string g_overrideRpfPath = "override";
+static std::string g_patchStagePath = "game";
 static std::string g_status = "CodeRED AI Menu ready";
 
 static std::vector<std::string> g_roster;
@@ -128,6 +131,7 @@ static std::vector<std::string> g_actions = {
     "side_lawman_immunity_request",
     "side_gang_immunity_request",
     "restore_player_faction_request",
+    "reload_override_rpf_request",
     "dismiss_ai_guest_request",
     "status_request"
 };
@@ -498,6 +502,36 @@ static std::string jsonEscape(const std::string& value) {
     return out.str();
 }
 
+static std::string dirnameOf(const std::string& path) {
+    const size_t slash = path.find_last_of("\\/");
+    if (slash == std::string::npos) return "";
+    return path.substr(0, slash);
+}
+
+static void createDirectoriesForPath(const std::string& path) {
+    std::string current;
+    for (size_t i = 0; i < path.size(); ++i) {
+        char c = path[i];
+        current.push_back(c);
+        if (c != '\\' && c != '/') continue;
+        if (current.size() <= 3 && current.size() >= 2 && current[1] == ':') continue;
+        if (!current.empty()) CreateDirectoryA(current.c_str(), nullptr);
+    }
+    if (!path.empty()) CreateDirectoryA(path.c_str(), nullptr);
+}
+
+static void createParentDirs(const std::string& filePath) {
+    const std::string dir = dirnameOf(filePath);
+    if (!dir.empty()) createDirectoriesForPath(dir);
+}
+
+static std::string joinPath(const std::string& base, const std::string& leaf) {
+    if (base.empty()) return leaf;
+    const char tail = base[base.size() - 1];
+    if (tail == '\\' || tail == '/') return base + leaf;
+    return base + "\\" + leaf;
+}
+
 static std::string enumHex(int actorEnum) {
     char buffer[32] = {};
     snprintf(buffer, sizeof(buffer), "0x%08X",
@@ -567,12 +601,22 @@ static void loadConfig() {
             g_actionsPath = value;
         } else if (key == "action_plan") {
             g_actionPlanPath = value;
+        } else if (key == "state") {
+            g_statePath = value;
+        } else if (key == "override_rpf" || key == "override_rpf_dir" ||
+                   key == "override_dir") {
+            g_overrideRpfPath = value;
+        } else if (key == "patch_stage" || key == "patch_stage_dir" ||
+                   key == "rpf_patch_stage") {
+            g_patchStagePath = value;
         }
     }
 
-    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s",
+    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s state=%s override_rpf=%s patch_stage=%s",
              g_rosterPath.c_str(), g_actorEnumMapPath.c_str(),
-             g_actionsPath.c_str(), g_actionPlanPath.c_str());
+             g_actionsPath.c_str(), g_actionPlanPath.c_str(),
+             g_statePath.c_str(), g_overrideRpfPath.c_str(),
+             g_patchStagePath.c_str());
 }
 
 static void loadActorEnumMap() {
@@ -665,6 +709,7 @@ static void ensureDefaultActions() {
         "side_lawman_immunity_request",
         "side_gang_immunity_request",
         "restore_player_faction_request",
+        "reload_override_rpf_request",
         "dismiss_ai_guest_request",
         "status_request"
     };
@@ -1350,6 +1395,161 @@ static void mpLaunchCtf() {
     launchFirstExistingScript("ctf", paths, _countof(paths));
 }
 
+struct OverridePatchFile {
+    std::string fileName;
+    std::string sourcePath;
+    std::string stagedPath;
+    unsigned long long size;
+};
+
+static bool isPatchRpfName(const char* name) {
+    if (!name) return false;
+    std::string text = lowerCopy(name);
+    if (text.size() < 10) return false;
+    if (text.rfind("patch", 0) != 0) return false;
+    if (text.compare(text.size() - 4, 4, ".rpf") != 0) return false;
+    for (size_t i = 5; i + 4 < text.size(); ++i) {
+        if (!std::isdigit(static_cast<unsigned char>(text[i]))) return false;
+    }
+    return true;
+}
+
+static int patchNumberFromName(const std::string& fileName) {
+    std::string text = lowerCopy(fileName);
+    if (text.rfind("patch", 0) != 0) return INT_MAX;
+    const size_t dot = text.rfind(".rpf");
+    if (dot == std::string::npos || dot <= 5) return INT_MAX;
+    return std::atoi(text.substr(5, dot - 5).c_str());
+}
+
+static std::vector<OverridePatchFile> findOverridePatchFiles() {
+    loadConfig();
+    createDirectoriesForPath(g_overrideRpfPath);
+
+    std::vector<OverridePatchFile> patches;
+    WIN32_FIND_DATAA data = {};
+    const std::string pattern = joinPath(g_overrideRpfPath, "patch*.rpf");
+    HANDLE find = FindFirstFileA(pattern.c_str(), &data);
+    if (find == INVALID_HANDLE_VALUE) return patches;
+
+    do {
+        if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) continue;
+        if (!isPatchRpfName(data.cFileName)) continue;
+
+        OverridePatchFile patch = {};
+        patch.fileName = data.cFileName;
+        patch.sourcePath = joinPath(g_overrideRpfPath, patch.fileName);
+        patch.stagedPath = joinPath(g_patchStagePath, patch.fileName);
+        patch.size = (static_cast<unsigned long long>(data.nFileSizeHigh) << 32) |
+                     static_cast<unsigned long long>(data.nFileSizeLow);
+        patches.push_back(patch);
+    } while (FindNextFileA(find, &data));
+    FindClose(find);
+
+    std::sort(patches.begin(), patches.end(),
+              [](const OverridePatchFile& a, const OverridePatchFile& b) {
+                  const int an = patchNumberFromName(a.fileName);
+                  const int bn = patchNumberFromName(b.fileName);
+                  if (an != bn) return an < bn;
+                  return lowerCopy(a.fileName) < lowerCopy(b.fileName);
+              });
+    return patches;
+}
+
+static void writeRuntimeState(const std::string& phase,
+                              const std::vector<OverridePatchFile>& patches,
+                              const std::string& result) {
+    createParentDirs(g_statePath);
+
+    std::ofstream file(g_statePath.c_str(), std::ios::trunc);
+    if (!file) {
+        writeLog("Could not write state file: %s", g_statePath.c_str());
+        return;
+    }
+
+    std::time_t now = std::time(nullptr);
+    Actor player = playerActor();
+    Vector3 playerPos = {};
+    const bool hasPlayerPos = player > 0 && actorPosition(player, &playerPos);
+
+    file << "{\n";
+    file << "  \"source\": \"CodeRED_AI_Menu\",\n";
+    file << "  \"phase\": \"" << jsonEscape(phase) << "\",\n";
+    file << "  \"result\": \"" << jsonEscape(result) << "\",\n";
+    file << "  \"timestamp\": " << static_cast<long long>(now) << ",\n";
+    file << "  \"override_rpf_dir\": \"" << jsonEscape(g_overrideRpfPath) << "\",\n";
+    file << "  \"patch_stage_dir\": \"" << jsonEscape(g_patchStagePath) << "\",\n";
+    file << "  \"player_actor\": " << player << ",\n";
+    file << "  \"player_side_faction\": " << g_playerSideFaction << ",\n";
+    if (hasPlayerPos) {
+        file << "  \"player_position\": {\"x\": " << playerPos.x
+             << ", \"y\": " << playerPos.y << ", \"z\": " << playerPos.z << "},\n";
+    } else {
+        file << "  \"player_position\": null,\n";
+    }
+    file << "  \"patches\": [\n";
+    for (size_t i = 0; i < patches.size(); ++i) {
+        const OverridePatchFile& patch = patches[i];
+        file << "    {\"name\": \"" << jsonEscape(patch.fileName)
+             << "\", \"source\": \"" << jsonEscape(patch.sourcePath)
+             << "\", \"staged\": \"" << jsonEscape(patch.stagedPath)
+             << "\", \"size\": " << patch.size << "}";
+        if (i + 1 < patches.size()) file << ",";
+        file << "\n";
+    }
+    file << "  ]\n";
+    file << "}\n";
+}
+
+static void reloadOverrideRpf() {
+    loadConfig();
+    const std::vector<OverridePatchFile> patches = findOverridePatchFiles();
+    writeRuntimeState("before_override_rpf_reload", patches, "snapshot");
+
+    if (patches.empty()) {
+        g_status = "No override patchN.rpf files in " + g_overrideRpfPath;
+        writeRuntimeState("override_rpf_reload_skipped", patches, "no_patch_files");
+        writeLog("Override RPF reload skipped: no patchN.rpf files in %s",
+                 g_overrideRpfPath.c_str());
+        return;
+    }
+    for (size_t i = 0; i < patches.size(); ++i) {
+        const int expected = static_cast<int>(i);
+        const int actual = patchNumberFromName(patches[i].fileName);
+        if (actual != expected) {
+            g_status = "Override RPF names must start at patch0.rpf and be contiguous";
+            writeRuntimeState("override_rpf_reload_failed", patches, "non_contiguous_patch_names");
+            writeLog("Override RPF reload failed: expected patch%d.rpf but found %s",
+                     expected, patches[i].fileName.c_str());
+            return;
+        }
+    }
+
+    createDirectoriesForPath(g_patchStagePath);
+    size_t copied = 0;
+    for (const OverridePatchFile& patch : patches) {
+        if (CopyFileA(patch.sourcePath.c_str(), patch.stagedPath.c_str(), FALSE)) {
+            ++copied;
+            writeLog("Override RPF staged: %s -> %s size=%llu",
+                     patch.sourcePath.c_str(), patch.stagedPath.c_str(), patch.size);
+        } else {
+            const DWORD err = GetLastError();
+            g_status = "RPF stage failed: " + patch.fileName +
+                       " err " + std::to_string(err);
+            writeRuntimeState("override_rpf_reload_failed", patches, g_status);
+            writeLog("Override RPF stage failed: %s -> %s err=%lu",
+                     patch.sourcePath.c_str(), patch.stagedPath.c_str(), err);
+            return;
+        }
+    }
+
+    g_status = "Staged " + std::to_string(copied) +
+               " override RPF(s); restart/load required";
+    writeRuntimeState("after_override_rpf_reload", patches, g_status);
+    writeLog("Override RPF staged: copied=%zu; live remount not called",
+             copied);
+}
+
 static void executeSelectedAction() {
     const std::string action = selectedAction();
     writeActionPlan();
@@ -1383,6 +1583,8 @@ static void executeSelectedAction() {
         mpLaunchDeathmatch();
     } else if (action == "mp_launch_ctf_request") {
         mpLaunchCtf();
+    } else if (action == "reload_override_rpf_request") {
+        reloadOverrideRpf();
     } else if (action == "status_request") {
         pruneSpawnedActors();
         const int actorEnum = selectedActorEnum();
@@ -1398,7 +1600,7 @@ static void executeSelectedAction() {
 }
 
 static void writeActionPlan() {
-    CreateDirectoryA("scratch", nullptr);
+    createParentDirs(g_actionPlanPath);
 
     std::ofstream file(g_actionPlanPath.c_str(), std::ios::trunc);
     if (!file) {
@@ -1424,6 +1626,9 @@ static void writeActionPlan() {
     }
     file << "  \"spawned_actor_count\": " << g_spawnedActors.size() << ",\n";
     file << "  \"player_side_faction\": " << g_playerSideFaction << ",\n";
+    file << "  \"override_rpf_dir\": \"" << jsonEscape(g_overrideRpfPath) << "\",\n";
+    file << "  \"patch_stage_dir\": \"" << jsonEscape(g_patchStagePath) << "\",\n";
+    file << "  \"state_path\": \"" << jsonEscape(g_statePath) << "\",\n";
     file << "  \"status\": \"queued\",\n";
     file << "  \"timestamp\": " << static_cast<long long>(now) << "\n";
     file << "}\n";
@@ -1525,6 +1730,7 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
     }
 
     if (key == VK_F5) {
+        g_configLoaded = false;
         g_dirtyRoster = true;
         g_dirtyActorMap = true;
         g_dirtyActions = true;
@@ -1626,7 +1832,7 @@ static void drawMenu() {
         drawTextSafe(rosterX + 0.005f, top + panelH - 0.050f, hint.c_str(), 190, 190, 190, 230, FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
     }
 
-    std::string footer = "F8 close | UP/DOWN action | LEFT/RIGHT roster | SHIFT+LEFT/RIGHT x10 | ENTER run";
+    std::string footer = "F8 close | UP/DOWN action | LEFT/RIGHT roster | F5 reload files | ENTER run";
     drawTextSafe(left + 0.020f, top + panelH - 0.026f, footer.c_str(), 235, 235, 235, 235, FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
     if (!g_status.empty()) {
         drawTextSafe(left + 0.020f, top + panelH - 0.005f, g_status.c_str(), 255, 140, 140, 235, FONT_REDEMPTION, 0.014f, JUSTIFY_LEFT);

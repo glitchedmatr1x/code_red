@@ -16,7 +16,7 @@ The tool:
 - starts from `build/content_mp_lan_fallback_test/content.rpf`
 - appends selected replacement payloads at EOF
 - rebuilds the RPF6 TOC
-- keeps resource entries untouched
+- keeps resource entries untouched unless a profile explicitly opts into full WSC/RSC85 replacement
 - Zstandard-compresses UI XML/SCXML entries before insertion
 - resolves hashed UI aliases by same-name hash so duplicate menu entries are not created
 
@@ -109,3 +109,60 @@ For each test, record:
 - the first new failure line in the game log
 
 Do not overwrite `D:\Games\Red Dead Redemption\game\content.rpf` without making a separate backup first.
+
+## RDR2 Init WSC Pass
+
+Runtime feedback corrected the init assumption: this PC path appears to read the `release64/init/*.wsc` resource scripts for init, not the added `.csc` probes. The earlier CSC/SCO init variants remain comparison material, but they are not the main route for `rdr2init`.
+
+WSC donor scan:
+
+- `build/content convert.zip` has no `.wsc` init donors.
+- `D:\Games\Red Dead Redemption\RDR-SteamGG.NET\kml\rdr2init.wsc` is byte-identical to the extracted stock `release64/init/rdr2init.wsc`.
+- Current useful stock WSC references are under `logs/content_rpf_full_extract_after_magic_names/content/release64/init/`.
+- A tiny SC-CL RDR `#SC` probe was compiled, byte-swapped into WSC/RSC85 form, and staged at `logs/sccl_wsc_probe/codered_launch_freemode_probe.wsc`.
+
+The overlay builder now supports explicit local-file WSC replacement only when `allow_resource_replace` is set and the payload starts with `RSC85`. It preserves the resource type in the RPF TOC, copies WSC resource flag words from the replacement header, and appends WSC resource replacements on a 2048-byte boundary so the RPF resource offset points at the actual payload.
+
+WSC test archives in the KML folder:
+
+1. Behavior-neutral WSC resource replacement proof:
+   `D:\Games\Red Dead Redemption\RDR-SteamGG.NET\kml\content_init_variants\init_wsc_stock_refresh\content.rpf`
+
+2. Active-source WSC hook replacing `initpopulation.wsc`:
+   `D:\Games\Red Dead Redemption\RDR-SteamGG.NET\kml\content_init_variants\init_wsc_launch_freemode_population\content.rpf`
+
+3. Active-source WSC hook replacing `rdr2init_each_load.wsc`:
+   `D:\Games\Red Dead Redemption\RDR-SteamGG.NET\kml\content_init_variants\init_wsc_launch_freemode_each_load\content.rpf`
+
+4. MP-injected source plus WSC hook replacing `initpopulation.wsc`:
+   `D:\Games\Red Dead Redemption\RDR-SteamGG.NET\kml\content_init_variants_mp\init_wsc_launch_freemode_population\content.rpf`
+
+5. MP-injected source plus WSC hook replacing `rdr2init_each_load.wsc`:
+   `D:\Games\Red Dead Redemption\RDR-SteamGG.NET\kml\content_init_variants_mp\init_wsc_launch_freemode_each_load\content.rpf`
+
+6. LAN-fallback MP source plus WSC hook replacing `initpopulation.wsc`:
+   `D:\Games\Red Dead Redemption\RDR-SteamGG.NET\kml\content_init_variants_mp_lan\init_wsc_launch_freemode_population\content.rpf`
+
+7. LAN-fallback MP source plus WSC hook replacing `rdr2init_each_load.wsc`:
+   `D:\Games\Red Dead Redemption\RDR-SteamGG.NET\kml\content_init_variants_mp_lan\init_wsc_launch_freemode_each_load\content.rpf`
+
+Verification report:
+
+`logs/content_convert_overlay/init_wsc_variant_verification_report.json`
+
+Suggested WSC test order:
+
+1. `init_wsc_stock_refresh` first, only to prove the WSC replacement mechanics do not crash the loader.
+2. `content_init_variants_mp/init_wsc_launch_freemode_population`, because it keeps core `rdr2init.wsc` and `rdr2init_each_load.wsc` intact while adding the MP script hook through a smaller init lane.
+3. `content_init_variants_mp_lan/init_wsc_launch_freemode_population`, if LAN fallback UI behavior is still needed.
+4. `content_init_variants_mp/init_wsc_launch_freemode_each_load`, only if the population hook does nothing.
+5. `content_init_variants_mp_lan/init_wsc_launch_freemode_each_load`, last, because `rdr2init_each_load.wsc` is more central.
+
+The WSC hook is intentionally experimental. It requests and launches:
+
+- `content/release64/multiplayer/mp_idle`
+- `content/release64/multiplayer/multiplayer_system_thread`
+- `content/release64/multiplayer/multiplayer_update_thread`
+- `content/release64/multiplayer/freemode/freemode`
+
+If these paths do not resolve at runtime, the next pass should keep the WSC resource replacement machinery but adjust the script path strings or move the launch logic back into the ASI where runtime logging is stronger.

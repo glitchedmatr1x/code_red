@@ -231,8 +231,9 @@ def scan_rpf_members(path: Path, limit: int = 4000, read_limit: int = 96 * 1024 
     if not is_rpf_archive(path):
         return records
     try:
+        bounded_read = min(read_limit, max(0, path.stat().st_size))
         with path.open("rb") as fh:
-            blob = fh.read(read_limit)
+            blob = fh.read(bounded_read)
     except OSError as exc:
         return [ResourceRecord(path=f"{path}::<rpf read failed>", lane="Archives", extension=".rpf", source="rpf", notes=[str(exc)])]
 
