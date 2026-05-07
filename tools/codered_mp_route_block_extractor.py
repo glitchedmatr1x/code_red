@@ -167,7 +167,7 @@ def find_hits(path: Path, text: str, radius: int) -> list[BlockHit]:
                 start, end, snippet = extract_snippet(lines, idx, radius)
                 calls = unique(m.group(0) for m in CALL_RE.finditer(snippet))
                 states = unique(m.group(0) for m in STATE_RE.finditer(snippet))
-                tags = unique(m.group(1) for m in XML_TAG_RE.finditer(snippet), 40)
+                tags = unique((m.group(1) for m in XML_TAG_RE.finditer(snippet)), 40)
                 hits.append(
                     BlockHit(
                         path=str(path),
