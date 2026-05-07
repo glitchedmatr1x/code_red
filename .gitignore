@@ -10,6 +10,7 @@ related_apps/Code_RED_ScriptHookRDR_AI_Menu/build/
 related_apps/Code_RED_ScriptHookRDR_AI_Menu/*.bak_*
 data/codered/*.bak_*
 data/codered/npc_roster_safe_verified.txt
+data/codered/menus/generated/
 
 # CodeRED repository hygiene - keep game/archive payloads local
 *.rpf
