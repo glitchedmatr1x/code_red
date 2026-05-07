@@ -21,6 +21,10 @@ Avoid launching these directly unless you are developing/building the app:
 
 Code RED currently appears to be a conservative research/workbench tool, not a complete RPF injector/editor. It can inspect and route archive children into format-aware lanes, generate reports, preview/edit some extracted content, and produce reintegration/replacement plans. Some operations intentionally stop at plan files instead of mutating unknown binary containers.
 
+## Research and log map
+
+Start with `docs/research_index/README.md` when looking for notes, milestones, readmes, handoffs, RPF research, MP UI findings, native bridge work, or script/decompile status. It is a generated organization layer; original `logs/` tool outputs stay in place so existing tools do not lose their fixed report paths.
+
 ## Missing / not yet safe to claim
 
 These features should be considered missing or staged until a later pass proves them:

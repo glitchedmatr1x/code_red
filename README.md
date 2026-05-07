@@ -51,3 +51,7 @@ Run_CodeRED_RPF_Edit_Lab.bat
 ## Repository hygiene
 
 Keep raw game data, generated reports, local imports, copied RPFs, build folders, logs, and packaged ZIP/RAR/7Z outputs out of Git. Use `imports/`, `game/`, `logs/`, and local drop folders at runtime, but do not commit their contents.
+
+## Research and log index
+
+Use `docs/research_index/README.md` as the current organized map for logs, research notes, readmes, handoffs, milestones, and AI-readable manifests. The index intentionally points to original files instead of moving root `logs/` outputs, because many tools use fixed report paths there.

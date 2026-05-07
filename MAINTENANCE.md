@@ -75,6 +75,16 @@ Do not commit these to Git:
 - local `imports/`, `game/`, `logs/`, `dist/`, and `build/` outputs
 - generated scan reports and temporary patch copies
 
+## Research/log organization
+
+Run this when logs, research notes, readmes, handoffs, or milestones get cluttered:
+
+```bat
+py -3 tools\codered_research_log_organizer.py
+```
+
+It writes the organized reading layer to `docs\research_index\` and `logs\_indexes\`. It does not move fixed-path tool outputs out of `logs\`, because many tools write exact report names there.
+
 ## Safe local workflow
 
 1. Drop real game archives into a local ignored folder such as `imports/`.

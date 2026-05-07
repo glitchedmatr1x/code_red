@@ -4,6 +4,8 @@ This folder is the working research index for Code RED. Keep dated research pass
 
 ## Start Here
 
+- `..\docs\research_index\README.md` - current organized master map across logs, research, docs, root readmes, handoffs, and milestones.
+- `_indexes\CODERED_LOG_RESEARCH_INDEX_2026-05-07.md` - generated log-only index grouped by topic.
 - `CodeRED_LOG_INDEX.md` - categorized index of current logs and generated report folders.
 - `CodeRED_Project_Research_Master_Chat_Source_2026-04-29.md` - user-added master chat/source notes and research lanes.
 - `CodeRED_RESEARCH_SYNTHESIS_2026-04-29.md` - consolidated vehicle spawning, cutscene, gringo, and string research summary.
@@ -15,6 +17,7 @@ This folder is the working research index for Code RED. Keep dated research pass
 2. `CodeRED_Project_Research_Master_Chat_Source_2026-04-29.md` for the broader source/chat context.
 3. `CodeRED_RESEARCH_SYNTHESIS_2026-04-29.md` for the condensed vehicle/gringo/cutscene/string findings.
 4. `CodeRED_LOG_INDEX.md` when jumping to a specific topic or generated CSV/JSON report.
+5. `_indexes\CODERED_LOG_RESEARCH_INDEX_2026-05-07.md` when the root log list gets too noisy.
 
 ## Generated Research Folders
 
