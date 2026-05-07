@@ -147,6 +147,25 @@ def safe_identifier(name: str) -> str:
     return "CR_NATIVE_" + ident
 
 
+def infer_category(name: str) -> str:
+    upper = name.upper()
+    if upper.startswith("TASK_"):
+        return "ai_task"
+    if "FACTION" in upper or "HOSTILE" in upper or "ENEMY" in upper:
+        return "faction_combat"
+    if "VEHICLE" in upper or "MOUNT" in upper or "HORSE" in upper:
+        return "vehicle_mount"
+    if "WEAPON" in upper:
+        return "weapon"
+    if "PLAYER" in upper:
+        return "player"
+    if "LAYOUT" in upper:
+        return "layout"
+    if "ACTOR" in upper or "CHAR" in upper:
+        return "actor"
+    return "sdk_only"
+
+
 def parse_sdk_natives(path: Path) -> dict[str, NativeSdkEntry]:
     text = path.read_text(encoding="utf-8", errors="ignore")
     entries: dict[str, NativeSdkEntry] = {}
@@ -174,14 +193,28 @@ def parse_sdk_natives(path: Path) -> dict[str, NativeSdkEntry]:
 
 
 def load_native_database(path: Path) -> dict[str, dict]:
-    if not path.exists():
-        return {}
-    data = json.loads(path.read_text(encoding="utf-8"))
-    records = data.get("records", []) if isinstance(data, dict) else []
+    if path.exists():
+        data = json.loads(path.read_text(encoding="utf-8"))
+        records = data.get("records", []) if isinstance(data, dict) else []
+    else:
+        # Some checked-out research snapshots only carry the generated bridge
+        # manifest, not the full native database. Reuse its metadata so a local
+        # regeneration does not throw away known categories and DB param notes.
+        bridge_manifest = path.with_name("native_bridge_manifest.json")
+        if not bridge_manifest.exists():
+            return {}
+        data = json.loads(bridge_manifest.read_text(encoding="utf-8"))
+        records = data.get("entries", []) if isinstance(data, dict) else []
     out: dict[str, dict] = {}
     for record in records:
         name = str(record.get("name", "")).strip()
         if name and name not in out:
+            if "line" not in record and "db_line" in record:
+                record = dict(record)
+                record["line"] = record.get("db_line")
+            if "params" not in record and "db_params" in record:
+                record = dict(record)
+                record["params"] = record.get("db_params")
             out[name] = record
     return out
 
@@ -227,19 +260,19 @@ def build_entries(root: Path, profile: str, extra: Sequence[str]) -> tuple[list[
         sdk_rec = sdk.get(name)
         warnings: list[str] = []
         if not db_rec:
-            warnings.append("missing_from_native_database")
+            warnings.append("sdk_only_native_database_missing")
         if not sdk_rec:
             warnings.append("missing_from_scripthook_sdk_hash_source")
         db_params = [str(item) for item in db_rec.get("params", [])] if db_rec else []
         sdk_params = sdk_rec.params if sdk_rec else []
         if db_params and sdk_params and len(db_params) != len(sdk_params):
             warnings.append(f"param_count_diff_db_{len(db_params)}_sdk_{len(sdk_params)}")
-        status = "ready" if sdk_rec and not any(w.startswith("missing") for w in warnings) else "partial"
+        status = "ready" if sdk_rec else "partial"
         entries.append(
             BridgeEntry(
                 name=name,
                 hash=sdk_rec.hash if sdk_rec else str(db_rec.get("declared_hash", "")),
-                category=str(db_rec.get("category", "uncategorized")) if db_rec else "uncategorized",
+                category=str(db_rec.get("category", infer_category(name))) if db_rec else infer_category(name),
                 return_type=sdk_rec.return_type if sdk_rec else str(db_rec.get("return_type", "void")),
                 params=sdk_params,
                 db_return_type=str(db_rec.get("return_type", "")) if db_rec else "",

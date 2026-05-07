@@ -1,6 +1,6 @@
 # Code RED Native Bridge Generation Report
 
-Generated: `2026-05-03T09:08:32Z`
+Generated: `2026-05-07T10:52:13Z`
 Profile: `ai_trainer_core`
 
 ## Result
@@ -9,14 +9,14 @@ Profile: `ai_trainer_core`
 - Ready wrappers: 26
 - Partial entries: 0
 - SDK native entries parsed: 3492
-- Native database entries loaded: 9102
+- Native database entries loaded: 26
 
 ## Outputs
 
-- `data/codered/native_bridge_manifest.json`
-- `data/codered/native_bridge_manifest.csv`
-- `data/codered/native_bridge_selected_wrappers.cpp`
-- `data/codered/native_bridge_compile_probe.cpp`
+- `data\codered\native_bridge_manifest.json`
+- `data\codered\native_bridge_manifest.csv`
+- `data\codered\native_bridge_selected_wrappers.cpp`
+- `data\codered\native_bridge_compile_probe.cpp`
 
 ## Safety Notes
 
@@ -33,7 +33,7 @@ Profile: `ai_trainer_core`
 | ready | IS_ACTOR_ALIVE | `0x2F232639` | actor | 1 |  |
 | ready | FIND_NAMED_LAYOUT | `0x5699DE7E` | world | 1 |  |
 | ready | CREATE_LAYOUT | `0x6CA53214` | world | 1 |  |
-| ready | CREATE_ACTOR_IN_LAYOUT | `0x8D67F397` | actor | 7 | param_count_diff_db_5_sdk_7 |
+| ready | CREATE_ACTOR_IN_LAYOUT | `0x8D67F397` | actor | 7 |  |
 | ready | GET_POSITION | `0x99BD9D6F` | world | 2 |  |
 | ready | TELEPORT_ACTOR | `0x2D54B916` | actor | 5 |  |
 | ready | SET_ACTOR_HEADING | `0xECE8520B` | actor | 3 |  |
