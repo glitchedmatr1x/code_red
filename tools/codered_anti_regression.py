@@ -26,6 +26,7 @@ FULL_BACKEND_HARNESS_PATH = REPO_ROOT / "tools" / "codered_full_backend_rpf6_har
 SCRIPT_WORKSHOP_PATH = REPO_ROOT / "tools" / "codered_script_workshop.py"
 DECOMPILE_ATTEMPT_PATH = REPO_ROOT / "tools" / "codered_script_decompile_attempt.py"
 RPF_DEEP_PROBE_PATH = REPO_ROOT / "tools" / "codered_rpf_deep_probe.py"
+FREEMODE_INIT_INSPECTOR_PATH = REPO_ROOT / "tools" / "codered_freemode_init_inspector.py"
 
 SCRIPT_LANE_EXTENSIONS = (".wsc", ".xsc", ".sco", ".wsv")
 ARCHIVE_LANE_EXTENSIONS = (".rpf", ".zip", ".z01")
@@ -46,6 +47,7 @@ REQUIRED_TOOL_FILES = {
     SCRIPT_WORKSHOP_PATH: "compiler-aware Script Workshop",
     DECOMPILE_ATTEMPT_PATH: "script decompile attempt workflow",
     RPF_DEEP_PROBE_PATH: "RPF deep probe",
+    FREEMODE_INIT_INSPECTOR_PATH: "Freemode / Init inspector",
 }
 
 
@@ -67,6 +69,37 @@ def _check_help(path: Path, failures: list[str]) -> None:
     result = _run_command([sys.executable, str(path), "--help"])
     if result.returncode != 0:
         failures.append(f"{path.name} --help failed: {result.stderr or result.stdout}")
+
+
+def _write_fake_freemode_harness(temp: Path) -> Path:
+    harness = temp / "fake_freemode_harness"
+    harness.mkdir(parents=True, exist_ok=True)
+    (harness / "full_backend_rpf6_harness_summary.json").write_text(
+        json.dumps(
+            {
+                "backend_ok": True,
+                "decrypt_extract_status": "confirmed_non_z_init_scripts_extracted",
+                "non_z_init_extracted_script_count": 1,
+                "notes": "mp_network session host lobby init smoke test",
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    (harness / "full_backend_rpf6_harness_selected_hits.json").write_text(
+        json.dumps(
+            [
+                {
+                    "value": "scripts/init_session.sco",
+                    "category": "init_script_entry",
+                    "raw_preview": "network session host client spawn",
+                }
+            ],
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return harness
 
 
 def main() -> int:
@@ -91,6 +124,7 @@ def main() -> int:
     _load_module(SCRIPT_WORKSHOP_PATH, "codered_script_workshop")
     _load_module(DECOMPILE_ATTEMPT_PATH, "codered_script_decompile_attempt")
     _load_module(RPF_DEEP_PROBE_PATH, "codered_rpf_deep_probe")
+    _load_module(FREEMODE_INIT_INSPECTOR_PATH, "codered_freemode_init_inspector")
 
     for name, label in FULL_BACKEND_REQUIRED_SYMBOLS.items():
         if not hasattr(full_backend, name):
@@ -121,7 +155,7 @@ def main() -> int:
     if self_test.returncode != 0:
         failures.append(f"--self-test failed: {self_test.stderr or self_test.stdout}")
 
-    for tool in (FULL_BACKEND_HARNESS_PATH, SCRIPT_WORKSHOP_PATH, DECOMPILE_ATTEMPT_PATH, RPF_DEEP_PROBE_PATH):
+    for tool in (FULL_BACKEND_HARNESS_PATH, SCRIPT_WORKSHOP_PATH, DECOMPILE_ATTEMPT_PATH, RPF_DEEP_PROBE_PATH, FREEMODE_INIT_INSPECTOR_PATH):
         _check_help(tool, failures)
 
     with tempfile.TemporaryDirectory(prefix="codered_guard_") as temp_dir:
@@ -180,6 +214,26 @@ def main() -> int:
         elif "test_guard.wsc" not in cli_scan.stdout or "test_guard.wsv" not in cli_scan.stdout or "test_guard.wtd" not in cli_scan.stdout:
             failures.append("--scan-archive output did not include synthetic RPF script/WSV/texture members")
 
+        fake_harness = _write_fake_freemode_harness(temp)
+        freemode_out = temp / "freemode_smoke_out"
+        freemode_smoke = _run_command([
+            sys.executable,
+            str(FREEMODE_INIT_INSPECTOR_PATH),
+            "--harness",
+            str(fake_harness),
+            "--out",
+            str(freemode_out),
+        ])
+        if freemode_smoke.returncode != 0:
+            failures.append(f"Freemode inspector smoke failed: {freemode_smoke.stderr or freemode_smoke.stdout}")
+        else:
+            try:
+                summary = json.loads((freemode_out / "freemode_init_inspector_summary.json").read_text(encoding="utf-8"))
+                if summary.get("mp_network_count", 0) < 1:
+                    failures.append("Freemode inspector smoke did not detect MP/network signal")
+            except Exception as exc:
+                failures.append(f"Freemode inspector smoke summary unreadable: {exc}")
+
     result = {
         "ok": not failures,
         "failures": failures,
@@ -194,6 +248,8 @@ def main() -> int:
             "Script Workshop imports and exposes --help",
             "script decompile attempt imports and exposes --help",
             "RPF deep probe imports and exposes --help",
+            "Freemode Init Inspector imports and exposes --help",
+            "Freemode Init Inspector detects synthetic MP/session/init harness output",
             "script lane guard including .wsv",
             "archive lane guard",
             "headless self-test",
