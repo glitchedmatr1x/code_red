@@ -34,7 +34,7 @@ from typing import Iterable
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_EXTS = {".c", ".h", ".hpp", ".cpp", ".cc", ".cxx", ".cs", ".lua", ".scp", ".sc", ".wscsrc", ".txt"}
-SCRIPT_EXTS = {".sco", ".wsc", ".xsc", ".wsv"}
+SCRIPT_EXTS = {".csc", ".sco", ".wsc", ".xsc", ".wsv"}
 SKIP_DIRS = {".git", "__pycache__", ".pytest_cache", "build", "dist", "logs", "node_modules", ".vs", ".vscode"}
 
 

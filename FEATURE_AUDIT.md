@@ -10,7 +10,7 @@
 - Resource payload analysis for RSC85/RSC86 resource type 2.
 - Best-effort AES payload decryption and zstd/zlib decompression.
 - Strings, Textures, Meshes, and Scripts lanes receive resource-header-aware analysis.
-- Script Lab for `.wsc/.xsc/.sco` with pseudo-decompile-style reports.
+- Script Lab for `.wsc/.csc/.xsc/.sco` with pseudo-decompile-style reports.
 - Round-trip clone rebuild/verification from processed script payloads.
 - Native DB loading for script/native-table research.
 - Script table/descriptor recovery for known `.wsc` cases.

@@ -16,10 +16,10 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable
 
-SCRIPT_EXTS = {".sco", ".wsc", ".xsc", ".wsv"}
+SCRIPT_EXTS = {".csc", ".sco", ".wsc", ".xsc", ".wsv"}
 WATCH_EXTS = sorted(SCRIPT_EXTS | {".csv", ".xml", ".strtbl", ".txt", ".ini", ".dat", ".wtd", ".wtx", ".wft", ".wvd", ".rpf"})
 KEYWORDS = [
-    "init", "startup", "script", "sco", "wsc", "xsc", "wsv",
+    "init", "startup", "script", "csc", "sco", "wsc", "xsc", "wsv",
     "mp_", "multiplayer", "network", "net_", "freemode", "coop", "co_",
     "grave", "graveyard", "wave", "zombie", "overrun", "rotation", "team",
 ]
@@ -55,7 +55,7 @@ def _context(blob: bytes, offset: int, size: int = 96) -> str:
 def _category(value: str) -> str:
     low = value.lower()
     ext = Path(low).suffix
-    if ext in SCRIPT_EXTS or any(k in low for k in (".sco", ".wsc", ".xsc", ".wsv")):
+    if ext in SCRIPT_EXTS or any(k in low for k in (".csc", ".sco", ".wsc", ".xsc", ".wsv")):
         return "script"
     if "init" in low:
         return "init"

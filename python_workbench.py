@@ -66,7 +66,7 @@ IMAGE_MAGICK_BIN = shutil.which('magick') or shutil.which('convert')
 
 
 SOURCE_CODE_EXTENSIONS = ('.c', '.cs', '.h', '.hpp', '.hh', '.cpp', '.cc', '.cxx', '.py', '.lua')
-SCRIPT_BINARY_EXTENSIONS = ('.wsc', '.xsc', '.sco')
+SCRIPT_BINARY_EXTENSIONS = ('.wsc', '.csc', '.xsc', '.sco')
 
 
 def _codered_is_code_bearing_extension(suffix: str) -> bool:
@@ -771,7 +771,7 @@ def _codered_detect_script_resource_tooling() -> dict:
         notes.append(f'Code RED compile lab staged: {compile_lab_root}')
     if donor_wsc or donor_sco:
         notes.append(f'Donor compiled script examples in resources: {len(donor_wsc)} .wsc / {len(donor_sco)} .sco')
-    notes.append('Decompiler-style .c output is treated as readable working text only. Existing binary .wsc/.xsc/.sco files still do not have a proven source-faithful decode/recompile path in the current workbench.')
+    notes.append('Decompiler-style .c output is treated as readable working text only. Existing binary .wsc/.csc/.xsc/.sco files still do not have a proven source-faithful decode/recompile path in the current workbench.')
     notes.append('Safe round-trip today means payload-aware inspection, export, clone verification, archive-copy probe validation, and external Windows toolchain staging.')
     return {
         'resources_root': resources_root,
@@ -4771,7 +4771,7 @@ class WorkbenchApp(tk.Tk):
         if not target:
             return
         analysis = None
-        if self.selected_path and self.selected_path.is_file() and self.selected_path.suffix.lower() in {'.wsc', '.xsc', '.sco'}:
+        if self.selected_path and self.selected_path.is_file() and self.selected_path.suffix.lower() in SCRIPT_BINARY_EXTENSIONS:
             try:
                 analysis = analyze_script_payload(self.selected_path)
             except Exception:
@@ -6742,8 +6742,8 @@ def analyze_script_payload(path: Path) -> dict:
     descriptor_layout = _codered_analyze_descriptor_layout(payload, native_descriptor)
     strong_native_hits = [hit for hit in native_hits if hit.get('confidence') in {'high', 'medium'}][:120]
     native_names = [hit['name'] for hit in strong_native_hits]
-    bytecode = _codered_scan_wsc_bytecode(payload, native_descriptor) if path.suffix.lower() in {'.wsc', '.xsc'} else None
-    script_spawn_insights = _codered_collect_script_spawn_insights(path, data, payload, strings, bytecode, payload_info) if path.suffix.lower() in {'.wsc', '.xsc', '.sco'} else None
+    bytecode = _codered_scan_wsc_bytecode(payload, native_descriptor) if path.suffix.lower() in {'.wsc', '.csc', '.xsc'} else None
+    script_spawn_insights = _codered_collect_script_spawn_insights(path, data, payload, strings, bytecode, payload_info) if path.suffix.lower() in SCRIPT_BINARY_EXTENSIONS else None
     native_table_entries_full = bytecode.get('native_table_entries_full', []) if bytecode else []
     native_table_entries = native_table_entries_full[:24]
     companions = _codered_find_script_companions(path)
@@ -7081,7 +7081,7 @@ class ScriptLabDialog(tk.Toplevel):
             self._compile_status_text(tooling),
             '',
             'Proof state:',
-            '- Existing .wsc/.xsc/.sco binaries can be inspected, pseudo-decompiled, exported, and round-trip cloned.',
+            '- Existing .wsc/.csc/.xsc/.sco binaries can be inspected, pseudo-decompiled, exported, and round-trip cloned.',
             '- Edited pseudo-decompile text is treated as a working note/source artifact only.',
             '- Source-project compilation is only plausible if a donor compiler/toolchain is actually present.',
             '- Magic-RDR can be staged as a helper viewer/decompiler/xcompress lane, but its exported .c text is still treated as reference only.',
@@ -7300,7 +7300,7 @@ _CODERED_ORIG_MODULE_ACTION = WorkbenchApp.module_action
 
 def _codered_inspect_extracted_entry(self, temp_path: Path, archive_entry: dict, archive_path: Path) -> None:
     mod = self.resolve_module(temp_path)
-    if mod and mod.name == 'Scripts' and temp_path.suffix.lower() in {'.wsc', '.xsc', '.sco'}:
+    if mod and mod.name == 'Scripts' and temp_path.suffix.lower() in SCRIPT_BINARY_EXTENSIONS:
         def write_archive_plan(saved_path: Path, action_label: str) -> None:
             plan_path = temp_path.with_name(temp_path.name + '.archive_reintegrate_plan.txt')
             assessment = _codered_build_script_reintegration_assessment(temp_path, saved_path, action_label, archive_entry=archive_entry, archive_path=archive_path)
@@ -7463,12 +7463,12 @@ def _codered_module_action(self, module_name: str, action: str) -> None:
         result = mod.validate(path)
         self._show_result(result)
         return
-    if action == 'Open Viewer' and path and path.is_file() and mod.can_handle(path) and mod.name == 'Scripts' and path.suffix.lower() in {'.wsc', '.xsc', '.sco'}:
+    if action == 'Open Viewer' and path and path.is_file() and mod.can_handle(path) and mod.name == 'Scripts' and path.suffix.lower() in SCRIPT_BINARY_EXTENSIONS:
         insp = mod.inspect(path)
         self._write_module_output(mod.name, insp)
         ScriptLabDialog(self, analyze_script_payload(path))
         return
-    if action == 'Export' and path and path.is_file() and mod.can_handle(path) and mod.name == 'Scripts' and path.suffix.lower() in {'.wsc', '.xsc', '.sco'}:
+    if action == 'Export' and path and path.is_file() and mod.can_handle(path) and mod.name == 'Scripts' and path.suffix.lower() in SCRIPT_BINARY_EXTENSIONS:
         analysis = analyze_script_payload(path)
         report_target = filedialog.asksaveasfilename(title='Export Script Pseudo-Decompile Report', initialfile=f'{path.stem}_pseudo_decompile.c.txt')
         if report_target:

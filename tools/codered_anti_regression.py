@@ -29,7 +29,7 @@ RPF_DEEP_PROBE_PATH = REPO_ROOT / "tools" / "codered_rpf_deep_probe.py"
 FREEMODE_INIT_INSPECTOR_PATH = REPO_ROOT / "tools" / "codered_freemode_init_inspector.py"
 MAGIC_RDR_BRIDGE_PATH = REPO_ROOT / "tools" / "codered_magic_rdr_bridge.py"
 
-SCRIPT_LANE_EXTENSIONS = (".wsc", ".xsc", ".sco", ".wsv")
+SCRIPT_LANE_EXTENSIONS = (".wsc", ".csc", ".xsc", ".sco", ".wsv")
 ARCHIVE_LANE_EXTENSIONS = (".rpf", ".zip", ".z01")
 
 FULL_BACKEND_REQUIRED_SYMBOLS = {
@@ -180,6 +180,7 @@ def main() -> int:
         fake_rpf.write_bytes(
             b"RPF6" + b"\0" * 64 +
             b"scripts/test_guard.wsc\0" +
+            b"scripts/test_guard.csc\0" +
             b"scripts/test_guard.xsc\0" +
             b"scripts/test_guard.sco\0" +
             b"scripts/test_guard.wsv\0" +
@@ -195,6 +196,7 @@ def main() -> int:
         rpf_records = module.scan_archive_members(fake_rpf)
         expected_rpf_members = {
             ".wsc": "Scripts",
+            ".csc": "Scripts",
             ".xsc": "Scripts",
             ".sco": "Scripts",
             ".wsv": "Scripts",
@@ -214,11 +216,14 @@ def main() -> int:
         fake_zip = temp / "package.zip"
         with zipfile.ZipFile(fake_zip, "w") as zf:
             zf.writestr("scripts/from_zip.wsc", "// package sample")
+            zf.writestr("scripts/from_zip.csc", b"csc sample")
             zf.writestr("scripts/from_zip.wsv", b"wsv sample")
             zf.writestr("textures/from_zip.wtd", b"texture sample")
         zip_records = module.scan_archive_members(fake_zip)
         if not any(rec.source == "zip" and rec.extension == ".wsc" and rec.lane == "Scripts" for rec in zip_records):
             failures.append("ZIP package scan did not preserve .wsc in Scripts lane")
+        if not any(rec.source == "zip" and rec.extension == ".csc" and rec.lane == "Scripts" for rec in zip_records):
+            failures.append("ZIP package scan did not preserve .csc in Scripts lane")
         if not any(rec.source == "zip" and rec.extension == ".wsv" and rec.lane == "Scripts" for rec in zip_records):
             failures.append("ZIP package scan did not preserve .wsv in Scripts lane")
         if not any(rec.source == "zip" and rec.extension == ".wtd" and rec.lane == "Textures" for rec in zip_records):
@@ -227,7 +232,7 @@ def main() -> int:
         cli_scan = _run_command([sys.executable, "code_red_main.py", "--scan-archive", str(fake_rpf)])
         if cli_scan.returncode != 0:
             failures.append(f"--scan-archive failed on synthetic RPF: {cli_scan.stderr or cli_scan.stdout}")
-        elif "test_guard.wsc" not in cli_scan.stdout or "test_guard.wsv" not in cli_scan.stdout or "test_guard.wtd" not in cli_scan.stdout:
+        elif "test_guard.wsc" not in cli_scan.stdout or "test_guard.csc" not in cli_scan.stdout or "test_guard.wsv" not in cli_scan.stdout or "test_guard.wtd" not in cli_scan.stdout:
             failures.append("--scan-archive output did not include synthetic RPF script/WSV/texture members")
 
         fake_harness = _write_fake_freemode_harness(temp)
@@ -277,7 +282,7 @@ def main() -> int:
             "Magic-RDR parity bridge imports and exposes --help",
             "Magic-RDR bridge detects non-z init and MP/freemode signals from synthetic output",
             "Freemode Init Inspector detects synthetic MP/session/init harness output",
-            "script lane guard including .wsv",
+            "script lane guard including .csc and .wsv",
             "archive lane guard",
             "headless self-test",
             "synthetic RPF inventory across scripts/WSV/textures/meshes/strings/audio/world",

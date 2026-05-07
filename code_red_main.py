@@ -33,10 +33,10 @@ except Exception:  # pragma: no cover - allows headless/static imports
     messagebox = None  # type: ignore[assignment]
 
 APP_TITLE = "Code RED - Main Workbench"
-APP_VERSION = "rpf-first-wsv-script-lane-2026-05-06"
+APP_VERSION = "rpf-first-csc-script-lane-2026-05-07"
 
 SPLIT_ZIP_EXTENSIONS = tuple(f".z{i:02d}" for i in range(1, 100))
-SCRIPT_EXTENSIONS = (".wsc", ".xsc", ".sco", ".wsv")
+SCRIPT_EXTENSIONS = (".wsc", ".csc", ".xsc", ".sco", ".wsv")
 
 # Centralized lane routing. Keep this as the single source of truth for buttons,
 # inspector headings, report grouping, and anti-regression checks.

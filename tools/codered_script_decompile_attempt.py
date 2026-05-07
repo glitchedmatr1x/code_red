@@ -6,7 +6,7 @@ Read-first helper for init/SCO/WSV investigations.
 It can:
 - inspect an RPF for visible init/script names and RSC block candidates
 - classify false positive text hits such as "score" containing "sco"
-- inventory extracted .sco/.wsc/.xsc/.wsv files
+- inventory extracted .csc/.sco/.wsc/.xsc/.wsv files
 - run an explicit decompiler template only when requested
 
 It does not decrypt, mutate, or write back archives.
@@ -28,9 +28,9 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable
 
-SCRIPT_EXTS = {".sco", ".wsc", ".xsc", ".wsv"}
-KEYWORDS = ["init", "main", "startup", "script", "sco", "wsc", "xsc", "wsv", "mp_", "graveyard", "zombie", "wave", "network"]
-FILE_NAME_RE = re.compile(rb"[A-Za-z0-9_$@][A-Za-z0-9_ .$@/\\\-]{0,180}\.(?:sco|wsc|xsc|wsv)", re.IGNORECASE)
+SCRIPT_EXTS = {".csc", ".sco", ".wsc", ".xsc", ".wsv"}
+KEYWORDS = ["init", "main", "startup", "script", "csc", "sco", "wsc", "xsc", "wsv", "mp_", "graveyard", "zombie", "wave", "network"]
+FILE_NAME_RE = re.compile(rb"[A-Za-z0-9_$@][A-Za-z0-9_ .$@/\\\-]{0,180}\.(?:csc|sco|wsc|xsc|wsv)", re.IGNORECASE)
 ASCII_RE = re.compile(rb"[\x20-\x7e]{4,220}")
 
 
@@ -113,7 +113,7 @@ def classify_string(value: str) -> tuple[str, str]:
         return "sco_text_false_positive", "not_a_script_filename"
     if any(k in low for k in ("mp_", "network", "graveyard", "zombie", "wave")):
         return "mp_script_signal", "visible_text_only"
-    if any(k in low for k in ("script", "wsc", "xsc", "wsv")):
+    if any(k in low for k in ("script", "csc", "wsc", "xsc", "wsv")):
         return "script_signal", "visible_text_only"
     return "other", "visible_text_only"
 
@@ -289,7 +289,7 @@ def write_report(out_dir: Path, rpf_results: list[dict], scripts: list[ScriptFil
     for r in summary["rpf_summaries"]:
         lines.append(f"- `{r['archive']}`: RPF6={r['is_rpf6']} RSC={r['rsc_block_count']} status={r['decompile_status']} categories={r['category_counts']}")
     lines.extend(["", "## Notes"])
-    lines.append("- If no visible init .sco/.wsv names are found, the archive table/resource payload still needs a stronger RPF/RSC extractor before source decompile can run.")
+    lines.append("- If no visible init .csc/.sco/.wsv names are found, the archive table/resource payload still needs a stronger RPF/RSC extractor before source decompile can run.")
     lines.append("- False positives such as `score` containing `sco` are recorded as text hits, not script filenames.")
     lines.append("- Actual decompile execution requires `--decompile`, `--decompiler`, and `--decompiler-template`.")
     (out_dir / "script_decompile_attempt_report.md").write_text("\n".join(lines), encoding="utf-8")
