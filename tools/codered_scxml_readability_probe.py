@@ -161,6 +161,10 @@ def visible_strings(data: bytes, limit: int = 80) -> list[str]:
     return values
 
 
+def is_script_path(path: Path) -> bool:
+    return path.suffix.lower() in SCRIPT_EXTS
+
+
 def classify(path: Path, data: bytes, attempts: list[DecodeAttempt]) -> tuple[str, str, str, bool, bool, int]:
     suffix = path.suffix.lower()
     best_xml = next((a for a in attempts if a.ok and a.xml_like), None)
@@ -174,8 +178,8 @@ def classify(path: Path, data: bytes, attempts: list[DecodeAttempt]) -> tuple[st
             "script_binary",
             "Route through Script Workshop/decompile-template lane; do not treat as patchable SC XML.",
             best_method,
-            bool(best_xml),
-            bool(best_text),
+            False,
+            False,
             hints,
         )
     if best_xml:
@@ -264,7 +268,7 @@ def write_outputs(out_dir: Path, source: Path, manifest_path: Path, probes: list
     manifest = load_manifest(manifest_path)
     counts = Counter(p.classification for p in probes)
     ext_counts = Counter(p.extension for p in probes)
-    readable_xml = [p for p in probes if p.xml_like]
+    readable_xml = [p for p in probes if p.classification == "direct_or_decoded_xml" and p.xml_like and p.extension not in SCRIPT_EXTS]
     packed = [p for p in probes if p.classification == "packed_or_binary_scxml"]
     scripts = [p for p in probes if p.classification == "script_binary"]
     summary = {
@@ -281,6 +285,7 @@ def write_outputs(out_dir: Path, source: Path, manifest_path: Path, probes: list
         "status": "direct_xml_available" if readable_xml else "decoder_needed_for_scxml_targets",
         "top_patchable_xml": [p.path for p in readable_xml[:20]],
         "top_decoder_needed": [p.path for p in packed[:20]],
+        "script_binary_targets": [p.path for p in scripts[:20]],
         "next_actions": [
             "If readable XML exists, inspect route/button/menu ids before patch planning.",
             "If SC XML targets are packed/binary, restore or add an SC XML/UI resource decoder before patching.",
