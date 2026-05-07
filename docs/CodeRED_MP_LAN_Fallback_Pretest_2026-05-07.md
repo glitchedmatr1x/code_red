@@ -65,6 +65,42 @@ Dry-run replacement map passed:
 
 The dry-run did not write `content.rpf`.
 
+## Copied RPF Build Result
+
+`--write-copied-rpf` passed against the MP-injected source archive:
+
+- source: `D:\Games\Red Dead Redemption\Code_RED\build\content_mp_singleplayer\content.rpf`
+- output: `D:\Games\Red Dead Redemption\Code_RED\build\content_mp_lan_fallback_test\content.rpf`
+- source size: `24828720`
+- output size: `24830432`
+- entry count: `1837`
+- auto-copy/install: `false`
+
+The builder copied the source archive, appended replacement Zstandard payloads at aligned EOF offsets, rebuilt the RPF6 TOC, and updated only the two target entries.
+
+Replacement offsets:
+
+- `root/content/ui/pausemenu/net/lanmenu.sc.xml`
+  - entry index `236`
+  - old offset/size: `831920` / `507`
+  - new offset/size: `24828720` / `641`
+- `root/content/ui/pausemenu/net/plaympconf.sc.xml`
+  - entry index `235`
+  - old offset/size: `833384` / `884`
+  - new offset/size: `24829368` / `1060`
+
+Post-build verification passed:
+
+- RPF parses
+- entry count stayed `1837`
+- MP CSC count is `90`
+- `release/multiplayer/freemode/freemode.csc` exists
+- `release64/multiplayer/freemode/freemode.csc` exists
+- patched SCXML extracts
+- patched SCXML Zstandard-decodes
+- decoded patched XML matches candidate text
+- untouched probe entries still extract
+
 ## Important Warning
 
 The current source `D:\Games\Red Dead Redemption\game\content.rpf` dry-run inventory reports no multiplayer `.csc` entries, and these required entries are missing there:

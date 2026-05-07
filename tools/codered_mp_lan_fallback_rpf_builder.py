@@ -12,6 +12,8 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import shutil
+import struct
 import sys
 import time
 from pathlib import Path
@@ -80,6 +82,10 @@ def sha1_bytes(data: bytes) -> str:
     return hashlib.sha1(data).hexdigest()
 
 
+def align(value: int, boundary: int = 8) -> int:
+    return (value + boundary - 1) & ~(boundary - 1)
+
+
 def load_candidate(candidate_dir: Path) -> dict:
     summary = candidate_dir / "candidate_summary.json"
     roundtrip = candidate_dir / "zstd_roundtrip_report.json"
@@ -93,11 +99,29 @@ def load_candidate(candidate_dir: Path) -> dict:
     return {"summary": data, "roundtrip": rt, "encoded_by_archive": encoded_by_archive}
 
 
-def build_dry_run(source: Path, candidate_dir: Path, output_rpf: Path, log_dir: Path) -> dict:
-    wb = load_backend()
-    info = parse_archive(wb, source)
+def make_preflight(info: dict, by_path: dict[str, dict]) -> dict:
+    mp_csc_entries = [path for path in by_path if "/multiplayer/" in path and path.endswith(".csc")]
+    required_mp_presence = {path: (path.lower() in by_path) for path in MP_REQUIRED}
+    untouched_probe_presence = {path: (path.lower() in by_path) for path in UNTOUCHED_PROBE_ENTRIES}
+    warnings = []
+    if not mp_csc_entries:
+        warnings.append("source_content_rpf_has_no_multiplayer_csc_entries; post-build test archive must be based on the MP-content candidate/injected archive or this verification gate will fail")
+    missing_required_mp = [path for path, present in required_mp_presence.items() if not present]
+    if missing_required_mp:
+        warnings.append(f"source_content_rpf_missing_required_mp_entries={missing_required_mp}")
+    return {
+        "entry_count": info.get("entry_count"),
+        "file_count": info.get("file_count"),
+        "dir_count": info.get("dir_count"),
+        "source_mp_csc_count": len(mp_csc_entries),
+        "source_required_mp_presence": required_mp_presence,
+        "source_untouched_probe_presence": untouched_probe_presence,
+        "warnings": warnings,
+    }
+
+
+def collect_replacements(info: dict, candidate: dict) -> tuple[list[dict], list[str]]:
     by_path = entry_by_path(info)
-    candidate = load_candidate(candidate_dir)
     replacements = []
     missing = []
     for item in candidate["summary"].get("candidate_files", []):
@@ -125,15 +149,17 @@ def build_dry_run(source: Path, candidate_dir: Path, output_rpf: Path, log_dir: 
                 "candidate_encoded_size": encoded.get("encoded_size"),
             }
         )
-    mp_csc_entries = [path for path in by_path if "/multiplayer/" in path and path.endswith(".csc")]
-    required_mp_presence = {path: (path.lower() in by_path) for path in MP_REQUIRED}
-    untouched_probe_presence = {path: (path.lower() in by_path) for path in UNTOUCHED_PROBE_ENTRIES}
-    warnings = []
-    if not mp_csc_entries:
-        warnings.append("source_content_rpf_has_no_multiplayer_csc_entries; post-build test archive must be based on the MP-content candidate/injected archive or this verification gate will fail")
-    missing_required_mp = [path for path, present in required_mp_presence.items() if not present]
-    if missing_required_mp:
-        warnings.append(f"source_content_rpf_missing_required_mp_entries={missing_required_mp}")
+    return replacements, missing
+
+
+def build_dry_run(source: Path, candidate_dir: Path, output_rpf: Path, log_dir: Path) -> dict:
+    wb = load_backend()
+    info = parse_archive(wb, source)
+    by_path = entry_by_path(info)
+    candidate = load_candidate(candidate_dir)
+    replacements, missing = collect_replacements(info, candidate)
+    preflight = make_preflight(info, by_path)
+    warnings = preflight["warnings"]
     status = "pass" if replacements and not missing and candidate["summary"].get("status") == "pass" else "fail"
     report = {
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -151,9 +177,9 @@ def build_dry_run(source: Path, candidate_dir: Path, output_rpf: Path, log_dir: 
         "missing_archive_paths": missing,
         "warnings": warnings,
         "approved_archive_paths": [item["archive_path"] for item in candidate["summary"].get("candidate_files", [])],
-        "source_mp_csc_count": len(mp_csc_entries),
-        "source_required_mp_presence": required_mp_presence,
-        "source_untouched_probe_presence": untouched_probe_presence,
+        "source_mp_csc_count": preflight["source_mp_csc_count"],
+        "source_required_mp_presence": preflight["source_required_mp_presence"],
+        "source_untouched_probe_presence": preflight["source_untouched_probe_presence"],
         "post_build_verification_required": [
             "RPF parses",
             "entry count stays expected",
@@ -198,12 +224,154 @@ def build_dry_run(source: Path, candidate_dir: Path, output_rpf: Path, log_dir: 
         for path in missing:
             lines.append(f"- `{path}`")
     lines.extend(["", "## Source Archive Preflight", ""])
-    lines.append(f"- MP CSC entries: `{len(mp_csc_entries)}`")
-    for path, present in required_mp_presence.items():
+    lines.append(f"- MP CSC entries: `{preflight['source_mp_csc_count']}`")
+    for path, present in preflight["source_required_mp_presence"].items():
         lines.append(f"- `{path}`: `{'present' if present else 'missing'}`")
-    for path, present in untouched_probe_presence.items():
+    for path, present in preflight["source_untouched_probe_presence"].items():
         lines.append(f"- untouched probe `{path}`: `{'present' if present else 'missing'}`")
     (log_dir / "RPF_TEST_PREP_REPORT.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return report
+
+
+def rewrite_toc_with_replacements(wb, archive_bytes: bytearray, info: dict, replacement_by_index: dict[int, dict]) -> None:
+    entries = info.get("entries", [])
+    toc = bytearray()
+    for ent in entries:
+        if ent.get("type") == "dir":
+            toc.extend(
+                struct.pack(
+                    ">5I",
+                    int(ent.get("name_off") or 0),
+                    int(ent.get("flags") or 0),
+                    0x80000000 | int(ent.get("start") or 0),
+                    int(ent.get("count") or 0),
+                    int(ent.get("unk") or 0),
+                )
+            )
+            continue
+        idx = int(ent.get("index") or 0)
+        if idx in replacement_by_index:
+            repl = replacement_by_index[idx]
+            if ent.get("is_resource"):
+                raise ValueError(f"Refusing to patch resource entry in SCXML lane: {ent.get('path')}")
+            decoded_size = int(repl["candidate_decoded_size"])
+            stored_size = int(repl["candidate_encoded_size"])
+            new_offset = int(repl["new_offset"])
+            offset_raw = (new_offset // 8) & 0x7FFFFFFF
+            flag1 = (int(ent.get("flag1") or 0) & 0xC0000000) | (decoded_size & 0x3FFFFFFF)
+            toc.extend(struct.pack(">5I", int(ent.get("name_off") or 0), stored_size & 0x0FFFFFFF, offset_raw, flag1, int(ent.get("flag2") or 0)))
+            continue
+        toc.extend(
+            struct.pack(
+                ">5I",
+                int(ent.get("name_off") or 0),
+                int(ent.get("size_in_archive") or 0) & 0x0FFFFFFF,
+                int(ent.get("offset_raw") or 0),
+                int(ent.get("flag1") or 0),
+                int(ent.get("flag2") or 0),
+            )
+        )
+    padded_size = align(len(toc), 16)
+    toc.extend(b"\x00" * (padded_size - len(toc)))
+    if int(info.get("enc_flag") or 0) != 0:
+        toc = bytearray(wb._codered_rpf6_encrypt(bytes(toc)))
+    struct.pack_into(">4I", archive_bytes, 0, 0x52504636, int(info.get("entry_count") or len(entries)), int(info.get("debug_offset") or 0), int(info.get("enc_flag") or 0))
+    archive_bytes[16:16 + len(toc)] = toc
+
+
+def write_copied_rpf(source: Path, candidate_dir: Path, output_rpf: Path, log_dir: Path) -> dict:
+    wb = load_backend()
+    if source.resolve() == output_rpf.resolve():
+        raise ValueError("Refusing to write copied RPF over source archive")
+    info = parse_archive(wb, source)
+    by_path = entry_by_path(info)
+    candidate = load_candidate(candidate_dir)
+    replacements, missing = collect_replacements(info, candidate)
+    preflight = make_preflight(info, by_path)
+    if candidate["summary"].get("status") != "pass":
+        raise RuntimeError("Candidate summary status is not pass")
+    if missing:
+        raise RuntimeError(f"Missing replacement archive paths: {missing}")
+    if preflight["warnings"]:
+        raise RuntimeError(f"Source archive failed MP preflight: {preflight['warnings']}")
+
+    output_rpf.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, output_rpf)
+    archive_bytes = bytearray(output_rpf.read_bytes())
+    write_pos = align(len(archive_bytes), 8)
+    if write_pos > len(archive_bytes):
+        archive_bytes.extend(b"\x00" * (write_pos - len(archive_bytes)))
+
+    replacement_by_index: dict[int, dict] = {}
+    appended = []
+    for repl in replacements:
+        encoded_path = Path(str(repl["candidate_encoded"]))
+        decoded_path = Path(str(repl["candidate_decoded"]))
+        payload = encoded_path.read_bytes()
+        decoded = decoded_path.read_bytes()
+        write_pos = align(len(archive_bytes), 8)
+        if write_pos > len(archive_bytes):
+            archive_bytes.extend(b"\x00" * (write_pos - len(archive_bytes)))
+        new_offset = write_pos
+        archive_bytes.extend(payload)
+        after_payload = len(archive_bytes)
+        padded_end = align(after_payload, 8)
+        if padded_end > after_payload:
+            archive_bytes.extend(b"\x00" * (padded_end - after_payload))
+        row = dict(repl)
+        row.update(
+            {
+                "old_offset": repl["offset"],
+                "old_stored_size": repl["stored_size"],
+                "old_total_size": repl["total_size"],
+                "new_offset": new_offset,
+                "candidate_encoded_size": len(payload),
+                "candidate_decoded_size": len(decoded),
+                "payload_sha1": sha1_bytes(payload),
+                "decoded_sha1": sha1_bytes(decoded),
+            }
+        )
+        replacement_by_index[int(repl["entry_index"])] = row
+        appended.append(row)
+
+    rewrite_toc_with_replacements(wb, archive_bytes, info, replacement_by_index)
+    output_rpf.write_bytes(archive_bytes)
+    verify = verify_built_archive(source, output_rpf, candidate_dir, log_dir)
+    status = "pass" if verify["status"] == "pass" else "fail"
+    report = {
+        "generated_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "mode": "write-copied-rpf",
+        "status": status,
+        "source_archive": str(source),
+        "output_archive": str(output_rpf),
+        "candidate_dir": str(candidate_dir),
+        "auto_install": False,
+        "original_size": source.stat().st_size,
+        "output_size": output_rpf.stat().st_size,
+        "entry_count": info.get("entry_count"),
+        "appended_replacements": appended,
+        "post_build_verification_report": str(log_dir / "post_build_verification_report.json"),
+        "post_build_status": verify["status"],
+    }
+    log_dir.mkdir(parents=True, exist_ok=True)
+    (log_dir / "write_copied_rpf_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    lines = [
+        "# Code RED LAN Fallback Copied RPF Build",
+        "",
+        f"Status: `{status}`",
+        "",
+        f"- source: `{source}`",
+        f"- output: `{output_rpf}`",
+        r"- install target later: `D:\Games\Red Dead Redemption\game\content.rpf`",
+        "- auto-copy/install: `false`",
+        "",
+        "## Appended Replacements",
+        "",
+    ]
+    for row in appended:
+        lines.append(f"- `{row['archive_path']}` entry `{row['entry_index']}` old `{row['old_offset']}`/`{row['old_stored_size']}` -> new `{row['new_offset']}`/`{row['candidate_encoded_size']}`")
+    lines.extend(["", "## Verification", "", f"- post-build verification: `{verify['status']}`", f"- report: `{log_dir / 'post_build_verification_report.json'}`"])
+    (log_dir / "WRITE_COPIED_RPF_REPORT.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return report
 
 
@@ -276,10 +444,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--candidate-dir", type=Path, default=DEFAULT_CANDIDATE_DIR)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUT_RPF)
     parser.add_argument("--log-dir", type=Path, default=DEFAULT_LOG_DIR)
+    parser.add_argument("--write-copied-rpf", action="store_true", help="Copy the source archive, append replacement Zstd payloads, rebuild the TOC, and verify the copied RPF. Does not install.")
     parser.add_argument("--verify-built", type=Path, default=None, help="Optional copied RPF to verify after a future explicit build.")
     args = parser.parse_args(argv)
     if args.verify_built:
         report = verify_built_archive(args.source, args.verify_built, args.candidate_dir, args.log_dir)
+    elif args.write_copied_rpf:
+        report = write_copied_rpf(args.source, args.candidate_dir, args.output, args.log_dir)
     else:
         report = build_dry_run(args.source, args.candidate_dir, args.output, args.log_dir)
     print(json.dumps(report, indent=2))

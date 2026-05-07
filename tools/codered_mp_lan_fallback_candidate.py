@@ -255,7 +255,7 @@ def run(decoded: Path, out: Path) -> dict:
         archive_path = map_decoded_name_to_archive_path(source.name)
         candidate_path = candidate_dir / source.name
         diff_path = diff_dir / f"{source.name}.candidate.diff"
-        candidate_path.write_text(candidate, encoding="utf-8")
+        candidate_path.write_bytes(candidate.encode("utf-8"))
         diff = "\n".join(
             difflib.unified_diff(
                 original.splitlines(),
