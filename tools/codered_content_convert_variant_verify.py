@@ -21,6 +21,8 @@ DEFAULT_REPORT = ROOT / "logs" / "content_convert_overlay" / "variant_verificati
 DEFAULT_VARIANTS = {
     "lan_fallback": ROOT / "build" / "content_mp_lan_fallback_test" / "content.rpf",
     "support_aliases": ROOT / "build" / "content_convert_variants" / "support_aliases" / "content.rpf",
+    "lanmenu_only": ROOT / "build" / "content_convert_variants" / "lanmenu_only" / "content.rpf",
+    "mp_confirm_only": ROOT / "build" / "content_convert_variants" / "mp_confirm_only" / "content.rpf",
     "convert_ui": ROOT / "build" / "content_convert_variants" / "convert_ui" / "content.rpf",
 }
 REQUIRED_MP = [

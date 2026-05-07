@@ -1204,6 +1204,152 @@ static void commandSpawnedActors(const std::string& action) {
     writeLog("Unsupported behavior action: %s", action.c_str());
 }
 
+static bool scriptExists(const char* scriptPath) {
+    if (!scriptPath || !scriptPath[0] || !nativeReady()) return false;
+    return nativeInvoke<BOOL>(0xDEAB87AB, scriptPath) != 0;
+}
+
+static int launchScriptPath(const char* scriptPath) {
+    if (!scriptPath || !scriptPath[0] || !nativeReady()) return 0;
+    int handle = nativeInvoke<int>(0x85A30503, scriptPath, 0);
+    if (handle <= 0) {
+        handle = nativeInvoke<int>(0x3F166D0E, scriptPath, 4096);
+    }
+    return handle;
+}
+
+static int launchFirstExistingScript(const char* label, const char* const* paths, size_t count) {
+    int checked = 0;
+    for (size_t i = 0; i < count; ++i) {
+        const char* path = paths[i];
+        if (!path || !path[0]) continue;
+        ++checked;
+        const bool exists = scriptExists(path);
+        writeLog("MP script probe: label=%s path=%s exists=%s",
+                 label, path, exists ? "true" : "false");
+        if (!exists) continue;
+
+        const int handle = launchScriptPath(path);
+        writeLog("MP script launch: label=%s path=%s handle=%d",
+                 label, path, handle);
+        if (handle > 0) {
+            g_status = std::string("MP launch ") + label + " handle " +
+                       std::to_string(handle);
+            return handle;
+        }
+    }
+
+    g_status = std::string("MP script not found: ") + label +
+               " checked " + std::to_string(checked);
+    return 0;
+}
+
+static void mpStatusProbe() {
+    const BOOL wasLastResetForMp = nativeInvoke<BOOL>(0x3B004817);
+    const BOOL simulateStartMp = nativeInvoke<BOOL>(0x9A73C2CD);
+    const BOOL inSession = nativeInvoke<BOOL>(0x8CA54980);
+    const BOOL isHost = nativeInvoke<BOOL>(0xCDAC0F0E);
+
+    const char* const probes[] = {
+        "multiplayer/freemode/freemode",
+        "multiplayer/freemode/freemode.csc",
+        "content/release/multiplayer/freemode/freemode.csc",
+        "release/multiplayer/freemode/freemode.csc",
+        "multiplayer/multiplayer_system_thread",
+        "multiplayer/multiplayer_update_thread",
+        "multiplayer/deathmatch/deathmatch",
+        "multiplayer/ctf/ctf_base_game",
+    };
+    int found = 0;
+    for (const char* path : probes) {
+        if (scriptExists(path)) ++found;
+    }
+
+    g_status = "MP probe reset=" + std::to_string(wasLastResetForMp) +
+               " sim=" + std::to_string(simulateStartMp) +
+               " session=" + std::to_string(inSession) +
+               " scripts=" + std::to_string(found);
+    writeLog("MP status: wasLastResetForMP=%d simulateStartMP=%d inSession=%d isHost=%d scriptProbeFound=%d",
+             wasLastResetForMp, simulateStartMp, inSession, isHost, found);
+}
+
+static void mpEnableMultiplayer() {
+    const int result = nativeInvoke<int>(0x9180FF1C, TRUE);
+    const BOOL inSession = nativeInvoke<BOOL>(0x8CA54980);
+    const BOOL isHost = nativeInvoke<BOOL>(0xCDAC0F0E);
+    g_status = "NET_ENABLE_MULTIPLAYER result=" + std::to_string(result) +
+               " session=" + std::to_string(inSession);
+    writeLog("MP enable: NET_ENABLE_MULTIPLAYER result=%d inSession=%d isHost=%d",
+             result, inSession, isHost);
+}
+
+static void mpEnterNetworkingUi() {
+    const char* const layers[] = {
+        "networking",
+        "net",
+        "pausemenu",
+        "pausemenu_networking",
+        "content/ui/pausemenu/networking.sc.xml",
+    };
+    for (const char* layer : layers) {
+        nativeInvoke<void>(0x594F2657, layer);
+        writeLog("MP UI enter attempted: %s", layer);
+    }
+    g_status = "Requested MP/networking UI layers";
+}
+
+static void mpStartCoreThreads() {
+    const char* const systemThread[] = {
+        "multiplayer/multiplayer_system_thread",
+        "multiplayer/multiplayer_system_thread.csc",
+        "content/release/multiplayer/multiplayer_system_thread.csc",
+        "release/multiplayer/multiplayer_system_thread.csc",
+    };
+    const char* const updateThread[] = {
+        "multiplayer/multiplayer_update_thread",
+        "multiplayer/multiplayer_update_thread.csc",
+        "content/release/multiplayer/multiplayer_update_thread.csc",
+        "release/multiplayer/multiplayer_update_thread.csc",
+    };
+    const int systemHandle = launchFirstExistingScript("mp_system_thread", systemThread, _countof(systemThread));
+    const int updateHandle = launchFirstExistingScript("mp_update_thread", updateThread, _countof(updateThread));
+    g_status = "MP threads sys=" + std::to_string(systemHandle) +
+               " upd=" + std::to_string(updateHandle);
+}
+
+static void mpLaunchFreemode() {
+    const char* const paths[] = {
+        "multiplayer/freemode/freemode",
+        "multiplayer/freemode/freemode.csc",
+        "content/release/multiplayer/freemode/freemode.csc",
+        "release/multiplayer/freemode/freemode.csc",
+        "freemode",
+    };
+    launchFirstExistingScript("freemode", paths, _countof(paths));
+}
+
+static void mpLaunchDeathmatch() {
+    const char* const paths[] = {
+        "multiplayer/deathmatch/deathmatch",
+        "multiplayer/deathmatch/deathmatch.csc",
+        "content/release/multiplayer/deathmatch/deathmatch.csc",
+        "release/multiplayer/deathmatch/deathmatch.csc",
+        "deathmatch",
+    };
+    launchFirstExistingScript("deathmatch", paths, _countof(paths));
+}
+
+static void mpLaunchCtf() {
+    const char* const paths[] = {
+        "multiplayer/ctf/ctf_base_game",
+        "multiplayer/ctf/ctf_base_game.csc",
+        "content/release/multiplayer/ctf/ctf_base_game.csc",
+        "release/multiplayer/ctf/ctf_base_game.csc",
+        "ctf_base_game",
+    };
+    launchFirstExistingScript("ctf", paths, _countof(paths));
+}
+
 static void executeSelectedAction() {
     const std::string action = selectedAction();
     writeActionPlan();
@@ -1223,6 +1369,20 @@ static void executeSelectedAction() {
         setPlayerFactionSide(FACTION_GENERIC_CRIMINAL, "generic criminal/gang");
     } else if (action == "restore_player_faction_request") {
         restorePlayerFaction();
+    } else if (action == "mp_status_probe_request") {
+        mpStatusProbe();
+    } else if (action == "mp_enable_multiplayer_request") {
+        mpEnableMultiplayer();
+    } else if (action == "mp_enter_networking_ui_request") {
+        mpEnterNetworkingUi();
+    } else if (action == "mp_start_core_threads_request") {
+        mpStartCoreThreads();
+    } else if (action == "mp_launch_freemode_request") {
+        mpLaunchFreemode();
+    } else if (action == "mp_launch_deathmatch_request") {
+        mpLaunchDeathmatch();
+    } else if (action == "mp_launch_ctf_request") {
+        mpLaunchCtf();
     } else if (action == "status_request") {
         pruneSpawnedActors();
         const int actorEnum = selectedActorEnum();

@@ -60,6 +60,28 @@ PROFILES: dict[str, dict[str, object]] = {
             "content/ui/pausemenu/net/0x1374443B.xml",
         ],
     },
+    "lanmenu_only": {
+        "description": "Replace only the LAN/System Link menu with the content-convert copy, plus Social Club support scripts.",
+        "include": [
+            "content/ui/pausemenu/net/lanmenu.sc.xml",
+            "content/release/scripting/DesignerDefined/socialclub/**",
+        ],
+        "replace": [
+            "content/ui/pausemenu/net/lanmenu.sc.xml",
+        ],
+    },
+    "mp_confirm_only": {
+        "description": "Replace only the same-hash offline and play-confirm MP route files, plus Social Club support scripts.",
+        "include": [
+            "content/ui/pausemenu/net/0x118473D0.xml",
+            "content/ui/pausemenu/net/0x1374443B.xml",
+            "content/release/scripting/DesignerDefined/socialclub/**",
+        ],
+        "replace": [
+            "content/ui/pausemenu/net/0x118473D0.xml",
+            "content/ui/pausemenu/net/0x1374443B.xml",
+        ],
+    },
     "force_freemode": {
         "description": "Start from the current LAN fallback source and add a direct LAN route plus support aliases. This is the strongest freeroam test candidate.",
         "include": [
