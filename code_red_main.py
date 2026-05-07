@@ -4,8 +4,8 @@ Code RED main workbench - consolidated UI shell.
 This shell is intentionally conservative:
 - RPF archives are treated as read-only game archives.
 - ZIP files are treated as package/transport archives.
-- Script resources stay classified in the Scripts lane; this file does not
-  compile or mutate scripts.
+- Script resources, including script-adjacent WSV resources, stay classified in
+  the Scripts lane; this file does not compile or mutate scripts.
 
 Python: 3.13+
 Dependencies: stdlib only (tkinter is bundled with most Python builds)
@@ -33,10 +33,10 @@ except Exception:  # pragma: no cover - allows headless/static imports
     messagebox = None  # type: ignore[assignment]
 
 APP_TITLE = "Code RED - Main Workbench"
-APP_VERSION = "rpf-first-anti-regression-2026-05-06"
+APP_VERSION = "rpf-first-wsv-script-lane-2026-05-06"
 
 SPLIT_ZIP_EXTENSIONS = tuple(f".z{i:02d}" for i in range(1, 100))
-SCRIPT_EXTENSIONS = (".wsc", ".xsc", ".sco")
+SCRIPT_EXTENSIONS = (".wsc", ".xsc", ".sco", ".wsv")
 
 # Centralized lane routing. Keep this as the single source of truth for buttons,
 # inspector headings, report grouping, and anti-regression checks.
@@ -168,6 +168,8 @@ def scan_filesystem(path: Path) -> list[ResourceRecord]:
                 notes.append("large file; prefix hash only")
             if fp.suffix.lower() == ".rpf":
                 notes.append("RPF game archive; Scan Archive inventories members read-only")
+            if fp.suffix.lower() == ".wsv":
+                notes.append("WSV script-adjacent resource; routed to Scripts lane")
             fragment_note = _split_fragment_note(fp)
             if fragment_note:
                 notes.append(fragment_note)
@@ -188,6 +190,9 @@ def scan_filesystem(path: Path) -> list[ResourceRecord]:
 
 def _record_from_archive_member(archive: Path, member_name: str, *, size: int = 0, source: str, note: str) -> ResourceRecord:
     member_path = member_name.strip().replace("\\", "/")
+    notes = [note]
+    if Path(member_path).suffix.lower() == ".wsv":
+        notes.append("WSV script-adjacent resource; routed to Scripts lane")
     return ResourceRecord(
         path=f"{archive}::{member_path}",
         lane=classify_extension(member_path),
@@ -195,7 +200,7 @@ def _record_from_archive_member(archive: Path, member_name: str, *, size: int = 
         size=size,
         sha1="",
         source=source,
-        notes=[note],
+        notes=notes,
     )
 
 
@@ -406,7 +411,7 @@ class CodeRedApp:
             button.grid(row=row, column=0, sticky="ew", pady=3)
             self._lane_buttons[lane] = button
         rail.rowconfigure(len(RESOURCE_LANES) + 1, weight=1)
-        hint = "RPF is read-only game archive inventory. ZIP is package inventory. Script lane is protected."
+        hint = "RPF is read-only game archive inventory. ZIP is package inventory. Script lane is protected, including WSV."
         ttk.Label(rail, text=hint, style="Muted.TLabel", wraplength=180, justify="left").grid(row=len(RESOURCE_LANES) + 2, column=0, sticky="sew", pady=(12, 0))
 
     def _build_workspace(self, body: "ttk.Frame") -> None:
