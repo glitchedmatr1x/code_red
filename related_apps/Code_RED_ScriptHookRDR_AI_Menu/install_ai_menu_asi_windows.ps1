@@ -84,4 +84,4 @@ Write-Host "ASI:" $DestAsi
 Write-Host "INI:" (Join-Path $GameRoot "CodeRED_AI_Menu.ini")
 Write-Host "Data:" $DataDest
 Write-Host "Report:" $InstallReport
-Write-Host "Next: launch the game, open CodeRED AI Menu, run Status or Stage Override RPF Folder."
+Write-Host "Next: launch the game, open CodeRED AI Menu, run Status or Apply Override RPF Folder."

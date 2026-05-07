@@ -7,7 +7,7 @@ mp_start_core_threads_request,MP Start Core Threads,mp_access,0,Disabled for lau
 mp_launch_freemode_request,MP Launch Freemode,mp_access,0,Disabled for launch stability; launching freemode from the menu caused native invoker errors
 mp_launch_deathmatch_request,MP Launch Deathmatch,mp_access,0,Disabled for launch stability; launching deathmatch from the menu caused native invoker errors
 mp_launch_ctf_request,MP Launch CTF,mp_access,0,Disabled for launch stability; launching MP scripts from the menu is not proven safe
-reload_override_rpf_request,Stage Override RPF Folder,rpf_override,1,Stages override\patchN.rpf files into game\patchN.rpf for the existing rpf_patch.asi hook and writes state JSON; no fake live remount is claimed
+reload_override_rpf_request,Apply Override RPF Folder,rpf_override,1,Applies override\content.rpf or a content-sized override\patch0.rpf to game\content.rpf with backup, then stages patchN.rpf files for rpf_patch.asi; restart is required
 dismiss_ai_guest_request,Dismiss Tracked Actors,cleanup,1,Safe cleanup action for any previously tracked CodeRED actors
 spawn_selected_npc_request,Spawn Disabled - Raw Native Crashes,spawn,0,CONFIRMED CRASH TRIGGER; do not call raw CREATE_ACTOR_IN_LAYOUT from the menu until ASI source has hard guards and a safer vehicle/gringo lane
 regroup_near_player_request,Regroup Near Player,behavior,0,Disabled because it depends on spawned actor handles after the spawn crash trigger

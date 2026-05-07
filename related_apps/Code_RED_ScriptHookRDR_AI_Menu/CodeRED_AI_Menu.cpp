@@ -111,6 +111,7 @@ static std::string g_actionPlanPath = "scratch/codered_ai_action_plan.json";
 static std::string g_statePath = "scratch/codered_ai_state.json";
 static std::string g_overrideRpfPath = "override";
 static std::string g_patchStagePath = "game";
+static std::string g_contentOverrideName = "content.rpf";
 static std::string g_status = "CodeRED AI Menu ready";
 
 static std::vector<std::string> g_roster;
@@ -532,6 +533,31 @@ static std::string joinPath(const std::string& base, const std::string& leaf) {
     return base + "\\" + leaf;
 }
 
+static bool fileExists(const std::string& path) {
+    const DWORD attr = GetFileAttributesA(path.c_str());
+    return attr != INVALID_FILE_ATTRIBUTES &&
+           (attr & FILE_ATTRIBUTE_DIRECTORY) == 0;
+}
+
+static unsigned long long fileSizeBytes(const std::string& path) {
+    WIN32_FILE_ATTRIBUTE_DATA data = {};
+    if (!GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &data)) {
+        return 0;
+    }
+    if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) return 0;
+    return (static_cast<unsigned long long>(data.nFileSizeHigh) << 32) |
+           static_cast<unsigned long long>(data.nFileSizeLow);
+}
+
+static unsigned long long fileWriteTime(const std::string& path) {
+    WIN32_FILE_ATTRIBUTE_DATA data = {};
+    if (!GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &data)) {
+        return 0;
+    }
+    return (static_cast<unsigned long long>(data.ftLastWriteTime.dwHighDateTime) << 32) |
+           static_cast<unsigned long long>(data.ftLastWriteTime.dwLowDateTime);
+}
+
 static std::string enumHex(int actorEnum) {
     char buffer[32] = {};
     snprintf(buffer, sizeof(buffer), "0x%08X",
@@ -609,14 +635,17 @@ static void loadConfig() {
         } else if (key == "patch_stage" || key == "patch_stage_dir" ||
                    key == "rpf_patch_stage") {
             g_patchStagePath = value;
+        } else if (key == "content_override" || key == "content_rpf" ||
+                   key == "content_override_name") {
+            g_contentOverrideName = value;
         }
     }
 
-    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s state=%s override_rpf=%s patch_stage=%s",
+    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s state=%s override_rpf=%s patch_stage=%s content_override=%s",
              g_rosterPath.c_str(), g_actorEnumMapPath.c_str(),
              g_actionsPath.c_str(), g_actionPlanPath.c_str(),
              g_statePath.c_str(), g_overrideRpfPath.c_str(),
-             g_patchStagePath.c_str());
+             g_patchStagePath.c_str(), g_contentOverrideName.c_str());
 }
 
 static void loadActorEnumMap() {
@@ -1479,6 +1508,7 @@ static void writeRuntimeState(const std::string& phase,
     file << "  \"timestamp\": " << static_cast<long long>(now) << ",\n";
     file << "  \"override_rpf_dir\": \"" << jsonEscape(g_overrideRpfPath) << "\",\n";
     file << "  \"patch_stage_dir\": \"" << jsonEscape(g_patchStagePath) << "\",\n";
+    file << "  \"content_override\": \"" << jsonEscape(g_contentOverrideName) << "\",\n";
     file << "  \"player_actor\": " << player << ",\n";
     file << "  \"player_side_faction\": " << g_playerSideFaction << ",\n";
     if (hasPlayerPos) {
@@ -1501,15 +1531,114 @@ static void writeRuntimeState(const std::string& phase,
     file << "}\n";
 }
 
+static bool applyContentOverride(std::string* appliedSource,
+                                 std::string* failure) {
+    const std::string contentSource =
+        joinPath(g_overrideRpfPath, g_contentOverrideName);
+    const std::string patch0Source = joinPath(g_overrideRpfPath, "patch0.rpf");
+    const std::string target = joinPath(g_patchStagePath, "content.rpf");
+    const std::string backup = target + ".codered_original_backup";
+
+    std::string source;
+    if (fileExists(contentSource)) {
+        source = contentSource;
+    } else if (fileExists(patch0Source)) {
+        const unsigned long long patchSize = fileSizeBytes(patch0Source);
+        const unsigned long long targetSize = fileSizeBytes(target);
+        if (patchSize >= 8ULL * 1024ULL * 1024ULL &&
+            (targetSize == 0 ||
+             (patchSize * 10ULL >= targetSize * 7ULL &&
+              patchSize * 10ULL <= targetSize * 13ULL))) {
+            source = patch0Source;
+        }
+    }
+
+    if (source.empty()) return false;
+
+    createDirectoriesForPath(g_patchStagePath);
+    const bool patch0IsContent =
+        lowerCopy(source) == lowerCopy(patch0Source);
+    const std::string stagedPatch0 = joinPath(g_patchStagePath, "patch0.rpf");
+    const unsigned long long sourceSize = fileSizeBytes(source);
+    const unsigned long long targetSize = fileSizeBytes(target);
+    const unsigned long long sourceTime = fileWriteTime(source);
+    const unsigned long long targetTime = fileWriteTime(target);
+    if (sourceSize != 0 && sourceSize == targetSize && targetTime >= sourceTime) {
+        if (patch0IsContent && fileExists(stagedPatch0)) {
+            if (DeleteFileA(stagedPatch0.c_str())) {
+                writeLog("Removed staged patch0 because patch0 is active content override: %s",
+                         stagedPatch0.c_str());
+            } else {
+                writeLog("Could not remove staged patch0 while patch0 is active content override: %s err=%lu",
+                         stagedPatch0.c_str(), GetLastError());
+            }
+        }
+        if (appliedSource) *appliedSource = source;
+        writeLog("Content RPF override already current: %s -> %s size=%llu",
+                 source.c_str(), target.c_str(), sourceSize);
+        return true;
+    }
+
+    if (!fileExists(backup) && fileExists(target)) {
+        if (!CopyFileA(target.c_str(), backup.c_str(), TRUE)) {
+            const DWORD err = GetLastError();
+            if (failure) {
+                *failure = "Content RPF backup failed err " + std::to_string(err);
+            }
+            writeLog("Content RPF backup failed: %s -> %s err=%lu",
+                     target.c_str(), backup.c_str(), err);
+            return false;
+        }
+        writeLog("Content RPF backup created: %s", backup.c_str());
+    }
+
+    if (!CopyFileA(source.c_str(), target.c_str(), FALSE)) {
+        const DWORD err = GetLastError();
+        if (failure) {
+            if (err == ERROR_SHARING_VIOLATION || err == ERROR_LOCK_VIOLATION) {
+                *failure = "Content RPF locked by game; restart to apply override";
+            } else {
+                *failure = "Content RPF override failed err " + std::to_string(err);
+            }
+        }
+        writeLog("Content RPF override failed: %s -> %s err=%lu",
+                 source.c_str(), target.c_str(), err);
+        return false;
+    }
+
+    if (appliedSource) *appliedSource = source;
+    if (patch0IsContent && fileExists(stagedPatch0)) {
+        if (DeleteFileA(stagedPatch0.c_str())) {
+            writeLog("Removed staged patch0 because patch0 is active content override: %s",
+                     stagedPatch0.c_str());
+        } else {
+            writeLog("Could not remove staged patch0 while patch0 is active content override: %s err=%lu",
+                     stagedPatch0.c_str(), GetLastError());
+        }
+    }
+    writeLog("Content RPF override applied: %s -> %s size=%llu",
+             source.c_str(), target.c_str(), fileSizeBytes(source));
+    return true;
+}
+
 static void reloadOverrideRpf() {
     loadConfig();
     const std::vector<OverridePatchFile> patches = findOverridePatchFiles();
     writeRuntimeState("before_override_rpf_reload", patches, "snapshot");
 
-    if (patches.empty()) {
-        g_status = "No override patchN.rpf files in " + g_overrideRpfPath;
+    std::string contentSource;
+    std::string contentFailure;
+    const bool appliedContent = applyContentOverride(&contentSource, &contentFailure);
+    if (!contentFailure.empty()) {
+        g_status = contentFailure;
+        writeRuntimeState("override_rpf_reload_failed", patches, g_status);
+        return;
+    }
+
+    if (patches.empty() && !appliedContent) {
+        g_status = "No override RPF files in " + g_overrideRpfPath;
         writeRuntimeState("override_rpf_reload_skipped", patches, "no_patch_files");
-        writeLog("Override RPF reload skipped: no patchN.rpf files in %s",
+        writeLog("Override RPF reload skipped: no content.rpf or patchN.rpf files in %s",
                  g_overrideRpfPath.c_str());
         return;
     }
@@ -1527,7 +1656,15 @@ static void reloadOverrideRpf() {
 
     createDirectoriesForPath(g_patchStagePath);
     size_t copied = 0;
+    size_t skipped = 0;
     for (const OverridePatchFile& patch : patches) {
+        if (appliedContent &&
+            lowerCopy(patch.sourcePath) == lowerCopy(contentSource)) {
+            ++skipped;
+            writeLog("Override RPF patch stage skipped because it is the active content override: %s",
+                     patch.sourcePath.c_str());
+            continue;
+        }
         if (CopyFileA(patch.sourcePath.c_str(), patch.stagedPath.c_str(), FALSE)) {
             ++copied;
             writeLog("Override RPF staged: %s -> %s size=%llu",
@@ -1543,11 +1680,24 @@ static void reloadOverrideRpf() {
         }
     }
 
-    g_status = "Staged " + std::to_string(copied) +
-               " override RPF(s); restart/load required";
+    if (appliedContent) {
+        g_status = "Applied content override";
+        if (copied) {
+            g_status += " and staged " + std::to_string(copied) + " patch RPF(s)";
+        }
+        if (skipped) {
+            g_status += "; skipped active content patch";
+        }
+        g_status += "; restart required";
+    } else {
+        g_status = "Staged " + std::to_string(copied) +
+                   " patch RPF(s); restart required";
+    }
     writeRuntimeState("after_override_rpf_reload", patches, g_status);
-    writeLog("Override RPF staged: copied=%zu; live remount not called",
-             copied);
+    writeLog("Override RPF applied: content=%s source=%s patch_copied=%zu patch_skipped=%zu; live remount not called",
+             appliedContent ? "true" : "false",
+             appliedContent ? contentSource.c_str() : "",
+             copied, skipped);
 }
 
 static void executeSelectedAction() {
@@ -1910,6 +2060,18 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID) {
         codered::g_module = module;
         InterlockedExchange(&codered::g_stopRequested, 0);
         codered::writeLog("ASI attached");
+        codered::loadConfig();
+        {
+            std::string source;
+            std::string failure;
+            if (codered::applyContentOverride(&source, &failure)) {
+                codered::writeLog("Startup content override check complete: %s",
+                                  source.c_str());
+            } else if (!failure.empty()) {
+                codered::writeLog("Startup content override check failed: %s",
+                                  failure.c_str());
+            }
+        }
         HANDLE thread = CreateThread(nullptr, 0, codered::registrationThread,
                                      module, 0, nullptr);
         if (thread) {
