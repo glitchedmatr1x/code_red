@@ -2,32 +2,34 @@
 
 Code RED is a read-first RDR resource workbench. The current safe launch path is:
 
-```bash
-python run_workbench.py
+```bat
+Code_RED.bat
 ```
 
-Optional direct launch with an archive or folder:
+Python fallback:
 
-```bash
-python run_workbench.py /path/to/content.rpf
+```bat
+py -3 main.py
 ```
 
-Headless safety check:
+Decompile / recompile capability check:
 
-```bash
-python code_red_main.py --self-test
+```bat
+Run_CodeRED_Decompile_Recompile_Hub.bat --validate
 ```
 
-Headless archive inventory check:
+RPF edit lab / inventory entry point:
 
-```bash
-python code_red_main.py --scan-archive /path/to/content.rpf
+```bat
+Run_CodeRED_RPF_Edit_Lab.bat
 ```
 
 ## Launch rules
 
-- `run_workbench.py` is the source launcher.
-- `code_red_main.py` is the conservative stable shell.
+- `Code_RED.bat` is the Windows source launcher.
+- `main.py` is the canonical Python app entry point.
+- `run_workbench.py` is compatibility only.
+- `code_red_main.py` is the conservative stable shell/fallback.
 - `python_workbench.py` contains the larger research/workbench implementation and script/toolchain lanes.
 - Do not launch project files, helper captures, generated reports, or archived test data as the app entry point.
 
@@ -36,13 +38,15 @@ python code_red_main.py --scan-archive /path/to/content.rpf
 - RPF archives are first-class game archives and are scanned read-only.
 - ZIP files are treated as package/transport archives only.
 - Split ZIP fragments such as `.z01` through `.z09` are tracked as fragments, not game archives.
-- Archive mutation/write-back stays staged unless a validated backend is attached.
+- Archive mutation/write-back stays staged to copied archives unless a validated backend is attached.
+- Use `tools/codered_rpf_utils.py` for RPF inventory/extract and `tools/codered_rpf_utils_patch.py` for patch-folder apply to copied archives.
 
 ## Script safety rules
 
 - `.wsc`, `.xsc`, and `.sco` stay routed to the Scripts lane.
 - The stable shell inventories script entries found inside RPF archives without compiling or mutating them.
-- The heavier script read/compile tooling in `python_workbench.py` is intentionally left untouched by lightweight UI maintenance.
+- Source compile is routed through `script_compiling/sccl/`.
+- Existing compiled `.wsc/.csc/.xsc/.sco` bytecode-to-source decompile is not proven yet; Code RED exports readable/pseudo-decompile reports until a real decompiler is available.
 
 ## Repository hygiene
 

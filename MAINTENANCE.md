@@ -4,11 +4,11 @@
 
 Use this launcher from the repository root:
 
-```bash
-python run_workbench.py
+```bat
+Code_RED.bat
 ```
 
-The stable launcher enters `code_red_main.py`. The larger `python_workbench.py` file is the full research/workbench backend and still contains the deeper RPF6, script/toolchain, source-validation, Magic-RDR, SC-CL, and archive-proof lanes.
+The canonical Python entry point is `main.py`. `run_workbench.py` is only a compatibility shim. The larger `python_workbench.py` file is the full research/workbench backend and still contains the deeper RPF6, script/toolchain, source-validation, Magic-RDR, SC-CL, and archive-proof lanes.
 
 ## Protected behavior
 
@@ -16,8 +16,9 @@ The stable launcher enters `code_red_main.py`. The larger `python_workbench.py` 
 - ZIP support is only for package/transport inspection.
 - `.wsc`, `.xsc`, `.sco`, and script-adjacent `.wsv` resources must remain routed to script/tooling workflows.
 - Script read/compile code in `python_workbench.py` should not be edited during lightweight UI cleanup.
-- Archive write-back and mutation should stay staged unless a validated backend is attached.
+- Archive write-back and mutation should stay staged to copied archives unless a validated backend is attached.
 - The full backend must continue exposing RPF6 audit/export, copied-archive proof, source validation, script tooling detection, Magic-RDR/SC-CL packaging, and safe copied-archive patch application.
+- True compiled-script bytecode-to-source decompilation must not be claimed until a real decompiler is proven in this checkout.
 
 ## Script Workshop
 
@@ -42,6 +43,25 @@ Run this before and after launcher, cleanup, archive, or script-lane changes:
 ```bash
 python tools/codered_anti_regression.py
 ```
+
+## Decompile / recompile hub
+
+Run this after archive/script/tooling changes:
+
+```bat
+Run_CodeRED_Decompile_Recompile_Hub.bat --validate
+```
+
+Current proven lanes:
+
+- RPF6 inventory and extraction.
+- RPF patch-folder apply to a copied archive.
+- Source/text script read/edit/export queues.
+- SC-CL source compile proof through `script_compiling/sccl/`.
+
+Blocked lane:
+
+- Existing compiled `.wsc/.csc/.xsc/.sco` bytecode-to-source decompile.
 
 The guard uses tiny synthetic RPF/ZIP files. It checks stable-shell routing and verifies that `python_workbench.py` still exposes the full backend symbols needed to keep Code RED beyond a basic Magic-RDR/Codex-style browser.
 

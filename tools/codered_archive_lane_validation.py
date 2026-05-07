@@ -19,6 +19,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from codered_rpf_utils import extract_entry_payload
+
 VERSION = "1.0.0-archive-lane-validation"
 DEFAULT_ARCHIVE_NAMES = (
     "content.rpf",
@@ -109,6 +111,7 @@ def discover_archives(root: Path, explicit: list[Path]) -> list[Path]:
         root / "game",
         root,
         root.parent,
+        root.parent / "game",
     ]
     for folder in candidate_dirs:
         for name in DEFAULT_ARCHIVE_NAMES:
@@ -179,7 +182,7 @@ def summarize_archive(wb, archive_path: Path, sample_limit: int) -> ArchiveSumma
         }
         summary.sample_attempts += 1
         try:
-            data = wb.extract_rpf_entry(archive_path, ent)
+            data = extract_entry_payload(wb, archive_path, ent)
             row["extract_ok"] = True
             row["extracted_size"] = len(data)
             resource = wb.parse_resource_header(data)
