@@ -1,6 +1,6 @@
 # Code RED Decompile / Recompile Hub
 
-Generated UTC: `2026-05-08T08:40:52Z`
+Generated UTC: `2026-05-08T09:08:13Z`
 
 Status: **READY_WITH_BLOCKED_SOURCE_DECOMPILER**
 
@@ -16,11 +16,12 @@ Status: **READY_WITH_BLOCKED_SOURCE_DECOMPILER**
 | `script_source_compile` | `ready` | `script_compiling/sccl/compile_vehicle_menu_probe_windows.bat` | SC-CL compile lane has produced real .xsc/.sco/.wsc proof artifacts where present |
 | `wsc_binary_edit_existing_file_patch` | `ready` | `tools/codered_wsc_edit_workflow.py` | Default WSC lane extracts the original WSC, inspects headers/strings/offsets, applies controlled length-preserving string or byte patches, and packs the edited original-derived WSC into a copied RPF |
 | `wsc_full_replacement_source_built` | `ready` | `tools/codered_wsc_edit_workflow.py` | Explicit full replacement lane creates src/main.c, compiles source to WSC/RSC85 through SC-CL, and packs only a copied RPF output under build/ |
+| `wsc_source_decompile_rebuild` | `blocked` | `tools/codered_wsc_edit_workflow.py source-edit-status` | Opening existing WSC as editable C/source, changing functions, adding code, freely expanding strings, and rebuilding internal sections requires a proven bytecode decoder, IR/lifter, assembler, and RSC85/WSC section rebuilder; none is present locally |
 | `compiled_script_source_decompile` | `blocked` | `` | No proven WSC/CSC/XSC/SCO bytecode-to-source decompiler was found; keep binary pseudo-decompile/export honest |
 
 ## Important Boundary
 
-Code RED can extract/decode RPF entries, patch supported entries into copied archives, binary-edit existing WSC files with length-preserving patches, and compile full replacement WSC files through SC-CL proof lanes. It still does not have a proven compiled-script bytecode-to-source decompiler, so `.wsc/.csc/.xsc/.sco` source recovery remains blocked until a real decompiler is found or built.
+Code RED can extract/decode RPF entries, patch supported entries into copied archives, binary-edit existing WSC files with length-preserving patches, and compile full replacement WSC files through SC-CL proof lanes. It still does not have a proven compiled-script bytecode-to-source decompiler/rebuilder, so opening existing `.wsc/.csc/.xsc/.sco` files as editable C/source remains blocked until a real decoder, lifter, assembler, and WSC section rebuilder are found or built.
 
 ## Magic-RDR Parity / Name Recovery
 
@@ -40,6 +41,7 @@ python tools\codered_wsc_edit_workflow.py init --name binary_initpopulation --ar
 python tools\codered_wsc_edit_workflow.py inspect --workspace build\wsc_edit\binary_initpopulation
 python tools\codered_wsc_edit_workflow.py strings --workspace build\wsc_edit\binary_initpopulation
 python tools\codered_wsc_edit_workflow.py replace-string --workspace build\wsc_edit\binary_initpopulation --find OLD_TEXT --replace NEW_TEXT
+python tools\codered_wsc_edit_workflow.py source-edit-status --workspace build\wsc_edit\binary_initpopulation
 python tools\codered_wsc_edit_workflow.py full-replace-init --name source_wait_probe --archive-path root/content/release64/init/initpopulation.wsc
 python tools\codered_wsc_edit_workflow.py full-replace-compile --workspace build\wsc_edit\source_wait_probe --clean
 python tools\codered_wsc_edit_workflow.py pack --workspace build\wsc_edit\source_wait_probe --write

@@ -118,6 +118,11 @@ def build_report(validate: bool) -> dict:
             "tool": "tools/codered_wsc_edit_workflow.py",
             "proof": "Explicit full replacement lane creates src/main.c, compiles source to WSC/RSC85 through SC-CL, and packs only a copied RPF output under build/",
         },
+        "wsc_source_decompile_rebuild": {
+            "state": "blocked",
+            "tool": "tools/codered_wsc_edit_workflow.py source-edit-status",
+            "proof": "Opening existing WSC as editable C/source, changing functions, adding code, freely expanding strings, and rebuilding internal sections requires a proven bytecode decoder, IR/lifter, assembler, and RSC85/WSC section rebuilder; none is present locally",
+        },
         "compiled_script_source_decompile": {
             "state": "blocked",
             "tool": "",
@@ -153,7 +158,7 @@ def write_outputs(report: dict) -> None:
     md += "## Capability Matrix\n\n| Lane | State | Tool | Proof / Boundary |\n|---|---|---|---|\n"
     md += "\n".join(lane_lines)
     md += "\n\n## Important Boundary\n\n"
-    md += "Code RED can extract/decode RPF entries, patch supported entries into copied archives, binary-edit existing WSC files with length-preserving patches, and compile full replacement WSC files through SC-CL proof lanes. It still does not have a proven compiled-script bytecode-to-source decompiler, so `.wsc/.csc/.xsc/.sco` source recovery remains blocked until a real decompiler is found or built.\n"
+    md += "Code RED can extract/decode RPF entries, patch supported entries into copied archives, binary-edit existing WSC files with length-preserving patches, and compile full replacement WSC files through SC-CL proof lanes. It still does not have a proven compiled-script bytecode-to-source decompiler/rebuilder, so opening existing `.wsc/.csc/.xsc/.sco` files as editable C/source remains blocked until a real decoder, lifter, assembler, and WSC section rebuilder are found or built.\n"
     md += "\n## Magic-RDR Parity / Name Recovery\n\n"
     md += "Code RED now uses local Magic-RDR `ImportedFileNames.txt` resources for RPF6 hash-name recovery. Validated result: live `content.rpf` resolved `1636/1636` entries and extracted `1320/1320` files through the internal RPF6 extractor.\n\n"
     md += "Primary proof log: `logs\\IMPORTANT_CodeRED_Magic_RDR_Parity_Extraction_2026-05-06.md`\n\n"
@@ -167,6 +172,7 @@ def write_outputs(report: dict) -> None:
     md += "python tools\\codered_wsc_edit_workflow.py inspect --workspace build\\wsc_edit\\binary_initpopulation\n"
     md += "python tools\\codered_wsc_edit_workflow.py strings --workspace build\\wsc_edit\\binary_initpopulation\n"
     md += "python tools\\codered_wsc_edit_workflow.py replace-string --workspace build\\wsc_edit\\binary_initpopulation --find OLD_TEXT --replace NEW_TEXT\n"
+    md += "python tools\\codered_wsc_edit_workflow.py source-edit-status --workspace build\\wsc_edit\\binary_initpopulation\n"
     md += "python tools\\codered_wsc_edit_workflow.py full-replace-init --name source_wait_probe --archive-path root/content/release64/init/initpopulation.wsc\n"
     md += "python tools\\codered_wsc_edit_workflow.py full-replace-compile --workspace build\\wsc_edit\\source_wait_probe --clean\n"
     md += "python tools\\codered_wsc_edit_workflow.py pack --workspace build\\wsc_edit\\source_wait_probe --write\n"

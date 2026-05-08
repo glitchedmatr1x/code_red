@@ -38,6 +38,35 @@ Run_CodeRED_WSC_Edit_Workflow.bat full-replace-compile --workspace build\wsc_edi
 Run_CodeRED_WSC_Edit_Workflow.bat pack --workspace build\wsc_edit\source_wait_probe --write
 ```
 
+## WSC As C/Source Editing
+
+This is not implemented yet. Code RED will not fake it.
+
+The requested capabilities are blocked until the project has a real WSC bytecode decompiler/rebuilder:
+
+- open existing WSC as C/source
+- change recovered functions
+- add new code into an existing WSC
+- expand strings freely
+- rebuild internal WSC sections
+- understand bytecode automatically
+
+Use this command to write the current blocked-status report for a workspace or WSC:
+
+```bat
+Run_CodeRED_WSC_Edit_Workflow.bat source-edit-status --workspace build\wsc_edit\binary_initpopulation
+```
+
+Required missing pieces:
+
+- WSC/RSC85 internal section table parser with validated offsets, lengths, alignment, and checksums
+- RDR WSC bytecode decoder with opcode table, operand formats, jump/call targets, locals, globals, and native call metadata
+- control-flow graph and function boundary recovery
+- IR-to-C or pseudocode lifter that can round-trip enough structure for edits
+- assembler/recompiler from edited IR/source back to valid WSC bytecode
+- container rebuilder that can expand strings/code and update all affected section offsets, lengths, relocations, and resource metadata
+- runtime validation corpus proving rebuilt WSCs boot and execute beyond trivial string/byte patches
+
 ## Boundary
 
 Code RED still does not have a proven WSC bytecode-to-source decompiler. `decompile` is an alias for creating an existing-file binary edit workspace: it extracts and inspects the original WSC, but it does not recover original source.

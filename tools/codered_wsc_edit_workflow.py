@@ -40,6 +40,15 @@ PROTECTED_WRITE_ROOTS = [
     ROOT.parent / "game",
     ROOT.parent / "RDR-SteamGG.NET",
 ]
+ADVANCED_SOURCE_REQUIREMENTS = [
+    "WSC/RSC85 internal section table parser with validated offsets, lengths, alignment, and checksums",
+    "RDR WSC bytecode decoder with opcode table, operand formats, jump/call targets, locals, globals, and native call metadata",
+    "control-flow graph and function boundary recovery",
+    "IR-to-C or pseudocode lifter that can round-trip enough structure for edits",
+    "assembler/recompiler from edited IR/source back to valid WSC bytecode",
+    "container rebuilder that can expand strings/code and update all affected section offsets, lengths, relocations, and resource metadata",
+    "runtime validation corpus proving rebuilt WSCs boot and execute beyond trivial string/byte patches",
+]
 
 
 def sha1_bytes(data: bytes) -> str:
@@ -542,6 +551,49 @@ def cmd_patch_bytes(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_source_edit_status(args: argparse.Namespace) -> int:
+    source = ""
+    inspection = {}
+    if args.workspace:
+        manifest = load_manifest(Path(args.workspace))
+        source_path = workspace_wsc_path(manifest, args.input)
+        source = str(source_path)
+        inspection = inspect_blob(source_path.read_bytes(), string_limit=20)
+    elif args.input:
+        source_path = Path(args.input)
+        source = str(source_path)
+        inspection = inspect_blob(source_path.read_bytes(), string_limit=20)
+
+    report = {
+        "status": "blocked",
+        "lane": "wsc_source_decompile_rebuild",
+        "input": source,
+        "requested_capabilities": [
+            "open WSC as C/source",
+            "change functions",
+            "add new code into an existing WSC",
+            "expand strings freely",
+            "rebuild internal WSC sections",
+            "understand bytecode automatically",
+        ],
+        "available_today": [
+            "existing-WSC binary inspection",
+            "printable string extraction with offsets",
+            "length-preserving string patches",
+            "controlled byte patches",
+            "full source-built replacement through SC-CL",
+            "copied-RPF packing",
+        ],
+        "missing_requirements": ADVANCED_SOURCE_REQUIREMENTS,
+        "boundary": "This tool will not present binary patching or source-built replacement as original WSC source editing.",
+        "inspection": inspection,
+    }
+    out = Path(args.out) if args.out else DEFAULT_LOG_ROOT / "wsc_source_decompile_rebuild_blocked.json"
+    write_json(out, report)
+    print(json.dumps({"status": "blocked", "lane": report["lane"], "report": str(out)}, indent=2))
+    return 2
+
+
 def newest_file(root: Path, suffix: str) -> Path:
     matches = list(root.rglob(f"*{suffix}"))
     if not matches:
@@ -665,7 +717,7 @@ def cmd_inspect(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Safe Code RED WSC workflow: existing-file binary edit plus explicit source-built replacement")
+    parser = argparse.ArgumentParser(description="Safe Code RED WSC workflow: binary edit, explicit full replacement, and honest source-edit capability status")
     sub = parser.add_subparsers(dest="command", required=True)
 
     init = sub.add_parser("init", help="Create an existing-WSC binary edit workspace from an RPF entry.")
@@ -722,6 +774,18 @@ def main(argv: list[str] | None = None) -> int:
     patch_bytes.add_argument("--expected-hex", default="")
     patch_bytes.add_argument("--input", default="")
     patch_bytes.set_defaults(func=cmd_patch_bytes)
+
+    source_status = sub.add_parser("source-edit-status", help="Report why WSC-as-C/source editing is blocked until a real bytecode decompiler/rebuilder exists.")
+    source_status.add_argument("--workspace", default="")
+    source_status.add_argument("--input", default="")
+    source_status.add_argument("--out", default="")
+    source_status.set_defaults(func=cmd_source_edit_status)
+
+    open_source = sub.add_parser("open-source", help="Alias for source-edit-status. Does not fake WSC-to-C decompilation.")
+    open_source.add_argument("--workspace", default="")
+    open_source.add_argument("--input", default="")
+    open_source.add_argument("--out", default="")
+    open_source.set_defaults(func=cmd_source_edit_status)
 
     compile_cmd = sub.add_parser("compile", help="Compile a full replacement workspace src/main.c to XSC and WSC.")
     compile_cmd.add_argument("--workspace", required=True)
