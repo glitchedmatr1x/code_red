@@ -402,7 +402,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         return args.func(args)
     except Exception as exc:
-        print(json.dumps({"status": "error", "error": str(exc)}, indent=2))
+        print(json.dumps({"status": "error", "error": str(exc) or repr(exc)}, indent=2))
         return 1
 
 
