@@ -1,5 +1,7 @@
 {
+  "allow_spawn": false,
   "jsonl_log": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\CodeRED_Peer_Clone_Game_Bridge_v0_1\\runtime\\codered_peer_clone_game_bridge.jsonl",
+  "kill_switch": false,
   "last_error": "",
   "mode": "dry-run",
   "no_spawn_fallback": false,
@@ -8,5 +10,6 @@
   "schema": "codered.bridge.status.v1",
   "source": "CodeRED_Peer_Clone_Game_Bridge_DryRun_v0_1",
   "spawned": false,
-  "updated_ms": 1778240233650
+  "startup_delay_ms": 30000,
+  "updated_ms": 1778241211452
 }

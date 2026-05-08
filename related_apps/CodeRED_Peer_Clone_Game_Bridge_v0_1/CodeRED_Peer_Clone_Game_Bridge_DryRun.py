@@ -35,6 +35,9 @@ def write_status(path: Path, status: dict[str, Any]) -> None:
         "source": "CodeRED_Peer_Clone_Game_Bridge_DryRun_v0_1",
         "updated_ms": now_ms(),
         "mode": "dry-run",
+        "allow_spawn": False,
+        "startup_delay_ms": 30000,
+        "kill_switch": False,
         **status,
     }
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")

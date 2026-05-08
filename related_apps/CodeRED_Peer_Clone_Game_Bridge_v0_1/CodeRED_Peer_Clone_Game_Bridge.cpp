@@ -69,6 +69,8 @@ struct Config {
     float positionScale = 0.05f;
     float interpolation = 0.35f;
     DWORD tickMs = 100;
+    DWORD startupDelayMs = 30000;
+    bool allowSpawn = false;
     bool relativeRemoteCoordinates = true;
 };
 
@@ -97,6 +99,7 @@ static int g_spawnCounter = 0;
 static Vector3 g_clonePos = {};
 static DWORD g_lastReadTick = 0;
 static DWORD g_lastStatusTick = 0;
+static ULONGLONG g_scriptStartTick = 0;
 
 static constexpr float PI = 3.14159265358979323846f;
 
@@ -370,6 +373,8 @@ static void loadConfig() {
         else if (key == "position_scale") g_config.positionScale = static_cast<float>(std::atof(value.c_str()));
         else if (key == "interpolation") g_config.interpolation = std::max(0.01f, std::min(1.0f, static_cast<float>(std::atof(value.c_str()))));
         else if (key == "tick_ms") g_config.tickMs = static_cast<DWORD>(std::max(25, std::atoi(value.c_str())));
+        else if (key == "startup_delay_ms") g_config.startupDelayMs = static_cast<DWORD>(std::max(0, std::atoi(value.c_str())));
+        else if (key == "allow_spawn") g_config.allowSpawn = parseBool(value, g_config.allowSpawn);
         else if (key == "relative_remote_coordinates") g_config.relativeRemoteCoordinates = parseBool(value, g_config.relativeRemoteCoordinates);
     }
 
@@ -535,6 +540,8 @@ static void writeStatus(const char* phase, int remoteCount) {
         << "  \"native_ready\": " << (g_nativeReady ? "true" : "false") << ",\n"
         << "  \"kill_switch\": " << (g_killSwitch ? "true" : "false") << ",\n"
         << "  \"spawned\": " << ((g_clone > 0) ? "true" : "false") << ",\n"
+        << "  \"allow_spawn\": " << (g_config.allowSpawn ? "true" : "false") << ",\n"
+        << "  \"startup_delay_ms\": " << g_config.startupDelayMs << ",\n"
         << "  \"clone_actor\": " << g_clone << ",\n"
         << "  \"clone_actor_enum\": " << g_config.cloneActorEnum << ",\n"
         << "  \"no_spawn_fallback\": " << (g_noSpawnFallback ? "true" : "false") << ",\n"
@@ -571,6 +578,12 @@ static void cleanupClone(const char* reason) {
 static bool spawnCloneNearPlayer(const Vector3& playerPos, float playerHeading) {
     if (g_noSpawnFallback) return false;
     if (cloneValid()) return true;
+    if (g_config.cloneActorEnum >= 1177 && g_config.cloneActorEnum <= 1202) {
+        g_lastError = "vehicle actor enum blocked";
+        g_noSpawnFallback = true;
+        appendJsonl("spawn_blocked_vehicle_enum", "\"actor_enum\":" + std::to_string(g_config.cloneActorEnum));
+        return false;
+    }
 
     Layout layout = bridgeLayout();
     if (layout <= 0) {
@@ -634,6 +647,12 @@ static void tickBridge() {
         return;
     }
 
+    const ULONGLONG elapsed = GetTickCount64() - g_scriptStartTick;
+    if (elapsed < g_config.startupDelayMs) {
+        writeStatus("startup_delay", 0);
+        return;
+    }
+
     Vector3 playerPos = {};
     float playerHeading = 0.0f;
     Actor player = getPlayer(&playerPos, &playerHeading);
@@ -655,6 +674,12 @@ static void tickBridge() {
                         ",\"y\":" + std::to_string(remote.y) + ",\"z\":" + std::to_string(remote.z));
         }
         writeStatus("log_only", remoteCount);
+        return;
+    }
+
+    if ((g_config.mode == "spawn-test" || g_config.mode == "move-test") && !g_config.allowSpawn) {
+        g_lastError = "spawn blocked by config: set allow_spawn=true after launch is stable";
+        writeStatus("spawn_blocked_by_config", remoteCount);
         return;
     }
 
@@ -688,6 +713,7 @@ static void keyboardHandler(DWORD key, WORD, BYTE, BOOL, BOOL, BOOL, BOOL) {
 
 static void mainScript() {
     loadConfig();
+    g_scriptStartTick = GetTickCount64();
     appendJsonl("asi_script_started", "");
 
     while (InterlockedCompareExchange(&g_stopRequested, 0, 0) == 0) {
@@ -724,8 +750,8 @@ static DWORD WINAPI registrationThread(void*) {
     }
 
     if (InterlockedCompareExchange(&g_registered, 1, 0) == 0) {
-        g_keyboardHandlerRegister(keyboardHandler);
         g_scriptRegister(g_module, mainScript);
+        g_keyboardHandlerRegister(keyboardHandler);
         appendJsonl("registered", "");
         writeStatus("registered", 0);
     }
