@@ -23,21 +23,29 @@ Boundaries:
 - `dry-run`: run `CodeRED_Peer_Clone_Game_Bridge_DryRun.py` outside the game.
 - `log-only`: ASI reads remote state and writes local player state, but never spawns.
 - `spawn-test`: ASI spawns one human clone near the local player when `allow_spawn=true`.
-- `move-test`: ASI spawns one human clone and interpolates it from remote player state when `allow_spawn=true`.
+- `move-test`: ASI spawns one human clone and interpolates it from `remote_players_state.json` when `allow_spawn=true`. If no remote state is present, it falls back to a local visible circle after spawning.
+- `local-proof`: ASI creates fake remote state itself, spawns one human clone, and moves it in a slow circle around the player.
 
 Edit `CodeRED_Peer_Clone_Game_Bridge.ini` beside the ASI and set:
+
+```ini
+mode=local-proof
+```
+
+The ASI waits `startup_delay_ms` before native player/actor work. The default is
+30000 ms to avoid launch-time native calls while the game is still booting.
+
+For remote-data testing, use:
 
 ```ini
 mode=move-test
 allow_spawn=true
 ```
 
-The ASI waits `startup_delay_ms` before native player/actor work. The default is
-30000 ms to avoid launch-time native calls while the game is still booting.
-
-For the first proof, start Red Dead with the ASI already loaded, then edit
-`bridge/remote_players_state.json`. In `move-test`, the clone should move as the
-remote `x`, `y`, `z`, and `heading` values change.
+For the first proof, start Red Dead with the ASI already loaded and
+`mode=local-proof`. After singleplayer loads and the startup delay passes, a
+human clone named internally as `codered_peer_clone_proof_*` should appear near
+the player and move in a slow circle. No dot simulator window is required.
 
 ## Hotkeys
 

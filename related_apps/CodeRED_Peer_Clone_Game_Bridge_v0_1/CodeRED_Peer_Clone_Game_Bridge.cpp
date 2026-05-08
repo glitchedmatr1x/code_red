@@ -57,7 +57,7 @@ struct RemotePlayer {
 };
 
 struct Config {
-    std::string mode = "log-only";
+    std::string mode = "local-proof";
     std::string bridgeDir = "bridge";
     std::string runtimeDir = "runtime";
     std::string localStatePath = "bridge/local_player_state.json";
@@ -68,6 +68,8 @@ struct Config {
     float spawnDistance = 2.5f;
     float positionScale = 0.05f;
     float interpolation = 0.35f;
+    float proofCircleRadius = 4.0f;
+    float proofCircleSpeedDeg = 30.0f;
     DWORD tickMs = 100;
     DWORD startupDelayMs = 30000;
     bool allowSpawn = false;
@@ -100,6 +102,7 @@ static Vector3 g_clonePos = {};
 static DWORD g_lastReadTick = 0;
 static DWORD g_lastStatusTick = 0;
 static ULONGLONG g_scriptStartTick = 0;
+static DWORD g_lastProofLogTick = 0;
 
 static constexpr float PI = 3.14159265358979323846f;
 
@@ -372,6 +375,8 @@ static void loadConfig() {
         else if (key == "spawn_distance") g_config.spawnDistance = static_cast<float>(std::atof(value.c_str()));
         else if (key == "position_scale") g_config.positionScale = static_cast<float>(std::atof(value.c_str()));
         else if (key == "interpolation") g_config.interpolation = std::max(0.01f, std::min(1.0f, static_cast<float>(std::atof(value.c_str()))));
+        else if (key == "proof_circle_radius") g_config.proofCircleRadius = std::max(1.0f, static_cast<float>(std::atof(value.c_str())));
+        else if (key == "proof_circle_speed_deg") g_config.proofCircleSpeedDeg = std::max(1.0f, static_cast<float>(std::atof(value.c_str())));
         else if (key == "tick_ms") g_config.tickMs = static_cast<DWORD>(std::max(25, std::atoi(value.c_str())));
         else if (key == "startup_delay_ms") g_config.startupDelayMs = static_cast<DWORD>(std::max(0, std::atoi(value.c_str())));
         else if (key == "allow_spawn") g_config.allowSpawn = parseBool(value, g_config.allowSpawn);
@@ -542,6 +547,7 @@ static void writeStatus(const char* phase, int remoteCount) {
         << "  \"spawned\": " << ((g_clone > 0) ? "true" : "false") << ",\n"
         << "  \"allow_spawn\": " << (g_config.allowSpawn ? "true" : "false") << ",\n"
         << "  \"startup_delay_ms\": " << g_config.startupDelayMs << ",\n"
+        << "  \"proof_circle_radius\": " << g_config.proofCircleRadius << ",\n"
         << "  \"clone_actor\": " << g_clone << ",\n"
         << "  \"clone_actor_enum\": " << g_config.cloneActorEnum << ",\n"
         << "  \"no_spawn_fallback\": " << (g_noSpawnFallback ? "true" : "false") << ",\n"
@@ -599,7 +605,7 @@ static bool spawnCloneNearPlayer(const Vector3& playerPos, float playerHeading) 
     };
     Vector2 orientXY = {0.0f, 1.0f};
     std::ostringstream name;
-    name << "codered_peer_clone_" << ++g_spawnCounter;
+    name << "codered_peer_clone_proof_" << ++g_spawnCounter;
 
     Actor spawned = nativeInvoke<Actor>(0x8D67F397ULL, layout, name.str().c_str(),
                                         g_config.cloneActorEnum, spawnXY, playerPos.z,
@@ -630,6 +636,47 @@ static Vector3 targetFromRemote(const Vector3& playerPos, const RemotePlayer& re
         playerPos.y + remote.y * g_config.positionScale,
         playerPos.z + remote.z * g_config.positionScale
     };
+}
+
+static Vector3 localProofTarget(const Vector3& playerPos, float* heading) {
+    const ULONGLONG elapsedMs = GetTickCount64() - g_scriptStartTick;
+    const float seconds = static_cast<float>(elapsedMs) / 1000.0f;
+    const float angleDeg = std::fmod(seconds * g_config.proofCircleSpeedDeg, 360.0f);
+    const float angle = angleDeg * (PI / 180.0f);
+    if (heading) {
+        *heading = std::fmod(angleDeg + 90.0f, 360.0f);
+    }
+    return {
+        playerPos.x + std::cos(angle) * g_config.proofCircleRadius,
+        playerPos.y + std::sin(angle) * g_config.proofCircleRadius,
+        playerPos.z
+    };
+}
+
+static void writeFakeRemoteState(const Vector3& target, float heading) {
+    std::ostringstream out;
+    out << "{\n"
+        << "  \"schema\": \"codered.bridge.remote_players.v1\",\n"
+        << "  \"source\": \"CodeRED_Peer_Clone_Game_Bridge_local_proof_v0_1\",\n"
+        << "  \"updated_ms\": " << nowMs() << ",\n"
+        << "  \"players\": {\n"
+        << "    \"local_proof_clone\": {\n"
+        << "      \"client_id\": \"local_proof_clone\",\n"
+        << "      \"name\": \"CodeRED Local Proof Clone\",\n"
+        << "      \"actor\": \"ACTOR_CAUCASIAN_ARMY_Easy01\",\n"
+        << "      \"color\": \"#ff4040\",\n"
+        << "      \"x\": " << target.x << ",\n"
+        << "      \"y\": " << target.y << ",\n"
+        << "      \"z\": " << target.z << ",\n"
+        << "      \"heading\": " << heading << ",\n"
+        << "      \"action\": \"local-proof-circle\",\n"
+        << "      \"health\": 100,\n"
+        << "      \"last_ms\": " << nowMs() << ",\n"
+        << "      \"pulse_id\": " << nowMs() << "\n"
+        << "    }\n"
+        << "  }\n"
+        << "}\n";
+    writeText(rootPath(g_config.remoteStatePath), out.str());
 }
 
 static void moveCloneToward(const Vector3& target, float heading) {
@@ -663,6 +710,30 @@ static void tickBridge() {
     }
     writeLocalPlayerState(playerPos, playerHeading);
 
+    if (g_config.mode == "local-proof") {
+        float proofHeading = 0.0f;
+        const Vector3 target = localProofTarget(playerPos, &proofHeading);
+        writeFakeRemoteState(target, proofHeading);
+        spawnCloneNearPlayer(playerPos, playerHeading);
+        if (cloneValid()) {
+            moveCloneToward(target, proofHeading);
+            g_lastError.clear();
+            const DWORD nowTick = GetTickCount();
+            if (nowTick - g_lastProofLogTick >= 2000) {
+                g_lastProofLogTick = nowTick;
+                appendJsonl("local_proof_clone_visible",
+                            "\"actor\":" + std::to_string(g_clone) +
+                            ",\"target_x\":" + std::to_string(target.x) +
+                            ",\"target_y\":" + std::to_string(target.y) +
+                            ",\"target_z\":" + std::to_string(target.z));
+            }
+            writeStatus("local_proof_visible_clone", 1);
+        } else {
+            writeStatus("local_proof_spawn_pending_or_failed", 1);
+        }
+        return;
+    }
+
     RemotePlayer remote = {};
     int remoteCount = 0;
     const bool hasRemote = readRemotePlayer(&remote, &remoteCount);
@@ -695,6 +766,12 @@ static void tickBridge() {
                     ",\"target_x\":" + std::to_string(target.x) +
                     ",\"target_y\":" + std::to_string(target.y) +
                     ",\"target_z\":" + std::to_string(target.z));
+    } else if (g_config.mode == "move-test" && !hasRemote && cloneValid()) {
+        float proofHeading = 0.0f;
+        const Vector3 target = localProofTarget(playerPos, &proofHeading);
+        moveCloneToward(target, proofHeading);
+        writeStatus("move_test_no_remote_local_circle_fallback", remoteCount);
+        return;
     }
 
     writeStatus(g_config.mode.c_str(), remoteCount);

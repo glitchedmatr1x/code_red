@@ -17,6 +17,7 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = (Resolve-Path $RepoRoot).Path
 $AppDir = Join-Path $RepoRoot "related_apps\CodeRED_Peer_Clone_Game_Bridge_v0_1"
 $Source = Join-Path $AppDir "CodeRED_Peer_Clone_Game_Bridge.cpp"
+$Ini = Join-Path $AppDir "CodeRED_Peer_Clone_Game_Bridge.ini"
 $BuildDir = Join-Path $AppDir "build"
 $ObjDir = Join-Path $BuildDir "obj"
 $OutAsi = Join-Path $BuildDir "CodeRED_Peer_Clone_Game_Bridge.asi"
@@ -75,6 +76,10 @@ if ($exitCode -ne 0) { exit $exitCode }
 
 if (-not (Test-Path $OutAsi)) {
     throw "Build completed but output .asi was not found: $OutAsi"
+}
+
+if (Test-Path $Ini) {
+    Copy-Item -Path $Ini -Destination (Join-Path $BuildDir "CodeRED_Peer_Clone_Game_Bridge.ini") -Force
 }
 
 $hash = Get-FileHash -Path $OutAsi -Algorithm SHA1
