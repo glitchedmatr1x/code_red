@@ -1,0 +1,20 @@
+{
+  "schema": "codered.bridge.remote_players.v1",
+  "updated_ms": 0,
+  "players": {
+    "peer_test": {
+      "client_id": "peer_test",
+      "name": "Peer Test",
+      "actor": "clone",
+      "color": "#67e8f9",
+      "x": 20.0,
+      "y": 0.0,
+      "z": 0.0,
+      "heading": 90.0,
+      "action": "idle",
+      "health": 100.0,
+      "last_ms": 0,
+      "pulse_id": 1
+    }
+  }
+}
