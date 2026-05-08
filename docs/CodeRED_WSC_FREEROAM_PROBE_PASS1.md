@@ -1,6 +1,6 @@
 # Code RED WSC Freeroam Probe Pass 1
 
-Pass 1 uses the source-first WSC edit lane against the current launch archive:
+Pass 1 used the source-built full replacement lane against the current launch archive. It did not preserve the original WSC body and should be treated as full replacement probe evidence, not existing-file editing evidence.
 
 `D:\Games\Red Dead Redemption\game\content.rpf`
 
@@ -24,7 +24,7 @@ Ranking outputs:
 
 ## Built Probe Archives
 
-Each probe is a separate copied `content.rpf` with one WSC replacement. None of these outputs are written into the live game folder.
+Each probe is a separate copied `content.rpf` with one full WSC replacement. None of these outputs are written into the live game folder.
 
 | Probe | Replaced WSC | Copied RPF |
 |---|---|---|
@@ -36,7 +36,7 @@ Each probe is a separate copied `content.rpf` with one WSC replacement. None of 
 
 ## Verification
 
-Every packed archive was inventoried, the replaced WSC was extracted, and the extracted WSC hash matched the compiled WSC hash.
+Every packed archive was inventoried, the replaced WSC was extracted, and the extracted WSC hash matched the compiled full-replacement WSC hash.
 
 Compiled/extracted probe WSC SHA1:
 
@@ -49,3 +49,5 @@ Verification output:
 ## Runtime Use
 
 These are not installed automatically. Test one copied RPF at a time through the game loader/override path being used for manual runtime testing. If a probe changes the loading-screen behavior, the replaced WSC is on the path to the failing handoff.
+
+For existing-file edits, use the separate `WSC binary edit / existing-file patch` lane documented in `docs\CodeRED_WSC_EDIT_WORKFLOW.md`.

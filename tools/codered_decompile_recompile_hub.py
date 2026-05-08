@@ -108,10 +108,15 @@ def build_report(validate: bool) -> dict:
             "tool": "script_compiling/sccl/compile_vehicle_menu_probe_windows.bat",
             "proof": "SC-CL compile lane has produced real .xsc/.sco/.wsc proof artifacts where present",
         },
-        "wsc_source_edit_compile_pack": {
+        "wsc_binary_edit_existing_file_patch": {
+            "state": "ready" if exists("tools/codered_wsc_edit_workflow.py") and exists("tools/codered_content_convert_overlay_builder.py") else "missing",
+            "tool": "tools/codered_wsc_edit_workflow.py",
+            "proof": "Default WSC lane extracts the original WSC, inspects headers/strings/offsets, applies controlled length-preserving string or byte patches, and packs the edited original-derived WSC into a copied RPF",
+        },
+        "wsc_full_replacement_source_built": {
             "state": "ready" if exists("tools/codered_wsc_edit_workflow.py") and detect_sccl()["available"] and exists("tools/codered_content_convert_overlay_builder.py") else "missing",
             "tool": "tools/codered_wsc_edit_workflow.py",
-            "proof": "Creates a safe edit workspace, compiles source to WSC/RSC85 through SC-CL, and packs only a copied RPF output under build/",
+            "proof": "Explicit full replacement lane creates src/main.c, compiles source to WSC/RSC85 through SC-CL, and packs only a copied RPF output under build/",
         },
         "compiled_script_source_decompile": {
             "state": "blocked",
@@ -148,7 +153,7 @@ def write_outputs(report: dict) -> None:
     md += "## Capability Matrix\n\n| Lane | State | Tool | Proof / Boundary |\n|---|---|---|---|\n"
     md += "\n".join(lane_lines)
     md += "\n\n## Important Boundary\n\n"
-    md += "Code RED can extract/decode RPF entries, patch supported entries into copied archives, and compile source through SC-CL proof lanes. It still does not have a proven compiled-script bytecode-to-source decompiler, so `.wsc/.csc/.xsc/.sco` binary decompile remains readable/pseudo-decompile only until a real decompiler is found or built.\n"
+    md += "Code RED can extract/decode RPF entries, patch supported entries into copied archives, binary-edit existing WSC files with length-preserving patches, and compile full replacement WSC files through SC-CL proof lanes. It still does not have a proven compiled-script bytecode-to-source decompiler, so `.wsc/.csc/.xsc/.sco` source recovery remains blocked until a real decompiler is found or built.\n"
     md += "\n## Magic-RDR Parity / Name Recovery\n\n"
     md += "Code RED now uses local Magic-RDR `ImportedFileNames.txt` resources for RPF6 hash-name recovery. Validated result: live `content.rpf` resolved `1636/1636` entries and extracted `1320/1320` files through the internal RPF6 extractor.\n\n"
     md += "Primary proof log: `logs\\IMPORTANT_CodeRED_Magic_RDR_Parity_Extraction_2026-05-06.md`\n\n"
@@ -158,9 +163,13 @@ def write_outputs(report: dict) -> None:
     md += "Run_CodeRED_RPF_Edit_Lab.bat\n"
     md += "Run_CodeRED_Decompile_Recompile_Hub.bat --validate\n"
     md += "Run_CodeRED_WSC_Edit_Workflow.bat --help\n"
-    md += "python tools\\codered_wsc_edit_workflow.py decompile --name codered_wait_probe --archive-path root/content/release64/init/initpopulation.wsc\n"
-    md += "python tools\\codered_wsc_edit_workflow.py recompile --workspace build\\wsc_edit\\codered_wait_probe --clean\n"
-    md += "python tools\\codered_wsc_edit_workflow.py pack --workspace build\\wsc_edit\\codered_wait_probe --write\n"
+    md += "python tools\\codered_wsc_edit_workflow.py init --name binary_initpopulation --archive-path root/content/release64/init/initpopulation.wsc\n"
+    md += "python tools\\codered_wsc_edit_workflow.py inspect --workspace build\\wsc_edit\\binary_initpopulation\n"
+    md += "python tools\\codered_wsc_edit_workflow.py strings --workspace build\\wsc_edit\\binary_initpopulation\n"
+    md += "python tools\\codered_wsc_edit_workflow.py replace-string --workspace build\\wsc_edit\\binary_initpopulation --find OLD_TEXT --replace NEW_TEXT\n"
+    md += "python tools\\codered_wsc_edit_workflow.py full-replace-init --name source_wait_probe --archive-path root/content/release64/init/initpopulation.wsc\n"
+    md += "python tools\\codered_wsc_edit_workflow.py full-replace-compile --workspace build\\wsc_edit\\source_wait_probe --clean\n"
+    md += "python tools\\codered_wsc_edit_workflow.py pack --workspace build\\wsc_edit\\source_wait_probe --write\n"
     md += "script_compiling\\sccl\\compile_vehicle_menu_probe_windows.bat\n"
     md += "```\n"
     LOG_MD.write_text(md, encoding="utf-8")
