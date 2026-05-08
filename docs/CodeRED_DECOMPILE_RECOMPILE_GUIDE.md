@@ -1,6 +1,6 @@
 # Code RED Decompile / Recompile Hub
 
-Generated UTC: `2026-05-07T07:51:01Z`
+Generated UTC: `2026-05-08T08:04:24Z`
 
 Status: **READY_WITH_BLOCKED_SOURCE_DECOMPILER**
 
@@ -14,6 +14,7 @@ Status: **READY_WITH_BLOCKED_SOURCE_DECOMPILER**
 | `file_io_full_decode` | `ready` | `tools/codered_file_io_validation.py` | Full-file and RPF sample extraction validation |
 | `script_read_decode` | `ready` | `tools/codered_script_pipeline.py` | Source/text decode plus compiled-script binary string/hash/native mining |
 | `script_source_compile` | `ready` | `script_compiling/sccl/compile_vehicle_menu_probe_windows.bat` | SC-CL compile lane has produced real .xsc/.sco/.wsc proof artifacts where present |
+| `wsc_source_edit_compile_pack` | `ready` | `tools/codered_wsc_edit_workflow.py` | Creates a safe edit workspace, compiles source to WSC/RSC85 through SC-CL, and packs only a copied RPF output under build/ |
 | `compiled_script_source_decompile` | `blocked` | `` | No proven WSC/CSC/XSC/SCO bytecode-to-source decompiler was found; keep binary pseudo-decompile/export honest |
 
 ## Important Boundary
@@ -33,5 +34,9 @@ Important distinction: the live PC `content.rpf` extracted here contains `releas
 ```bat
 Run_CodeRED_RPF_Edit_Lab.bat
 Run_CodeRED_Decompile_Recompile_Hub.bat --validate
+Run_CodeRED_WSC_Edit_Workflow.bat --help
+python tools\codered_wsc_edit_workflow.py decompile --name codered_wait_probe --archive-path root/content/release64/init/initpopulation.wsc
+python tools\codered_wsc_edit_workflow.py recompile --workspace build\wsc_edit\codered_wait_probe --clean
+python tools\codered_wsc_edit_workflow.py pack --workspace build\wsc_edit\codered_wait_probe --write
 script_compiling\sccl\compile_vehicle_menu_probe_windows.bat
 ```

@@ -108,6 +108,11 @@ def build_report(validate: bool) -> dict:
             "tool": "script_compiling/sccl/compile_vehicle_menu_probe_windows.bat",
             "proof": "SC-CL compile lane has produced real .xsc/.sco/.wsc proof artifacts where present",
         },
+        "wsc_source_edit_compile_pack": {
+            "state": "ready" if exists("tools/codered_wsc_edit_workflow.py") and detect_sccl()["available"] and exists("tools/codered_content_convert_overlay_builder.py") else "missing",
+            "tool": "tools/codered_wsc_edit_workflow.py",
+            "proof": "Creates a safe edit workspace, compiles source to WSC/RSC85 through SC-CL, and packs only a copied RPF output under build/",
+        },
         "compiled_script_source_decompile": {
             "state": "blocked",
             "tool": "",
@@ -152,6 +157,10 @@ def write_outputs(report: dict) -> None:
     md += "```bat\n"
     md += "Run_CodeRED_RPF_Edit_Lab.bat\n"
     md += "Run_CodeRED_Decompile_Recompile_Hub.bat --validate\n"
+    md += "Run_CodeRED_WSC_Edit_Workflow.bat --help\n"
+    md += "python tools\\codered_wsc_edit_workflow.py decompile --name codered_wait_probe --archive-path root/content/release64/init/initpopulation.wsc\n"
+    md += "python tools\\codered_wsc_edit_workflow.py recompile --workspace build\\wsc_edit\\codered_wait_probe --clean\n"
+    md += "python tools\\codered_wsc_edit_workflow.py pack --workspace build\\wsc_edit\\codered_wait_probe --write\n"
     md += "script_compiling\\sccl\\compile_vehicle_menu_probe_windows.bat\n"
     md += "```\n"
     LOG_MD.write_text(md, encoding="utf-8")
