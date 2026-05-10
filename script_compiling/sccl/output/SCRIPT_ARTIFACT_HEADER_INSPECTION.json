@@ -1,0 +1,642 @@
+﻿[
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  9358,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 07 00 00 80",
+        "SHA1":  "AD9E8579C02681C887095ACF6B8EBECB5813F467",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\benedict_point\\benedictpoint.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  8177,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "96A7663CC6AB3408803FD4E1CB623923062711CD",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\benedict_point\\benedictpointvol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  12967,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 09 00 00 80",
+        "SHA1":  "57EC711A07764C3FC615FA6BE46A6FC57F5DB97B",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\gaptooth_breach\\actionarea\\gaptoothbreach_fte.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  34702,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 17 00 00 80",
+        "SHA1":  "22391950ACF266589768A4204E381D2EA353442A",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\gaptooth_breach\\gaptoothbreach.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  7552,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "FFDA7E535C735F14C3EADDAAA865645539CEDF9B",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\gaptooth_breach\\gaptoothbreachvol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  12356,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 0A 00 00 90",
+        "SHA1":  "74A7D76569A048C6B888BB668277B75D1A6C7269",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\gaptoothridge.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  8232,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "6B8ABE76BFEB24860324FE2D04CBF904B38E03B5",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\gaptoothridgevol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  16469,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 0F 00 00 80",
+        "SHA1":  "CA164AF04694E245C464680391CE5F8E9D02FD5C",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\rathskeller_fork\\rathskellerfork.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  8489,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "EF45992C181273D8255DF9A5FBBC59EA75177602",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\rathskeller_fork\\rathskellerforkvol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  18171,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 0B 00 00 80",
+        "SHA1":  "C165B090A0916B8613E760790656B4C1B1B50DF9",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\solomons_folly\\solomonsfolly.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  6770,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "1C190B264FAE60F47D89FB53CA592591D0091A44",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\solomons_folly\\solomonsfollyvol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  10919,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 07 00 00 80",
+        "SHA1":  "9C7387AE7B09637EAD418AEF7133F108A7253D0B",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\tumbleweed\\actionarea\\event_tum_churchboss.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  10815,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 07 00 00 80",
+        "SHA1":  "3E2B4B2B71111DEC983FB3D0D1DD48F07EACFE95",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\tumbleweed\\actionarea\\event_tum_corrboss.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  10528,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 07 00 00 80",
+        "SHA1":  "581F474A64C9C834D98F58D5417B24AA854829EC",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\tumbleweed\\actionarea\\event_tum_gallowsboss.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  10393,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 07 00 00 80",
+        "SHA1":  "6B6CABCA13A659F4323C287AD7B18D6FD642E337",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\tumbleweed\\actionarea\\event_tum_genboss.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  10650,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 07 00 00 80",
+        "SHA1":  "25FF67F88F27132ABC441CA7655496E4724A3128",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\tumbleweed\\actionarea\\event_tum_houseboss.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  12648,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 09 00 00 80",
+        "SHA1":  "A7152ABE3F874B02B19949319FF32E5B96072DF6",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\tumbleweed\\actionarea\\event_tum_mainboss.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  14836,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 09 00 00 80",
+        "SHA1":  "21B8BCECD9B959DE307A2D11E797FE47154D84F3",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\tumbleweed\\actionarea\\tumbleweed_fte.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  32667,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 17 00 00 80",
+        "SHA1":  "A78FCC3F130B471E5D18188E73A612AFC16B6108",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\tumbleweed\\tumbleweed.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  8662,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "F4399E662216F6A1404B7CCB4181817F6F06DBFB",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\gaptooth_ridge\\tumbleweed\\tumbleweedvol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  20414,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 11 00 00 80",
+        "SHA1":  "289C9EF98B8F1E858CD81A2F122215DB71F9133E",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\hennigans_stead\\hennigans_ranch\\hennigansranch.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  10656,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 07 00 00 80",
+        "SHA1":  "D79DAE5361411AEA55C181479729B16DA550D255",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\hennigans_stead\\hennigans_ranch\\hennigansranchvol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  14944,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 0D 00 00 80",
+        "SHA1":  "280059F389CFB6BD26AB21DE802EF15D94FFE6E5",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\hennigans_stead\\hennigansstead.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  11241,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 09 00 00 80",
+        "SHA1":  "154E0AD4881DDBA7CB68DC352E6299A5E9CFAB4A",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\hennigans_stead\\henniganssteadvol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  26706,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 11 00 00 80",
+        "SHA1":  "2616C8571BF7DAED4BAE6531A9B2A7F6445B339C",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\hennigans_stead\\pikes_basin\\actionarea\\pikesbasin_herding.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  32832,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 15 00 00 80",
+        "SHA1":  "881047039B4FADDC27BAFB8E9FEAFD695990ABB3",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\hennigans_stead\\pikes_basin\\pikesbasin.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  8420,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "2FA2CC505CC2D0687FAEEBBF12638FBBCC5E69E6",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\hennigans_stead\\pikes_basin\\pikesbasinvol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  21866,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 12 00 00 90",
+        "SHA1":  "7B577527F462BD5F885EEC827A9224B89DDED584",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\hennigans_stead\\thieves_landing\\thieveslanding.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  17231,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 0D 00 00 80",
+        "SHA1":  "E9C4ACCE8B4F64748269C9D7335B5D9C3E9381D8",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\hennigans_stead\\thieves_landing\\thieveslandingvol.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  2561,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 03 00 00 80",
+        "SHA1":  "F04E995CBC16BD54A52FCD6DEF932496ED214C69",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\armwrestling_pln\\armwrestling_pln.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  667,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "A68BE2BADBF01FFBBD82631C473AC378966C28C4",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\armwrestling_pln\\armwrestling_pln_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  2796,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 03 00 00 80",
+        "SHA1":  "93C7A270D36D0CB779FDB534C40239657F4E472A",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\blackjack_rat\\blackjack_rat.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  666,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "2FF7FD3BE3B6458FF37AFF52DD0A7AA626DD9058",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\blackjack_rat\\blackjack_rat_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  2784,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 03 00 00 80",
+        "SHA1":  "459442C72C2F978BACBEB7BBEBC7DDF441C28D2E",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\blackjack_thi\\blackjack_thi.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  665,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "389611F7CC87F26709373C10FC59E883EE62F8F0",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\blackjack_thi\\blackjack_thi_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  2746,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 03 00 00 80",
+        "SHA1":  "9EB675FBBEBEC33CF1C01AEF9CAFCE16396B232A",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\fivefingerfillet_arm\\fivefingerfillet_arm.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  665,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "BAA7F18F8D4906EB58BE4B877605949318A302A3",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\fivefingerfillet_arm\\fivefingerfillet_arm_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  2689,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 03 00 00 80",
+        "SHA1":  "84D11F961998B8F8E5C269917CB0180941B258D1",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\fivefingerfillet_thi\\fivefingerfillet_thi.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  665,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "D5BCCC236A351365F009EC69859F7990FF899E1C",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\fivefingerfillet_thi\\fivefingerfillet_thi_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  2608,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 02 00 00 90",
+        "SHA1":  "E85F43003BC41E1F16B86085963D5A9918E7A561",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\horseshoes_hen\\horseshoes_hen.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  1248,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "16E875F30B35D7B594A428AC73218E52C666446A",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\horseshoes_hen\\horseshoes_hen_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  2611,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 02 00 00 90",
+        "SHA1":  "3E54BF7913D946892D38DA00C3828983B3A37CFA",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\horseshoes_rat\\horseshoes_rat.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  1249,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "7421DA72F79B5A47BDA315CC628E428244B46739",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\horseshoes_rat\\horseshoes_rat_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  2872,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 03 00 00 80",
+        "SHA1":  "1A368D204298613932B40207F1337031A2D9F9B2",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\liarsdice_thi\\liarsdice_thi.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  665,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "9ECC2FE42847829A0DF765E31BD55362E487C6CE",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\liarsdice_thi\\liarsdice_thi_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  4932,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "55F27FABD2E59288D32D7BBBCB8A9A47C511A462",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\liarsdice_thi\\mp_liarsdice_thi.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  5349,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "AEBD3AF43B5EB5C8292DA46231A55C2B99E12B90",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\poker_arm\\mp_poker_arm.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  3296,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 03 00 00 80",
+        "SHA1":  "14A217896E81122DC0821056349B8A7492A78CC7",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\poker_arm\\poker_arm.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  666,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "DC402B0327AE6B4220F756749D9B1F065C1F3F40",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\poker_arm\\poker_arm_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  5314,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "CF3A5C8CF5A9B3174F9B14B4E8C0F821FA5792AD",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\poker_hen\\mp_poker_hen.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  3239,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 03 00 00 80",
+        "SHA1":  "5B783BD413B7EFD96DA85F45DD48B1086CBE04C7",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\poker_hen\\poker_hen.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  666,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "789C40EE46412666EFAD8B349C927F9D2237016C",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\poker_hen\\poker_hen_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  5081,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 05 00 00 80",
+        "SHA1":  "F7181AD7891F116119C693DF116E463F01422245",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\poker_thi\\mp_poker_thi.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  3248,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 03 00 00 80",
+        "SHA1":  "EF48A7863ABCD6696E8838396CB19EB3467AFCD8",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\poker_thi\\poker_thi.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  666,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "28B0612E0AE0549AA022E348A405AFD30980BF33",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\mini_games\\poker_thi\\poker_thi_teleport.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  66317,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 2D 00 00 80",
+        "SHA1":  "C42B40CA6F3FDDF617C5802A17F22571D482E799",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\fort01\\fort01.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  59185,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 27 00 00 80",
+        "SHA1":  "22F0D56DBCE9A61001EEE5C6EFE08C0598E8CA45",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\fort02\\fort02.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  58852,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 26 00 00 90",
+        "SHA1":  "648A349BA8B94ADB42535F6CB1AC19A5B8ECD0A0",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\grave01\\grave01.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  51730,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 20 00 00 C0",
+        "SHA1":  "044718BED9F63C5F1802D60EF9F433C4731A44F3",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\grave02\\grave02.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  49612,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 1E 00 00 90",
+        "SHA1":  "77EB7EDADCD21499E80E667BDFBF8F407B57DB75",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\grave03\\grave03.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  59748,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 27 00 00 80",
+        "SHA1":  "783B972181B91B433A05845115F08BD5692CEE02",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\intro01\\intro01.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  68928,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 2B 00 00 80",
+        "SHA1":  "BEE77D880A6D0C8CCE79EE5BEA4C60D24261E18A",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\marshal01\\marshal01.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  81194,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 39 00 00 80",
+        "SHA1":  "03D701542B9BB24FB1B67B312E95341106021614",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\marshal02\\marshal02.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  59424,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 27 00 00 80",
+        "SHA1":  "E8E308AD47764BB7CFFD0B0681CA5288E45A20B4",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\marshal03\\marshal03.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  47663,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 1E 00 00 90",
+        "SHA1":  "4EC08C944F279F7837924672AB3F29FAE5C7C196",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\merchant01\\merchant01.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  53031,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 25 00 00 80",
+        "SHA1":  "C7714119B54A65771DB4FBFFDF64DD5C2F2DCA33",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\merchant02\\merchant02.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  67553,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 2B 00 00 80",
+        "SHA1":  "7B772458587C8D3CA22472F86B4BCBB2A3A18053",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\merchant03\\merchant03.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  70506,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 2D 00 00 80",
+        "SHA1":  "AE6F3D4B4563CC87D093904B8DCAC7ED6F0513CC",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\merchant04\\merchant04.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  73889,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 2D 00 00 80",
+        "SHA1":  "6423368ADB64D88B9B9A104C7FD8CC70E767B07C",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\merchant05\\merchant05.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  50855,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 21 00 00 80",
+        "SHA1":  "A9FDCA08F61391EAD4A7FFC8DC3B4624E1521CC7",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\outlaw01\\outlaw01.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  60159,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 2B 00 00 80",
+        "SHA1":  "EBA39214F63B22D40FADF11C3D1FAFA7492CEC32",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\outlaw02\\outlaw02.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  60806,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 27 00 00 80",
+        "SHA1":  "5B0A9BBF807BC951176AD89C97FAFBA6A547852C",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\outlaw03\\outlaw03.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  58756,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 29 00 00 80",
+        "SHA1":  "94B15D602A5BC066134DD37A29B1F7328CD5C9B8",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\ranch01\\ranch01.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  50920,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 20 00 00 C0",
+        "SHA1":  "B62B7B35E0FC57500B9371414E8685E739DF671D",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\ranch02\\ranch02.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  50650,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 1E 00 00 90",
+        "SHA1":  "64745AE62948852E7AC7909C0F728333AD4B6CF4",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\ranch03\\ranch03.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  61397,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 2B 00 00 80",
+        "SHA1":  "223CC9C8AD2A5C49D0BF69A0523DA23D7022C671",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\ranch04\\ranch04.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  66205,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 31 00 00 80",
+        "SHA1":  "023A590D1019966FEFC2D820944F2742731CC7CA",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\ranch06\\ranch06.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  54621,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 29 00 00 80",
+        "SHA1":  "A6D42622730BACC6B4A93C312986D3A878E5611E",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\ranch07\\ranch07.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  59593,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 2D 00 00 80",
+        "SHA1":  "4EE453232555598527B2DF9DA1143D01004A87FB",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\missions\\ranch08\\ranch08.wsc"
+    },
+    {
+        "Extension":  ".wsc",
+        "Kind":  "unknown",
+        "Length":  539,
+        "HeadHex":  "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80",
+        "SHA1":  "35151DA2F8100E14FFE85B3D9F55A7597D04435C",
+        "RelativePath":  "game\\content_extracted\\release64\\frontier\\pr_frontier.wsc"
+    }
+]
