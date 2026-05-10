@@ -3,6 +3,7 @@ Code RED multiplayer_update_thread SCO probe stager.
 
 Purpose:
 - Stage the compiled multiplayer_update_thread.sco stub into a patch-layer mirror folder.
+- Mirror the active extracted script tree under release64.
 - Do not inject or install anything into game archives.
 - Write a manifest and README describing the probe boundary.
 
@@ -14,7 +15,7 @@ param(
     [string]$RepoRoot = ".",
     [string]$CompiledSCO = "script_compiling\sccl\output\multiplayer_update_thread_stub\multiplayer_update_thread.sco",
     [string]$PatchRoot = "script_compiling\sccl\output\sco_loader_probe_patch",
-    [string]$TargetRelativePath = "content\multiplayer\multiplayer_update_thread.sco"
+    [string]$TargetRelativePath = "release64\multiplayer\multiplayer_update_thread.sco"
 )
 
 $ErrorActionPreference = "Stop"
@@ -39,6 +40,10 @@ function HeadHex($Path, $Count = 16) {
     return (($bytes[0..($take - 1)] | ForEach-Object { $_.ToString("X2") }) -join " ")
 }
 
+# Remove the earlier wrong content\multiplayer staging path if present so the patch root is unambiguous.
+$legacyTarget = Join-Path $PatchRootPath "content\multiplayer\multiplayer_update_thread.sco"
+Remove-Item -LiteralPath $legacyTarget -Force -ErrorAction SilentlyContinue
+
 New-Item -ItemType Directory -Force -Path (Split-Path $TargetPath -Parent) | Out-Null
 Copy-Item -Path $CompiledPath -Destination $TargetPath -Force
 
@@ -50,6 +55,7 @@ $manifest = [ordered]@{
     patch_root = Rel $PatchRootPath
     staged_target = Rel $TargetPath
     target_relative_path = $TargetRelativePath
+    legacy_path_removed_if_present = "content\\multiplayer\\multiplayer_update_thread.sco"
     bytes = $item.Length
     sha1 = $hash.Hash
     first_16_bytes_hex = HeadHex $TargetPath 16
@@ -63,7 +69,7 @@ $readme = @"
 Code RED SCO Loader Probe
 =========================
 
-This folder mirrors a candidate patch-layer path:
+This folder mirrors the active extracted script tree path:
 
   $TargetRelativePath
 
