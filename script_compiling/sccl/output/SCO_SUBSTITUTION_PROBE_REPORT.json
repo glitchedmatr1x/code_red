@@ -1,0 +1,30 @@
+﻿{
+    "project_name":  "vehicle_menu_probe",
+    "output_name":  "test_sco",
+    "compile_exit_code":  0,
+    "generated_artifacts":  [
+                                {
+                                    "extension":  ".csc",
+                                    "length":  1426,
+                                    "head_hex":  "86 43 53 52 00 00 00 02 80 00 00 00 80 00 00 01 63 8E 7D 42 C4 C5 F4 47 76 57 2A 8B 6D 61 FA 39",
+                                    "sha1":  "7F547D195D5589EC4AC9CD4F5CF040AF315403BF",
+                                    "relative_path":  "script_compiling\\sccl\\output\\vehicle_menu_probe\\test_ps3.csc"
+                                },
+                                {
+                                    "extension":  ".sco",
+                                    "length":  1402,
+                                    "head_hex":  "53 43 52 02 34 9D 01 8A 00 00 05 4A FF FF FF FD 00 00 0B 4B 00 00 00 0E 00 00 00 00 00 00 00 00",
+                                    "sha1":  "627F6E338ED0DDB1F52EA998FAA1F999EBE4F8D8",
+                                    "relative_path":  "script_compiling\\sccl\\output\\vehicle_menu_probe\\test_sco.sco"
+                                },
+                                {
+                                    "extension":  ".xsc",
+                                    "length":  1462,
+                                    "head_hex":  "85 43 53 52 00 00 00 02 80 00 00 00 80 00 00 01 D4 B0 6C 63 C6 C8 A0 82 B3 4C D9 AD 61 C7 7E BD",
+                                    "sha1":  "F6BDB733B54EAAAE757984008A7804F489471A5D",
+                                    "relative_path":  "script_compiling\\sccl\\output\\vehicle_menu_probe\\test_x360.xsc"
+                                }
+                            ],
+    "verdict":  "If .sco compiles, it still must be runtime-tested by a non-critical script request. Header mismatch with active WSC means substitution is not proven by naming alone.",
+    "safe_next_test":  "Try a nonessential, tiny script alias/probe first; do not replace multiplayer_update_thread until the engine proves it will resolve/load .sco for a no-extension request."
+}
