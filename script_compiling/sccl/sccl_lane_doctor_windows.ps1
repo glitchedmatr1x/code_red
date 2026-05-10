@@ -62,9 +62,9 @@ $items = [ordered]@{
     lane_header_is_fake = IsFakeHeader (Join-Path $Lane "include\RDR\natives32.h")
     project_header_looks_real = LooksRealHeader (Join-Path $Project "include\RDR\natives32.h")
     lane_header_looks_real = LooksRealHeader (Join-Path $Lane "include\RDR\natives32.h")
-    source_uses_loose_float_create_actor = ($mainText -match 'CREATE_ACTOR_IN_LAYOUT\(g_codeRedLayout, "CodeREDMenuVehicle", actorModel, 0\.0f')
-    source_uses_vector3_create_actor = ($mainText -match 'CREATE_ACTOR_IN_LAYOUT\(g_codeRedLayout, "CodeREDMenuVehicle", actorModel, spawnPos, spawnRot\)')
-    source_uses_real_print_subtitle_shape = ($mainText -match '_PRINT_SUBTITLE\(text, 3000\.0f, true, 1, 0, 0, 0, 0\)')
+    source_uses_loose_float_create_actor = ($mainText -match "CREATE_ACTOR_IN_LAYOUT\(g_codeRedLayout, \"CodeREDMenuVehicle\", actorModel, 0\.0f")
+    source_uses_vector3_create_actor = ($mainText -match "CREATE_ACTOR_IN_LAYOUT\(g_codeRedLayout, \"CodeREDMenuVehicle\", actorModel, spawnPos, spawnRot\)")
+    source_uses_real_print_subtitle_shape = ($mainText -match "_PRINT_SUBTITLE\(text, 3000\.0f, true, 1, 0, 0, 0, 0\)")
     compiler_candidates = @($compilerCandidates | ForEach-Object { [ordered]@{ path = $_; exists = Exists $_ } })
     include_candidates = @($includeCandidates | ForEach-Object { [ordered]@{ path = $_; exists = Exists $_; fake = IsFakeHeader $_; looks_real = LooksRealHeader $_ } })
 }
