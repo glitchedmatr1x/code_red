@@ -44,11 +44,15 @@ function Get-HeadHex($Path, $Count) {
 }
 
 function Get-ScriptKind($Head) {
-    if ($Head -match '^85 43 53 52') { return 'XSC/CSR marker 0x85' }
-    if ($Head -match '^86 43 53 52') { return 'CSC/CSR marker 0x86' }
-    if ($Head -match '^87 43 53 52') { return 'WSC/CSR marker 0x87 candidate' }
+    if ($Head -match '^85 43 53 52') { return 'XSC/CSR console marker 0x85' }
+    if ($Head -match '^86 43 53 52') { return 'CSC/CSR console marker 0x86' }
+    if ($Head -match '^87 43 53 52') { return 'CSR console marker 0x87 candidate' }
     if ($Head -match '^43 53 52') { return 'CSR marker without platform byte' }
+    if ($Head -match '^52 53 43 85') { return 'WSC active RSC85 wrapper/header' }
+    if ($Head -match '^52 53 43 86') { return 'RSC86 wrapper/header candidate' }
+    if ($Head -match '^52 53 43 87') { return 'RSC87 wrapper/header candidate' }
     if ($Head -match '^52 53 43 37') { return 'RSC7 container candidate' }
+    if ($Head -match '^53 43 4F') { return 'SCO ASCII marker candidate' }
     return 'unknown'
 }
 
