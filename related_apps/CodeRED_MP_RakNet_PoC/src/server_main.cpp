@@ -43,7 +43,50 @@ struct ServerConfig {
     std::uint16_t maxPlayers = 16;
     const char* bind = nullptr;
     std::string gamemode = "gamemodes/codered_hello.amx";
+    std::string spawnPreset = "escalera-mptransport";
+    float spawnX = -4265.4355f;
+    float spawnY = 4475.8091f;
+    float spawnZ = 19.1414f;
+    float spawnHeading = 31.9f;
+    float spawnSpacing = 2.5f;
 };
+
+bool ApplySpawnPreset(ServerConfig& config, const std::string& preset) {
+    if (preset == "origin") {
+        config.spawnPreset = preset;
+        config.spawnX = 0.0f;
+        config.spawnY = 0.0f;
+        config.spawnZ = 0.0f;
+        config.spawnHeading = 0.0f;
+        return true;
+    }
+    if (preset == "escalera" || preset == "escalera-mptransport" ||
+        preset == "escalera-market") {
+        config.spawnPreset = "escalera-mptransport";
+        config.spawnX = -4265.4355f;
+        config.spawnY = 4475.8091f;
+        config.spawnZ = 19.1414f;
+        config.spawnHeading = 31.9f;
+        return true;
+    }
+    if (preset == "escalera-trainer") {
+        config.spawnPreset = "escalera-trainer";
+        config.spawnX = -4279.04f;
+        config.spawnY = 4447.64f;
+        config.spawnZ = 18.07f;
+        config.spawnHeading = 90.0f;
+        return true;
+    }
+    if (preset == "escalera-legacy" || preset == "escalera-market-legacy") {
+        config.spawnPreset = "escalera-legacy";
+        config.spawnX = -4285.0f;
+        config.spawnY = -3475.0f;
+        config.spawnZ = 45.0f;
+        config.spawnHeading = 90.0f;
+        return true;
+    }
+    return false;
+}
 
 ServerConfig ParseArgs(int argc, char** argv) {
     ServerConfig config;
@@ -57,21 +100,56 @@ ServerConfig ParseArgs(int argc, char** argv) {
             config.bind = argv[++i];
         } else if ((arg == "--gamemode" || arg == "--amx") && i + 1 < argc) {
             config.gamemode = argv[++i];
+        } else if (arg == "--spawn-preset" && i + 1 < argc) {
+            const std::string preset = argv[++i];
+            if (!ApplySpawnPreset(config, preset)) {
+                std::fprintf(stderr, "[server] unknown spawn preset '%s' (known: escalera, escalera-mptransport, escalera-trainer, escalera-legacy, origin)\n",
+                             preset.c_str());
+                std::exit(2);
+            }
+        } else if (arg == "--spawn-x" && i + 1 < argc) {
+            config.spawnX = static_cast<float>(std::strtod(argv[++i], nullptr));
+            config.spawnPreset = "custom";
+        } else if (arg == "--spawn-y" && i + 1 < argc) {
+            config.spawnY = static_cast<float>(std::strtod(argv[++i], nullptr));
+            config.spawnPreset = "custom";
+        } else if (arg == "--spawn-z" && i + 1 < argc) {
+            config.spawnZ = static_cast<float>(std::strtod(argv[++i], nullptr));
+            config.spawnPreset = "custom";
+        } else if (arg == "--spawn-heading" && i + 1 < argc) {
+            config.spawnHeading = static_cast<float>(std::strtod(argv[++i], nullptr));
+            config.spawnPreset = "custom";
+        } else if (arg == "--spawn-spacing" && i + 1 < argc) {
+            config.spawnSpacing = static_cast<float>(std::strtod(argv[++i], nullptr));
+            config.spawnPreset = "custom";
         } else if (arg == "--help") {
-            std::puts("Usage: codered-mp-server [--bind 0.0.0.0] [--port 7777] [--maxplayers 16] [--gamemode gamemodes/codered_hello.amx]");
+            std::puts("Usage: codered-mp-server [--bind 0.0.0.0] [--port 7777] [--maxplayers 16] [--gamemode gamemodes/codered_hello.amx] [--spawn-preset escalera-mptransport|escalera-trainer|escalera-legacy|origin] [--spawn-x -4265.4355] [--spawn-y 4475.8091] [--spawn-z 19.1414] [--spawn-heading 31.9] [--spawn-spacing 2.5]");
             std::exit(0);
         }
     }
     return config;
 }
 
-std::uint8_t AllocateSlot(std::array<PeerSlot, 32>& peers, SLNet::SystemAddress address) {
+codered_mp::PlayerState MakeSpawnState(const ServerConfig& config, std::uint8_t slot) {
+    codered_mp::PlayerState state;
+    state.playerId = slot;
+    state.x = config.spawnX + static_cast<float>(slot % 4) * config.spawnSpacing;
+    state.y = config.spawnY + static_cast<float>(slot / 4) * config.spawnSpacing;
+    state.z = config.spawnZ;
+    state.heading = config.spawnHeading;
+    state.health = 100;
+    state.flags = 0;
+    state.actorEnum = static_cast<std::uint16_t>(codered_mp::kDefaultActorEnum + (slot % 8));
+    state.sequence = 0;
+    return state;
+}
+
+std::uint8_t AllocateSlot(std::array<PeerSlot, 32>& peers, SLNet::SystemAddress address, const ServerConfig& config) {
     for (std::uint8_t i = 0; i < peers.size(); ++i) {
         if (!peers[i].active) {
             peers[i].active = true;
             peers[i].address = address;
-            peers[i].state.playerId = i;
-            peers[i].state.health = 100;
+            peers[i].state = MakeSpawnState(config, i);
             return i;
         }
     }
@@ -91,6 +169,7 @@ void SendJoinAccepted(SLNet::RakPeerInterface* server, const PeerSlot& peer) {
     SLNet::BitStream out;
     out.Write(static_cast<unsigned char>(codered_mp::kMsgJoinAccepted));
     out.Write(peer.state.playerId);
+    codered_mp::WritePlayerState(out, peer.state);
     codered_mp::WriteString(out, "Code RED MP PoC accepted", codered_mp::kMaxChatLength);
     server->Send(&out, HIGH_PRIORITY, RELIABLE_ORDERED, 0, peer.address, false);
 }
@@ -172,6 +251,20 @@ int main(int argc, char** argv) {
                 return;
             }
             SendNativeCall(server, peers[playerId], callName, payload);
+        },
+        [&](std::uint8_t playerId, codered_mp::PlayerState& outState) {
+            if (playerId >= peers.size() || !peers[playerId].active) {
+                return false;
+            }
+            outState = peers[playerId].state;
+            return true;
+        },
+        [&](std::uint8_t playerId, std::uint16_t actorEnum) {
+            if (playerId >= peers.size() || !peers[playerId].active || actorEnum == 0) {
+                return false;
+            }
+            peers[playerId].state.actorEnum = actorEnum;
+            return true;
         })) {
         std::fprintf(stderr, "[server] Pawn gamemode failed: %s\n", script.LastError().c_str());
         server->Shutdown(100);
@@ -182,6 +275,9 @@ int main(int argc, char** argv) {
     std::printf("[server] Code RED MP SLikeNet PoC listening on %s:%u maxplayers=%u\n",
                 config.bind ? config.bind : "0.0.0.0", config.port, config.maxPlayers);
     std::printf("[server] gamemode=%s text=%s\n", config.gamemode.c_str(), script.GameModeText().c_str());
+    std::printf("[server] spawn preset=%s pos=(%.2f, %.2f, %.2f) heading=%.2f spacing=%.2f\n",
+                config.spawnPreset.c_str(), config.spawnX, config.spawnY, config.spawnZ,
+                config.spawnHeading, config.spawnSpacing);
 
     auto nextSnapshot = std::chrono::steady_clock::now();
 
@@ -211,7 +307,7 @@ int main(int argc, char** argv) {
                         } else {
                             std::uint8_t slot = FindSlot(peers, packet->systemAddress);
                             if (slot == codered_mp::kInvalidPlayerId) {
-                                slot = AllocateSlot(peers, packet->systemAddress);
+                                slot = AllocateSlot(peers, packet->systemAddress, config);
                             }
                             if (slot == codered_mp::kInvalidPlayerId) {
                                 SendJoinRejected(server, packet->systemAddress, "server full");
@@ -225,7 +321,9 @@ int main(int argc, char** argv) {
                         codered_mp::PlayerState state;
                         const std::uint8_t slot = FindSlot(peers, packet->systemAddress);
                         if (slot != codered_mp::kInvalidPlayerId && codered_mp::ReadPlayerState(in, state)) {
+                            const std::uint16_t actorEnum = peers[slot].state.actorEnum;
                             state.playerId = slot;
+                            state.actorEnum = actorEnum;
                             peers[slot].state = state;
                         }
                     } else if (messageId == codered_mp::kMsgChat) {

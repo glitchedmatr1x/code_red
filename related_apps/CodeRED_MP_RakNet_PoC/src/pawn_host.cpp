@@ -1,6 +1,9 @@
 #include "codered_mp/pawn_host.h"
 
+#include <algorithm>
+#include <cctype>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <sstream>
@@ -9,6 +12,7 @@
 #include <amxaux.h>
 
 extern "C" int AMXEXPORT AMXAPI amx_CoreInit(AMX* amx);
+extern "C" int AMXEXPORT AMXAPI amx_FloatInit(AMX* amx);
 
 namespace codered_mp {
 namespace {
@@ -21,6 +25,54 @@ PawnHost* HostFromAmx(AMX* amx) {
         return nullptr;
     }
     return static_cast<PawnHost*>(userData);
+}
+
+cell AMX_NATIVE_CALL NativeStrLen(AMX* amx, const cell* params) {
+    PawnHost* host = HostFromAmx(amx);
+    if (!host || params[0] < static_cast<cell>(sizeof(cell))) {
+        return 0;
+    }
+    return static_cast<cell>(host->GetStringParam(params, 1).size());
+}
+
+cell AMX_NATIVE_CALL NativeStrVal(AMX* amx, const cell* params) {
+    PawnHost* host = HostFromAmx(amx);
+    if (!host || params[0] < static_cast<cell>(sizeof(cell))) {
+        return 0;
+    }
+    return static_cast<cell>(std::strtol(host->GetStringParam(params, 1).c_str(), nullptr, 10));
+}
+
+cell AMX_NATIVE_CALL NativeStrCmp(AMX* amx, const cell* params) {
+    PawnHost* host = HostFromAmx(amx);
+    if (!host || params[0] < static_cast<cell>(sizeof(cell) * 2)) {
+        return 0;
+    }
+
+    std::string left = host->GetStringParam(params, 1);
+    std::string right = host->GetStringParam(params, 2);
+    const bool ignoreCase = params[0] >= static_cast<cell>(sizeof(cell) * 3) && params[3] != 0;
+    int maxLength = -1;
+    if (params[0] >= static_cast<cell>(sizeof(cell) * 4)) {
+        maxLength = static_cast<int>(params[4]);
+    }
+
+    const std::size_t limit = maxLength >= 0
+        ? static_cast<std::size_t>(maxLength)
+        : (std::max(left.size(), right.size()) + 1);
+    for (std::size_t i = 0; i < limit; ++i) {
+        const unsigned char lc = i < left.size() ? static_cast<unsigned char>(left[i]) : 0;
+        const unsigned char rc = i < right.size() ? static_cast<unsigned char>(right[i]) : 0;
+        const int a = ignoreCase ? std::tolower(lc) : lc;
+        const int b = ignoreCase ? std::tolower(rc) : rc;
+        if (a != b) {
+            return a < b ? -1 : 1;
+        }
+        if (lc == 0 && rc == 0) {
+            return 0;
+        }
+    }
+    return 0;
 }
 
 cell AMX_NATIVE_CALL NativePrint(AMX* amx, const cell* params) {
@@ -56,10 +108,126 @@ cell AMX_NATIVE_CALL NativeSendClientNativeCall(AMX* amx, const cell* params) {
     return 1;
 }
 
+cell AMX_NATIVE_CALL NativeSendClientNativeCallInt(AMX* amx, const cell* params) {
+    PawnHost* host = HostFromAmx(amx);
+    if (!host || params[0] < static_cast<cell>(sizeof(cell) * 3)) {
+        return 0;
+    }
+    const cell playerId = params[1];
+    if (playerId < 0 || playerId > 255) {
+        return 0;
+    }
+    host->SendClientNativeCall(static_cast<std::uint8_t>(playerId),
+                               host->GetStringParam(params, 2),
+                               std::to_string(static_cast<int>(params[3])));
+    return 1;
+}
+
+cell AMX_NATIVE_CALL NativeSendClientTeleport(AMX* amx, const cell* params) {
+    PawnHost* host = HostFromAmx(amx);
+    if (!host || params[0] < static_cast<cell>(sizeof(cell) * 5)) {
+        return 0;
+    }
+    const cell playerId = params[1];
+    if (playerId < 0 || playerId > 255) {
+        return 0;
+    }
+
+    char payload[96] = {};
+    std::snprintf(payload, sizeof(payload), "%.4f,%.4f,%.4f,%.2f",
+                  amx_ctof(params[2]), amx_ctof(params[3]),
+                  amx_ctof(params[4]), amx_ctof(params[5]));
+    host->SendClientNativeCall(static_cast<std::uint8_t>(playerId),
+                               "client_teleport", payload);
+    return 1;
+}
+
+cell AMX_NATIVE_CALL NativeIsPlayerConnected(AMX* amx, const cell* params) {
+    PawnHost* host = HostFromAmx(amx);
+    if (!host || params[0] < static_cast<cell>(sizeof(cell))) {
+        return 0;
+    }
+    const cell playerId = params[1];
+    if (playerId < 0 || playerId > 255) {
+        return 0;
+    }
+    return host->IsPlayerConnected(static_cast<std::uint8_t>(playerId)) ? 1 : 0;
+}
+
+bool SetFloatRef(AMX* amx, cell address, float value) {
+    cell* physicalAddress = nullptr;
+    if (amx_GetAddr(amx, address, &physicalAddress) != AMX_ERR_NONE || !physicalAddress) {
+        return false;
+    }
+    *physicalAddress = amx_ftoc(value);
+    return true;
+}
+
+cell AMX_NATIVE_CALL NativeGetPlayerPosition(AMX* amx, const cell* params) {
+    PawnHost* host = HostFromAmx(amx);
+    if (!host || params[0] < static_cast<cell>(sizeof(cell) * 4)) {
+        return 0;
+    }
+    const cell playerId = params[1];
+    if (playerId < 0 || playerId > 255) {
+        return 0;
+    }
+
+    PlayerState state;
+    if (!host->GetPlayerState(static_cast<std::uint8_t>(playerId), state)) {
+        return 0;
+    }
+
+    return SetFloatRef(amx, params[2], state.x) &&
+           SetFloatRef(amx, params[3], state.y) &&
+           SetFloatRef(amx, params[4], state.z) ? 1 : 0;
+}
+
+cell AMX_NATIVE_CALL NativeGetPlayerHeading(AMX* amx, const cell* params) {
+    PawnHost* host = HostFromAmx(amx);
+    if (!host || params[0] < static_cast<cell>(sizeof(cell) * 2)) {
+        return 0;
+    }
+    const cell playerId = params[1];
+    if (playerId < 0 || playerId > 255) {
+        return 0;
+    }
+
+    PlayerState state;
+    if (!host->GetPlayerState(static_cast<std::uint8_t>(playerId), state)) {
+        return 0;
+    }
+
+    return SetFloatRef(amx, params[2], state.heading) ? 1 : 0;
+}
+
+cell AMX_NATIVE_CALL NativeSetPlayerActorEnum(AMX* amx, const cell* params) {
+    PawnHost* host = HostFromAmx(amx);
+    if (!host || params[0] < static_cast<cell>(sizeof(cell) * 2)) {
+        return 0;
+    }
+    const cell playerId = params[1];
+    const cell actorEnum = params[2];
+    if (playerId < 0 || playerId > 255 || actorEnum <= 0 || actorEnum > 65535) {
+        return 0;
+    }
+    return host->SetPlayerActorEnum(static_cast<std::uint8_t>(playerId),
+                                    static_cast<std::uint16_t>(actorEnum)) ? 1 : 0;
+}
+
 const AMX_NATIVE_INFO kCodeRedNatives[] = {
+    {"strlen", NativeStrLen},
+    {"strval", NativeStrVal},
+    {"strcmp", NativeStrCmp},
     {"print", NativePrint},
     {"SetGameModeText", NativeSetGameModeText},
     {"SendClientNativeCall", NativeSendClientNativeCall},
+    {"SendClientNativeCallInt", NativeSendClientNativeCallInt},
+    {"SendClientTeleport", NativeSendClientTeleport},
+    {"IsPlayerConnected", NativeIsPlayerConnected},
+    {"GetPlayerPosition", NativeGetPlayerPosition},
+    {"GetPlayerHeading", NativeGetPlayerHeading},
+    {"SetPlayerActorEnum", NativeSetPlayerActorEnum},
     {nullptr, nullptr},
 };
 
@@ -71,9 +239,13 @@ PawnHost::~PawnHost() {
     Unload();
 }
 
-bool PawnHost::Load(const std::string& amxPath, NativeCallSender nativeCallSender) {
+bool PawnHost::Load(const std::string& amxPath, NativeCallSender nativeCallSender,
+                    PlayerStateGetter playerStateGetter,
+                    PlayerActorEnumSetter playerActorEnumSetter) {
     Unload();
     nativeCallSender_ = std::move(nativeCallSender);
+    playerStateGetter_ = std::move(playerStateGetter);
+    playerActorEnumSetter_ = std::move(playerActorEnumSetter);
     amx_ = new AMX{};
 
     const int loadError = aux_LoadProgram(amx_, const_cast<char*>(amxPath.c_str()), nullptr);
@@ -121,6 +293,8 @@ void PawnHost::Unload() {
         amx_ = nullptr;
     }
     nativeCallSender_ = nullptr;
+    playerStateGetter_ = nullptr;
+    playerActorEnumSetter_ = nullptr;
 }
 
 bool PawnHost::IsLoaded() const {
@@ -166,6 +340,25 @@ void PawnHost::SendClientNativeCall(std::uint8_t playerId, const std::string& ca
     if (nativeCallSender_) {
         nativeCallSender_(playerId, callName, payload);
     }
+}
+
+bool PawnHost::IsPlayerConnected(std::uint8_t playerId) {
+    PlayerState state;
+    return GetPlayerState(playerId, state);
+}
+
+bool PawnHost::GetPlayerState(std::uint8_t playerId, PlayerState& outState) {
+    if (!playerStateGetter_) {
+        return false;
+    }
+    return playerStateGetter_(playerId, outState);
+}
+
+bool PawnHost::SetPlayerActorEnum(std::uint8_t playerId, std::uint16_t actorEnum) {
+    if (!playerActorEnumSetter_ || actorEnum == 0) {
+        return false;
+    }
+    return playerActorEnumSetter_(playerId, actorEnum);
 }
 
 const std::string& PawnHost::GameModeText() const {
@@ -281,7 +474,11 @@ bool PawnHost::RegisterNatives() {
         SetError("register core natives", coreError);
         return false;
     }
-
+    const int floatError = amx_FloatInit(amx_);
+    if (floatError != AMX_ERR_NONE && floatError != AMX_ERR_NOTFOUND) {
+        SetError("register float natives", floatError);
+        return false;
+    }
     const int nativeError = amx_Register(amx_, kCodeRedNatives, -1);
     if (nativeError != AMX_ERR_NONE) {
         SetError("register Code RED natives", nativeError);
