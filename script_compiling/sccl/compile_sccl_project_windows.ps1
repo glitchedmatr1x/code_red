@@ -60,7 +60,7 @@ function HashFile($Path) {
 }
 function RequireFile($Path, $Label) {
     if (-not (Test-Path $Path)) {
-        throw "Missing $Label: $Path"
+        throw "Missing ${Label}: $Path"
     }
 }
 
@@ -171,11 +171,11 @@ $report | ConvertTo-Json -Depth 10 | Set-Content -Path $jsonPath -Encoding UTF8
 $lines = New-Object System.Collections.Generic.List[string]
 $lines.Add("# Code RED SC-CL Compile Report")
 $lines.Add("")
-$lines.Add("Project: `$ProjectName`")
-$lines.Add("Output: `$OutputName`")
-$lines.Add("Target/platform: `$Target / $Platform`")
-$lines.Add("Exit code: `$exitCode`")
-$lines.Add("Artifact count: `$($artifacts.Count)`")
+$lines.Add("Project: $ProjectName")
+$lines.Add("Output: $OutputName")
+$lines.Add("Target/platform: $Target / $Platform")
+$lines.Add("Exit code: $exitCode")
+$lines.Add("Artifact count: $($artifacts.Count)")
 $lines.Add("")
 foreach ($a in $artifacts) {
     $lines.Add("## $($a.relative_path)")
