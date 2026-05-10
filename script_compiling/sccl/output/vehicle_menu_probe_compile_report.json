@@ -1,0 +1,27 @@
+﻿{
+    "project_name":  "vehicle_menu_probe",
+    "output_name":  "test_pc",
+    "source":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\vehicle_menu_probe\\src\\main.c",
+    "include":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\vehicle_menu_probe\\include",
+    "compiler":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\SC-CL.exe",
+    "target":  "RDR_#SC",
+    "platform":  "PC",
+    "out_dir":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\vehicle_menu_probe",
+    "started":  "2026-05-10T15:00:51",
+    "command":  [
+                    "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\SC-CL.exe",
+                    "-target=RDR_#SC",
+                    "-platform=PC",
+                    "-out-dir=D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\vehicle_menu_probe\\\\",
+                    "-name=test_pc",
+                    "-extra-arg=-ID:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\vehicle_menu_probe\\include",
+                    "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\vehicle_menu_probe\\src\\main.c"
+                ],
+    "exit_code":  1,
+    "finished":  "2026-05-10T15:00:51",
+    "artifact_count":  0,
+    "artifacts":  [
+
+                  ],
+    "note":  "Only .xsc and .sco files are counted as compiled artifacts. This script does not install/import anything into the game."
+}
