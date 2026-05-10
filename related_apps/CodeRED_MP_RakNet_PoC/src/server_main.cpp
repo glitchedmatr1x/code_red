@@ -1,3 +1,4 @@
+#include "codered_mp/pawn_host.h"
 #include "codered_mp/protocol.h"
 
 #include <array>
@@ -9,8 +10,7 @@
 #include <string>
 #include <thread>
 
-#include <raknet/RakNetworkFactory.h>
-#include <raknet/RakServerInterface.h>
+#include <slikenet/peerinterface.h>
 
 namespace {
 
@@ -18,33 +18,9 @@ std::atomic<bool> g_stopRequested{false};
 
 struct PeerSlot {
     bool active = false;
-    RakNet::PlayerID address = RakNet::UNASSIGNED_PLAYER_ID;
+    SLNet::SystemAddress address = SLNet::UNASSIGNED_SYSTEM_ADDRESS;
     std::string name;
     codered_mp::PlayerState state;
-};
-
-class ScriptHostStub {
-public:
-    void OnGameModeInit() {
-        std::puts("[script] OnGameModeInit()");
-    }
-
-    void OnPlayerConnect(std::uint8_t playerId, const std::string& name) {
-        std::printf("[script] OnPlayerConnect(playerid=%u, name=%s)\n", playerId, name.c_str());
-    }
-
-    void OnPlayerDisconnect(std::uint8_t playerId) {
-        std::printf("[script] OnPlayerDisconnect(playerid=%u)\n", playerId);
-    }
-
-    void OnPlayerUpdate(const codered_mp::PlayerState& state) {
-        std::printf("[script] OnPlayerUpdate(playerid=%u, pos=%.2f %.2f %.2f)\n",
-                    state.playerId, state.x, state.y, state.z);
-    }
-
-    void OnPlayerText(std::uint8_t playerId, const std::string& text) {
-        std::printf("[script] OnPlayerText(playerid=%u, text=%s)\n", playerId, text.c_str());
-    }
 };
 
 void OnSignal(int) {
@@ -66,6 +42,7 @@ struct ServerConfig {
     std::uint16_t port = codered_mp::kDefaultPort;
     std::uint16_t maxPlayers = 16;
     const char* bind = nullptr;
+    std::string gamemode = "gamemodes/codered_hello.amx";
 };
 
 ServerConfig ParseArgs(int argc, char** argv) {
@@ -78,15 +55,17 @@ ServerConfig ParseArgs(int argc, char** argv) {
             config.maxPlayers = ParseU16(argv[++i], config.maxPlayers);
         } else if (arg == "--bind" && i + 1 < argc) {
             config.bind = argv[++i];
+        } else if ((arg == "--gamemode" || arg == "--amx") && i + 1 < argc) {
+            config.gamemode = argv[++i];
         } else if (arg == "--help") {
-            std::puts("Usage: codered-mp-server [--bind 0.0.0.0] [--port 7777] [--maxplayers 16]");
+            std::puts("Usage: codered-mp-server [--bind 0.0.0.0] [--port 7777] [--maxplayers 16] [--gamemode gamemodes/codered_hello.amx]");
             std::exit(0);
         }
     }
     return config;
 }
 
-std::uint8_t AllocateSlot(std::array<PeerSlot, 32>& peers, RakNet::PlayerID address) {
+std::uint8_t AllocateSlot(std::array<PeerSlot, 32>& peers, SLNet::SystemAddress address) {
     for (std::uint8_t i = 0; i < peers.size(); ++i) {
         if (!peers[i].active) {
             peers[i].active = true;
@@ -99,7 +78,7 @@ std::uint8_t AllocateSlot(std::array<PeerSlot, 32>& peers, RakNet::PlayerID addr
     return codered_mp::kInvalidPlayerId;
 }
 
-std::uint8_t FindSlot(const std::array<PeerSlot, 32>& peers, RakNet::PlayerID address) {
+std::uint8_t FindSlot(const std::array<PeerSlot, 32>& peers, SLNet::SystemAddress address) {
     for (std::uint8_t i = 0; i < peers.size(); ++i) {
         if (peers[i].active && peers[i].address == address) {
             return i;
@@ -108,23 +87,32 @@ std::uint8_t FindSlot(const std::array<PeerSlot, 32>& peers, RakNet::PlayerID ad
     return codered_mp::kInvalidPlayerId;
 }
 
-void SendJoinAccepted(RakNet::RakServerInterface* server, const PeerSlot& peer) {
-    RakNet::BitStream out;
+void SendJoinAccepted(SLNet::RakPeerInterface* server, const PeerSlot& peer) {
+    SLNet::BitStream out;
     out.Write(static_cast<unsigned char>(codered_mp::kMsgJoinAccepted));
     out.Write(peer.state.playerId);
     codered_mp::WriteString(out, "Code RED MP PoC accepted", codered_mp::kMaxChatLength);
-    server->Send(&out, RakNet::HIGH_PRIORITY, RakNet::RELIABLE_ORDERED, 0, peer.address, false);
+    server->Send(&out, HIGH_PRIORITY, RELIABLE_ORDERED, 0, peer.address, false);
 }
 
-void SendJoinRejected(RakNet::RakServerInterface* server, RakNet::PlayerID target, const std::string& reason) {
-    RakNet::BitStream out;
+void SendJoinRejected(SLNet::RakPeerInterface* server, SLNet::SystemAddress target, const std::string& reason) {
+    SLNet::BitStream out;
     out.Write(static_cast<unsigned char>(codered_mp::kMsgJoinRejected));
     codered_mp::WriteString(out, reason, codered_mp::kMaxChatLength);
-    server->Send(&out, RakNet::HIGH_PRIORITY, RakNet::RELIABLE_ORDERED, 0, target, false);
+    server->Send(&out, HIGH_PRIORITY, RELIABLE_ORDERED, 0, target, false);
 }
 
-void BroadcastSnapshot(RakNet::RakServerInterface* server, const std::array<PeerSlot, 32>& peers) {
-    RakNet::BitStream out;
+void SendNativeCall(SLNet::RakPeerInterface* server, const PeerSlot& peer,
+                    const std::string& callName, const std::string& payload) {
+    SLNet::BitStream out;
+    out.Write(static_cast<unsigned char>(codered_mp::kMsgNativeCall));
+    codered_mp::WriteString(out, callName, codered_mp::kMaxNativeCallLength);
+    codered_mp::WriteString(out, payload, codered_mp::kMaxChatLength);
+    server->Send(&out, HIGH_PRIORITY, RELIABLE_ORDERED, 0, peer.address, false);
+}
+
+void BroadcastSnapshot(SLNet::RakPeerInterface* server, const std::array<PeerSlot, 32>& peers) {
+    SLNet::BitStream out;
     out.Write(static_cast<unsigned char>(codered_mp::kMsgWorldSnapshot));
 
     std::uint8_t count = 0;
@@ -140,14 +128,14 @@ void BroadcastSnapshot(RakNet::RakServerInterface* server, const std::array<Peer
         }
     }
 
-    server->Send(&out, RakNet::MEDIUM_PRIORITY, RakNet::UNRELIABLE_SEQUENCED, 0, RakNet::UNASSIGNED_PLAYER_ID, true);
+    server->Send(&out, MEDIUM_PRIORITY, UNRELIABLE_SEQUENCED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
-void BroadcastChat(RakNet::RakServerInterface* server, std::uint8_t playerId, const std::string& text) {
-    RakNet::BitStream out;
+void BroadcastChat(SLNet::RakPeerInterface* server, std::uint8_t playerId, const std::string& text) {
+    SLNet::BitStream out;
     out.Write(static_cast<unsigned char>(codered_mp::kMsgChat));
     codered_mp::WriteString(out, "[" + std::to_string(playerId) + "] " + text, codered_mp::kMaxChatLength);
-    server->Send(&out, RakNet::HIGH_PRIORITY, RakNet::RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_PLAYER_ID, true);
+    server->Send(&out, HIGH_PRIORITY, RELIABLE_ORDERED, 0, SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 } // namespace
@@ -157,78 +145,96 @@ int main(int argc, char** argv) {
     std::signal(SIGINT, OnSignal);
     std::signal(SIGTERM, OnSignal);
 
-    RakNet::RakServerInterface* server = RakNet::RakNetworkFactory::GetRakServerInterface();
+    SLNet::RakPeerInterface* server = SLNet::RakPeerInterface::GetInstance();
     if (!server) {
-        std::fputs("[server] failed to create RakServerInterface\n", stderr);
+        std::fputs("[server] failed to create SLikeNet RakPeerInterface\n", stderr);
         return 1;
     }
 
     server->DisableSecurity();
-    if (!server->Start(config.maxPlayers, 0, 10, config.port, config.bind)) {
+    SLNet::SocketDescriptor descriptor(config.port, config.bind);
+    const SLNet::StartupResult startup = server->Startup(config.maxPlayers, &descriptor, 1);
+    if (startup != SLNet::RAKNET_STARTED) {
         std::fprintf(stderr, "[server] unable to start on %s:%u\n",
                      config.bind ? config.bind : "0.0.0.0", config.port);
-        RakNet::RakNetworkFactory::DestroyRakServerInterface(server);
+        std::fprintf(stderr, "[server] SLikeNet Startup() result=%d\n", static_cast<int>(startup));
+        SLNet::RakPeerInterface::DestroyInstance(server);
         return 1;
     }
-    server->StartOccasionalPing();
-
-    ScriptHostStub script;
-    script.OnGameModeInit();
-    std::printf("[server] Code RED MP RakNet PoC listening on %s:%u maxplayers=%u\n",
-                config.bind ? config.bind : "0.0.0.0", config.port, config.maxPlayers);
+    server->SetMaximumIncomingConnections(config.maxPlayers);
 
     std::array<PeerSlot, 32> peers;
+    codered_mp::PawnHost script;
+    if (!script.Load(config.gamemode, [&](std::uint8_t playerId, const std::string& callName, const std::string& payload) {
+            if (playerId >= peers.size() || !peers[playerId].active) {
+                std::printf("[server] native-call target is not active: playerid=%u call=%s\n",
+                            playerId, callName.c_str());
+                return;
+            }
+            SendNativeCall(server, peers[playerId], callName, payload);
+        })) {
+        std::fprintf(stderr, "[server] Pawn gamemode failed: %s\n", script.LastError().c_str());
+        server->Shutdown(100);
+        SLNet::RakPeerInterface::DestroyInstance(server);
+        return 1;
+    }
+    script.OnGameModeInit();
+    std::printf("[server] Code RED MP SLikeNet PoC listening on %s:%u maxplayers=%u\n",
+                config.bind ? config.bind : "0.0.0.0", config.port, config.maxPlayers);
+    std::printf("[server] gamemode=%s text=%s\n", config.gamemode.c_str(), script.GameModeText().c_str());
+
     auto nextSnapshot = std::chrono::steady_clock::now();
 
     while (!g_stopRequested) {
-        for (RakNet::Packet* packet = server->Receive(); packet; packet = server->Receive()) {
+        for (SLNet::Packet* packet = server->Receive(); packet; packet = server->Receive()) {
             const std::uint8_t packetId = codered_mp::GetPacketId(packet);
-            if (packetId == RakNet::ID_NEW_INCOMING_CONNECTION) {
-                std::printf("[server] raknet incoming connection\n");
-            } else if (packetId == RakNet::ID_DISCONNECTION_NOTIFICATION || packetId == RakNet::ID_CONNECTION_LOST) {
-                const std::uint8_t slot = FindSlot(peers, packet->playerId);
+            if (packetId == ID_NEW_INCOMING_CONNECTION) {
+                std::printf("[server] SLikeNet incoming connection from %s\n",
+                            packet->systemAddress.ToString(true));
+            } else if (packetId == ID_DISCONNECTION_NOTIFICATION || packetId == ID_CONNECTION_LOST) {
+                const std::uint8_t slot = FindSlot(peers, packet->systemAddress);
                 if (slot != codered_mp::kInvalidPlayerId) {
                     peers[slot] = PeerSlot{};
                     script.OnPlayerDisconnect(slot);
                 }
             } else if (packetId >= codered_mp::kMsgJoinRequest) {
-                RakNet::BitStream in(packet->data, packet->length, false);
+                SLNet::BitStream in(packet->data, packet->length, false);
                 unsigned char messageId = 0;
                 if (in.Read(messageId)) {
                     if (messageId == codered_mp::kMsgJoinRequest) {
                         std::uint32_t version = 0;
                         std::string name;
                         if (!in.Read(version) || !codered_mp::ReadString(in, name, codered_mp::kMaxNameLength)) {
-                            SendJoinRejected(server, packet->playerId, "malformed join");
+                            SendJoinRejected(server, packet->systemAddress, "malformed join");
                         } else if (version != codered_mp::kProtocolVersion) {
-                            SendJoinRejected(server, packet->playerId, "protocol mismatch");
+                            SendJoinRejected(server, packet->systemAddress, "protocol mismatch");
                         } else {
-                            std::uint8_t slot = FindSlot(peers, packet->playerId);
+                            std::uint8_t slot = FindSlot(peers, packet->systemAddress);
                             if (slot == codered_mp::kInvalidPlayerId) {
-                                slot = AllocateSlot(peers, packet->playerId);
+                                slot = AllocateSlot(peers, packet->systemAddress);
                             }
                             if (slot == codered_mp::kInvalidPlayerId) {
-                                SendJoinRejected(server, packet->playerId, "server full");
+                                SendJoinRejected(server, packet->systemAddress, "server full");
                             } else {
                                 peers[slot].name = name;
                                 SendJoinAccepted(server, peers[slot]);
-                                script.OnPlayerConnect(slot, name);
+                                script.OnPlayerConnect(slot);
                             }
                         }
                     } else if (messageId == codered_mp::kMsgPlayerState) {
                         codered_mp::PlayerState state;
-                        const std::uint8_t slot = FindSlot(peers, packet->playerId);
+                        const std::uint8_t slot = FindSlot(peers, packet->systemAddress);
                         if (slot != codered_mp::kInvalidPlayerId && codered_mp::ReadPlayerState(in, state)) {
                             state.playerId = slot;
                             peers[slot].state = state;
-                            script.OnPlayerUpdate(state);
                         }
                     } else if (messageId == codered_mp::kMsgChat) {
                         std::string text;
-                        const std::uint8_t slot = FindSlot(peers, packet->playerId);
+                        const std::uint8_t slot = FindSlot(peers, packet->systemAddress);
                         if (slot != codered_mp::kInvalidPlayerId && codered_mp::ReadString(in, text, codered_mp::kMaxChatLength)) {
-                            script.OnPlayerText(slot, text);
-                            BroadcastChat(server, slot, text);
+                            if (script.OnPlayerText(slot, text)) {
+                                BroadcastChat(server, slot, text);
+                            }
                         }
                     }
                 }
@@ -246,7 +252,7 @@ int main(int argc, char** argv) {
     }
 
     std::puts("[server] shutting down");
-    server->Disconnect(100);
-    RakNet::RakNetworkFactory::DestroyRakServerInterface(server);
+    server->Shutdown(100);
+    SLNet::RakPeerInterface::DestroyInstance(server);
     return 0;
 }

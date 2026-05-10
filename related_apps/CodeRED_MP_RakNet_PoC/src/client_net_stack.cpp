@@ -3,8 +3,7 @@
 #include <cstdio>
 #include <sstream>
 
-#include <raknet/RakClientInterface.h>
-#include <raknet/RakNetworkFactory.h>
+#include <slikenet/peerinterface.h>
 
 namespace codered_mp {
 
@@ -17,30 +16,45 @@ ClientNetStack::~ClientNetStack() {
 bool ClientNetStack::Connect(const ClientConfig& config) {
     Disconnect();
     config_ = config;
-    client_ = RakNet::RakNetworkFactory::GetRakClientInterface();
+    client_ = SLNet::RakPeerInterface::GetInstance();
     if (!client_) {
-        PushLog("RakNetworkFactory returned null client");
+        PushLog("SLikeNet returned null client peer");
         return false;
     }
 
-    client_->SetPassword(nullptr);
-    if (!client_->Connect(config_.host.c_str(), config_.port, config_.localPort, 0, 10)) {
-        PushLog("Connect() initiation failed");
-        RakNet::RakNetworkFactory::DestroyRakClientInterface(client_);
+    SLNet::SocketDescriptor descriptor(config_.localPort, nullptr);
+    const SLNet::StartupResult startup = client_->Startup(1, &descriptor, 1);
+    if (startup != SLNet::RAKNET_STARTED) {
+        std::ostringstream out;
+        out << "SLikeNet Startup() failed result=" << static_cast<int>(startup);
+        PushLog(out.str());
+        SLNet::RakPeerInterface::DestroyInstance(client_);
+        client_ = nullptr;
+        return false;
+    }
+
+    const SLNet::ConnectionAttemptResult attempt =
+        client_->Connect(config_.host.c_str(), config_.port, nullptr, 0);
+    if (attempt != SLNet::CONNECTION_ATTEMPT_STARTED) {
+        std::ostringstream out;
+        out << "SLikeNet Connect() initiation failed result=" << static_cast<int>(attempt);
+        PushLog(out.str());
+        client_->Shutdown(100);
+        SLNet::RakPeerInterface::DestroyInstance(client_);
         client_ = nullptr;
         return false;
     }
 
     std::ostringstream out;
-    out << "connect initiated host=" << config_.host << " port=" << config_.port;
+    out << "SLikeNet connect initiated host=" << config_.host << " port=" << config_.port;
     PushLog(out.str());
     return true;
 }
 
 void ClientNetStack::Disconnect() {
     if (client_) {
-        client_->Disconnect(100);
-        RakNet::RakNetworkFactory::DestroyRakClientInterface(client_);
+        client_->Shutdown(100);
+        SLNet::RakPeerInterface::DestroyInstance(client_);
         client_ = nullptr;
     }
     connected_ = false;
@@ -52,7 +66,7 @@ void ClientNetStack::Pump() {
         return;
     }
 
-    for (RakNet::Packet* packet = client_->Receive(); packet; packet = client_->Receive()) {
+    for (SLNet::Packet* packet = client_->Receive(); packet; packet = client_->Receive()) {
         HandlePacket(packet);
         client_->DeallocatePacket(packet);
     }
@@ -66,10 +80,11 @@ bool ClientNetStack::SendPlayerState(const PlayerState& state) {
     PlayerState outbound = state;
     outbound.playerId = localPlayerId_;
 
-    RakNet::BitStream stream;
+    SLNet::BitStream stream;
     stream.Write(static_cast<unsigned char>(kMsgPlayerState));
     WritePlayerState(stream, outbound);
-    return client_->Send(&stream, RakNet::HIGH_PRIORITY, RakNet::UNRELIABLE_SEQUENCED, 0);
+    return client_->Send(&stream, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0,
+                         SLNet::UNASSIGNED_SYSTEM_ADDRESS, true) != 0;
 }
 
 bool ClientNetStack::SendChat(const std::string& text) {
@@ -77,10 +92,11 @@ bool ClientNetStack::SendChat(const std::string& text) {
         return false;
     }
 
-    RakNet::BitStream stream;
+    SLNet::BitStream stream;
     stream.Write(static_cast<unsigned char>(kMsgChat));
     WriteString(stream, text, kMaxChatLength);
-    return client_->Send(&stream, RakNet::HIGH_PRIORITY, RakNet::RELIABLE_ORDERED, 0);
+    return client_->Send(&stream, HIGH_PRIORITY, RELIABLE_ORDERED, 0,
+                         SLNet::UNASSIGNED_SYSTEM_ADDRESS, true) != 0;
 }
 
 bool ClientNetStack::IsConnected() const {
@@ -104,22 +120,22 @@ void ClientNetStack::PushLog(const std::string& text) {
     events_.push_back(event);
 }
 
-void ClientNetStack::HandlePacket(RakNet::Packet* packet) {
+void ClientNetStack::HandlePacket(SLNet::Packet* packet) {
     const std::uint8_t packetId = GetPacketId(packet);
     switch (packetId) {
-        case RakNet::ID_CONNECTION_REQUEST_ACCEPTED:
+        case ID_CONNECTION_REQUEST_ACCEPTED:
             connected_ = true;
-            events_.push_back({ClientEvent::kConnected, "raknet connection accepted", kInvalidPlayerId, {}});
+            events_.push_back({ClientEvent::kConnected, "SLikeNet connection accepted", kInvalidPlayerId, {}});
             SendJoinRequest();
             return;
-        case RakNet::ID_DISCONNECTION_NOTIFICATION:
-        case RakNet::ID_CONNECTION_LOST:
+        case ID_DISCONNECTION_NOTIFICATION:
+        case ID_CONNECTION_LOST:
             connected_ = false;
             events_.push_back({ClientEvent::kDisconnected, PacketIdName(packetId), localPlayerId_, {}});
             return;
-        case RakNet::ID_CONNECTION_ATTEMPT_FAILED:
-        case RakNet::ID_NO_FREE_INCOMING_CONNECTIONS:
-        case RakNet::ID_INVALID_PASSWORD:
+        case ID_CONNECTION_ATTEMPT_FAILED:
+        case ID_NO_FREE_INCOMING_CONNECTIONS:
+        case ID_INVALID_PASSWORD:
             connected_ = false;
             events_.push_back({ClientEvent::kDisconnected, PacketIdName(packetId), kInvalidPlayerId, {}});
             return;
@@ -129,12 +145,12 @@ void ClientNetStack::HandlePacket(RakNet::Packet* packet) {
 
     if (packetId < kMsgJoinRequest) {
         std::ostringstream out;
-        out << "ignored raknet packet id=" << static_cast<int>(packetId) << " " << PacketIdName(packetId);
+        out << "ignored SLikeNet packet id=" << static_cast<int>(packetId) << " " << PacketIdName(packetId);
         PushLog(out.str());
         return;
     }
 
-    RakNet::BitStream stream(packet->data, packet->length, false);
+    SLNet::BitStream stream(packet->data, packet->length, false);
     unsigned char messageId = 0;
     if (!stream.Read(messageId)) {
         return;
@@ -169,6 +185,13 @@ void ClientNetStack::HandlePacket(RakNet::Packet* packet) {
         std::string text;
         ReadString(stream, text, kMaxChatLength);
         events_.push_back({messageId == kMsgChat ? ClientEvent::kChat : ClientEvent::kLog, text, localPlayerId_, {}});
+    } else if (messageId == kMsgNativeCall) {
+        std::string callName;
+        std::string payload;
+        if (ReadString(stream, callName, kMaxNativeCallLength) &&
+            ReadString(stream, payload, kMaxChatLength)) {
+            events_.push_back({ClientEvent::kNativeCall, callName + ": " + payload, localPlayerId_, {}});
+        }
     } else {
         std::ostringstream out;
         out << "ignored user message id=" << static_cast<int>(messageId) << " " << MessageName(messageId);
@@ -177,11 +200,12 @@ void ClientNetStack::HandlePacket(RakNet::Packet* packet) {
 }
 
 void ClientNetStack::SendJoinRequest() {
-    RakNet::BitStream stream;
+    SLNet::BitStream stream;
     stream.Write(static_cast<unsigned char>(kMsgJoinRequest));
     stream.Write(kProtocolVersion);
     WriteString(stream, config_.name, kMaxNameLength);
-    client_->Send(&stream, RakNet::HIGH_PRIORITY, RakNet::RELIABLE_ORDERED, 0);
+    client_->Send(&stream, HIGH_PRIORITY, RELIABLE_ORDERED, 0,
+                  SLNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
 } // namespace codered_mp

@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <string>
 
-#include <raknet/BitStream.h>
-#include <raknet/NetworkTypes.h>
-#include <raknet/PacketEnumerations.h>
+#include <slikenet/BitStream.h>
+#include <slikenet/MessageIdentifiers.h>
+#include <slikenet/types.h>
 
 namespace codered_mp {
 
@@ -14,15 +14,17 @@ constexpr std::uint16_t kDefaultPort = 7777;
 constexpr std::uint8_t kInvalidPlayerId = 0xFF;
 constexpr std::size_t kMaxNameLength = 24;
 constexpr std::size_t kMaxChatLength = 96;
+constexpr std::size_t kMaxNativeCallLength = 96;
 
 enum MessageId : std::uint8_t {
-    kMsgJoinRequest = RakNet::ID_USER_PACKET_ENUM,
+    kMsgJoinRequest = ID_USER_PACKET_ENUM,
     kMsgJoinAccepted,
     kMsgJoinRejected,
     kMsgPlayerState,
     kMsgWorldSnapshot,
     kMsgChat,
     kMsgServerNotice,
+    kMsgNativeCall,
 };
 
 struct PlayerState {
@@ -35,14 +37,14 @@ struct PlayerState {
     std::uint16_t flags = 0;
 };
 
-std::uint8_t GetPacketId(const RakNet::Packet* packet);
+std::uint8_t GetPacketId(const SLNet::Packet* packet);
 const char* PacketIdName(std::uint8_t packetId);
 const char* MessageName(std::uint8_t messageId);
 
-void WriteString(RakNet::BitStream& stream, const std::string& value, std::size_t maxLength);
-bool ReadString(RakNet::BitStream& stream, std::string& value, std::size_t maxLength);
+void WriteString(SLNet::BitStream& stream, const std::string& value, std::size_t maxLength);
+bool ReadString(SLNet::BitStream& stream, std::string& value, std::size_t maxLength);
 
-void WritePlayerState(RakNet::BitStream& stream, const PlayerState& state);
-bool ReadPlayerState(RakNet::BitStream& stream, PlayerState& state);
+void WritePlayerState(SLNet::BitStream& stream, const PlayerState& state);
+bool ReadPlayerState(SLNet::BitStream& stream, PlayerState& state);
 
 } // namespace codered_mp

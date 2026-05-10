@@ -8,8 +8,8 @@
 
 #include "codered_mp/protocol.h"
 
-namespace RakNet {
-class RakClientInterface;
+namespace SLNet {
+class RakPeerInterface;
 struct Packet;
 }
 
@@ -31,6 +31,7 @@ struct ClientEvent {
         kJoinRejected,
         kSnapshot,
         kChat,
+        kNativeCall,
     };
 
     Type type = kLog;
@@ -60,10 +61,10 @@ public:
 
 private:
     void PushLog(const std::string& text);
-    void HandlePacket(RakNet::Packet* packet);
+    void HandlePacket(SLNet::Packet* packet);
     void SendJoinRequest();
 
-    RakNet::RakClientInterface* client_ = nullptr;
+    SLNet::RakPeerInterface* client_ = nullptr;
     ClientConfig config_;
     bool connected_ = false;
     std::uint8_t localPlayerId_ = kInvalidPlayerId;

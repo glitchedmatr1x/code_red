@@ -3,16 +3,18 @@
 #include <algorithm>
 #include <cstring>
 
+#include <slikenet/time.h>
+
 namespace codered_mp {
 
-std::uint8_t GetPacketId(const RakNet::Packet* packet) {
+std::uint8_t GetPacketId(const SLNet::Packet* packet) {
     if (!packet || !packet->data || packet->length == 0) {
         return 0xFF;
     }
 
     const auto first = static_cast<std::uint8_t>(packet->data[0]);
-    if (first == RakNet::ID_TIMESTAMP) {
-        const std::size_t offset = sizeof(unsigned char) + sizeof(unsigned long);
+    if (first == ID_TIMESTAMP) {
+        const std::size_t offset = sizeof(unsigned char) + sizeof(SLNet::Time);
         if (packet->length > offset) {
             return static_cast<std::uint8_t>(packet->data[offset]);
         }
@@ -23,14 +25,13 @@ std::uint8_t GetPacketId(const RakNet::Packet* packet) {
 
 const char* PacketIdName(std::uint8_t packetId) {
     switch (packetId) {
-        case RakNet::ID_CONNECTION_REQUEST_ACCEPTED: return "ID_CONNECTION_REQUEST_ACCEPTED";
-        case RakNet::ID_NEW_INCOMING_CONNECTION: return "ID_NEW_INCOMING_CONNECTION";
-        case RakNet::ID_NO_FREE_INCOMING_CONNECTIONS: return "ID_NO_FREE_INCOMING_CONNECTIONS";
-        case RakNet::ID_DISCONNECTION_NOTIFICATION: return "ID_DISCONNECTION_NOTIFICATION";
-        case RakNet::ID_CONNECTION_LOST: return "ID_CONNECTION_LOST";
-        case RakNet::ID_CONNECTION_ATTEMPT_FAILED: return "ID_CONNECTION_ATTEMPT_FAILED";
-        case RakNet::ID_INVALID_PASSWORD: return "ID_INVALID_PASSWORD";
-        case RakNet::ID_MODIFIED_PACKET: return "ID_MODIFIED_PACKET";
+        case ID_CONNECTION_REQUEST_ACCEPTED: return "ID_CONNECTION_REQUEST_ACCEPTED";
+        case ID_NEW_INCOMING_CONNECTION: return "ID_NEW_INCOMING_CONNECTION";
+        case ID_NO_FREE_INCOMING_CONNECTIONS: return "ID_NO_FREE_INCOMING_CONNECTIONS";
+        case ID_DISCONNECTION_NOTIFICATION: return "ID_DISCONNECTION_NOTIFICATION";
+        case ID_CONNECTION_LOST: return "ID_CONNECTION_LOST";
+        case ID_CONNECTION_ATTEMPT_FAILED: return "ID_CONNECTION_ATTEMPT_FAILED";
+        case ID_INVALID_PASSWORD: return "ID_INVALID_PASSWORD";
         default: return "UNKNOWN";
     }
 }
@@ -44,11 +45,12 @@ const char* MessageName(std::uint8_t messageId) {
         case kMsgWorldSnapshot: return "world_snapshot";
         case kMsgChat: return "chat";
         case kMsgServerNotice: return "server_notice";
+        case kMsgNativeCall: return "native_call";
         default: return "unknown_user_message";
     }
 }
 
-void WriteString(RakNet::BitStream& stream, const std::string& value, std::size_t maxLength) {
+void WriteString(SLNet::BitStream& stream, const std::string& value, std::size_t maxLength) {
     const auto length = static_cast<std::uint8_t>(std::min(value.size(), maxLength));
     stream.Write(length);
     if (length > 0) {
@@ -56,7 +58,7 @@ void WriteString(RakNet::BitStream& stream, const std::string& value, std::size_
     }
 }
 
-bool ReadString(RakNet::BitStream& stream, std::string& value, std::size_t maxLength) {
+bool ReadString(SLNet::BitStream& stream, std::string& value, std::size_t maxLength) {
     std::uint8_t length = 0;
     if (!stream.Read(length)) {
         return false;
@@ -71,7 +73,7 @@ bool ReadString(RakNet::BitStream& stream, std::string& value, std::size_t maxLe
     return stream.Read(value.data(), length);
 }
 
-void WritePlayerState(RakNet::BitStream& stream, const PlayerState& state) {
+void WritePlayerState(SLNet::BitStream& stream, const PlayerState& state) {
     stream.Write(state.playerId);
     stream.Write(state.x);
     stream.Write(state.y);
@@ -81,7 +83,7 @@ void WritePlayerState(RakNet::BitStream& stream, const PlayerState& state) {
     stream.Write(state.flags);
 }
 
-bool ReadPlayerState(RakNet::BitStream& stream, PlayerState& state) {
+bool ReadPlayerState(SLNet::BitStream& stream, PlayerState& state) {
     return stream.Read(state.playerId) &&
            stream.Read(state.x) &&
            stream.Read(state.y) &&
