@@ -1,9 +1,10 @@
 ﻿{
-    "generated_at":  "2026-05-10T16:01:47",
+    "generated_at":  "2026-05-10T16:09:52",
     "compiled_source":  "script_compiling\\sccl\\output\\multiplayer_update_thread_stub\\multiplayer_update_thread.sco",
     "patch_root":  "script_compiling\\sccl\\output\\sco_loader_probe_patch",
-    "staged_target":  "script_compiling\\sccl\\output\\sco_loader_probe_patch\\content\\multiplayer\\multiplayer_update_thread.sco",
-    "target_relative_path":  "content\\multiplayer\\multiplayer_update_thread.sco",
+    "staged_target":  "script_compiling\\sccl\\output\\sco_loader_probe_patch\\release64\\multiplayer\\multiplayer_update_thread.sco",
+    "target_relative_path":  "release64\\multiplayer\\multiplayer_update_thread.sco",
+    "legacy_path_removed_if_present":  "content\\\\multiplayer\\\\multiplayer_update_thread.sco",
     "bytes":  100,
     "sha1":  "E9371F3019DFF50C370977B35E85A920D2938F6F",
     "first_16_bytes_hex":  "53 43 52 02 34 9D 01 8A 00 00 00 34 FF FF FF FD",
