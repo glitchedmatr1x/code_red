@@ -48,6 +48,9 @@ function ReadText($Path) {
 function CountRegex($Text, $Pattern) {
     return ([regex]::Matches($Text, $Pattern)).Count
 }
+function CountChar($Text, [char]$Char) {
+    return ($Text.ToCharArray() | Where-Object { $_ -eq $Char }).Count
+}
 
 RequireFile $SourcePath "decoded source"
 RequireFile (Join-Path $LaneInclude "RDR\natives32.h") "lane RDR native header"
@@ -72,15 +75,15 @@ $netCalls = CountRegex $text '\bNET_[A-Z0-9_]+\s*\('
 $uiEvents = CountRegex $text '\bUI_SEND_EVENT\s*\('
 $waitCalls = CountRegex $text '\bWAIT\s*\('
 $hasMain = $text -match '\bvoid\s+main\s*\('
-$braceBalance = (($text.ToCharArray() | Where-Object { $_ -eq '{' }).Count -eq ($text.ToCharArray() | Where-Object { $_ -eq '}' }).Count)
-$parenBalance = (($text.ToCharArray() | Where-Object { $_ -eq '(' }).Count -eq ($text.ToCharArray() | Where-Object { $_ -eq ')' }).Count)
+$braceBalance = (CountChar $text '{') -eq (CountChar $text '}')
+$parenBalance = (CountChar $text '(') -eq (CountChar $text ')')
 
 $warnings = New-Object System.Collections.Generic.List[string]
 if (-not $hasMain) { $warnings.Add("No 'void main()' entrypoint was detected.") }
 if (-not $braceBalance) { $warnings.Add("Brace counts are not balanced.") }
 if (-not $parenBalance) { $warnings.Add("Parenthesis counts are not balanced.") }
 if ($unknownFunctionCount -gt 0) { $warnings.Add("Unknown_Function calls remain. SC-CL may not compile until these are resolved or mapped.") }
-if ($text -match '^\s*#region' -m) { $warnings.Add("Decompiler #region blocks remain. If SC-CL rejects them, remove or convert them to comments.") }
+if ($text -match '(?m)^\s*#region') { $warnings.Add("Decompiler #region blocks remain. If SC-CL rejects them, remove or convert them to comments.") }
 if ($text -match 'char\*\s+\w+\[\d+\]') { $warnings.Add("Decompiler char* array syntax was detected; SC-CL may require cleanup depending on parser behavior.") }
 if ($text -match '\bvar\s+') { $warnings.Add("Decompiler 'var' declarations were detected; verify SC-CL accepts this dialect.") }
 if ($text -match '\bbool\s+bVar\d+;') { $warnings.Add("Decompiler bool temporaries are present; this is expected but should be checked if compile fails.") }
@@ -148,9 +151,9 @@ if ($warnings.Count -eq 0) {
 $lines.Add("")
 $lines.Add("## Next command")
 $lines.Add("")
-$lines.Add("```powershell")
+$lines.Add('```powershell')
 $lines.Add($manifest.next_command)
-$lines.Add("```")
+$lines.Add('```')
 $lines.Add("")
 $lines.Add("Boundary: local probe only; do not commit decoded game script source.")
 $lines -join "`n" | Set-Content -Path $mdPath -Encoding UTF8
