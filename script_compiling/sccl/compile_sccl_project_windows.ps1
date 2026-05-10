@@ -4,7 +4,7 @@ Code RED generic SC-CL project compiler.
 Purpose:
 - Compile a named project under script_compiling/sccl/projects/<ProjectName>.
 - Preserve the existing vehicle_menu_probe lane while enabling one-script probes.
-- Inspect only real .xsc/.sco outputs and record hashes.
+- Inspect real Rockstar script artifacts and record hashes.
 - Do not install/import anything into the game.
 
 Run from repo root, example:
@@ -34,6 +34,7 @@ $Out = Join-Path $OutRoot $ProjectName
 $Compiler = Join-Path $OutRoot "SC-CL.exe"
 $Promote = Join-Path $Lane "promote_real_sccl_headers_windows.ps1"
 $Stage = Join-Path $Lane "stage_sccl_runtime_windows.ps1"
+$ArtifactExtensions = @(".xsc", ".csc", ".wsc", ".sco", ".ysc")
 
 if (-not $OutputName) { $OutputName = $ProjectName }
 
@@ -50,18 +51,37 @@ function LooksRealHeader($Path) {
     return (($txt -match "SC-CL's include library" -or $txt -match "_native") -and $txt -match "CREATE_ACTOR_IN_LAYOUT" -and $txt -notmatch "Minimal Code RED proof natives")
 }
 function HashFile($Path) {
+    $item = Get-Item $Path
     $hash = Get-FileHash -Path $Path -Algorithm SHA1
+    $head = ""
+    try {
+        $bytes = [System.IO.File]::ReadAllBytes($Path)
+        $take = [Math]::Min(16, $bytes.Length)
+        if ($take -gt 0) {
+            $head = (($bytes[0..($take - 1)] | ForEach-Object { $_.ToString("X2") }) -join " ")
+        }
+    } catch {}
     return [ordered]@{
         path = $Path
         relative_path = $Path.Substring($RepoRoot.Length).TrimStart('\')
-        length = (Get-Item $Path).Length
+        extension = $item.Extension
+        length = $item.Length
         sha1 = $hash.Hash
+        first_16_bytes_hex = $head
     }
 }
 function RequireFile($Path, $Label) {
     if (-not (Test-Path $Path)) {
         throw "Missing ${Label}: $Path"
     }
+}
+function FindArtifacts($Root, $Name, $Extensions) {
+    $found = @()
+    foreach ($ext in $Extensions) {
+        $found += Get-ChildItem -Path $Root -Recurse -File -Filter "*$ext" -ErrorAction SilentlyContinue |
+            Where-Object { $_.BaseName -eq $Name -or $_.FullName -match [regex]::Escape($Name) }
+    }
+    return @($found | Sort-Object FullName -Unique)
 }
 
 RequireFile $Source "SC-CL source"
@@ -115,12 +135,11 @@ New-Item -ItemType Directory -Force -Path $Out | Out-Null
 $OutArg = "$Out\\"
 
 # Remove stale artifacts for this output name so inspection cannot pass on an old compile.
-$stale = @(
-    (Join-Path $OutRoot "$ProjectName$OutputName.xsc"),
-    (Join-Path $OutRoot "$ProjectName$OutputName.sco"),
-    (Join-Path $Out "$OutputName.xsc"),
-    (Join-Path $Out "$OutputName.sco")
-)
+$stale = @()
+foreach ($ext in $ArtifactExtensions) {
+    $stale += Join-Path $OutRoot "$ProjectName$OutputName$ext"
+    $stale += Join-Path $Out "$OutputName$ext"
+}
 foreach ($s in $stale) { Remove-Item -LiteralPath $s -Force -ErrorAction SilentlyContinue }
 
 $report = [ordered]@{
@@ -132,6 +151,7 @@ $report = [ordered]@{
     target = $Target
     platform = $Platform
     out_dir = $Out
+    artifact_extensions = $ArtifactExtensions
     started = (Get-Date).ToString('s')
     command = @($Compiler, "-target=$Target", "-platform=$Platform", "-out-dir=$OutArg", "-name=$OutputName", "-extra-arg=-I$ProjectInclude", $Source)
 }
@@ -155,14 +175,18 @@ if ($exitCode -eq -1073741515) {
     Write-Host "[CodeRED] Run: powershell -ExecutionPolicy Bypass -File script_compiling\sccl\stage_sccl_runtime_windows.ps1"
 }
 
-$artifactFiles = @()
-$artifactFiles += Get-ChildItem -Path $OutRoot -Recurse -File -Filter "*.xsc" -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match [regex]::Escape($OutputName) }
-$artifactFiles += Get-ChildItem -Path $OutRoot -Recurse -File -Filter "*.sco" -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match [regex]::Escape($OutputName) }
-$artifactFiles = @($artifactFiles | Sort-Object FullName -Unique)
+$artifactFiles = FindArtifacts $OutRoot $OutputName $ArtifactExtensions
 $artifacts = @($artifactFiles | ForEach-Object { HashFile $_.FullName })
+$nearbyFiles = @()
+foreach ($ext in $ArtifactExtensions) {
+    $nearbyFiles += Get-ChildItem -Path $OutRoot -Recurse -File -Filter "*$ext" -ErrorAction SilentlyContinue |
+        Sort-Object LastWriteTime -Descending |
+        Select-Object -First 25 FullName, Length, LastWriteTime
+}
 $report.artifact_count = $artifacts.Count
 $report.artifacts = $artifacts
-$report.note = "Only .xsc and .sco files are counted as compiled artifacts. This script does not install/import anything into the game."
+$report.nearby_recent_script_artifacts = @($nearbyFiles | Sort-Object LastWriteTime -Descending -Unique)
+$report.note = "Counts .xsc, .csc, .wsc, .sco, and .ysc artifacts. This script does not install/import anything into the game."
 
 $jsonPath = Join-Path $OutRoot "$ProjectName`_compile_report.json"
 $mdPath = Join-Path $OutRoot "$ProjectName`_compile_report.md"
@@ -179,12 +203,14 @@ $lines.Add("Artifact count: $($artifacts.Count)")
 $lines.Add("")
 foreach ($a in $artifacts) {
     $lines.Add("## $($a.relative_path)")
+    $lines.Add("- extension: $($a.extension)")
     $lines.Add("- length: $($a.length)")
     $lines.Add("- sha1: $($a.sha1)")
+    $lines.Add("- first 16 bytes: $($a.first_16_bytes_hex)")
     $lines.Add("")
 }
 if ($artifacts.Count -eq 0) {
-    $lines.Add("No .xsc or .sco artifacts were found for this output name.")
+    $lines.Add("No .xsc, .csc, .wsc, .sco, or .ysc artifacts were found for this output name.")
     $lines.Add("")
     $lines.Add("Check compiler stdout/stderr, source syntax, target/platform, and output path parsing.")
 }
@@ -192,6 +218,7 @@ $lines -join "`n" | Set-Content -Path $mdPath -Encoding UTF8
 
 Write-Host "[CodeRED] SC-CL exit:" $exitCode
 Write-Host "[CodeRED] Artifact count:" $artifacts.Count
+foreach ($a in $artifacts) { Write-Host "  [$($a.extension)] $($a.relative_path) bytes=$($a.length) head=$($a.first_16_bytes_hex)" }
 Write-Host "[CodeRED] Report:" $mdPath
 Write-Host "[CodeRED] JSON:" $jsonPath
 
