@@ -52,6 +52,7 @@ function Get-ScriptKind($Head) {
     if ($Head -match '^52 53 43 86') { return 'RSC86 wrapper/header candidate' }
     if ($Head -match '^52 53 43 87') { return 'RSC87 wrapper/header candidate' }
     if ($Head -match '^52 53 43 37') { return 'RSC7 container candidate' }
+    if ($Head -match '^53 43 52 02') { return 'SCO active/generated SCR02 header' }
     if ($Head -match '^53 43 4F') { return 'SCO ASCII marker candidate' }
     return 'unknown'
 }
