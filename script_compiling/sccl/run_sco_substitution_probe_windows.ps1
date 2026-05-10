@@ -25,6 +25,11 @@ $Inspect = Join-Path $Lane "inspect_script_artifact_headers_windows.ps1"
 $Out = Join-Path $Lane "output"
 $Report = Join-Path $Out "SCO_SUBSTITUTION_PROBE_REPORT.md"
 $Json = Join-Path $Out "SCO_SUBSTITUTION_PROBE_REPORT.json"
+$InspectRoots = @(
+    "script_compiling\sccl\output",
+    "game\content_extracted",
+    "logs\content_rpf_full_extract_after_magic_names\content"
+)
 
 if (-not (Test-Path $Compile)) { throw "Missing compile wrapper: $Compile" }
 if (-not (Test-Path $Inspect)) { throw "Missing header inspector: $Inspect" }
@@ -42,12 +47,8 @@ powershell -ExecutionPolicy Bypass -File $Compile `
 $exitCode = $LASTEXITCODE
 
 Write-Host "Inspecting generated and extracted script headers..."
-
-powershell -ExecutionPolicy Bypass -File $Inspect `
-  -RepoRoot $RepoRoot `
-  -Root @("script_compiling\sccl\output", "game\content_extracted", "logs\content_rpf_full_extract_after_magic_names\content") `
-  -Max 120 `
-  -Bytes 32
+# Invoke the inspector in-process so the -Root string array is passed correctly.
+& $Inspect -RepoRoot $RepoRoot -Root $InspectRoots -Max 120 -Bytes 32
 
 $scriptArtifacts = @()
 $extensions = @(".sco", ".xsc", ".csc", ".wsc")
@@ -81,7 +82,8 @@ $summary = [ordered]@{
     output_name = $OutputName
     compile_exit_code = $exitCode
     generated_artifacts = $rows
-    verdict = "If .sco compiles, it still must be runtime-tested by a non-critical script request. Header mismatch with active WSC means substitution is not proven by naming alone."
+    inspect_roots = $InspectRoots
+    verdict = "RDR_SCO emits an SCR02-style artifact. Header mismatch with active RSC85 WSC means SCO substitution is possible only if the game loader explicitly accepts SCO as an alternate script asset for the requested path."
     safe_next_test = "Try a nonessential, tiny script alias/probe first; do not replace multiplayer_update_thread until the engine proves it will resolve/load .sco for a no-extension request."
 }
 $summary | ConvertTo-Json -Depth 10 | Set-Content -Path $Json -Encoding UTF8
@@ -107,7 +109,7 @@ if ($rows.Count -eq 0) {
     }
 }
 $lines.Add("## Verdict")
-$lines.Add("A successful .sco compile only proves SC-CL can emit RDR_SCO. It does not prove that active PC/Switch/PS4-style WSC requests will accept .sco in place of .wsc.")
+$lines.Add("A successful .sco compile only proves SC-CL can emit RDR_SCO. It does not prove that active WSC/RSC85 script requests will accept .sco in place of .wsc.")
 $lines.Add("")
 $lines.Add("Safe next test: use a tiny noncritical script probe/alias before attempting anything near multiplayer_update_thread.")
 $lines -join "`n" | Set-Content -Path $Report -Encoding UTF8
