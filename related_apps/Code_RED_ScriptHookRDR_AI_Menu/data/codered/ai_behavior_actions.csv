@@ -11,5 +11,6 @@ make_spawned_lawmen_request,Make Spawned Actors Lawmen,faction,1,Sets spawned ac
 side_lawman_immunity_request,Join Lawman Side,faction,1,Sets player to US law faction until restored
 side_gang_immunity_request,Join Gang Side,faction,1,Sets player to generic criminal/gang faction until restored
 restore_player_faction_request,Restore Player Faction,faction,1,Restores the saved player faction or default player faction
+mp_connect_localhost_request,Connect MP Localhost,network,1,Starts the SLikeNet PoC client against 127.0.0.1:7777
 dismiss_ai_guest_request,Dismiss Spawned Actors,cleanup,1,Releases tracked CodeRED spawned actors
 status_request,Status,debug,1,Reports native bridge, enum, tracked actors, and optional world scan support

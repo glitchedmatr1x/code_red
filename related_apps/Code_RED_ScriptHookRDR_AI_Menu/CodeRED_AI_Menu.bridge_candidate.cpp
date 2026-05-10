@@ -108,11 +108,15 @@ static std::string g_rosterPath = "data/codered/npc_roster.txt";
 static std::string g_actorEnumMapPath = "data/codered/actor_enum_map.csv";
 static std::string g_actionsPath = "data/codered/ai_behavior_actions.csv";
 static std::string g_actionPlanPath = "scratch/codered_ai_action_plan.json";
+static std::string g_mpConnectRequestPath = "scratch/codered_mp_connect_request.json";
+static std::string g_mpClientStatusPath = "scratch/codered_mp_client_status.json";
+static std::string g_mpClientPath = "codered-mp-client.exe";
 static std::string g_statePath = "scratch/codered_ai_state.json";
 static std::string g_overrideRpfPath = "override";
 static std::string g_patchStagePath = "game";
 static std::string g_contentOverrideName = "content.rpf";
 static std::string g_status = "CodeRED AI Menu ready";
+static unsigned long long g_mpClientStatusWriteTime = 0;
 
 static std::vector<std::string> g_roster;
 static std::unordered_map<std::string, int> g_actorEnumMap;
@@ -132,6 +136,7 @@ static std::vector<std::string> g_actions = {
     "side_lawman_immunity_request",
     "side_gang_immunity_request",
     "restore_player_faction_request",
+    "mp_connect_localhost_request",
     "reload_override_rpf_request",
     "dismiss_ai_guest_request",
     "status_request"
@@ -150,6 +155,21 @@ static std::string logPath() {
         return "CodeRED_AI_Menu.log";
     }
     return path.substr(0, slash + 1) + "CodeRED_AI_Menu.log";
+}
+
+static std::string gameDirectory() {
+    char exePath[MAX_PATH] = {};
+    DWORD len = GetModuleFileNameA(nullptr, exePath, MAX_PATH);
+    if (len == 0 || len >= MAX_PATH) {
+        return ".";
+    }
+
+    std::string path(exePath);
+    size_t slash = path.find_last_of("\\/");
+    if (slash == std::string::npos) {
+        return ".";
+    }
+    return path.substr(0, slash);
 }
 
 static void writeLog(const char* format, ...) {
@@ -503,6 +523,57 @@ static std::string jsonEscape(const std::string& value) {
     return out.str();
 }
 
+static std::string jsonStringValue(const std::string& json, const std::string& key) {
+    const std::string needle = "\"" + key + "\"";
+    size_t pos = json.find(needle);
+    if (pos == std::string::npos) return "";
+    pos = json.find(':', pos + needle.size());
+    if (pos == std::string::npos) return "";
+    pos = json.find('"', pos + 1);
+    if (pos == std::string::npos) return "";
+
+    std::string out;
+    bool escaped = false;
+    for (++pos; pos < json.size(); ++pos) {
+        const char c = json[pos];
+        if (escaped) {
+            switch (c) {
+                case 'n': out.push_back('\n'); break;
+                case 'r': out.push_back('\r'); break;
+                case 't': out.push_back('\t'); break;
+                default: out.push_back(c); break;
+            }
+            escaped = false;
+            continue;
+        }
+        if (c == '\\') {
+            escaped = true;
+            continue;
+        }
+        if (c == '"') break;
+        out.push_back(c);
+    }
+    return out;
+}
+
+static std::string readSmallTextFile(const std::string& path, size_t maxBytes = 32768) {
+    std::ifstream file(path.c_str(), std::ios::binary);
+    if (!file) return "";
+    std::ostringstream out;
+    char buffer[1024] = {};
+    size_t total = 0;
+    while (file && total < maxBytes) {
+        const size_t remaining = maxBytes - total;
+        const size_t want = remaining < sizeof(buffer) ? remaining : sizeof(buffer);
+        file.read(buffer, static_cast<std::streamsize>(want));
+        const std::streamsize got = file.gcount();
+        if (got <= 0) break;
+        out.write(buffer, got);
+        total += static_cast<size_t>(got);
+    }
+    return out.str();
+}
+
 static std::string dirnameOf(const std::string& path) {
     const size_t slash = path.find_last_of("\\/");
     if (slash == std::string::npos) return "";
@@ -531,6 +602,20 @@ static std::string joinPath(const std::string& base, const std::string& leaf) {
     const char tail = base[base.size() - 1];
     if (tail == '\\' || tail == '/') return base + leaf;
     return base + "\\" + leaf;
+}
+
+static bool isAbsolutePath(const std::string& path) {
+    if (path.empty()) return false;
+    if (path.size() >= 3 && std::isalpha(static_cast<unsigned char>(path[0])) &&
+        path[1] == ':' && (path[2] == '\\' || path[2] == '/')) {
+        return true;
+    }
+    return path[0] == '\\' || path[0] == '/';
+}
+
+static std::string gamePath(const std::string& path) {
+    if (isAbsolutePath(path)) return path;
+    return joinPath(gameDirectory(), path);
 }
 
 static bool fileExists(const std::string& path) {
@@ -627,6 +712,13 @@ static void loadConfig() {
             g_actionsPath = value;
         } else if (key == "action_plan") {
             g_actionPlanPath = value;
+        } else if (key == "mp_connect_request" || key == "mp_connect_request_path") {
+            g_mpConnectRequestPath = value;
+        } else if (key == "mp_client_status" || key == "mp_client_status_path") {
+            g_mpClientStatusPath = value;
+        } else if (key == "mp_client" || key == "mp_client_exe" ||
+                   key == "mp_client_path") {
+            g_mpClientPath = value;
         } else if (key == "state") {
             g_statePath = value;
         } else if (key == "override_rpf" || key == "override_rpf_dir" ||
@@ -641,9 +733,11 @@ static void loadConfig() {
         }
     }
 
-    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s state=%s override_rpf=%s patch_stage=%s content_override=%s",
+    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s mp_connect_request=%s mp_client_status=%s mp_client=%s state=%s override_rpf=%s patch_stage=%s content_override=%s",
              g_rosterPath.c_str(), g_actorEnumMapPath.c_str(),
              g_actionsPath.c_str(), g_actionPlanPath.c_str(),
+             g_mpConnectRequestPath.c_str(), g_mpClientStatusPath.c_str(),
+             g_mpClientPath.c_str(),
              g_statePath.c_str(), g_overrideRpfPath.c_str(),
              g_patchStagePath.c_str(), g_contentOverrideName.c_str());
 }
@@ -738,6 +832,7 @@ static void ensureDefaultActions() {
         "side_lawman_immunity_request",
         "side_gang_immunity_request",
         "restore_player_faction_request",
+        "mp_connect_localhost_request",
         "reload_override_rpf_request",
         "dismiss_ai_guest_request",
         "status_request"
@@ -1347,6 +1442,139 @@ static void mpStatusProbe() {
              wasLastResetForMp, simulateStartMp, inSession, isHost, found);
 }
 
+static std::string quoteCommandArg(const std::string& value) {
+    std::string out = "\"";
+    for (char c : value) {
+        if (c == '"') out += '\\';
+        out += c;
+    }
+    out += "\"";
+    return out;
+}
+
+static void writeMpConnectRequest(const std::string& status) {
+    createParentDirs(g_mpConnectRequestPath);
+
+    std::ofstream file(g_mpConnectRequestPath.c_str(), std::ios::trunc);
+    if (!file) {
+        writeLog("MP localhost connect request write failed: path=%s",
+                 g_mpConnectRequestPath.c_str());
+        return;
+    }
+
+    std::time_t now = std::time(nullptr);
+    file << "{\n";
+    file << "  \"source\": \"CodeRED_AI_Menu\",\n";
+    file << "  \"action\": \"mp_connect_localhost_request\",\n";
+    file << "  \"transport\": \"slikenet\",\n";
+    file << "  \"host\": \"127.0.0.1\",\n";
+    file << "  \"port\": 7777,\n";
+    file << "  \"client\": \"" << jsonEscape(g_mpClientPath) << "\",\n";
+    file << "  \"client_status\": \"" << jsonEscape(g_mpClientStatusPath) << "\",\n";
+    file << "  \"status\": \"" << jsonEscape(status) << "\",\n";
+    file << "  \"timestamp\": " << static_cast<long long>(now) << "\n";
+    file << "}\n";
+}
+
+static void pollMpClientStatus() {
+    if (g_mpClientStatusPath.empty()) {
+        return;
+    }
+
+    const std::string statusPath = gamePath(g_mpClientStatusPath);
+    const unsigned long long writeTime = fileWriteTime(statusPath);
+    if (writeTime == 0 || writeTime == g_mpClientStatusWriteTime) {
+        return;
+    }
+    g_mpClientStatusWriteTime = writeTime;
+
+    const std::string json = readSmallTextFile(statusPath);
+    if (json.empty()) {
+        return;
+    }
+
+    const std::string state = jsonStringValue(json, "state");
+    const std::string summary = jsonStringValue(json, "summary");
+    const std::string nativeCall = jsonStringValue(json, "native_call");
+    if (!nativeCall.empty()) {
+        g_status = "MP native: " + nativeCall;
+    } else if (!summary.empty()) {
+        g_status = "MP " + summary;
+    } else if (!state.empty()) {
+        g_status = "MP client " + state;
+    }
+    writeLog("MP client status updated: state=%s summary=%s native_call=%s",
+             state.c_str(), summary.c_str(), nativeCall.c_str());
+}
+
+static void mpConnectLocalhost() {
+    const std::string gameDir = gameDirectory();
+    const std::string clientPath = gamePath(g_mpClientPath);
+    const std::string statusPath = gamePath(g_mpClientStatusPath);
+    const std::string stdoutPath = gamePath("scratch/codered_mp_client_stdout.log");
+
+    createParentDirs(statusPath);
+    createParentDirs(stdoutPath);
+
+    const std::string cmdLine = quoteCommandArg(clientPath) +
+        " --host 127.0.0.1 --port 7777 --name rdr_asi --seconds 0 --status " +
+        quoteCommandArg(statusPath);
+
+    std::vector<char> mutableCmd(cmdLine.begin(), cmdLine.end());
+    mutableCmd.push_back('\0');
+
+    STARTUPINFOA startupInfo = {};
+    startupInfo.cb = sizeof(startupInfo);
+    SECURITY_ATTRIBUTES securityAttributes = {};
+    securityAttributes.nLength = sizeof(securityAttributes);
+    securityAttributes.bInheritHandle = TRUE;
+    HANDLE stdoutFile = CreateFileA(stdoutPath.c_str(), GENERIC_WRITE,
+                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                    &securityAttributes, CREATE_ALWAYS,
+                                    FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (stdoutFile != INVALID_HANDLE_VALUE) {
+        startupInfo.dwFlags |= STARTF_USESTDHANDLES;
+        startupInfo.hStdOutput = stdoutFile;
+        startupInfo.hStdError = stdoutFile;
+        startupInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+    }
+    PROCESS_INFORMATION processInfo = {};
+
+    DeleteFileA(statusPath.c_str());
+    g_mpClientStatusWriteTime = 0;
+
+    const BOOL started = CreateProcessA(
+        clientPath.c_str(),
+        mutableCmd.data(),
+        nullptr,
+        nullptr,
+        stdoutFile != INVALID_HANDLE_VALUE,
+        CREATE_NO_WINDOW,
+        nullptr,
+        gameDir.c_str(),
+        &startupInfo,
+        &processInfo);
+
+    if (stdoutFile != INVALID_HANDLE_VALUE) {
+        CloseHandle(stdoutFile);
+    }
+
+    if (started) {
+        CloseHandle(processInfo.hThread);
+        CloseHandle(processInfo.hProcess);
+        g_status = "MP connect 127.0.0.1:7777 started";
+        writeMpConnectRequest("started");
+        writeLog("MP localhost connect started: cwd=%s command=%s stdout=%s",
+                 gameDir.c_str(), cmdLine.c_str(), stdoutPath.c_str());
+    } else {
+        const DWORD err = GetLastError();
+        g_status = "MP client start failed err=" + std::to_string(err);
+        writeMpConnectRequest("start_failed");
+        writeLog("MP localhost connect failed: cwd=%s command=%s err=%lu",
+                 gameDir.c_str(), cmdLine.c_str(), err);
+    }
+}
+
 static void mpEnableMultiplayer() {
     const int result = nativeInvoke<int>(0x9180FF1C, TRUE);
     const BOOL inSession = nativeInvoke<BOOL>(0x8CA54980);
@@ -1704,6 +1932,11 @@ static void executeSelectedAction() {
     const std::string action = selectedAction();
     writeActionPlan();
 
+    if (action == "mp_connect_localhost_request") {
+        mpConnectLocalhost();
+        return;
+    }
+
     if (!resolveNativeBridge(false)) {
         g_status = "Queued JSON; native bridge unavailable";
         writeLog("Native bridge unavailable while executing action=%s",
@@ -1778,6 +2011,9 @@ static void writeActionPlan() {
     file << "  \"player_side_faction\": " << g_playerSideFaction << ",\n";
     file << "  \"override_rpf_dir\": \"" << jsonEscape(g_overrideRpfPath) << "\",\n";
     file << "  \"patch_stage_dir\": \"" << jsonEscape(g_patchStagePath) << "\",\n";
+    file << "  \"mp_connect_request_path\": \"" << jsonEscape(g_mpConnectRequestPath) << "\",\n";
+    file << "  \"mp_client_status_path\": \"" << jsonEscape(g_mpClientStatusPath) << "\",\n";
+    file << "  \"mp_client\": \"" << jsonEscape(g_mpClientPath) << "\",\n";
     file << "  \"state_path\": \"" << jsonEscape(g_statePath) << "\",\n";
     file << "  \"status\": \"queued\",\n";
     file << "  \"timestamp\": " << static_cast<long long>(now) << "\n";
@@ -1912,6 +2148,7 @@ static void drawMenu() {
     if (g_dirtyRoster) loadRoster();
     if (g_dirtyActorMap) loadActorEnumMap();
     if (g_dirtyActions) loadActions();
+    pollMpClientStatus();
 
     const int totalActions = static_cast<int>(g_actions.size());
     const int totalRoster = static_cast<int>(g_roster.size());
