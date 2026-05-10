@@ -54,6 +54,7 @@ add_library(codered_pawn_amx STATIC
   "${CODE_RED_PAWN_ROOT}/source/amx/amx.c"
   "${CODE_RED_PAWN_ROOT}/source/amx/amxaux.c"
   "${CODE_RED_PAWN_ROOT}/source/amx/amxcore.c"
+  "${CODE_RED_PAWN_ROOT}/source/amx/amxfloat.c"
 )
 target_compile_definitions(codered_pawn_amx
   PUBLIC

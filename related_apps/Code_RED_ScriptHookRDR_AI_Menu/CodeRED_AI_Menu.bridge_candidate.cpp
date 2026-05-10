@@ -110,13 +110,71 @@ static std::string g_actionsPath = "data/codered/ai_behavior_actions.csv";
 static std::string g_actionPlanPath = "scratch/codered_ai_action_plan.json";
 static std::string g_mpConnectRequestPath = "scratch/codered_mp_connect_request.json";
 static std::string g_mpClientStatusPath = "scratch/codered_mp_client_status.json";
+static std::string g_mpBridgeInputPath = "scratch/codered_mp_local_state.json";
+static std::string g_mpBridgeWorldPath = "scratch/codered_mp_world_state.json";
 static std::string g_mpClientPath = "codered-mp-client.exe";
+static std::string g_mpServerHost = "127.0.0.1";
+static int g_mpServerPort = 7777;
+static std::string g_mpPlayerName = "rdr_asi";
+static bool g_mpBareWorldEnabled = true;
+static bool g_mpBareWorldDestroyActors = true;
+static bool g_mpBareWorldPopulationSuppression = true;
+static float g_mpBareWorldRadius = 280.0f;
+static int g_mpBareWorldMaxDestroyPerTick = 32;
+static int g_mpBareWorldTickMs = 400;
 static std::string g_statePath = "scratch/codered_ai_state.json";
 static std::string g_overrideRpfPath = "override";
 static std::string g_patchStagePath = "game";
 static std::string g_contentOverrideName = "content.rpf";
 static std::string g_status = "CodeRED AI Menu ready";
 static unsigned long long g_mpClientStatusWriteTime = 0;
+static unsigned long long g_mpWorldStateWriteTime = 0;
+static unsigned int g_mpLastNativeCallSeq = 0;
+static bool g_mpLiteActive = false;
+static bool g_mpLiteJoined = false;
+static bool g_mpSpawnApplied = false;
+static bool g_mpChatOpen = false;
+static bool g_mpChatControlsSuppressed = false;
+static std::string g_mpChatDraft;
+static std::string g_mpPendingChat;
+static int g_mpLocalPlayerId = -1;
+static int g_mpLocalActorEnum = 837;
+static unsigned int g_mpStateSeq = 0;
+static unsigned int g_mpChatSeq = 0;
+static DWORD g_mpPendingChatStartedMs = 0;
+static DWORD g_mpLastLocalStateMs = 0;
+static DWORD g_mpBareWorldLastTickMs = 0;
+static DWORD g_mpBareWorldLastPopulationMs = 0;
+static int g_mpBareWorldLastSeen = 0;
+static int g_mpBareWorldLastProtected = 0;
+static int g_mpBareWorldLastDestroyed = 0;
+static int g_mpBareWorldTotalDestroyed = 0;
+static bool g_mpNoClipActive = false;
+static DWORD g_mpNoClipLastTickMs = 0;
+static int g_mpNoClipSpeedIndex = 1;
+static bool g_mpLocalGodMode = false;
+static bool g_mpTransportPropsetPending = false;
+static int g_mpTransportPropset = 0;
+static int g_mpTransportPropsetAssetId = 0;
+static DWORD g_mpTransportPropsetRequestedMs = 0;
+static Vector3 g_mpTransportPropsetPosition = {};
+static float g_mpTransportPropsetHeading = 0.0f;
+static std::vector<std::string> g_mpChatLines;
+static std::vector<std::string> g_mpNoticeLines;
+static HWND g_gameWindow = nullptr;
+static WNDPROC g_originalWndProc = nullptr;
+
+struct MpRemoteActor {
+    int playerId = -1;
+    Actor actor = 0;
+    int actorEnum = 837;
+    Vector3 position = {};
+    float heading = 0.0f;
+    unsigned int sequence = 0;
+    DWORD lastSeenMs = 0;
+};
+
+static std::vector<MpRemoteActor> g_mpRemoteActors;
 
 static std::vector<std::string> g_roster;
 static std::unordered_map<std::string, int> g_actorEnumMap;
@@ -137,6 +195,9 @@ static std::vector<std::string> g_actions = {
     "side_gang_immunity_request",
     "restore_player_faction_request",
     "mp_connect_localhost_request",
+    "mp_toggle_bare_world_request",
+    "mp_bare_world_purge_request",
+    "mp_toggle_bare_world_suppression_request",
     "reload_override_rpf_request",
     "dismiss_ai_guest_request",
     "status_request"
@@ -421,6 +482,39 @@ static std::string lowerCopy(const std::string& value) {
     return out;
 }
 
+static bool parseConfigBool(const std::string& raw, bool fallback) {
+    const std::string text = lowerCopy(trim(raw));
+    if (text == "1" || text == "true" || text == "yes" ||
+        text == "on" || text == "enabled") {
+        return true;
+    }
+    if (text == "0" || text == "false" || text == "no" ||
+        text == "off" || text == "disabled") {
+        return false;
+    }
+    return fallback;
+}
+
+static int parseConfigInt(const std::string& raw, int fallback,
+                          int minValue, int maxValue) {
+    char* end = nullptr;
+    const long parsed = std::strtol(raw.c_str(), &end, 10);
+    if (end == raw.c_str() || *end != '\0') return fallback;
+    if (parsed < minValue) return minValue;
+    if (parsed > maxValue) return maxValue;
+    return static_cast<int>(parsed);
+}
+
+static float parseConfigFloat(const std::string& raw, float fallback,
+                              float minValue, float maxValue) {
+    char* end = nullptr;
+    const float parsed = static_cast<float>(std::strtod(raw.c_str(), &end));
+    if (end == raw.c_str() || *end != '\0') return fallback;
+    if (parsed < minValue) return minValue;
+    if (parsed > maxValue) return maxValue;
+    return parsed;
+}
+
 static std::string stripInlineComment(const std::string& value) {
     bool inQuotes = false;
     for (size_t i = 0; i < value.size(); ++i) {
@@ -554,6 +648,144 @@ static std::string jsonStringValue(const std::string& json, const std::string& k
         out.push_back(c);
     }
     return out;
+}
+
+static bool jsonNumberValue(const std::string& json, const std::string& key, double& out) {
+    const std::string needle = "\"" + key + "\"";
+    size_t pos = json.find(needle);
+    if (pos == std::string::npos) return false;
+    pos = json.find(':', pos + needle.size());
+    if (pos == std::string::npos) return false;
+    ++pos;
+    while (pos < json.size() && std::isspace(static_cast<unsigned char>(json[pos]))) ++pos;
+    const size_t start = pos;
+    while (pos < json.size()) {
+        const char c = json[pos];
+        if (!(std::isdigit(static_cast<unsigned char>(c)) || c == '-' || c == '+' ||
+              c == '.' || c == 'e' || c == 'E')) {
+            break;
+        }
+        ++pos;
+    }
+    if (pos == start) return false;
+    char* end = nullptr;
+    out = std::strtod(json.substr(start, pos - start).c_str(), &end);
+    return end && *end == '\0';
+}
+
+static int jsonIntValue(const std::string& json, const std::string& key, int fallback = 0) {
+    double value = 0.0;
+    if (!jsonNumberValue(json, key, value)) return fallback;
+    return static_cast<int>(value);
+}
+
+static float jsonFloatValue(const std::string& json, const std::string& key, float fallback = 0.0f) {
+    double value = 0.0;
+    if (!jsonNumberValue(json, key, value)) return fallback;
+    return static_cast<float>(value);
+}
+
+static bool jsonBoolValue(const std::string& json, const std::string& key, bool fallback = false) {
+    const std::string needle = "\"" + key + "\"";
+    size_t pos = json.find(needle);
+    if (pos == std::string::npos) return fallback;
+    pos = json.find(':', pos + needle.size());
+    if (pos == std::string::npos) return fallback;
+    ++pos;
+    while (pos < json.size() && std::isspace(static_cast<unsigned char>(json[pos]))) ++pos;
+    if (json.compare(pos, 4, "true") == 0) return true;
+    if (json.compare(pos, 5, "false") == 0) return false;
+    return fallback;
+}
+
+static bool jsonReadStringAt(const std::string& json, size_t& pos, std::string& out) {
+    if (pos >= json.size() || json[pos] != '"') return false;
+    out.clear();
+    bool escaped = false;
+    for (++pos; pos < json.size(); ++pos) {
+        const char c = json[pos];
+        if (escaped) {
+            switch (c) {
+                case 'n': out.push_back('\n'); break;
+                case 'r': out.push_back('\r'); break;
+                case 't': out.push_back('\t'); break;
+                default: out.push_back(c); break;
+            }
+            escaped = false;
+            continue;
+        }
+        if (c == '\\') {
+            escaped = true;
+            continue;
+        }
+        if (c == '"') {
+            ++pos;
+            return true;
+        }
+        out.push_back(c);
+    }
+    return false;
+}
+
+static size_t jsonArrayEnd(const std::string& json, size_t arrayStart) {
+    if (arrayStart >= json.size() || json[arrayStart] != '[') return std::string::npos;
+    int depth = 0;
+    bool inString = false;
+    bool escaped = false;
+    for (size_t pos = arrayStart; pos < json.size(); ++pos) {
+        const char c = json[pos];
+        if (inString) {
+            if (escaped) {
+                escaped = false;
+            } else if (c == '\\') {
+                escaped = true;
+            } else if (c == '"') {
+                inString = false;
+            }
+            continue;
+        }
+        if (c == '"') {
+            inString = true;
+        } else if (c == '[') {
+            ++depth;
+        } else if (c == ']') {
+            --depth;
+            if (depth == 0) return pos;
+            if (depth < 0) return std::string::npos;
+        }
+    }
+    return std::string::npos;
+}
+
+static std::vector<std::string> jsonStringArrayValue(const std::string& json, const std::string& key) {
+    std::vector<std::string> values;
+    const std::string needle = "\"" + key + "\"";
+    size_t pos = json.find(needle);
+    if (pos == std::string::npos) return values;
+    pos = json.find('[', pos + needle.size());
+    if (pos == std::string::npos) return values;
+    const size_t end = jsonArrayEnd(json, pos);
+    if (end == std::string::npos) return values;
+
+    while (pos < end) {
+        pos = json.find('"', pos + 1);
+        if (pos == std::string::npos || pos >= end) break;
+        std::string item;
+        if (!jsonReadStringAt(json, pos, item)) break;
+        values.push_back(item);
+    }
+    return values;
+}
+
+static bool jsonArrayKeyPresent(const std::string& json, const std::string& key) {
+    const std::string needle = "\"" + key + "\"";
+    size_t pos = json.find(needle);
+    if (pos == std::string::npos) return false;
+    pos = json.find(':', pos + needle.size());
+    if (pos == std::string::npos) return false;
+    ++pos;
+    while (pos < json.size() && std::isspace(static_cast<unsigned char>(json[pos]))) ++pos;
+    return pos < json.size() && json[pos] == '[';
 }
 
 static std::string readSmallTextFile(const std::string& path, size_t maxBytes = 32768) {
@@ -694,7 +926,7 @@ static void loadConfig() {
             section = lowerCopy(trim(clean.substr(1, clean.size() - 2)));
             continue;
         }
-        if (section != "paths") continue;
+        if (section != "paths" && section != "mp") continue;
 
         size_t eq = clean.find('=');
         if (eq == std::string::npos) continue;
@@ -702,42 +934,82 @@ static void loadConfig() {
         std::string value = trim(clean.substr(eq + 1));
         if (value.empty()) continue;
 
-        if (key == "roster") {
-            g_rosterPath = value;
-        } else if (key == "actor_enum_map" || key == "actor_map" ||
-                   key == "enum_map") {
-            g_actorEnumMapPath = value;
-        } else if (key == "behavior_actions" || key == "actions" ||
-                   key == "action_menu") {
-            g_actionsPath = value;
-        } else if (key == "action_plan") {
-            g_actionPlanPath = value;
-        } else if (key == "mp_connect_request" || key == "mp_connect_request_path") {
-            g_mpConnectRequestPath = value;
-        } else if (key == "mp_client_status" || key == "mp_client_status_path") {
-            g_mpClientStatusPath = value;
-        } else if (key == "mp_client" || key == "mp_client_exe" ||
-                   key == "mp_client_path") {
-            g_mpClientPath = value;
-        } else if (key == "state") {
-            g_statePath = value;
-        } else if (key == "override_rpf" || key == "override_rpf_dir" ||
-                   key == "override_dir") {
-            g_overrideRpfPath = value;
-        } else if (key == "patch_stage" || key == "patch_stage_dir" ||
-                   key == "rpf_patch_stage") {
-            g_patchStagePath = value;
-        } else if (key == "content_override" || key == "content_rpf" ||
-                   key == "content_override_name") {
-            g_contentOverrideName = value;
+        if (section == "paths") {
+            if (key == "roster") {
+                g_rosterPath = value;
+            } else if (key == "actor_enum_map" || key == "actor_map" ||
+                       key == "enum_map") {
+                g_actorEnumMapPath = value;
+            } else if (key == "behavior_actions" || key == "actions" ||
+                       key == "action_menu") {
+                g_actionsPath = value;
+            } else if (key == "action_plan") {
+                g_actionPlanPath = value;
+            } else if (key == "mp_connect_request" || key == "mp_connect_request_path") {
+                g_mpConnectRequestPath = value;
+            } else if (key == "mp_client_status" || key == "mp_client_status_path") {
+                g_mpClientStatusPath = value;
+            } else if (key == "mp_bridge_input" || key == "mp_bridge_in" ||
+                       key == "mp_local_state") {
+                g_mpBridgeInputPath = value;
+            } else if (key == "mp_bridge_world" || key == "mp_bridge_out" ||
+                       key == "mp_world_state") {
+                g_mpBridgeWorldPath = value;
+            } else if (key == "mp_client" || key == "mp_client_exe" ||
+                       key == "mp_client_path") {
+                g_mpClientPath = value;
+            } else if (key == "state") {
+                g_statePath = value;
+            } else if (key == "override_rpf" || key == "override_rpf_dir" ||
+                       key == "override_dir") {
+                g_overrideRpfPath = value;
+            } else if (key == "patch_stage" || key == "patch_stage_dir" ||
+                       key == "rpf_patch_stage") {
+                g_patchStagePath = value;
+            } else if (key == "content_override" || key == "content_rpf" ||
+                       key == "content_override_name") {
+                g_contentOverrideName = value;
+            }
+        } else if (section == "mp") {
+            if (key == "host" || key == "server" || key == "server_host") {
+                g_mpServerHost = value;
+            } else if (key == "port" || key == "server_port") {
+                g_mpServerPort = parseConfigInt(value, g_mpServerPort, 1, 65535);
+            } else if (key == "name" || key == "player_name") {
+                g_mpPlayerName = value;
+            } else if (key == "bare_world" || key == "bare_world_enabled") {
+                g_mpBareWorldEnabled = parseConfigBool(value, g_mpBareWorldEnabled);
+            } else if (key == "bare_world_destroy_actors" ||
+                       key == "bare_world_cleanup") {
+                g_mpBareWorldDestroyActors = parseConfigBool(value, g_mpBareWorldDestroyActors);
+            } else if (key == "bare_world_population_suppression" ||
+                       key == "population_suppression") {
+                g_mpBareWorldPopulationSuppression = parseConfigBool(value, g_mpBareWorldPopulationSuppression);
+            } else if (key == "bare_world_radius" || key == "cleanup_radius") {
+                g_mpBareWorldRadius = parseConfigFloat(value, g_mpBareWorldRadius, 25.0f, 2000.0f);
+            } else if (key == "bare_world_max_destroy_per_tick" ||
+                       key == "cleanup_max_destroy_per_tick") {
+                g_mpBareWorldMaxDestroyPerTick =
+                    parseConfigInt(value, g_mpBareWorldMaxDestroyPerTick, 1, 128);
+            } else if (key == "bare_world_tick_ms" || key == "cleanup_tick_ms") {
+                g_mpBareWorldTickMs = parseConfigInt(value, g_mpBareWorldTickMs, 100, 5000);
+            }
         }
     }
 
-    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s mp_connect_request=%s mp_client_status=%s mp_client=%s state=%s override_rpf=%s patch_stage=%s content_override=%s",
+    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s mp_connect_request=%s mp_client_status=%s mp_bridge_in=%s mp_bridge_world=%s mp_client=%s mp_host=%s mp_port=%d mp_name=%s mp_bare_world=%d mp_bare_destroy=%d mp_bare_population=%d mp_bare_radius=%.1f mp_bare_max_destroy=%d mp_bare_tick_ms=%d state=%s override_rpf=%s patch_stage=%s content_override=%s",
              g_rosterPath.c_str(), g_actorEnumMapPath.c_str(),
              g_actionsPath.c_str(), g_actionPlanPath.c_str(),
              g_mpConnectRequestPath.c_str(), g_mpClientStatusPath.c_str(),
-             g_mpClientPath.c_str(),
+             g_mpBridgeInputPath.c_str(), g_mpBridgeWorldPath.c_str(),
+             g_mpClientPath.c_str(), g_mpServerHost.c_str(), g_mpServerPort,
+             g_mpPlayerName.c_str(),
+             g_mpBareWorldEnabled ? 1 : 0,
+             g_mpBareWorldDestroyActors ? 1 : 0,
+             g_mpBareWorldPopulationSuppression ? 1 : 0,
+             g_mpBareWorldRadius,
+             g_mpBareWorldMaxDestroyPerTick,
+             g_mpBareWorldTickMs,
              g_statePath.c_str(), g_overrideRpfPath.c_str(),
              g_patchStagePath.c_str(), g_contentOverrideName.c_str());
 }
@@ -833,6 +1105,9 @@ static void ensureDefaultActions() {
         "side_gang_immunity_request",
         "restore_player_faction_request",
         "mp_connect_localhost_request",
+        "mp_toggle_bare_world_request",
+        "mp_bare_world_purge_request",
+        "mp_toggle_bare_world_suppression_request",
         "reload_override_rpf_request",
         "dismiss_ai_guest_request",
         "status_request"
@@ -952,6 +1227,7 @@ static std::string selectedAction() {
 }
 
 static void writeActionPlan();
+static void pollMpClientStatus();
 
 static std::string displayAction(const std::string& action) {
     auto found = g_actionLabels.find(action);
@@ -1092,6 +1368,1040 @@ static bool actorPosition(Actor actor, Vector3* out) {
     *out = {};
     nativeInvoke<void>(0x99BD9D6F, actor, out);
     return true;
+}
+
+static void mpLiteAddChatLine(const std::string& line) {
+    if (line.empty()) return;
+    g_mpNoticeLines.push_back(line);
+    if (g_mpNoticeLines.size() > 16) {
+        g_mpNoticeLines.erase(g_mpNoticeLines.begin(), g_mpNoticeLines.end() - 16);
+    }
+}
+
+static void mpLiteRemoveNoticeLine(const std::string& line) {
+    g_mpNoticeLines.erase(
+        std::remove(g_mpNoticeLines.begin(), g_mpNoticeLines.end(), line),
+        g_mpNoticeLines.end());
+}
+
+static std::string mpLiteClipText(const std::string& text, size_t maxChars) {
+    if (text.size() <= maxChars) return text;
+    if (maxChars <= 3) return text.substr(0, maxChars);
+    return text.substr(0, maxChars - 3) + "...";
+}
+
+static void mpLiteTeleportActorWithHeading(Actor actor, const Vector3& target, float heading) {
+    Vector2 targetXY = {target.x, target.y};
+    nativeInvoke<void>(0xE4DE507CULL, actor, targetXY, target.z, heading, TRUE, TRUE, TRUE);
+}
+
+static MpRemoteActor* mpLiteRemoteById(int playerId) {
+    for (MpRemoteActor& remote : g_mpRemoteActors) {
+        if (remote.playerId == playerId) return &remote;
+    }
+    g_mpRemoteActors.push_back(MpRemoteActor{});
+    g_mpRemoteActors.back().playerId = playerId;
+    return &g_mpRemoteActors.back();
+}
+
+static bool mpLiteRemoteActorValid(const MpRemoteActor& remote) {
+    return remote.actor > 0 && nativeReady() &&
+           nativeInvoke<BOOL>(0xBA6C3E92, remote.actor);
+}
+
+static bool mpLiteSpawnRemoteActor(MpRemoteActor& remote) {
+    if (!nativeReady()) return false;
+    Layout layout = ensureLayout();
+    if (layout <= 0) return false;
+
+    Vector2 spawnXY = {remote.position.x, remote.position.y};
+    Vector2 orientXY = {0.0f, 1.0f};
+    std::ostringstream instanceName;
+    instanceName << "codered_mp_remote_" << remote.playerId;
+
+    Actor actor = nativeInvoke<Actor>(0x8D67F397, layout,
+                                      instanceName.str().c_str(),
+                                      remote.actorEnum,
+                                      spawnXY,
+                                      remote.position.z,
+                                      orientXY,
+                                      remote.heading);
+    if (actor <= 0 || !nativeInvoke<BOOL>(0xBA6C3E92, actor)) {
+        writeLog("MP remote spawn failed: playerid=%d enum=%d actor=%d",
+                 remote.playerId, remote.actorEnum, actor);
+        return false;
+    }
+
+    remote.actor = actor;
+    nativeInvoke<void>(0x16876A25, remote.actor);
+    nativeInvoke<void>(0x6F80965D, remote.actor, -1.0f, 0, 0);
+    writeLog("MP remote spawned: playerid=%d enum=%d actor=%d",
+             remote.playerId, remote.actorEnum, remote.actor);
+    return true;
+}
+
+static void mpLiteApplyRemoteState(MpRemoteActor& remote) {
+    if (!nativeReady()) return;
+    if (!mpLiteRemoteActorValid(remote) && !mpLiteSpawnRemoteActor(remote)) {
+        return;
+    }
+    Vector3 target = remote.position;
+    mpLiteTeleportActorWithHeading(remote.actor, target, remote.heading);
+}
+
+static void mpLitePruneStaleRemotes() {
+    if (!nativeReady()) return;
+    const DWORD now = GetTickCount();
+    std::vector<MpRemoteActor> kept;
+    for (MpRemoteActor& remote : g_mpRemoteActors) {
+        if (remote.lastSeenMs != 0 && now - remote.lastSeenMs > 5000) {
+            if (mpLiteRemoteActorValid(remote)) {
+                nativeInvoke<void>(0x8BD21869, remote.actor);
+            }
+            writeLog("MP remote removed as stale: playerid=%d actor=%d",
+                     remote.playerId, remote.actor);
+            continue;
+        }
+        kept.push_back(remote);
+    }
+    g_mpRemoteActors.swap(kept);
+}
+
+static bool mpBareWorldIsRemoteActor(Actor actor) {
+    for (const MpRemoteActor& remote : g_mpRemoteActors) {
+        if (remote.actor == actor) return true;
+    }
+    return false;
+}
+
+static bool mpBareWorldProtectActor(Actor actor, Actor player,
+                                    Actor mount, Actor vehicle) {
+    if (actor <= 0) return true;
+    if (actor == player || actor == mount || actor == vehicle) return true;
+    if (isCodeRedSpawnedActor(actor)) return true;
+    if (mpBareWorldIsRemoteActor(actor)) return true;
+    return false;
+}
+
+static void mpBareWorldApplyPopulationSuppression(bool force) {
+    if (!g_mpBareWorldPopulationSuppression || !nativeReady()) return;
+
+    const DWORD now = GetTickCount();
+    if (!force && g_mpBareWorldLastPopulationMs != 0 &&
+        now - g_mpBareWorldLastPopulationMs < 1500) {
+        return;
+    }
+    g_mpBareWorldLastPopulationMs = now;
+
+    nativeInvoke<void>(0x04EFC113ULL, 0);
+}
+
+static void mpBareWorldTick(bool force) {
+    if (!nativeReady()) {
+        if (force) g_status = "Bare world skipped: native bridge unavailable";
+        return;
+    }
+
+    if (!g_mpBareWorldEnabled && !force) return;
+
+    const DWORD now = GetTickCount();
+    if (!force && g_mpBareWorldLastTickMs != 0 &&
+        now - g_mpBareWorldLastTickMs < static_cast<DWORD>(g_mpBareWorldTickMs)) {
+        mpBareWorldApplyPopulationSuppression(false);
+        return;
+    }
+    g_mpBareWorldLastTickMs = now;
+
+    mpBareWorldApplyPopulationSuppression(force);
+
+    if (!g_mpBareWorldDestroyActors) {
+        if (force) {
+            g_status = "Bare world cleanup disabled";
+            writeLog("Bare world cleanup skipped: destroy_actors disabled");
+        }
+        return;
+    }
+
+    if (!g_worldGetAllActors) {
+        if (force) g_status = "Bare world skipped: worldGetAllActors missing";
+        return;
+    }
+
+    Actor player = playerActor();
+    Vector3 playerPos = {};
+    if (player <= 0 || !actorPosition(player, &playerPos)) {
+        if (force) g_status = "Bare world skipped: player actor not ready";
+        return;
+    }
+
+    const Actor mount = nativeInvoke<Actor>(0xDD31EC4EULL, player);
+    const Actor vehicle = nativeInvoke<Actor>(0xA0936EB6ULL, player);
+
+    constexpr int MAX_ACTORS = 1024;
+    int actors[MAX_ACTORS] = {};
+    const int count = g_worldGetAllActors(actors, MAX_ACTORS);
+    const float radiusSq = g_mpBareWorldRadius * g_mpBareWorldRadius;
+    int seen = 0;
+    int protectedCount = 0;
+    int destroyed = 0;
+
+    for (int i = 0; i < count && i < MAX_ACTORS; ++i) {
+        const Actor candidate = actors[i];
+        if (candidate <= 0) continue;
+        if (!nativeInvoke<BOOL>(0xBA6C3E92ULL, candidate)) continue;
+        ++seen;
+
+        if (mpBareWorldProtectActor(candidate, player, mount, vehicle)) {
+            ++protectedCount;
+            continue;
+        }
+
+        Vector3 pos = {};
+        if (!actorPosition(candidate, &pos)) continue;
+        if (radiusSq > 0.0f && distanceSquared(playerPos, pos) > radiusSq) {
+            continue;
+        }
+
+        nativeInvoke<void>(0x16876A25ULL, candidate);
+        nativeInvoke<void>(0x8BD21869ULL, candidate);
+        ++destroyed;
+        if (destroyed >= g_mpBareWorldMaxDestroyPerTick) break;
+    }
+
+    g_mpBareWorldLastSeen = seen;
+    g_mpBareWorldLastProtected = protectedCount;
+    g_mpBareWorldLastDestroyed = destroyed;
+    g_mpBareWorldTotalDestroyed += destroyed;
+
+    if (destroyed > 0 || force) {
+        writeLog("Bare world tick: seen=%d protected=%d destroyed=%d total=%d radius=%.1f population=%d",
+                 seen, protectedCount, destroyed, g_mpBareWorldTotalDestroyed,
+                 g_mpBareWorldRadius,
+                 g_mpBareWorldPopulationSuppression ? 1 : 0);
+    }
+    if (force) {
+        g_status = "Bare world purge: destroyed " + std::to_string(destroyed) +
+                   " / seen " + std::to_string(seen);
+    }
+}
+
+static void mpBareWorldToggle() {
+    g_mpBareWorldEnabled = !g_mpBareWorldEnabled;
+    g_mpBareWorldLastTickMs = 0;
+    g_mpBareWorldLastPopulationMs = 0;
+    if (g_mpBareWorldEnabled) {
+        mpBareWorldTick(true);
+    }
+    g_status = std::string("Bare world ") +
+               (g_mpBareWorldEnabled ? "enabled" : "disabled");
+    writeLog("Bare world toggled: enabled=%d", g_mpBareWorldEnabled ? 1 : 0);
+}
+
+static void mpBareWorldPurgeNow() {
+    g_mpBareWorldLastTickMs = 0;
+    g_mpBareWorldLastPopulationMs = 0;
+    mpBareWorldTick(true);
+}
+
+static void mpBareWorldTogglePopulationSuppression() {
+    g_mpBareWorldPopulationSuppression = !g_mpBareWorldPopulationSuppression;
+    g_mpBareWorldLastPopulationMs = 0;
+    if (g_mpBareWorldPopulationSuppression) {
+        mpBareWorldApplyPopulationSuppression(true);
+    }
+    g_status = std::string("Bare population suppression ") +
+               (g_mpBareWorldPopulationSuppression ? "enabled" : "disabled");
+    writeLog("Bare population suppression toggled: enabled=%d",
+             g_mpBareWorldPopulationSuppression ? 1 : 0);
+}
+
+static bool mpLiteChatAcknowledgedByServer(const std::vector<std::string>& chatLines) {
+    if (g_mpPendingChat.empty() || g_mpLocalPlayerId < 0) return false;
+    const std::string expected = "[" + std::to_string(g_mpLocalPlayerId) + "] " + g_mpPendingChat;
+    for (const std::string& line : chatLines) {
+        if (line == expected) return true;
+    }
+    return false;
+}
+
+static void mpLiteWriteLocalState(bool force = false) {
+    if (!g_mpLiteActive || !nativeReady()) return;
+    const DWORD now = GetTickCount();
+    if (!force && now - g_mpLastLocalStateMs < 100) return;
+    g_mpLastLocalStateMs = now;
+
+    if (!g_mpPendingChat.empty() && g_mpPendingChatStartedMs != 0 &&
+        now - g_mpPendingChatStartedMs > 5000) {
+        writeLog("MP chat send window expired: seq=%u text=%s",
+                 g_mpChatSeq, g_mpPendingChat.c_str());
+        g_mpPendingChat.clear();
+        g_mpPendingChatStartedMs = 0;
+    }
+
+    Actor player = playerActor();
+    Vector3 pos = {};
+    if (player <= 0 || !actorPosition(player, &pos)) return;
+    const float heading = nativeInvoke<float>(0x42DE39F0, player);
+
+    const std::string path = gamePath(g_mpBridgeInputPath);
+    createParentDirs(path);
+    std::ofstream file(path.c_str(), std::ios::trunc);
+    if (!file) return;
+
+    file << "{\n";
+    file << "  \"source\": \"CodeRED_AI_Menu\",\n";
+    file << "  \"state_seq\": " << ++g_mpStateSeq << ",\n";
+    file << "  \"chat_seq\": " << g_mpChatSeq << ",\n";
+    file << "  \"chat\": \"" << jsonEscape(g_mpPendingChat) << "\",\n";
+    file << "  \"x\": " << pos.x << ",\n";
+    file << "  \"y\": " << pos.y << ",\n";
+    file << "  \"z\": " << pos.z << ",\n";
+    file << "  \"heading\": " << heading << ",\n";
+    file << "  \"health\": 100,\n";
+    file << "  \"flags\": 0,\n";
+    file << "  \"actor_enum\": " << g_mpLocalActorEnum << ",\n";
+    file << "  \"timestamp_ms\": " << static_cast<unsigned long>(now) << "\n";
+    file << "}\n";
+}
+
+static bool mpLiteParsePlayerObject(const std::string& objectText, MpRemoteActor& remote) {
+    const int playerId = jsonIntValue(objectText, "player_id", -1);
+    if (playerId < 0 || playerId > 255) return false;
+    remote.playerId = playerId;
+    remote.position.x = jsonFloatValue(objectText, "x", remote.position.x);
+    remote.position.y = jsonFloatValue(objectText, "y", remote.position.y);
+    remote.position.z = jsonFloatValue(objectText, "z", remote.position.z);
+    remote.heading = jsonFloatValue(objectText, "heading", remote.heading);
+    remote.actorEnum = jsonIntValue(objectText, "actor_enum", remote.actorEnum);
+    remote.sequence = static_cast<unsigned int>(jsonIntValue(objectText, "sequence", remote.sequence));
+    remote.lastSeenMs = GetTickCount();
+    return true;
+}
+
+static bool parseFloatCsv(const std::string& text, std::vector<float>& values) {
+    values.clear();
+    std::stringstream input(text);
+    std::string item;
+    while (std::getline(input, item, ',')) {
+        item = trim(item);
+        if (item.empty()) return false;
+        char* end = nullptr;
+        errno = 0;
+        const float value = std::strtof(item.c_str(), &end);
+        if (errno != 0 || end == item.c_str() || !trim(end).empty()) {
+            return false;
+        }
+        values.push_back(value);
+    }
+    return !values.empty();
+}
+
+static bool parseFloatValue(const std::string& text, float* value) {
+    if (!value) return false;
+    char* end = nullptr;
+    errno = 0;
+    const float parsed = std::strtof(text.c_str(), &end);
+    if (errno != 0 || end == text.c_str() || !trim(end).empty()) return false;
+    *value = parsed;
+    return true;
+}
+
+static void mpLiteApplyTeleportPayload(const std::string& payload) {
+    if (!nativeReady()) return;
+    std::vector<float> values;
+    if (!parseFloatCsv(payload, values) || values.size() < 3) {
+        g_status = "MP teleport failed: bad payload";
+        writeLog("MP native teleport bad payload: %s", payload.c_str());
+        return;
+    }
+
+    Actor player = playerActor();
+    if (player <= 0) {
+        g_status = "MP teleport failed: player not ready";
+        return;
+    }
+
+    Vector3 target = {};
+    target.x = values[0];
+    target.y = values[1];
+    target.z = values[2];
+    const float heading = values.size() >= 4
+        ? values[3]
+        : nativeInvoke<float>(0x42DE39F0ULL, player);
+    mpLiteTeleportActorWithHeading(player, target, heading);
+    g_status = "MP teleported";
+    writeLog("MP native teleport applied: pos=(%.3f, %.3f, %.3f) heading=%.3f",
+             target.x, target.y, target.z, heading);
+}
+
+static void mpLiteApplyHealthPayload(const std::string& payload) {
+    if (!nativeReady()) return;
+    float health = 100.0f;
+    const std::string text = trim(payload);
+    if (!text.empty() && (!parseFloatValue(text, &health) || health <= 0.0f)) {
+        g_status = "MP health failed: bad payload";
+        writeLog("MP health bad payload: %s", payload.c_str());
+        return;
+    }
+
+    Actor player = playerActor();
+    if (player <= 0) return;
+    nativeInvoke<void>(0x165BD4C5ULL, player, health);
+    nativeInvoke<void>(0xFA090024ULL, player, health);
+    g_status = "MP health set";
+}
+
+static void mpLiteApplyGodMode(bool enabled) {
+    g_mpLocalGodMode = enabled;
+    if (nativeReady()) {
+        Actor player = playerActor();
+        if (player > 0) {
+            nativeInvoke<void>(0xE38EF526ULL, player, enabled ? TRUE : FALSE);
+            nativeInvoke<void>(0x0D9A35F6ULL, player, enabled ? TRUE : FALSE);
+        }
+    }
+    g_status = std::string("MP god mode ") + (enabled ? "enabled" : "disabled");
+    mpLiteAddChatLine(g_status);
+}
+
+static void mpLiteApplyModelPayload(const std::string& payload) {
+    int actorEnum = 0;
+    if (!parseInteger(trim(payload), &actorEnum) || actorEnum <= 0 || actorEnum > 65535) {
+        g_status = "MP model failed: bad actor enum";
+        writeLog("MP model bad payload: %s", payload.c_str());
+        return;
+    }
+
+    g_mpLocalActorEnum = actorEnum;
+    if (!nativeReady()) {
+        return;
+    }
+
+    Actor player = playerActor();
+    Vector3 pos = {};
+    if (player <= 0 || !actorPosition(player, &pos)) {
+        g_status = "MP model sync updated";
+        return;
+    }
+
+    Layout layout = ensureLayout();
+    if (layout <= 0) {
+        g_status = "MP model sync updated";
+        return;
+    }
+
+    const float heading = nativeInvoke<float>(0x42DE39F0ULL, player);
+    Vector2 spawnXY = {pos.x, pos.y};
+    Vector2 orientXY = {0.0f, 1.0f};
+    Actor respawned = nativeInvoke<Actor>(0x637E446BULL, layout, player,
+                                          "codered_mp_player", actorEnum,
+                                          spawnXY, pos.z, orientXY, heading, 0);
+    if (respawned > 0 && nativeInvoke<BOOL>(0xBA6C3E92ULL, respawned)) {
+        if (g_mpLocalGodMode) {
+            nativeInvoke<void>(0xE38EF526ULL, respawned, TRUE);
+            nativeInvoke<void>(0x0D9A35F6ULL, respawned, TRUE);
+        }
+        g_status = "MP model changed to " + std::to_string(actorEnum);
+        writeLog("MP local player respawned with enum=%d actor=%d",
+                 actorEnum, respawned);
+    } else {
+        g_status = "MP model sync updated";
+        writeLog("MP local model respawn failed: enum=%d result=%d",
+                 actorEnum, respawned);
+    }
+}
+
+static void mpLiteSetNoClip(bool enabled) {
+    g_mpNoClipActive = enabled;
+    g_mpNoClipLastTickMs = GetTickCount();
+    if (nativeReady()) {
+        Actor player = playerActor();
+        if (player > 0) {
+            const BOOL frozen = nativeInvoke<BOOL>(0x9C12BD5AULL, player);
+            if (enabled && !frozen) {
+                nativeInvoke<void>(0x13E6B5EEULL, player, TRUE);
+            } else if (!enabled && frozen) {
+                nativeInvoke<void>(0x13E6B5EEULL, player, FALSE);
+            }
+        }
+        if (enabled || !g_mpChatOpen) {
+            nativeInvoke<void>(0xD17AFCD8ULL, -1, enabled ? FALSE : TRUE,
+                               enabled ? 1 : 0, enabled ? TRUE : FALSE);
+        }
+    }
+    g_status = std::string("MP noclip ") + (enabled ? "enabled" : "disabled");
+    writeLog("MP noclip toggled: enabled=%d", enabled ? 1 : 0);
+}
+
+static float mpLiteNoClipSpeed() {
+    static const float speeds[] = {10.0f, 50.0f, 100.0f, 300.0f};
+    if (g_mpNoClipSpeedIndex < 0) g_mpNoClipSpeedIndex = 0;
+    if (g_mpNoClipSpeedIndex >= static_cast<int>(sizeof(speeds) / sizeof(speeds[0]))) {
+        g_mpNoClipSpeedIndex = static_cast<int>(sizeof(speeds) / sizeof(speeds[0])) - 1;
+    }
+    return speeds[g_mpNoClipSpeedIndex];
+}
+
+static Vector3 mpLiteHeadingVector(float heading, float correctionDegrees) {
+    const float radians = (heading + correctionDegrees) * (PI / 180.0f);
+    Vector3 out = {};
+    out.x = -std::cos(radians);
+    out.y = std::sin(radians);
+    out.z = 0.0f;
+    return out;
+}
+
+static void mpLiteNoClipTick() {
+    if (!g_mpNoClipActive || !nativeReady()) return;
+    if (g_mpChatOpen) return;
+
+    if ((GetAsyncKeyState(VK_BACK) & 0x0001) != 0) {
+        mpLiteSetNoClip(false);
+        return;
+    }
+    if ((GetAsyncKeyState('Q') & 0x0001) != 0 && g_mpNoClipSpeedIndex > 0) {
+        --g_mpNoClipSpeedIndex;
+    }
+    if ((GetAsyncKeyState('E') & 0x0001) != 0 && g_mpNoClipSpeedIndex < 3) {
+        ++g_mpNoClipSpeedIndex;
+    }
+
+    Actor player = playerActor();
+    Vector3 pos = {};
+    if (player <= 0 || !actorPosition(player, &pos)) return;
+
+    const DWORD now = GetTickCount();
+    float dt = g_mpNoClipLastTickMs == 0 ? 0.016f :
+        static_cast<float>(now - g_mpNoClipLastTickMs) / 1000.0f;
+    g_mpNoClipLastTickMs = now;
+    if (dt <= 0.0f) dt = 0.016f;
+    if (dt > 0.1f) dt = 0.1f;
+
+    float heading = nativeInvoke<float>(0x42DE39F0ULL, player);
+    const int camera = nativeInvoke<int>(0x6B7677BFULL);
+    if (camera > 0) {
+        heading = nativeInvoke<float>(0x1C02D2F8ULL, camera);
+    }
+
+    float speed = mpLiteNoClipSpeed();
+    if ((GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0) {
+        speed *= 2.0f;
+    }
+    const float delta = speed * dt;
+
+    Vector3 move = {};
+    const Vector3 forward = mpLiteHeadingVector(heading, 90.0f);
+    const Vector3 right = mpLiteHeadingVector(heading, 180.0f);
+    if ((GetAsyncKeyState('W') & 0x8000) != 0) {
+        move.x += forward.x;
+        move.y += forward.y;
+    }
+    if ((GetAsyncKeyState('S') & 0x8000) != 0) {
+        move.x -= forward.x;
+        move.y -= forward.y;
+    }
+    if ((GetAsyncKeyState('D') & 0x8000) != 0) {
+        move.x += right.x;
+        move.y += right.y;
+    }
+    if ((GetAsyncKeyState('A') & 0x8000) != 0) {
+        move.x -= right.x;
+        move.y -= right.y;
+    }
+    if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0) {
+        move.z += 1.0f;
+    }
+    if ((GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0) {
+        move.z -= 1.0f;
+    }
+
+    const float lengthSq = move.x * move.x + move.y * move.y + move.z * move.z;
+    if (lengthSq > 0.0001f) {
+        const float scale = delta / std::sqrt(lengthSq);
+        pos.x += move.x * scale;
+        pos.y += move.y * scale;
+        pos.z += move.z * scale;
+        mpLiteTeleportActorWithHeading(player, pos, heading);
+    }
+    nativeInvoke<void>(0xECE8520BULL, player, heading, TRUE);
+}
+
+static void mpLiteRequestTransportPropset(const std::string& payload) {
+    std::vector<float> values;
+    if (!parseFloatCsv(payload, values) || values.size() < 4) {
+        g_status = "MP propset failed: bad payload";
+        writeLog("MP propset bad payload: %s", payload.c_str());
+        return;
+    }
+    g_mpTransportPropsetPosition = {values[0], values[1], values[2]};
+    g_mpTransportPropsetHeading = values[3];
+    g_mpTransportPropsetPending = true;
+    g_mpTransportPropsetRequestedMs = GetTickCount();
+    g_mpTransportPropsetAssetId = 0;
+    g_status = "MP propset requested";
+}
+
+static void mpLiteTransportPropsetTick() {
+    if (!g_mpTransportPropsetPending || !nativeReady()) return;
+
+    if (g_mpTransportPropset > 0 &&
+        nativeInvoke<BOOL>(0xD7E7187BULL, g_mpTransportPropset)) {
+        g_mpTransportPropsetPending = false;
+        return;
+    }
+
+    constexpr const char* kMpTransportRefGroup = "$/tune/refGroups/refgroups/mp_transport";
+    constexpr int kAssetTypePropset = 7;
+    nativeInvoke<int>(0x9AA02DA7ULL, kMpTransportRefGroup, kAssetTypePropset);
+    if (g_mpTransportPropsetAssetId <= 0) {
+        g_mpTransportPropsetAssetId =
+            nativeInvoke<int>(0x6005B514ULL, kMpTransportRefGroup, kAssetTypePropset);
+    }
+    if (g_mpTransportPropsetAssetId <= 0) {
+        return;
+    }
+
+    nativeInvoke<void>(0xEC1F14C8ULL, g_mpTransportPropsetAssetId);
+    if (!nativeInvoke<BOOL>(0xF7D65903ULL, g_mpTransportPropsetAssetId)) {
+        if (GetTickCount() - g_mpTransportPropsetRequestedMs > 10000) {
+            g_mpTransportPropsetPending = false;
+            g_status = "MP propset load timed out";
+            writeLog("MP transport propset load timed out asset=%d",
+                     g_mpTransportPropsetAssetId);
+        }
+        return;
+    }
+
+    Layout layout = nativeInvoke<Layout>(0x5699DE7EULL, "PlayerLayout");
+    if (layout <= 0) {
+        layout = ensureLayout();
+    }
+    if (layout <= 0) {
+        return;
+    }
+
+    g_mpTransportPropset = nativeInvoke<int>(
+        0x779267C3ULL, layout, "", kMpTransportRefGroup,
+        g_mpTransportPropsetPosition.x, g_mpTransportPropsetPosition.y,
+        g_mpTransportPropsetPosition.z, 0.0f, g_mpTransportPropsetHeading, 0.0f);
+    nativeInvoke<void>(0x4A5E4C13ULL, g_mpTransportPropsetAssetId);
+    g_mpTransportPropsetPending = false;
+
+    if (g_mpTransportPropset > 0) {
+        g_status = "MP Escalera propset spawned";
+        writeLog("MP transport propset spawned: object=%d pos=(%.3f, %.3f, %.3f) heading=%.3f",
+                 g_mpTransportPropset,
+                 g_mpTransportPropsetPosition.x,
+                 g_mpTransportPropsetPosition.y,
+                 g_mpTransportPropsetPosition.z,
+                 g_mpTransportPropsetHeading);
+    } else {
+        g_status = "MP propset create failed";
+        writeLog("MP transport propset create failed");
+    }
+}
+
+static void mpLiteApplyNativeCallRecord(const std::string& record) {
+    const size_t split = record.find('|');
+    if (split == std::string::npos || split == 0) return;
+
+    char* end = nullptr;
+    const unsigned long seq = std::strtoul(record.substr(0, split).c_str(), &end, 10);
+    if (!end || *end != '\0' || seq == 0 || seq <= g_mpLastNativeCallSeq) {
+        return;
+    }
+    g_mpLastNativeCallSeq = static_cast<unsigned int>(seq);
+
+    std::string callText = record.substr(split + 1);
+    std::string callName = callText;
+    std::string payload;
+    const size_t payloadSplit = callText.find(": ");
+    if (payloadSplit != std::string::npos) {
+        callName = callText.substr(0, payloadSplit);
+        payload = callText.substr(payloadSplit + 2);
+    }
+
+    if (callName == "client_chat_echo") {
+        return;
+    }
+    if (callName == "client_hello_world" || callName == "client_add_message") {
+        mpLiteAddChatLine(payload);
+        return;
+    }
+    if (callName == "client_teleport") {
+        mpLiteApplyTeleportPayload(payload);
+        return;
+    }
+    if (callName == "client_set_model") {
+        mpLiteApplyModelPayload(payload);
+        return;
+    }
+    if (callName == "client_kill_player") {
+        Actor player = playerActor();
+        if (player > 0) {
+            nativeInvoke<void>(0x8B08ECA2ULL, player);
+        }
+        return;
+    }
+    if (callName == "client_set_health") {
+        mpLiteApplyHealthPayload(payload);
+        return;
+    }
+    if (callName == "client_god_toggle") {
+        mpLiteApplyGodMode(!g_mpLocalGodMode);
+        return;
+    }
+    if (callName == "client_noclip_toggle") {
+        mpLiteSetNoClip(!g_mpNoClipActive);
+        return;
+    }
+    if (callName == "client_spawn_transport_propset") {
+        mpLiteRequestTransportPropset(payload);
+        return;
+    }
+
+    g_status = "MP native unhandled: " + callName;
+    writeLog("MP native call unhandled: %s payload=%s",
+             callName.c_str(), payload.c_str());
+}
+
+static void mpLiteApplyWorldState() {
+    if (!g_mpLiteActive) return;
+    const std::string path = gamePath(g_mpBridgeWorldPath);
+    const unsigned long long writeTime = fileWriteTime(path);
+    if (writeTime == 0 || writeTime == g_mpWorldStateWriteTime) return;
+    g_mpWorldStateWriteTime = writeTime;
+
+    const std::string json = readSmallTextFile(path, 131072);
+    if (json.empty()) return;
+
+    const int playerId = jsonIntValue(json, "player_id", -1);
+    if (playerId >= 0) {
+        g_mpLocalPlayerId = playerId;
+        g_mpLiteJoined = true;
+    }
+    g_mpLocalActorEnum = jsonIntValue(json, "spawn_actor_enum", g_mpLocalActorEnum);
+
+    if (jsonBoolValue(json, "spawn_valid", false) && !g_mpSpawnApplied && nativeReady()) {
+        Actor player = playerActor();
+        if (player > 0) {
+            Vector3 spawn = {};
+            spawn.x = jsonFloatValue(json, "spawn_x", 0.0f);
+            spawn.y = jsonFloatValue(json, "spawn_y", 0.0f);
+            spawn.z = jsonFloatValue(json, "spawn_z", 0.0f);
+            const float heading = jsonFloatValue(json, "spawn_heading", 0.0f);
+            mpLiteTeleportActorWithHeading(player, spawn, heading);
+            g_mpSpawnApplied = true;
+            writeLog("MP local spawn applied: playerid=%d pos=(%.3f, %.3f, %.3f) heading=%.3f",
+                     g_mpLocalPlayerId, spawn.x, spawn.y, spawn.z, heading);
+        }
+    }
+
+    if (jsonArrayKeyPresent(json, "chat")) {
+        const std::vector<std::string> chat = jsonStringArrayValue(json, "chat");
+        if (mpLiteChatAcknowledgedByServer(chat)) {
+            mpLiteRemoveNoticeLine("[you] " + g_mpPendingChat);
+            g_mpPendingChat.clear();
+            g_mpPendingChatStartedMs = 0;
+            mpLiteWriteLocalState(true);
+        }
+        g_mpChatLines = chat;
+        if (g_mpChatLines.size() > 16) {
+            g_mpChatLines.erase(g_mpChatLines.begin(), g_mpChatLines.end() - 16);
+        }
+    }
+
+    if (jsonArrayKeyPresent(json, "native_calls")) {
+        const std::vector<std::string> nativeCalls = jsonStringArrayValue(json, "native_calls");
+        for (const std::string& record : nativeCalls) {
+            mpLiteApplyNativeCallRecord(record);
+        }
+    }
+
+    const std::string playersNeedle = "\"players\"";
+    size_t playersPos = json.find(playersNeedle);
+    if (playersPos != std::string::npos) {
+        size_t pos = json.find('[', playersPos + playersNeedle.size());
+        const size_t end = pos == std::string::npos ? std::string::npos : jsonArrayEnd(json, pos);
+        while (pos != std::string::npos && end != std::string::npos && pos < end) {
+            const size_t objectStart = json.find('{', pos + 1);
+            if (objectStart == std::string::npos || objectStart >= end) break;
+            const size_t objectEnd = json.find('}', objectStart + 1);
+            if (objectEnd == std::string::npos || objectEnd > end) break;
+            const std::string objectText = json.substr(objectStart, objectEnd - objectStart + 1);
+
+            MpRemoteActor parsed;
+            if (mpLiteParsePlayerObject(objectText, parsed) &&
+                parsed.playerId != g_mpLocalPlayerId) {
+                MpRemoteActor* remote = mpLiteRemoteById(parsed.playerId);
+                Actor existingActor = remote->actor;
+                if (existingActor > 0 && remote->actorEnum != parsed.actorEnum &&
+                    mpLiteRemoteActorValid(*remote)) {
+                    nativeInvoke<void>(0x8BD21869ULL, existingActor);
+                    existingActor = 0;
+                    writeLog("MP remote respawn requested: playerid=%d enum %d -> %d",
+                             parsed.playerId, remote->actorEnum, parsed.actorEnum);
+                }
+                *remote = parsed;
+                remote->actor = existingActor;
+                mpLiteApplyRemoteState(*remote);
+            }
+            pos = objectEnd + 1;
+        }
+    }
+
+    mpLitePruneStaleRemotes();
+}
+
+static void mpLiteSendChat() {
+    std::string text = trim(g_mpChatDraft);
+    if (text.empty()) {
+        g_mpChatDraft.clear();
+        g_mpChatOpen = false;
+        return;
+    }
+    if (text.size() > 96) text.resize(96);
+    g_mpPendingChat = text;
+    ++g_mpChatSeq;
+    g_mpPendingChatStartedMs = GetTickCount();
+    mpLiteAddChatLine("[you] " + text);
+    g_mpChatDraft.clear();
+    g_mpChatOpen = false;
+    mpLiteWriteLocalState(true);
+}
+
+static char mpLiteCharFromKey(DWORD key) {
+    const bool shift = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+    if (key >= 'A' && key <= 'Z') {
+        char c = static_cast<char>(key);
+        return shift ? c : static_cast<char>(std::tolower(c));
+    }
+    if (key >= '0' && key <= '9') {
+        if (!shift) return static_cast<char>(key);
+        const char shifted[] = {')', '!', '@', '#', '$', '%', '^', '&', '*', '('};
+        return shifted[key - '0'];
+    }
+    if (key == VK_SPACE) return ' ';
+    if (key == VK_OEM_PERIOD) return shift ? '>' : '.';
+    if (key == VK_OEM_COMMA) return shift ? '<' : ',';
+    if (key == VK_OEM_MINUS) return shift ? '_' : '-';
+    if (key == VK_OEM_PLUS) return shift ? '+' : '=';
+    if (key == VK_OEM_2) return shift ? '?' : '/';
+    if (key == VK_OEM_1) return shift ? ':' : ';';
+    if (key == VK_OEM_7) return shift ? '"' : '\'';
+    return 0;
+}
+
+static bool mpLiteHandleKey(DWORD key) {
+    if (!g_mpLiteActive || g_menuOpen) return false;
+    if (!g_mpChatOpen) {
+        if (key == 'T') {
+            g_mpChatOpen = true;
+            g_mpChatDraft.clear();
+            return true;
+        }
+        return false;
+    }
+
+    if (key == VK_RETURN) {
+        mpLiteSendChat();
+        return true;
+    }
+    if (key == VK_ESCAPE) {
+        g_mpChatDraft.clear();
+        g_mpChatOpen = false;
+        return true;
+    }
+    if (key == VK_BACK) {
+        if (!g_mpChatDraft.empty()) g_mpChatDraft.pop_back();
+        return true;
+    }
+    const char c = mpLiteCharFromKey(key);
+    if (c != 0 && g_mpChatDraft.size() < 96) {
+        g_mpChatDraft.push_back(c);
+        return true;
+    }
+    return true;
+}
+
+static void mpLiteDrawOverlay() {
+    if (!g_mpLiteActive) return;
+
+    constexpr float boxLeft = 0.020f;
+    constexpr float boxTop = 0.030f;
+    constexpr float boxWidth = 0.470f;
+    constexpr float boxHeight = 0.235f;
+    constexpr float textLeft = boxLeft + 0.010f;
+    drawRectSafe(boxLeft + boxWidth * 0.5f, boxTop + boxHeight * 0.5f,
+                 boxWidth, boxHeight, 5, 5, 8, 178, 0.010f);
+
+    std::string title = "CodeRED MP Lite";
+    if (g_mpLiteJoined) {
+        title += " | player " + std::to_string(g_mpLocalPlayerId) +
+                 " | remotes " + std::to_string(g_mpRemoteActors.size()) +
+                 " | bare " + (g_mpBareWorldEnabled ? std::string("on") : std::string("off")) +
+                 " | noclip " + (g_mpNoClipActive ? std::string("on") : std::string("off"));
+    } else {
+        title += " | joining";
+    }
+    drawTextSafe(textLeft, boxTop + 0.010f, mpLiteClipText(title, 74).c_str(),
+                 255, 235, 235, 235, FONT_REDEMPTION, 0.018f, JUSTIFY_LEFT);
+    drawTextSafe(textLeft, boxTop + 0.035f, "T chat | F8 menu",
+                 220, 220, 220, 220, FONT_REDEMPTION, 0.014f, JUSTIFY_LEFT);
+    std::string bareLine = "bare cleaned " +
+                           std::to_string(g_mpBareWorldLastDestroyed) +
+                           " last | " +
+                           std::to_string(g_mpBareWorldTotalDestroyed) +
+                           " total";
+    drawTextSafe(textLeft, boxTop + 0.058f, bareLine.c_str(),
+                 190, 205, 205, 210, FONT_REDEMPTION, 0.013f, JUSTIFY_LEFT);
+
+    std::vector<std::string> lines = g_mpChatLines;
+    lines.insert(lines.end(), g_mpNoticeLines.begin(), g_mpNoticeLines.end());
+    if (lines.size() > 16) {
+        lines.erase(lines.begin(), lines.end() - 16);
+    }
+
+    constexpr float lineHeight = 0.020f;
+    const float chatTop = boxTop + 0.084f;
+    const float inputY = boxTop + boxHeight - 0.030f;
+    const float chatBottom = g_mpChatOpen ? inputY - 0.012f : boxTop + boxHeight - 0.024f;
+    const int maxLines = std::max(0, static_cast<int>((chatBottom - chatTop) / lineHeight) + 1);
+    const int visibleLines = std::min(static_cast<int>(lines.size()), maxLines);
+    const int firstLine = static_cast<int>(lines.size()) - visibleLines;
+    float y = chatBottom - static_cast<float>(visibleLines - 1) * lineHeight;
+    for (int i = 0; i < visibleLines; ++i) {
+        const std::string line = mpLiteClipText(lines[firstLine + i], 68);
+        drawTextSafe(textLeft, y, line.c_str(), 235, 235, 235, 220,
+                     FONT_REDEMPTION, 0.014f, JUSTIFY_LEFT);
+        y += lineHeight;
+    }
+    if (g_mpChatOpen) {
+        const std::string draft = mpLiteClipText("> " + g_mpChatDraft + "_", 70);
+        drawTextSafe(textLeft, inputY, draft.c_str(), 255, 170, 170, 240,
+                     FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
+    }
+}
+
+static void mpLiteApplyChatControlSuppression() {
+    if (!nativeReady()) return;
+    if (g_mpChatOpen) {
+        nativeInvoke<void>(0xD17AFCD8ULL, -1, FALSE, 1, TRUE);
+        nativeInvoke<void>(0x0959C27AULL, -1, TRUE);
+        g_mpChatControlsSuppressed = true;
+        return;
+    }
+    if (g_mpChatControlsSuppressed && !g_mpNoClipActive) {
+        nativeInvoke<void>(0x0959C27AULL, -1, FALSE);
+        nativeInvoke<void>(0xD17AFCD8ULL, -1, TRUE, 0, FALSE);
+        g_mpChatControlsSuppressed = false;
+    }
+}
+
+static void mpLiteTick() {
+    if (!g_mpLiteActive) return;
+    pollMpClientStatus();
+    mpLiteApplyWorldState();
+    mpLiteApplyChatControlSuppression();
+    mpBareWorldTick(false);
+    mpLiteTransportPropsetTick();
+    mpLiteNoClipTick();
+    mpLiteWriteLocalState(false);
+}
+
+static BOOL CALLBACK mpLiteFindGameWindow(HWND hwnd, LPARAM param) {
+    DWORD processId = 0;
+    GetWindowThreadProcessId(hwnd, &processId);
+    if (processId != GetCurrentProcessId() || !IsWindowVisible(hwnd) ||
+        GetWindow(hwnd, GW_OWNER) != nullptr) {
+        return TRUE;
+    }
+    *reinterpret_cast<HWND*>(param) = hwnd;
+    return FALSE;
+}
+
+static LRESULT CALLBACK mpLiteWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    if (g_mpLiteActive) {
+        if ((message == WM_KEYDOWN || message == WM_SYSKEYDOWN) &&
+            (g_mpChatOpen || (!g_menuOpen && static_cast<DWORD>(wParam) == 'T'))) {
+            mpLiteHandleKey(static_cast<DWORD>(wParam));
+            return 0;
+        }
+        if (g_mpChatOpen &&
+            (message == WM_CHAR || message == WM_SYSCHAR ||
+             message == WM_KEYUP || message == WM_SYSKEYUP)) {
+            return 0;
+        }
+    }
+    return CallWindowProc(g_originalWndProc, hwnd, message, wParam, lParam);
+}
+
+static void mpLiteInstallInputFilter() {
+    if (g_originalWndProc != nullptr) return;
+    HWND hwnd = nullptr;
+    EnumWindows(mpLiteFindGameWindow, reinterpret_cast<LPARAM>(&hwnd));
+    if (!hwnd) {
+        writeLog("MP chat input filter: game window not found");
+        return;
+    }
+    SetLastError(0);
+    LONG_PTR previous = SetWindowLongPtr(hwnd, GWLP_WNDPROC,
+                                         reinterpret_cast<LONG_PTR>(mpLiteWndProc));
+    if (previous == 0 && GetLastError() != 0) {
+        writeLog("MP chat input filter install failed: error=%lu", GetLastError());
+        return;
+    }
+    g_gameWindow = hwnd;
+    g_originalWndProc = reinterpret_cast<WNDPROC>(previous);
+    writeLog("MP chat input filter installed");
+}
+
+static void mpLiteUninstallInputFilter() {
+    if (!g_gameWindow || !g_originalWndProc) return;
+    SetWindowLongPtr(g_gameWindow, GWLP_WNDPROC,
+                     reinterpret_cast<LONG_PTR>(g_originalWndProc));
+    g_gameWindow = nullptr;
+    g_originalWndProc = nullptr;
+}
+
+static void mpLiteBegin() {
+    g_mpLiteActive = true;
+    g_mpLiteJoined = false;
+    g_mpSpawnApplied = false;
+    g_mpChatOpen = false;
+    g_mpChatControlsSuppressed = false;
+    g_mpChatDraft.clear();
+    g_mpPendingChat.clear();
+    g_mpLocalPlayerId = -1;
+    g_mpStateSeq = 0;
+    g_mpChatSeq = 0;
+    g_mpPendingChatStartedMs = 0;
+    g_mpLastLocalStateMs = 0;
+    g_mpBareWorldLastTickMs = 0;
+    g_mpBareWorldLastPopulationMs = 0;
+    g_mpBareWorldLastSeen = 0;
+    g_mpBareWorldLastProtected = 0;
+    g_mpBareWorldLastDestroyed = 0;
+    g_mpBareWorldTotalDestroyed = 0;
+    g_mpLastNativeCallSeq = 0;
+    g_mpWorldStateWriteTime = 0;
+    g_mpNoClipActive = false;
+    g_mpNoClipLastTickMs = 0;
+    g_mpNoClipSpeedIndex = 1;
+    g_mpLocalGodMode = false;
+    g_mpTransportPropsetPending = false;
+    g_mpTransportPropset = 0;
+    g_mpTransportPropsetAssetId = 0;
+    g_mpTransportPropsetRequestedMs = 0;
+    g_mpTransportPropsetPosition = {};
+    g_mpTransportPropsetHeading = 0.0f;
+    g_mpRemoteActors.clear();
+    g_mpChatLines.clear();
+    g_mpNoticeLines.clear();
+    mpLiteAddChatLine("MP Lite connecting...");
+    mpLiteInstallInputFilter();
+    writeLog("MP Lite bridge started: input=%s world=%s",
+             g_mpBridgeInputPath.c_str(), g_mpBridgeWorldPath.c_str());
 }
 
 static void saveOriginalPlayerFaction(Actor player) {
@@ -1471,6 +2781,8 @@ static void writeMpConnectRequest(const std::string& status) {
     file << "  \"port\": 7777,\n";
     file << "  \"client\": \"" << jsonEscape(g_mpClientPath) << "\",\n";
     file << "  \"client_status\": \"" << jsonEscape(g_mpClientStatusPath) << "\",\n";
+    file << "  \"bridge_input\": \"" << jsonEscape(g_mpBridgeInputPath) << "\",\n";
+    file << "  \"bridge_world\": \"" << jsonEscape(g_mpBridgeWorldPath) << "\",\n";
     file << "  \"status\": \"" << jsonEscape(status) << "\",\n";
     file << "  \"timestamp\": " << static_cast<long long>(now) << "\n";
     file << "}\n";
@@ -1511,14 +2823,23 @@ static void mpConnectLocalhost() {
     const std::string gameDir = gameDirectory();
     const std::string clientPath = gamePath(g_mpClientPath);
     const std::string statusPath = gamePath(g_mpClientStatusPath);
+    const std::string bridgeInputPath = gamePath(g_mpBridgeInputPath);
+    const std::string bridgeWorldPath = gamePath(g_mpBridgeWorldPath);
     const std::string stdoutPath = gamePath("scratch/codered_mp_client_stdout.log");
 
     createParentDirs(statusPath);
+    createParentDirs(bridgeInputPath);
+    createParentDirs(bridgeWorldPath);
     createParentDirs(stdoutPath);
 
     const std::string cmdLine = quoteCommandArg(clientPath) +
-        " --host 127.0.0.1 --port 7777 --name rdr_asi --seconds 0 --status " +
-        quoteCommandArg(statusPath);
+        " --host " + quoteCommandArg(g_mpServerHost) +
+        " --port " + std::to_string(g_mpServerPort) +
+        " --name " + quoteCommandArg(g_mpPlayerName) +
+        " --seconds 0 --status " +
+        quoteCommandArg(statusPath) +
+        " --bridge-in " + quoteCommandArg(bridgeInputPath) +
+        " --bridge-out " + quoteCommandArg(bridgeWorldPath);
 
     std::vector<char> mutableCmd(cmdLine.begin(), cmdLine.end());
     mutableCmd.push_back('\0');
@@ -1541,7 +2862,10 @@ static void mpConnectLocalhost() {
     PROCESS_INFORMATION processInfo = {};
 
     DeleteFileA(statusPath.c_str());
+    DeleteFileA(bridgeInputPath.c_str());
+    DeleteFileA(bridgeWorldPath.c_str());
     g_mpClientStatusWriteTime = 0;
+    g_mpWorldStateWriteTime = 0;
 
     const BOOL started = CreateProcessA(
         clientPath.c_str(),
@@ -1562,15 +2886,17 @@ static void mpConnectLocalhost() {
     if (started) {
         CloseHandle(processInfo.hThread);
         CloseHandle(processInfo.hProcess);
-        g_status = "MP connect 127.0.0.1:7777 started";
+        mpLiteBegin();
+        mpLiteWriteLocalState(true);
+        g_status = "MP connect " + g_mpServerHost + ":" + std::to_string(g_mpServerPort) + " started";
         writeMpConnectRequest("started");
-        writeLog("MP localhost connect started: cwd=%s command=%s stdout=%s",
+        writeLog("MP connect started: cwd=%s command=%s stdout=%s",
                  gameDir.c_str(), cmdLine.c_str(), stdoutPath.c_str());
     } else {
         const DWORD err = GetLastError();
         g_status = "MP client start failed err=" + std::to_string(err);
         writeMpConnectRequest("start_failed");
-        writeLog("MP localhost connect failed: cwd=%s command=%s err=%lu",
+        writeLog("MP connect failed: cwd=%s command=%s err=%lu",
                  gameDir.c_str(), cmdLine.c_str(), err);
     }
 }
@@ -1966,17 +3292,30 @@ static void executeSelectedAction() {
         mpLaunchDeathmatch();
     } else if (action == "mp_launch_ctf_request") {
         mpLaunchCtf();
+    } else if (action == "mp_toggle_bare_world_request") {
+        mpBareWorldToggle();
+    } else if (action == "mp_bare_world_purge_request") {
+        mpBareWorldPurgeNow();
+    } else if (action == "mp_toggle_bare_world_suppression_request") {
+        mpBareWorldTogglePopulationSuppression();
     } else if (action == "reload_override_rpf_request") {
         reloadOverrideRpf();
     } else if (action == "status_request") {
         pruneSpawnedActors();
         const int actorEnum = selectedActorEnum();
         g_status = "Native OK | enum " + std::to_string(actorEnum) +
-                   " | spawned " + std::to_string(g_spawnedActors.size());
-        writeLog("Status: native=ready selected=%s enum=%d spawned=%zu worldGetAllActors=%s playerSideFaction=%d",
+                   " | spawned " + std::to_string(g_spawnedActors.size()) +
+                   " | bare " + (g_mpBareWorldEnabled ? "on" : "off") +
+                   " total " + std::to_string(g_mpBareWorldTotalDestroyed);
+        writeLog("Status: native=ready selected=%s enum=%d spawned=%zu worldGetAllActors=%s playerSideFaction=%d bare=%d bare_seen=%d bare_protected=%d bare_destroyed_last=%d bare_destroyed_total=%d",
                  selectedNpc().c_str(), actorEnum, g_spawnedActors.size(),
                  g_worldGetAllActors ? "ready" : "missing",
-                 g_playerSideFaction);
+                 g_playerSideFaction,
+                 g_mpBareWorldEnabled ? 1 : 0,
+                 g_mpBareWorldLastSeen,
+                 g_mpBareWorldLastProtected,
+                 g_mpBareWorldLastDestroyed,
+                 g_mpBareWorldTotalDestroyed);
     } else {
         commandSpawnedActors(action);
     }
@@ -2013,6 +3352,8 @@ static void writeActionPlan() {
     file << "  \"patch_stage_dir\": \"" << jsonEscape(g_patchStagePath) << "\",\n";
     file << "  \"mp_connect_request_path\": \"" << jsonEscape(g_mpConnectRequestPath) << "\",\n";
     file << "  \"mp_client_status_path\": \"" << jsonEscape(g_mpClientStatusPath) << "\",\n";
+    file << "  \"mp_bridge_input_path\": \"" << jsonEscape(g_mpBridgeInputPath) << "\",\n";
+    file << "  \"mp_bridge_world_path\": \"" << jsonEscape(g_mpBridgeWorldPath) << "\",\n";
     file << "  \"mp_client\": \"" << jsonEscape(g_mpClientPath) << "\",\n";
     file << "  \"state_path\": \"" << jsonEscape(g_statePath) << "\",\n";
     file << "  \"status\": \"queued\",\n";
@@ -2040,6 +3381,11 @@ static bool throttleKey() {
     return false;
 }
 
+static bool isMenuNavigationKey(DWORD key) {
+    return key == VK_UP || key == VK_DOWN || key == VK_LEFT || key == VK_RIGHT ||
+           key == VK_HOME || key == VK_END;
+}
+
 static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
                   BOOL isWithAlt, BOOL wasDownBefore, BOOL isUpNow) {
     (void)repeats;
@@ -2048,7 +3394,13 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
     (void)isWithAlt;
 
     if (isUpNow) return;
-    if (wasDownBefore && key != VK_RETURN) return;
+    const bool menuNavigationKey = isMenuNavigationKey(key);
+    if (wasDownBefore && key != VK_RETURN && !(g_menuOpen && menuNavigationKey)) return;
+
+    if (g_mpLiteActive && g_mpChatOpen) {
+        mpLiteHandleKey(key);
+        return;
+    }
 
     if (key == VK_F8 || key == VK_INSERT) {
         if (throttleKey()) return;
@@ -2063,65 +3415,87 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
         return;
     }
 
-    if (!g_menuOpen) return;
-    if (throttleKey()) return;
+    if (g_menuOpen) {
+        if (!menuNavigationKey && throttleKey()) return;
 
-    if (key == VK_BACK || key == VK_ESCAPE) {
-        g_menuOpen = false;
+        if (key == VK_BACK || key == VK_ESCAPE) {
+            g_menuOpen = false;
+            return;
+        }
+
+        if (key == VK_UP) {
+            if (g_dirtyActions) loadActions();
+            const int count = static_cast<int>(g_actions.size());
+            if (count > 0) {
+                g_menuIndex--;
+                if (g_menuIndex < 0) g_menuIndex = count - 1;
+            }
+            return;
+        }
+
+        if (key == VK_DOWN) {
+            if (g_dirtyActions) loadActions();
+            const int count = static_cast<int>(g_actions.size());
+            if (count > 0) {
+                g_menuIndex++;
+                if (g_menuIndex >= count) g_menuIndex = 0;
+            }
+            return;
+        }
+
+        if (key == VK_LEFT) {
+            ensureDefaultRoster();
+            const int count = static_cast<int>(g_roster.size());
+            if (count > 0) {
+                const bool fast = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+                g_npcIndex -= fast ? 10 : 1;
+                while (g_npcIndex < 0) g_npcIndex += count;
+            }
+            return;
+        }
+
+        if (key == VK_RIGHT) {
+            ensureDefaultRoster();
+            const int count = static_cast<int>(g_roster.size());
+            if (count > 0) {
+                const bool fast = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+                g_npcIndex += fast ? 10 : 1;
+                if (g_npcIndex >= count) g_npcIndex %= count;
+            }
+            return;
+        }
+
+        if (key == VK_HOME) {
+            g_npcIndex = 0;
+            return;
+        }
+
+        if (key == VK_END) {
+            ensureDefaultRoster();
+            if (!g_roster.empty()) {
+                g_npcIndex = static_cast<int>(g_roster.size()) - 1;
+            }
+            return;
+        }
+
+        if (key == VK_RETURN) {
+            executeSelectedAction();
+            return;
+        }
+
+        if (key == VK_F5) {
+            g_configLoaded = false;
+            g_dirtyRoster = true;
+            g_dirtyActorMap = true;
+            g_dirtyActions = true;
+            g_status = "Reload requested";
+            writeLog("Manual reload requested");
+            return;
+        }
         return;
     }
 
-    if (key == VK_UP) {
-        g_menuIndex--;
-        if (g_menuIndex < 0) g_menuIndex = static_cast<int>(g_actions.size()) - 1;
-        return;
-    }
-
-    if (key == VK_DOWN) {
-        g_menuIndex++;
-        if (g_menuIndex >= static_cast<int>(g_actions.size())) g_menuIndex = 0;
-        return;
-    }
-
-    if (key == VK_LEFT) {
-        ensureDefaultRoster();
-        const bool fast = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
-        g_npcIndex -= fast ? 10 : 1;
-        if (g_npcIndex < 0) g_npcIndex = static_cast<int>(g_roster.size()) - 1;
-        return;
-    }
-
-    if (key == VK_RIGHT) {
-        ensureDefaultRoster();
-        const bool fast = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
-        g_npcIndex += fast ? 10 : 1;
-        if (g_npcIndex >= static_cast<int>(g_roster.size())) g_npcIndex = 0;
-        return;
-    }
-
-    if (key == VK_HOME) {
-        g_npcIndex = 0;
-        return;
-    }
-
-    if (key == VK_END) {
-        ensureDefaultRoster();
-        g_npcIndex = static_cast<int>(g_roster.size()) - 1;
-        return;
-    }
-
-    if (key == VK_RETURN) {
-        executeSelectedAction();
-        return;
-    }
-
-    if (key == VK_F5) {
-        g_configLoaded = false;
-        g_dirtyRoster = true;
-        g_dirtyActorMap = true;
-        g_dirtyActions = true;
-        g_status = "Reload requested";
-        writeLog("Manual reload requested");
+    if (mpLiteHandleKey(key)) {
         return;
     }
 }
@@ -2231,6 +3605,8 @@ static void drawMenu() {
 
 static void mainLoop() {
     while (true) {
+        mpLiteTick();
+        mpLiteDrawOverlay();
         drawMenu();
         waitFrame(0);
     }
@@ -2320,6 +3696,7 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID) {
     } else if (reason == DLL_PROCESS_DETACH) {
         InterlockedExchange(&codered::g_stopRequested, 1);
         codered::writeLog("ASI detach requested");
+        codered::mpLiteUninstallInputFilter();
         if (InterlockedCompareExchange(&codered::g_registered, 0, 0) &&
             codered::g_keyboardHandlerUnregister) {
             codered::g_keyboardHandlerUnregister(codered::onKey);

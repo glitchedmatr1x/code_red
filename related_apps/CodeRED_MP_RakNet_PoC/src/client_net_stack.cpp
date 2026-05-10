@@ -158,10 +158,18 @@ void ClientNetStack::HandlePacket(SLNet::Packet* packet) {
 
     if (messageId == kMsgJoinAccepted) {
         std::uint8_t assignedId = kInvalidPlayerId;
+        PlayerState spawnState;
         std::string notice;
-        if (stream.Read(assignedId) && ReadString(stream, notice, kMaxChatLength)) {
+        if (stream.Read(assignedId) &&
+            ReadPlayerState(stream, spawnState) &&
+            ReadString(stream, notice, kMaxChatLength)) {
             localPlayerId_ = assignedId;
-            events_.push_back({ClientEvent::kJoinAccepted, notice, assignedId, {}});
+            ClientEvent event;
+            event.type = ClientEvent::kJoinAccepted;
+            event.text = notice;
+            event.playerId = assignedId;
+            event.players.push_back(spawnState);
+            events_.push_back(event);
         }
     } else if (messageId == kMsgJoinRejected) {
         std::string reason;

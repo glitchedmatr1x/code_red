@@ -9,9 +9,10 @@
 
 namespace codered_mp {
 
-constexpr std::uint32_t kProtocolVersion = 1;
+constexpr std::uint32_t kProtocolVersion = 2;
 constexpr std::uint16_t kDefaultPort = 7777;
 constexpr std::uint8_t kInvalidPlayerId = 0xFF;
+constexpr std::uint16_t kDefaultActorEnum = 837; // ACTOR_mpplayer01.
 constexpr std::size_t kMaxNameLength = 24;
 constexpr std::size_t kMaxChatLength = 96;
 constexpr std::size_t kMaxNativeCallLength = 96;
@@ -35,6 +36,8 @@ struct PlayerState {
     float heading = 0.0f;
     std::uint16_t health = 100;
     std::uint16_t flags = 0;
+    std::uint16_t actorEnum = kDefaultActorEnum;
+    std::uint32_t sequence = 0;
 };
 
 std::uint8_t GetPacketId(const SLNet::Packet* packet);

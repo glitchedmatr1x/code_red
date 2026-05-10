@@ -81,6 +81,8 @@ void WritePlayerState(SLNet::BitStream& stream, const PlayerState& state) {
     stream.Write(state.heading);
     stream.Write(state.health);
     stream.Write(state.flags);
+    stream.Write(state.actorEnum);
+    stream.Write(state.sequence);
 }
 
 bool ReadPlayerState(SLNet::BitStream& stream, PlayerState& state) {
@@ -90,7 +92,9 @@ bool ReadPlayerState(SLNet::BitStream& stream, PlayerState& state) {
            stream.Read(state.z) &&
            stream.Read(state.heading) &&
            stream.Read(state.health) &&
-           stream.Read(state.flags);
+           stream.Read(state.flags) &&
+           stream.Read(state.actorEnum) &&
+           stream.Read(state.sequence);
 }
 
 } // namespace codered_mp
