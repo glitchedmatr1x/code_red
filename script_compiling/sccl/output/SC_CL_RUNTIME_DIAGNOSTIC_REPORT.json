@@ -34,10 +34,10 @@
                                                         "zlib1.dll"
                                                     ],
                            "launch_test":  {
-                                               "attempted":  true,
-                                               "exit_code":  0,
+                                               "attempted":  false,
+                                               "exit_code":  null,
                                                "timed_out":  false,
-                                               "status":  "exit_0"
+                                               "status":  "skipped"
                                            },
                            "score":  150
                        },
@@ -74,10 +74,10 @@
                                                         "zlib1.dll"
                                                     ],
                            "launch_test":  {
-                                               "attempted":  true,
-                                               "exit_code":  0,
+                                               "attempted":  false,
+                                               "exit_code":  null,
                                                "timed_out":  false,
-                                               "status":  "exit_0"
+                                               "status":  "skipped"
                                            },
                            "score":  150
                        },
@@ -92,7 +92,7 @@
                                         "zlib1.dll"
                                     ],
                            "pdb_count":  0,
-                           "include_folder":  null,
+                           "include_folder":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\include",
                            "likely_imported_dlls":  [
                                                         "ADVAPI32.dll",
                                                         "api-ms-win-crt-convert-l1-1-0.dll",
@@ -113,12 +113,12 @@
                                                         "zlib1.dll"
                                                     ],
                            "launch_test":  {
-                                               "attempted":  true,
-                                               "exit_code":  0,
+                                               "attempted":  false,
+                                               "exit_code":  null,
                                                "timed_out":  false,
-                                               "status":  "exit_0"
+                                               "status":  "skipped"
                                            },
-                           "score":  110
+                           "score":  150
                        },
                        {
                            "exe":  "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\llvm-14.0.0.src\\tools\\clang\\tools\\extra\\SC-CL\\bin\\SC-CL.exe",
@@ -152,10 +152,10 @@
                                                         "zlib1.dll"
                                                     ],
                            "launch_test":  {
-                                               "attempted":  true,
-                                               "exit_code":  0,
+                                               "attempted":  false,
+                                               "exit_code":  null,
                                                "timed_out":  false,
-                                               "status":  "exit_0"
+                                               "status":  "skipped"
                                            },
                            "score":  150
                        },
@@ -190,12 +190,12 @@
                                                         "zlib1.dll"
                                                     ],
                            "launch_test":  {
-                                               "attempted":  true,
-                                               "exit_code":  -1073741515,
+                                               "attempted":  false,
+                                               "exit_code":  null,
                                                "timed_out":  false,
-                                               "status":  "missing_dll_0xC0000135"
+                                               "status":  "skipped"
                                            },
-                           "score":  30
+                           "score":  80
                        },
                        {
                            "exe":  "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin\\SC-CL.exe",
@@ -229,10 +229,10 @@
                                                         "zlib1.dll"
                                                     ],
                            "launch_test":  {
-                                               "attempted":  true,
-                                               "exit_code":  0,
+                                               "attempted":  false,
+                                               "exit_code":  null,
                                                "timed_out":  false,
-                                               "status":  "exit_0"
+                                               "status":  "skipped"
                                            },
                            "score":  170
                        }

@@ -1,7 +1,8 @@
 ﻿{
-    "source":  "D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\\bin",
+    "source":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\obsolete\\code_red_sccl_attempt_bundle_v1\\code_red_sccl_windows_build_kit_v1",
     "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output",
     "copied":  [
+                   "README_SCCL_DETECTION_V3.txt",
                    "SC-CL.exe",
                    "xcompress32.dll",
                    "zlib1.dll"
