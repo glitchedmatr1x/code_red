@@ -154,3 +154,4 @@ cython_debug/
 *.txt
 CodeRED_Peer_Clone_Playable_v0_3.zip
 APPLY_NOTES.txt
+related_apps/CodeRED_MP_RakNet_PoC/third_party/slikenet
