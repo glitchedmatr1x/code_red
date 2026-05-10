@@ -25,6 +25,11 @@
                                     "relative_path":  "script_compiling\\sccl\\output\\vehicle_menu_probe\\test_x360.xsc"
                                 }
                             ],
-    "verdict":  "If .sco compiles, it still must be runtime-tested by a non-critical script request. Header mismatch with active WSC means substitution is not proven by naming alone.",
+    "inspect_roots":  [
+                          "script_compiling\\sccl\\output",
+                          "game\\content_extracted",
+                          "logs\\content_rpf_full_extract_after_magic_names\\content"
+                      ],
+    "verdict":  "RDR_SCO emits an SCR02-style artifact. Header mismatch with active RSC85 WSC means SCO substitution is possible only if the game loader explicitly accepts SCO as an alternate script asset for the requested path.",
     "safe_next_test":  "Try a nonessential, tiny script alias/probe first; do not replace multiplayer_update_thread until the engine proves it will resolve/load .sco for a no-extension request."
 }

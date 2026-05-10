@@ -24,6 +24,6 @@ RDR_SCO compile exit code: 0
 - first 32 bytes: 85 43 53 52 00 00 00 02 80 00 00 00 80 00 00 01 D4 B0 6C 63 C6 C8 A0 82 B3 4C D9 AD 61 C7 7E BD
 
 ## Verdict
-A successful .sco compile only proves SC-CL can emit RDR_SCO. It does not prove that active PC/Switch/PS4-style WSC requests will accept .sco in place of .wsc.
+A successful .sco compile only proves SC-CL can emit RDR_SCO. It does not prove that active WSC/RSC85 script requests will accept .sco in place of .wsc.
 
 Safe next test: use a tiny noncritical script probe/alias before attempting anything near multiplayer_update_thread.

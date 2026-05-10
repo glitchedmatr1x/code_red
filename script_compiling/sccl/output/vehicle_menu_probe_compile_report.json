@@ -14,7 +14,7 @@
                                 ".sco",
                                 ".ysc"
                             ],
-    "started":  "2026-05-10T15:25:42",
+    "started":  "2026-05-10T15:31:03",
     "command":  [
                     "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\SC-CL.exe",
                     "-target=RDR_SCO",
@@ -25,7 +25,7 @@
                     "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\projects\\vehicle_menu_probe\\src\\main.c"
                 ],
     "exit_code":  0,
-    "finished":  "2026-05-10T15:25:42",
+    "finished":  "2026-05-10T15:31:03",
     "artifact_count":  1,
     "artifacts":  [
                       {
@@ -41,7 +41,7 @@
                                            {
                                                "FullName":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\vehicle_menu_probe\\test_sco.sco",
                                                "Length":  1402,
-                                               "LastWriteTime":  "\/Date(1778451942551)\/"
+                                               "LastWriteTime":  "\/Date(1778452263537)\/"
                                            },
                                            {
                                                "FullName":  "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\vehicle_menu_probe\\test_x360.xsc",
