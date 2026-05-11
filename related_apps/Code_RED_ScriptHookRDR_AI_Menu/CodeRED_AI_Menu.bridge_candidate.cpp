@@ -29,6 +29,12 @@
 #include <unordered_map>
 #include <vector>
 
+#ifndef _MSC_VER
+#ifndef _TRUNCATE
+#define _TRUNCATE static_cast<size_t>(-1)
+#endif
+#endif
+
 namespace codered {
 
 using KeyboardHandler = void(*)(DWORD, WORD, BYTE, BOOL, BOOL, BOOL, BOOL);
@@ -127,6 +133,24 @@ static std::string g_overrideRpfPath = "override";
 static std::string g_patchStagePath = "game";
 static std::string g_contentOverrideName = "content.rpf";
 static std::string g_status = "CodeRED AI Menu ready";
+static bool g_nativeTestsOpen = false;
+static int g_nativeTestIndex = 0;
+static int g_nativeProbeBlip = 0;
+static int g_nativeProbeUseContext = 0;
+static bool g_nativeProbeReplicationEnabled = false;
+static bool g_nativeProbeGringoNavComplete = false;
+static std::string g_nativeTestStatus = "Select a native test";
+constexpr unsigned long long H_NP_GET_PLAYER_ACTOR = 0xE8CFDD53ULL;
+constexpr unsigned long long H_NP_IS_ACTOR_VALID = 0xBA6C3E92ULL;
+constexpr unsigned long long H_NP_GET_POSITION = 0x99BD9D6FULL;
+constexpr unsigned long long H_NP_GET_HEADING = 0x42DE39F0ULL;
+constexpr unsigned long long H_NP_TELEPORT_ACTOR = 0x2D54B916ULL;
+constexpr unsigned long long H_NP_UI_SET_STRING = 0xE457546CULL;
+constexpr unsigned long long H_NP_IS_BLIP_VALID = 0xDCC10BA9ULL;
+constexpr unsigned long long H_NP_REMOVE_BLIP = 0xD8C3C1CDULL;
+constexpr unsigned long long H_NP_RELEASE_SCRIPT_USE_CONTEXT = 0x4F52CB58ULL;
+constexpr unsigned long long H_NP_IS_SCRIPT_USE_CONTEXT_VALID = 0x115CD0CCULL;
+constexpr unsigned long long H_NP_PRINT_SMALL_B = 0x04A38C60ULL;
 static unsigned long long g_mpClientStatusWriteTime = 0;
 static unsigned long long g_mpWorldStateWriteTime = 0;
 static unsigned int g_mpLastNativeCallSeq = 0;
@@ -194,6 +218,7 @@ static std::vector<std::string> g_actions = {
     "side_lawman_immunity_request",
     "side_gang_immunity_request",
     "restore_player_faction_request",
+    "native_tests_menu_request",
     "mp_connect_localhost_request",
     "mp_toggle_bare_world_request",
     "mp_bare_world_purge_request",
@@ -1104,6 +1129,7 @@ static void ensureDefaultActions() {
         "side_lawman_immunity_request",
         "side_gang_immunity_request",
         "restore_player_faction_request",
+        "native_tests_menu_request",
         "mp_connect_localhost_request",
         "mp_toggle_bare_world_request",
         "mp_bare_world_purge_request",
@@ -1368,6 +1394,246 @@ static bool actorPosition(Actor actor, Vector3* out) {
     *out = {};
     nativeInvoke<void>(0x99BD9D6F, actor, out);
     return true;
+}
+
+
+static void setNativeTestStatus(const char* format, ...) {
+    char message[1024] = {};
+    va_list args;
+    va_start(args, format);
+    vsnprintf_s(message, sizeof(message), _TRUNCATE, format, args);
+    va_end(args);
+    g_nativeTestStatus = message;
+    g_status = "NativeTests: " + g_nativeTestStatus;
+    writeLog("NativeTests: %s", message);
+}
+
+static Actor nativeProbePlayerActor() {
+    if (!nativeReady()) return 0;
+    Actor actor = nativeInvoke<Actor>(H_NP_GET_PLAYER_ACTOR, -1);
+    if (actor > 0 && nativeInvoke<BOOL>(H_NP_IS_ACTOR_VALID, actor)) {
+        return actor;
+    }
+    actor = nativeInvoke<Actor>(H_NP_GET_PLAYER_ACTOR, 0);
+    if (actor > 0 && nativeInvoke<BOOL>(H_NP_IS_ACTOR_VALID, actor)) {
+        return actor;
+    }
+    return 0;
+}
+
+static bool nativeProbePlayerPosition(Vector3* position, float* heading = nullptr) {
+    if (!position || !nativeReady()) return false;
+    Actor actor = nativeProbePlayerActor();
+    if (actor <= 0) {
+        setNativeTestStatus("GET_PLAYER_ACTOR returned no valid actor");
+        return false;
+    }
+    *position = {};
+    nativeInvoke<void>(H_NP_GET_POSITION, actor, position);
+    if (heading) {
+        *heading = nativeInvoke<float>(H_NP_GET_HEADING, actor);
+    }
+    return true;
+}
+
+static void nativeProbeCleanupBlip() {
+    if (!nativeReady() || g_nativeProbeBlip == 0) return;
+    if (nativeInvoke<BOOL>(H_NP_IS_BLIP_VALID, g_nativeProbeBlip)) {
+        nativeInvoke<void>(H_NP_REMOVE_BLIP, g_nativeProbeBlip);
+    }
+    g_nativeProbeBlip = 0;
+}
+
+static void nativeProbeCleanupUseContext() {
+    if (!nativeReady() || g_nativeProbeUseContext == 0) return;
+    nativeInvoke<void>(H_NP_RELEASE_SCRIPT_USE_CONTEXT, g_nativeProbeUseContext);
+    g_nativeProbeUseContext = 0;
+}
+
+static void nativeProbeCleanup() {
+    nativeProbeCleanupBlip();
+    nativeProbeCleanupUseContext();
+    setNativeTestStatus("cleanup complete");
+}
+
+static void nativeTestCorePlayer() {
+    Actor actorMinusOne = nativeInvoke<Actor>(H_NP_GET_PLAYER_ACTOR, -1);
+    Actor actorZero = nativeInvoke<Actor>(H_NP_GET_PLAYER_ACTOR, 0);
+    int validMinusOne = actorMinusOne > 0 ? nativeInvoke<BOOL>(H_NP_IS_ACTOR_VALID, actorMinusOne) : 0;
+    int validZero = actorZero > 0 ? nativeInvoke<BOOL>(H_NP_IS_ACTOR_VALID, actorZero) : 0;
+    int localPlayerValid = nativeInvoke<BOOL>(0x0ADC17E9ULL, 0);
+    int localSlot = nativeInvoke<int>(0xAD68A22EULL);
+    int slotValid = nativeInvoke<BOOL>(0xD04480FEULL, localSlot);
+    setNativeTestStatus("actor(-1)=0x%X v=%d actor(0)=0x%X v=%d local=%d slot=%d slotValid=%d",
+                        actorMinusOne, validMinusOne, actorZero, validZero,
+                        localPlayerValid, localSlot, slotValid);
+}
+
+static void nativeTestPlayerPosition() {
+    Vector3 position = {};
+    float heading = 0.0f;
+    if (!nativeProbePlayerPosition(&position, &heading)) return;
+    setNativeTestStatus("pos %.2f %.2f %.2f heading %.2f",
+                        position.x, position.y, position.z, heading);
+}
+
+static void nativeTestPrintSmall() {
+    nativeInvoke<void>(H_NP_PRINT_SMALL_B, "CodeRED Native Test", 1.8f, TRUE, 0, 0, 0, 0);
+    setNativeTestStatus("PRINT_SMALL_B invoked");
+}
+
+static void nativeTestCoordBlip() {
+    Vector3 position = {};
+    if (!nativeProbePlayerPosition(&position)) return;
+    nativeProbeCleanupBlip();
+    nativeInvoke<void>(H_NP_UI_SET_STRING, "CODERED_NP_BLIP", "CodeRED Native");
+    g_nativeProbeBlip = nativeInvoke<int>(0xC6F43D0EULL, &position, 396, 0.0f, 2, 0);
+    if (g_nativeProbeBlip != 0) {
+        nativeInvoke<void>(0xDC249B12ULL, g_nativeProbeBlip, "CODERED_NP_BLIP");
+        nativeInvoke<void>(0xCE87DA6FULL, g_nativeProbeBlip, 2);
+        nativeInvoke<void>(0xCE79F8E2ULL, g_nativeProbeBlip, 25.0f);
+    }
+    setNativeTestStatus("ADD_BLIP_FOR_COORD handle=%d at %.2f %.2f %.2f",
+                        g_nativeProbeBlip, position.x, position.y, position.z);
+}
+
+static void nativeTestActorBlip() {
+    Actor actor = nativeProbePlayerActor();
+    if (actor <= 0) {
+        setNativeTestStatus("ADD_BLIP_FOR_ACTOR: no valid player actor");
+        return;
+    }
+    nativeProbeCleanupBlip();
+    nativeInvoke<void>(H_NP_UI_SET_STRING, "CODERED_NP_BLIP", "CodeRED Native");
+    g_nativeProbeBlip = nativeInvoke<int>(0xEFB9362FULL, actor, 356, 0.0f, 2, 0);
+    if (g_nativeProbeBlip != 0) {
+        nativeInvoke<void>(0xDC249B12ULL, g_nativeProbeBlip, "CODERED_NP_BLIP");
+        nativeInvoke<void>(0xCE87DA6FULL, g_nativeProbeBlip, 2);
+        nativeInvoke<void>(0xCE79F8E2ULL, g_nativeProbeBlip, 25.0f);
+    }
+    setNativeTestStatus("ADD_BLIP_FOR_ACTOR handle=%d actor=0x%X",
+                        g_nativeProbeBlip, actor);
+}
+
+static void nativeTestUseContext() {
+    nativeProbeCleanupUseContext();
+    nativeInvoke<void>(H_NP_UI_SET_STRING, "CODERED_NP_USE", "CodeRED Native");
+    g_nativeProbeUseContext = nativeInvoke<int>(0xD7591B0EULL, "CODERED_NP_USE", 30,
+                                                "@GENERIC.USE", "", "", "", "", -1, "");
+    int valid = g_nativeProbeUseContext != 0
+                    ? nativeInvoke<BOOL>(H_NP_IS_SCRIPT_USE_CONTEXT_VALID, g_nativeProbeUseContext)
+                    : 0;
+    setNativeTestStatus("ADD_SCRIPT_USE_CONTEXT handle=%d valid=%d",
+                        g_nativeProbeUseContext, valid);
+}
+
+static void nativeTestMailbox() {
+    int signedIntoSc = nativeInvoke<BOOL>(0xA3E1EF71ULL);
+    setNativeTestStatus("NET_MAILBOX_IS_SIGNED_INTO_SC=%d", signedIntoSc);
+}
+
+static void nativeTestNetSlot() {
+    int localSlot = nativeInvoke<int>(0xAD68A22EULL);
+    int slotValid = nativeInvoke<BOOL>(0xD04480FEULL, localSlot);
+    setNativeTestStatus("GET_LOCAL_SLOT=%d IS_SLOT_VALID=%d", localSlot, slotValid);
+}
+
+static void nativeTestNetLog() {
+    nativeInvoke<void>(0x48275716ULL, 1, "CodeRED", "Native test NET_LOG", 0, 0, 0, 0);
+    setNativeTestStatus("NET_LOG invoked");
+}
+
+static void nativeTestNodeReplication() {
+    Actor actor = nativeProbePlayerActor();
+    if (actor <= 0) {
+        setNativeTestStatus("NET_SET_NODE_REPLICATION: no valid player actor");
+        return;
+    }
+    g_nativeProbeReplicationEnabled = !g_nativeProbeReplicationEnabled;
+    int result = nativeInvoke<int>(0xA4B5275CULL, actor,
+                                   g_nativeProbeReplicationEnabled ? TRUE : FALSE, TRUE);
+    setNativeTestStatus("NET_SET_NODE_REPLICATION actor=0x%X enabled=%d result=%d",
+                        actor, g_nativeProbeReplicationEnabled ? 1 : 0, result);
+}
+
+static void nativeTestGringoNavigation() {
+    Actor actor = nativeProbePlayerActor();
+    if (actor <= 0) {
+        setNativeTestStatus("NET_ACTOR_SET_GRINGO_NAVIGATION_COMPLETE: no valid player actor");
+        return;
+    }
+    g_nativeProbeGringoNavComplete = !g_nativeProbeGringoNavComplete;
+    int result = nativeInvoke<int>(0x7284A71BULL, actor,
+                                   g_nativeProbeGringoNavComplete ? TRUE : FALSE);
+    setNativeTestStatus("NET_ACTOR_SET_GRINGO_NAVIGATION_COMPLETE actor=0x%X complete=%d result=%d",
+                        actor, g_nativeProbeGringoNavComplete ? 1 : 0, result);
+}
+
+static void nativeTestScriptMsgSend() {
+    int localSlot = nativeInvoke<int>(0xAD68A22EULL);
+    int payload[6] = {0x43445244, localSlot, 0, 0, 0, 0};
+    int result = nativeInvoke<int>(0x5E985228ULL, 1, 0x43445244, payload, 6, TRUE);
+    setNativeTestStatus("NET_SCRIPTMSG_SEND result=%d localSlot=%d payload0=0x%X",
+                        result, localSlot, payload[0]);
+}
+
+static void nativeTestTeleportNudge() {
+    Actor actor = nativeProbePlayerActor();
+    if (actor <= 0) {
+        setNativeTestStatus("TELEPORT_ACTOR: no valid player actor");
+        return;
+    }
+    Vector3 position = {};
+    float heading = 0.0f;
+    if (!nativeProbePlayerPosition(&position, &heading)) return;
+    const float radians = heading * PI / 180.0f;
+    position.x += std::sin(radians) * 2.0f;
+    position.z += std::cos(radians) * 2.0f;
+    nativeInvoke<void>(H_NP_TELEPORT_ACTOR, actor, &position, FALSE, FALSE, FALSE);
+    setNativeTestStatus("TELEPORT_ACTOR +2m to %.2f %.2f %.2f",
+                        position.x, position.y, position.z);
+}
+
+struct NativeProbeTest {
+    const char* label;
+    unsigned long long hash;
+    bool risky;
+    void (*run)();
+};
+
+static const NativeProbeTest kNativeProbeTests[] = {
+    {"Core: Player Actor / Slot", H_NP_GET_PLAYER_ACTOR, false, nativeTestCorePlayer},
+    {"Core: Player Position", H_NP_GET_POSITION, false, nativeTestPlayerPosition},
+    {"HUD: PRINT_SMALL_B", H_NP_PRINT_SMALL_B, false, nativeTestPrintSmall},
+    {"Blip: ADD_BLIP_FOR_COORD", 0xC6F43D0EULL, false, nativeTestCoordBlip},
+    {"Blip: ADD_BLIP_FOR_ACTOR", 0xEFB9362FULL, false, nativeTestActorBlip},
+    {"UI: ADD_SCRIPT_USE_CONTEXT", 0xD7591B0EULL, false, nativeTestUseContext},
+    {"NET: MAILBOX_IS_SIGNED_INTO_SC", 0xA3E1EF71ULL, false, nativeTestMailbox},
+    {"NET: GET_LOCAL_SLOT / IS_SLOT_VALID", 0xAD68A22EULL, false, nativeTestNetSlot},
+    {"NET: NET_LOG", 0x48275716ULL, false, nativeTestNetLog},
+    {"NET: SET_NODE_REPLICATION toggle", 0xA4B5275CULL, true, nativeTestNodeReplication},
+    {"NET: GRINGO_NAV_COMPLETE toggle", 0x7284A71BULL, true, nativeTestGringoNavigation},
+    {"NET: SCRIPTMSG_SEND test", 0x5E985228ULL, true, nativeTestScriptMsgSend},
+    {"World: TELEPORT_ACTOR +2m", H_NP_TELEPORT_ACTOR, true, nativeTestTeleportNudge},
+};
+
+static int nativeProbeTestCount() {
+    return static_cast<int>(sizeof(kNativeProbeTests) / sizeof(kNativeProbeTests[0]));
+}
+
+static void runSelectedNativeProbeTest() {
+    if (!resolveNativeBridge(false)) {
+        setNativeTestStatus("native bridge unavailable");
+        return;
+    }
+    const int count = nativeProbeTestCount();
+    if (count <= 0) return;
+    if (g_nativeTestIndex < 0) g_nativeTestIndex = 0;
+    if (g_nativeTestIndex >= count) g_nativeTestIndex = count - 1;
+    const NativeProbeTest& test = kNativeProbeTests[g_nativeTestIndex];
+    writeLog("NativeTests run: %s hash=0x%08llX risky=%d",
+             test.label, test.hash, test.risky ? 1 : 0);
+    test.run();
 }
 
 static void mpLiteAddChatLine(const std::string& line) {
@@ -3256,6 +3522,15 @@ static void reloadOverrideRpf() {
 
 static void executeSelectedAction() {
     const std::string action = selectedAction();
+
+    if (action == "native_tests_menu_request") {
+        g_nativeTestsOpen = true;
+        g_nativeTestStatus = "Select a test, ENTER runs it";
+        g_status = "NativeTests open";
+        writeLog("NativeTests menu opened");
+        return;
+    }
+
     writeActionPlan();
 
     if (action == "mp_connect_localhost_request") {
@@ -3383,7 +3658,7 @@ static bool throttleKey() {
 
 static bool isMenuNavigationKey(DWORD key) {
     return key == VK_UP || key == VK_DOWN || key == VK_LEFT || key == VK_RIGHT ||
-           key == VK_HOME || key == VK_END;
+           key == VK_PRIOR || key == VK_NEXT || key == VK_HOME || key == VK_END;
 }
 
 static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
@@ -3395,10 +3670,28 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
 
     if (isUpNow) return;
     const bool menuNavigationKey = isMenuNavigationKey(key);
-    if (wasDownBefore && key != VK_RETURN && !(g_menuOpen && menuNavigationKey)) return;
+    const bool menuConfirmKey = key == VK_RETURN || key == VK_SPACE;
+    if (wasDownBefore && !menuNavigationKey) return;
 
     if (g_mpLiteActive && g_mpChatOpen) {
         mpLiteHandleKey(key);
+        return;
+    }
+
+    if (key == VK_F6) {
+        if (throttleKey()) return;
+        if (g_menuOpen && g_nativeTestsOpen) {
+            g_nativeTestsOpen = false;
+            g_menuOpen = false;
+            g_status = "NativeTests closed";
+            writeLog("NativeTests menu closed via F6");
+        } else {
+            g_menuOpen = true;
+            g_nativeTestsOpen = true;
+            g_nativeTestStatus = "Select a test, ENTER runs it";
+            g_status = "NativeTests open";
+            writeLog("NativeTests menu opened via F6");
+        }
         return;
     }
 
@@ -3409,6 +3702,8 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
             g_dirtyRoster = true;
             g_dirtyActorMap = true;
             g_dirtyActions = true;
+        } else {
+            g_nativeTestsOpen = false;
         }
         writeLog("Menu toggled: open=%s key=0x%08lX",
                  g_menuOpen ? "true" : "false", key);
@@ -3416,10 +3711,72 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
     }
 
     if (g_menuOpen) {
-        if (!menuNavigationKey && throttleKey()) return;
+        if (!menuNavigationKey && !menuConfirmKey && key != VK_BACK &&
+            key != VK_ESCAPE && key != VK_DELETE && key != VK_F5 &&
+            throttleKey()) {
+            return;
+        }
 
         if (key == VK_BACK || key == VK_ESCAPE) {
+            if (g_nativeTestsOpen) {
+                g_nativeTestsOpen = false;
+                g_status = "NativeTests closed";
+                writeLog("NativeTests menu closed");
+                return;
+            }
             g_menuOpen = false;
+            return;
+        }
+
+        if (g_nativeTestsOpen) {
+            const int count = nativeProbeTestCount();
+            if (count <= 0) return;
+
+            if (key == VK_UP) {
+                g_nativeTestIndex--;
+                if (g_nativeTestIndex < 0) g_nativeTestIndex = count - 1;
+                return;
+            }
+
+            if (key == VK_DOWN) {
+                g_nativeTestIndex++;
+                if (g_nativeTestIndex >= count) g_nativeTestIndex = 0;
+                return;
+            }
+
+            if (key == VK_PRIOR) {
+                g_nativeTestIndex -= 5;
+                if (g_nativeTestIndex < 0) g_nativeTestIndex = 0;
+                return;
+            }
+
+            if (key == VK_NEXT) {
+                g_nativeTestIndex += 5;
+                if (g_nativeTestIndex >= count) g_nativeTestIndex = count - 1;
+                return;
+            }
+
+            if (key == VK_HOME) {
+                g_nativeTestIndex = 0;
+                return;
+            }
+
+            if (key == VK_END) {
+                g_nativeTestIndex = count - 1;
+                return;
+            }
+
+            if (menuConfirmKey) {
+                const NativeProbeTest& test = kNativeProbeTests[g_nativeTestIndex];
+                writeLog("NativeTests confirm: index=%d label=%s", g_nativeTestIndex, test.label);
+                runSelectedNativeProbeTest();
+                return;
+            }
+
+            if (key == VK_DELETE) {
+                nativeProbeCleanup();
+                return;
+            }
             return;
         }
 
@@ -3478,7 +3835,9 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
             return;
         }
 
-        if (key == VK_RETURN) {
+        if (menuConfirmKey) {
+            const std::string action = selectedAction();
+            writeLog("Menu confirm: index=%d action=%s", g_menuIndex, action.c_str());
             executeSelectedAction();
             return;
         }
@@ -3517,8 +3876,67 @@ static int listStartFor(int selected, int total, int visible) {
     return start;
 }
 
+
+static void drawNativeTestsMenu() {
+    const int totalTests = nativeProbeTestCount();
+    const int visibleTests = crMinInt(crMaxInt(totalTests, 1), 11);
+    const float rowH = 0.038f;
+    const float panelW = 0.680f;
+    const float panelH = 0.720f;
+    const float x = 0.500f;
+    const float y = 0.500f;
+    const float left = x - panelW * 0.5f;
+    const float top = y - panelH * 0.5f;
+
+    drawRectSafe(x, y, panelW, panelH, 8, 8, 10, 218, 0.015f);
+    drawRectSafe(x, top + 0.040f, panelW, 0.080f, 90, 0, 0, 230, 0.015f);
+    drawRectSafe(x, top + panelH - 0.045f, panelW, 0.090f, 30, 0, 0, 205, 0.010f);
+
+    drawTextSafe(left + 0.020f, top + 0.016f, "CodeRED Native Tests", 255, 235, 235, 255, FONT_REDEMPTION, 0.030f, JUSTIFY_LEFT);
+    drawTextSafe(left + 0.020f, top + 0.058f, "MP-script/native probes from decompiled freeroam analysis", 230, 210, 190, 245, FONT_REDEMPTION, 0.018f, JUSTIFY_LEFT);
+
+    const int start = listStartFor(g_nativeTestIndex, totalTests, visibleTests);
+    const float listTop = top + 0.120f;
+    for (int i = 0; i < visibleTests && start + i < totalTests; ++i) {
+        const int index = start + i;
+        const bool selected = index == g_nativeTestIndex;
+        const NativeProbeTest& test = kNativeProbeTests[index];
+        const float rowY = listTop + rowH * static_cast<float>(i);
+        if (selected) {
+            drawRectSafe(x, rowY + 0.012f, panelW - 0.050f, rowH, 95, 0, 0, 185, 0.006f);
+        }
+
+        char line[256] = {};
+        snprintf(line, sizeof(line), "%02d  %s  [0x%08llX]%s",
+                 index + 1, test.label, test.hash, test.risky ? "  RISK" : "");
+        drawTextSafe(left + 0.030f, rowY, line,
+                     test.risky ? 255 : 230,
+                     selected ? 235 : (test.risky ? 180 : 220),
+                     selected ? 210 : (test.risky ? 130 : 210),
+                     255, FONT_REDEMPTION, 0.017f, JUSTIFY_LEFT);
+    }
+
+    if (totalTests > visibleTests) {
+        const int end = crMinInt(start + visibleTests, totalTests);
+        std::string hint = "tests " + std::to_string(start + 1) + "-" +
+                           std::to_string(end) + " / " + std::to_string(totalTests);
+        drawTextSafe(left + 0.030f, top + panelH - 0.070f, hint.c_str(), 190, 190, 190, 230, FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
+    }
+
+    drawTextSafe(left + 0.020f, top + panelH - 0.044f,
+                 "BACK close tests | UP/DOWN choose | ENTER run | DEL cleanup | PageUp/PageDown jump",
+                 235, 235, 235, 235, FONT_REDEMPTION, 0.014f, JUSTIFY_LEFT);
+    drawTextSafe(left + 0.020f, top + panelH - 0.018f,
+                 g_nativeTestStatus.c_str(), 255, 150, 130, 245, FONT_REDEMPTION, 0.014f, JUSTIFY_LEFT);
+}
+
 static void drawMenu() {
     if (!g_menuOpen) return;
+    if (g_nativeTestsOpen) {
+        pollMpClientStatus();
+        drawNativeTestsMenu();
+        return;
+    }
     if (g_dirtyRoster) loadRoster();
     if (g_dirtyActorMap) loadActorEnumMap();
     if (g_dirtyActions) loadActions();
