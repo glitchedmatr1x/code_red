@@ -1,0 +1,17 @@
+{
+  "target_script": "beat_crime_wagonthief.wsc",
+  "preferred_target": "car",
+  "confirmed_car_model_id": 1194,
+  "confirmed_car_reference": "T:/rdr2/assets/entity/Car01x",
+  "avoid_guessing": ["truck model id", "unknown wagon IDs", "unknown opcode layout"],
+  "safe_modes": [
+    "inspect/decrypt/decompress script resource",
+    "patch only caller-supplied old 32-bit values to 1194",
+    "stage output file; never overwrite source"
+  ],
+  "notes": [
+    "beat_crime_wagonthief.wsc is the right first target because it already contains active wagon-thief/vehicle behavior.",
+    "This kit does not invent a truck id. It is car-only around known id 1194.",
+    "If the script payload cannot be decrypted/decompressed locally, direct WSC editing remains blocked."
+  ]
+}

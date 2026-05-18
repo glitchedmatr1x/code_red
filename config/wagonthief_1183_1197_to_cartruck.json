@@ -1,0 +1,19 @@
+{
+  "target_script": "beat_crime_wagonthief.wsc",
+  "confirmed_trainer_ids": {
+    "Truck01": 1193,
+    "Car01": 1194
+  },
+  "old_actor_range": [1183, 1197],
+  "new_actor_range": [1193, 1194],
+  "recommended_patch": {
+    "mode": "binary-range",
+    "int_format": "u16be",
+    "range_map": "alternating",
+    "note": "The decoded WSC has no isolated ASCII 4-digit tokens. Use exact decoded binary u16be actor-ID patching."
+  },
+  "previous_bounds_patch": {
+    "mode": "bounds",
+    "mapping": {"1183": 1193, "1197": 1194}
+  }
+}

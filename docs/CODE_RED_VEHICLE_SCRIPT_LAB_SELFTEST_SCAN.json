@@ -1,0 +1,40 @@
+{
+  "input": "/mnt/data/vsl_selftest/playercar.wsc",
+  "name": "playercar.wsc",
+  "kind": "compiled-script",
+  "size": 115,
+  "ascii_strings": 1,
+  "utf16le_strings": 0,
+  "target_hits": 15,
+  "hash_targets_checked": 57,
+  "targets_with_hits": [
+    "beat_crime_wagonthief",
+    "car01x",
+    "car01x.vehsim",
+    "crime",
+    "playercar",
+    "playercar.wsc",
+    "t:/rdr2/assets/entity/truck01x",
+    "thief",
+    "truck01x",
+    "vehicle",
+    "vehicle_generator",
+    "vehsim",
+    "wagon"
+  ],
+  "likely_vehicle_strings_sample": [
+    "playercar.wsc car01x truck01x vehicle_generator beat_crime_wagonthief car01x.vehsim t:/rdr2/assets/entity/truck01x"
+  ],
+  "outputs": {
+    "strings_csv": "/tmp/vsl_scan/playercar.wsc.strings.csv",
+    "target_hits_csv": "/tmp/vsl_scan/playercar.wsc.target_hits.csv",
+    "hash_probe_csv": "/tmp/vsl_scan/playercar.wsc.hash_probe.csv",
+    "summary_json": "/tmp/vsl_scan/playercar.wsc.summary.json",
+    "report_md": "/tmp/vsl_scan/playercar.wsc.report.md"
+  },
+  "guardrails": [
+    "read-only scan",
+    "no compiled script decompile/recompile claimed",
+    "hash hits are research clues, not proof of control flow"
+  ]
+}
