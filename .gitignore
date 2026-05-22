@@ -155,3 +155,7 @@ cython_debug/
 CodeRED_Peer_Clone_Playable_v0_3.zip
 APPLY_NOTES.txt
 /related_apps/CodeRED_MP_RakNet_PoC/third_party
+
+# Local Code RED WSC tool samples and generated reports
+/samples/codered_wsc_local/
+/reports/codered_wsc_samples/
