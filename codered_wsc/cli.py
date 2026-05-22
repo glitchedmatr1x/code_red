@@ -7,8 +7,8 @@ import sys
 from pathlib import Path
 
 from . import __version__
-from .analysis import write_candidates_report, write_disasm_report, write_inspect_report, write_json, write_map_report, write_scan_report
-from .patching import PatchError, load_recipe, validate_recipe, write_patch_bundle
+from .analysis import write_candidates_report, write_control_flow_report, write_disasm_report, write_inspect_report, write_json, write_map_report, write_scan_report
+from .patching import PatchError, load_recipe, requires_control_flow_dry_run, validate_recipe, write_patch_bundle
 from .pools import write_pool_scan_report
 from .resource import KeyOptions, ResourceError, open_script, repack_script
 
@@ -82,6 +82,14 @@ def cmd_candidates(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_control_flow(args: argparse.Namespace) -> int:
+    resource = open_input(args)
+    require_decoded(resource)
+    summary = write_control_flow_report(Path(args.out), resource.header_dict(), resource.decoded, args.terms)
+    print(json.dumps({"status": "control_flow_report", "out": args.out, **summary}, indent=2))
+    return 0
+
+
 def cmd_repack(args: argparse.Namespace) -> int:
     resource = open_input(args)
     require_decoded(resource)
@@ -99,9 +107,22 @@ def cmd_patch(args: argparse.Namespace) -> int:
     require_decoded(resource)
     recipe_path = Path(args.recipe)
     recipe = load_recipe(recipe_path)
-    manifest = write_patch_bundle(resource, recipe_path, recipe, Path(args.out), dry_run=args.dry_run)
-    status = "patch_dry_run" if args.dry_run else "patched"
+    forced_dry_run = not args.dry_run and requires_control_flow_dry_run(recipe)
+    manifest = write_patch_bundle(resource, recipe_path, recipe, Path(args.out), dry_run=args.dry_run or forced_dry_run)
+    status = "control_flow_write_refused_dry_run_emitted" if forced_dry_run else "patch_dry_run" if args.dry_run else "patched"
     print(json.dumps({"status": status, "out": args.out, "manifest": manifest["report_dir"] + "\\manifest.json"}, indent=2))
+    if forced_dry_run:
+        print(
+            json.dumps(
+                {
+                    "status": "error",
+                    "error": "Control-flow writes require a reviewed --dry-run and acknowledge_control_flow_write: true in the recipe.",
+                },
+                indent=2,
+            ),
+            file=sys.stderr,
+        )
+        return 2
     return 0
 
 
@@ -157,10 +178,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     candidates = sub.add_parser("candidates", help="Write patchability-labeled candidates for a decoded script structure kind.")
     candidates.add_argument("input")
-    candidates.add_argument("--kind", required=True, choices=["branch", "native", "constants", "strings", "tables"])
+    candidates.add_argument("--kind", required=True, choices=["branch", "native", "functions", "constants", "strings", "tables"])
     candidates.add_argument("--out", default="", help="Report folder. Defaults under reports/codered_wsc_candidates.")
     add_key_args(candidates)
     candidates.set_defaults(func=cmd_candidates)
+
+    control_flow = sub.add_parser("control-flow", help="Rank branch, native, and function candidates near decoded control-flow terms.")
+    add_input_and_out(control_flow)
+    control_flow.add_argument("--terms", required=True, help="Comma-separated decoded context terms used to rank owner functions.")
+    control_flow.set_defaults(func=cmd_control_flow)
 
     repack = sub.add_parser("repack", help="Decode and rebuild a script with no decoded byte changes.")
     repack.add_argument("input")

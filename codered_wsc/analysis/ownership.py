@@ -4,6 +4,7 @@ from __future__ import annotations
 import math
 import re
 import struct
+from bisect import bisect_left, bisect_right
 from dataclasses import dataclass
 from typing import Any
 
@@ -31,6 +32,7 @@ CANDIDATE_PREFIX = {
     "strings": "STR",
     "native": "NATIVE",
     "branch": "BRANCH",
+    "functions": "FUNC",
     "tables": "TABLE",
 }
 NEARBY_RADIUS = 128
@@ -43,7 +45,10 @@ class ContextIndex:
     functions: list[dict[str, Any]]
     strings: list[dict[str, Any]]
     natives: list[dict[str, Any]]
+    native_offsets: list[int]
     branches: list[dict[str, Any]]
+    branch_offsets: list[int]
+    string_offsets: list[int]
     tables: list[dict[str, Any]]
 
 
@@ -52,13 +57,19 @@ def build_context_index(data: bytes) -> ContextIndex:
 
     instructions = disassemble(data)
     functions = function_ranges(find_functions(instructions), len(data))
+    strings = extract_strings(data)
+    natives = native_rows(instructions)
+    branches = branch_rows(instructions)
     return ContextIndex(
         len(data),
         instructions,
         functions,
-        extract_strings(data),
-        native_rows(instructions),
-        branch_rows(instructions),
+        strings,
+        natives,
+        [int(row["offset"]) for row in natives],
+        branches,
+        [int(row["offset"]) for row in branches],
+        [int(row["offset"]) for row in strings],
         table_rows(data),
     )
 
@@ -102,11 +113,19 @@ def rows_near(rows: list[dict[str, Any]], offset: int, radius: int = NEARBY_RADI
     return [row for row in rows if abs(int(row.get("offset", row.get("code_start", 0))) - offset) <= radius]
 
 
+def rows_near_offsets(rows: list[dict[str, Any]], offsets: list[int], offset: int, radius: int = NEARBY_RADIUS) -> list[dict[str, Any]]:
+    return rows[bisect_left(offsets, offset - radius) : bisect_right(offsets, offset + radius)]
+
+
 def texts_near(index: ContextIndex, offset: int) -> list[str]:
     function = owner_function(index, offset)
-    rows = [row for row in index.strings if abs(int(row["offset"]) - offset) <= NEARBY_RADIUS]
+    rows = rows_near_offsets(index.strings, index.string_offsets, offset)
     if function:
-        rows.extend(row for row in index.strings if in_range(function, int(row["offset"])))
+        rows.extend(
+            index.strings[
+                bisect_left(index.string_offsets, int(function["start"])) : bisect_right(index.string_offsets, int(function["end"]))
+            ]
+        )
     output: list[str] = []
     for row in rows:
         text = str(row["text"])
@@ -115,8 +134,8 @@ def texts_near(index: ContextIndex, offset: int) -> list[str]:
     return output[:12]
 
 
-def offsets_near(rows: list[dict[str, Any]], offset: int) -> list[str]:
-    return [str(row.get("offset_hex", f"0x{int(row['offset']):X}")) for row in rows_near(rows, offset)[:12]]
+def offsets_near(rows: list[dict[str, Any]], offsets: list[int], offset: int) -> list[str]:
+    return [str(row.get("offset_hex", f"0x{int(row['offset']):X}")) for row in rows_near_offsets(rows, offsets, offset)[:12]]
 
 
 def string_classification(text: str, row: dict[str, Any], function_names: set[str]) -> str:
@@ -209,6 +228,8 @@ def owner_defaults(kind: str, row: dict[str, Any]) -> tuple[str, str, str]:
         return "native", "native_table", f"native_index_bits=0x{int(row.get('native_index_bits', 0)):X}"
     if kind == "branch":
         return "code", "branch_instruction", str(row.get("kind", "branch"))
+    if kind == "functions":
+        return "code", "function", str(row.get("name", ""))
     if kind == "tables":
         return "table", "population_pool" if row.get("table_kind") == "population_pool" else "generic_table", str(row.get("pool", row.get("table_kind", "")))
     return "code", "constant_operand", str(row.get("value", ""))
@@ -221,6 +242,8 @@ def candidate_offset(row: dict[str, Any]) -> int:
 def candidate_width(kind: str, row: dict[str, Any]) -> int:
     if kind == "strings":
         return int(row.get("length", 0))
+    if kind == "functions":
+        return int(row.get("size", row.get("instruction_size", 0)))
     return int(row.get("operand_width", row.get("width", len(bytes.fromhex(str(row.get("operand_hex", "")))) if row.get("operand_hex") else 0)))
 
 
@@ -256,6 +279,8 @@ def candidate_value(kind: str, row: dict[str, Any], index: ContextIndex, offset:
         return row.get("native_index_bits", ""), "native index bits", float(row.get("confidence", 0.85))
     if kind == "branch":
         return row.get("target_candidate", ""), "branch target candidate", float(row.get("confidence", 0.70))
+    if kind == "functions":
+        return row.get("name", ""), "function entry", float(row.get("confidence", 0.80))
     if kind == "tables":
         return row.get("enum", ""), str(row.get("likely_enum_category", "table value")), float(row.get("confidence", 0.50))
     value_type, confidence = constant_value_type(row, index, offset)
@@ -265,7 +290,16 @@ def candidate_value(kind: str, row: dict[str, Any], index: ContextIndex, offset:
 def enrich_candidates(data: bytes, kind: str, rows: list[dict[str, Any]], index: ContextIndex | None = None) -> list[dict[str, Any]]:
     index = index or build_context_index(data)
     prefix = CANDIDATE_PREFIX[kind]
-    function_tags = {function["index"]: function_purpose_tags(index, function) for function in index.functions}
+    string_refs = pushed_string_references(index)
+    refs_by_function: dict[int, list[str]] = {}
+    for row in string_refs:
+        owner = row.get("owner_function_index")
+        if isinstance(owner, int):
+            refs_by_function.setdefault(owner, []).append(str(row["string_text"]))
+    function_tags = {
+        function["index"]: function_purpose_tags(index, function, refs_by_function.get(function["index"], []))
+        for function in index.functions
+    }
     output: list[dict[str, Any]] = []
     for ordinal, row in enumerate(sorted(rows, key=candidate_offset), start=1):
         offset = candidate_offset(row)
@@ -274,10 +308,17 @@ def enrich_candidates(data: bytes, kind: str, rows: list[dict[str, Any]], index:
         section, owner_type, owner_name = owner_defaults(kind, row)
         value, value_type, confidence = candidate_value(kind, row, index, offset)
         patchability = str(row.get("patchability", "READ_ONLY"))
+        blocked_reason = row.get("blocked_reason", row.get("reason", "ownership or edit primitive is not proven"))
+        safety_reason = row.get("reason", "decoded candidate has no proven edit primitive")
+        if kind == "branch" and patchability == "CONTROL_FLOW_SAFE" and function is None:
+            patchability = "READ_ONLY"
+            blocked_reason = "PROTECTED_SECTION_OVERLAP"
+            safety_reason = "branch bytes have a known replacement but no owner function was mapped"
         nearby_strings = texts_near(index, offset)
         enriched = {
             **row,
             "candidate_id": f"{prefix}_{ordinal:06d}",
+            "patchability": patchability,
             "file_offset": "",
             "decoded_offset": offset,
             "decoded_offset_hex": f"0x{offset:X}",
@@ -289,22 +330,28 @@ def enrich_candidates(data: bytes, kind: str, rows: list[dict[str, Any]], index:
             "owner_function_name": function["name"] if function else "",
             "owner_function_purpose_tags": function_tags.get(function["index"], []) if function else [],
             "nearby_strings": nearby_strings,
-            "nearby_native_calls": offsets_near(index.natives, offset),
-            "nearby_branches": offsets_near(index.branches, offset),
+            "nearby_native_calls": offsets_near(index.natives, index.native_offsets, offset),
+            "nearby_branches": offsets_near(index.branches, index.branch_offsets, offset),
             "candidate_value": value,
             "candidate_value_type": value_type,
             "operand_width": width,
             "patchability_level": patchability,
             "confidence_score": f"{confidence:.2f}",
-            "safety_reason": row.get("reason", "decoded candidate has no proven edit primitive"),
-            "blocked_reason": "" if patchability in {"SAME_SIZE_SAFE", "CONTROL_FLOW_SAFE"} else row.get("reason", "ownership or edit primitive is not proven"),
-            "unrelated_code_risk": "bounded operand or owned string/table bytes" if patchability == "SAME_SIZE_SAFE" else "editing could affect unrelated code until ownership and rewrite rules are proven",
+            "safety_reason": safety_reason,
+            "blocked_reason": "" if patchability in {"SAME_SIZE_SAFE", "CONTROL_FLOW_SAFE"} else blocked_reason,
+            "unrelated_code_risk": (
+                "bounded decoded instruction bytes with a width-preserving control-flow replacement"
+                if patchability == "CONTROL_FLOW_SAFE"
+                else "bounded operand or owned string/table bytes"
+                if patchability == "SAME_SIZE_SAFE"
+                else "editing could affect unrelated code until ownership and rewrite rules are proven"
+            ),
         }
         output.append(enriched)
     return output
 
 
-def function_purpose_tags(index: ContextIndex, function: dict[str, Any]) -> list[str]:
-    refs = [row["string_text"] for row in pushed_string_references(index) if row["owner_function_index"] == function["index"]]
+def function_purpose_tags(index: ContextIndex, function: dict[str, Any], refs: list[str] | None = None) -> list[str]:
+    refs = refs if refs is not None else [row["string_text"] for row in pushed_string_references(index) if row["owner_function_index"] == function["index"]]
     text = " ".join([str(function["name"]), *refs]).lower()
     return [term for term in PURPOSE_TERMS if term in text]

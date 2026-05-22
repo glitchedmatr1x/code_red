@@ -15,6 +15,7 @@ def native_patch_candidates(rows: list[InstructionRow]) -> list[dict[str, Any]]:
                 "candidate_kind": "native",
                 "patchability": "READ_ONLY",
                 "confidence": "0.85",
+                "blocked_reason": "UNKNOWN_STACK_EFFECT",
                 "reason": "native index bits are decoded but call and argument edits are not proven safe",
             }
         )

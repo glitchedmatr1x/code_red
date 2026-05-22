@@ -12,9 +12,9 @@ The current milestone is deliberately conservative:
 - scan decoded anchors with nearby byte context
 - map bounded inline population pool blocks to same-width actor and vehicle enum operand candidates
 - rebuild unchanged RSC85 resources
-- apply reviewed same-size decoded edits and mapped population-pool recipes to new output files
+- apply reviewed same-size decoded edits, mapped population-pool recipes, and tightly gated control-flow probes to new output files
 
-It is not a C-like decompiler and it does not claim branch, force-return, or string-table rebuild support before those structures are validated.
+It is not a C-like decompiler. Control-flow support starts with candidate-targeted comparison-branch inversion only; native-call nops, function force-return, broad branch rewrites, and string-table rebuilds stay blocked until their VM effects are proven.
 
 If an XSC normalizes to RSC85 but does not match the implemented Zstandard or zlib lanes under the supplied AES key, `inspect` still writes resource metadata and a decode-limit note. `disasm`, `scan`, `repack`, and `patch` stay blocked for that resource until the correct Xbox LZX or other decode bridge is wired in.
 
@@ -29,6 +29,8 @@ python -m codered_wsc scan imports\short_update_thread.wsc --terms enable,disabl
 python -m codered_wsc map imports\long_update_thread.wsc --out reports\long_update_thread_map --rdr-exe "..\rdr.exe"
 python -m codered_wsc candidates imports\long_update_thread.wsc --kind constants --out reports\long_update_thread_constant_candidates --rdr-exe "..\rdr.exe"
 python -m codered_wsc candidates imports\long_update_thread.wsc --kind native --rdr-exe "..\rdr.exe"
+python -m codered_wsc candidates imports\long_update_thread.wsc --kind functions --rdr-exe "..\rdr.exe"
+python -m codered_wsc control-flow imports\long_update_thread.wsc --terms vehicle,flee,driver,sector,enable --out reports\long_update_thread_control_flow --rdr-exe "..\rdr.exe"
 python -m codered_wsc scan-pools imports\grt_population.wsc --out reports\grt_population_pools --rdr-exe "..\rdr.exe"
 python -m codered_wsc repack imports\grt_population.wsc --out build\wsc_roundtrip\grt_population.wsc --rdr-exe "..\rdr.exe"
 python -m codered_wsc recipe recipes\codered_wsc_same_size_enum_example.yaml
@@ -54,7 +56,9 @@ Use `--aes-key-file` or `--aes-key-hex` instead of `--rdr-exe` when operating on
 
 `scan-pools` writes `population_pools.csv/json`, pool actor/vehicle candidate CSVs, bounded pool disassembly context, and a report. Pool patch recipes only use immediate enum operands marked safe by that mapper. A variable-size standalone WSC report tells you to use Magic RDR/RPF import rather than raw archive offset overwrite.
 
-`map` writes a general decoded structure inventory for functions, strings, constants, native calls, branch/call candidates, and known table blocks. `candidates` accepts `branch`, `native`, `constants`, `strings`, or `tables` and labels every row as `READ_ONLY`, `SAME_SIZE_SAFE`, `CONTROL_FLOW_SAFE`, `REBUILD_REQUIRED`, or `UNSUPPORTED`. Current safe rows are same-width constant operands, same-length printable strings, and mapped population table enum operands; native and branch rows stay report-only.
+`map` writes a general decoded structure inventory for functions, strings, constants, native calls, branch/call candidates, and known table blocks. `candidates` accepts `branch`, `native`, `functions`, `constants`, `strings`, or `tables` and labels every row as `READ_ONLY`, `SAME_SIZE_SAFE`, `CONTROL_FLOW_SAFE`, `REBUILD_REQUIRED`, or `UNSUPPORTED`. Current safe rows are same-width constant operands, same-length printable strings, mapped population table enum operands, and branch candidates only when the opcode has a proven same-width invert pair. Native and function behavior candidates remain report-only.
+
+`control-flow` writes `control_flow_candidates.csv/json`, `control_flow_ranked_functions.csv`, and `control_flow_context.md`. It groups branch, native, and function candidates by owner function and ranks nearby context terms without writing a script.
 
 `map` also writes ownership review files:
 
@@ -76,6 +80,14 @@ patches:
 ```
 
 Matching by value or nearby context requires `max_matches`. Exact `candidate_id` or decoded-offset matches do not. Raw `replace_bytes` is blocked unless the recipe explicitly sets `allow_unowned: true`, and protected string/native/function metadata overlap is still validated before output writes.
+
+Control-flow recipes are dry-run-first. They must target a branch, native, or function candidate by `candidate_id` or exact decoded offset. A real write is refused unless the reviewed recipe adds:
+
+```yaml
+acknowledge_control_flow_write: true
+```
+
+The first writable probe is `force_branch` with `mode: invert` for promoted comparison branches. `nop_instruction`, `nop_native_call`, `force_function_return`, and branch `always_true` / `always_false` remain wired but blocked with explicit reasons until no-op opcodes, stack effects, and return conventions are proven.
 
 The package is split so new analysis and patch safety can land in focused modules:
 

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ..analysis import ensure_dir, patch_candidates, write_csv, write_json
+from ..analysis import disassemble, ensure_dir, patch_candidates, write_csv, write_json
 from ..pools import PoolMap, scan_population_pools
 from ..resource import ResourceError, ScriptResource, repack_script, sha256
 from .primitives import DecodedEdit, integer_bytes, parse_hex as parse_primitive_hex, parse_int as parse_primitive_int, replace_at as primitive_replace_at
@@ -21,14 +21,15 @@ SUPPORTED_PATCHES = {
     "same_length_string_replace",
     "population_actor_pool_replace",
     "population_vehicle_pool_replace",
+    "nop_instruction",
+    "force_branch",
+    "nop_native_call",
+    "force_function_return",
 }
 PLANNED_PATCHES = {
     "flip_boolean_constant",
-    "nop_instruction",
     "nop_call",
-    "force_function_return",
     "disable_branch",
-    "force_branch",
     "invert_branch",
     "replace_call_target",
     "replace_float_operand",
@@ -36,6 +37,8 @@ PLANNED_PATCHES = {
     "replace_table_values",
     "replace_native_arg_when_mapped",
 }
+CONTROL_FLOW_PATCHES = {"nop_instruction", "force_branch", "nop_native_call", "force_function_return"}
+INVERT_BRANCH_OPCODE = {100: 101, 101: 100, 102: 105, 105: 102, 103: 104, 104: 103}
 
 
 class PatchError(RuntimeError):
@@ -222,6 +225,89 @@ def apply_constant_patch(output: bytearray, decoded: bytes, recipe: dict[str, An
     return [edit]
 
 
+def control_flow_patch_types(recipe: dict[str, Any]) -> list[str]:
+    return [
+        str(patch.get("type", ""))
+        for patch in recipe.get("patches", [])
+        if isinstance(patch, dict) and str(patch.get("type", "")) in CONTROL_FLOW_PATCHES
+    ]
+
+
+def requires_control_flow_dry_run(recipe: dict[str, Any]) -> bool:
+    return bool(control_flow_patch_types(recipe)) and not bool(recipe.get("acknowledge_control_flow_write", False))
+
+
+def targeted_candidate(decoded: bytes, kind: str, patch: dict[str, Any], patch_type: str) -> dict[str, Any]:
+    candidate_id = str(patch.get("candidate_id", patch.get("function_candidate_id", "")))
+    decoded_offset = patch.get("decoded_offset")
+    if not candidate_id and decoded_offset is None:
+        raise PatchError(f"{patch_type} requires candidate_id or exact decoded_offset")
+    selected = []
+    for candidate in patch_candidates(decoded, kind):
+        if candidate_id and str(candidate.get("candidate_id", "")) != candidate_id:
+            continue
+        if decoded_offset is not None and int(candidate["decoded_offset"]) != parse_int(decoded_offset, f"{patch_type} decoded_offset"):
+            continue
+        selected.append(candidate)
+    if len(selected) != 1:
+        target = candidate_id or f"decoded_offset={decoded_offset}"
+        raise PatchError(f"{patch_type} expected one {kind} candidate for {target}, found {len(selected)}")
+    return selected[0]
+
+
+def require_candidate_patchability(candidate: dict[str, Any], patch: dict[str, Any], patch_type: str) -> None:
+    required = str(patch.get("require_patchability", "CONTROL_FLOW_SAFE"))
+    actual = str(candidate.get("patchability_level", candidate.get("patchability", "")))
+    if required and actual != required:
+        reason = str(candidate.get("blocked_reason", "candidate is not promoted for this edit"))
+        raise PatchError(f"{patch_type} candidate {candidate['candidate_id']} is {actual}, requires {required}: {reason}")
+
+
+def expected_instruction_bytes(candidate: dict[str, Any], patch: dict[str, Any], patch_type: str) -> bytes:
+    before = parse_hex(candidate.get("instruction_hex", ""), f"{patch_type} candidate instruction_hex")
+    expected = patch.get("expected_original_bytes")
+    if expected is not None:
+        configured = parse_hex(expected, f"{patch_type} expected_original_bytes")
+        if configured != before:
+            raise PatchError(f"{patch_type} expected_original_bytes does not match candidate {candidate['candidate_id']}")
+    if len(before) != int(candidate.get("instruction_size", len(before))):
+        raise PatchError(f"{patch_type} candidate {candidate['candidate_id']} has UNKNOWN_INSTRUCTION_WIDTH")
+    return before
+
+
+def apply_force_branch(output: bytearray, decoded: bytes, patch: dict[str, Any], patch_type: str) -> DecodedEdit:
+    candidate = targeted_candidate(decoded, "branch", patch, patch_type)
+    require_candidate_patchability(candidate, patch, patch_type)
+    if str(candidate.get("owner_type", "")) != "branch_instruction":
+        raise PatchError(f"{patch_type} candidate {candidate['candidate_id']} has PROTECTED_SECTION_OVERLAP or unowned bytes")
+    mode = str(patch.get("mode", "")).lower()
+    if mode not in {"always_true", "always_false", "invert"}:
+        raise PatchError(f"{patch_type} mode must be always_true, always_false, or invert")
+    if mode != "invert":
+        raise PatchError(f"{patch_type} {mode} is blocked: UNKNOWN_STACK_EFFECT")
+    original_opcode = parse_int(candidate.get("opcode"), f"{patch_type} opcode")
+    replacement_opcode = INVERT_BRANCH_OPCODE.get(original_opcode)
+    if replacement_opcode is None or mode not in set(candidate.get("supported_control_flow_modes", [])):
+        raise PatchError(f"{patch_type} candidate {candidate['candidate_id']} is blocked: UNKNOWN_BRANCH_SEMANTICS")
+    before = expected_instruction_bytes(candidate, patch, patch_type)
+    after = bytes([replacement_opcode]) + before[1:]
+    edit = replace_at(
+        output,
+        int(candidate["decoded_offset"]),
+        before,
+        after,
+        patch_type,
+        f"invert comparison branch {candidate['candidate_id']} opcode 0x{original_opcode:02X} -> 0x{replacement_opcode:02X}",
+    )
+    return annotate_edit(edit, candidate)
+
+
+def blocked_control_flow(decoded: bytes, patch: dict[str, Any], patch_type: str, kind: str, reason: str) -> None:
+    candidate = targeted_candidate(decoded, kind, patch, patch_type)
+    detail = str(candidate.get("blocked_reason", "")) or reason
+    raise PatchError(f"{patch_type} candidate {candidate['candidate_id']} blocked: {reason}; {detail}")
+
+
 def apply_recipe(decoded: bytes, recipe: dict[str, Any]) -> tuple[bytes, list[DecodedEdit], list[str]]:
     result = apply_recipe_detailed(decoded, recipe)
     return result.decoded, result.edits, result.required_strings
@@ -371,6 +457,14 @@ def apply_recipe_detailed(decoded: bytes, recipe: dict[str, Any]) -> PatchResult
         patch_type = str(patch.get("type", ""))
         if patch_type in {"replace_constant", "replace_enum_operand"}:
             edits.extend(apply_constant_patch(output, decoded, recipe, patch, patch_type))
+        elif patch_type == "force_branch":
+            edits.append(apply_force_branch(output, decoded, patch, patch_type))
+        elif patch_type == "nop_instruction":
+            blocked_control_flow(decoded, patch, patch_type, "branch", "NO_PROVEN_NOP_OPCODE")
+        elif patch_type == "nop_native_call":
+            blocked_control_flow(decoded, patch, patch_type, "native", "UNKNOWN_STACK_EFFECT")
+        elif patch_type == "force_function_return":
+            blocked_control_flow(decoded, patch, patch_type, "functions", "UNKNOWN_RETURN_CONVENTION")
         elif patch_type == "replace_bytes":
             if not patch_allows_unowned(recipe, patch):
                 raise PatchError("replace_bytes is unowned by default; set allow_unowned: true only for a reviewed exact decoded range")
@@ -440,6 +534,11 @@ def apply_recipe_detailed(decoded: bytes, recipe: dict[str, Any]) -> PatchResult
 
 
 def write_patch_bundle(resource: ScriptResource, recipe_path: Path, recipe: dict[str, Any], out_file: Path, dry_run: bool = False) -> dict[str, Any]:
+    if not dry_run and requires_control_flow_dry_run(recipe):
+        types = ", ".join(control_flow_patch_types(recipe))
+        raise PatchError(
+            f"Control-flow write refused for {types}; run --dry-run first and set acknowledge_control_flow_write: true after review"
+        )
     result = apply_recipe_detailed(resource.decoded, recipe)
     patched_decoded, edits, required_strings = result.decoded, result.edits, result.required_strings
     # Prefer exact-slot fits, but population edits must still be exportable for
@@ -467,6 +566,7 @@ def write_patch_bundle(resource: ScriptResource, recipe_path: Path, recipe: dict
         lineterm="",
     )
     (report_dir / "decompressed.diff.txt").write_text("\n".join(decompressed_diff) + "\n", encoding="utf-8")
+    write_control_flow_patch_context(report_dir, resource.decoded, patched_decoded, edits)
     expected_offsets = {
         edit.offset + index
         for edit in edits
@@ -567,3 +667,49 @@ def write_patch_bundle(resource: ScriptResource, recipe_path: Path, recipe: dict
     ]
     (report_dir / "validation_report.md").write_text("\n".join(validation_report) + "\n", encoding="utf-8")
     return manifest
+
+
+def disasm_window(data: bytes, offset: int, span: int = 10) -> list[str]:
+    rows = disassemble(data)
+    selected = next((index for index, row in enumerate(rows) if row.offset == offset), None)
+    if selected is None:
+        return [f"0x{offset:X}: target instruction is not aligned in current disassembly"]
+    return [row.text() for row in rows[max(0, selected - span) : selected + span + 1]]
+
+
+def write_control_flow_patch_context(report_dir: Path, before: bytes, after: bytes, edits: list[DecodedEdit]) -> None:
+    selected = [edit for edit in edits if edit.patch_type in CONTROL_FLOW_PATCHES]
+    if not selected:
+        return
+    lines = [
+        "# Code RED Control Flow Patch Context",
+        "",
+        "Control-flow edits are candidate-targeted decoded instruction replacements. Review before and after disassembly before installing.",
+        "",
+    ]
+    for edit in selected:
+        lines.extend(
+            [
+                f"## {edit.patch_type} {edit.candidate_id or f'0x{edit.offset:X}'}",
+                "",
+                f"- Owner: `{edit.owner_type}` `{edit.owner_name}`",
+                f"- Patchability: `{edit.patchability_level}`",
+                f"- Safety reason: `{edit.safety_reason}`",
+                f"- Before bytes: `{edit.before.hex(' ').upper()}`",
+                f"- After bytes: `{edit.after.hex(' ').upper()}`",
+                "",
+                "### Before",
+                "",
+                "```text",
+                *disasm_window(before, edit.offset),
+                "```",
+                "",
+                "### After",
+                "",
+                "```text",
+                *disasm_window(after, edit.offset),
+                "```",
+                "",
+            ]
+        )
+    (report_dir / "control_flow_patch_context.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

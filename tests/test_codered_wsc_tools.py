@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from codered_wsc.analysis import disasm_artifacts, patch_candidates, write_candidates_report, write_inspect_report, write_map_report, write_scan_report
+from codered_wsc.analysis import disasm_artifacts, patch_candidates, write_candidates_report, write_control_flow_report, write_inspect_report, write_map_report, write_scan_report
 from codered_wsc.patching import PatchError, apply_recipe, apply_recipe_detailed, validate_recipe, write_patch_bundle
 from codered_wsc.pools import scan_population_pools
 from codered_wsc.resource import (
@@ -47,6 +47,17 @@ def pool_decoded_fixture() -> bytes:
         )
     )
     return (enter + pools + bytes([46, 0, 0])).ljust(4096, b"\0")
+
+
+def control_flow_decoded_fixture() -> bytes:
+    enter = bytes([45, 0, 0, 1, 6]) + b"sector"
+    body = push_string("vehicle_driver_sector_enable") + bytes([37, 1, 100, 0, 3, 46, 0, 0, 46, 0, 0])
+    return (enter + body).ljust(4096, b"\0")
+
+
+def unknown_branch_decoded_fixture() -> bytes:
+    enter = bytes([45, 0, 0, 1, 4]) + b"main"
+    return (enter + bytes([37, 1, 99, 0, 3, 46, 0, 0])).ljust(4096, b"\0")
 
 
 def rsc85_fixture(decoded: bytes, payload_capacity: int = 512) -> bytes:
@@ -176,7 +187,13 @@ class CodeRedWscToolsTests(unittest.TestCase):
             "safety_reason",
             "blocked_reason",
         }
-        data_by_kind = {"constants": decoded_fixture(), "strings": decoded_fixture(), "native": decoded_fixture(), "tables": pool_decoded_fixture()}
+        data_by_kind = {
+            "constants": decoded_fixture(),
+            "strings": decoded_fixture(),
+            "native": decoded_fixture(),
+            "functions": decoded_fixture(),
+            "tables": pool_decoded_fixture(),
+        }
         with tempfile.TemporaryDirectory() as tmp:
             for kind, data in data_by_kind.items():
                 rows = patch_candidates(data, kind)
@@ -217,6 +234,80 @@ class CodeRedWscToolsTests(unittest.TestCase):
             apply_recipe(decoded_fixture(), branch)
         with self.assertRaises(PatchError):
             apply_recipe(decoded_fixture(), native)
+
+    def test_control_flow_report_and_candidate_promotion(self) -> None:
+        branches = patch_candidates(unknown_branch_decoded_fixture(), "branch")
+        promoted = patch_candidates(control_flow_decoded_fixture(), "branch")
+        self.assertEqual(branches[0]["patchability_level"], "READ_ONLY")
+        self.assertEqual(branches[0]["blocked_reason"], "UNKNOWN_BRANCH_SEMANTICS")
+        self.assertEqual(promoted[0]["patchability_level"], "CONTROL_FLOW_SAFE")
+        self.assertEqual(promoted[0]["supported_control_flow_modes"], ["invert"])
+        with tempfile.TemporaryDirectory() as tmp:
+            summary = write_control_flow_report(
+                Path(tmp) / "control_flow",
+                {"path": "control_flow_fixture.wsc", "family": "synthetic"},
+                control_flow_decoded_fixture(),
+                "vehicle,driver,sector,enable",
+            )
+            self.assertGreaterEqual(summary["candidates"], 2)
+            self.assertTrue((Path(tmp) / "control_flow" / "control_flow_candidates.csv").exists())
+            self.assertTrue((Path(tmp) / "control_flow" / "control_flow_context.md").exists())
+
+    def test_control_flow_blocked_primitives_explain_reason(self) -> None:
+        branch = patch_candidates(control_flow_decoded_fixture(), "branch")[0]
+        unknown_branch = patch_candidates(unknown_branch_decoded_fixture(), "branch")[0]
+        native = patch_candidates(decoded_fixture(), "native")[0]
+        function = patch_candidates(control_flow_decoded_fixture(), "functions")[0]
+        with self.assertRaisesRegex(PatchError, "NO_PROVEN_NOP_OPCODE"):
+            apply_recipe(control_flow_decoded_fixture(), {"patches": [{"type": "nop_instruction", "candidate_id": branch["candidate_id"]}]})
+        with self.assertRaisesRegex(PatchError, "UNKNOWN_STACK_EFFECT"):
+            apply_recipe(control_flow_decoded_fixture(), {"patches": [{"type": "force_branch", "candidate_id": branch["candidate_id"], "mode": "always_true"}]})
+        with self.assertRaisesRegex(PatchError, "UNKNOWN_BRANCH_SEMANTICS"):
+            apply_recipe(unknown_branch_decoded_fixture(), {"patches": [{"type": "force_branch", "candidate_id": unknown_branch["candidate_id"], "mode": "invert"}]})
+        with self.assertRaisesRegex(PatchError, "UNKNOWN_STACK_EFFECT"):
+            apply_recipe(decoded_fixture(), {"patches": [{"type": "nop_native_call", "candidate_id": native["candidate_id"]}]})
+        with self.assertRaisesRegex(PatchError, "UNKNOWN_RETURN_CONVENTION"):
+            apply_recipe(
+                control_flow_decoded_fixture(),
+                {"patches": [{"type": "force_function_return", "function_candidate_id": function["candidate_id"]}]},
+            )
+
+    def test_control_flow_invert_dry_run_and_acknowledged_write(self) -> None:
+        branch = patch_candidates(control_flow_decoded_fixture(), "branch")[0]
+        recipe = {
+            "name": "synthetic_branch_invert",
+            "patches": [{"type": "force_branch", "candidate_id": branch["candidate_id"], "mode": "invert"}],
+        }
+        acknowledged = {**recipe, "acknowledge_control_flow_write": True}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "branch.wsc"
+            source.write_bytes(rsc85_fixture(control_flow_decoded_fixture()))
+            resource = open_script(source, KeyOptions(aes_key_hex=TEST_KEY.hex()))
+            output = root / "patched" / "branch.wsc"
+            dry_run = write_patch_bundle(resource, root / "branch_dry.yaml", recipe, output, dry_run=True)
+            self.assertFalse(output.exists())
+            self.assertEqual(dry_run["would_change_count"], 1)
+            with self.assertRaisesRegex(PatchError, "Control-flow write refused"):
+                write_patch_bundle(resource, root / "branch_blocked.yaml", recipe, output)
+            real = write_patch_bundle(resource, root / "branch_write.yaml", acknowledged, output)
+            reopened = open_script(output, KeyOptions(aes_key_hex=TEST_KEY.hex()))
+            self.assertEqual(reopened.decoded[branch["decoded_offset"]], 101)
+            self.assertTrue(real["validation"]["resource_reopens"])
+            self.assertTrue((root / "patched" / "branch_patch" / "control_flow_patch_context.md").exists())
+
+    def test_protected_function_metadata_overlap_stays_blocked(self) -> None:
+        recipe = {
+            "allow_unowned": True,
+            "patches": [{"type": "replace_bytes", "offset": 0, "expected_hex": "2D", "hex": "2E"}],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "protected.wsc"
+            source.write_bytes(rsc85_fixture(decoded_fixture()))
+            resource = open_script(source, KeyOptions(aes_key_hex=TEST_KEY.hex()))
+            with self.assertRaisesRegex(Exception, "Patch validation failed"):
+                write_patch_bundle(resource, root / "protected.yaml", recipe, root / "out" / "protected.wsc", dry_run=True)
 
     def test_pool_actor_and_vehicle_recipes_change_only_selected_operands(self) -> None:
         actor_recipe = {

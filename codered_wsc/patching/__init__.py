@@ -6,6 +6,7 @@ from .recipes import (
     apply_recipe,
     apply_recipe_detailed,
     load_recipe,
+    requires_control_flow_dry_run,
     validate_recipe,
     write_patch_bundle,
 )
@@ -17,6 +18,7 @@ __all__ = [
     "apply_recipe",
     "apply_recipe_detailed",
     "load_recipe",
+    "requires_control_flow_dry_run",
     "validate_recipe",
     "write_patch_bundle",
 ]

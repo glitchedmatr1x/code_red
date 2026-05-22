@@ -22,9 +22,12 @@ The initial walker follows the opcode-width behavior used by the local Magic-RDR
 - `Return` is opcode `0x2E`
 - compact return opcodes occupy `0x7A` through `0x89`
 - native calls use opcode `0x2C` with two operand bytes
+- decoded three-byte control-flow candidates include call-family `0x52..0x61`, jump `0x62`, jump-false `0x63`, and comparison branches `0x64..0x69`
 - string, switch, and fixed-width operand families are walked by known width only
 
 Unknown opcode widths are left as one raw byte in reports. That avoids inventing structure during milestone one, but it also means a disassembly can lose synchronization in scripts that use width rules not recorded yet.
+
+The first controlled control-flow write keeps layout fixed. Current local opcode references establish invert pairs for comparison branches only: `JumpNE` and `JumpEQ`, `JumpLE` and `JumpGT`, `JumpLT` and `JumpGE`. `JumpFalse`, call-family opcodes, native calls, NOP substitution, and function-return rewriting stay read-only until stack effects and return conventions are mapped.
 
 ## Actor Enum Hints
 
@@ -52,9 +55,11 @@ The bytecode walker now feeds general analysis modules:
 - `analysis.strings` exposes printable string anchors and same-length patch candidates
 - `analysis.constants` exposes fixed-width immediate constant candidates
 - `analysis.native_calls` records decoded native-call operand bits without allowing call edits yet
-- `analysis.control_flow` records branch/call target candidates without branch rewrites yet
+- `analysis.control_flow` records branch/call/function context and promotes only bounded comparison-branch invert candidates
 - `analysis.tables` owns table families as they become proven; population pools are the first one
 
 Each candidate report states its patchability level. A decoded branch, native, or raw enum hint can be useful evidence while still remaining read-only.
 
 Ownership uses decoded offsets because encrypted/compressed resource storage does not give every decoded byte a safe standalone file offset. Candidate context is drawn from current function boundaries, inline pushed strings, native-call candidates, branch/call candidates, and proven table mappers. That context is evidence for review. A readable string remains an anchor unless code references and a safe edit primitive establish ownership.
+
+Control-flow blockers are explicit in reports and patch errors: `UNKNOWN_OPCODE`, `UNKNOWN_INSTRUCTION_WIDTH`, `UNKNOWN_BRANCH_SEMANTICS`, `NO_PROVEN_NOP_OPCODE`, `UNKNOWN_STACK_EFFECT`, `UNKNOWN_RETURN_CONVENTION`, `LAYOUT_REBUILD_REQUIRED`, and `PROTECTED_SECTION_OVERLAP`.

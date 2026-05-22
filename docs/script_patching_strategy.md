@@ -19,6 +19,7 @@ The currently supported recipe patch types are:
 - `same_length_string_replace`
 - `population_actor_pool_replace`
 - `population_vehicle_pool_replace`
+- `force_branch` for candidate-targeted same-width comparison-branch inversion
 
 `replace_constant` and `replace_enum_operand` refuse values that cannot fit the selected one, two, or four byte operand width. They do not widen instructions or recalculate offsets.
 
@@ -48,7 +49,7 @@ Patchability means:
 
 - `READ_ONLY`: decoded evidence is useful, but no edit primitive is safe yet.
 - `SAME_SIZE_SAFE`: the owned bytes have a width-preserving primitive and manifest coverage.
-- `CONTROL_FLOW_SAFE`: reserved for future proven branch/call rewrites.
+- `CONTROL_FLOW_SAFE`: owned control-flow bytes with a known opcode, instruction width, width-preserving replacement, and no protected-section overlap.
 - `REBUILD_REQUIRED`: requires table/string/code rebuilding before edits are safe.
 - `UNSUPPORTED`: known lane is outside the implemented decoder or patcher.
 
@@ -69,17 +70,49 @@ patches:
 
 Raw decoded-byte replacements are unowned by default. `allow_unowned: true` is an explicit manual-review escape hatch, and it still cannot overlap protected string/native/function metadata in this milestone.
 
+## Controlled Control Flow
+
+Control-flow editing is dangerous because branch conditions, stack consumption, call arguments, return values, and jump layout all affect VM state beyond the patched bytes. A decoded target is not enough. A control-flow primitive must keep ownership, instruction width, semantics, and replacement bytes proven.
+
+`control-flow` is the review report for this lane:
+
+```bat
+python -m codered_wsc control-flow imports\long_update_thread.wsc --terms sector,enable,disable,vehicle,flee --out reports\long_update_thread_control_flow --rdr-exe "..\rdr.exe"
+```
+
+Recipes must target a `candidate_id` or exact decoded offset. The patch command emits a dry-run bundle and refuses a real control-flow write until the recipe explicitly records review:
+
+```yaml
+acknowledge_control_flow_write: true
+patches:
+  - type: force_branch
+    candidate_id: BRANCH_000088
+    mode: invert
+    require_patchability: CONTROL_FLOW_SAFE
+```
+
+Milestone four only promotes comparison branches that have a known same-width invert opcode pair. `always_true` and `always_false` are still blocked because their stack behavior is not proven. Blocked probes use these actionable reason codes:
+
+- `UNKNOWN_OPCODE`
+- `UNKNOWN_INSTRUCTION_WIDTH`
+- `UNKNOWN_BRANCH_SEMANTICS`
+- `NO_PROVEN_NOP_OPCODE`
+- `UNKNOWN_STACK_EFFECT`
+- `UNKNOWN_RETURN_CONVENTION`
+- `LAYOUT_REBUILD_REQUIRED`
+- `PROTECTED_SECTION_OVERLAP`
+
 ## Deferred Work
 
 Population pool recipes are bounded by inline pool string blocks and emit skipped candidates. Actor recipes refuse vehicle and animal candidates; vehicle recipes require `ped_vehicle` and an explicit old-to-new vehicle enum mapping.
 
-These recipe types are named but intentionally blocked until Code RED proves their bytecode and table context:
+These recipe types are named or wired but intentionally blocked until Code RED proves their bytecode and table context:
 
 - inferred boolean flip
 - nop by decoded instruction boundary
 - nop or redirect by call target
 - force function return
-- branch flip, force, or redirect
+- branch force or redirect outside the bounded comparison invert probe
 - native argument replacement without mapped argument ownership
 - length-changing string table rebuild
 - XSC patching where the decode/repack path is not proven for that sample
@@ -88,4 +121,4 @@ Pool recipes still refuse an unmapped pool, unsafe candidate, or width expansion
 
 ## Next Implementation Lane
 
-The next step after the pool lane is to extend opcode structure and function/reference recovery before branch patching. Population pools are the first known table family plugged into a broader decoded-script map.
+Control-flow reports should be run on update-thread scripts before any new primitive is promoted. The next expansion needs VM stack and return-convention proof for a narrow call, return, or conditional family, not broad branch automation.

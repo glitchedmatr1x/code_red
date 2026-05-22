@@ -22,6 +22,7 @@ from .core import (
     write_map_report,
     write_scan_report,
 )
+from .control_flow import write_control_flow_report
 
 __all__ = [
     "InstructionRow",
@@ -45,4 +46,5 @@ __all__ = [
     "write_json",
     "write_map_report",
     "write_scan_report",
+    "write_control_flow_report",
 ]

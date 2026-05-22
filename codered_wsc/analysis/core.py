@@ -36,6 +36,15 @@ OPCODE_NAMES = {
     44: "Native",
     45: "Enter",
     46: "Return",
+    82: "Call2",
+    98: "Jump",
+    99: "JumpFalse",
+    100: "JumpNE",
+    101: "JumpEQ",
+    102: "JumpLE",
+    103: "JumpLT",
+    104: "JumpGE",
+    105: "JumpGT",
     110: "Switch",
     111: "PushString",
     112: "PushArrayP",
@@ -222,12 +231,26 @@ def branch_rows(rows: list[InstructionRow]) -> list[dict[str, Any]]:
         if 82 <= row.opcode <= 105 and row.size == 3:
             operands = bytes.fromhex(row.operand_hex)
             delta = int.from_bytes(operands, "big", signed=True)
+            is_call = 82 <= row.opcode <= 97
+            semantics = {
+                98: "unconditional_jump",
+                99: "jump_false",
+                100: "jump_ne",
+                101: "jump_eq",
+                102: "jump_le",
+                103: "jump_lt",
+                104: "jump_ge",
+                105: "jump_gt",
+            }.get(row.opcode, "call2")
             output.append(
                 {
                     "offset": row.offset,
                     "offset_hex": f"0x{row.offset:X}",
                     "opcode": row.opcode,
-                    "kind": "branch_or_call_candidate",
+                    "kind": "call_candidate" if is_call else "branch_candidate",
+                    "semantics": semantics,
+                    "instruction_size": row.size,
+                    "instruction_hex": bytes([row.opcode]).hex(" ").upper() + (" " + row.operand_hex if row.operand_hex else ""),
                     "delta": delta,
                     "target_candidate": row.offset + row.size + delta,
                 }
@@ -422,7 +445,7 @@ def write_scan_report(out: Path, source_info: dict[str, Any], data: bytes, terms
 
 
 PATCHABILITY_LEVELS = ["READ_ONLY", "SAME_SIZE_SAFE", "CONTROL_FLOW_SAFE", "REBUILD_REQUIRED", "UNSUPPORTED"]
-CANDIDATE_KINDS = ("branch", "native", "constants", "strings", "tables")
+CANDIDATE_KINDS = ("branch", "native", "functions", "constants", "strings", "tables")
 
 
 def map_artifacts(data: bytes) -> dict[str, Any]:
@@ -539,6 +562,10 @@ def patch_candidates(data: bytes, kind: str) -> list[dict[str, Any]]:
         from .native_calls import native_patch_candidates
 
         base = native_patch_candidates(rows)
+    elif kind == "functions":
+        from .functions import function_patch_candidates
+
+        base = function_patch_candidates(rows, len(data))
     elif kind == "constants":
         from .constants import constant_patch_candidates
 
