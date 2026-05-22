@@ -7,6 +7,7 @@ __pycache__/
 logs/CodeRED_Actor_Enum_Validation_Report.json
 tools/logs/
 related_apps/Code_RED_ScriptHookRDR_AI_Menu/build/
+related_apps/Code_RED_MP_DevTrainer/build/
 related_apps/Code_RED_ScriptHookRDR_AI_Menu/*.bak_*
 data/codered/*.bak_*
 data/codered/npc_roster_safe_verified.txt
@@ -159,4 +160,7 @@ APPLY_NOTES.txt
 # Local Code RED WSC tool samples and generated reports
 /samples/codered_wsc_local/
 /reports/codered_wsc_samples/
-/related_apps
+/related_apps/*
+!/related_apps/Code_RED_MP_DevTrainer/
+!/related_apps/Code_RED_MP_DevTrainer/**
+/related_apps/Code_RED_MP_DevTrainer/build/
