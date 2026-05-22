@@ -56,3 +56,5 @@ The bytecode walker now feeds general analysis modules:
 - `analysis.tables` owns table families as they become proven; population pools are the first one
 
 Each candidate report states its patchability level. A decoded branch, native, or raw enum hint can be useful evidence while still remaining read-only.
+
+Ownership uses decoded offsets because encrypted/compressed resource storage does not give every decoded byte a safe standalone file offset. Candidate context is drawn from current function boundaries, inline pushed strings, native-call candidates, branch/call candidates, and proven table mappers. That context is evidence for review. A readable string remains an anchor unless code references and a safe edit primitive establish ownership.

@@ -32,6 +32,43 @@ Population recipes prove table ownership and same-width enum edits. They do not 
 
 `map` is the general structure report. `candidates` is the report that states what the current tool can patch and what remains evidence only.
 
+## Ownership Model
+
+Candidate reports include a stable-ish ID for the current decoded script pass:
+
+- `CONST_000123`
+- `STR_000045`
+- `NATIVE_000142`
+- `BRANCH_000088`
+- `TABLE_000019`
+
+The same row also records decoded offset, section, owner type/name, owner function range, nearby string/native/branch context, value type, operand width, confidence, safety reason, blocked reason, and unrelated-code risk. Decoded ownership is required for a normal patch. If compressed/encrypted storage makes the source file offset unknowable, `file_offset` stays blank rather than pretending raw RPF/resource offsets are editable.
+
+Patchability means:
+
+- `READ_ONLY`: decoded evidence is useful, but no edit primitive is safe yet.
+- `SAME_SIZE_SAFE`: the owned bytes have a width-preserving primitive and manifest coverage.
+- `CONTROL_FLOW_SAFE`: reserved for future proven branch/call rewrites.
+- `REBUILD_REQUIRED`: requires table/string/code rebuilding before edits are safe.
+- `UNSUPPORTED`: known lane is outside the implemented decoder or patcher.
+
+Constants should be matched by candidate ID, exact decoded offset, or a bounded contextual match. A value/context query must specify `max_matches`:
+
+```yaml
+patches:
+  - type: replace_constant
+    match:
+      value: 1
+      owner_function_contains_terms: [sector, enable]
+      nearby_string_contains: [sector]
+    replacement: 0
+    expected_width: 1
+    max_matches: 3
+    require_patchability: SAME_SIZE_SAFE
+```
+
+Raw decoded-byte replacements are unowned by default. `allow_unowned: true` is an explicit manual-review escape hatch, and it still cannot overlap protected string/native/function metadata in this milestone.
+
 ## Deferred Work
 
 Population pool recipes are bounded by inline pool string blocks and emit skipped candidates. Actor recipes refuse vehicle and animal candidates; vehicle recipes require `ped_vehicle` and an explicit old-to-new vehicle enum mapping.
@@ -45,6 +82,7 @@ These recipe types are named but intentionally blocked until Code RED proves the
 - branch flip, force, or redirect
 - native argument replacement without mapped argument ownership
 - length-changing string table rebuild
+- XSC patching where the decode/repack path is not proven for that sample
 
 Pool recipes still refuse an unmapped pool, unsafe candidate, or width expansion when the recipe requests fail-fast width checks.
 

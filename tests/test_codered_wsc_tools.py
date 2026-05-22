@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from codered_wsc.analysis import disasm_artifacts, write_candidates_report, write_inspect_report, write_map_report, write_scan_report
+from codered_wsc.analysis import disasm_artifacts, patch_candidates, write_candidates_report, write_inspect_report, write_map_report, write_scan_report
 from codered_wsc.patching import PatchError, apply_recipe, apply_recipe_detailed, validate_recipe, write_patch_bundle
 from codered_wsc.pools import scan_population_pools
 from codered_wsc.resource import (
@@ -152,7 +152,71 @@ class CodeRedWscToolsTests(unittest.TestCase):
             self.assertEqual(branches["patchability"]["CONTROL_FLOW_SAFE"], 0)
             self.assertGreaterEqual(native["patchability"]["READ_ONLY"], 1)
             self.assertTrue((root / "map" / "script_map.json").exists())
+            self.assertTrue((root / "map" / "functions_detailed.csv").exists())
+            self.assertTrue((root / "map" / "function_context.json").exists())
+            self.assertTrue((root / "map" / "function_context.md").exists())
+            self.assertTrue((root / "map" / "string_references.csv").exists())
+            self.assertTrue((root / "map" / "string_context.md").exists())
             self.assertTrue((root / "constant_candidates" / "constants_candidates.csv").exists())
+
+    def test_candidate_reports_have_ownership_fields_for_every_kind(self) -> None:
+        required = {
+            "candidate_id",
+            "decoded_offset",
+            "section",
+            "owner_type",
+            "nearby_strings",
+            "nearby_native_calls",
+            "nearby_branches",
+            "candidate_value",
+            "candidate_value_type",
+            "operand_width",
+            "patchability_level",
+            "confidence_score",
+            "safety_reason",
+            "blocked_reason",
+        }
+        data_by_kind = {"constants": decoded_fixture(), "strings": decoded_fixture(), "native": decoded_fixture(), "tables": pool_decoded_fixture()}
+        with tempfile.TemporaryDirectory() as tmp:
+            for kind, data in data_by_kind.items():
+                rows = patch_candidates(data, kind)
+                summary = write_candidates_report(Path(tmp) / kind, {"path": "fixture.wsc", "family": "synthetic"}, data, kind)
+                self.assertTrue(rows, kind)
+                self.assertGreater(summary["candidates"], 0)
+                self.assertTrue(required.issubset(rows[0]), kind)
+            branch_summary = write_candidates_report(Path(tmp) / "branch", {"path": "fixture.wsc", "family": "synthetic"}, decoded_fixture(), "branch")
+            self.assertEqual(branch_summary["kind"], "branch")
+
+    def test_replace_constant_by_candidate_and_match_limit(self) -> None:
+        candidate = patch_candidates(decoded_fixture(), "constants")[0]
+        recipe = {
+            "patches": [
+                {
+                    "type": "replace_constant",
+                    "match": {"candidate_id": candidate["candidate_id"]},
+                    "replacement": 1183,
+                    "expected_width": 2,
+                    "require_patchability": "SAME_SIZE_SAFE",
+                }
+            ]
+        }
+        patched, edits, _ = apply_recipe(decoded_fixture(), recipe)
+        self.assertEqual(edits[0].candidate_id, candidate["candidate_id"])
+        self.assertEqual(patched[10:12], bytes.fromhex("04 9F"))
+        too_broad = {"patches": [{"type": "replace_constant", "match": {"value": 1193}, "replacement": 1183, "expected_width": 2}]}
+        with self.assertRaises(PatchError):
+            apply_recipe(decoded_fixture(), too_broad)
+
+    def test_unowned_raw_replacement_and_readonly_edits_stay_blocked(self) -> None:
+        raw = {"patches": [{"type": "replace_bytes", "offset": 10, "expected_hex": "04 A9", "hex": "04 9F"}]}
+        branch = {"patches": [{"type": "force_branch", "candidate_id": "BRANCH_000001", "value": True}]}
+        native = {"patches": [{"type": "nop_call", "candidate_id": "NATIVE_000001"}]}
+        with self.assertRaises(PatchError):
+            apply_recipe(decoded_fixture(), raw)
+        with self.assertRaises(PatchError):
+            apply_recipe(decoded_fixture(), branch)
+        with self.assertRaises(PatchError):
+            apply_recipe(decoded_fixture(), native)
 
     def test_pool_actor_and_vehicle_recipes_change_only_selected_operands(self) -> None:
         actor_recipe = {
@@ -192,8 +256,12 @@ class CodeRedWscToolsTests(unittest.TestCase):
             output = root / "patched" / "population.wsc"
             resource = open_script(source, KeyOptions(aes_key_hex=TEST_KEY.hex()))
             manifest = write_patch_bundle(resource, root / "dry_run.yaml", recipe, output, dry_run=True)
+            real_manifest = write_patch_bundle(resource, root / "real.yaml", recipe, root / "real" / "population.wsc")
             self.assertFalse(output.exists())
             self.assertFalse(manifest["output_written"])
+            self.assertTrue(real_manifest["output_written"])
+            self.assertTrue({"would_change_count", "blocked_count", "skipped_count", "warnings"}.issubset(manifest))
+            self.assertEqual(set(manifest), set(real_manifest))
             self.assertTrue((root / "patched" / "population_patch" / "manifest.json").exists())
 
     @unittest.skipUnless(Path("imports/grt_population.wsc").exists() and Path("../rdr.exe").exists(), "local grt WSC sample is absent")

@@ -1,0 +1,6 @@
+name: demo_readonly_branch_blocked
+description: This recipe intentionally fails because branch rewrite safety is not enabled.
+patches:
+  - type: force_branch
+    candidate_id: BRANCH_000001
+    value: true

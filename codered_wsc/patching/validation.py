@@ -41,3 +41,29 @@ def validate_population_isolation(result) -> dict[str, Any]:
         "no_vehicle_pool_changed_during_actor_only_recipe": not actor_only or all(edit.enum_category == "human_actor" and edit.pool != "ped_vehicle" for edit in population_edits),
         "no_actor_pool_changed_during_vehicle_only_recipe": not vehicle_only or all(edit.enum_category == "vehicle_actor" and edit.pool == "ped_vehicle" for edit in population_edits),
     }
+
+
+def protected_overlap_violations(data: bytes, edits: list[DecodedEdit]) -> list[dict[str, Any]]:
+    native_bytes: set[int] = set()
+    function_metadata_bytes: set[int] = set()
+    for row in disassemble(data):
+        selected = set(range(row.offset, row.offset + row.size))
+        if row.opcode == 44:
+            native_bytes.update(selected)
+        if row.opcode == 45:
+            function_metadata_bytes.update(selected)
+    string_bytes = string_offsets(data)
+    violations: list[dict[str, Any]] = []
+    for edit in edits:
+        changed = {
+            edit.offset + index
+            for index, (before, after) in enumerate(zip(edit.before, edit.after))
+            if before != after
+        }
+        if changed & string_bytes and edit.owner_type != "string_table":
+            violations.append({"type": edit.patch_type, "offset_hex": f"0x{edit.offset:X}", "protected_section": "string", "reason": "string bytes need a string-owned patch"})
+        if changed & native_bytes and edit.owner_type != "native_table":
+            violations.append({"type": edit.patch_type, "offset_hex": f"0x{edit.offset:X}", "protected_section": "native", "reason": "native call bytes are read-only in this milestone"})
+        if changed & function_metadata_bytes and edit.owner_type != "function":
+            violations.append({"type": edit.patch_type, "offset_hex": f"0x{edit.offset:X}", "protected_section": "function", "reason": "function enter metadata is not a constant/table/string patch target"})
+    return violations

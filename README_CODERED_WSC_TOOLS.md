@@ -56,6 +56,27 @@ Use `--aes-key-file` or `--aes-key-hex` instead of `--rdr-exe` when operating on
 
 `map` writes a general decoded structure inventory for functions, strings, constants, native calls, branch/call candidates, and known table blocks. `candidates` accepts `branch`, `native`, `constants`, `strings`, or `tables` and labels every row as `READ_ONLY`, `SAME_SIZE_SAFE`, `CONTROL_FLOW_SAFE`, `REBUILD_REQUIRED`, or `UNSUPPORTED`. Current safe rows are same-width constant operands, same-length printable strings, and mapped population table enum operands; native and branch rows stay report-only.
 
+`map` also writes ownership review files:
+
+- `functions_detailed.csv`, `function_context.json`, and `function_context.md`
+- `string_references.csv` and `string_context.md`
+
+Candidate rows carry `candidate_id`, decoded offset, section, owner type/name, owner function range, nearby strings/native calls/branches, value type, confidence, safety reason, and blocked reason. `file_offset` is blank when a decoded offset cannot be mapped through compressed/encrypted resource storage.
+
+Use a reviewed constant candidate instead of guessing an offset:
+
+```yaml
+patches:
+  - type: replace_constant
+    match:
+      candidate_id: CONST_000123
+    replacement: 0
+    expected_width: 1
+    require_patchability: SAME_SIZE_SAFE
+```
+
+Matching by value or nearby context requires `max_matches`. Exact `candidate_id` or decoded-offset matches do not. Raw `replace_bytes` is blocked unless the recipe explicitly sets `allow_unowned: true`, and protected string/native/function metadata overlap is still validated before output writes.
+
 The package is split so new analysis and patch safety can land in focused modules:
 
 - `codered_wsc.analysis`: core walker plus `functions`, `strings`, `constants`, `native_calls`, `control_flow`, and `tables`

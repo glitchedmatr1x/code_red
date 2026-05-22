@@ -16,6 +16,13 @@ class DecodedEdit:
     enum_category: str = ""
     old_enum: int | None = None
     new_enum: int | None = None
+    candidate_id: str = ""
+    section: str = ""
+    owner_type: str = ""
+    owner_name: str = ""
+    patchability_level: str = ""
+    safety_reason: str = ""
+    allow_unowned: bool = False
 
     def csv_row(self) -> dict[str, Any]:
         return {
@@ -30,6 +37,13 @@ class DecodedEdit:
             "enum_category": self.enum_category,
             "old_enum": self.old_enum if self.old_enum is not None else "",
             "new_enum": self.new_enum if self.new_enum is not None else "",
+            "candidate_id": self.candidate_id,
+            "section": self.section,
+            "owner_type": self.owner_type,
+            "owner_name": self.owner_name,
+            "patchability_level": self.patchability_level,
+            "safety_reason": self.safety_reason,
+            "allow_unowned": self.allow_unowned,
         }
 
 

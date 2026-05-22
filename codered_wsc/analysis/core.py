@@ -437,15 +437,61 @@ def map_artifacts(data: bytes) -> dict[str, Any]:
 
 
 def write_map_report(out: Path, source_info: dict[str, Any], data: bytes) -> dict[str, Any]:
+    from .ownership import build_context_index, function_context_rows, pushed_string_references, string_classification
+
     ensure_dir(out)
     artifacts = map_artifacts(data)
+    context_index = build_context_index(data)
+    function_details, function_context = function_context_rows(data, context_index)
+    string_references = pushed_string_references(context_index)
+    function_names = {str(row["name"]) for row in context_index.functions}
+    string_rows = [{**row, "string_class": string_classification(str(row["text"]), row, function_names)} for row in artifacts["strings"]]
     write_json(out / "script_map.json", {"source": source_info, "patchability_levels": PATCHABILITY_LEVELS, **artifacts_to_json(artifacts)})
     write_csv(out / "functions.csv", artifacts["functions"])
-    write_csv(out / "strings.csv", artifacts["strings"])
+    write_csv(out / "functions_detailed.csv", function_details)
+    write_json(out / "function_context.json", {"source": source_info, "functions": function_context})
+    write_csv(out / "strings.csv", string_rows)
+    write_csv(out / "string_references.csv", string_references)
     write_csv(out / "constants.csv", artifacts["constants"])
     write_csv(out / "native_calls.csv", artifacts["natives"])
     write_csv(out / "branch_map.csv", artifacts["branches"])
     write_csv(out / "tables.csv", artifacts["tables"])
+    function_markdown = ["# Code RED Function Context", ""]
+    for function in function_context:
+        function_markdown.extend(
+            [
+                f"## {function['function_index']} {function['function_name']}",
+                "",
+                f"- Range: `{function['start_decoded_offset_hex']}..{function['end_decoded_offset_hex']}`",
+                f"- Size: `{function['size']}`",
+                f"- Purpose tags: `{', '.join(function['purpose_tags']) or 'none'}`",
+                f"- Strings: `{function['string_reference_count']}`",
+                f"- Native calls: `{function['native_call_count']}`",
+                f"- Constants: `{function['constant_count']}`",
+                f"- Branch/call candidates: `{function['branch_count']}`",
+                f"- Known tables: `{function['table_block_count']}`",
+                "",
+            ]
+        )
+    (out / "function_context.md").write_text("\n".join(function_markdown) + "\n", encoding="utf-8")
+    string_markdown = [
+        "# Code RED String Context",
+        "",
+        "Strings are anchors. A reference row means decoded code pushed the inline bytes; it does not prove game behavior alone.",
+        "",
+    ]
+    for row in string_references:
+        string_markdown.extend(
+            [
+                f"## {row['string_class']} at {row['string_offset_hex']}",
+                "",
+                f"- Text: `{row['string_text']}`",
+                f"- Push reference: `{row['reference_instruction_offset_hex']}`",
+                f"- Owner function: `{row['owner_function'] or 'unknown'}` {row['owner_function_offset_range']}",
+                "",
+            ]
+        )
+    (out / "string_context.md").write_text("\n".join(string_markdown) + "\n", encoding="utf-8")
     report = [
         "# Code RED Decoded Script Map",
         "",
@@ -456,6 +502,7 @@ def write_map_report(out: Path, source_info: dict[str, Any], data: bytes) -> dic
         f"- Native-call candidates: `{len(artifacts['natives'])}`",
         f"- Branch/call candidates: `{len(artifacts['branches'])}`",
         f"- Known table blocks: `{len(artifacts['tables'])}`",
+        f"- Inline string reference rows: `{len(string_references)}`",
         "",
         "This map separates decoded evidence from patch candidates. Use `candidates` and dry-run recipes before editing a decoded range.",
         "Population pools are currently the first known table mapper; update-thread, mission, sector, and state tables can join this surface when their ownership is proven.",
@@ -468,6 +515,7 @@ def write_map_report(out: Path, source_info: dict[str, Any], data: bytes) -> dic
         "natives": len(artifacts["natives"]),
         "branches": len(artifacts["branches"]),
         "tables": len(artifacts["tables"]),
+        "string_references": len(string_references),
     }
 
 
@@ -486,24 +534,28 @@ def patch_candidates(data: bytes, kind: str) -> list[dict[str, Any]]:
     if kind == "branch":
         from .control_flow import branch_patch_candidates
 
-        return branch_patch_candidates(rows)
-    if kind == "native":
+        base = branch_patch_candidates(rows)
+    elif kind == "native":
         from .native_calls import native_patch_candidates
 
-        return native_patch_candidates(rows)
-    if kind == "constants":
+        base = native_patch_candidates(rows)
+    elif kind == "constants":
         from .constants import constant_patch_candidates
 
-        return constant_patch_candidates(rows)
-    if kind == "strings":
+        base = constant_patch_candidates(rows)
+    elif kind == "strings":
         from .strings import string_patch_candidates
 
-        return string_patch_candidates(data)
-    if kind == "tables":
+        base = string_patch_candidates(data)
+    elif kind == "tables":
         from .tables import table_patch_candidates
 
-        return table_patch_candidates(data)
-    raise ValueError(f"Candidate kind must be one of {', '.join(CANDIDATE_KINDS)}, got {kind}")
+        base = table_patch_candidates(data)
+    else:
+        raise ValueError(f"Candidate kind must be one of {', '.join(CANDIDATE_KINDS)}, got {kind}")
+    from .ownership import enrich_candidates
+
+    return enrich_candidates(data, kind, base)
 
 
 def write_candidates_report(out: Path, source_info: dict[str, Any], data: bytes, kind: str) -> dict[str, Any]:
