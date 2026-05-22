@@ -1,0 +1,36 @@
+name: grt_population_lawmen_fbi_drivers
+description: Cycle Great Plains ambient human pools into police and FBI actor enums while leaving ped_vehicle untouched.
+input_expected:
+  strings_required:
+    - ped_wilderness
+    - ped_traveller
+    - ped_law
+    - ped_bad_guys_local
+    - ped_bad_guys_generic
+    - ped_vehicle
+patches:
+  - type: population_actor_pool_replace
+    pool: ped_wilderness
+    replace_all_human_actor_operands_with_cycle: [184, 185, 186, 187, 188]
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true
+  - type: population_actor_pool_replace
+    pool: ped_traveller
+    replace_all_human_actor_operands_with_cycle: [184, 185, 186, 187, 188]
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true
+  - type: population_actor_pool_replace
+    pool: ped_law
+    replace_all_human_actor_operands_with_cycle: [595, 596, 597]
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true
+  - type: population_actor_pool_replace
+    pool: ped_bad_guys_local
+    replace_all_human_actor_operands_with_cycle: [595, 596, 597]
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true
+  - type: population_actor_pool_replace
+    pool: ped_bad_guys_generic
+    replace_all_human_actor_operands_with_cycle: [595, 596, 597]
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true

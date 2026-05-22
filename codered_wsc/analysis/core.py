@@ -238,10 +238,10 @@ def branch_rows(rows: list[InstructionRow]) -> list[dict[str, Any]]:
 def constant_rows(rows: list[InstructionRow]) -> list[dict[str, Any]]:
     output: list[dict[str, Any]] = []
     for row in rows:
-        if row.opcode not in (37, 38, 39, 40):
+        if row.opcode not in (37, 38, 39, 40, 65):
             continue
         raw = bytes.fromhex(row.operand_hex)
-        value = int.from_bytes(raw, "big", signed=True)
+        value = int.from_bytes(raw, "big", signed=False)
         output.append(
             {
                 "offset": row.offset,
@@ -419,3 +419,112 @@ def write_scan_report(out: Path, source_info: dict[str, Any], data: bytes, terms
     ]
     (out / "scan_report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     return {"terms": requested, "hits": len(rows)}
+
+
+PATCHABILITY_LEVELS = ["READ_ONLY", "SAME_SIZE_SAFE", "CONTROL_FLOW_SAFE", "REBUILD_REQUIRED", "UNSUPPORTED"]
+CANDIDATE_KINDS = ("branch", "native", "constants", "strings", "tables")
+
+
+def map_artifacts(data: bytes) -> dict[str, Any]:
+    from .tables import table_rows
+
+    disasm = disasm_artifacts(data)
+    return {
+        **disasm,
+        "strings": extract_strings(data),
+        "tables": table_rows(data),
+    }
+
+
+def write_map_report(out: Path, source_info: dict[str, Any], data: bytes) -> dict[str, Any]:
+    ensure_dir(out)
+    artifacts = map_artifacts(data)
+    write_json(out / "script_map.json", {"source": source_info, "patchability_levels": PATCHABILITY_LEVELS, **artifacts_to_json(artifacts)})
+    write_csv(out / "functions.csv", artifacts["functions"])
+    write_csv(out / "strings.csv", artifacts["strings"])
+    write_csv(out / "constants.csv", artifacts["constants"])
+    write_csv(out / "native_calls.csv", artifacts["natives"])
+    write_csv(out / "branch_map.csv", artifacts["branches"])
+    write_csv(out / "tables.csv", artifacts["tables"])
+    report = [
+        "# Code RED Decoded Script Map",
+        "",
+        f"- Source: `{source_info['path']}`",
+        f"- Function candidates: `{len(artifacts['functions'])}`",
+        f"- String anchors: `{len(artifacts['strings'])}`",
+        f"- Constant operands: `{len(artifacts['constants'])}`",
+        f"- Native-call candidates: `{len(artifacts['natives'])}`",
+        f"- Branch/call candidates: `{len(artifacts['branches'])}`",
+        f"- Known table blocks: `{len(artifacts['tables'])}`",
+        "",
+        "This map separates decoded evidence from patch candidates. Use `candidates` and dry-run recipes before editing a decoded range.",
+        "Population pools are currently the first known table mapper; update-thread, mission, sector, and state tables can join this surface when their ownership is proven.",
+    ]
+    (out / "map_report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
+    return {
+        "functions": len(artifacts["functions"]),
+        "strings": len(artifacts["strings"]),
+        "constants": len(artifacts["constants"]),
+        "natives": len(artifacts["natives"]),
+        "branches": len(artifacts["branches"]),
+        "tables": len(artifacts["tables"]),
+    }
+
+
+def artifacts_to_json(artifacts: dict[str, Any]) -> dict[str, Any]:
+    output: dict[str, Any] = {}
+    for name, value in artifacts.items():
+        if name == "instructions":
+            output[name] = [asdict(row) for row in value]
+        else:
+            output[name] = value
+    return output
+
+
+def patch_candidates(data: bytes, kind: str) -> list[dict[str, Any]]:
+    rows = disassemble(data)
+    if kind == "branch":
+        from .control_flow import branch_patch_candidates
+
+        return branch_patch_candidates(rows)
+    if kind == "native":
+        from .native_calls import native_patch_candidates
+
+        return native_patch_candidates(rows)
+    if kind == "constants":
+        from .constants import constant_patch_candidates
+
+        return constant_patch_candidates(rows)
+    if kind == "strings":
+        from .strings import string_patch_candidates
+
+        return string_patch_candidates(data)
+    if kind == "tables":
+        from .tables import table_patch_candidates
+
+        return table_patch_candidates(data)
+    raise ValueError(f"Candidate kind must be one of {', '.join(CANDIDATE_KINDS)}, got {kind}")
+
+
+def write_candidates_report(out: Path, source_info: dict[str, Any], data: bytes, kind: str) -> dict[str, Any]:
+    ensure_dir(out)
+    candidates = patch_candidates(data, kind)
+    counts = {level: sum(1 for row in candidates if row.get("patchability") == level) for level in PATCHABILITY_LEVELS}
+    write_csv(out / f"{kind}_candidates.csv", candidates)
+    write_json(
+        out / f"{kind}_candidates.json",
+        {"source": source_info, "kind": kind, "patchability_levels": PATCHABILITY_LEVELS, "counts": counts, "candidates": candidates},
+    )
+    report = [
+        "# Code RED Patch Candidate Report",
+        "",
+        f"- Source: `{source_info['path']}`",
+        f"- Candidate kind: `{kind}`",
+        f"- Candidate rows: `{len(candidates)}`",
+        *(f"- {level}: `{counts[level]}`" for level in PATCHABILITY_LEVELS),
+        "",
+        "Patchability labels describe the current tool guarantee. `READ_ONLY` candidates are analysis evidence and must not be edited by a recipe yet.",
+        "Current `SAME_SIZE_SAFE` coverage is fixed-width constant operands, same-length printable strings, and mapped population table enum operands.",
+    ]
+    (out / f"{kind}_candidates_report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
+    return {"kind": kind, "candidates": len(candidates), "patchability": counts}

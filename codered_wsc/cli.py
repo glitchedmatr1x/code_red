@@ -7,8 +7,9 @@ import sys
 from pathlib import Path
 
 from . import __version__
-from .analysis import write_disasm_report, write_inspect_report, write_json, write_scan_report
+from .analysis import write_candidates_report, write_disasm_report, write_inspect_report, write_json, write_map_report, write_scan_report
 from .patching import PatchError, load_recipe, validate_recipe, write_patch_bundle
+from .pools import write_pool_scan_report
 from .resource import KeyOptions, ResourceError, open_script, repack_script
 
 
@@ -49,6 +50,38 @@ def cmd_scan(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_scan_pools(args: argparse.Namespace) -> int:
+    resource = open_input(args)
+    require_decoded(resource)
+    summary = write_pool_scan_report(Path(args.out), resource.header_dict(), resource.decoded)
+    print(json.dumps({"status": "population_pools_scanned", "out": args.out, **summary}, indent=2))
+    return 0
+
+
+def cmd_map(args: argparse.Namespace) -> int:
+    resource = open_input(args)
+    require_decoded(resource)
+    summary = write_map_report(Path(args.out), resource.header_dict(), resource.decoded)
+    print(json.dumps({"status": "mapped", "out": args.out, **summary}, indent=2))
+    return 0
+
+
+def candidates_out(args: argparse.Namespace) -> Path:
+    if args.out:
+        return Path(args.out)
+    stem = Path(args.input).stem
+    return Path("reports") / "codered_wsc_candidates" / f"{stem}_{args.kind}"
+
+
+def cmd_candidates(args: argparse.Namespace) -> int:
+    resource = open_input(args)
+    require_decoded(resource)
+    out = candidates_out(args)
+    summary = write_candidates_report(out, resource.header_dict(), resource.decoded, args.kind)
+    print(json.dumps({"status": "candidates", "out": str(out), **summary}, indent=2))
+    return 0
+
+
 def cmd_repack(args: argparse.Namespace) -> int:
     resource = open_input(args)
     require_decoded(resource)
@@ -66,8 +99,9 @@ def cmd_patch(args: argparse.Namespace) -> int:
     require_decoded(resource)
     recipe_path = Path(args.recipe)
     recipe = load_recipe(recipe_path)
-    manifest = write_patch_bundle(resource, recipe_path, recipe, Path(args.out))
-    print(json.dumps({"status": "patched", "out": args.out, "manifest": manifest["report_dir"] + "\\manifest.json"}, indent=2))
+    manifest = write_patch_bundle(resource, recipe_path, recipe, Path(args.out), dry_run=args.dry_run)
+    status = "patch_dry_run" if args.dry_run else "patched"
+    print(json.dumps({"status": status, "out": args.out, "manifest": manifest["report_dir"] + "\\manifest.json"}, indent=2))
     return 0
 
 
@@ -113,6 +147,21 @@ def build_parser() -> argparse.ArgumentParser:
     scan.add_argument("--terms", required=True, help="Comma-separated decoded byte/string anchors.")
     scan.set_defaults(func=cmd_scan)
 
+    scan_pools = sub.add_parser("scan-pools", help="Map inline population pool blocks to immediate actor and vehicle enum candidates.")
+    add_input_and_out(scan_pools)
+    scan_pools.set_defaults(func=cmd_scan_pools)
+
+    mapped = sub.add_parser("map", help="Write a general decoded script map for functions, strings, constants, calls, and known tables.")
+    add_input_and_out(mapped)
+    mapped.set_defaults(func=cmd_map)
+
+    candidates = sub.add_parser("candidates", help="Write patchability-labeled candidates for a decoded script structure kind.")
+    candidates.add_argument("input")
+    candidates.add_argument("--kind", required=True, choices=["branch", "native", "constants", "strings", "tables"])
+    candidates.add_argument("--out", default="", help="Report folder. Defaults under reports/codered_wsc_candidates.")
+    add_key_args(candidates)
+    candidates.set_defaults(func=cmd_candidates)
+
     repack = sub.add_parser("repack", help="Decode and rebuild a script with no decoded byte changes.")
     repack.add_argument("input")
     repack.add_argument("--out", required=True)
@@ -124,6 +173,7 @@ def build_parser() -> argparse.ArgumentParser:
     patch.add_argument("input")
     patch.add_argument("--recipe", required=True)
     patch.add_argument("--out", required=True)
+    patch.add_argument("--dry-run", action="store_true", help="Write patch reports and manifest without writing the patched script file.")
     add_key_args(patch)
     patch.set_defaults(func=cmd_patch)
 

@@ -1,0 +1,21 @@
+name: initpopulation_ambient_gunslingers_car_vehicle
+description: Initpopulation ambient gunslinger recipe plus explicit Cart01 to Car01 ped_vehicle replacement.
+input_expected:
+  strings_required: [ped_wilderness, ped_traveller, ped_vehicle]
+patches:
+  - type: population_actor_pool_replace
+    pool: ped_wilderness
+    replace_all_human_actor_operands_with_cycle: [133, 135, 136]
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true
+  - type: population_actor_pool_replace
+    pool: ped_traveller
+    replace_all_human_actor_operands_with_cycle: [137, 138, 139, 140]
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true
+  - type: population_vehicle_pool_replace
+    pool: ped_vehicle
+    replace_vehicle_actor_operands:
+      1183: 1194
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true

@@ -5,8 +5,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from codered_wsc.analysis import disasm_artifacts, write_inspect_report, write_scan_report
-from codered_wsc.patching import PatchError, apply_recipe, validate_recipe, write_patch_bundle
+from codered_wsc.analysis import disasm_artifacts, write_candidates_report, write_inspect_report, write_map_report, write_scan_report
+from codered_wsc.patching import PatchError, apply_recipe, apply_recipe_detailed, validate_recipe, write_patch_bundle
+from codered_wsc.pools import scan_population_pools
 from codered_wsc.resource import (
     KeyOptions,
     aes_crypt_16_passes,
@@ -26,6 +27,26 @@ def decoded_fixture() -> bytes:
     body = bytes([38, 0x04, 0xA9, 44, 0x01, 0x02, 46, 0, 0])
     strings = b"\0ped_wilderness\0vehicle\0driver flee sector\0"
     return (enter + body + strings).ljust(4096, b"\0")
+
+
+def push_string(value: str) -> bytes:
+    raw = value.encode("ascii") + b"\0"
+    return bytes([111, len(raw)]) + raw
+
+
+def pool_decoded_fixture() -> bytes:
+    enter = bytes([45, 0, 0, 1, 4]) + b"main"
+    pools = b"".join(
+        (
+            push_string("ped_wilderness"),
+            bytes([37, 111, 149]),
+            push_string("ped_traveller"),
+            bytes([37, 115, 149]),
+            push_string("ped_vehicle"),
+            bytes([65, 0x04, 0x9F, 150]),
+        )
+    )
+    return (enter + pools + bytes([46, 0, 0])).ljust(4096, b"\0")
 
 
 def rsc85_fixture(decoded: bytes, payload_capacity: int = 512) -> bytes:
@@ -82,6 +103,16 @@ class CodeRedWscToolsTests(unittest.TestCase):
         self.assertEqual(patched[10:12], bytes.fromhex("04 AA"))
         self.assertEqual(patched[:10] + patched[12:], decoded_fixture()[:10] + decoded_fixture()[12:])
 
+    def test_same_size_constant_recipe_uses_general_primitive(self) -> None:
+        recipe = {
+            "name": "synthetic_constant",
+            "patches": [{"type": "replace_constant", "offset": 10, "width": 2, "endian": "big", "expected": 1193, "value": 1183}],
+        }
+        patched, edits, _ = apply_recipe(decoded_fixture(), recipe)
+        self.assertEqual(edits[0].patch_type, "replace_constant")
+        self.assertEqual(patched[10:12], bytes.fromhex("04 9F"))
+        self.assertEqual(patched[:10] + patched[12:], decoded_fixture()[:10] + decoded_fixture()[12:])
+
     def test_patch_bundle_reopens_and_keeps_backup(self) -> None:
         recipe = {
             "name": "synthetic_actor",
@@ -101,11 +132,76 @@ class CodeRedWscToolsTests(unittest.TestCase):
             self.assertTrue(manifest["validation"]["roundtrip_decompress"])
             self.assertTrue((root / "patched" / "source_patch" / "source.wsc.original_backup").exists())
 
-    def test_planned_population_recipe_is_not_claimed_ready(self) -> None:
-        recipe = {"patches": [{"type": "population_actor_pool_replace", "pool": "ped_law"}]}
-        self.assertFalse(validate_recipe(recipe)["ready"])
+    def test_pool_scan_finds_actor_and_vehicle_pools(self) -> None:
+        pool_map = scan_population_pools(pool_decoded_fixture())
+        self.assertIsNotNone(pool_map.by_name("ped_wilderness"))
+        self.assertIsNotNone(pool_map.by_name("ped_traveller"))
+        self.assertIsNotNone(pool_map.by_name("ped_vehicle"))
+        self.assertEqual(pool_map.candidates_for("ped_vehicle")[0]["enum"], 1183)
+
+    def test_general_map_and_candidates_label_patchability(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            info = {"path": "fixture.wsc", "family": "synthetic"}
+            mapped = write_map_report(root / "map", info, pool_decoded_fixture())
+            constants = write_candidates_report(root / "constant_candidates", info, decoded_fixture(), "constants")
+            branches = write_candidates_report(root / "branch_candidates", info, decoded_fixture(), "branch")
+            native = write_candidates_report(root / "native_candidates", info, decoded_fixture(), "native")
+            self.assertGreaterEqual(mapped["tables"], 3)
+            self.assertGreaterEqual(constants["patchability"]["SAME_SIZE_SAFE"], 1)
+            self.assertEqual(branches["patchability"]["CONTROL_FLOW_SAFE"], 0)
+            self.assertGreaterEqual(native["patchability"]["READ_ONLY"], 1)
+            self.assertTrue((root / "map" / "script_map.json").exists())
+            self.assertTrue((root / "constant_candidates" / "constants_candidates.csv").exists())
+
+    def test_pool_actor_and_vehicle_recipes_change_only_selected_operands(self) -> None:
+        actor_recipe = {
+            "patches": [{"type": "population_actor_pool_replace", "pool": "ped_wilderness", "replace_all_human_actor_operands_with_cycle": [184]}]
+        }
+        vehicle_recipe = {
+            "patches": [{"type": "population_vehicle_pool_replace", "pool": "ped_vehicle", "replace_vehicle_actor_operands": {1183: 1194}}]
+        }
+        actor_result = apply_recipe_detailed(pool_decoded_fixture(), actor_recipe)
+        vehicle_result = apply_recipe_detailed(pool_decoded_fixture(), vehicle_recipe)
+        self.assertEqual([(edit.old_enum, edit.new_enum, edit.pool) for edit in actor_result.edits], [(111, 184, "ped_wilderness")])
+        self.assertEqual([(edit.old_enum, edit.new_enum, edit.pool) for edit in vehicle_result.edits], [(1183, 1194, "ped_vehicle")])
+        self.assertEqual(actor_result.decoded.count(bytes([65, 0x04, 0x9F])), 1)
+        self.assertEqual(vehicle_result.decoded.count(bytes([37, 111])), 1)
+
+    def test_pool_width_and_bad_pool_fail_safely(self) -> None:
+        too_wide = {
+            "patches": [{"type": "population_actor_pool_replace", "pool": "ped_wilderness", "replace_all_human_actor_operands_with_cycle": [595]}]
+        }
+        bad_pool = {
+            "patches": [{"type": "population_actor_pool_replace", "pool": "missing_pool", "replace_all_human_actor_operands_with_cycle": [184]}]
+        }
         with self.assertRaises(PatchError):
-            apply_recipe(decoded_fixture(), recipe)
+            apply_recipe_detailed(pool_decoded_fixture(), too_wide)
+        with self.assertRaises(PatchError):
+            apply_recipe_detailed(pool_decoded_fixture(), bad_pool)
+
+    def test_dry_run_patch_bundle_writes_manifest_without_patch_file(self) -> None:
+        recipe = {
+            "name": "synthetic_vehicle",
+            "patches": [{"type": "population_vehicle_pool_replace", "pool": "ped_vehicle", "replace_vehicle_actor_operands": {1183: 1194}}],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "population.wsc"
+            source.write_bytes(rsc85_fixture(pool_decoded_fixture()))
+            output = root / "patched" / "population.wsc"
+            resource = open_script(source, KeyOptions(aes_key_hex=TEST_KEY.hex()))
+            manifest = write_patch_bundle(resource, root / "dry_run.yaml", recipe, output, dry_run=True)
+            self.assertFalse(output.exists())
+            self.assertFalse(manifest["output_written"])
+            self.assertTrue((root / "patched" / "population_patch" / "manifest.json").exists())
+
+    @unittest.skipUnless(Path("imports/grt_population.wsc").exists() and Path("../rdr.exe").exists(), "local grt WSC sample is absent")
+    def test_local_grt_pool_sample_maps_requested_pools(self) -> None:
+        resource = open_script(Path("imports/grt_population.wsc"), KeyOptions(rdr_exe="../rdr.exe"))
+        pool_map = scan_population_pools(resource.decoded)
+        for pool in ("ped_wilderness", "ped_traveller", "ped_law", "ped_bad_guys_local", "ped_bad_guys_generic", "ped_vehicle"):
+            self.assertIsNotNone(pool_map.by_name(pool))
 
 
 if __name__ == "__main__":

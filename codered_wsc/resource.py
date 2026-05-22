@@ -318,7 +318,14 @@ def repack_script(resource: ScriptResource, decoded: bytes, allow_growth: bool =
     payload_capacity = len(resource.normalized) - 16
     candidates = zstd_compress_variants(decoded)
     size, codec, compressed = candidates[0]
-    fit = next((candidate for candidate in candidates if candidate[0] <= payload_capacity), None)
+    fit = next(
+        (
+            candidate
+            for candidate in candidates
+            if candidate[0] <= payload_capacity and (payload_capacity - candidate[0] == 0 or payload_capacity - candidate[0] >= 8)
+        ),
+        None,
+    )
     if fit is None and not allow_growth:
         raise ResourceError(f"Smallest rebuilt payload is {size} bytes for {payload_capacity}-byte slot")
     if fit is None:

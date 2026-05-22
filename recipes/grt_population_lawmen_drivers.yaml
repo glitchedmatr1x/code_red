@@ -1,5 +1,5 @@
 name: grt_population_lawmen_drivers
-description: Planned actor-pool recipe retained for analysis until population group operands are structurally mapped.
+description: Legacy Great Plains police/FBI actor-pool recipe using bounded same-width population pool mapping.
 input_expected:
   strings_required:
     - ped_wilderness

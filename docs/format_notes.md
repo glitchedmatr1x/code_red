@@ -37,3 +37,22 @@ Reports mark likely actor integer windows for review:
 - vehicle hints around `1155` through `1202`
 
 Raw two-byte candidates are intentionally noisy. Prefer instruction constants and exact reviewed offsets before applying a recipe.
+
+## Population Pool Mapper
+
+Population scripts observed in this workspace define pool names inline with `PushString`. Milestone two maps from each recognized `ped_*` or `animal_*` pool string to the next population pool string and inspects bounded immediate enum operands inside that block.
+
+Low actor IDs use one-byte immediates. Larger law, hostile, and vehicle IDs in `grt_population.wsc` use the `0x41` two-byte operand carrier. The mapper records candidate width, enum category, confidence, and skipped entries. Recipes patch only candidates marked safe for the selected actor or vehicle pool.
+
+## Analysis Packages
+
+The bytecode walker now feeds general analysis modules:
+
+- `analysis.functions` exposes `Enter`-pattern function candidates
+- `analysis.strings` exposes printable string anchors and same-length patch candidates
+- `analysis.constants` exposes fixed-width immediate constant candidates
+- `analysis.native_calls` records decoded native-call operand bits without allowing call edits yet
+- `analysis.control_flow` records branch/call target candidates without branch rewrites yet
+- `analysis.tables` owns table families as they become proven; population pools are the first one
+
+Each candidate report states its patchability level. A decoded branch, native, or raw enum hint can be useful evidence while still remaining read-only.
