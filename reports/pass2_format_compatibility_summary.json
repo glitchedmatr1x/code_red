@@ -1,0 +1,18 @@
+{
+  "tool": "codered_mp_content_restore_pass2",
+  "current_pc_rows": 1085,
+  "selected_psn_csc_rows": 45,
+  "xenon_xsc_review_rows": 56,
+  "compatibility_rows": 101,
+  "raw_copy_rows": 236,
+  "raw_copy_all_bytes_match": true,
+  "reports": "D:\\Games\\Red Dead Redemption\\Code_RED\\reports",
+  "build_root": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_content_restore_pass2",
+  "status_counts": {
+    "raw_import_candidate": 45,
+    "conversion_blocked": 56
+  },
+  "no_rpf_write": true,
+  "no_bytecode_edit": true,
+  "no_extension_conversion": true
+}

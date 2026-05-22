@@ -1,0 +1,6 @@
+lane_id,lane_name,package_kind,clean_content_rpf_backup_used,imported_package,import_target,magic_rdr_reopen_result,exported_back_folder_path,exported_byte_compare_result,launch_result,menu_option_changes,networking_screen_changes,error_message_changes,loading_behavior,crash_hang_return_to_menu_behavior,screenshots_video_notes,crash_report_log_notes,conclusion,tested,approved_for_import,updated_at
+A,baseline_no_mp_restore,baseline,,,clean backup / no MP restore,,,,,,,,,,,,,,yes,
+B,release64_csc_only,csc,,import_test_release64_csc,content/release64/multiplayer/,,,,,,,,,,,,,,yes,
+C,release_csc_only,csc,,import_test_release_csc,content/release/multiplayer/,,,,,,,,,,,,,,yes,
+D,both_release_and_release64_csc,csc,,import_test_both_csc,both CSC path families,,,,,,,,,,,,,,yes,
+E,xsc_review_only,xsc_review,,import_test_xsc_review,review only until explicitly approved,,,,,,,,,,,,,,no,

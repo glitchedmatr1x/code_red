@@ -1,0 +1,19 @@
+{
+  "tool": "codered_mp_test_result_ingest",
+  "results_rows": 5,
+  "tested_lanes": [],
+  "verification_rows": 5,
+  "verification_status_counts": {
+    "not_applicable": 1,
+    "export_folder_missing": 3,
+    "review_only_not_approved": 1
+  },
+  "classification": "do_not_patch_yet",
+  "next_action_choice": "keep testing CSC",
+  "next_lane": "baseline_no_mp_restore",
+  "reports": "D:\\Games\\Red Dead Redemption\\Code_RED\\reports",
+  "no_content_rpf_write": true,
+  "no_script_bytecode_patch": true,
+  "no_conversion": true,
+  "no_public_server_spoofing": true
+}
