@@ -1,0 +1,12 @@
+{
+  "status": "complete",
+  "input_dir": "imports",
+  "out_dir": "patches\\escort_transport_caronly",
+  "terms": [
+    "escort",
+    "transport"
+  ],
+  "preview_only": false,
+  "files_considered": 0,
+  "summaries": []
+}

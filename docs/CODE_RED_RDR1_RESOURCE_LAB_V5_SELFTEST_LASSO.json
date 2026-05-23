@@ -1,0 +1,307 @@
+{
+  "input": "/mnt/data/commongringos.wgd",
+  "output": "/mnt/data/commongringos_lasso_override_v5.wgd",
+  "patch_root": "/mnt/data/codered_v5_patch",
+  "internal_path": "commongringos.wgd",
+  "staged_path": "/mnt/data/codered_v5_patch/commongringos.wgd",
+  "replacements": [
+    {
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14
+    },
+    {
+      "old": "revolver_schofield01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14
+    }
+  ],
+  "case_sensitive": false,
+  "source_sha1": "f99e6cbd33c30930f43ebc7d709edf0267995dfe",
+  "output_sha1": "6debe518fd1e64cf2d8c5038b102ac67995b7233",
+  "source_size": 176347,
+  "output_size": 188345,
+  "rsc": {
+    "magic": "RSC85",
+    "resource_type": 18,
+    "flag1": -2147483648,
+    "flag2": -1073741627,
+    "header_size": 16,
+    "compressed_size": 176331,
+    "payload_sha1": "ead1fe8389eb89051a9a9dc908bbc4186430d9eb",
+    "virtual_size": 806912,
+    "physical_size": 0,
+    "expected_unpacked_size": 806912,
+    "payload_unpacked_size": 806912,
+    "compression": "zstd"
+  },
+  "payload_before_sha1": "41f7c097c902fc9695dba5e527266de9261d5539",
+  "payload_after_sha1": "23fb4c31eef99791f23c535882d77b2214c82e55",
+  "referenced_strings_scanned": 8976,
+  "targets_modified": 11,
+  "edits": [
+    {
+      "patch_offset": 474096,
+      "patch_offset_hex": "0x73BF0",
+      "referenced_string_target": 474084,
+      "referenced_string_target_hex": "0x73BE4",
+      "old": "revolver_schofield01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_schofield01x",
+      "source_ref": {
+        "pointer_offset": 90976,
+        "pointer_offset_hex": "0x16360",
+        "pointer_value_hex": "0x50073BE4",
+        "target_offset": 474084,
+        "target_offset_hex": "0x73BE4",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_schofield01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 474164,
+      "patch_offset_hex": "0x73C34",
+      "referenced_string_target": 474152,
+      "referenced_string_target_hex": "0x73C28",
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_cattleman01x",
+      "source_ref": {
+        "pointer_offset": 80032,
+        "pointer_offset_hex": "0x138A0",
+        "pointer_value_hex": "0x50073C28",
+        "target_offset": 474152,
+        "target_offset_hex": "0x73C28",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_cattleman01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 474198,
+      "patch_offset_hex": "0x73C56",
+      "referenced_string_target": 474186,
+      "referenced_string_target_hex": "0x73C4A",
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_cattleman01x",
+      "source_ref": {
+        "pointer_offset": 58896,
+        "pointer_offset_hex": "0xE610",
+        "pointer_value_hex": "0x50073C4A",
+        "target_offset": 474186,
+        "target_offset_hex": "0x73C4A",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_cattleman01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 474368,
+      "patch_offset_hex": "0x73D00",
+      "referenced_string_target": 474356,
+      "referenced_string_target_hex": "0x73CF4",
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_cattleman01x",
+      "source_ref": {
+        "pointer_offset": 19440,
+        "pointer_offset_hex": "0x4BF0",
+        "pointer_value_hex": "0x50073CF4",
+        "target_offset": 474356,
+        "target_offset_hex": "0x73CF4",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_cattleman01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 474606,
+      "patch_offset_hex": "0x73DEE",
+      "referenced_string_target": 474594,
+      "referenced_string_target_hex": "0x73DE2",
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_cattleman01x",
+      "source_ref": {
+        "pointer_offset": 103360,
+        "pointer_offset_hex": "0x193C0",
+        "pointer_value_hex": "0x50073DE2",
+        "target_offset": 474594,
+        "target_offset_hex": "0x73DE2",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_cattleman01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 474640,
+      "patch_offset_hex": "0x73E10",
+      "referenced_string_target": 474628,
+      "referenced_string_target_hex": "0x73E04",
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_cattleman01x",
+      "source_ref": {
+        "pointer_offset": 26496,
+        "pointer_offset_hex": "0x6780",
+        "pointer_value_hex": "0x50073E04",
+        "target_offset": 474628,
+        "target_offset_hex": "0x73E04",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_cattleman01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 474776,
+      "patch_offset_hex": "0x73E98",
+      "referenced_string_target": 474764,
+      "referenced_string_target_hex": "0x73E8C",
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_cattleman01x",
+      "source_ref": {
+        "pointer_offset": 104656,
+        "pointer_offset_hex": "0x198D0",
+        "pointer_value_hex": "0x50073E8C",
+        "target_offset": 474764,
+        "target_offset_hex": "0x73E8C",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_cattleman01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 474810,
+      "patch_offset_hex": "0x73EBA",
+      "referenced_string_target": 474798,
+      "referenced_string_target_hex": "0x73EAE",
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_cattleman01x",
+      "source_ref": {
+        "pointer_offset": 18576,
+        "pointer_offset_hex": "0x4890",
+        "pointer_value_hex": "0x50073EAE",
+        "target_offset": 474798,
+        "target_offset_hex": "0x73EAE",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_cattleman01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 474980,
+      "patch_offset_hex": "0x73F64",
+      "referenced_string_target": 474968,
+      "referenced_string_target_hex": "0x73F58",
+      "old": "revolver_schofield01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_schofield01x",
+      "source_ref": {
+        "pointer_offset": 61632,
+        "pointer_offset_hex": "0xF0C0",
+        "pointer_value_hex": "0x50073F58",
+        "target_offset": 474968,
+        "target_offset_hex": "0x73F58",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_schofield01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 475082,
+      "patch_offset_hex": "0x73FCA",
+      "referenced_string_target": 475070,
+      "referenced_string_target_hex": "0x73FBE",
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_cattleman01x",
+      "source_ref": {
+        "pointer_offset": 25632,
+        "pointer_offset_hex": "0x6420",
+        "pointer_value_hex": "0x50073FBE",
+        "target_offset": 475070,
+        "target_offset_hex": "0x73FBE",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_cattleman01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    },
+    {
+      "patch_offset": 475116,
+      "patch_offset_hex": "0x73FEC",
+      "referenced_string_target": 475104,
+      "referenced_string_target_hex": "0x73FE0",
+      "old": "revolver_cattleman01x",
+      "new": "melee_lasso01x",
+      "old_size": 21,
+      "new_size": 14,
+      "nul_padded_bytes": 7,
+      "matched_text_before": "$\\fragments\\revolver_cattleman01x",
+      "source_ref": {
+        "pointer_offset": 18864,
+        "pointer_offset_hex": "0x49B0",
+        "pointer_value_hex": "0x50073FE0",
+        "target_offset": 475104,
+        "target_offset_hex": "0x73FE0",
+        "target_space": "virtual",
+        "text": "$\\fragments\\revolver_cattleman01x"
+      },
+      "matched_text_after": "$\\fragments\\melee_lasso01x"
+    }
+  ],
+  "verification": {
+    "can_reopen": true,
+    "payload_source": "rsc-decompressed",
+    "payload_size": 806912,
+    "payload_sha1": "23fb4c31eef99791f23c535882d77b2214c82e55",
+    "remaining_old_reference_counts": {
+      "revolver_cattleman01x": 0,
+      "revolver_schofield01x": 0
+    },
+    "new_reference_counts": {
+      "melee_lasso01x": 12
+    }
+  },
+  "guardrails": [
+    "source RPF was not modified",
+    "source file was not modified",
+    "replacement substrings were same-size or shorter with NUL padding",
+    "no arrays, pointers, or resource sizes were structurally grown"
+  ]
+}

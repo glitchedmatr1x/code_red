@@ -1,0 +1,27 @@
+name: grt_population_cars_only
+description: Replace safe Great Plains non-boat ped_vehicle cart and wagon operands with Car01.
+input_expected:
+  strings_required: [ped_vehicle]
+patches:
+  - type: population_vehicle_pool_replace
+    pool: ped_vehicle
+    replace_vehicle_actor_operands:
+      1183: 1194
+      1184: 1194
+      1185: 1194
+      1186: 1194
+      1187: 1194
+      1188: 1194
+      1193: 1194
+      1195: 1194
+      1196: 1194
+      1199: 1194
+      1200: 1194
+      1201: 1194
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true
+validation:
+  roundtrip_decompress: true
+  no_unrelated_bytes_changed: true
+  require_strings_unchanged: true
+  require_resource_reopens: true

@@ -1,0 +1,26 @@
+{
+  "tool": "codered_mp_readiness_probe",
+  "source_files_scanned": 50,
+  "readiness_hits": 161,
+  "hit_categories": {
+    "auth_or_profile_gate": 87,
+    "online_route_signal": 7,
+    "mp_signal": 14,
+    "runtime_load_route": 15,
+    "local_or_menu_route": 32,
+    "visibility_or_offline_signal": 6
+  },
+  "pass2_package_files": 236,
+  "pass2_packages": {
+    "import_test_both_csc": 90,
+    "import_test_release64_csc": 45,
+    "import_test_release_csc": 45,
+    "import_test_xsc_review": 56
+  },
+  "exported_back_roots_present": [],
+  "reports": "D:\\Games\\Red Dead Redemption\\Code_RED\\reports",
+  "no_content_rpf_write": true,
+  "no_script_bytecode_patch": true,
+  "no_conversion": true,
+  "no_public_server_spoofing": true
+}

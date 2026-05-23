@@ -1,0 +1,8 @@
+name: demo_same_length_string_replace
+description: Replace reviewed decoded text only when the encoded byte length stays unchanged.
+patches:
+  - type: same_length_string_replace
+    find: FLAG_ON
+    replace: FLAG_NO
+    encoding: ascii
+    occurrence: first

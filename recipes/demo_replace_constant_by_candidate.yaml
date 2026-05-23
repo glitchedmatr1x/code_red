@@ -1,0 +1,9 @@
+name: demo_replace_constant_by_candidate
+description: Safe same-width constant edit skeleton driven by a reviewed candidates report row.
+patches:
+  - type: replace_constant
+    match:
+      candidate_id: CONST_000001
+    replacement: 0
+    expected_width: 1
+    require_patchability: SAME_SIZE_SAFE

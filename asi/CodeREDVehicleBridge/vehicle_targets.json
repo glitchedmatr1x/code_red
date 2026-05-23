@@ -1,0 +1,20 @@
+{
+  "vehicles": [
+    "car01x",
+    "truck01x",
+    "stagecoachgatling01x"
+  ],
+  "scripts": [
+    "playercar.wsc",
+    "beat_crime_wagonthief.wsc",
+    "gen_vehicle_brain.wsc",
+    "vehicle_generator.wsc"
+  ],
+  "tune_files": [
+    "*.vehsim",
+    "*.vehmodel",
+    "*.vehinput",
+    "*.vehgyro",
+    "*.vehstuck"
+  ]
+}

@@ -1,4 +1,6 @@
 cryptography
+zstandard
+PyYAML
 pillow
 numpy
 matplotlib

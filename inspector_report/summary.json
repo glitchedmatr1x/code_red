@@ -1,0 +1,12 @@
+{
+  "input": "/mnt/data/commongringos.wgd_unpacked.wgd",
+  "size": 806912,
+  "top_level": 950,
+  "hashes": 950,
+  "components": 5480,
+  "item_gringos": 950,
+  "use_contexts": 1082,
+  "vehicle_components": 129,
+  "vehicle_use_contexts": 18,
+  "parse_errors": 0
+}

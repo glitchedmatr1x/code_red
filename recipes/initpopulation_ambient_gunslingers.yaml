@@ -1,0 +1,15 @@
+name: initpopulation_ambient_gunslingers
+description: Replace initpopulation ambient wilderness and traveller pools with reviewed gunslinger enum cycles.
+input_expected:
+  strings_required: [ped_wilderness, ped_traveller]
+patches:
+  - type: population_actor_pool_replace
+    pool: ped_wilderness
+    replace_all_human_actor_operands_with_cycle: [133, 135, 136]
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true
+  - type: population_actor_pool_replace
+    pool: ped_traveller
+    replace_all_human_actor_operands_with_cycle: [137, 138, 139, 140]
+    preserve_operand_width: true
+    fail_if_width_expansion_required: true

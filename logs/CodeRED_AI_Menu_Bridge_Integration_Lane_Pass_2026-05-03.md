@@ -2,16 +2,16 @@
 
 # CodeRED AI Menu Bridge Integration Report
 
-Generated: `2026-05-03T09:14:27Z`
+Generated: `2026-05-10T21:12:28Z`
 Result: **PASS**
 
 ## Outputs
 
-- Source: `/mnt/data/codered_work/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp`
-- Candidate: `/mnt/data/codered_work/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.bridge_candidate.cpp`
-- Build helper: `/mnt/data/codered_work/related_apps/Code_RED_ScriptHookRDR_AI_Menu/build_bridge_candidate.bat`
-- Diff: `/mnt/data/codered_work/logs/CodeRED_AI_Menu_Bridge_Integration_Candidate.diff`
-- Manifest: `/mnt/data/codered_work/data/codered/ai_menu_bridge_integration_manifest.json`
+- Source: `D:\Games\Red Dead Redemption\Code_RED\related_apps\Code_RED_ScriptHookRDR_AI_Menu\CodeRED_AI_Menu.cpp`
+- Candidate: `D:\Games\Red Dead Redemption\Code_RED\related_apps\Code_RED_ScriptHookRDR_AI_Menu\CodeRED_AI_Menu.bridge_candidate.cpp`
+- Build helper: `D:\Games\Red Dead Redemption\Code_RED\related_apps\Code_RED_ScriptHookRDR_AI_Menu\build_bridge_candidate.bat`
+- Diff: `D:\Games\Red Dead Redemption\Code_RED\logs\CodeRED_AI_Menu_Bridge_Integration_Candidate.diff`
+- Manifest: `D:\Games\Red Dead Redemption\Code_RED\data\codered\ai_menu_bridge_integration_manifest.json`
 
 ## Native bridge wrapper proof
 
@@ -21,12 +21,12 @@ Result: **PASS**
 
 ## Existing AI Menu native usage
 
-- `AI_IS_HOSTILE_OR_ENEMY`: `2` hash references
-- `CREATE_ACTOR_IN_LAYOUT`: `1` hash references
-- `GET_ACTOR_FACTION`: `1` hash references
-- `SET_ACTOR_FACTION`: `3` hash references
-- `TASK_FOLLOW_ACTOR`: `3` hash references
-- `TASK_KILL_CHAR`: `1` hash references
+- `AI_IS_HOSTILE_OR_ENEMY`: `4` hash references
+- `CREATE_ACTOR_IN_LAYOUT`: `3` hash references
+- `GET_ACTOR_FACTION`: `3` hash references
+- `SET_ACTOR_FACTION`: `5` hash references
+- `TASK_FOLLOW_ACTOR`: `5` hash references
+- `TASK_KILL_CHAR`: `3` hash references
 
 ## Safety note
 

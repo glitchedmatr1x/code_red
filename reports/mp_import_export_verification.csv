@@ -1,0 +1,6 @@
+lane_id,lane_name,package,package_kind,content_path,staged_path,exported_back_folder,export_path,status,staged_size,export_size,size_match,staged_sha1,export_sha1,sha1_match,staged_crc32,export_crc32,crc32_match,note
+A,baseline_no_mp_restore,,baseline,,,,,not_applicable,,,,,,,,,,baseline lane has no imported package
+B,release64_csc_only,import_test_release64_csc,csc,,,D:\Games\Red Dead Redemption\Code_RED\reports\mp_content_restore_pass4\exported_back\release64_csc_only,,export_folder_missing,,,,,,,,,,expected exported-back folder for 45 staged files
+C,release_csc_only,import_test_release_csc,csc,,,D:\Games\Red Dead Redemption\Code_RED\reports\mp_content_restore_pass4\exported_back\release_csc_only,,export_folder_missing,,,,,,,,,,expected exported-back folder for 45 staged files
+D,both_release_and_release64_csc,import_test_both_csc,csc,,,D:\Games\Red Dead Redemption\Code_RED\reports\mp_content_restore_pass4\exported_back\both_release_and_release64_csc,,export_folder_missing,,,,,,,,,,expected exported-back folder for 90 staged files
+E,xsc_review_only,import_test_xsc_review,xsc_review,,,D:\Games\Red Dead Redemption\Code_RED\reports\mp_content_restore_pass4\exported_back\xsc_review_only,,review_only_not_approved,,,,,,,,,,xsc_review_only stays review-only until explicitly approved

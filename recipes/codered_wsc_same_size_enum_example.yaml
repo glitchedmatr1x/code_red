@@ -1,0 +1,17 @@
+name: same_size_enum_operand_example
+description: Replace one reviewed big-endian actor enum operand at a decoded byte offset.
+input_expected:
+  strings_required:
+    - ped_vehicle
+patches:
+  - type: replace_enum_operand
+    offset: 0x1234
+    width: 2
+    endian: big
+    expected: 1193
+    value: 1194
+validation:
+  roundtrip_decompress: true
+  no_unrelated_bytes_changed: true
+  require_strings_unchanged: true
+  require_resource_reopens: true
