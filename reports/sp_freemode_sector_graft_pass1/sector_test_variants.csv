@@ -1,0 +1,7 @@
+variant_name,base_sha1,base_path,base_found,changed_files,sector_enabled,sector_disabled,launch_point,expected_behavior,risk,output_rpf_path,readback_status,magicrdr_status
+A0_repack_control,91304EBA24B3759AE206783EBE4CA42EA0F2A134,,False,not built,,,none,no content changes,low,,blocked_base_missing,not_applicable
+A1_sp_wsc_noop_probe,91304EBA24B3759AE206783EBE4CA42EA0F2A134,,False,not built,,,sp_idle/main/rdr2init late safe point,SP-side no-op/log probe only,review,,blocked_base_missing,not_applicable
+A2_one_mp_sector_only,91304EBA24B3759AE206783EBE4CA42EA0F2A134,,False,not built,first recommended low-risk candidate,,SP-side sector probe,enable exactly one low-risk MP sector,medium,,blocked_base_missing,not_applicable
+A3_one_mp_sector_plus_sp_counterpart_unload,91304EBA24B3759AE206783EBE4CA42EA0F2A134,,False,not built,first recommended low-risk candidate,one reviewed SP counterpart,SP-side sector probe,enable one MP sector and disable one reviewed SP counterpart,high,,blocked_base_missing,not_applicable
+A4_small_region_sector_set,91304EBA24B3759AE206783EBE4CA42EA0F2A134,,False,not built,same region set,,SP-side sector probe,enable 2-4 related MP sectors,high,,blocked_base_missing,not_applicable
+A5_sector_plus_one_blip_or_action_area_marker,91304EBA24B3759AE206783EBE4CA42EA0F2A134,,False,not built,one proven sector,,SP-side sector probe,sector plus one marker/action-area,high,,blocked_base_missing,not_applicable

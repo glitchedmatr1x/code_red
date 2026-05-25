@@ -2,7 +2,8 @@ param(
     [Parameter(Mandatory=$true)][string]$InputPath,
     [string]$MagicRdrDir = "D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\Magic-RDR-main",
     [ValidateSet("Switch","Xbox","PS3")][string]$Platform = "Switch",
-    [ValidateSet("Auto","Little","Big")][string]$ReaderEndian = "Auto"
+    [ValidateSet("Auto","Little","Big")][string]$ReaderEndian = "Auto",
+    [string]$DecompiledOut = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -67,6 +68,13 @@ try {
 
     $script = New-Object "Magic_RDR.ScriptFile" -ArgumentList $reader, $entry
     $decompiled = [Magic_RDR.ScriptViewerForm]::DecompiledCode
+    if ($DecompiledOut -ne "" -and $null -ne $decompiled) {
+        $parent = Split-Path -Parent $DecompiledOut
+        if ($parent -and -not (Test-Path -LiteralPath $parent)) {
+            New-Item -ItemType Directory -Force -Path $parent | Out-Null
+        }
+        [IO.File]::WriteAllText($DecompiledOut, $decompiled)
+    }
     Write-JsonResult ([ordered]@{
         ok = $true
         input = (Resolve-Path -LiteralPath $InputPath).Path
