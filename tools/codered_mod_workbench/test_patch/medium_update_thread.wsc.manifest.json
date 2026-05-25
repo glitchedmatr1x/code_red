@@ -1,0 +1,14 @@
+{
+  "mode": "rsc85",
+  "replacements": 2,
+  "compression": "zstd",
+  "decoded_size": 143360,
+  "validated": true,
+  "input": "/mnt/data/medium_update_thread.wsc",
+  "output": "/mnt/data/codered_mod_workbench/test_patch/medium_update_thread.wsc",
+  "find": "beh_grave01x",
+  "replace": "dlc02x",
+  "input_sha256": "9435a0fe2461b92d9fa28aa2300d3098c4f4b8f418803e35e14ff6b5a4e5d3e5",
+  "output_sha256": "1a9ec30b4db485f726e195948a0da685c7adbbbf4aac41a5ef7d4616e112917c",
+  "dry_run": false
+}

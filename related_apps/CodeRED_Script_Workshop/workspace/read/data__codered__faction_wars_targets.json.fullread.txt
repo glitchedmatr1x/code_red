@@ -115,15 +115,15 @@
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt",
     "source_kind": "manifest/text",
-    "score": 22278,
+    "score": 22912,
     "category": "research/reference",
     "groups": {
-      "factions": 2187,
-      "war_behavior": 479,
-      "spawning": 6592,
-      "world_hosts": 5426,
-      "weapons_pressure": 1788,
-      "scripting": 5594
+      "factions": 2348,
+      "war_behavior": 488,
+      "spawning": 6770,
+      "world_hosts": 5503,
+      "weapons_pressure": 1825,
+      "scripting": 5766
     },
     "regions": [
       "armadillo",
@@ -173,20 +173,20 @@
       "L31: \"regions\": [",
       "L33: \"armadillo\","
     ],
-    "size": 1526782
+    "size": 1560963
   },
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt",
     "source_kind": "manifest/text",
-    "score": 22277,
+    "score": 22911,
     "category": "research/reference",
     "groups": {
-      "factions": 2186,
-      "war_behavior": 479,
-      "spawning": 6592,
-      "world_hosts": 5426,
-      "weapons_pressure": 1788,
-      "scripting": 5594
+      "factions": 2347,
+      "war_behavior": 488,
+      "spawning": 6770,
+      "world_hosts": 5503,
+      "weapons_pressure": 1825,
+      "scripting": 5766
     },
     "regions": [
       "armadillo",
@@ -236,20 +236,20 @@
       "L29: \"armadillo\",",
       "L31: \"macfarlane\""
     ],
-    "size": 1526643
+    "size": 1560824
   },
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json",
     "source_kind": "manifest/text",
-    "score": 22277,
+    "score": 22911,
     "category": "research/reference",
     "groups": {
-      "factions": 2186,
-      "war_behavior": 479,
-      "spawning": 6592,
-      "world_hosts": 5426,
-      "weapons_pressure": 1788,
-      "scripting": 5594
+      "factions": 2347,
+      "war_behavior": 488,
+      "spawning": 6770,
+      "world_hosts": 5503,
+      "weapons_pressure": 1825,
+      "scripting": 5766
     },
     "regions": [
       "armadillo",
@@ -299,20 +299,20 @@
       "L15: \"armadillo\",",
       "L16: \"macfarlane\""
     ],
-    "size": 1497071
+    "size": 1530369
   },
   {
     "path": "data/codered/faction_wars_targets.json",
     "source_kind": "repo/text",
-    "score": 22277,
+    "score": 22911,
     "category": "research/reference",
     "groups": {
-      "factions": 2186,
-      "war_behavior": 479,
-      "spawning": 6592,
-      "world_hosts": 5426,
-      "weapons_pressure": 1788,
-      "scripting": 5594
+      "factions": 2347,
+      "war_behavior": 488,
+      "spawning": 6770,
+      "world_hosts": 5503,
+      "weapons_pressure": 1825,
+      "scripting": 5766
     },
     "regions": [
       "armadillo",
@@ -362,7 +362,7 @@
       "L15: \"armadillo\",",
       "L16: \"macfarlane\""
     ],
-    "size": 1497071
+    "size": 1530369
   },
   {
     "path": "research/extracted_root_research/extracted_root_findings.csv",
@@ -903,6 +903,132 @@
   {
     "path": "data/codered/script_workshop_extension_manifest.csv",
     "source_kind": "repo/text",
+    "score": 9188,
+    "category": "script/native candidate",
+    "groups": {
+      "factions": 317,
+      "war_behavior": 512,
+      "spawning": 3332,
+      "world_hosts": 782,
+      "weapons_pressure": 661,
+      "scripting": 3489
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "create_actor",
+      "get_actor_faction",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander"
+    ],
+    "excerpts": [
+      "L2: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+      "L3: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+      "L4: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+      "L5: data/codered/faction_wars_actionable_targets.csv,.csv,source_text,editable_source,109663,f9589931db8580f41f04991eaa17756ee6bc5941,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_actionable_targets.csv.fullread.txt,related_apps/C",
+      "L6: data/codered/faction_wars_actionable_targets.json,.json,source_text,editable_source,198431,c37a44d41b3b322bd1f9379e93366aa1cf725dd2,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_actionable_targets.json.fullread.txt,related_app",
+      "L7: data/codered/faction_wars_capabilities.json,.json,source_text,editable_source,621,c682d5dabfdaa852c56fbb24404a2cf8ab82b387,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_capabilities.json.fullread.txt,related_apps/CodeRED_Scrip",
+      "L8: data/codered/faction_wars_targets.csv,.csv,source_text,editable_source,277353,b37f585be34a741f127b9af9c307ae0cd6b7a692,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.csv.fullread.txt,related_apps/CodeRED_Script_Workshop",
+      "L9: data/codered/faction_wars_targets.json,.json,source_text,editable_source,1530369,e54c5d168b72d8f1ec9c7c9b52ebdf98ab65b987,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt,related_apps/CodeRED_Script_Work"
+    ],
+    "size": 1579664
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__script_workshop_extension_manifest.csv.decompiled_source.txt",
+    "source_kind": "manifest/text",
+    "score": 9125,
+    "category": "script/native candidate",
+    "groups": {
+      "factions": 299,
+      "war_behavior": 509,
+      "spawning": 3320,
+      "world_hosts": 782,
+      "weapons_pressure": 661,
+      "scripting": 3459
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "create_actor",
+      "get_actor_faction",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander"
+    ],
+    "excerpts": [
+      "L2: # Source: data/codered/script_workshop_extension_manifest.csv",
+      "L7: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+      "L9: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+      "L11: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+      "L13: data/codered/faction_wars_capabilities.json,.json,source_text,editable_source,621,c682d5dabfdaa852c56fbb24404a2cf8ab82b387,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_capabilities.json.fullread.txt,related_apps/CodeRED_Scrip",
+      "L15: data/codered/faction_wars_targets.csv,.csv,source_text,editable_source,268959,575639e20aee4aaed9c596512620ea011c6196b3,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.csv.fullread.txt,related_apps/CodeRED_Script_Workshop",
+      "L17: data/codered/faction_wars_targets.json,.json,source_text,editable_source,1497071,f00364710143ed1c36edde2211ee19c749e2f704,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt,related_apps/CodeRED_Script_Work",
+      "L19: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri"
+    ],
+    "size": 1578364
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__script_workshop_extension_manifest.csv.fullread.txt",
+    "source_kind": "manifest/text",
+    "score": 9124,
+    "category": "script/native candidate",
+    "groups": {
+      "factions": 299,
+      "war_behavior": 509,
+      "spawning": 3320,
+      "world_hosts": 782,
+      "weapons_pressure": 661,
+      "scripting": 3458
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "create_actor",
+      "get_actor_faction",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander"
+    ],
+    "excerpts": [
+      "L3: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
+      "L5: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
+      "L7: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
+      "L9: data/codered/faction_wars_capabilities.json,.json,source_text,editable_source,621,c682d5dabfdaa852c56fbb24404a2cf8ab82b387,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_capabilities.json.fullread.txt,related_apps/CodeRED_Scrip",
+      "L11: data/codered/faction_wars_targets.csv,.csv,source_text,editable_source,268959,575639e20aee4aaed9c596512620ea011c6196b3,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.csv.fullread.txt,related_apps/CodeRED_Script_Workshop",
+      "L13: data/codered/faction_wars_targets.json,.json,source_text,editable_source,1497071,f00364710143ed1c36edde2211ee19c749e2f704,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt,related_apps/CodeRED_Script_Work",
+      "L15: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
+      "L17: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh"
+    ],
+    "size": 1578212
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/script_workshop_extension_manifest.csv",
+    "source_kind": "manifest/text",
     "score": 9124,
     "category": "script/native candidate",
     "groups": {
@@ -941,132 +1067,6 @@
       "L9: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh"
     ],
     "size": 1577859
-  },
-  {
-    "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__script_workshop_extension_manifest.csv.decompiled_source.txt",
-    "source_kind": "manifest/text",
-    "score": 8928,
-    "category": "script/native candidate",
-    "groups": {
-      "factions": 251,
-      "war_behavior": 501,
-      "spawning": 3266,
-      "world_hosts": 781,
-      "weapons_pressure": 660,
-      "scripting": 3374
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "tumbleweed"
-    ],
-    "high_value_terms": [
-      "ai_is_hostile",
-      "create_actor",
-      "get_actor_faction",
-      "population",
-      "refgroup",
-      "set_actor_faction",
-      "task_follow",
-      "task_kill",
-      "task_stand",
-      "task_wander"
-    ],
-    "excerpts": [
-      "L2: # Source: data/codered/script_workshop_extension_manifest.csv",
-      "L7: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
-      "L9: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
-      "L11: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
-      "L13: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
-      "L15: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
-      "L17: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
-      "L19: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod"
-    ],
-    "size": 1569059
-  },
-  {
-    "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__script_workshop_extension_manifest.csv.fullread.txt",
-    "source_kind": "manifest/text",
-    "score": 8927,
-    "category": "script/native candidate",
-    "groups": {
-      "factions": 251,
-      "war_behavior": 501,
-      "spawning": 3266,
-      "world_hosts": 781,
-      "weapons_pressure": 660,
-      "scripting": 3373
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "tumbleweed"
-    ],
-    "high_value_terms": [
-      "ai_is_hostile",
-      "create_actor",
-      "get_actor_faction",
-      "population",
-      "refgroup",
-      "set_actor_faction",
-      "task_follow",
-      "task_kill",
-      "task_stand",
-      "task_wander"
-    ],
-    "excerpts": [
-      "L3: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
-      "L5: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
-      "L7: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
-      "L9: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
-      "L11: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
-      "L13: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
-      "L15: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod",
-      "L17: data/codered/npc_model_roster_v1.json,.json,source_text,editable_source,5985,415c8d05d67fbafb0bb78ef98879a00a0aeffd20,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__npc_model_roster_v1.json.fullread.txt,related_apps/CodeRED_Script_Workshop/"
-    ],
-    "size": 1568907
-  },
-  {
-    "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/script_workshop_extension_manifest.csv",
-    "source_kind": "manifest/text",
-    "score": 8927,
-    "category": "script/native candidate",
-    "groups": {
-      "factions": 251,
-      "war_behavior": 501,
-      "spawning": 3266,
-      "world_hosts": 781,
-      "weapons_pressure": 660,
-      "scripting": 3373
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "tumbleweed"
-    ],
-    "high_value_terms": [
-      "ai_is_hostile",
-      "create_actor",
-      "get_actor_faction",
-      "population",
-      "refgroup",
-      "set_actor_faction",
-      "task_follow",
-      "task_kill",
-      "task_stand",
-      "task_wander"
-    ],
-    "excerpts": [
-      "L2: data/codered/actor_enum_map.csv,.csv,source_text,editable_source,3796,214b3f617ac965d9e70919906efdceadb948834e,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__actor_enum_map.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/workspace/edi",
-      "L3: data/codered/ai_behavior_actions.csv,.csv,source_text,editable_source,1740,f004e9ea5c1740ffd004a1192bf4f4ffb334538f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_behavior_actions.csv.fullread.txt,related_apps/CodeRED_Script_Workshop/wor",
-      "L4: data/codered/ai_menu_bridge_integration_manifest.json,.json,source_text,editable_source,1255,62095aa4458ab7d4d0571112b7edc2b8c9905bb6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__ai_menu_bridge_integration_manifest.json.fullread.txt,relat",
-      "L5: data/codered/native_bridge_compile_probe.cpp,.cpp,source_text,editable_source,432,55a1ba215732f9aa2ad2d0689fed4855e38a5d8f,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_compile_probe.cpp.fullread.txt,related_apps/CodeRED_Scri",
-      "L6: data/codered/native_bridge_manifest.csv,.csv,source_text,editable_source,1604,0731412c8326a83825e6fd46b4cb515484dd9da6,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt,related_apps/CodeRED_Script_Worksh",
-      "L7: data/codered/native_bridge_manifest.json,.json,source_text,editable_source,11660,bc3c4f9791a590665b72aa8c9a7fd3d1c4720641,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.json.fullread.txt,related_apps/CodeRED_Script_Wo",
-      "L8: data/codered/native_bridge_selected_wrappers.cpp,.cpp,source_text,editable_source,5407,01433d35497bb5dbcd4654a717e84d9253ee3531,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_selected_wrappers.cpp.fullread.txt,related_apps/Cod",
-      "L9: data/codered/npc_model_roster_v1.json,.json,source_text,editable_source,5985,415c8d05d67fbafb0bb78ef98879a00a0aeffd20,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__npc_model_roster_v1.json.fullread.txt,related_apps/CodeRED_Script_Workshop/"
-    ],
-    "size": 1568561
   },
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt",
@@ -1361,15 +1361,15 @@
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.csv.decompiled_source.txt",
     "source_kind": "manifest/text",
-    "score": 7021,
+    "score": 7321,
     "category": "world host / gringo",
     "groups": {
-      "factions": 699,
-      "war_behavior": 80,
-      "spawning": 1994,
-      "world_hosts": 655,
-      "weapons_pressure": 585,
-      "scripting": 2796
+      "factions": 757,
+      "war_behavior": 89,
+      "spawning": 2092,
+      "world_hosts": 676,
+      "weapons_pressure": 598,
+      "scripting": 2897
     },
     "regions": [
       "armadillo",
@@ -1416,23 +1416,23 @@
       "L9: 34990,research/reference,related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv,repo/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|world_hosts:1863,,1074090",
       "L11: 34990,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.fullread.txt,manifest/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|worl",
       "L13: 34990,research/reference,related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv,manifest/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|world_hosts:1863,,107",
-      "L15: 22116,research/reference,data/codered/faction_wars_targets.json,repo/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new austin|nuevo paraiso|plainview|rathskeller|ridgewood|rio bravo|tall trees|t",
-      "L17: 12671,research/reference,research/extracted_root_research/extracted_root_findings.csv,repo/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|thieves|tumbleweed,factions:548|scripting:1641|spawning:3721|war_behavior:335|weapons_pressure:976|world_hos"
+      "L15: 22278,research/reference,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|man",
+      "L17: 22277,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new aust"
     ],
-    "size": 270256
+    "size": 278670
   },
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.csv.fullread.txt",
     "source_kind": "manifest/text",
-    "score": 7020,
+    "score": 7320,
     "category": "world host / gringo",
     "groups": {
-      "factions": 698,
-      "war_behavior": 80,
-      "spawning": 1994,
-      "world_hosts": 655,
-      "weapons_pressure": 585,
-      "scripting": 2796
+      "factions": 756,
+      "war_behavior": 89,
+      "spawning": 2092,
+      "world_hosts": 676,
+      "weapons_pressure": 598,
+      "scripting": 2897
     },
     "regions": [
       "armadillo",
@@ -1478,24 +1478,24 @@
       "L5: 34990,research/reference,related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv,repo/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|world_hosts:1863,,1074090",
       "L7: 34990,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.fullread.txt,manifest/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|worl",
       "L9: 34990,research/reference,related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv,manifest/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|world_hosts:1863,,107",
-      "L11: 22116,research/reference,data/codered/faction_wars_targets.json,repo/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new austin|nuevo paraiso|plainview|rathskeller|ridgewood|rio bravo|tall trees|t",
-      "L13: 12671,research/reference,research/extracted_root_research/extracted_root_findings.csv,repo/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|thieves|tumbleweed,factions:548|scripting:1641|spawning:3721|war_behavior:335|weapons_pressure:976|world_hos",
-      "L15: 12671,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/research__extracted_root_research__extracted_root_findings.csv.fullread.txt,manifest/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|thieves|tumbleweed,factions:548|scrip"
+      "L11: 22278,research/reference,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|man",
+      "L13: 22277,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new aust",
+      "L15: 22277,research/reference,related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new austin|nuevo parais"
     ],
-    "size": 270118
+    "size": 278532
   },
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.csv",
     "source_kind": "manifest/text",
-    "score": 7020,
+    "score": 7320,
     "category": "world host / gringo",
     "groups": {
-      "factions": 698,
-      "war_behavior": 80,
-      "spawning": 1994,
-      "world_hosts": 655,
-      "weapons_pressure": 585,
-      "scripting": 2796
+      "factions": 756,
+      "war_behavior": 89,
+      "spawning": 2092,
+      "world_hosts": 676,
+      "weapons_pressure": 598,
+      "scripting": 2897
     },
     "regions": [
       "armadillo",
@@ -1541,24 +1541,24 @@
       "L3: 34990,research/reference,related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv,repo/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|world_hosts:1863,,1074090",
       "L4: 34990,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.fullread.txt,manifest/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|worl",
       "L5: 34990,research/reference,related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv,manifest/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|world_hosts:1863,,107",
-      "L6: 22116,research/reference,data/codered/faction_wars_targets.json,repo/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new austin|nuevo paraiso|plainview|rathskeller|ridgewood|rio bravo|tall trees|t",
-      "L7: 12671,research/reference,research/extracted_root_research/extracted_root_findings.csv,repo/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|thieves|tumbleweed,factions:548|scripting:1641|spawning:3721|war_behavior:335|weapons_pressure:976|world_hos",
-      "L8: 12671,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/research__extracted_root_research__extracted_root_findings.csv.fullread.txt,manifest/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|thieves|tumbleweed,factions:548|scrip"
+      "L6: 22278,research/reference,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|man",
+      "L7: 22277,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new aust",
+      "L8: 22277,research/reference,related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new austin|nuevo parais"
     ],
-    "size": 268959
+    "size": 277353
   },
   {
     "path": "data/codered/faction_wars_targets.csv",
     "source_kind": "repo/text",
-    "score": 7020,
+    "score": 7320,
     "category": "world host / gringo",
     "groups": {
-      "factions": 698,
-      "war_behavior": 80,
-      "spawning": 1994,
-      "world_hosts": 655,
-      "weapons_pressure": 585,
-      "scripting": 2796
+      "factions": 756,
+      "war_behavior": 89,
+      "spawning": 2092,
+      "world_hosts": 676,
+      "weapons_pressure": 598,
+      "scripting": 2897
     },
     "regions": [
       "armadillo",
@@ -1604,11 +1604,11 @@
       "L3: 34990,research/reference,related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv,repo/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|world_hosts:1863,,1074090",
       "L4: 34990,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__actor_enum_map.csv.fullread.txt,manifest/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|worl",
       "L5: 34990,research/reference,related_apps/CodeRED_Script_Workshop/workspace/edit/related_apps/Code_RED_ScriptHookRDR_AI_Menu/data/codered/actor_enum_map.csv,manifest/text,armadillo|macfarlane,factions:11907|spawning:20508|weapons_pressure:702|world_hosts:1863,,107",
-      "L6: 22116,research/reference,data/codered/faction_wars_targets.json,repo/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new austin|nuevo paraiso|plainview|rathskeller|ridgewood|rio bravo|tall trees|t",
-      "L7: 12671,research/reference,research/extracted_root_research/extracted_root_findings.csv,repo/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|thieves|tumbleweed,factions:548|scripting:1641|spawning:3721|war_behavior:335|weapons_pressure:976|world_hos",
-      "L8: 12671,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/research__extracted_root_research__extracted_root_findings.csv.fullread.txt,manifest/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|thieves|tumbleweed,factions:548|scrip"
+      "L6: 22278,research/reference,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_targets.json.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|man",
+      "L7: 22277,research/reference,related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_targets.json.fullread.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new aust",
+      "L8: 22277,research/reference,related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_targets.json,manifest/text,armadillo|blackwater|chuparosa|escalera|fort mercer|gaptooth|henningan|landing|macfarlane|manzanita|mexico|new austin|nuevo parais"
     ],
-    "size": 268959
+    "size": 277353
   },
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__gringos_findings.csv.decompiled_source.txt",
@@ -2347,6 +2347,258 @@
     "size": 213965
   },
   {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_actionable_targets.json.decompiled_source.txt",
+    "source_kind": "manifest/text",
+    "score": 3452,
+    "category": "world host / gringo",
+    "groups": {
+      "factions": 260,
+      "war_behavior": 26,
+      "spawning": 849,
+      "world_hosts": 807,
+      "weapons_pressure": 254,
+      "scripting": 1044
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L2: # Source: data/codered/faction_wars_actionable_targets.json",
+      "L11: \"category\": \"world host / gringo\",",
+      "L13: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt\",",
+      "L17: \"regions\": \"armadillo|blackwater|chuparosa|escalera|gaptooth|landing|manzanita|mexico|plainview|rathskeller|ridgewood|thieves|tumbleweed\",",
+      "L19: \"groups\": \"factions:1222|scripting:2227|spawning:2468|war_behavior:277|weapons_pressure:589|world_hosts:3045\",",
+      "L21: \"high_value_terms\": \"commongringos|gringobrain|population|refgroup|task_follow|vehicle_generator\",",
+      "L33: \"category\": \"world host / gringo\",",
+      "L35: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt\","
+    ],
+    "size": 203620
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_actionable_targets.json.fullread.txt",
+    "source_kind": "manifest/text",
+    "score": 3451,
+    "category": "world host / gringo",
+    "groups": {
+      "factions": 259,
+      "war_behavior": 26,
+      "spawning": 849,
+      "world_hosts": 807,
+      "weapons_pressure": 254,
+      "scripting": 1044
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L7: \"category\": \"world host / gringo\",",
+      "L9: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt\",",
+      "L13: \"regions\": \"armadillo|blackwater|chuparosa|escalera|gaptooth|landing|manzanita|mexico|plainview|rathskeller|ridgewood|thieves|tumbleweed\",",
+      "L15: \"groups\": \"factions:1222|scripting:2227|spawning:2468|war_behavior:277|weapons_pressure:589|world_hosts:3045\",",
+      "L17: \"high_value_terms\": \"commongringos|gringobrain|population|refgroup|task_follow|vehicle_generator\",",
+      "L29: \"category\": \"world host / gringo\",",
+      "L31: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt\",",
+      "L35: \"regions\": \"armadillo|blackwater|chuparosa|escalera|gaptooth|manzanita|rathskeller|tumbleweed\","
+    ],
+    "size": 203470
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_actionable_targets.json",
+    "source_kind": "manifest/text",
+    "score": 3451,
+    "category": "world host / gringo",
+    "groups": {
+      "factions": 259,
+      "war_behavior": 26,
+      "spawning": 849,
+      "world_hosts": 807,
+      "weapons_pressure": 254,
+      "scripting": 1044
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L4: \"category\": \"world host / gringo\",",
+      "L5: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt\",",
+      "L7: \"regions\": \"armadillo|blackwater|chuparosa|escalera|gaptooth|landing|manzanita|mexico|plainview|rathskeller|ridgewood|thieves|tumbleweed\",",
+      "L8: \"groups\": \"factions:1222|scripting:2227|spawning:2468|war_behavior:277|weapons_pressure:589|world_hosts:3045\",",
+      "L9: \"high_value_terms\": \"commongringos|gringobrain|population|refgroup|task_follow|vehicle_generator\",",
+      "L15: \"category\": \"world host / gringo\",",
+      "L16: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt\",",
+      "L18: \"regions\": \"armadillo|blackwater|chuparosa|escalera|gaptooth|manzanita|rathskeller|tumbleweed\","
+    ],
+    "size": 198431
+  },
+  {
+    "path": "data/codered/faction_wars_actionable_targets.json",
+    "source_kind": "repo/text",
+    "score": 3451,
+    "category": "world host / gringo",
+    "groups": {
+      "factions": 259,
+      "war_behavior": 26,
+      "spawning": 849,
+      "world_hosts": 807,
+      "weapons_pressure": 254,
+      "scripting": 1044
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L4: \"category\": \"world host / gringo\",",
+      "L5: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt\",",
+      "L7: \"regions\": \"armadillo|blackwater|chuparosa|escalera|gaptooth|landing|manzanita|mexico|plainview|rathskeller|ridgewood|thieves|tumbleweed\",",
+      "L8: \"groups\": \"factions:1222|scripting:2227|spawning:2468|war_behavior:277|weapons_pressure:589|world_hosts:3045\",",
+      "L9: \"high_value_terms\": \"commongringos|gringobrain|population|refgroup|task_follow|vehicle_generator\",",
+      "L15: \"category\": \"world host / gringo\",",
+      "L16: \"path\": \"related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt\",",
+      "L18: \"regions\": \"armadillo|blackwater|chuparosa|escalera|gaptooth|manzanita|rathskeller|tumbleweed\","
+    ],
+    "size": 198431
+  },
+  {
     "path": "scratch/script_workshop_pipeline/recompile_queue/research/menu resources/natives.h",
     "source_kind": "repo/text",
     "score": 3148,
@@ -2723,6 +2975,258 @@
       "L39: static void GET_ACTOR_AXIS(Actor actor, Vector3* axis, int p2) { invoke<void>(0x294A5549, actor, axis, p2); } // 0x294A5549"
     ],
     "size": 435144
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/data__codered__faction_wars_actionable_targets.csv.decompiled_source.txt",
+    "source_kind": "manifest/text",
+    "score": 2995,
+    "category": "world host / gringo",
+    "groups": {
+      "factions": 260,
+      "war_behavior": 26,
+      "spawning": 849,
+      "world_hosts": 350,
+      "weapons_pressure": 254,
+      "scripting": 1044
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L2: # Source: data/codered/faction_wars_actionable_targets.csv",
+      "L5: actionable_score,score,category,path,source_kind,regions,groups,high_value_terms,size",
+      "L7: 10116,9941,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|gaptooth|landing|manz",
+      "L9: 9771,9621,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|gaptooth|manzanit",
+      "L11: 8858,8733,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt,manifest/text,blackwater,factions:28|scripting:3851|spawning:6|",
+      "L13: 8850,8725,world host / gringo,research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv,repo/text,,factions:28|scripting:3851|spawning:6|war_behavior:6|weapons_pressure:98|world_hosts:4720,gringobrain|vehicle_generator,173869",
+      "L15: 8214,8089,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__vehicle_spawning_findings.csv.decompiled_source.txt,manifest/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|tumblewe",
+      "L17: 8213,8088,world host / gringo,research/extracted_root_research/vehicle_spawning_findings.csv,repo/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|tumbleweed,factions:255|scripting:336|spawning:3604|war_behavior:275|weapons_pressure:697|world_hosts"
+    ],
+    "size": 110271
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__faction_wars_actionable_targets.csv.fullread.txt",
+    "source_kind": "manifest/text",
+    "score": 2994,
+    "category": "world host / gringo",
+    "groups": {
+      "factions": 259,
+      "war_behavior": 26,
+      "spawning": 849,
+      "world_hosts": 350,
+      "weapons_pressure": 254,
+      "scripting": 1044
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L1: actionable_score,score,category,path,source_kind,regions,groups,high_value_terms,size",
+      "L3: 10116,9941,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|gaptooth|landing|manz",
+      "L5: 9771,9621,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|gaptooth|manzanit",
+      "L7: 8858,8733,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt,manifest/text,blackwater,factions:28|scripting:3851|spawning:6|",
+      "L9: 8850,8725,world host / gringo,research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv,repo/text,,factions:28|scripting:3851|spawning:6|war_behavior:6|weapons_pressure:98|world_hosts:4720,gringobrain|vehicle_generator,173869",
+      "L11: 8214,8089,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__vehicle_spawning_findings.csv.decompiled_source.txt,manifest/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|tumblewe",
+      "L13: 8213,8088,world host / gringo,research/extracted_root_research/vehicle_spawning_findings.csv,repo/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|tumbleweed,factions:255|scripting:336|spawning:3604|war_behavior:275|weapons_pressure:697|world_hosts",
+      "L15: 5507,5432,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__gringos_findings.csv.decompiled_source.txt,manifest/text,armadillo|chuparosa|gaptooth|landing,factions:60|scripting:1471|spawning:"
+    ],
+    "size": 110122
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/data/codered/faction_wars_actionable_targets.csv",
+    "source_kind": "manifest/text",
+    "score": 2994,
+    "category": "world host / gringo",
+    "groups": {
+      "factions": 259,
+      "war_behavior": 26,
+      "spawning": 849,
+      "world_hosts": 350,
+      "weapons_pressure": 254,
+      "scripting": 1044
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L1: actionable_score,score,category,path,source_kind,regions,groups,high_value_terms,size",
+      "L2: 10116,9941,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|gaptooth|landing|manz",
+      "L3: 9771,9621,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|gaptooth|manzanit",
+      "L4: 8858,8733,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt,manifest/text,blackwater,factions:28|scripting:3851|spawning:6|",
+      "L5: 8850,8725,world host / gringo,research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv,repo/text,,factions:28|scripting:3851|spawning:6|war_behavior:6|weapons_pressure:98|world_hosts:4720,gringobrain|vehicle_generator,173869",
+      "L6: 8214,8089,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__vehicle_spawning_findings.csv.decompiled_source.txt,manifest/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|tumblewe",
+      "L7: 8213,8088,world host / gringo,research/extracted_root_research/vehicle_spawning_findings.csv,repo/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|tumbleweed,factions:255|scripting:336|spawning:3604|war_behavior:275|weapons_pressure:697|world_hosts",
+      "L8: 5507,5432,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__gringos_findings.csv.decompiled_source.txt,manifest/text,armadillo|chuparosa|gaptooth|landing,factions:60|scripting:1471|spawning:"
+    ],
+    "size": 109663
+  },
+  {
+    "path": "data/codered/faction_wars_actionable_targets.csv",
+    "source_kind": "repo/text",
+    "score": 2994,
+    "category": "world host / gringo",
+    "groups": {
+      "factions": 259,
+      "war_behavior": 26,
+      "spawning": 849,
+      "world_hosts": 350,
+      "weapons_pressure": 254,
+      "scripting": 1044
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L1: actionable_score,score,category,path,source_kind,regions,groups,high_value_terms,size",
+      "L2: 10116,9941,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|gaptooth|landing|manz",
+      "L3: 9771,9621,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt,manifest/text,armadillo|blackwater|chuparosa|escalera|gaptooth|manzanit",
+      "L4: 8858,8733,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt,manifest/text,blackwater,factions:28|scripting:3851|spawning:6|",
+      "L5: 8850,8725,world host / gringo,research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv,repo/text,,factions:28|scripting:3851|spawning:6|war_behavior:6|weapons_pressure:98|world_hosts:4720,gringobrain|vehicle_generator,173869",
+      "L6: 8214,8089,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__vehicle_spawning_findings.csv.decompiled_source.txt,manifest/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|tumblewe",
+      "L7: 8213,8088,world host / gringo,research/extracted_root_research/vehicle_spawning_findings.csv,repo/text,armadillo|chuparosa|escalera|gaptooth|landing|manzanita|tumbleweed,factions:255|scripting:336|spawning:3604|war_behavior:275|weapons_pressure:697|world_hosts",
+      "L8: 5507,5432,world host / gringo,related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__extracted_root_research__gringos_findings.csv.decompiled_source.txt,manifest/text,armadillo|chuparosa|gaptooth|landing,factions:60|scripting:1471|spawning:"
+    ],
+    "size": 109663
   },
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__CodeRED_Cutscene_Placement_Pass15_Build__reports__tune_refgroup_vehicle_cutscene_candidates.csv.decompiled_source.txt",
@@ -5187,6 +5691,258 @@
     "size": 250462
   },
   {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__faction_wars__FW_TARGET_PLAN.md.decompiled_source.txt",
+    "source_kind": "manifest/text",
+    "score": 1089,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 89,
+      "war_behavior": 20,
+      "spawning": 334,
+      "world_hosts": 173,
+      "weapons_pressure": 46,
+      "scripting": 215
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L2: # Source: research/faction_wars/FW_TARGET_PLAN.md",
+      "L5: # Code RED Faction Wars Target Plan",
+      "L17: - No in-game menu spawning.",
+      "L19: - No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.",
+      "L23: - One changed script/resource/event at a time, with proof JSON and reopen verification.",
+      "L25: - Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.",
+      "L33: ### FW-1 \u2014 Pressure without script install",
+      "L37: Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path."
+    ],
+    "size": 42524
+  },
+  {
+    "path": "research/faction_wars/FW_TARGET_PLAN.md",
+    "source_kind": "repo/text",
+    "score": 1088,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 88,
+      "war_behavior": 20,
+      "spawning": 334,
+      "world_hosts": 173,
+      "weapons_pressure": 46,
+      "scripting": 215
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L1: # Code RED Faction Wars Target Plan",
+      "L7: - No in-game menu spawning.",
+      "L8: - No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.",
+      "L10: - One changed script/resource/event at a time, with proof JSON and reopen verification.",
+      "L11: - Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.",
+      "L15: ### FW-1 \u2014 Pressure without script install",
+      "L17: Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path.",
+      "L19: ### FW-2 \u2014 Existing event/script target discovery"
+    ],
+    "size": 42068
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/read/research__faction_wars__FW_TARGET_PLAN.md.fullread.txt",
+    "source_kind": "manifest/text",
+    "score": 1088,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 88,
+      "war_behavior": 20,
+      "spawning": 334,
+      "world_hosts": 173,
+      "weapons_pressure": 46,
+      "scripting": 215
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L1: # Code RED Faction Wars Target Plan",
+      "L13: - No in-game menu spawning.",
+      "L15: - No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.",
+      "L19: - One changed script/resource/event at a time, with proof JSON and reopen verification.",
+      "L21: - Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.",
+      "L29: ### FW-1 \u2014 Pressure without script install",
+      "L33: Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path.",
+      "L37: ### FW-2 \u2014 Existing event/script target discovery"
+    ],
+    "size": 42384
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/faction_wars/FW_TARGET_PLAN.md",
+    "source_kind": "manifest/text",
+    "score": 1088,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 88,
+      "war_behavior": 20,
+      "spawning": 334,
+      "world_hosts": 173,
+      "weapons_pressure": 46,
+      "scripting": 215
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L1: # Code RED Faction Wars Target Plan",
+      "L7: - No in-game menu spawning.",
+      "L8: - No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.",
+      "L10: - One changed script/resource/event at a time, with proof JSON and reopen verification.",
+      "L11: - Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.",
+      "L15: ### FW-1 \u2014 Pressure without script install",
+      "L17: Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path.",
+      "L19: ### FW-2 \u2014 Existing event/script target discovery"
+    ],
+    "size": 42068
+  },
+  {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/related_apps__Code_RED_ScriptHookRDR_AI_Menu__data__codered__rosters__npc_roster_law_gang_companion.txt.decompiled_source.txt",
     "source_kind": "manifest/text",
     "score": 1088,
@@ -5908,258 +6664,6 @@
     "size": 120077
   },
   {
-    "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__faction_wars__FW_TARGET_PLAN.md.decompiled_source.txt",
-    "source_kind": "manifest/text",
-    "score": 939,
-    "category": "tune/template pressure",
-    "groups": {
-      "factions": 64,
-      "war_behavior": 11,
-      "spawning": 284,
-      "world_hosts": 176,
-      "weapons_pressure": 43,
-      "scripting": 149
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "chuparosa",
-      "escalera",
-      "fort mercer",
-      "gaptooth",
-      "henningan",
-      "landing",
-      "macfarlane",
-      "manzanita",
-      "mexico",
-      "new austin",
-      "nuevo paraiso",
-      "plainview",
-      "rathskeller",
-      "ridgewood",
-      "rio bravo",
-      "tall trees",
-      "thieves",
-      "tumbleweed"
-    ],
-    "high_value_terms": [
-      "ai_is_hostile",
-      "commongringos",
-      "create_actor",
-      "get_actor_faction",
-      "gringobrain",
-      "population",
-      "refgroup",
-      "set_actor_faction",
-      "streaming_request_actor",
-      "task_follow",
-      "task_kill",
-      "task_stand",
-      "task_wander",
-      "vehicle_generator"
-    ],
-    "excerpts": [
-      "L2: # Source: research/faction_wars/FW_TARGET_PLAN.md",
-      "L5: # Code RED Faction Wars Target Plan",
-      "L17: - No in-game menu spawning.",
-      "L19: - No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.",
-      "L23: - One changed script/resource/event at a time, with proof JSON and reopen verification.",
-      "L25: - Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.",
-      "L33: ### FW-1 \u2014 Pressure without script install",
-      "L37: Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path."
-    ],
-    "size": 45376
-  },
-  {
-    "path": "research/faction_wars/FW_TARGET_PLAN.md",
-    "source_kind": "repo/text",
-    "score": 938,
-    "category": "tune/template pressure",
-    "groups": {
-      "factions": 63,
-      "war_behavior": 11,
-      "spawning": 284,
-      "world_hosts": 176,
-      "weapons_pressure": 43,
-      "scripting": 149
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "chuparosa",
-      "escalera",
-      "fort mercer",
-      "gaptooth",
-      "henningan",
-      "landing",
-      "macfarlane",
-      "manzanita",
-      "mexico",
-      "new austin",
-      "nuevo paraiso",
-      "plainview",
-      "rathskeller",
-      "ridgewood",
-      "rio bravo",
-      "tall trees",
-      "thieves",
-      "tumbleweed"
-    ],
-    "high_value_terms": [
-      "ai_is_hostile",
-      "commongringos",
-      "create_actor",
-      "get_actor_faction",
-      "gringobrain",
-      "population",
-      "refgroup",
-      "set_actor_faction",
-      "streaming_request_actor",
-      "task_follow",
-      "task_kill",
-      "task_stand",
-      "task_wander",
-      "vehicle_generator"
-    ],
-    "excerpts": [
-      "L1: # Code RED Faction Wars Target Plan",
-      "L7: - No in-game menu spawning.",
-      "L8: - No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.",
-      "L10: - One changed script/resource/event at a time, with proof JSON and reopen verification.",
-      "L11: - Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.",
-      "L15: ### FW-1 \u2014 Pressure without script install",
-      "L17: Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path.",
-      "L19: ### FW-2 \u2014 Existing event/script target discovery"
-    ],
-    "size": 44920
-  },
-  {
-    "path": "related_apps/CodeRED_Script_Workshop/workspace/read/research__faction_wars__FW_TARGET_PLAN.md.fullread.txt",
-    "source_kind": "manifest/text",
-    "score": 938,
-    "category": "tune/template pressure",
-    "groups": {
-      "factions": 63,
-      "war_behavior": 11,
-      "spawning": 284,
-      "world_hosts": 176,
-      "weapons_pressure": 43,
-      "scripting": 149
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "chuparosa",
-      "escalera",
-      "fort mercer",
-      "gaptooth",
-      "henningan",
-      "landing",
-      "macfarlane",
-      "manzanita",
-      "mexico",
-      "new austin",
-      "nuevo paraiso",
-      "plainview",
-      "rathskeller",
-      "ridgewood",
-      "rio bravo",
-      "tall trees",
-      "thieves",
-      "tumbleweed"
-    ],
-    "high_value_terms": [
-      "ai_is_hostile",
-      "commongringos",
-      "create_actor",
-      "get_actor_faction",
-      "gringobrain",
-      "population",
-      "refgroup",
-      "set_actor_faction",
-      "streaming_request_actor",
-      "task_follow",
-      "task_kill",
-      "task_stand",
-      "task_wander",
-      "vehicle_generator"
-    ],
-    "excerpts": [
-      "L1: # Code RED Faction Wars Target Plan",
-      "L13: - No in-game menu spawning.",
-      "L15: - No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.",
-      "L19: - One changed script/resource/event at a time, with proof JSON and reopen verification.",
-      "L21: - Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.",
-      "L29: ### FW-1 \u2014 Pressure without script install",
-      "L33: Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path.",
-      "L37: ### FW-2 \u2014 Existing event/script target discovery"
-    ],
-    "size": 45236
-  },
-  {
-    "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/faction_wars/FW_TARGET_PLAN.md",
-    "source_kind": "manifest/text",
-    "score": 938,
-    "category": "tune/template pressure",
-    "groups": {
-      "factions": 63,
-      "war_behavior": 11,
-      "spawning": 284,
-      "world_hosts": 176,
-      "weapons_pressure": 43,
-      "scripting": 149
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "chuparosa",
-      "escalera",
-      "fort mercer",
-      "gaptooth",
-      "henningan",
-      "landing",
-      "macfarlane",
-      "manzanita",
-      "mexico",
-      "new austin",
-      "nuevo paraiso",
-      "plainview",
-      "rathskeller",
-      "ridgewood",
-      "rio bravo",
-      "tall trees",
-      "thieves",
-      "tumbleweed"
-    ],
-    "high_value_terms": [
-      "ai_is_hostile",
-      "commongringos",
-      "create_actor",
-      "get_actor_faction",
-      "gringobrain",
-      "population",
-      "refgroup",
-      "set_actor_faction",
-      "streaming_request_actor",
-      "task_follow",
-      "task_kill",
-      "task_stand",
-      "task_wander",
-      "vehicle_generator"
-    ],
-    "excerpts": [
-      "L1: # Code RED Faction Wars Target Plan",
-      "L7: - No in-game menu spawning.",
-      "L8: - No direct raw `CREATE_ACTOR_IN_LAYOUT` tests for faction wars.",
-      "L10: - One changed script/resource/event at a time, with proof JSON and reopen verification.",
-      "L11: - Prefer existing event, tune, refgroup, WSI/WGD, and gringo hosts over invented spawns.",
-      "L15: ### FW-1 \u2014 Pressure without script install",
-      "L17: Use tune/content/resource patches to increase law/gang pressure, awareness, lasso/hogtie, dogs, weapons, and event density. This is the safest live path.",
-      "L19: ### FW-2 \u2014 Existing event/script target discovery"
-    ],
-    "size": 44920
-  },
-  {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__dualgun_left_hand_bypass__smic_gunbelt_rows.csv.decompiled_source.txt",
     "source_kind": "manifest/text",
     "score": 912,
@@ -6590,6 +7094,258 @@
       "L8: /mnt/data/codered_run/blackwater_type134/0224_0x19839F99.wsi.decoded,ascii_string_keyword,1848756,0x001C35B4,i_gen_hitchingPost02x/a_has_gringo_gringoannotation_has_gringo,0xF6E0BE01,0x0018F000,blk_bank01x,blackwater,,,\"[675.444214, 78.305908, 1225.108032, 15."
     ],
     "size": 89103
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__faction_wars__FW_ACTIONABLE_TARGETS.md.decompiled_source.txt",
+    "source_kind": "manifest/text",
+    "score": 707,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 37,
+      "war_behavior": 14,
+      "spawning": 161,
+      "world_hosts": 96,
+      "weapons_pressure": 4,
+      "scripting": 183
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L2: # Source: research/faction_wars/FW_ACTIONABLE_TARGETS.md",
+      "L5: # Code RED Faction Wars \u2014 Actionable Targets",
+      "L13: This shortlist filters out Code RED generated manifests, actor enum maps, index files, and Script Workshop duplicate read/edit exports.",
+      "L21: Start with one FW-1 tune/template pressure target or one FW-2 world-host/gringo target. Do not start with a source script replacement unless it is the only clean target left.",
+      "L29: | Rank | Actionable score | Raw score | Category | Path | Regions | High-value terms |",
+      "L33: | 1 | 10116 | 9941 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt` | armadillo|blackwater|chuparosa|escalera|gaptooth|landing|ma",
+      "L35: | 2 | 9771 | 9621 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt` | armadillo|blackwater|chuparosa|escalera|gaptooth|manzan",
+      "L37: | 3 | 8858 | 8733 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt` | blackwater | gringobrain|vehicle_generator |"
+    ],
+    "size": 17174
+  },
+  {
+    "path": "research/faction_wars/FW_ACTIONABLE_TARGETS.md",
+    "source_kind": "repo/text",
+    "score": 706,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 36,
+      "war_behavior": 14,
+      "spawning": 161,
+      "world_hosts": 96,
+      "weapons_pressure": 4,
+      "scripting": 183
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L1: # Code RED Faction Wars \u2014 Actionable Targets",
+      "L5: This shortlist filters out Code RED generated manifests, actor enum maps, index files, and Script Workshop duplicate read/edit exports.",
+      "L9: Start with one FW-1 tune/template pressure target or one FW-2 world-host/gringo target. Do not start with a source script replacement unless it is the only clean target left.",
+      "L13: | Rank | Actionable score | Raw score | Category | Path | Regions | High-value terms |",
+      "L15: | 1 | 10116 | 9941 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt` | armadillo|blackwater|chuparosa|escalera|gaptooth|landing|ma",
+      "L16: | 2 | 9771 | 9621 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt` | armadillo|blackwater|chuparosa|escalera|gaptooth|manzan",
+      "L17: | 3 | 8858 | 8733 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt` | blackwater | gringobrain|vehicle_generator |",
+      "L18: | 4 | 8850 | 8725 | world host / gringo | `research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv` |  | gringobrain|vehicle_generator |"
+    ],
+    "size": 16949
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/read/research__faction_wars__FW_ACTIONABLE_TARGETS.md.fullread.txt",
+    "source_kind": "manifest/text",
+    "score": 706,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 36,
+      "war_behavior": 14,
+      "spawning": 161,
+      "world_hosts": 96,
+      "weapons_pressure": 4,
+      "scripting": 183
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L1: # Code RED Faction Wars \u2014 Actionable Targets",
+      "L9: This shortlist filters out Code RED generated manifests, actor enum maps, index files, and Script Workshop duplicate read/edit exports.",
+      "L17: Start with one FW-1 tune/template pressure target or one FW-2 world-host/gringo target. Do not start with a source script replacement unless it is the only clean target left.",
+      "L25: | Rank | Actionable score | Raw score | Category | Path | Regions | High-value terms |",
+      "L29: | 1 | 10116 | 9941 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt` | armadillo|blackwater|chuparosa|escalera|gaptooth|landing|ma",
+      "L31: | 2 | 9771 | 9621 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt` | armadillo|blackwater|chuparosa|escalera|gaptooth|manzan",
+      "L33: | 3 | 8858 | 8733 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt` | blackwater | gringobrain|vehicle_generator |",
+      "L35: | 4 | 8850 | 8725 | world host / gringo | `research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv` |  | gringobrain|vehicle_generator |"
+    ],
+    "size": 17027
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/research/faction_wars/FW_ACTIONABLE_TARGETS.md",
+    "source_kind": "manifest/text",
+    "score": 706,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 36,
+      "war_behavior": 14,
+      "spawning": 161,
+      "world_hosts": 96,
+      "weapons_pressure": 4,
+      "scripting": 183
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "chuparosa",
+      "escalera",
+      "fort mercer",
+      "gaptooth",
+      "henningan",
+      "landing",
+      "macfarlane",
+      "manzanita",
+      "mexico",
+      "new austin",
+      "nuevo paraiso",
+      "plainview",
+      "rathskeller",
+      "ridgewood",
+      "rio bravo",
+      "tall trees",
+      "thieves",
+      "tumbleweed"
+    ],
+    "high_value_terms": [
+      "ai_is_hostile",
+      "commongringos",
+      "create_actor",
+      "get_actor_faction",
+      "gringobrain",
+      "population",
+      "refgroup",
+      "set_actor_faction",
+      "streaming_request_actor",
+      "task_follow",
+      "task_kill",
+      "task_stand",
+      "task_wander",
+      "vehicle_generator"
+    ],
+    "excerpts": [
+      "L1: # Code RED Faction Wars \u2014 Actionable Targets",
+      "L5: This shortlist filters out Code RED generated manifests, actor enum maps, index files, and Script Workshop duplicate read/edit exports.",
+      "L9: Start with one FW-1 tune/template pressure target or one FW-2 world-host/gringo target. Do not start with a source script replacement unless it is the only clean target left.",
+      "L13: | Rank | Actionable score | Raw score | Category | Path | Regions | High-value terms |",
+      "L15: | 1 | 10116 | 9941 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__file_index.csv.decompiled_source.txt` | armadillo|blackwater|chuparosa|escalera|gaptooth|landing|ma",
+      "L16: | 2 | 9771 | 9621 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__IMPORTANT_readable_root_index_2026-05-02__important_files.csv.decompiled_source.txt` | armadillo|blackwater|chuparosa|escalera|gaptooth|manzan",
+      "L17: | 3 | 8858 | 8733 | world host / gringo | `related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__blackwater_wsi_gringo_correlation_outputs__wgd_keyword_components.csv.decompiled_source.txt` | blackwater | gringobrain|vehicle_generator |",
+      "L18: | 4 | 8850 | 8725 | world host / gringo | `research/blackwater_wsi_gringo_correlation_outputs/wgd_keyword_components.csv` |  | gringobrain|vehicle_generator |"
+    ],
+    "size": 16949
   },
   {
     "path": "research/Code_RED_Car_Truck_FBI_Pass26_RESEARCH/reports/fbi_car_truck_raw_hits.csv",
@@ -10883,6 +11639,41 @@
     "size": 40849
   },
   {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/tools__codered_faction_wars_actionable_targets.py.decompiled_source.txt",
+    "source_kind": "manifest/text",
+    "score": 142,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 33,
+      "war_behavior": 6,
+      "spawning": 14,
+      "world_hosts": 24,
+      "weapons_pressure": 6,
+      "scripting": 23
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "fort mercer",
+      "thieves"
+    ],
+    "high_value_terms": [
+      "population",
+      "refgroup"
+    ],
+    "excerpts": [
+      "L2: # Source: tools/codered_faction_wars_actionable_targets.py",
+      "L7: \"\"\"Create an actionable Faction Wars target shortlist from the broad scan.",
+      "L11: The broad scanner intentionally catches a lot. This pass removes Code RED's own",
+      "L13: generated manifests, index catalogs, actor enum maps, SDK headers, and Script",
+      "L17: gringo, archive, and script candidates.",
+      "L41: VERSION = \"1.1.0-actionable-faction-targets-cleaner\"",
+      "L43: TARGETS_CSV = Path(\"data/codered/faction_wars_targets.csv\")",
+      "L45: ACTIONABLE_CSV = Path(\"data/codered/faction_wars_actionable_targets.csv\")"
+    ],
+    "size": 14215
+  },
+  {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/research__15_50_rival_gang_towns_report.json.decompiled_source.txt",
     "source_kind": "manifest/text",
     "score": 142,
@@ -10908,6 +11699,111 @@
       "L61: \"lasso_15_30_still_applied\": true"
     ],
     "size": 4817
+  },
+  {
+    "path": "tools/codered_faction_wars_actionable_targets.py",
+    "source_kind": "repo/text",
+    "score": 141,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 32,
+      "war_behavior": 6,
+      "spawning": 14,
+      "world_hosts": 24,
+      "weapons_pressure": 6,
+      "scripting": 23
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "fort mercer",
+      "thieves"
+    ],
+    "high_value_terms": [
+      "population",
+      "refgroup"
+    ],
+    "excerpts": [
+      "L2: \"\"\"Create an actionable Faction Wars target shortlist from the broad scan.",
+      "L4: The broad scanner intentionally catches a lot. This pass removes Code RED's own",
+      "L5: generated manifests, index catalogs, actor enum maps, SDK headers, and Script",
+      "L7: gringo, archive, and script candidates.",
+      "L19: VERSION = \"1.1.0-actionable-faction-targets-cleaner\"",
+      "L20: TARGETS_CSV = Path(\"data/codered/faction_wars_targets.csv\")",
+      "L21: ACTIONABLE_CSV = Path(\"data/codered/faction_wars_actionable_targets.csv\")",
+      "L22: ACTIONABLE_JSON = Path(\"data/codered/faction_wars_actionable_targets.json\")"
+    ],
+    "size": 13713
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/read/tools__codered_faction_wars_actionable_targets.py.fullread.txt",
+    "source_kind": "manifest/text",
+    "score": 141,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 32,
+      "war_behavior": 6,
+      "spawning": 14,
+      "world_hosts": 24,
+      "weapons_pressure": 6,
+      "scripting": 23
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "fort mercer",
+      "thieves"
+    ],
+    "high_value_terms": [
+      "population",
+      "refgroup"
+    ],
+    "excerpts": [
+      "L3: \"\"\"Create an actionable Faction Wars target shortlist from the broad scan.",
+      "L7: The broad scanner intentionally catches a lot. This pass removes Code RED's own",
+      "L9: generated manifests, index catalogs, actor enum maps, SDK headers, and Script",
+      "L13: gringo, archive, and script candidates.",
+      "L37: VERSION = \"1.1.0-actionable-faction-targets-cleaner\"",
+      "L39: TARGETS_CSV = Path(\"data/codered/faction_wars_targets.csv\")",
+      "L41: ACTIONABLE_CSV = Path(\"data/codered/faction_wars_actionable_targets.csv\")",
+      "L43: ACTIONABLE_JSON = Path(\"data/codered/faction_wars_actionable_targets.json\")"
+    ],
+    "size": 14066
+  },
+  {
+    "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_faction_wars_actionable_targets.py",
+    "source_kind": "manifest/text",
+    "score": 141,
+    "category": "tune/template pressure",
+    "groups": {
+      "factions": 32,
+      "war_behavior": 6,
+      "spawning": 14,
+      "world_hosts": 24,
+      "weapons_pressure": 6,
+      "scripting": 23
+    },
+    "regions": [
+      "armadillo",
+      "blackwater",
+      "fort mercer",
+      "thieves"
+    ],
+    "high_value_terms": [
+      "population",
+      "refgroup"
+    ],
+    "excerpts": [
+      "L2: \"\"\"Create an actionable Faction Wars target shortlist from the broad scan.",
+      "L4: The broad scanner intentionally catches a lot. This pass removes Code RED's own",
+      "L5: generated manifests, index catalogs, actor enum maps, SDK headers, and Script",
+      "L7: gringo, archive, and script candidates.",
+      "L19: VERSION = \"1.1.0-actionable-faction-targets-cleaner\"",
+      "L20: TARGETS_CSV = Path(\"data/codered/faction_wars_targets.csv\")",
+      "L21: ACTIONABLE_CSV = Path(\"data/codered/faction_wars_actionable_targets.csv\")",
+      "L22: ACTIONABLE_JSON = Path(\"data/codered/faction_wars_actionable_targets.json\")"
+    ],
+    "size": 13713
   },
   {
     "path": "research/15_50_rival_gang_towns_report.json",
@@ -12206,146 +13102,6 @@
       "L8: /mnt/data/codered_run/blackwater_type134/0224_0x19839F99.wsi.decoded,i_gen_wagonParts02x,0xB25DD799,default_priority_hosts,,i_gen_wagonParts02x,0x0022CF60,0x5022CF60,0x0010C978,resolved_to_known_array_record,drawable_instance_0xE0,1099968,0x0010C8C0,224,184,0x"
     ],
     "size": 23935
-  },
-  {
-    "path": "related_apps/CodeRED_Script_Workshop/workspace/decompiled_export/tools__codered_faction_wars_actionable_targets.py.decompiled_source.txt",
-    "source_kind": "manifest/text",
-    "score": 115,
-    "category": "tune/template pressure",
-    "groups": {
-      "factions": 29,
-      "war_behavior": 3,
-      "spawning": 8,
-      "world_hosts": 19,
-      "weapons_pressure": 3,
-      "scripting": 17
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "fort mercer",
-      "thieves"
-    ],
-    "high_value_terms": [
-      "population",
-      "refgroup"
-    ],
-    "excerpts": [
-      "L2: # Source: tools/codered_faction_wars_actionable_targets.py",
-      "L7: \"\"\"Create an actionable Faction Wars target shortlist from the broad scan.",
-      "L11: The broad scanner intentionally catches a lot. This pass removes Code RED's own",
-      "L13: generated manifests, actor enum maps, and Script Workshop duplicate read/edit",
-      "L15: exports so FW-1 can focus on real tune/template, world-host/gringo, archive, and",
-      "L17: script candidates.",
-      "L41: VERSION = \"1.0.0-actionable-faction-targets\"",
-      "L43: TARGETS_CSV = Path(\"data/codered/faction_wars_targets.csv\")"
-    ],
-    "size": 11870
-  },
-  {
-    "path": "tools/codered_faction_wars_actionable_targets.py",
-    "source_kind": "repo/text",
-    "score": 114,
-    "category": "tune/template pressure",
-    "groups": {
-      "factions": 28,
-      "war_behavior": 3,
-      "spawning": 8,
-      "world_hosts": 19,
-      "weapons_pressure": 3,
-      "scripting": 17
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "fort mercer",
-      "thieves"
-    ],
-    "high_value_terms": [
-      "population",
-      "refgroup"
-    ],
-    "excerpts": [
-      "L2: \"\"\"Create an actionable Faction Wars target shortlist from the broad scan.",
-      "L4: The broad scanner intentionally catches a lot. This pass removes Code RED's own",
-      "L5: generated manifests, actor enum maps, and Script Workshop duplicate read/edit",
-      "L6: exports so FW-1 can focus on real tune/template, world-host/gringo, archive, and",
-      "L7: script candidates.",
-      "L19: VERSION = \"1.0.0-actionable-faction-targets\"",
-      "L20: TARGETS_CSV = Path(\"data/codered/faction_wars_targets.csv\")",
-      "L21: ACTIONABLE_CSV = Path(\"data/codered/faction_wars_actionable_targets.csv\")"
-    ],
-    "size": 11425
-  },
-  {
-    "path": "related_apps/CodeRED_Script_Workshop/workspace/read/tools__codered_faction_wars_actionable_targets.py.fullread.txt",
-    "source_kind": "manifest/text",
-    "score": 114,
-    "category": "tune/template pressure",
-    "groups": {
-      "factions": 28,
-      "war_behavior": 3,
-      "spawning": 8,
-      "world_hosts": 19,
-      "weapons_pressure": 3,
-      "scripting": 17
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "fort mercer",
-      "thieves"
-    ],
-    "high_value_terms": [
-      "population",
-      "refgroup"
-    ],
-    "excerpts": [
-      "L3: \"\"\"Create an actionable Faction Wars target shortlist from the broad scan.",
-      "L7: The broad scanner intentionally catches a lot. This pass removes Code RED's own",
-      "L9: generated manifests, actor enum maps, and Script Workshop duplicate read/edit",
-      "L11: exports so FW-1 can focus on real tune/template, world-host/gringo, archive, and",
-      "L13: script candidates.",
-      "L37: VERSION = \"1.0.0-actionable-faction-targets\"",
-      "L39: TARGETS_CSV = Path(\"data/codered/faction_wars_targets.csv\")",
-      "L41: ACTIONABLE_CSV = Path(\"data/codered/faction_wars_actionable_targets.csv\")"
-    ],
-    "size": 11721
-  },
-  {
-    "path": "related_apps/CodeRED_Script_Workshop/workspace/edit/tools/codered_faction_wars_actionable_targets.py",
-    "source_kind": "manifest/text",
-    "score": 114,
-    "category": "tune/template pressure",
-    "groups": {
-      "factions": 28,
-      "war_behavior": 3,
-      "spawning": 8,
-      "world_hosts": 19,
-      "weapons_pressure": 3,
-      "scripting": 17
-    },
-    "regions": [
-      "armadillo",
-      "blackwater",
-      "fort mercer",
-      "thieves"
-    ],
-    "high_value_terms": [
-      "population",
-      "refgroup"
-    ],
-    "excerpts": [
-      "L2: \"\"\"Create an actionable Faction Wars target shortlist from the broad scan.",
-      "L4: The broad scanner intentionally catches a lot. This pass removes Code RED's own",
-      "L5: generated manifests, actor enum maps, and Script Workshop duplicate read/edit",
-      "L6: exports so FW-1 can focus on real tune/template, world-host/gringo, archive, and",
-      "L7: script candidates.",
-      "L19: VERSION = \"1.0.0-actionable-faction-targets\"",
-      "L20: TARGETS_CSV = Path(\"data/codered/faction_wars_targets.csv\")",
-      "L21: ACTIONABLE_CSV = Path(\"data/codered/faction_wars_actionable_targets.csv\")"
-    ],
-    "size": 11425
   },
   {
     "path": "related_apps/CodeRED_Script_Workshop/workspace/read/data__codered__native_bridge_manifest.csv.fullread.txt",

@@ -1,17 +1,17 @@
 {
   "version": "1.0.0-native-bridge-generation-pass",
-  "generated_utc": "2026-05-03T09:08:32Z",
+  "generated_utc": "2026-05-07T10:52:13Z",
   "profile": "ai_trainer_core",
   "counts": {
     "selected": 26,
     "ready": 26,
     "partial": 0,
     "sdk_database_entries": 3492,
-    "native_database_entries": 9102
+    "native_database_entries": 26
   },
   "sources": {
-    "native_database": "/mnt/data/codered_work/data/codered/native_database.json",
-    "sdk_natives": "/mnt/data/codered_work/data/ScriptHookRDR/sdk/inc/natives.h"
+    "native_database": "D:\\Games\\Red Dead Redemption\\Code_RED\\data\\codered\\native_database.json",
+    "sdk_natives": "D:\\Games\\Red Dead Redemption\\Code_RED\\data\\ScriptHookRDR\\sdk\\inc\\natives.h"
   },
   "entries": [
     {
@@ -24,7 +24,7 @@
       ],
       "db_return_type": "Actor",
       "db_params": [
-        "int PlayerId"
+        "Player player"
       ],
       "sdk_line": 57,
       "db_line": 248,
@@ -39,9 +39,9 @@
       "params": [
         "Actor actor"
       ],
-      "db_return_type": "bool",
+      "db_return_type": "BOOL",
       "db_params": [
-        "Actor Actor"
+        "Actor actor"
       ],
       "sdk_line": 1463,
       "db_line": 100,
@@ -56,9 +56,9 @@
       "params": [
         "Actor actor"
       ],
-      "db_return_type": "int",
+      "db_return_type": "BOOL",
       "db_params": [
-        "int pram0"
+        "Actor actor"
       ],
       "sdk_line": 2022,
       "db_line": 209,
@@ -75,7 +75,7 @@
       ],
       "db_return_type": "Layout",
       "db_params": [
-        "const char* LayoutName"
+        "const char* layoutName"
       ],
       "sdk_line": 2732,
       "db_line": 97,
@@ -115,18 +115,18 @@
       ],
       "db_return_type": "Actor",
       "db_params": [
-        "Layout Layout",
-        "const char* ActorName",
-        "eActor ActorID",
-        "vector3 Position",
-        "vector3 Rotation"
+        "Layout layout",
+        "const char* layoutName",
+        "int actorEnum",
+        "Vector2 positionXY",
+        "float positionZ",
+        "Vector2 orientationXY",
+        "float orientationZ"
       ],
       "sdk_line": 3005,
       "db_line": 370,
       "status": "ready",
-      "warnings": [
-        "param_count_diff_db_5_sdk_7"
-      ]
+      "warnings": []
     },
     {
       "name": "GET_POSITION",
@@ -139,8 +139,8 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0",
-        "vector3* outCoords"
+        "Actor actor",
+        "Vector3* position"
       ],
       "sdk_line": 16,
       "db_line": 353,
@@ -161,11 +161,11 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "Actor Actor",
-        "vector3* Position",
-        "bool Unk1",
-        "bool _Unk1",
-        "bool __Unk1"
+        "Actor actor",
+        "Vector3* coords",
+        "BOOL xAxis",
+        "BOOL yAxis",
+        "BOOL zAxis"
       ],
       "sdk_line": 12,
       "db_line": 1037,
@@ -184,9 +184,9 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "Actor Actor",
-        "float Heading",
-        "bool Unk1"
+        "Actor actor",
+        "float heading",
+        "BOOL p2"
       ],
       "sdk_line": 19,
       "db_line": 1046,
@@ -203,7 +203,7 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0"
+        "Actor actor"
       ],
       "sdk_line": 3753,
       "db_line": 722,
@@ -223,10 +223,10 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0",
-        "int pram1",
-        "int pram2",
-        "int pram3"
+        "Actor actor",
+        "float p1",
+        "int p2",
+        "int p3"
       ],
       "sdk_line": 3727,
       "db_line": 371,
@@ -244,8 +244,8 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0",
-        "int pram1"
+        "Any p0",
+        "Any p1"
       ],
       "sdk_line": 3743,
       "db_line": 723,
@@ -263,8 +263,8 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0",
-        "int pram1"
+        "Actor actor",
+        "Actor followActor"
       ],
       "sdk_line": 3678,
       "db_line": 1078,
@@ -282,8 +282,8 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0",
-        "int pram1"
+        "Any p0",
+        "Any p1"
       ],
       "sdk_line": 3704,
       "db_line": 422,
@@ -301,8 +301,8 @@
       ],
       "db_return_type": "int",
       "db_params": [
-        "int pram0",
-        "int pram1"
+        "Any p0",
+        "Any p1"
       ],
       "sdk_line": 447,
       "db_line": 853,
@@ -320,8 +320,8 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0",
-        "int pram1"
+        "Actor actor",
+        "int faction"
       ],
       "sdk_line": 1667,
       "db_line": 1104,
@@ -338,7 +338,7 @@
       ],
       "db_return_type": "int",
       "db_params": [
-        "int pram0"
+        "Actor actor"
       ],
       "sdk_line": 1665,
       "db_line": 1047,
@@ -359,11 +359,11 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "Actor Actor",
-        "int WeaponID",
-        "int Unk0",
-        "int Unk1",
-        "int _Unk1"
+        "Actor actor",
+        "int weaponEnum",
+        "float ammoCount",
+        "BOOL p3",
+        "Any p4"
       ],
       "sdk_line": 2269,
       "db_line": 144,
@@ -385,12 +385,12 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0",
-        "int pram1",
-        "int pram2",
-        "int pram3",
-        "int pram4",
-        "int pram5"
+        "Any p0",
+        "Any p1",
+        "Any p2",
+        "Any p3",
+        "Any p4",
+        "Any p5"
       ],
       "sdk_line": 3707,
       "db_line": 868,
@@ -408,8 +408,8 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0",
-        "int pram1"
+        "Any p0",
+        "Any p1"
       ],
       "sdk_line": 3667,
       "db_line": 1080,
@@ -424,9 +424,9 @@
       "params": [
         "Actor actor"
       ],
-      "db_return_type": "int",
+      "db_return_type": "Mount",
       "db_params": [
-        "int pram0"
+        "Actor actor"
       ],
       "sdk_line": 3353,
       "db_line": 727,
@@ -441,9 +441,9 @@
       "params": [
         "Actor actor"
       ],
-      "db_return_type": "int",
+      "db_return_type": "Vehicle",
       "db_params": [
-        "int pram0"
+        "Actor actor"
       ],
       "sdk_line": 3880,
       "db_line": 418,
@@ -460,7 +460,7 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "Actor Vehicle"
+        "Vehicle vehicle"
       ],
       "sdk_line": 3893,
       "db_line": 955,
@@ -477,7 +477,7 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0"
+        "Vehicle vehicle"
       ],
       "sdk_line": 3892,
       "db_line": 972,
@@ -494,7 +494,7 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0"
+        "Any p0"
       ],
       "sdk_line": 3742,
       "db_line": 1020,
@@ -511,7 +511,7 @@
       ],
       "db_return_type": "void",
       "db_params": [
-        "int pram0"
+        "Layout layout"
       ],
       "sdk_line": 2790,
       "db_line": 177,

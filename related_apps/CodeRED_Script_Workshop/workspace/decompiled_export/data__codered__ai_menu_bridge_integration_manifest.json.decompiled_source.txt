@@ -1,29 +1,29 @@
 # Code RED source/decompiled export
 # Source: data/codered/ai_menu_bridge_integration_manifest.json
-# SHA1: 62095aa4458ab7d4d0571112b7edc2b8c9905bb6
+# SHA1: 5caf94c7ad4e9563529b99aaae5ede1ee857e76c
 
 {
   "version": "1.0.0-ai-menu-bridge-integration-prep",
-  "generated_utc": "2026-05-03T09:14:27Z",
+  "generated_utc": "2026-05-10T21:12:28Z",
   "ok": true,
-  "source": "/mnt/data/codered_work/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.cpp",
-  "candidate": "/mnt/data/codered_work/related_apps/Code_RED_ScriptHookRDR_AI_Menu/CodeRED_AI_Menu.bridge_candidate.cpp",
-  "wrappers": "/mnt/data/codered_work/data/codered/native_bridge_selected_wrappers.cpp",
+  "source": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Code_RED_ScriptHookRDR_AI_Menu\\CodeRED_AI_Menu.cpp",
+  "candidate": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Code_RED_ScriptHookRDR_AI_Menu\\CodeRED_AI_Menu.bridge_candidate.cpp",
+  "wrappers": "D:\\Games\\Red Dead Redemption\\Code_RED\\data\\codered\\native_bridge_selected_wrappers.cpp",
   "selected_natives": 26,
   "ready_wrappers": 26,
   "inserted": true,
-  "build_helper": "/mnt/data/codered_work/related_apps/Code_RED_ScriptHookRDR_AI_Menu/build_bridge_candidate.bat",
-  "diff": "/mnt/data/codered_work/logs/CodeRED_AI_Menu_Bridge_Integration_Candidate.diff",
-  "manifest": "/mnt/data/codered_work/data/codered/ai_menu_bridge_integration_manifest.json",
-  "report_markdown": "/mnt/data/codered_work/logs/CodeRED_AI_Menu_Bridge_Integration_Report.md",
-  "report_json": "/mnt/data/codered_work/logs/CodeRED_AI_Menu_Bridge_Integration_Report.json",
+  "build_helper": "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Code_RED_ScriptHookRDR_AI_Menu\\build_bridge_candidate.bat",
+  "diff": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\CodeRED_AI_Menu_Bridge_Integration_Candidate.diff",
+  "manifest": "D:\\Games\\Red Dead Redemption\\Code_RED\\data\\codered\\ai_menu_bridge_integration_manifest.json",
+  "report_markdown": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\CodeRED_AI_Menu_Bridge_Integration_Report.md",
+  "report_json": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\CodeRED_AI_Menu_Bridge_Integration_Report.json",
   "existing_native_usage": {
-    "CREATE_ACTOR_IN_LAYOUT": 1,
-    "TASK_FOLLOW_ACTOR": 3,
-    "TASK_KILL_CHAR": 1,
-    "SET_ACTOR_FACTION": 3,
-    "GET_ACTOR_FACTION": 1,
-    "AI_IS_HOSTILE_OR_ENEMY": 2
+    "CREATE_ACTOR_IN_LAYOUT": 3,
+    "TASK_FOLLOW_ACTOR": 5,
+    "TASK_KILL_CHAR": 3,
+    "SET_ACTOR_FACTION": 5,
+    "GET_ACTOR_FACTION": 3,
+    "AI_IS_HOSTILE_OR_ENEMY": 4
   },
   "warnings": [],
   "errors": []

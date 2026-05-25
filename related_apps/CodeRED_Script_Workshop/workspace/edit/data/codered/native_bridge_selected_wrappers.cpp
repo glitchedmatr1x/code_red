@@ -1,5 +1,5 @@
 // Code RED selected native bridge prep
-// Generated: 2026-05-03T09:08:32Z
+// Generated: 2026-05-07T10:52:13Z
 // Profile: ai_trainer_core
 // Include this below the existing nativeInvoke/nativePush helpers in CodeRED_AI_Menu.cpp.
 // This file is bridge prep, not a blind auto-install patch.

@@ -1,6 +1,6 @@
 # Code RED source/decompiled export
 # Source: data/codered/native_bridge_manifest.csv
-# SHA1: 0731412c8326a83825e6fd46b4cb515484dd9da6
+# SHA1: 5112f721bb947836cdff6740740915cd4184578f
 
 name,hash,category,return_type,param_count,sdk_line,db_line,status,warnings
 GET_PLAYER_ACTOR,0xE8CFDD53,actor,Actor,1,57,248,ready,
@@ -8,7 +8,7 @@ IS_ACTOR_VALID,0xBA6C3E92,actor,BOOL,1,1463,100,ready,
 IS_ACTOR_ALIVE,0x2F232639,actor,BOOL,1,2022,209,ready,
 FIND_NAMED_LAYOUT,0x5699DE7E,world,Layout,1,2732,97,ready,
 CREATE_LAYOUT,0x6CA53214,world,Layout,1,2758,108,ready,
-CREATE_ACTOR_IN_LAYOUT,0x8D67F397,actor,Actor,7,3005,370,ready,param_count_diff_db_5_sdk_7
+CREATE_ACTOR_IN_LAYOUT,0x8D67F397,actor,Actor,7,3005,370,ready,
 GET_POSITION,0x99BD9D6F,world,void,2,16,353,ready,
 TELEPORT_ACTOR,0x2D54B916,actor,void,5,12,1037,ready,
 SET_ACTOR_HEADING,0xECE8520B,actor,void,3,19,1046,ready,

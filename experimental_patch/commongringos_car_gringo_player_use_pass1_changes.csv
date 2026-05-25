@@ -1,3 +1,0 @@
-offset_hex,field,old_hex,new_hex,old_value,new_value
-0x3D3C0,car_gringo.Childs Rsc6PtrArr (position/count/cap),0000000000000000,58310c5001000100,"null, 0, 0","borrow PlayerCar child pointer array, count 1, cap 1"
-0x3D3DC,car_gringo.InstanceSlotCount,00000000,03000000,0,3

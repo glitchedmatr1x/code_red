@@ -1,0 +1,2 @@
+offset_hex,offset,value,width,endian,context_hex,container
+0x2C38B,181131,1166,2,little,726b008d29c547774529421996b529458e0406b294294334004394b2294170000099,decoded_rsc85:zstd

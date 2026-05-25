@@ -1,0 +1,28 @@
+{
+  "targetMode": "ReticleFirst",
+  "possessionMode": "PreferRealSwap",
+  "maxTargetDistance": 35.0,
+  "forwardConeDegrees": 70.0,
+  "allowAnimals": false,
+  "allowMissionCritical": false,
+  "freezeOriginalTargetOnFallback": true,
+  "hideOriginalTargetOnFallback": false,
+  "makeOriginalTargetInvincibleOnFallback": true,
+  "restorePlayerPositionOnCancel": true,
+  "debugLogging": true,
+  "remotePuppet": {
+    "enableRemoteBlip": true,
+    "enableRemotePuppetSoftSync": false,
+    "remotePuppetInterpolation": 0.35
+  },
+  "hotkeys": {
+    "toggleSoulStealerVk": "0x77",
+    "captureTargetVk": "0x45",
+    "cancelVk": "0x08",
+    "saveTeleportSlot0Vk": "0x74",
+    "loadTeleportSlot0Vk": "0x75",
+    "teleportControlledActorToPlayerVk": "0x76",
+    "dumpDebugVk": "0x78",
+    "reloadConfigVk": "0x79"
+  }
+}

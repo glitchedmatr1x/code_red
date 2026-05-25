@@ -1,33 +1,33 @@
-@echo off
-setlocal
-
-rem CodeRED AI Menu candidate bridge build helper.
-rem Run from the repository root in a Visual Studio x64 Native Tools Command Prompt.
-rem This builds the generated bridge-candidate source and does not overwrite the normal ASI.
-
-set OUTDIR=related_apps\Code_RED_ScriptHookRDR_AI_Menu\build_bridge_candidate
-set SRC=related_apps\Code_RED_ScriptHookRDR_AI_Menu\CodeRED_AI_Menu.bridge_candidate.cpp
-set OUT=%OUTDIR%\CodeRED_AI_Menu_bridge_candidate.asi
-set OBJ=%OUTDIR%\CodeRED_AI_Menu_bridge_candidate.obj
-set PDB=%OUTDIR%\CodeRED_AI_Menu_bridge_candidate.pdb
-set IMPLIB=%OUTDIR%\CodeRED_AI_Menu_bridge_candidate.lib
-
-if not exist "%OUTDIR%" mkdir "%OUTDIR%"
-
-where cl >nul 2>nul
-if errorlevel 1 (
-  echo [ERROR] cl.exe was not found.
-  echo Open "x64 Native Tools Command Prompt for VS" or install Visual Studio Build Tools.
-  exit /b 1
-)
-
-cl /std:c++17 /EHsc /LD /nologo "%SRC%" /Fo"%OBJ%" /Fd"%PDB%" /Fe"%OUT%" /link /OUT:"%OUT%" /IMPLIB:"%IMPLIB%" user32.lib
-if errorlevel 1 (
-  echo [ERROR] Candidate bridge build failed.
-  exit /b 1
-)
-
-echo.
-echo Built candidate: %OUT%
-echo This is a proof artifact. Do not install until runtime testing is planned.
-endlocal
+@echo off
+setlocal
+
+rem CodeRED AI Menu candidate bridge build helper.
+rem Run from the repository root in a Visual Studio x64 Native Tools Command Prompt.
+rem This builds the generated bridge-candidate source and does not overwrite the normal ASI.
+
+set OUTDIR=related_apps\Code_RED_ScriptHookRDR_AI_Menu\build_bridge_candidate
+set SRC=related_apps\Code_RED_ScriptHookRDR_AI_Menu\CodeRED_AI_Menu.bridge_candidate.cpp
+set OUT=%OUTDIR%\CodeRED_AI_Menu_bridge_candidate.asi
+set OBJ=%OUTDIR%\CodeRED_AI_Menu_bridge_candidate.obj
+set PDB=%OUTDIR%\CodeRED_AI_Menu_bridge_candidate.pdb
+set IMPLIB=%OUTDIR%\CodeRED_AI_Menu_bridge_candidate.lib
+
+if not exist "%OUTDIR%" mkdir "%OUTDIR%"
+
+where cl >nul 2>nul
+if errorlevel 1 (
+  echo [ERROR] cl.exe was not found.
+  echo Open "x64 Native Tools Command Prompt for VS" or install Visual Studio Build Tools.
+  exit /b 1
+)
+
+cl /std:c++17 /EHsc /LD /nologo "%SRC%" /Fo"%OBJ%" /Fd"%PDB%" /Fe"%OUT%" /link /OUT:"%OUT%" /IMPLIB:"%IMPLIB%" user32.lib
+if errorlevel 1 (
+  echo [ERROR] Candidate bridge build failed.
+  exit /b 1
+)
+
+echo.
+echo Built candidate: %OUT%
+echo This is a proof artifact. Do not install until runtime testing is planned.
+endlocal

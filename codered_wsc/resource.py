@@ -79,7 +79,7 @@ def sha1(data: bytes) -> bytes:
 
 
 def swap32(data: bytes) -> bytes:
-    """Swap complete 32-bit words, the XSC <-> WSC header transform in Code RED."""
+    """Swap complete 32-bit words."""
     full = len(data) // 4
     out = bytearray()
     for index in range(full):
@@ -89,9 +89,24 @@ def swap32(data: bytes) -> bytes:
     return bytes(out)
 
 
+def normalize_xsc_resource(data: bytes) -> bytes:
+    """Normalize XENON XSC to RSC85 without corrupting the encrypted payload.
+
+    The XENON resource header is 32-bit word-swapped, but the encrypted script
+    payload is byte-for-byte AES data. Swapping the whole file destroys the LZX
+    wrapper after decrypt.
+    """
+    return swap32(data[:16]) + data[16:]
+
+
+def denormalize_xsc_resource(data: bytes) -> bytes:
+    """Return normalized RSC85 bytes to XENON XSC header order."""
+    return swap32(data[:16]) + data[16:]
+
+
 def normalize_resource(data: bytes) -> tuple[bytes, bool]:
     if data.startswith(XSC_SWAPPED_RSC85):
-        return swap32(data), True
+        return normalize_xsc_resource(data), True
     return data, False
 
 
@@ -338,7 +353,7 @@ def repack_script(resource: ScriptResource, decoded: bytes, allow_growth: bool =
         payload = compressed + zstd_skippable_padding(pad)
         fit_mode = "exact" if pad == 0 else "zstd-skippable-padding"
     normalized = resource.normalized[:16] + aes_crypt_16_passes(payload, resource.key, decrypt=False)
-    output = swap32(normalized) if resource.header.normalized_from_xsc else normalized
+    output = denormalize_xsc_resource(normalized) if resource.header.normalized_from_xsc else normalized
     reopened = open_script_from_bytes(output, resource.path, resource.key, resource.header.normalized_from_xsc)
     report = {
         "fit_mode": fit_mode,

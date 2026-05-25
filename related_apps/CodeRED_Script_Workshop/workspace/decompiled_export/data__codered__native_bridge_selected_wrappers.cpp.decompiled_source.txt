@@ -1,9 +1,9 @@
 # Code RED source/decompiled export
 # Source: data/codered/native_bridge_selected_wrappers.cpp
-# SHA1: 01433d35497bb5dbcd4654a717e84d9253ee3531
+# SHA1: 78691cc915b55cec629191e53988dfd19bef8538
 
 // Code RED selected native bridge prep
-// Generated: 2026-05-03T09:08:32Z
+// Generated: 2026-05-07T10:52:13Z
 // Profile: ai_trainer_core
 // Include this below the existing nativeInvoke/nativePush helpers in CodeRED_AI_Menu.cpp.
 // This file is bridge prep, not a blind auto-install patch.

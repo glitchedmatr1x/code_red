@@ -1,0 +1,9 @@
+parent_state,element_tag,visible_label_key,id,target,actions,requires_online_or_auth,can_be_visible_offline,avatar_candidate
+NetTabs,UIButton,mp_fe_avatarpicker_tab,,,transition {'event': '@UI.ACCEPT*RELEASED'} ; PlaySound('HUD_MENU_SELECT_MASTER') ; goto(NetConf_AvatarPicker),True,False,True
+NetTabs,UIButton,mp_fe_play_online_tab,NetTab_Online,NetConf_PlayPublic,transition {'event': 'retry_action'} ; goto(NetConf_PlayPublic) ; NetMachine.Authenticate('Online Multiplayer'),True,False,True
+NetTabs,UIButton,mp_fe_play_private_tab,NetTab_Private,NetConf_PlayPrivate,transition {'event': 'retry_action'} ; goto(NetConf_PlayPrivate) ; NetMachine.Authenticate('Online Multiplayer'),True,False,False
+NetTabs,UILabel,mp_fe_play_lan_tab,NetTab_LAN,NetConf_PlayLAN,,True,False,True
+NetTabs,UIButton,mp_fe_exit_tab,NetTab_Exit,NetConf_ExitMP,,True,False,False
+NetOfflineTabs,UIButton,mp_fe_play_online_tab,,NetConf_PlayPublic,transition {'event': 'retry_action'} ; goto(NetConf_PlayPublic) ; NetMachine.Authenticate('Online Multiplayer'),True,True,True
+NetOfflineTabs,UIButton,mp_fe_play_private_tab,,NetConf_PlayPrivate,transition {'event': 'retry_action'} ; goto(NetConf_PlayPrivate) ; NetMachine.Authenticate('Online Multiplayer'),True,True,False
+NetOfflineTabs,UILabel,mp_fe_play_lan_tab,,NetConf_PlayLAN,,False,True,True

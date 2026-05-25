@@ -1,8 +1,4 @@
-cryptography
 zstandard
-PyYAML
+cryptography
 pillow
 numpy
-matplotlib
-panda3d
-pygame

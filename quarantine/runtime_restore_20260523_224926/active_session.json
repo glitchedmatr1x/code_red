@@ -1,0 +1,29 @@
+{
+  "version": 6,
+  "mode": "join",
+  "session_name": "Code RED Freemode",
+  "player_name": "PlayerHost",
+  "host_ip": "192.168.1.7",
+  "port": 6677,
+  "transport": "direct_listen_session",
+  "world": "freemode",
+  "boot_target": "MULTI_FREE_ROAM",
+  "route_note": "Workbench sync handoff from Code RED",
+  "indicator_protocol": "codered_session_probe_v6",
+  "runtime_bridge_port": 6777,
+  "runtime_bridge_host": "127.0.0.1",
+  "runtime_bridge_dir": "D:\\Games\\Red Dead Redemption\\Code_RED_Launch",
+  "voice_enabled": true,
+  "voice_muted": false,
+  "trainer_profile": {
+    "god_mode": false,
+    "infinite_ammo": false,
+    "noclip": false,
+    "super_jump": false,
+    "fast_travel": false,
+    "weather": "default",
+    "time": "default"
+  },
+  "game_dir": "D:/Games/Red Dead Redemption",
+  "game_exe": "D:\\Games\\Red Dead Redemption\\RDR.exe"
+}

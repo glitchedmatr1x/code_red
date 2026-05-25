@@ -1,3 +1,0 @@
-old_id,old_name,target_id,target_name,offset,before_hex,value_hex,after_hex,new_value_hex
-1200,Chuckwagon,1194,Car01,540,6C 79 00 8B 52 2A 37 37,04 B0,37 04 25 57 98 8B 8B 52,04 AA
-1200,Chuckwagon,1194,Car01,4919,25 09 4F B7 7C 34 01 41,04 B0,96 8B 8B 52 28 5F 2B 25,04 AA

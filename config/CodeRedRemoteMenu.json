@@ -1,0 +1,25 @@
+{
+  "schema": "CodeRED.RemoteMenu.Config.v1",
+  "menuTitle": "Code RED Remote Menu",
+  "menuHotkeys": {
+    "openMenuVk": "F11",
+    "backVk": "Backspace",
+    "selectVk": "Enter",
+    "upVk": "Up",
+    "downVk": "Down"
+  },
+  "sections": [
+    "Soul Stealer",
+    "Teleport Options",
+    "Remote Puppet / Ghost Blip",
+    "World / Child Sector Toggle",
+    "Debug"
+  ],
+  "sectorToggle": {
+    "mode": "queue_offline_patches",
+    "catalogPath": "config/sector_catalog.json",
+    "patchQueuePath": "logs/sector_patch_queue.json",
+    "workbenchToolPath": "tools/workbench_v0_3_sector_toggle/codered_mod_workbench.py",
+    "warning": "Do not patch live RPF/WSC while the game is running. Queue patches from menu, then apply with Workbench to copied WSC files."
+  }
+}

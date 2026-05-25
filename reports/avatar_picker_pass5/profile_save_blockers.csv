@@ -1,0 +1,5 @@
+blocker,path,evidence,risk,pass5_action
+netstats stats.readFail,root/content/ui/pausemenu/netstats/main.sc.xml,stats.readSuccess/readFail branches; Gamespy authentication calls,Can leave MP profile/unlock stats empty,report_only
+Gamespy/Online Authenticate,root/content/ui/pausemenu/netstats/main.sc.xml; root/content/ui/boot.sc.xml; pausemenu networking XML,NetMachine.Authenticate(Gamespy/Online/Online Multiplayer) routes,Could block profile data reads; do not spoof broadly,report_only
+save/autosave prompt,root/content/ui/savegame.sc.xml,"fileStartingMPWithoutAutoSave, SG_AutoSaveDisabled, SG_AutoSaveDisabledNotSignedIn, fileNoSaveEvent","May block applying/saving avatar choices, but should not remove visible list labels",report_only
+missing streamed avatar string table,root/content/ui/net/profileeditor/main.sc.xml + strings_d11generic.rpf,profile editor uses mp_avatar_group* and mp_avatar* keys; no StreamStringTable(mp_avatarpicker) in layer; strings archive contains mp_avatarpicker resources,High likelihood cause of blank text/list presentation,variant_F_stream_table

@@ -1,0 +1,3589 @@
+offset,offset_hex,opcode,width,value,actor_kind,operand_hex
+5,0x5,37,1,31,eActorEnum_candidate,1F
+9,0x9,37,1,33,eActorEnum_candidate,21
+369,0x171,37,1,15,eActorEnum_candidate,0F
+600,0x258,37,1,48,eActorEnum_candidate,30
+767,0x2FF,37,1,13,eActorEnum_candidate,0D
+793,0x319,37,1,12,eActorEnum_candidate,0C
+1709,0x6AD,65,2,16385,,40 01
+1847,0x737,65,2,1000,eActorEnum_candidate,03 E8
+2100,0x834,65,2,16385,,40 01
+2294,0x8F6,65,2,1024,eActorEnum_candidate,04 00
+3410,0xD52,37,1,12,eActorEnum_candidate,0C
+3464,0xD88,37,1,8,eActorEnum_candidate,08
+5932,0x172C,37,1,52,eActorEnum_candidate,34
+6126,0x17EE,37,1,83,eActorEnum_candidate,53
+6229,0x1855,37,1,8,eActorEnum_candidate,08
+6315,0x18AB,37,1,51,eActorEnum_candidate,33
+6412,0x190C,37,1,50,eActorEnum_candidate,32
+6592,0x19C0,37,1,82,eActorEnum_candidate,52
+6693,0x1A25,37,1,62,eActorEnum_candidate,3E
+6799,0x1A8F,37,1,9,eActorEnum_candidate,09
+6907,0x1AFB,37,1,95,eActorEnum_candidate,5F
+7023,0x1B6F,37,1,30,eActorEnum_candidate,1E
+7127,0x1BD7,37,1,94,eActorEnum_candidate,5E
+7239,0x1C47,37,1,75,eActorEnum_candidate,4B
+7337,0x1CA9,37,1,60,eActorEnum_candidate,3C
+7435,0x1D0B,37,1,84,eActorEnum_candidate,54
+7547,0x1D7B,37,1,11,eActorEnum_candidate,0B
+7662,0x1DEE,37,1,73,eActorEnum_candidate,49
+7768,0x1E58,37,1,74,eActorEnum_candidate,4A
+7870,0x1EBE,37,1,53,eActorEnum_candidate,35
+7974,0x1F26,37,1,36,eActorEnum_candidate,24
+8091,0x1F9B,37,1,29,eActorEnum_candidate,1D
+8210,0x2012,37,1,40,eActorEnum_candidate,28
+8313,0x2079,37,1,61,eActorEnum_candidate,3D
+8422,0x20E6,37,1,85,eActorEnum_candidate,55
+8524,0x214C,37,1,54,eActorEnum_candidate,36
+8643,0x21C3,37,1,21,eActorEnum_candidate,15
+8652,0x21CC,37,1,12,eActorEnum_candidate,0C
+8777,0x2249,37,1,86,eActorEnum_candidate,56
+8888,0x22B8,37,1,42,eActorEnum_candidate,2A
+8990,0x231E,37,1,35,eActorEnum_candidate,23
+9109,0x2395,37,1,27,eActorEnum_candidate,1B
+9224,0x2408,37,1,10,eActorEnum_candidate,0A
+9320,0x2468,37,1,64,eActorEnum_candidate,40
+9435,0x24DB,37,1,28,eActorEnum_candidate,1C
+9542,0x2546,37,1,55,eActorEnum_candidate,37
+9661,0x25BD,37,1,41,eActorEnum_candidate,29
+9766,0x2626,37,1,76,eActorEnum_candidate,4C
+9874,0x2692,37,1,26,eActorEnum_candidate,1A
+9981,0x26FD,37,1,12,eActorEnum_candidate,0C
+10018,0x2722,37,1,78,eActorEnum_candidate,4E
+10055,0x2747,37,1,89,eActorEnum_candidate,59
+10092,0x276C,37,1,63,eActorEnum_candidate,3F
+10129,0x2791,37,1,90,eActorEnum_candidate,5A
+10166,0x27B6,37,1,34,eActorEnum_candidate,22
+10175,0x27BF,37,1,8,eActorEnum_candidate,08
+10204,0x27DC,37,1,43,eActorEnum_candidate,2B
+10241,0x2801,37,1,97,eActorEnum_candidate,61
+10278,0x2826,37,1,44,eActorEnum_candidate,2C
+10315,0x284B,37,1,72,eActorEnum_candidate,48
+10324,0x2854,37,1,12,eActorEnum_candidate,0C
+10353,0x2871,37,1,24,eActorEnum_candidate,18
+10362,0x287A,37,1,15,eActorEnum_candidate,0F
+10391,0x2897,37,1,57,eActorEnum_candidate,39
+10428,0x28BC,37,1,31,eActorEnum_candidate,1F
+10465,0x28E1,37,1,22,eActorEnum_candidate,16
+10474,0x28EA,37,1,13,eActorEnum_candidate,0D
+10503,0x2907,37,1,39,eActorEnum_candidate,27
+10540,0x292C,37,1,65,eActorEnum_candidate,41
+10577,0x2951,37,1,67,eActorEnum_candidate,43
+10614,0x2976,37,1,98,eActorEnum_candidate,62
+10651,0x299B,37,1,37,eActorEnum_candidate,25
+10688,0x29C0,37,1,45,eActorEnum_candidate,2D
+10725,0x29E5,37,1,18,eActorEnum_candidate,12
+10734,0x29EE,37,1,9,eActorEnum_candidate,09
+10763,0x2A0B,37,1,15,eActorEnum_candidate,0F
+10800,0x2A30,37,1,70,eActorEnum_candidate,46
+10809,0x2A39,37,1,10,eActorEnum_candidate,0A
+10838,0x2A56,37,1,17,eActorEnum_candidate,11
+10847,0x2A5F,37,1,8,eActorEnum_candidate,08
+10876,0x2A7C,37,1,68,eActorEnum_candidate,44
+10885,0x2A85,37,1,8,eActorEnum_candidate,08
+10914,0x2AA2,37,1,14,eActorEnum_candidate,0E
+10951,0x2AC7,37,1,81,eActorEnum_candidate,51
+10960,0x2AD0,37,1,8,eActorEnum_candidate,08
+10989,0x2AED,37,1,91,eActorEnum_candidate,5B
+11026,0x2B12,37,1,20,eActorEnum_candidate,14
+11035,0x2B1B,37,1,11,eActorEnum_candidate,0B
+11064,0x2B38,37,1,80,eActorEnum_candidate,50
+11101,0x2B5D,37,1,46,eActorEnum_candidate,2E
+11138,0x2B82,37,1,93,eActorEnum_candidate,5D
+11147,0x2B8B,37,1,9,eActorEnum_candidate,09
+11176,0x2BA8,37,1,87,eActorEnum_candidate,57
+11213,0x2BCD,37,1,48,eActorEnum_candidate,30
+11222,0x2BD6,37,1,8,eActorEnum_candidate,08
+11251,0x2BF3,37,1,58,eActorEnum_candidate,3A
+11288,0x2C18,37,1,19,eActorEnum_candidate,13
+11297,0x2C21,37,1,10,eActorEnum_candidate,0A
+11326,0x2C3E,37,1,69,eActorEnum_candidate,45
+11335,0x2C47,37,1,9,eActorEnum_candidate,09
+11364,0x2C64,37,1,59,eActorEnum_candidate,3B
+11401,0x2C89,37,1,66,eActorEnum_candidate,42
+11438,0x2CAE,37,1,71,eActorEnum_candidate,47
+11447,0x2CB7,37,1,11,eActorEnum_candidate,0B
+11476,0x2CD4,37,1,16,eActorEnum_candidate,10
+11513,0x2CF9,37,1,38,eActorEnum_candidate,26
+11550,0x2D1E,37,1,13,eActorEnum_candidate,0D
+11587,0x2D43,37,1,77,eActorEnum_candidate,4D
+11624,0x2D68,37,1,32,eActorEnum_candidate,20
+11661,0x2D8D,37,1,56,eActorEnum_candidate,38
+11698,0x2DB2,37,1,33,eActorEnum_candidate,21
+11735,0x2DD7,37,1,79,eActorEnum_candidate,4F
+11772,0x2DFC,37,1,47,eActorEnum_candidate,2F
+11809,0x2E21,37,1,88,eActorEnum_candidate,58
+11846,0x2E46,37,1,92,eActorEnum_candidate,5C
+11855,0x2E4F,37,1,8,eActorEnum_candidate,08
+11884,0x2E6C,37,1,23,eActorEnum_candidate,17
+11893,0x2E75,37,1,14,eActorEnum_candidate,0E
+11922,0x2E92,37,1,25,eActorEnum_candidate,19
+11931,0x2E9B,37,1,16,eActorEnum_candidate,10
+11960,0x2EB8,37,1,49,eActorEnum_candidate,31
+11969,0x2EC1,37,1,9,eActorEnum_candidate,09
+11998,0x2EDE,37,1,96,eActorEnum_candidate,60
+12024,0x2EF8,65,2,1024,eActorEnum_candidate,04 00
+12041,0x2F09,65,2,1024,eActorEnum_candidate,04 00
+12058,0x2F1A,65,2,1024,eActorEnum_candidate,04 00
+12075,0x2F2B,65,2,1024,eActorEnum_candidate,04 00
+12113,0x2F51,37,1,12,eActorEnum_candidate,0C
+12640,0x3160,65,2,4096,,10 00
+12682,0x318A,37,1,15,eActorEnum_candidate,0F
+12687,0x318F,65,2,256,eActorEnum_candidate,01 00
+12808,0x3208,37,1,11,eActorEnum_candidate,0B
+12820,0x3214,37,1,14,eActorEnum_candidate,0E
+12832,0x3220,37,1,18,eActorEnum_candidate,12
+12844,0x322C,37,1,22,eActorEnum_candidate,16
+12878,0x324E,38,2,4382,,11 1E
+12906,0x326A,37,1,13,eActorEnum_candidate,0D
+12919,0x3277,37,1,13,eActorEnum_candidate,0D
+12978,0x32B2,37,1,13,eActorEnum_candidate,0D
+13030,0x32E6,37,1,13,eActorEnum_candidate,0D
+13035,0x32EB,65,2,10000,,27 10
+13045,0x32F5,65,2,9000,,23 28
+13059,0x3303,65,2,8000,,1F 40
+13073,0x3311,65,2,7000,,1B 58
+13079,0x3317,37,1,17,eActorEnum_candidate,11
+13146,0x335A,37,1,31,eActorEnum_candidate,1F
+13152,0x3360,37,1,30,eActorEnum_candidate,1E
+13158,0x3366,37,1,32,eActorEnum_candidate,20
+13164,0x336C,37,1,33,eActorEnum_candidate,21
+13170,0x3372,37,1,29,eActorEnum_candidate,1D
+13176,0x3378,37,1,23,eActorEnum_candidate,17
+13342,0x341E,37,1,64,eActorEnum_candidate,40
+13388,0x344C,37,1,21,eActorEnum_candidate,15
+13394,0x3452,37,1,33,eActorEnum_candidate,21
+13405,0x345D,37,1,9,eActorEnum_candidate,09
+13411,0x3463,37,1,34,eActorEnum_candidate,22
+13449,0x3489,37,1,8,eActorEnum_candidate,08
+13464,0x3498,37,1,10,eActorEnum_candidate,0A
+13479,0x34A7,37,1,15,eActorEnum_candidate,0F
+13490,0x34B2,37,1,33,eActorEnum_candidate,21
+13535,0x34DF,37,1,8,eActorEnum_candidate,08
+13547,0x34EB,37,1,9,eActorEnum_candidate,09
+13559,0x34F7,37,1,16,eActorEnum_candidate,10
+13571,0x3503,37,1,34,eActorEnum_candidate,22
+13709,0x358D,37,1,20,eActorEnum_candidate,14
+13737,0x35A9,37,1,16,eActorEnum_candidate,10
+13746,0x35B2,37,1,16,eActorEnum_candidate,10
+13817,0x35F9,37,1,16,eActorEnum_candidate,10
+13829,0x3605,37,1,21,eActorEnum_candidate,15
+13841,0x3611,37,1,22,eActorEnum_candidate,16
+13888,0x3640,37,1,15,eActorEnum_candidate,0F
+13902,0x364E,37,1,19,eActorEnum_candidate,13
+13916,0x365C,37,1,20,eActorEnum_candidate,14
+14036,0x36D4,37,1,48,eActorEnum_candidate,30
+14068,0x36F4,37,1,9,eActorEnum_candidate,09
+14105,0x3719,37,1,9,eActorEnum_candidate,09
+14125,0x372D,40,4,1065353216,,3F 80 00 00
+14157,0x374D,37,1,11,eActorEnum_candidate,0B
+14203,0x377B,38,2,3930,,0F 5A
+14213,0x3785,38,2,3930,,0F 5A
+14227,0x3793,38,2,3930,,0F 5A
+14237,0x379D,38,2,3900,,0F 3C
+14247,0x37A7,38,2,3945,,0F 69
+14261,0x37B5,38,2,4040,,0F C8
+14338,0x3802,65,2,300,eActorEnum_candidate,01 2C
+14359,0x3817,65,2,16384,,40 00
+14380,0x382C,37,1,28,eActorEnum_candidate,1C
+14421,0x3855,40,4,268435456,,10 00 00 00
+14482,0x3892,65,2,16384,,40 00
+14516,0x38B4,40,4,1092616192,,41 20 00 00
+15010,0x3AA2,37,1,32,eActorEnum_candidate,20
+15086,0x3AEE,37,1,9,eActorEnum_candidate,09
+15199,0x3B5F,37,1,8,eActorEnum_candidate,08
+15206,0x3B66,37,1,16,eActorEnum_candidate,10
+15219,0x3B73,37,1,15,eActorEnum_candidate,0F
+15228,0x3B7C,37,1,19,eActorEnum_candidate,13
+15301,0x3BC5,37,1,15,eActorEnum_candidate,0F
+15426,0x3C42,65,2,1000,eActorEnum_candidate,03 E8
+15484,0x3C7C,40,4,1065353216,,3F 80 00 00
+16783,0x418F,65,2,275,eActorEnum_candidate,01 13
+16806,0x41A6,37,1,58,eActorEnum_candidate,3A
+16903,0x4207,37,1,61,eActorEnum_candidate,3D
+17207,0x4337,65,2,992,eActorEnum_candidate,03 E0
+17215,0x433F,37,1,52,eActorEnum_candidate,34
+17242,0x435A,40,4,1089470464,,40 F0 00 00
+17290,0x438A,40,4,1089470464,,40 F0 00 00
+17320,0x43A8,37,1,25,eActorEnum_candidate,19
+17347,0x43C3,37,1,11,eActorEnum_candidate,0B
+17361,0x43D1,37,1,13,eActorEnum_candidate,0D
+17375,0x43DF,37,1,16,eActorEnum_candidate,10
+17389,0x43ED,37,1,17,eActorEnum_candidate,11
+17403,0x43FB,37,1,18,eActorEnum_candidate,12
+17417,0x4409,37,1,24,eActorEnum_candidate,18
+17431,0x4417,37,1,26,eActorEnum_candidate,1A
+17445,0x4425,37,1,22,eActorEnum_candidate,16
+17459,0x4433,37,1,28,eActorEnum_candidate,1C
+17473,0x4441,37,1,35,eActorEnum_candidate,23
+17487,0x444F,37,1,36,eActorEnum_candidate,24
+17501,0x445D,37,1,37,eActorEnum_candidate,25
+17515,0x446B,37,1,38,eActorEnum_candidate,26
+17529,0x4479,37,1,39,eActorEnum_candidate,27
+17543,0x4487,37,1,23,eActorEnum_candidate,17
+17769,0x4569,37,1,199,eActorEnum_candidate,C7
+17789,0x457D,37,1,199,eActorEnum_candidate,C7
+17812,0x4594,65,2,372,eActorEnum_candidate,01 74
+17824,0x45A0,65,2,373,eActorEnum_candidate,01 75
+17836,0x45AC,65,2,374,eActorEnum_candidate,01 76
+17848,0x45B8,65,2,375,eActorEnum_candidate,01 77
+17860,0x45C4,65,2,376,eActorEnum_candidate,01 78
+17872,0x45D0,65,2,377,eActorEnum_candidate,01 79
+17884,0x45DC,65,2,378,eActorEnum_candidate,01 7A
+17896,0x45E8,65,2,379,eActorEnum_candidate,01 7B
+17908,0x45F4,65,2,380,eActorEnum_candidate,01 7C
+17920,0x4600,65,2,381,eActorEnum_candidate,01 7D
+17928,0x4608,37,1,8,eActorEnum_candidate,08
+17933,0x460D,65,2,382,eActorEnum_candidate,01 7E
+17941,0x4615,37,1,9,eActorEnum_candidate,09
+17946,0x461A,65,2,383,eActorEnum_candidate,01 7F
+17958,0x4626,65,2,385,eActorEnum_candidate,01 81
+17966,0x462E,37,1,10,eActorEnum_candidate,0A
+17971,0x4633,65,2,387,eActorEnum_candidate,01 83
+17979,0x463B,37,1,11,eActorEnum_candidate,0B
+17984,0x4640,65,2,388,eActorEnum_candidate,01 84
+17992,0x4648,37,1,12,eActorEnum_candidate,0C
+17997,0x464D,65,2,394,eActorEnum_candidate,01 8A
+18009,0x4659,37,1,44,eActorEnum_candidate,2C
+18020,0x4664,65,2,392,eActorEnum_candidate,01 88
+18032,0x4670,65,2,391,eActorEnum_candidate,01 87
+18044,0x467C,65,2,393,eActorEnum_candidate,01 89
+18056,0x4688,65,2,395,eActorEnum_candidate,01 8B
+18173,0x46FD,37,1,49,eActorEnum_candidate,31
+18482,0x4832,37,1,49,eActorEnum_candidate,31
+18576,0x4890,37,1,49,eActorEnum_candidate,31
+18882,0x49C2,37,1,49,eActorEnum_candidate,31
+19006,0x4A3E,65,2,65534,,FF FE
+19187,0x4AF3,37,1,17,eActorEnum_candidate,11
+19483,0x4C1B,37,1,39,eActorEnum_candidate,27
+19563,0x4C6B,37,1,39,eActorEnum_candidate,27
+19595,0x4C8B,37,1,31,eActorEnum_candidate,1F
+19605,0x4C95,37,1,50,eActorEnum_candidate,32
+19613,0x4C9D,37,1,183,eActorEnum_candidate,B7
+19622,0x4CA6,37,1,90,eActorEnum_candidate,5A
+19671,0x4CD7,37,1,182,eActorEnum_candidate,B6
+19714,0x4D02,65,2,696,eActorEnum_candidate,02 B8
+20359,0x4F87,40,4,1077936128,,40 40 00 00
+20496,0x5010,37,1,21,eActorEnum_candidate,15
+20651,0x50AB,37,1,8,eActorEnum_candidate,08
+20706,0x50E2,37,1,8,eActorEnum_candidate,08
+20737,0x5101,37,1,60,eActorEnum_candidate,3C
+20744,0x5108,37,1,60,eActorEnum_candidate,3C
+20751,0x510F,37,1,60,eActorEnum_candidate,3C
+20792,0x5138,37,1,24,eActorEnum_candidate,18
+20799,0x513F,37,1,24,eActorEnum_candidate,18
+21215,0x52DF,37,1,8,eActorEnum_candidate,08
+21370,0x537A,37,1,8,eActorEnum_candidate,08
+21488,0x53F0,65,2,390,eActorEnum_candidate,01 86
+21518,0x540E,65,2,390,eActorEnum_candidate,01 86
+21757,0x54FD,37,1,49,eActorEnum_candidate,31
+21819,0x553B,37,1,8,eActorEnum_candidate,08
+22043,0x561B,37,1,8,eActorEnum_candidate,08
+22087,0x5647,37,1,8,eActorEnum_candidate,08
+22125,0x566D,37,1,8,eActorEnum_candidate,08
+22139,0x567B,37,1,49,eActorEnum_candidate,31
+22210,0x56C2,37,1,8,eActorEnum_candidate,08
+22234,0x56DA,37,1,8,eActorEnum_candidate,08
+22261,0x56F5,37,1,8,eActorEnum_candidate,08
+22305,0x5721,37,1,100,eActorEnum_candidate,64
+22342,0x5746,37,1,100,eActorEnum_candidate,64
+22526,0x57FE,37,1,19,eActorEnum_candidate,13
+22534,0x5806,37,1,17,eActorEnum_candidate,11
+22543,0x580F,37,1,10,eActorEnum_candidate,0A
+22552,0x5818,37,1,9,eActorEnum_candidate,09
+23213,0x5AAD,65,2,696,eActorEnum_candidate,02 B8
+23321,0x5B19,65,2,696,eActorEnum_candidate,02 B8
+23419,0x5B7B,65,2,500,gang_actor,01 F4
+23425,0x5B81,65,2,586,eActorEnum_candidate,02 4A
+23432,0x5B88,65,2,596,fbi_actor,02 54
+23813,0x5D05,37,1,50,eActorEnum_candidate,32
+23823,0x5D0F,37,1,183,eActorEnum_candidate,B7
+23834,0x5D1A,37,1,90,eActorEnum_candidate,5A
+23882,0x5D4A,37,1,181,eActorEnum_candidate,B5
+23905,0x5D61,37,1,15,eActorEnum_candidate,0F
+23946,0x5D8A,37,1,13,eActorEnum_candidate,0D
+23957,0x5D95,37,1,10,eActorEnum_candidate,0A
+23964,0x5D9C,37,1,50,eActorEnum_candidate,32
+23974,0x5DA6,37,1,183,eActorEnum_candidate,B7
+23985,0x5DB1,37,1,90,eActorEnum_candidate,5A
+24033,0x5DE1,37,1,180,eActorEnum_candidate,B4
+24056,0x5DF8,37,1,8,eActorEnum_candidate,08
+24097,0x5E21,37,1,8,eActorEnum_candidate,08
+24102,0x5E26,37,1,50,eActorEnum_candidate,32
+24110,0x5E2E,37,1,183,eActorEnum_candidate,B7
+24119,0x5E37,37,1,90,eActorEnum_candidate,5A
+24165,0x5E65,37,1,179,eActorEnum_candidate,B3
+24244,0x5EB4,37,1,8,eActorEnum_candidate,08
+24269,0x5ECD,65,2,696,eActorEnum_candidate,02 B8
+24719,0x608F,40,4,1077936128,,40 40 00 00
+24795,0x60DB,37,1,38,eActorEnum_candidate,26
+24951,0x6177,65,2,1024,eActorEnum_candidate,04 00
+24977,0x6191,37,1,79,eActorEnum_candidate,4F
+25067,0x61EB,37,1,128,eActorEnum_candidate,80
+25085,0x61FD,37,1,64,eActorEnum_candidate,40
+25162,0x624A,37,1,8,eActorEnum_candidate,08
+25167,0x624F,37,1,10,eActorEnum_candidate,0A
+25176,0x6258,37,1,9,eActorEnum_candidate,09
+25181,0x625D,37,1,11,eActorEnum_candidate,0B
+26190,0x664E,37,1,20,eActorEnum_candidate,14
+26456,0x6758,37,1,146,eActorEnum_candidate,92
+26728,0x6868,65,2,2048,,08 00
+27260,0x6A7C,65,2,512,gang_actor,02 00
+27382,0x6AF6,65,2,696,eActorEnum_candidate,02 B8
+27650,0x6C02,37,1,26,eActorEnum_candidate,1A
+27736,0x6C58,37,1,26,eActorEnum_candidate,1A
+28019,0x6D73,37,1,8,eActorEnum_candidate,08
+28032,0x6D80,37,1,8,eActorEnum_candidate,08
+28389,0x6EE5,37,1,24,eActorEnum_candidate,18
+28606,0x6FBE,37,1,24,eActorEnum_candidate,18
+28620,0x6FCC,37,1,25,eActorEnum_candidate,19
+28655,0x6FEF,37,1,12,eActorEnum_candidate,0C
+28669,0x6FFD,37,1,13,eActorEnum_candidate,0D
+28683,0x700B,37,1,14,eActorEnum_candidate,0E
+28720,0x7030,37,1,8,eActorEnum_candidate,08
+28734,0x703E,37,1,9,eActorEnum_candidate,09
+28748,0x704C,37,1,23,eActorEnum_candidate,17
+28762,0x705A,37,1,21,eActorEnum_candidate,15
+28800,0x7080,37,1,10,eActorEnum_candidate,0A
+28814,0x708E,37,1,11,eActorEnum_candidate,0B
+28828,0x709C,37,1,17,eActorEnum_candidate,11
+28842,0x70AA,37,1,15,eActorEnum_candidate,0F
+28878,0x70CE,37,1,18,eActorEnum_candidate,12
+28892,0x70DC,37,1,19,eActorEnum_candidate,13
+28906,0x70EA,37,1,20,eActorEnum_candidate,14
+28967,0x7127,37,1,22,eActorEnum_candidate,16
+29026,0x7162,37,1,30,eActorEnum_candidate,1E
+29040,0x7170,37,1,33,eActorEnum_candidate,21
+29054,0x717E,37,1,32,eActorEnum_candidate,20
+29068,0x718C,37,1,31,eActorEnum_candidate,1F
+29105,0x71B1,37,1,34,eActorEnum_candidate,22
+29119,0x71BF,37,1,35,eActorEnum_candidate,23
+29156,0x71E4,37,1,27,eActorEnum_candidate,1B
+29170,0x71F2,37,1,26,eActorEnum_candidate,1A
+29184,0x7200,37,1,28,eActorEnum_candidate,1C
+29198,0x720E,37,1,29,eActorEnum_candidate,1D
+29212,0x721C,37,1,36,eActorEnum_candidate,24
+29247,0x723F,37,1,39,eActorEnum_candidate,27
+29261,0x724D,37,1,37,eActorEnum_candidate,25
+29275,0x725B,37,1,38,eActorEnum_candidate,26
+29289,0x7269,37,1,41,eActorEnum_candidate,29
+29303,0x7277,37,1,40,eActorEnum_candidate,28
+29339,0x729B,37,1,45,eActorEnum_candidate,2D
+29353,0x72A9,37,1,46,eActorEnum_candidate,2E
+29386,0x72CA,37,1,43,eActorEnum_candidate,2B
+29400,0x72D8,37,1,47,eActorEnum_candidate,2F
+29414,0x72E6,37,1,48,eActorEnum_candidate,30
+29428,0x72F4,37,1,42,eActorEnum_candidate,2A
+29464,0x7318,37,1,44,eActorEnum_candidate,2C
+29498,0x733A,37,1,49,eActorEnum_candidate,31
+29512,0x7348,37,1,55,eActorEnum_candidate,37
+29526,0x7356,37,1,56,eActorEnum_candidate,38
+29540,0x7364,37,1,52,eActorEnum_candidate,34
+29554,0x7372,37,1,53,eActorEnum_candidate,35
+29568,0x7380,37,1,54,eActorEnum_candidate,36
+29582,0x738E,37,1,50,eActorEnum_candidate,32
+29596,0x739C,37,1,51,eActorEnum_candidate,33
+29610,0x73AA,37,1,57,eActorEnum_candidate,39
+29632,0x73C0,37,1,12,eActorEnum_candidate,0C
+29641,0x73C9,38,2,3945,,0F 69
+29792,0x7460,37,1,33,eActorEnum_candidate,21
+29854,0x749E,37,1,20,eActorEnum_candidate,14
+29859,0x74A3,37,1,33,eActorEnum_candidate,21
+29881,0x74B9,37,1,41,eActorEnum_candidate,29
+30016,0x7540,37,1,24,eActorEnum_candidate,18
+30070,0x7576,40,4,16777216,,01 00 00 00
+30108,0x759C,37,1,25,eActorEnum_candidate,19
+30113,0x75A1,37,1,40,eActorEnum_candidate,28
+30167,0x75D7,40,4,16777216,,01 00 00 00
+30205,0x75FD,37,1,25,eActorEnum_candidate,19
+30210,0x7602,37,1,41,eActorEnum_candidate,29
+30264,0x7638,40,4,16777216,,01 00 00 00
+30302,0x765E,37,1,42,eActorEnum_candidate,2A
+30307,0x7663,37,1,44,eActorEnum_candidate,2C
+30361,0x7699,40,4,16777216,,01 00 00 00
+30399,0x76BF,37,1,42,eActorEnum_candidate,2A
+30404,0x76C4,37,1,48,eActorEnum_candidate,30
+30458,0x76FA,40,4,16777216,,01 00 00 00
+30496,0x7720,37,1,49,eActorEnum_candidate,31
+30501,0x7725,37,1,57,eActorEnum_candidate,39
+30555,0x775B,40,4,16777216,,01 00 00 00
+30585,0x7779,37,1,24,eActorEnum_candidate,18
+30599,0x7787,37,1,40,eActorEnum_candidate,28
+30613,0x7795,37,1,41,eActorEnum_candidate,29
+30627,0x77A3,37,1,44,eActorEnum_candidate,2C
+30641,0x77B1,37,1,24,eActorEnum_candidate,18
+30655,0x77BF,37,1,57,eActorEnum_candidate,39
+30811,0x785B,37,1,11,eActorEnum_candidate,0B
+30817,0x7861,37,1,16,eActorEnum_candidate,10
+30824,0x7868,37,1,15,eActorEnum_candidate,0F
+30831,0x786F,37,1,43,eActorEnum_candidate,2B
+31189,0x79D5,37,1,10,eActorEnum_candidate,0A
+31268,0x7A24,37,1,48,eActorEnum_candidate,30
+31485,0x7AFD,37,1,24,eActorEnum_candidate,18
+31492,0x7B04,37,1,12,eActorEnum_candidate,0C
+31514,0x7B1A,37,1,25,eActorEnum_candidate,19
+31519,0x7B1F,37,1,41,eActorEnum_candidate,29
+31526,0x7B26,37,1,13,eActorEnum_candidate,0D
+31538,0x7B32,37,1,25,eActorEnum_candidate,19
+31549,0x7B3D,37,1,42,eActorEnum_candidate,2A
+31554,0x7B42,37,1,48,eActorEnum_candidate,30
+31561,0x7B49,37,1,14,eActorEnum_candidate,0E
+31573,0x7B55,37,1,25,eActorEnum_candidate,19
+31584,0x7B60,37,1,49,eActorEnum_candidate,31
+31589,0x7B65,37,1,57,eActorEnum_candidate,39
+31596,0x7B6C,37,1,15,eActorEnum_candidate,0F
+31608,0x7B78,37,1,49,eActorEnum_candidate,31
+31620,0x7B84,37,1,57,eActorEnum_candidate,39
+31627,0x7B8B,37,1,9,eActorEnum_candidate,09
+31691,0x7BCB,37,1,18,eActorEnum_candidate,12
+31711,0x7BDF,37,1,10,eActorEnum_candidate,0A
+31731,0x7BF3,37,1,16,eActorEnum_candidate,10
+31760,0x7C10,37,1,13,eActorEnum_candidate,0D
+31790,0x7C2E,37,1,11,eActorEnum_candidate,0B
+31819,0x7C4B,37,1,10,eActorEnum_candidate,0A
+31830,0x7C56,37,1,15,eActorEnum_candidate,0F
+31840,0x7C60,37,1,8,eActorEnum_candidate,08
+31851,0x7C6B,37,1,14,eActorEnum_candidate,0E
+31861,0x7C75,37,1,11,eActorEnum_candidate,0B
+31910,0x7CA6,37,1,17,eActorEnum_candidate,11
+31930,0x7CBA,37,1,8,eActorEnum_candidate,08
+31940,0x7CC4,37,1,9,eActorEnum_candidate,09
+31951,0x7CCF,37,1,13,eActorEnum_candidate,0D
+31961,0x7CD9,37,1,11,eActorEnum_candidate,0B
+31972,0x7CE4,37,1,12,eActorEnum_candidate,0C
+32030,0x7D1E,37,1,9,eActorEnum_candidate,09
+32069,0x7D45,37,1,19,eActorEnum_candidate,13
+32148,0x7D94,65,2,363,eActorEnum_candidate,01 6B
+32172,0x7DAC,65,2,364,eActorEnum_candidate,01 6C
+32196,0x7DC4,65,2,365,eActorEnum_candidate,01 6D
+32230,0x7DE6,65,2,458,law_actor,01 CA
+32267,0x7E0B,37,1,10,eActorEnum_candidate,0A
+32287,0x7E1F,37,1,11,eActorEnum_candidate,0B
+32307,0x7E33,37,1,12,eActorEnum_candidate,0C
+32327,0x7E47,37,1,13,eActorEnum_candidate,0D
+32347,0x7E5B,37,1,14,eActorEnum_candidate,0E
+32367,0x7E6F,37,1,15,eActorEnum_candidate,0F
+32387,0x7E83,37,1,16,eActorEnum_candidate,10
+32407,0x7E97,37,1,17,eActorEnum_candidate,11
+32427,0x7EAB,65,2,400,eActorEnum_candidate,01 90
+32459,0x7ECB,65,2,402,eActorEnum_candidate,01 92
+32529,0x7F11,65,2,403,eActorEnum_candidate,01 93
+32552,0x7F28,37,1,8,eActorEnum_candidate,08
+32573,0x7F3D,37,1,9,eActorEnum_candidate,09
+32688,0x7FB0,37,1,255,eActorEnum_candidate,FF
+32725,0x7FD5,37,1,16,eActorEnum_candidate,10
+32873,0x8069,65,2,696,eActorEnum_candidate,02 B8
+34067,0x8513,37,1,8,eActorEnum_candidate,08
+34094,0x852E,37,1,9,eActorEnum_candidate,09
+34123,0x854B,37,1,10,eActorEnum_candidate,0A
+34156,0x856C,37,1,11,eActorEnum_candidate,0B
+34186,0x858A,37,1,12,eActorEnum_candidate,0C
+34216,0x85A8,37,1,13,eActorEnum_candidate,0D
+34298,0x85FA,37,1,24,eActorEnum_candidate,18
+34330,0x861A,37,1,24,eActorEnum_candidate,18
+34340,0x8624,37,1,24,eActorEnum_candidate,18
+34381,0x864D,37,1,24,eActorEnum_candidate,18
+34391,0x8657,37,1,24,eActorEnum_candidate,18
+34421,0x8675,65,2,696,eActorEnum_candidate,02 B8
+34515,0x86D3,37,1,20,eActorEnum_candidate,14
+34527,0x86DF,37,1,18,eActorEnum_candidate,12
+35242,0x89AA,37,1,8,eActorEnum_candidate,08
+36099,0x8D03,37,1,49,eActorEnum_candidate,31
+36678,0x8F46,37,1,15,eActorEnum_candidate,0F
+36691,0x8F53,37,1,255,eActorEnum_candidate,FF
+36700,0x8F5C,37,1,12,eActorEnum_candidate,0C
+36705,0x8F61,37,1,255,eActorEnum_candidate,FF
+36731,0x8F7B,37,1,48,eActorEnum_candidate,30
+36754,0x8F92,37,1,48,eActorEnum_candidate,30
+36912,0x9030,37,1,42,eActorEnum_candidate,2A
+36925,0x903D,37,1,27,eActorEnum_candidate,1B
+37008,0x9090,37,1,49,eActorEnum_candidate,31
+37024,0x90A0,37,1,49,eActorEnum_candidate,31
+37110,0x90F6,65,2,355,eActorEnum_candidate,01 63
+37300,0x91B4,37,1,50,eActorEnum_candidate,32
+37313,0x91C1,37,1,28,eActorEnum_candidate,1C
+37322,0x91CA,37,1,28,eActorEnum_candidate,1C
+37346,0x91E2,37,1,11,eActorEnum_candidate,0B
+37352,0x91E8,37,1,16,eActorEnum_candidate,10
+37359,0x91EF,37,1,15,eActorEnum_candidate,0F
+37366,0x91F6,37,1,43,eActorEnum_candidate,2B
+37444,0x9244,37,1,100,eActorEnum_candidate,64
+37512,0x9288,65,2,10000,,27 10
+37518,0x928E,65,2,10000,,27 10
+37642,0x930A,65,2,1000,eActorEnum_candidate,03 E8
+37686,0x9336,65,2,2000,,07 D0
+37730,0x9362,65,2,4000,,0F A0
+37774,0x938E,65,2,7000,,1B 58
+37818,0x93BA,65,2,10000,,27 10
+37875,0x93F3,37,1,27,eActorEnum_candidate,1B
+37884,0x93FC,37,1,27,eActorEnum_candidate,1B
+37969,0x9451,37,1,36,eActorEnum_candidate,24
+37975,0x9457,37,1,37,eActorEnum_candidate,25
+37981,0x945D,37,1,46,eActorEnum_candidate,2E
+37987,0x9463,37,1,13,eActorEnum_candidate,0D
+37993,0x9469,37,1,55,eActorEnum_candidate,37
+37999,0x946F,37,1,9,eActorEnum_candidate,09
+38005,0x9475,37,1,17,eActorEnum_candidate,11
+38038,0x9496,37,1,36,eActorEnum_candidate,24
+38044,0x949C,37,1,37,eActorEnum_candidate,25
+38050,0x94A2,37,1,46,eActorEnum_candidate,2E
+38056,0x94A8,37,1,13,eActorEnum_candidate,0D
+38062,0x94AE,37,1,55,eActorEnum_candidate,37
+38068,0x94B4,37,1,9,eActorEnum_candidate,09
+38074,0x94BA,37,1,17,eActorEnum_candidate,11
+38107,0x94DB,37,1,36,eActorEnum_candidate,24
+38113,0x94E1,37,1,37,eActorEnum_candidate,25
+38119,0x94E7,37,1,46,eActorEnum_candidate,2E
+38125,0x94ED,37,1,13,eActorEnum_candidate,0D
+38131,0x94F3,37,1,55,eActorEnum_candidate,37
+38137,0x94F9,37,1,9,eActorEnum_candidate,09
+38143,0x94FF,37,1,17,eActorEnum_candidate,11
+38176,0x9520,37,1,36,eActorEnum_candidate,24
+38182,0x9526,37,1,37,eActorEnum_candidate,25
+38188,0x952C,37,1,46,eActorEnum_candidate,2E
+38194,0x9532,37,1,13,eActorEnum_candidate,0D
+38200,0x9538,37,1,55,eActorEnum_candidate,37
+38206,0x953E,37,1,9,eActorEnum_candidate,09
+38212,0x9544,37,1,17,eActorEnum_candidate,11
+38245,0x9565,37,1,36,eActorEnum_candidate,24
+38251,0x956B,37,1,37,eActorEnum_candidate,25
+38257,0x9571,37,1,46,eActorEnum_candidate,2E
+38263,0x9577,37,1,13,eActorEnum_candidate,0D
+38269,0x957D,37,1,55,eActorEnum_candidate,37
+38275,0x9583,37,1,9,eActorEnum_candidate,09
+38281,0x9589,37,1,17,eActorEnum_candidate,11
+38342,0x95C6,37,1,64,eActorEnum_candidate,40
+38348,0x95CC,37,1,65,eActorEnum_candidate,41
+38354,0x95D2,37,1,66,eActorEnum_candidate,42
+38360,0x95D8,37,1,67,eActorEnum_candidate,43
+38366,0x95DE,37,1,49,eActorEnum_candidate,31
+38372,0x95E4,65,2,423,eActorEnum_candidate,01 A7
+38379,0x95EB,65,2,424,law_actor,01 A8
+38386,0x95F2,65,2,425,law_actor,01 A9
+38405,0x9605,37,1,102,eActorEnum_candidate,66
+38414,0x960E,37,1,102,eActorEnum_candidate,66
+38420,0x9614,37,1,99,eActorEnum_candidate,63
+38437,0x9625,37,1,64,eActorEnum_candidate,40
+38443,0x962B,37,1,65,eActorEnum_candidate,41
+38449,0x9631,37,1,66,eActorEnum_candidate,42
+38455,0x9637,37,1,67,eActorEnum_candidate,43
+38461,0x963D,37,1,49,eActorEnum_candidate,31
+38467,0x9643,65,2,423,eActorEnum_candidate,01 A7
+38474,0x964A,65,2,424,law_actor,01 A8
+38481,0x9651,65,2,425,law_actor,01 A9
+38488,0x9658,37,1,102,eActorEnum_candidate,66
+38494,0x965E,37,1,99,eActorEnum_candidate,63
+38526,0x967E,65,2,696,eActorEnum_candidate,02 B8
+38604,0x96CC,37,1,20,eActorEnum_candidate,14
+38616,0x96D8,37,1,18,eActorEnum_candidate,12
+38858,0x97CA,37,1,26,eActorEnum_candidate,1A
+39079,0x98A7,65,2,696,eActorEnum_candidate,02 B8
+39357,0x99BD,37,1,26,eActorEnum_candidate,1A
+39449,0x9A19,37,1,26,eActorEnum_candidate,1A
+40081,0x9C91,37,1,9,eActorEnum_candidate,09
+40272,0x9D50,37,1,48,eActorEnum_candidate,30
+40664,0x9ED8,37,1,25,eActorEnum_candidate,19
+40674,0x9EE2,37,1,25,eActorEnum_candidate,19
+40691,0x9EF3,37,1,50,eActorEnum_candidate,32
+40699,0x9EFB,37,1,250,eActorEnum_candidate,FA
+40706,0x9F02,37,1,200,eActorEnum_candidate,C8
+40716,0x9F0C,37,1,75,eActorEnum_candidate,4B
+40723,0x9F13,37,1,100,eActorEnum_candidate,64
+40733,0x9F1D,37,1,150,eActorEnum_candidate,96
+40743,0x9F27,37,1,50,eActorEnum_candidate,32
+40751,0x9F2F,37,1,150,eActorEnum_candidate,96
+40768,0x9F40,37,1,100,eActorEnum_candidate,64
+40778,0x9F4A,37,1,75,eActorEnum_candidate,4B
+40785,0x9F51,37,1,150,eActorEnum_candidate,96
+40802,0x9F62,37,1,200,eActorEnum_candidate,C8
+40812,0x9F6C,37,1,150,eActorEnum_candidate,96
+40822,0x9F76,37,1,150,eActorEnum_candidate,96
+40832,0x9F80,37,1,25,eActorEnum_candidate,19
+40840,0x9F88,37,1,75,eActorEnum_candidate,4B
+40850,0x9F92,37,1,10,eActorEnum_candidate,0A
+40858,0x9F9A,37,1,75,eActorEnum_candidate,4B
+40868,0x9FA4,37,1,50,eActorEnum_candidate,32
+40875,0x9FAB,37,1,100,eActorEnum_candidate,64
+40885,0x9FB5,37,1,150,eActorEnum_candidate,96
+40895,0x9FBF,37,1,20,eActorEnum_candidate,14
+40905,0x9FC9,37,1,50,eActorEnum_candidate,32
+40915,0x9FD3,37,1,20,eActorEnum_candidate,14
+40923,0x9FDB,37,1,75,eActorEnum_candidate,4B
+40930,0x9FE2,37,1,100,eActorEnum_candidate,64
+40940,0x9FEC,37,1,25,eActorEnum_candidate,19
+40948,0x9FF4,37,1,150,eActorEnum_candidate,96
+40955,0x9FFB,37,1,100,eActorEnum_candidate,64
+40965,0xA005,37,1,10,eActorEnum_candidate,0A
+40973,0xA00D,37,1,150,eActorEnum_candidate,96
+40980,0xA014,37,1,100,eActorEnum_candidate,64
+40990,0xA01E,37,1,250,eActorEnum_candidate,FA
+41000,0xA028,37,1,50,eActorEnum_candidate,32
+41010,0xA032,37,1,100,eActorEnum_candidate,64
+41034,0xA04A,37,1,200,eActorEnum_candidate,C8
+41044,0xA054,37,1,125,eActorEnum_candidate,7D
+41051,0xA05B,37,1,150,eActorEnum_candidate,96
+41061,0xA065,37,1,50,eActorEnum_candidate,32
+41069,0xA06D,37,1,100,eActorEnum_candidate,64
+41076,0xA074,37,1,125,eActorEnum_candidate,7D
+41086,0xA07E,37,1,50,eActorEnum_candidate,32
+41094,0xA086,37,1,250,eActorEnum_candidate,FA
+41104,0xA090,37,1,75,eActorEnum_candidate,4B
+41112,0xA098,37,1,200,eActorEnum_candidate,C8
+41122,0xA0A2,37,1,150,eActorEnum_candidate,96
+41132,0xA0AC,37,1,75,eActorEnum_candidate,4B
+41139,0xA0B3,37,1,100,eActorEnum_candidate,64
+41149,0xA0BD,37,1,250,eActorEnum_candidate,FA
+41156,0xA0C4,37,1,50,eActorEnum_candidate,32
+41166,0xA0CE,37,1,75,eActorEnum_candidate,4B
+41173,0xA0D5,37,1,50,eActorEnum_candidate,32
+41183,0xA0DF,37,1,200,eActorEnum_candidate,C8
+41190,0xA0E6,37,1,50,eActorEnum_candidate,32
+41200,0xA0F0,37,1,75,eActorEnum_candidate,4B
+41207,0xA0F7,37,1,100,eActorEnum_candidate,64
+41217,0xA101,37,1,150,eActorEnum_candidate,96
+41227,0xA10B,37,1,50,eActorEnum_candidate,32
+41235,0xA113,37,1,250,eActorEnum_candidate,FA
+41245,0xA11D,37,1,100,eActorEnum_candidate,64
+41253,0xA125,65,2,300,eActorEnum_candidate,01 2C
+41264,0xA130,37,1,200,eActorEnum_candidate,C8
+41271,0xA137,37,1,125,eActorEnum_candidate,7D
+41281,0xA141,65,2,300,eActorEnum_candidate,01 2C
+41289,0xA149,37,1,125,eActorEnum_candidate,7D
+41299,0xA153,65,2,300,eActorEnum_candidate,01 2C
+41307,0xA15B,37,1,125,eActorEnum_candidate,7D
+41317,0xA165,65,2,300,eActorEnum_candidate,01 2C
+41325,0xA16D,37,1,125,eActorEnum_candidate,7D
+41335,0xA177,65,2,500,gang_actor,01 F4
+41343,0xA17F,37,1,250,eActorEnum_candidate,FA
+41353,0xA189,37,1,150,eActorEnum_candidate,96
+41360,0xA190,37,1,125,eActorEnum_candidate,7D
+41370,0xA19A,37,1,25,eActorEnum_candidate,19
+41377,0xA1A1,37,1,100,eActorEnum_candidate,64
+41388,0xA1AC,37,1,150,eActorEnum_candidate,96
+41395,0xA1B3,37,1,25,eActorEnum_candidate,19
+41405,0xA1BD,37,1,25,eActorEnum_candidate,19
+41415,0xA1C7,37,1,25,eActorEnum_candidate,19
+41431,0xA1D7,37,1,150,eActorEnum_candidate,96
+41441,0xA1E1,37,1,150,eActorEnum_candidate,96
+41448,0xA1E8,37,1,100,eActorEnum_candidate,64
+41459,0xA1F3,37,1,150,eActorEnum_candidate,96
+41469,0xA1FD,37,1,150,eActorEnum_candidate,96
+41479,0xA207,37,1,150,eActorEnum_candidate,96
+41486,0xA20E,37,1,100,eActorEnum_candidate,64
+41497,0xA219,37,1,150,eActorEnum_candidate,96
+41507,0xA223,37,1,150,eActorEnum_candidate,96
+41589,0xA275,65,2,5000,,13 88
+41595,0xA27B,65,2,5000,,13 88
+41608,0xA288,65,2,60536,,EC 78
+41614,0xA28E,65,2,60536,,EC 78
+41746,0xA312,65,2,60536,,EC 78
+41753,0xA319,65,2,60536,,EC 78
+41768,0xA328,65,2,5000,,13 88
+41775,0xA32F,65,2,5000,,13 88
+41851,0xA37B,65,2,61036,,EE 6C
+41882,0xA39A,65,2,61036,,EE 6C
+41917,0xA3BD,37,1,27,eActorEnum_candidate,1B
+41926,0xA3C6,37,1,27,eActorEnum_candidate,1B
+41937,0xA3D1,65,2,63036,,F6 3C
+41968,0xA3F0,65,2,63036,,F6 3C
+41999,0xA40F,65,2,64536,,FC 18
+42078,0xA45E,65,2,64536,,FC 18
+42109,0xA47D,65,2,1000,eActorEnum_candidate,03 E8
+42140,0xA49C,65,2,1000,eActorEnum_candidate,03 E8
+42171,0xA4BB,65,2,2500,,09 C4
+42202,0xA4DA,65,2,2500,,09 C4
+42233,0xA4F9,65,2,4500,,11 94
+42268,0xA51C,37,1,27,eActorEnum_candidate,1B
+42277,0xA525,37,1,27,eActorEnum_candidate,1B
+42288,0xA530,65,2,4500,,11 94
+42505,0xA609,65,2,696,eActorEnum_candidate,02 B8
+42945,0xA7C1,40,4,1077936128,,40 40 00 00
+43023,0xA80F,65,2,696,eActorEnum_candidate,02 B8
+43301,0xA925,37,1,26,eActorEnum_candidate,1A
+43393,0xA981,37,1,26,eActorEnum_candidate,1A
+43587,0xAA43,65,2,597,fbi_actor,02 55
+43604,0xAA54,65,2,597,fbi_actor,02 55
+43610,0xAA5A,65,2,450,law_actor,01 C2
+43617,0xAA61,65,2,10000,,27 10
+43623,0xAA67,37,1,24,eActorEnum_candidate,18
+43632,0xAA70,37,1,24,eActorEnum_candidate,18
+44104,0xAC48,37,1,8,eActorEnum_candidate,08
+44192,0xACA0,37,1,15,eActorEnum_candidate,0F
+44199,0xACA7,37,1,9,eActorEnum_candidate,09
+44206,0xACAE,37,1,12,eActorEnum_candidate,0C
+44213,0xACB5,37,1,16,eActorEnum_candidate,10
+44241,0xACD1,37,1,21,eActorEnum_candidate,15
+44259,0xACE3,37,1,39,eActorEnum_candidate,27
+44335,0xAD2F,37,1,10,eActorEnum_candidate,0A
+44395,0xAD6B,65,2,256,eActorEnum_candidate,01 00
+44404,0xAD74,37,1,9,eActorEnum_candidate,09
+44472,0xADB8,65,2,256,eActorEnum_candidate,01 00
+44605,0xAE3D,37,1,21,eActorEnum_candidate,15
+44636,0xAE5C,40,4,33554432,,02 00 00 00
+44648,0xAE68,40,4,67108864,,04 00 00 00
+44660,0xAE74,65,2,4096,,10 00
+44670,0xAE7E,37,1,8,eActorEnum_candidate,08
+44743,0xAEC7,65,2,256,eActorEnum_candidate,01 00
+44796,0xAEFC,65,2,256,eActorEnum_candidate,01 00
+44823,0xAF17,37,1,16,eActorEnum_candidate,10
+44873,0xAF49,65,2,256,eActorEnum_candidate,01 00
+44882,0xAF52,37,1,9,eActorEnum_candidate,09
+44933,0xAF85,37,1,12,eActorEnum_candidate,0C
+44953,0xAF99,65,2,256,eActorEnum_candidate,01 00
+44990,0xAFBE,37,1,13,eActorEnum_candidate,0D
+45003,0xAFCB,37,1,18,eActorEnum_candidate,12
+45010,0xAFD2,37,1,34,eActorEnum_candidate,22
+45017,0xAFD9,37,1,44,eActorEnum_candidate,2C
+45024,0xAFE0,37,1,47,eActorEnum_candidate,2F
+45032,0xAFE8,37,1,10,eActorEnum_candidate,0A
+45174,0xB076,37,1,23,eActorEnum_candidate,17
+45183,0xB07F,37,1,23,eActorEnum_candidate,17
+45237,0xB0B5,65,2,256,eActorEnum_candidate,01 00
+45246,0xB0BE,37,1,19,eActorEnum_candidate,13
+45276,0xB0DC,37,1,24,eActorEnum_candidate,18
+45285,0xB0E5,37,1,24,eActorEnum_candidate,18
+45325,0xB10D,37,1,12,eActorEnum_candidate,0C
+45347,0xB123,37,1,12,eActorEnum_candidate,0C
+45369,0xB139,37,1,25,eActorEnum_candidate,19
+45374,0xB13E,37,1,10,eActorEnum_candidate,0A
+45391,0xB14F,37,1,12,eActorEnum_candidate,0C
+45404,0xB15C,37,1,12,eActorEnum_candidate,0C
+45417,0xB169,37,1,13,eActorEnum_candidate,0D
+45454,0xB18E,37,1,8,eActorEnum_candidate,08
+45463,0xB197,37,1,8,eActorEnum_candidate,08
+45481,0xB1A9,37,1,9,eActorEnum_candidate,09
+45492,0xB1B4,37,1,11,eActorEnum_candidate,0B
+45505,0xB1C1,37,1,20,eActorEnum_candidate,14
+45512,0xB1C8,37,1,57,eActorEnum_candidate,39
+45620,0xB234,37,1,17,eActorEnum_candidate,11
+45657,0xB259,37,1,15,eActorEnum_candidate,0F
+45666,0xB262,37,1,15,eActorEnum_candidate,0F
+45674,0xB26A,37,1,26,eActorEnum_candidate,1A
+45690,0xB27A,65,2,256,eActorEnum_candidate,01 00
+45696,0xB280,37,1,11,eActorEnum_candidate,0B
+45824,0xB300,37,1,11,eActorEnum_candidate,0B
+45829,0xB305,37,1,12,eActorEnum_candidate,0C
+45835,0xB30B,37,1,11,eActorEnum_candidate,0B
+45844,0xB314,37,1,56,eActorEnum_candidate,38
+45858,0xB322,37,1,9,eActorEnum_candidate,09
+45867,0xB32B,37,1,9,eActorEnum_candidate,09
+45876,0xB334,37,1,10,eActorEnum_candidate,0A
+45885,0xB33D,37,1,10,eActorEnum_candidate,0A
+46210,0xB482,37,1,16,eActorEnum_candidate,10
+46359,0xB517,37,1,23,eActorEnum_candidate,17
+46364,0xB51C,37,1,24,eActorEnum_candidate,18
+46408,0xB548,65,2,65534,,FF FE
+46549,0xB5D5,65,2,65534,,FF FE
+46626,0xB622,65,2,32767,,7F FF
+46634,0xB62A,37,1,15,eActorEnum_candidate,0F
+46639,0xB62F,65,2,32767,,7F FF
+46663,0xB647,40,4,1073741824,,40 00 00 00
+46681,0xB659,40,4,2147483648,,80 00 00 00
+46719,0xB67F,65,2,32767,,7F FF
+46733,0xB68D,65,2,32767,,7F FF
+46737,0xB691,37,1,15,eActorEnum_candidate,0F
+46754,0xB6A2,40,4,1073741824,,40 00 00 00
+46773,0xB6B5,40,4,2147483648,,80 00 00 00
+46886,0xB726,37,1,15,eActorEnum_candidate,0F
+47244,0xB88C,65,2,457,law_actor,01 C9
+47266,0xB8A2,37,1,23,eActorEnum_candidate,17
+47275,0xB8AB,37,1,23,eActorEnum_candidate,17
+47591,0xB9E7,37,1,30,eActorEnum_candidate,1E
+47839,0xBADF,65,2,456,law_actor,01 C8
+48238,0xBC6E,37,1,8,eActorEnum_candidate,08
+48243,0xBC73,37,1,8,eActorEnum_candidate,08
+48351,0xBCDF,37,1,8,eActorEnum_candidate,08
+48356,0xBCE4,37,1,8,eActorEnum_candidate,08
+48853,0xBED5,37,1,16,eActorEnum_candidate,10
+48992,0xBF60,37,1,16,eActorEnum_candidate,10
+49670,0xC206,65,2,468,gang_actor,01 D4
+49681,0xC211,37,1,16,eActorEnum_candidate,10
+49717,0xC235,40,4,1092616192,,41 20 00 00
+49739,0xC24B,37,1,17,eActorEnum_candidate,11
+49752,0xC258,37,1,8,eActorEnum_candidate,08
+49769,0xC269,37,1,14,eActorEnum_candidate,0E
+49778,0xC272,37,1,14,eActorEnum_candidate,0E
+50095,0xC3AF,40,4,1092616192,,41 20 00 00
+50111,0xC3BF,65,2,468,gang_actor,01 D4
+50132,0xC3D4,37,1,16,eActorEnum_candidate,10
+50266,0xC45A,65,2,456,law_actor,01 C8
+50289,0xC471,37,1,8,eActorEnum_candidate,08
+50294,0xC476,37,1,8,eActorEnum_candidate,08
+50714,0xC61A,37,1,12,eActorEnum_candidate,0C
+50728,0xC628,37,1,18,eActorEnum_candidate,12
+50742,0xC636,37,1,24,eActorEnum_candidate,18
+50756,0xC644,37,1,18,eActorEnum_candidate,12
+50768,0xC650,37,1,24,eActorEnum_candidate,18
+50777,0xC659,37,1,25,eActorEnum_candidate,19
+50786,0xC662,37,1,26,eActorEnum_candidate,1A
+50795,0xC66B,37,1,27,eActorEnum_candidate,1B
+50804,0xC674,37,1,28,eActorEnum_candidate,1C
+50822,0xC686,37,1,16,eActorEnum_candidate,10
+51226,0xC81A,37,1,12,eActorEnum_candidate,0C
+51876,0xCAA4,37,1,13,eActorEnum_candidate,0D
+52584,0xCD68,37,1,26,eActorEnum_candidate,1A
+52618,0xCD8A,37,1,25,eActorEnum_candidate,19
+52652,0xCDAC,37,1,24,eActorEnum_candidate,18
+52686,0xCDCE,37,1,23,eActorEnum_candidate,17
+52722,0xCDF2,37,1,26,eActorEnum_candidate,1A
+52819,0xCE53,37,1,55,eActorEnum_candidate,37
+52853,0xCE75,37,1,54,eActorEnum_candidate,36
+52887,0xCE97,37,1,27,eActorEnum_candidate,1B
+53208,0xCFD8,37,1,52,eActorEnum_candidate,34
+53242,0xCFFA,37,1,51,eActorEnum_candidate,33
+53276,0xD01C,37,1,50,eActorEnum_candidate,32
+53310,0xD03E,37,1,49,eActorEnum_candidate,31
+53344,0xD060,37,1,17,eActorEnum_candidate,11
+53694,0xD1BE,37,1,19,eActorEnum_candidate,13
+53754,0xD1FA,37,1,18,eActorEnum_candidate,12
+53789,0xD21D,37,1,17,eActorEnum_candidate,11
+53844,0xD254,37,1,9,eActorEnum_candidate,09
+53850,0xD25A,37,1,16,eActorEnum_candidate,10
+53885,0xD27D,37,1,15,eActorEnum_candidate,0F
+53940,0xD2B4,37,1,8,eActorEnum_candidate,08
+54102,0xD356,37,1,9,eActorEnum_candidate,09
+54150,0xD386,65,2,440,law_actor,01 B8
+54563,0xD523,65,2,4096,,10 00
+54580,0xD534,65,2,4096,,10 00
+54599,0xD547,65,2,473,gang_actor,01 D9
+54627,0xD563,65,2,474,gang_actor,01 DA
+54651,0xD57B,65,2,475,gang_actor,01 DB
+54675,0xD593,65,2,476,gang_actor,01 DC
+54698,0xD5AA,37,1,8,eActorEnum_candidate,08
+54704,0xD5B0,37,1,30,eActorEnum_candidate,1E
+54711,0xD5B7,37,1,31,eActorEnum_candidate,1F
+54727,0xD5C7,37,1,10,eActorEnum_candidate,0A
+54744,0xD5D8,37,1,9,eActorEnum_candidate,09
+54755,0xD5E3,37,1,30,eActorEnum_candidate,1E
+54760,0xD5E8,65,2,473,gang_actor,01 D9
+54766,0xD5EE,65,2,473,gang_actor,01 D9
+54776,0xD5F8,37,1,30,eActorEnum_candidate,1E
+54785,0xD601,37,1,30,eActorEnum_candidate,1E
+55013,0xD6E5,65,2,16384,,40 00
+55236,0xD7C4,37,1,12,eActorEnum_candidate,0C
+55244,0xD7CC,37,1,20,eActorEnum_candidate,14
+55253,0xD7D5,37,1,16,eActorEnum_candidate,10
+55441,0xD891,37,1,16,eActorEnum_candidate,10
+55448,0xD898,37,1,19,eActorEnum_candidate,13
+55817,0xDA09,37,1,12,eActorEnum_candidate,0C
+55822,0xDA0E,37,1,255,eActorEnum_candidate,FF
+55849,0xDA29,37,1,15,eActorEnum_candidate,0F
+58643,0xE513,37,1,62,eActorEnum_candidate,3E
+59328,0xE7C0,65,2,1078,eActorEnum_candidate,04 36
+59474,0xE852,37,1,14,eActorEnum_candidate,0E
+59540,0xE894,40,4,3212836864,,BF 80 00 00
+59700,0xE934,37,1,39,eActorEnum_candidate,27
+60072,0xEAA8,37,1,39,eActorEnum_candidate,27
+60256,0xEB60,37,1,17,eActorEnum_candidate,11
+60519,0xEC67,37,1,79,eActorEnum_candidate,4F
+60759,0xED57,37,1,8,eActorEnum_candidate,08
+61025,0xEE61,37,1,17,eActorEnum_candidate,11
+61043,0xEE73,37,1,39,eActorEnum_candidate,27
+61637,0xF0C5,37,1,79,eActorEnum_candidate,4F
+61716,0xF114,37,1,13,eActorEnum_candidate,0D
+61727,0xF11F,65,2,65534,,FF FE
+61886,0xF1BE,37,1,17,eActorEnum_candidate,11
+61890,0xF1C2,37,1,39,eActorEnum_candidate,27
+62057,0xF269,37,1,79,eActorEnum_candidate,4F
+62143,0xF2BF,37,1,17,eActorEnum_candidate,11
+62147,0xF2C3,37,1,39,eActorEnum_candidate,27
+62340,0xF384,37,1,79,eActorEnum_candidate,4F
+62856,0xF588,37,1,45,eActorEnum_candidate,2D
+62862,0xF58E,37,1,45,eActorEnum_candidate,2D
+62909,0xF5BD,37,1,8,eActorEnum_candidate,08
+62933,0xF5D5,37,1,45,eActorEnum_candidate,2D
+63259,0xF71B,37,1,80,eActorEnum_candidate,50
+63261,0xF71D,65,2,20000,,4E 20
+63462,0xF7E6,65,2,65534,,FF FE
+63641,0xF899,37,1,146,eActorEnum_candidate,92
+63647,0xF89F,37,1,146,eActorEnum_candidate,92
+63662,0xF8AE,37,1,146,eActorEnum_candidate,92
+63669,0xF8B5,37,1,146,eActorEnum_candidate,92
+63692,0xF8CC,37,1,145,eActorEnum_candidate,91
+63847,0xF967,37,1,145,eActorEnum_candidate,91
+63954,0xF9D2,65,2,8192,,20 00
+63973,0xF9E5,37,1,146,eActorEnum_candidate,92
+64034,0xFA22,65,2,65534,,FF FE
+64297,0xFB29,37,1,146,eActorEnum_candidate,92
+64482,0xFBE2,37,1,10,eActorEnum_candidate,0A
+64733,0xFCDD,37,1,8,eActorEnum_candidate,08
+64918,0xFD96,37,1,10,eActorEnum_candidate,0A
+65161,0xFE89,37,1,8,eActorEnum_candidate,08
+65380,0xFF64,37,1,8,eActorEnum_candidate,08
+65421,0xFF8D,37,1,8,eActorEnum_candidate,08
+65472,0xFFC0,37,1,8,eActorEnum_candidate,08
+65531,0xFFFB,37,1,8,eActorEnum_candidate,08
+65765,0x100E5,37,1,32,eActorEnum_candidate,20
+65805,0x1010D,37,1,32,eActorEnum_candidate,20
+66314,0x1030A,65,2,415,eActorEnum_candidate,01 9F
+66339,0x10323,37,1,26,eActorEnum_candidate,1A
+66355,0x10333,65,2,416,eActorEnum_candidate,01 A0
+66380,0x1034C,37,1,27,eActorEnum_candidate,1B
+66396,0x1035C,65,2,422,eActorEnum_candidate,01 A6
+66421,0x10375,37,1,28,eActorEnum_candidate,1C
+66437,0x10385,65,2,423,eActorEnum_candidate,01 A7
+66462,0x1039E,37,1,29,eActorEnum_candidate,1D
+66478,0x103AE,65,2,418,eActorEnum_candidate,01 A2
+66503,0x103C7,37,1,30,eActorEnum_candidate,1E
+66519,0x103D7,65,2,419,eActorEnum_candidate,01 A3
+66544,0x103F0,37,1,31,eActorEnum_candidate,1F
+66560,0x10400,65,2,397,eActorEnum_candidate,01 8D
+66585,0x10419,37,1,12,eActorEnum_candidate,0C
+66601,0x10429,65,2,398,eActorEnum_candidate,01 8E
+66626,0x10442,37,1,32,eActorEnum_candidate,20
+66642,0x10452,65,2,403,eActorEnum_candidate,01 93
+66667,0x1046B,37,1,33,eActorEnum_candidate,21
+66683,0x1047B,65,2,404,eActorEnum_candidate,01 94
+66708,0x10494,37,1,34,eActorEnum_candidate,22
+66724,0x104A4,65,2,400,eActorEnum_candidate,01 90
+66749,0x104BD,37,1,35,eActorEnum_candidate,23
+66765,0x104CD,65,2,401,eActorEnum_candidate,01 91
+66790,0x104E6,37,1,36,eActorEnum_candidate,24
+66806,0x104F6,65,2,496,gang_actor,01 F0
+66831,0x1050F,37,1,13,eActorEnum_candidate,0D
+66847,0x1051F,65,2,497,gang_actor,01 F1
+66872,0x10538,37,1,14,eActorEnum_candidate,0E
+66888,0x10548,65,2,502,gang_actor,01 F6
+66913,0x10561,37,1,17,eActorEnum_candidate,11
+66929,0x10571,65,2,503,gang_actor,01 F7
+66969,0x10599,65,2,499,gang_actor,01 F3
+66994,0x105B2,37,1,18,eActorEnum_candidate,12
+67010,0x105C2,65,2,500,gang_actor,01 F4
+67035,0x105DB,37,1,19,eActorEnum_candidate,13
+67051,0x105EB,65,2,477,gang_actor,01 DD
+67091,0x10613,65,2,478,gang_actor,01 DE
+67116,0x1062C,37,1,42,eActorEnum_candidate,2A
+67132,0x1063C,65,2,483,gang_actor,01 E3
+67157,0x10655,37,1,41,eActorEnum_candidate,29
+67173,0x10665,65,2,484,gang_actor,01 E4
+67213,0x1068D,65,2,480,gang_actor,01 E0
+67253,0x106B5,65,2,481,gang_actor,01 E1
+67293,0x106DD,65,2,505,gang_actor,01 F9
+67318,0x106F6,37,1,43,eActorEnum_candidate,2B
+67334,0x10706,65,2,506,gang_actor,01 FA
+67359,0x1071F,37,1,44,eActorEnum_candidate,2C
+67375,0x1072F,65,2,513,gang_actor,02 01
+67400,0x10748,37,1,15,eActorEnum_candidate,0F
+67416,0x10758,65,2,514,gang_actor,02 02
+67456,0x10780,65,2,508,gang_actor,01 FC
+67481,0x10799,37,1,16,eActorEnum_candidate,10
+67497,0x107A9,65,2,509,gang_actor,01 FD
+67537,0x107D1,65,2,486,gang_actor,01 E6
+67562,0x107EA,37,1,45,eActorEnum_candidate,2D
+67578,0x107FA,65,2,487,gang_actor,01 E7
+67603,0x10813,37,1,46,eActorEnum_candidate,2E
+67619,0x10823,65,2,492,gang_actor,01 EC
+67644,0x1083C,37,1,8,eActorEnum_candidate,08
+67660,0x1084C,65,2,493,gang_actor,01 ED
+67685,0x10865,37,1,9,eActorEnum_candidate,09
+67701,0x10875,65,2,489,gang_actor,01 E9
+67726,0x1088E,37,1,10,eActorEnum_candidate,0A
+67742,0x1089E,65,2,490,gang_actor,01 EA
+67767,0x108B7,37,1,11,eActorEnum_candidate,0B
+67783,0x108C7,65,2,467,gang_actor,01 D3
+67808,0x108E0,37,1,47,eActorEnum_candidate,2F
+67824,0x108F0,65,2,468,gang_actor,01 D4
+67849,0x10909,37,1,48,eActorEnum_candidate,30
+67865,0x10919,65,2,406,eActorEnum_candidate,01 96
+67890,0x10932,37,1,20,eActorEnum_candidate,14
+67906,0x10942,65,2,407,eActorEnum_candidate,01 97
+67931,0x1095B,37,1,21,eActorEnum_candidate,15
+67947,0x1096B,65,2,412,eActorEnum_candidate,01 9C
+67972,0x10984,37,1,22,eActorEnum_candidate,16
+67988,0x10994,65,2,413,eActorEnum_candidate,01 9D
+68013,0x109AD,37,1,23,eActorEnum_candidate,17
+68029,0x109BD,65,2,410,eActorEnum_candidate,01 9A
+68054,0x109D6,37,1,24,eActorEnum_candidate,18
+68070,0x109E6,65,2,411,eActorEnum_candidate,01 9B
+68095,0x109FF,37,1,25,eActorEnum_candidate,19
+68111,0x10A0F,65,2,787,eActorEnum_candidate,03 13
+68136,0x10A28,37,1,60,eActorEnum_candidate,3C
+68294,0x10AC6,37,1,8,eActorEnum_candidate,08
+68316,0x10ADC,37,1,8,eActorEnum_candidate,08
+68396,0x10B2C,65,2,358,eActorEnum_candidate,01 66
+68402,0x10B32,65,2,359,eActorEnum_candidate,01 67
+68604,0x10BFC,37,1,14,eActorEnum_candidate,0E
+68747,0x10C8B,65,2,1118,eActorEnum_candidate,04 5E
+68785,0x10CB1,65,2,1087,eActorEnum_candidate,04 3F
+68920,0x10D38,40,4,1092616192,,41 20 00 00
+69606,0x10FE6,37,1,57,eActorEnum_candidate,39
+69813,0x110B5,40,4,1092616192,,41 20 00 00
+70110,0x111DE,65,2,512,gang_actor,02 00
+70147,0x11203,65,2,512,gang_actor,02 00
+70158,0x1120E,65,2,256,eActorEnum_candidate,01 00
+70198,0x11236,65,2,256,eActorEnum_candidate,01 00
+70209,0x11241,37,1,128,eActorEnum_candidate,80
+70251,0x1126B,37,1,128,eActorEnum_candidate,80
+70261,0x11275,37,1,64,eActorEnum_candidate,40
+70303,0x1129F,37,1,64,eActorEnum_candidate,40
+70313,0x112A9,37,1,32,eActorEnum_candidate,20
+70353,0x112D1,37,1,32,eActorEnum_candidate,20
+70363,0x112DB,37,1,16,eActorEnum_candidate,10
+70401,0x11301,37,1,16,eActorEnum_candidate,10
+70411,0x1130B,37,1,8,eActorEnum_candidate,08
+70454,0x11336,37,1,8,eActorEnum_candidate,08
+70686,0x1141E,37,1,8,eActorEnum_candidate,08
+70746,0x1145A,65,2,375,eActorEnum_candidate,01 77
+70754,0x11462,65,2,397,eActorEnum_candidate,01 8D
+70848,0x114C0,37,1,22,eActorEnum_candidate,16
+70859,0x114CB,37,1,22,eActorEnum_candidate,16
+70963,0x11533,37,1,8,eActorEnum_candidate,08
+70973,0x1153D,65,2,976,eActorEnum_candidate,03 D0
+71049,0x11589,65,2,10000,,27 10
+71087,0x115AF,37,1,8,eActorEnum_candidate,08
+71128,0x115D8,37,1,8,eActorEnum_candidate,08
+71162,0x115FA,37,1,8,eActorEnum_candidate,08
+71402,0x116EA,65,2,696,eActorEnum_candidate,02 B8
+71471,0x1172F,65,2,696,eActorEnum_candidate,02 B8
+71739,0x1183B,37,1,26,eActorEnum_candidate,1A
+71825,0x11891,37,1,26,eActorEnum_candidate,1A
+71873,0x118C1,65,2,696,eActorEnum_candidate,02 B8
+72294,0x11A66,40,4,1077936128,,40 40 00 00
+72861,0x11C9D,37,1,15,eActorEnum_candidate,0F
+73047,0x11D57,37,1,31,eActorEnum_candidate,1F
+73186,0x11DE2,37,1,15,eActorEnum_candidate,0F
+73372,0x11E9C,37,1,31,eActorEnum_candidate,1F
+74289,0x12231,37,1,31,eActorEnum_candidate,1F
+74334,0x1225E,65,2,256,eActorEnum_candidate,01 00
+74375,0x12287,65,2,4096,,10 00
+74390,0x12296,37,1,12,eActorEnum_candidate,0C
+74409,0x122A9,65,2,2048,,08 00
+74530,0x12322,37,1,35,eActorEnum_candidate,23
+74803,0x12433,37,1,16,eActorEnum_candidate,10
+74810,0x1243A,37,1,19,eActorEnum_candidate,13
+75239,0x125E7,37,1,8,eActorEnum_candidate,08
+75715,0x127C3,37,1,8,eActorEnum_candidate,08
+76214,0x129B6,37,1,32,eActorEnum_candidate,20
+76222,0x129BE,37,1,32,eActorEnum_candidate,20
+76230,0x129C6,37,1,32,eActorEnum_candidate,20
+76255,0x129DF,37,1,64,eActorEnum_candidate,40
+76263,0x129E7,37,1,64,eActorEnum_candidate,40
+76271,0x129EF,37,1,64,eActorEnum_candidate,40
+76297,0x12A09,37,1,128,eActorEnum_candidate,80
+76305,0x12A11,37,1,128,eActorEnum_candidate,80
+76313,0x12A19,37,1,128,eActorEnum_candidate,80
+76336,0x12A30,65,2,256,eActorEnum_candidate,01 00
+76346,0x12A3A,65,2,256,eActorEnum_candidate,01 00
+76355,0x12A43,65,2,256,eActorEnum_candidate,01 00
+76582,0x12B26,37,1,8,eActorEnum_candidate,08
+76607,0x12B3F,37,1,9,eActorEnum_candidate,09
+76661,0x12B75,37,1,10,eActorEnum_candidate,0A
+76683,0x12B8B,37,1,11,eActorEnum_candidate,0B
+76709,0x12BA5,37,1,12,eActorEnum_candidate,0C
+76735,0x12BBF,37,1,14,eActorEnum_candidate,0E
+76919,0x12C77,37,1,62,eActorEnum_candidate,3E
+77104,0x12D30,65,2,65534,,FF FE
+79694,0x1374E,65,2,1311,,05 1F
+79851,0x137EB,37,1,8,eActorEnum_candidate,08
+79876,0x13804,37,1,16,eActorEnum_candidate,10
+79901,0x1381D,37,1,32,eActorEnum_candidate,20
+79904,0x13820,37,1,32,eActorEnum_candidate,20
+79912,0x13828,65,2,512,gang_actor,02 00
+80227,0x13963,37,1,40,eActorEnum_candidate,28
+80234,0x1396A,37,1,21,eActorEnum_candidate,15
+80344,0x139D8,37,1,36,eActorEnum_candidate,24
+80555,0x13AAB,37,1,11,eActorEnum_candidate,0B
+80561,0x13AB1,37,1,16,eActorEnum_candidate,10
+80568,0x13AB8,37,1,15,eActorEnum_candidate,0F
+80575,0x13ABF,37,1,43,eActorEnum_candidate,2B
+81136,0x13CF0,40,4,2147483648,,80 00 00 00
+81255,0x13D67,40,4,16777216,,01 00 00 00
+81265,0x13D71,40,4,33554432,,02 00 00 00
+81276,0x13D7C,40,4,67108864,,04 00 00 00
+81308,0x13D9C,40,4,268435456,,10 00 00 00
+81408,0x13E00,37,1,8,eActorEnum_candidate,08
+81425,0x13E11,37,1,9,eActorEnum_candidate,09
+81442,0x13E22,37,1,11,eActorEnum_candidate,0B
+81459,0x13E33,37,1,12,eActorEnum_candidate,0C
+81476,0x13E44,37,1,13,eActorEnum_candidate,0D
+81493,0x13E55,37,1,14,eActorEnum_candidate,0E
+81510,0x13E66,37,1,15,eActorEnum_candidate,0F
+81527,0x13E77,37,1,16,eActorEnum_candidate,10
+81544,0x13E88,37,1,17,eActorEnum_candidate,11
+81561,0x13E99,37,1,25,eActorEnum_candidate,19
+81578,0x13EAA,37,1,18,eActorEnum_candidate,12
+81595,0x13EBB,37,1,19,eActorEnum_candidate,13
+81612,0x13ECC,37,1,21,eActorEnum_candidate,15
+81629,0x13EDD,37,1,22,eActorEnum_candidate,16
+81646,0x13EEE,37,1,23,eActorEnum_candidate,17
+81663,0x13EFF,37,1,24,eActorEnum_candidate,18
+81680,0x13F10,37,1,26,eActorEnum_candidate,1A
+81697,0x13F21,37,1,27,eActorEnum_candidate,1B
+81901,0x13FED,38,2,7755,,1E 4B
+82436,0x14204,37,1,15,eActorEnum_candidate,0F
+82505,0x14249,37,1,13,eActorEnum_candidate,0D
+82510,0x1424E,37,1,14,eActorEnum_candidate,0E
+82709,0x14315,37,1,15,eActorEnum_candidate,0F
+84999,0x14C07,40,4,16777216,,01 00 00 00
+85009,0x14C11,40,4,33554432,,02 00 00 00
+85020,0x14C1C,40,4,67108864,,04 00 00 00
+85031,0x14C27,40,4,268435456,,10 00 00 00
+85104,0x14C70,65,2,65534,,FF FE
+85141,0x14C95,37,1,200,eActorEnum_candidate,C8
+85205,0x14CD5,37,1,105,eActorEnum_candidate,69
+85240,0x14CF8,37,1,90,eActorEnum_candidate,5A
+85275,0x14D1B,37,1,90,eActorEnum_candidate,5A
+85468,0x14DDC,37,1,90,eActorEnum_candidate,5A
+85503,0x14DFF,37,1,90,eActorEnum_candidate,5A
+85806,0x14F2E,37,1,8,eActorEnum_candidate,08
+85887,0x14F7F,37,1,8,eActorEnum_candidate,08
+85927,0x14FA7,37,1,8,eActorEnum_candidate,08
+86020,0x15004,37,1,14,eActorEnum_candidate,0E
+86025,0x15009,37,1,18,eActorEnum_candidate,12
+86031,0x1500F,37,1,37,eActorEnum_candidate,25
+86042,0x1501A,37,1,11,eActorEnum_candidate,0B
+86053,0x15025,37,1,21,eActorEnum_candidate,15
+86183,0x150A7,37,1,24,eActorEnum_candidate,18
+86231,0x150D7,37,1,27,eActorEnum_candidate,1B
+86241,0x150E1,37,1,23,eActorEnum_candidate,17
+86864,0x15350,65,2,658,eActorEnum_candidate,02 92
+86904,0x15378,65,2,658,eActorEnum_candidate,02 92
+87264,0x154E0,37,1,11,eActorEnum_candidate,0B
+87273,0x154E9,37,1,8,eActorEnum_candidate,08
+87281,0x154F1,37,1,8,eActorEnum_candidate,08
+87329,0x15521,65,2,491,gang_actor,01 EB
+87352,0x15538,65,2,497,gang_actor,01 F1
+87388,0x1555C,37,1,8,eActorEnum_candidate,08
+87420,0x1557C,37,1,8,eActorEnum_candidate,08
+87458,0x155A2,65,2,491,gang_actor,01 EB
+87482,0x155BA,37,1,8,eActorEnum_candidate,08
+87519,0x155DF,37,1,8,eActorEnum_candidate,08
+87561,0x15609,65,2,497,gang_actor,01 F1
+87585,0x15621,37,1,8,eActorEnum_candidate,08
+87626,0x1564A,65,2,491,gang_actor,01 EB
+87634,0x15652,65,2,497,gang_actor,01 F1
+87646,0x1565E,37,1,9,eActorEnum_candidate,09
+87691,0x1568B,37,1,8,eActorEnum_candidate,08
+87722,0x156AA,37,1,9,eActorEnum_candidate,09
+87730,0x156B2,37,1,8,eActorEnum_candidate,08
+87761,0x156D1,37,1,9,eActorEnum_candidate,09
+87805,0x156FD,37,1,9,eActorEnum_candidate,09
+87837,0x1571D,37,1,10,eActorEnum_candidate,0A
+87845,0x15725,37,1,9,eActorEnum_candidate,09
+87876,0x15744,37,1,10,eActorEnum_candidate,0A
+87924,0x15774,40,4,1089470464,,40 F0 00 00
+87989,0x157B5,37,1,11,eActorEnum_candidate,0B
+87995,0x157BB,37,1,16,eActorEnum_candidate,10
+88002,0x157C2,37,1,15,eActorEnum_candidate,0F
+88009,0x157C9,37,1,43,eActorEnum_candidate,2B
+88466,0x15992,37,1,38,eActorEnum_candidate,26
+88543,0x159DF,40,4,1097859072,,41 70 00 00
+88839,0x15B07,37,1,38,eActorEnum_candidate,26
+89344,0x15D00,37,1,8,eActorEnum_candidate,08
+89350,0x15D06,37,1,9,eActorEnum_candidate,09
+89356,0x15D0C,37,1,10,eActorEnum_candidate,0A
+89362,0x15D12,37,1,11,eActorEnum_candidate,0B
+89368,0x15D18,37,1,12,eActorEnum_candidate,0C
+89374,0x15D1E,37,1,13,eActorEnum_candidate,0D
+89380,0x15D24,37,1,14,eActorEnum_candidate,0E
+89386,0x15D2A,37,1,31,eActorEnum_candidate,1F
+89392,0x15D30,37,1,19,eActorEnum_candidate,13
+89398,0x15D36,37,1,20,eActorEnum_candidate,14
+89404,0x15D3C,37,1,16,eActorEnum_candidate,10
+89410,0x15D42,37,1,17,eActorEnum_candidate,11
+89416,0x15D48,37,1,18,eActorEnum_candidate,12
+89422,0x15D4E,37,1,15,eActorEnum_candidate,0F
+89428,0x15D54,37,1,23,eActorEnum_candidate,17
+89434,0x15D5A,37,1,24,eActorEnum_candidate,18
+89440,0x15D60,37,1,25,eActorEnum_candidate,19
+89446,0x15D66,37,1,29,eActorEnum_candidate,1D
+89452,0x15D6C,37,1,22,eActorEnum_candidate,16
+89458,0x15D72,37,1,21,eActorEnum_candidate,15
+89464,0x15D78,37,1,32,eActorEnum_candidate,20
+89470,0x15D7E,37,1,33,eActorEnum_candidate,21
+89476,0x15D84,37,1,34,eActorEnum_candidate,22
+89482,0x15D8A,37,1,35,eActorEnum_candidate,23
+89488,0x15D90,37,1,36,eActorEnum_candidate,24
+89494,0x15D96,37,1,37,eActorEnum_candidate,25
+89528,0x15DB8,37,1,42,eActorEnum_candidate,2A
+89539,0x15DC3,37,1,80,eActorEnum_candidate,50
+89545,0x15DC9,37,1,13,eActorEnum_candidate,0D
+90355,0x160F3,37,1,31,eActorEnum_candidate,1F
+90414,0x1612E,65,2,16384,,40 00
+90475,0x1616B,37,1,32,eActorEnum_candidate,20
+90709,0x16255,37,1,145,eActorEnum_candidate,91
+90762,0x1628A,65,2,1024,eActorEnum_candidate,04 00
+90804,0x162B4,65,2,1024,eActorEnum_candidate,04 00
+91391,0x164FF,65,2,360,eActorEnum_candidate,01 68
+92038,0x16786,37,1,146,eActorEnum_candidate,92
+92263,0x16867,37,1,8,eActorEnum_candidate,08
+92672,0x16A00,37,1,145,eActorEnum_candidate,91
+92699,0x16A1B,37,1,48,eActorEnum_candidate,30
+92741,0x16A45,37,1,48,eActorEnum_candidate,30
+92753,0x16A51,37,1,16,eActorEnum_candidate,10
+92802,0x16A82,37,1,16,eActorEnum_candidate,10
+92862,0x16ABE,37,1,16,eActorEnum_candidate,10
+92903,0x16AE7,37,1,10,eActorEnum_candidate,0A
+92941,0x16B0D,37,1,16,eActorEnum_candidate,10
+93062,0x16B86,37,1,16,eActorEnum_candidate,10
+93249,0x16C41,37,1,16,eActorEnum_candidate,10
+93316,0x16C84,37,1,14,eActorEnum_candidate,0E
+93395,0x16CD3,37,1,24,eActorEnum_candidate,18
+93537,0x16D61,65,2,10000,,27 10
+93543,0x16D67,65,2,7500,,1D 4C
+93834,0x16E8A,40,4,1073741824,,40 00 00 00
+93840,0x16E90,40,4,1073741824,,40 00 00 00
+93852,0x16E9C,40,4,1073741824,,40 00 00 00
+93937,0x16EF1,65,2,8192,,20 00
+94225,0x17011,40,4,1092616192,,41 20 00 00
+94306,0x17062,40,4,1092616192,,41 20 00 00
+94385,0x170B1,40,4,1092616192,,41 20 00 00
+94404,0x170C4,37,1,8,eActorEnum_candidate,08
+94415,0x170CF,37,1,8,eActorEnum_candidate,08
+94427,0x170DB,37,1,8,eActorEnum_candidate,08
+94436,0x170E4,37,1,8,eActorEnum_candidate,08
+94468,0x17104,40,4,1092616192,,41 20 00 00
+94487,0x17117,37,1,16,eActorEnum_candidate,10
+94498,0x17122,37,1,16,eActorEnum_candidate,10
+94510,0x1712E,37,1,16,eActorEnum_candidate,10
+94519,0x17137,37,1,16,eActorEnum_candidate,10
+94556,0x1715C,40,4,1092616192,,41 20 00 00
+94575,0x1716F,37,1,32,eActorEnum_candidate,20
+94586,0x1717A,37,1,32,eActorEnum_candidate,20
+94598,0x17186,37,1,32,eActorEnum_candidate,20
+94607,0x1718F,37,1,32,eActorEnum_candidate,20
+94644,0x171B4,40,4,1092616192,,41 20 00 00
+94663,0x171C7,37,1,64,eActorEnum_candidate,40
+94674,0x171D2,37,1,64,eActorEnum_candidate,40
+94686,0x171DE,37,1,64,eActorEnum_candidate,40
+94695,0x171E7,37,1,64,eActorEnum_candidate,40
+94733,0x1720D,40,4,1092616192,,41 20 00 00
+94752,0x17220,37,1,128,eActorEnum_candidate,80
+94763,0x1722B,37,1,128,eActorEnum_candidate,80
+94775,0x17237,37,1,128,eActorEnum_candidate,80
+94784,0x17240,37,1,128,eActorEnum_candidate,80
+94822,0x17266,40,4,1092616192,,41 20 00 00
+94841,0x17279,65,2,256,eActorEnum_candidate,01 00
+94853,0x17285,65,2,256,eActorEnum_candidate,01 00
+94866,0x17292,65,2,256,eActorEnum_candidate,01 00
+94876,0x1729C,65,2,256,eActorEnum_candidate,01 00
+94915,0x172C3,40,4,1092616192,,41 20 00 00
+94934,0x172D6,65,2,512,gang_actor,02 00
+94946,0x172E2,65,2,512,gang_actor,02 00
+94959,0x172EF,65,2,512,gang_actor,02 00
+94969,0x172F9,65,2,512,gang_actor,02 00
+95009,0x17321,40,4,1092616192,,41 20 00 00
+95028,0x17334,65,2,1024,eActorEnum_candidate,04 00
+95040,0x17340,65,2,1024,eActorEnum_candidate,04 00
+95053,0x1734D,65,2,1024,eActorEnum_candidate,04 00
+95063,0x17357,65,2,1024,eActorEnum_candidate,04 00
+95105,0x17381,40,4,1092616192,,41 20 00 00
+95124,0x17394,65,2,2048,,08 00
+95136,0x173A0,65,2,2048,,08 00
+95149,0x173AD,65,2,2048,,08 00
+95159,0x173B7,65,2,2048,,08 00
+95198,0x173DE,40,4,1092616192,,41 20 00 00
+95217,0x173F1,65,2,4096,,10 00
+95229,0x173FD,65,2,4096,,10 00
+95242,0x1740A,65,2,4096,,10 00
+95252,0x17414,65,2,4096,,10 00
+95293,0x1743D,40,4,1092616192,,41 20 00 00
+95312,0x17450,65,2,8192,,20 00
+95324,0x1745C,65,2,8192,,20 00
+95337,0x17469,65,2,8192,,20 00
+95347,0x17473,65,2,8192,,20 00
+95388,0x1749C,40,4,1092616192,,41 20 00 00
+95407,0x174AF,65,2,16384,,40 00
+95419,0x174BB,65,2,16384,,40 00
+95432,0x174C8,65,2,16384,,40 00
+95442,0x174D2,65,2,16384,,40 00
+95482,0x174FA,40,4,1092616192,,41 20 00 00
+95686,0x175C6,40,4,1092616192,,41 20 00 00
+95786,0x1762A,40,4,1092616192,,41 20 00 00
+95886,0x1768E,40,4,1092616192,,41 20 00 00
+95987,0x176F3,40,4,1092616192,,41 20 00 00
+96089,0x17759,40,4,1092616192,,41 20 00 00
+96189,0x177BD,40,4,1092616192,,41 20 00 00
+96289,0x17821,40,4,1092616192,,41 20 00 00
+96308,0x17834,40,4,16777216,,01 00 00 00
+96322,0x17842,40,4,16777216,,01 00 00 00
+96337,0x17851,40,4,16777216,,01 00 00 00
+96349,0x1785D,40,4,16777216,,01 00 00 00
+96394,0x1788A,40,4,1092616192,,41 20 00 00
+96413,0x1789D,40,4,33554432,,02 00 00 00
+96427,0x178AB,40,4,33554432,,02 00 00 00
+96442,0x178BA,40,4,33554432,,02 00 00 00
+96454,0x178C6,40,4,33554432,,02 00 00 00
+96500,0x178F4,40,4,1092616192,,41 20 00 00
+96519,0x17907,40,4,67108864,,04 00 00 00
+96533,0x17915,40,4,67108864,,04 00 00 00
+96548,0x17924,40,4,67108864,,04 00 00 00
+96560,0x17930,40,4,67108864,,04 00 00 00
+96606,0x1795E,40,4,1092616192,,41 20 00 00
+96625,0x17971,40,4,134217728,,08 00 00 00
+96639,0x1797F,40,4,134217728,,08 00 00 00
+96654,0x1798E,40,4,134217728,,08 00 00 00
+96666,0x1799A,40,4,134217728,,08 00 00 00
+96711,0x179C7,40,4,1092616192,,41 20 00 00
+96730,0x179DA,40,4,268435456,,10 00 00 00
+96744,0x179E8,40,4,268435456,,10 00 00 00
+96759,0x179F7,40,4,268435456,,10 00 00 00
+96771,0x17A03,40,4,268435456,,10 00 00 00
+96813,0x17A2D,40,4,1092616192,,41 20 00 00
+96832,0x17A40,40,4,536870912,,20 00 00 00
+96846,0x17A4E,40,4,536870912,,20 00 00 00
+96861,0x17A5D,40,4,536870912,,20 00 00 00
+96873,0x17A69,40,4,536870912,,20 00 00 00
+96918,0x17A96,40,4,1092616192,,41 20 00 00
+96937,0x17AA9,40,4,1073741824,,40 00 00 00
+96951,0x17AB7,40,4,1073741824,,40 00 00 00
+96966,0x17AC6,40,4,1073741824,,40 00 00 00
+96978,0x17AD2,40,4,1073741824,,40 00 00 00
+97027,0x17B03,40,4,1092616192,,41 20 00 00
+97121,0x17B61,40,4,1092616192,,41 20 00 00
+97211,0x17BBB,40,4,1092616192,,41 20 00 00
+97230,0x17BCE,37,1,16,eActorEnum_candidate,10
+97241,0x17BD9,37,1,16,eActorEnum_candidate,10
+97253,0x17BE5,37,1,16,eActorEnum_candidate,10
+97262,0x17BEE,37,1,16,eActorEnum_candidate,10
+97293,0x17C0D,40,4,1092616192,,41 20 00 00
+97312,0x17C20,37,1,32,eActorEnum_candidate,20
+97323,0x17C2B,37,1,32,eActorEnum_candidate,20
+97335,0x17C37,37,1,32,eActorEnum_candidate,20
+97344,0x17C40,37,1,32,eActorEnum_candidate,20
+97378,0x17C62,40,4,1092616192,,41 20 00 00
+97397,0x17C75,37,1,64,eActorEnum_candidate,40
+97408,0x17C80,37,1,64,eActorEnum_candidate,40
+97420,0x17C8C,37,1,64,eActorEnum_candidate,40
+97429,0x17C95,37,1,64,eActorEnum_candidate,40
+97466,0x17CBA,40,4,1092616192,,41 20 00 00
+97485,0x17CCD,37,1,128,eActorEnum_candidate,80
+97496,0x17CD8,37,1,128,eActorEnum_candidate,80
+97508,0x17CE4,37,1,128,eActorEnum_candidate,80
+97517,0x17CED,37,1,128,eActorEnum_candidate,80
+97554,0x17D12,40,4,1092616192,,41 20 00 00
+97573,0x17D25,65,2,256,eActorEnum_candidate,01 00
+97585,0x17D31,65,2,256,eActorEnum_candidate,01 00
+97598,0x17D3E,65,2,256,eActorEnum_candidate,01 00
+97608,0x17D48,65,2,256,eActorEnum_candidate,01 00
+97642,0x17D6A,40,4,1092616192,,41 20 00 00
+97661,0x17D7D,65,2,512,gang_actor,02 00
+97673,0x17D89,65,2,512,gang_actor,02 00
+97686,0x17D96,65,2,512,gang_actor,02 00
+97696,0x17DA0,65,2,512,gang_actor,02 00
+97738,0x17DCA,40,4,1092616192,,41 20 00 00
+97757,0x17DDD,65,2,1024,eActorEnum_candidate,04 00
+97769,0x17DE9,65,2,1024,eActorEnum_candidate,04 00
+97782,0x17DF6,65,2,1024,eActorEnum_candidate,04 00
+97792,0x17E00,65,2,1024,eActorEnum_candidate,04 00
+97845,0x17E35,40,4,1092616192,,41 20 00 00
+97883,0x17E5B,40,4,1092616192,,41 20 00 00
+97921,0x17E81,40,4,1092616192,,41 20 00 00
+97940,0x17E94,37,1,8,eActorEnum_candidate,08
+97951,0x17E9F,37,1,8,eActorEnum_candidate,08
+97963,0x17EAB,37,1,8,eActorEnum_candidate,08
+97972,0x17EB4,37,1,8,eActorEnum_candidate,08
+98005,0x17ED5,40,4,1092616192,,41 20 00 00
+98024,0x17EE8,65,2,2048,,08 00
+98036,0x17EF4,65,2,2048,,08 00
+98049,0x17F01,65,2,2048,,08 00
+98059,0x17F0B,65,2,2048,,08 00
+98102,0x17F36,40,4,1092616192,,41 20 00 00
+98121,0x17F49,65,2,4096,,10 00
+98133,0x17F55,65,2,4096,,10 00
+98146,0x17F62,65,2,4096,,10 00
+98156,0x17F6C,65,2,4096,,10 00
+98200,0x17F98,40,4,1092616192,,41 20 00 00
+98219,0x17FAB,65,2,8192,,20 00
+98231,0x17FB7,65,2,8192,,20 00
+98244,0x17FC4,65,2,8192,,20 00
+98254,0x17FCE,65,2,8192,,20 00
+98304,0x18000,40,4,1092616192,,41 20 00 00
+98323,0x18013,65,2,16384,,40 00
+98335,0x1801F,65,2,16384,,40 00
+98348,0x1802C,65,2,16384,,40 00
+98358,0x18036,65,2,16384,,40 00
+98392,0x18058,40,4,1092616192,,41 20 00 00
+98482,0x180B2,40,4,1092616192,,41 20 00 00
+98571,0x1810B,40,4,1092616192,,41 20 00 00
+98667,0x1816B,40,4,1092616192,,41 20 00 00
+98764,0x181CC,40,4,1092616192,,41 20 00 00
+98856,0x18228,40,4,1092616192,,41 20 00 00
+98947,0x18283,40,4,1092616192,,41 20 00 00
+99036,0x182DC,40,4,1092616192,,41 20 00 00
+99055,0x182EF,40,4,16777216,,01 00 00 00
+99069,0x182FD,40,4,16777216,,01 00 00 00
+99084,0x1830C,40,4,16777216,,01 00 00 00
+99096,0x18318,40,4,16777216,,01 00 00 00
+99130,0x1833A,40,4,1092616192,,41 20 00 00
+99149,0x1834D,40,4,33554432,,02 00 00 00
+99163,0x1835B,40,4,33554432,,02 00 00 00
+99178,0x1836A,40,4,33554432,,02 00 00 00
+99190,0x18376,40,4,33554432,,02 00 00 00
+99231,0x1839F,40,4,1092616192,,41 20 00 00
+99250,0x183B2,40,4,67108864,,04 00 00 00
+99264,0x183C0,40,4,67108864,,04 00 00 00
+99279,0x183CF,40,4,67108864,,04 00 00 00
+99291,0x183DB,40,4,67108864,,04 00 00 00
+99324,0x183FC,40,4,1092616192,,41 20 00 00
+99343,0x1840F,40,4,268435456,,10 00 00 00
+99357,0x1841D,40,4,268435456,,10 00 00 00
+99372,0x1842C,40,4,268435456,,10 00 00 00
+99384,0x18438,40,4,268435456,,10 00 00 00
+99419,0x1845B,40,4,1092616192,,41 20 00 00
+99438,0x1846E,40,4,536870912,,20 00 00 00
+99452,0x1847C,40,4,536870912,,20 00 00 00
+99467,0x1848B,40,4,536870912,,20 00 00 00
+99479,0x18497,40,4,536870912,,20 00 00 00
+99518,0x184BE,40,4,1092616192,,41 20 00 00
+99537,0x184D1,40,4,1073741824,,40 00 00 00
+99551,0x184DF,40,4,1073741824,,40 00 00 00
+99566,0x184EE,40,4,1073741824,,40 00 00 00
+99578,0x184FA,40,4,1073741824,,40 00 00 00
+99613,0x1851D,40,4,1092616192,,41 20 00 00
+99695,0x1856F,40,4,1092616192,,41 20 00 00
+99774,0x185BE,40,4,1092616192,,41 20 00 00
+99793,0x185D1,37,1,8,eActorEnum_candidate,08
+99804,0x185DC,37,1,8,eActorEnum_candidate,08
+99816,0x185E8,37,1,8,eActorEnum_candidate,08
+99825,0x185F1,37,1,8,eActorEnum_candidate,08
+99856,0x18610,40,4,1092616192,,41 20 00 00
+99875,0x18623,37,1,16,eActorEnum_candidate,10
+99886,0x1862E,37,1,16,eActorEnum_candidate,10
+99898,0x1863A,37,1,16,eActorEnum_candidate,10
+99907,0x18643,37,1,16,eActorEnum_candidate,10
+99938,0x18662,40,4,1092616192,,41 20 00 00
+99957,0x18675,37,1,32,eActorEnum_candidate,20
+99968,0x18680,37,1,32,eActorEnum_candidate,20
+99980,0x1868C,37,1,32,eActorEnum_candidate,20
+99989,0x18695,37,1,32,eActorEnum_candidate,20
+100020,0x186B4,40,4,1092616192,,41 20 00 00
+100039,0x186C7,37,1,64,eActorEnum_candidate,40
+100050,0x186D2,37,1,64,eActorEnum_candidate,40
+100062,0x186DE,37,1,64,eActorEnum_candidate,40
+100071,0x186E7,37,1,64,eActorEnum_candidate,40
+100102,0x18706,40,4,1092616192,,41 20 00 00
+100121,0x18719,65,2,256,eActorEnum_candidate,01 00
+100133,0x18725,65,2,256,eActorEnum_candidate,01 00
+100146,0x18732,65,2,256,eActorEnum_candidate,01 00
+100156,0x1873C,65,2,256,eActorEnum_candidate,01 00
+100211,0x18773,40,4,1092616192,,41 20 00 00
+100251,0x1879B,40,4,1092616192,,41 20 00 00
+100298,0x187CA,40,4,1092616192,,41 20 00 00
+100338,0x187F2,40,4,1092616192,,41 20 00 00
+100357,0x18805,65,2,2048,,08 00
+100369,0x18811,65,2,2048,,08 00
+100382,0x1881E,65,2,2048,,08 00
+100392,0x18828,65,2,2048,,08 00
+100424,0x18848,40,4,1092616192,,41 20 00 00
+100443,0x1885B,65,2,4096,,10 00
+100455,0x18867,65,2,4096,,10 00
+100468,0x18874,65,2,4096,,10 00
+100478,0x1887E,65,2,4096,,10 00
+100512,0x188A0,40,4,1092616192,,41 20 00 00
+100531,0x188B3,65,2,8192,,20 00
+100543,0x188BF,65,2,8192,,20 00
+100556,0x188CC,65,2,8192,,20 00
+100566,0x188D6,65,2,8192,,20 00
+100596,0x188F4,40,4,1092616192,,41 20 00 00
+100615,0x18907,65,2,16384,,40 00
+100627,0x18913,65,2,16384,,40 00
+100640,0x18920,65,2,16384,,40 00
+100650,0x1892A,65,2,16384,,40 00
+100682,0x1894A,40,4,1092616192,,41 20 00 00
+100771,0x189A3,40,4,1092616192,,41 20 00 00
+100862,0x189FE,40,4,1092616192,,41 20 00 00
+100950,0x18A56,40,4,1092616192,,41 20 00 00
+101040,0x18AB0,40,4,1092616192,,41 20 00 00
+101059,0x18AC3,37,1,128,eActorEnum_candidate,80
+101070,0x18ACE,37,1,128,eActorEnum_candidate,80
+101082,0x18ADA,37,1,128,eActorEnum_candidate,80
+101091,0x18AE3,37,1,128,eActorEnum_candidate,80
+101122,0x18B02,40,4,1092616192,,41 20 00 00
+101141,0x18B15,65,2,512,gang_actor,02 00
+101153,0x18B21,65,2,512,gang_actor,02 00
+101166,0x18B2E,65,2,512,gang_actor,02 00
+101176,0x18B38,65,2,512,gang_actor,02 00
+101213,0x18B5D,40,4,1092616192,,41 20 00 00
+101232,0x18B70,65,2,1024,eActorEnum_candidate,04 00
+101244,0x18B7C,65,2,1024,eActorEnum_candidate,04 00
+101257,0x18B89,65,2,1024,eActorEnum_candidate,04 00
+101267,0x18B93,65,2,1024,eActorEnum_candidate,04 00
+101307,0x18BBB,40,4,1092616192,,41 20 00 00
+101626,0x18CFA,65,2,390,eActorEnum_candidate,01 86
+101634,0x18D02,65,2,390,eActorEnum_candidate,01 86
+102112,0x18EE0,65,2,390,eActorEnum_candidate,01 86
+102120,0x18EE8,65,2,390,eActorEnum_candidate,01 86
+102512,0x19070,40,4,1073741824,,40 00 00 00
+102682,0x1911A,40,4,1073741824,,40 00 00 00
+102726,0x19146,40,4,1073741824,,40 00 00 00
+103158,0x192F6,37,1,8,eActorEnum_candidate,08
+103166,0x192FE,37,1,9,eActorEnum_candidate,09
+103174,0x19306,37,1,10,eActorEnum_candidate,0A
+103182,0x1930E,37,1,11,eActorEnum_candidate,0B
+103190,0x19316,37,1,32,eActorEnum_candidate,20
+103198,0x1931E,37,1,19,eActorEnum_candidate,13
+103206,0x19326,37,1,20,eActorEnum_candidate,14
+103214,0x1932E,37,1,50,eActorEnum_candidate,32
+103222,0x19336,37,1,12,eActorEnum_candidate,0C
+103230,0x1933E,37,1,23,eActorEnum_candidate,17
+103238,0x19346,37,1,52,eActorEnum_candidate,34
+103246,0x1934E,37,1,43,eActorEnum_candidate,2B
+103254,0x19356,37,1,24,eActorEnum_candidate,18
+103262,0x1935E,37,1,46,eActorEnum_candidate,2E
+103270,0x19366,37,1,47,eActorEnum_candidate,2F
+103278,0x1936E,37,1,14,eActorEnum_candidate,0E
+103475,0x19433,37,1,12,eActorEnum_candidate,0C
+103480,0x19438,37,1,13,eActorEnum_candidate,0D
+103486,0x1943E,37,1,10,eActorEnum_candidate,0A
+103492,0x19444,37,1,11,eActorEnum_candidate,0B
+104097,0x196A1,37,1,22,eActorEnum_candidate,16
+104122,0x196BA,37,1,10,eActorEnum_candidate,0A
+104143,0x196CF,37,1,22,eActorEnum_candidate,16
+104188,0x196FC,37,1,22,eActorEnum_candidate,16
+104233,0x19729,37,1,22,eActorEnum_candidate,16
+104289,0x19761,37,1,22,eActorEnum_candidate,16
+104398,0x197CE,37,1,125,eActorEnum_candidate,7D
+104426,0x197EA,37,1,19,eActorEnum_candidate,13
+104490,0x1982A,37,1,40,eActorEnum_candidate,28
+104518,0x19846,37,1,19,eActorEnum_candidate,13
+104563,0x19873,37,1,19,eActorEnum_candidate,13
+104642,0x198C2,37,1,10,eActorEnum_candidate,0A
+104674,0x198E2,37,1,19,eActorEnum_candidate,13
+105777,0x19D31,37,1,11,eActorEnum_candidate,0B
+105836,0x19D6C,37,1,11,eActorEnum_candidate,0B
+106021,0x19E25,37,1,10,eActorEnum_candidate,0A
+106352,0x19F70,37,1,11,eActorEnum_candidate,0B
+106424,0x19FB8,37,1,11,eActorEnum_candidate,0B
+106541,0x1A02D,37,1,11,eActorEnum_candidate,0B
+106612,0x1A074,37,1,11,eActorEnum_candidate,0B
+106687,0x1A0BF,37,1,11,eActorEnum_candidate,0B
+107249,0x1A2F1,37,1,35,eActorEnum_candidate,23
+107577,0x1A439,65,2,256,eActorEnum_candidate,01 00
+107594,0x1A44A,65,2,256,eActorEnum_candidate,01 00
+107611,0x1A45B,65,2,256,eActorEnum_candidate,01 00
+107646,0x1A47E,65,2,256,eActorEnum_candidate,01 00
+107681,0x1A4A1,65,2,256,eActorEnum_candidate,01 00
+107716,0x1A4C4,65,2,256,eActorEnum_candidate,01 00
+107746,0x1A4E2,37,1,12,eActorEnum_candidate,0C
+107755,0x1A4EB,38,2,3945,,0F 69
+108062,0x1A61E,37,1,21,eActorEnum_candidate,15
+108072,0x1A628,37,1,16,eActorEnum_candidate,10
+108806,0x1A906,40,4,1077863423,,40 3E E3 FF
+108927,0x1A97F,65,2,8192,,20 00
+108946,0x1A992,65,2,16384,,40 00
+109137,0x1AA51,37,1,63,eActorEnum_candidate,3F
+109144,0x1AA58,37,1,60,eActorEnum_candidate,3C
+109151,0x1AA5F,37,1,48,eActorEnum_candidate,30
+109176,0x1AA78,37,1,9,eActorEnum_candidate,09
+109610,0x1AC2A,65,2,4096,,10 00
+109990,0x1ADA6,37,1,63,eActorEnum_candidate,3F
+110080,0x1AE00,65,2,473,gang_actor,01 D9
+110083,0x1AE03,65,2,473,gang_actor,01 D9
+110113,0x1AE21,65,2,474,gang_actor,01 DA
+110116,0x1AE24,65,2,474,gang_actor,01 DA
+110142,0x1AE3E,65,2,475,gang_actor,01 DB
+110145,0x1AE41,65,2,475,gang_actor,01 DB
+110171,0x1AE5B,65,2,476,gang_actor,01 DC
+110174,0x1AE5E,65,2,476,gang_actor,01 DC
+110196,0x1AE74,65,2,4096,,10 00
+110290,0x1AED2,37,1,10,eActorEnum_candidate,0A
+110308,0x1AEE4,65,2,268,eActorEnum_candidate,01 0C
+110344,0x1AF08,65,2,269,eActorEnum_candidate,01 0D
+110380,0x1AF2C,65,2,276,eActorEnum_candidate,01 14
+110416,0x1AF50,65,2,283,eActorEnum_candidate,01 1B
+110451,0x1AF73,37,1,11,eActorEnum_candidate,0B
+110453,0x1AF75,65,2,289,eActorEnum_candidate,01 21
+110489,0x1AF99,65,2,391,eActorEnum_candidate,01 87
+110526,0x1AFBE,65,2,392,eActorEnum_candidate,01 88
+110563,0x1AFE3,65,2,393,eActorEnum_candidate,01 89
+110600,0x1B008,65,2,394,eActorEnum_candidate,01 8A
+110636,0x1B02C,37,1,8,eActorEnum_candidate,08
+110638,0x1B02E,65,2,395,eActorEnum_candidate,01 8B
+110674,0x1B052,37,1,9,eActorEnum_candidate,09
+110676,0x1B054,65,2,396,eActorEnum_candidate,01 8C
+110852,0x1B104,37,1,8,eActorEnum_candidate,08
+110864,0x1B110,37,1,16,eActorEnum_candidate,10
+110927,0x1B14F,37,1,15,eActorEnum_candidate,0F
+110962,0x1B172,37,1,24,eActorEnum_candidate,18
+110997,0x1B195,65,2,420,eActorEnum_candidate,01 A4
+111033,0x1B1B9,37,1,36,eActorEnum_candidate,24
+111068,0x1B1DC,37,1,38,eActorEnum_candidate,26
+111103,0x1B1FF,37,1,39,eActorEnum_candidate,27
+111138,0x1B222,37,1,54,eActorEnum_candidate,36
+111173,0x1B245,37,1,55,eActorEnum_candidate,37
+111207,0x1B267,38,2,2104,,08 38
+111242,0x1B28A,37,1,9,eActorEnum_candidate,09
+111244,0x1B28C,65,2,404,eActorEnum_candidate,01 94
+111279,0x1B2AF,37,1,13,eActorEnum_candidate,0D
+111281,0x1B2B1,65,2,400,eActorEnum_candidate,01 90
+111316,0x1B2D4,37,1,14,eActorEnum_candidate,0E
+111318,0x1B2D6,65,2,372,eActorEnum_candidate,01 74
+111354,0x1B2FA,37,1,15,eActorEnum_candidate,0F
+111356,0x1B2FC,65,2,373,eActorEnum_candidate,01 75
+111392,0x1B320,37,1,10,eActorEnum_candidate,0A
+111394,0x1B322,65,2,374,eActorEnum_candidate,01 76
+111430,0x1B346,37,1,11,eActorEnum_candidate,0B
+111432,0x1B348,65,2,375,eActorEnum_candidate,01 77
+111468,0x1B36C,37,1,12,eActorEnum_candidate,0C
+111470,0x1B36E,65,2,376,eActorEnum_candidate,01 78
+111597,0x1B3ED,37,1,23,eActorEnum_candidate,17
+111658,0x1B42A,37,1,11,eActorEnum_candidate,0B
+111707,0x1B45B,37,1,24,eActorEnum_candidate,18
+111921,0x1B531,65,2,433,law_actor,01 B1
+111928,0x1B538,65,2,349,eActorEnum_candidate,01 5D
+111935,0x1B53F,65,2,327,eActorEnum_candidate,01 47
+111942,0x1B546,65,2,351,eActorEnum_candidate,01 5F
+111949,0x1B54D,65,2,350,eActorEnum_candidate,01 5E
+111956,0x1B554,65,2,426,law_actor,01 AA
+111963,0x1B55B,65,2,353,eActorEnum_candidate,01 61
+111970,0x1B562,65,2,341,eActorEnum_candidate,01 55
+111977,0x1B569,65,2,327,eActorEnum_candidate,01 47
+111984,0x1B570,65,2,397,eActorEnum_candidate,01 8D
+111991,0x1B577,65,2,399,eActorEnum_candidate,01 8F
+111998,0x1B57E,65,2,398,eActorEnum_candidate,01 8E
+112005,0x1B585,65,2,520,gang_actor,02 08
+112012,0x1B58C,65,2,326,eActorEnum_candidate,01 46
+112019,0x1B593,65,2,420,eActorEnum_candidate,01 A4
+112026,0x1B59A,65,2,421,eActorEnum_candidate,01 A5
+112033,0x1B5A1,65,2,346,eActorEnum_candidate,01 5A
+112040,0x1B5A8,65,2,354,eActorEnum_candidate,01 62
+112047,0x1B5AF,65,2,525,gang_actor,02 0D
+112054,0x1B5B6,65,2,383,eActorEnum_candidate,01 7F
+112061,0x1B5BD,65,2,411,eActorEnum_candidate,01 9B
+112068,0x1B5C4,65,2,411,eActorEnum_candidate,01 9B
+112078,0x1B5CE,65,2,327,eActorEnum_candidate,01 47
+113643,0x1BBEB,37,1,8,eActorEnum_candidate,08
+113657,0x1BBF9,37,1,8,eActorEnum_candidate,08
+113733,0x1BC45,37,1,9,eActorEnum_candidate,09
+113747,0x1BC53,37,1,9,eActorEnum_candidate,09
+113823,0x1BC9F,37,1,10,eActorEnum_candidate,0A
+113837,0x1BCAD,37,1,10,eActorEnum_candidate,0A
+113913,0x1BCF9,37,1,11,eActorEnum_candidate,0B
+113927,0x1BD07,37,1,11,eActorEnum_candidate,0B
+114003,0x1BD53,37,1,12,eActorEnum_candidate,0C
+114017,0x1BD61,37,1,12,eActorEnum_candidate,0C
+114838,0x1C096,37,1,8,eActorEnum_candidate,08
+114853,0x1C0A5,37,1,8,eActorEnum_candidate,08
+114930,0x1C0F2,37,1,9,eActorEnum_candidate,09
+114945,0x1C101,37,1,9,eActorEnum_candidate,09
+115030,0x1C156,37,1,10,eActorEnum_candidate,0A
+115045,0x1C165,37,1,10,eActorEnum_candidate,0A
+115130,0x1C1BA,37,1,11,eActorEnum_candidate,0B
+115145,0x1C1C9,37,1,11,eActorEnum_candidate,0B
+115230,0x1C21E,37,1,12,eActorEnum_candidate,0C
+115245,0x1C22D,37,1,12,eActorEnum_candidate,0C
+115330,0x1C282,37,1,13,eActorEnum_candidate,0D
+115345,0x1C291,37,1,13,eActorEnum_candidate,0D
+116750,0x1C80E,37,1,8,eActorEnum_candidate,08
+116766,0x1C81E,37,1,8,eActorEnum_candidate,08
+129687,0x1FA97,37,1,31,eActorEnum_candidate,1F
+129698,0x1FAA2,37,1,32,eActorEnum_candidate,20
+129709,0x1FAAD,37,1,33,eActorEnum_candidate,21
+129720,0x1FAB8,37,1,34,eActorEnum_candidate,22
+129731,0x1FAC3,37,1,35,eActorEnum_candidate,23
+129742,0x1FACE,37,1,36,eActorEnum_candidate,24
+129753,0x1FAD9,37,1,37,eActorEnum_candidate,25
+129829,0x1FB25,37,1,12,eActorEnum_candidate,0C
+129845,0x1FB35,37,1,13,eActorEnum_candidate,0D
+129861,0x1FB45,37,1,14,eActorEnum_candidate,0E
+129871,0x1FB4F,37,1,8,eActorEnum_candidate,08
+129887,0x1FB5F,37,1,8,eActorEnum_candidate,08
+129909,0x1FB75,37,1,8,eActorEnum_candidate,08
+129925,0x1FB85,37,1,9,eActorEnum_candidate,09
+129941,0x1FB95,37,1,10,eActorEnum_candidate,0A
+129957,0x1FBA5,37,1,11,eActorEnum_candidate,0B
+130003,0x1FBD3,37,1,15,eActorEnum_candidate,0F
+130019,0x1FBE3,37,1,16,eActorEnum_candidate,10
+130035,0x1FBF3,37,1,17,eActorEnum_candidate,11
+130051,0x1FC03,37,1,18,eActorEnum_candidate,12
+130067,0x1FC13,37,1,19,eActorEnum_candidate,13
+130077,0x1FC1D,37,1,10,eActorEnum_candidate,0A
+130084,0x1FC24,37,1,20,eActorEnum_candidate,14
+130100,0x1FC34,37,1,21,eActorEnum_candidate,15
+130116,0x1FC44,37,1,22,eActorEnum_candidate,16
+130132,0x1FC54,37,1,23,eActorEnum_candidate,17
+130148,0x1FC64,37,1,24,eActorEnum_candidate,18
+130164,0x1FC74,37,1,25,eActorEnum_candidate,19
+130180,0x1FC84,37,1,26,eActorEnum_candidate,1A
+130196,0x1FC94,37,1,27,eActorEnum_candidate,1B
+130212,0x1FCA4,37,1,28,eActorEnum_candidate,1C
+130228,0x1FCB4,37,1,29,eActorEnum_candidate,1D
+130244,0x1FCC4,37,1,30,eActorEnum_candidate,1E
+130255,0x1FCCF,37,1,31,eActorEnum_candidate,1F
+130266,0x1FCDA,37,1,32,eActorEnum_candidate,20
+130277,0x1FCE5,37,1,33,eActorEnum_candidate,21
+130288,0x1FCF0,37,1,34,eActorEnum_candidate,22
+130299,0x1FCFB,37,1,35,eActorEnum_candidate,23
+130310,0x1FD06,37,1,36,eActorEnum_candidate,24
+130321,0x1FD11,37,1,37,eActorEnum_candidate,25
+130372,0x1FD44,37,1,12,eActorEnum_candidate,0C
+130383,0x1FD4F,37,1,13,eActorEnum_candidate,0D
+130394,0x1FD5A,37,1,14,eActorEnum_candidate,0E
+130425,0x1FD79,37,1,8,eActorEnum_candidate,08
+130436,0x1FD84,37,1,9,eActorEnum_candidate,09
+130447,0x1FD8F,37,1,10,eActorEnum_candidate,0A
+130458,0x1FD9A,37,1,11,eActorEnum_candidate,0B
+130489,0x1FDB9,37,1,15,eActorEnum_candidate,0F
+130500,0x1FDC4,37,1,16,eActorEnum_candidate,10
+130511,0x1FDCF,37,1,17,eActorEnum_candidate,11
+130522,0x1FDDA,37,1,18,eActorEnum_candidate,12
+130533,0x1FDE5,37,1,19,eActorEnum_candidate,13
+130544,0x1FDF0,37,1,20,eActorEnum_candidate,14
+130555,0x1FDFB,37,1,21,eActorEnum_candidate,15
+130566,0x1FE06,37,1,22,eActorEnum_candidate,16
+130577,0x1FE11,37,1,23,eActorEnum_candidate,17
+130588,0x1FE1C,37,1,24,eActorEnum_candidate,18
+130599,0x1FE27,37,1,25,eActorEnum_candidate,19
+130610,0x1FE32,37,1,26,eActorEnum_candidate,1A
+130621,0x1FE3D,37,1,27,eActorEnum_candidate,1B
+130632,0x1FE48,37,1,28,eActorEnum_candidate,1C
+130643,0x1FE53,37,1,29,eActorEnum_candidate,1D
+130654,0x1FE5E,37,1,30,eActorEnum_candidate,1E
+130670,0x1FE6E,38,2,7967,,1F 1F
+130683,0x1FE7B,37,1,31,eActorEnum_candidate,1F
+130703,0x1FE8F,37,1,31,eActorEnum_candidate,1F
+130732,0x1FEAC,37,1,31,eActorEnum_candidate,1F
+130804,0x1FEF4,37,1,31,eActorEnum_candidate,1F
+130816,0x1FF00,37,1,31,eActorEnum_candidate,1F
+130828,0x1FF0C,37,1,31,eActorEnum_candidate,1F
+130839,0x1FF17,65,2,2019,,07 E3
+130842,0x1FF1A,37,1,31,eActorEnum_candidate,1F
+130866,0x1FF32,37,1,31,eActorEnum_candidate,1F
+130879,0x1FF3F,37,1,31,eActorEnum_candidate,1F
+130889,0x1FF49,65,2,1273,eActorEnum_candidate,04 F9
+130892,0x1FF4C,37,1,31,eActorEnum_candidate,1F
+130902,0x1FF56,65,2,411,eActorEnum_candidate,01 9B
+130905,0x1FF59,37,1,31,eActorEnum_candidate,1F
+130916,0x1FF64,37,1,31,eActorEnum_candidate,1F
+130927,0x1FF6F,37,1,31,eActorEnum_candidate,1F
+130953,0x1FF89,37,1,31,eActorEnum_candidate,1F
+130980,0x1FFA4,37,1,31,eActorEnum_candidate,1F
+130996,0x1FFB4,37,1,31,eActorEnum_candidate,1F
+131049,0x1FFE9,37,1,9,eActorEnum_candidate,09
+131054,0x1FFEE,37,1,31,eActorEnum_candidate,1F
+131066,0x1FFFA,37,1,31,eActorEnum_candidate,1F
+131085,0x2000D,37,1,31,eActorEnum_candidate,1F
+131100,0x2001C,37,1,31,eActorEnum_candidate,1F
+131117,0x2002D,37,1,31,eActorEnum_candidate,1F
+131135,0x2003F,37,1,31,eActorEnum_candidate,1F
+131161,0x20059,37,1,31,eActorEnum_candidate,1F
+131177,0x20069,37,1,31,eActorEnum_candidate,1F
+131185,0x20071,37,1,31,eActorEnum_candidate,1F
+131192,0x20078,39,3,6490377,,63 09 09
+131196,0x2007C,37,1,9,eActorEnum_candidate,09
+131201,0x20081,37,1,31,eActorEnum_candidate,1F
+131213,0x2008D,37,1,31,eActorEnum_candidate,1F
+131223,0x20097,38,2,7968,,1F 20
+131236,0x200A4,37,1,32,eActorEnum_candidate,20
+131256,0x200B8,37,1,32,eActorEnum_candidate,20
+131285,0x200D5,37,1,32,eActorEnum_candidate,20
+131357,0x2011D,37,1,32,eActorEnum_candidate,20
+131368,0x20128,38,2,7968,,1F 20
+131381,0x20135,37,1,32,eActorEnum_candidate,20
+131392,0x20140,65,2,2019,,07 E3
+131395,0x20143,37,1,32,eActorEnum_candidate,20
+131419,0x2015B,37,1,32,eActorEnum_candidate,20
+131432,0x20168,37,1,32,eActorEnum_candidate,20
+131443,0x20173,37,1,32,eActorEnum_candidate,20
+131454,0x2017E,37,1,32,eActorEnum_candidate,20
+131465,0x20189,37,1,32,eActorEnum_candidate,20
+131476,0x20194,37,1,32,eActorEnum_candidate,20
+131502,0x201AE,37,1,32,eActorEnum_candidate,20
+131529,0x201C9,37,1,32,eActorEnum_candidate,20
+131545,0x201D9,37,1,32,eActorEnum_candidate,20
+131556,0x201E4,37,1,32,eActorEnum_candidate,20
+131571,0x201F3,37,1,32,eActorEnum_candidate,20
+131586,0x20202,37,1,32,eActorEnum_candidate,20
+131603,0x20213,37,1,32,eActorEnum_candidate,20
+131621,0x20225,37,1,32,eActorEnum_candidate,20
+131647,0x2023F,37,1,32,eActorEnum_candidate,20
+131663,0x2024F,37,1,32,eActorEnum_candidate,20
+131671,0x20257,37,1,32,eActorEnum_candidate,20
+131678,0x2025E,39,3,6490377,,63 09 09
+131682,0x20262,37,1,9,eActorEnum_candidate,09
+131687,0x20267,37,1,32,eActorEnum_candidate,20
+131699,0x20273,37,1,32,eActorEnum_candidate,20
+131709,0x2027D,38,2,7969,,1F 21
+131722,0x2028A,37,1,33,eActorEnum_candidate,21
+131742,0x2029E,37,1,33,eActorEnum_candidate,21
+131771,0x202BB,37,1,33,eActorEnum_candidate,21
+131843,0x20303,37,1,33,eActorEnum_candidate,21
+131854,0x2030E,38,2,8225,,20 21
+131867,0x2031B,37,1,33,eActorEnum_candidate,21
+131878,0x20326,65,2,2019,,07 E3
+131881,0x20329,37,1,33,eActorEnum_candidate,21
+131905,0x20341,37,1,33,eActorEnum_candidate,21
+131918,0x2034E,37,1,33,eActorEnum_candidate,21
+131929,0x20359,37,1,33,eActorEnum_candidate,21
+131940,0x20364,37,1,33,eActorEnum_candidate,21
+131951,0x2036F,37,1,33,eActorEnum_candidate,21
+131962,0x2037A,37,1,33,eActorEnum_candidate,21
+131988,0x20394,37,1,33,eActorEnum_candidate,21
+132015,0x203AF,37,1,33,eActorEnum_candidate,21
+132031,0x203BF,37,1,33,eActorEnum_candidate,21
+132042,0x203CA,37,1,33,eActorEnum_candidate,21
+132057,0x203D9,37,1,33,eActorEnum_candidate,21
+132072,0x203E8,37,1,33,eActorEnum_candidate,21
+132089,0x203F9,37,1,33,eActorEnum_candidate,21
+132107,0x2040B,37,1,33,eActorEnum_candidate,21
+132133,0x20425,37,1,33,eActorEnum_candidate,21
+132149,0x20435,37,1,33,eActorEnum_candidate,21
+132157,0x2043D,37,1,33,eActorEnum_candidate,21
+132164,0x20444,39,3,6490377,,63 09 09
+132168,0x20448,37,1,9,eActorEnum_candidate,09
+132173,0x2044D,37,1,33,eActorEnum_candidate,21
+132185,0x20459,37,1,33,eActorEnum_candidate,21
+132195,0x20463,38,2,7970,,1F 22
+132208,0x20470,37,1,34,eActorEnum_candidate,22
+132228,0x20484,37,1,34,eActorEnum_candidate,22
+132257,0x204A1,37,1,34,eActorEnum_candidate,22
+132329,0x204E9,37,1,34,eActorEnum_candidate,22
+132340,0x204F4,38,2,8482,,21 22
+132353,0x20501,37,1,34,eActorEnum_candidate,22
+132364,0x2050C,65,2,2019,,07 E3
+132367,0x2050F,37,1,34,eActorEnum_candidate,22
+132391,0x20527,37,1,34,eActorEnum_candidate,22
+132404,0x20534,37,1,34,eActorEnum_candidate,22
+132415,0x2053F,37,1,34,eActorEnum_candidate,22
+132426,0x2054A,37,1,34,eActorEnum_candidate,22
+132437,0x20555,37,1,34,eActorEnum_candidate,22
+132448,0x20560,37,1,34,eActorEnum_candidate,22
+132474,0x2057A,37,1,34,eActorEnum_candidate,22
+132501,0x20595,37,1,34,eActorEnum_candidate,22
+132517,0x205A5,37,1,34,eActorEnum_candidate,22
+132528,0x205B0,37,1,34,eActorEnum_candidate,22
+132543,0x205BF,37,1,34,eActorEnum_candidate,22
+132558,0x205CE,37,1,34,eActorEnum_candidate,22
+132575,0x205DF,37,1,34,eActorEnum_candidate,22
+132593,0x205F1,37,1,34,eActorEnum_candidate,22
+132619,0x2060B,37,1,34,eActorEnum_candidate,22
+132635,0x2061B,37,1,34,eActorEnum_candidate,22
+132643,0x20623,37,1,34,eActorEnum_candidate,22
+132650,0x2062A,39,3,6490377,,63 09 09
+132654,0x2062E,37,1,9,eActorEnum_candidate,09
+132659,0x20633,37,1,34,eActorEnum_candidate,22
+132671,0x2063F,37,1,34,eActorEnum_candidate,22
+132681,0x20649,38,2,7971,,1F 23
+132694,0x20656,37,1,35,eActorEnum_candidate,23
+132714,0x2066A,37,1,35,eActorEnum_candidate,23
+132743,0x20687,37,1,35,eActorEnum_candidate,23
+132815,0x206CF,37,1,35,eActorEnum_candidate,23
+132826,0x206DA,38,2,8739,,22 23
+132839,0x206E7,37,1,35,eActorEnum_candidate,23
+132850,0x206F2,65,2,2019,,07 E3
+132853,0x206F5,37,1,35,eActorEnum_candidate,23
+132877,0x2070D,37,1,35,eActorEnum_candidate,23
+132890,0x2071A,37,1,35,eActorEnum_candidate,23
+132901,0x20725,37,1,35,eActorEnum_candidate,23
+132912,0x20730,37,1,35,eActorEnum_candidate,23
+132923,0x2073B,37,1,35,eActorEnum_candidate,23
+132934,0x20746,37,1,35,eActorEnum_candidate,23
+132960,0x20760,37,1,35,eActorEnum_candidate,23
+132987,0x2077B,37,1,35,eActorEnum_candidate,23
+133003,0x2078B,37,1,35,eActorEnum_candidate,23
+133014,0x20796,37,1,35,eActorEnum_candidate,23
+133029,0x207A5,37,1,35,eActorEnum_candidate,23
+133044,0x207B4,37,1,35,eActorEnum_candidate,23
+133061,0x207C5,37,1,35,eActorEnum_candidate,23
+133079,0x207D7,37,1,35,eActorEnum_candidate,23
+133105,0x207F1,37,1,35,eActorEnum_candidate,23
+133121,0x20801,37,1,35,eActorEnum_candidate,23
+133129,0x20809,37,1,35,eActorEnum_candidate,23
+133136,0x20810,39,3,6490377,,63 09 09
+133140,0x20814,37,1,9,eActorEnum_candidate,09
+133145,0x20819,37,1,35,eActorEnum_candidate,23
+133157,0x20825,37,1,35,eActorEnum_candidate,23
+133167,0x2082F,38,2,7972,,1F 24
+133180,0x2083C,37,1,36,eActorEnum_candidate,24
+133200,0x20850,37,1,36,eActorEnum_candidate,24
+133229,0x2086D,37,1,36,eActorEnum_candidate,24
+133301,0x208B5,37,1,36,eActorEnum_candidate,24
+133312,0x208C0,38,2,8996,,23 24
+133325,0x208CD,37,1,36,eActorEnum_candidate,24
+133336,0x208D8,65,2,2019,,07 E3
+133339,0x208DB,37,1,36,eActorEnum_candidate,24
+133363,0x208F3,37,1,36,eActorEnum_candidate,24
+133376,0x20900,37,1,36,eActorEnum_candidate,24
+133387,0x2090B,37,1,36,eActorEnum_candidate,24
+133398,0x20916,37,1,36,eActorEnum_candidate,24
+133409,0x20921,37,1,36,eActorEnum_candidate,24
+133420,0x2092C,37,1,36,eActorEnum_candidate,24
+133446,0x20946,37,1,36,eActorEnum_candidate,24
+133473,0x20961,37,1,36,eActorEnum_candidate,24
+133489,0x20971,37,1,36,eActorEnum_candidate,24
+133500,0x2097C,37,1,36,eActorEnum_candidate,24
+133515,0x2098B,37,1,36,eActorEnum_candidate,24
+133530,0x2099A,37,1,36,eActorEnum_candidate,24
+133547,0x209AB,37,1,36,eActorEnum_candidate,24
+133565,0x209BD,37,1,36,eActorEnum_candidate,24
+133591,0x209D7,37,1,36,eActorEnum_candidate,24
+133607,0x209E7,37,1,36,eActorEnum_candidate,24
+133615,0x209EF,37,1,36,eActorEnum_candidate,24
+133622,0x209F6,39,3,6490377,,63 09 09
+133626,0x209FA,37,1,9,eActorEnum_candidate,09
+133631,0x209FF,37,1,36,eActorEnum_candidate,24
+133643,0x20A0B,37,1,36,eActorEnum_candidate,24
+133653,0x20A15,38,2,7973,,1F 25
+133666,0x20A22,37,1,37,eActorEnum_candidate,25
+133686,0x20A36,37,1,37,eActorEnum_candidate,25
+133714,0x20A52,37,1,37,eActorEnum_candidate,25
+133786,0x20A9A,37,1,37,eActorEnum_candidate,25
+133797,0x20AA5,38,2,9253,,24 25
+133810,0x20AB2,37,1,37,eActorEnum_candidate,25
+133821,0x20ABD,65,2,2019,,07 E3
+133824,0x20AC0,37,1,37,eActorEnum_candidate,25
+133848,0x20AD8,37,1,37,eActorEnum_candidate,25
+133861,0x20AE5,37,1,37,eActorEnum_candidate,25
+133871,0x20AEF,65,2,1263,eActorEnum_candidate,04 EF
+133874,0x20AF2,37,1,37,eActorEnum_candidate,25
+133884,0x20AFC,65,2,411,eActorEnum_candidate,01 9B
+133887,0x20AFF,37,1,37,eActorEnum_candidate,25
+133898,0x20B0A,37,1,37,eActorEnum_candidate,25
+133913,0x20B19,37,1,37,eActorEnum_candidate,25
+133939,0x20B33,37,1,37,eActorEnum_candidate,25
+133966,0x20B4E,37,1,37,eActorEnum_candidate,25
+133982,0x20B5E,37,1,37,eActorEnum_candidate,25
+134035,0x20B93,37,1,9,eActorEnum_candidate,09
+134040,0x20B98,37,1,37,eActorEnum_candidate,25
+134052,0x20BA4,37,1,37,eActorEnum_candidate,25
+134067,0x20BB3,37,1,37,eActorEnum_candidate,25
+134082,0x20BC2,37,1,37,eActorEnum_candidate,25
+134099,0x20BD3,37,1,37,eActorEnum_candidate,25
+134117,0x20BE5,37,1,37,eActorEnum_candidate,25
+134143,0x20BFF,37,1,37,eActorEnum_candidate,25
+134159,0x20C0F,37,1,37,eActorEnum_candidate,25
+134167,0x20C17,37,1,37,eActorEnum_candidate,25
+134174,0x20C1E,39,3,6490377,,63 09 09
+134178,0x20C22,37,1,9,eActorEnum_candidate,09
+134183,0x20C27,37,1,37,eActorEnum_candidate,25
+134195,0x20C33,37,1,37,eActorEnum_candidate,25
+134371,0x20CE3,65,2,2018,,07 E2
+134418,0x20D12,65,2,561,eActorEnum_candidate,02 31
+134430,0x20D1E,65,2,312,eActorEnum_candidate,01 38
+134569,0x20DA9,37,1,9,eActorEnum_candidate,09
+134700,0x20E2C,39,3,6490377,,63 09 09
+134704,0x20E30,37,1,9,eActorEnum_candidate,09
+134895,0x20EEF,65,2,2023,,07 E7
+134952,0x20F28,65,2,312,eActorEnum_candidate,01 38
+135091,0x20FB3,37,1,9,eActorEnum_candidate,09
+135222,0x21036,39,3,6490377,,63 09 09
+135226,0x2103A,37,1,9,eActorEnum_candidate,09
+135417,0x210F9,65,2,2019,,07 E3
+135536,0x21170,65,2,312,eActorEnum_candidate,01 38
+135681,0x21201,37,1,9,eActorEnum_candidate,09
+135812,0x21284,39,3,6490377,,63 09 09
+135816,0x21288,37,1,9,eActorEnum_candidate,09
+136007,0x21347,65,2,2019,,07 E3
+136064,0x21380,65,2,312,eActorEnum_candidate,01 38
+136207,0x2140F,37,1,9,eActorEnum_candidate,09
+136338,0x21492,39,3,6490377,,63 09 09
+136342,0x21496,37,1,9,eActorEnum_candidate,09
+136367,0x214AF,38,2,3084,,0C 0C
+136380,0x214BC,37,1,12,eActorEnum_candidate,0C
+136397,0x214CD,37,1,12,eActorEnum_candidate,0C
+136423,0x214E7,37,1,12,eActorEnum_candidate,0C
+136489,0x21529,37,1,12,eActorEnum_candidate,0C
+136501,0x21535,37,1,12,eActorEnum_candidate,0C
+136513,0x21541,37,1,12,eActorEnum_candidate,0C
+136524,0x2154C,65,2,2023,,07 E7
+136527,0x2154F,37,1,12,eActorEnum_candidate,0C
+136551,0x21567,37,1,12,eActorEnum_candidate,0C
+136564,0x21574,37,1,12,eActorEnum_candidate,0C
+136574,0x2157E,65,2,551,eActorEnum_candidate,02 27
+136577,0x21581,37,1,12,eActorEnum_candidate,0C
+136587,0x2158B,65,2,411,eActorEnum_candidate,01 9B
+136590,0x2158E,37,1,12,eActorEnum_candidate,0C
+136601,0x21599,37,1,12,eActorEnum_candidate,0C
+136612,0x215A4,37,1,12,eActorEnum_candidate,0C
+136638,0x215BE,37,1,12,eActorEnum_candidate,0C
+136665,0x215D9,37,1,12,eActorEnum_candidate,0C
+136681,0x215E9,37,1,12,eActorEnum_candidate,0C
+136746,0x2162A,37,1,9,eActorEnum_candidate,09
+136751,0x2162F,37,1,12,eActorEnum_candidate,0C
+136763,0x2163B,37,1,12,eActorEnum_candidate,0C
+136778,0x2164A,37,1,12,eActorEnum_candidate,0C
+136793,0x21659,37,1,12,eActorEnum_candidate,0C
+136810,0x2166A,37,1,12,eActorEnum_candidate,0C
+136828,0x2167C,37,1,12,eActorEnum_candidate,0C
+136851,0x21693,37,1,12,eActorEnum_candidate,0C
+136867,0x216A3,37,1,12,eActorEnum_candidate,0C
+136875,0x216AB,37,1,12,eActorEnum_candidate,0C
+136882,0x216B2,39,3,6490377,,63 09 09
+136886,0x216B6,37,1,9,eActorEnum_candidate,09
+136891,0x216BB,37,1,12,eActorEnum_candidate,0C
+136903,0x216C7,37,1,12,eActorEnum_candidate,0C
+136913,0x216D1,38,2,3085,,0C 0D
+136926,0x216DE,37,1,13,eActorEnum_candidate,0D
+136943,0x216EF,37,1,13,eActorEnum_candidate,0D
+136969,0x21709,37,1,13,eActorEnum_candidate,0D
+137035,0x2174B,37,1,13,eActorEnum_candidate,0D
+137046,0x21756,38,2,3085,,0C 0D
+137059,0x21763,37,1,13,eActorEnum_candidate,0D
+137070,0x2176E,65,2,2019,,07 E3
+137073,0x21771,37,1,13,eActorEnum_candidate,0D
+137097,0x21789,37,1,13,eActorEnum_candidate,0D
+137110,0x21796,37,1,13,eActorEnum_candidate,0D
+137120,0x217A0,65,2,551,eActorEnum_candidate,02 27
+137123,0x217A3,37,1,13,eActorEnum_candidate,0D
+137133,0x217AD,65,2,300,eActorEnum_candidate,01 2C
+137136,0x217B0,37,1,13,eActorEnum_candidate,0D
+137147,0x217BB,37,1,13,eActorEnum_candidate,0D
+137162,0x217CA,37,1,13,eActorEnum_candidate,0D
+137188,0x217E4,37,1,13,eActorEnum_candidate,0D
+137215,0x217FF,37,1,13,eActorEnum_candidate,0D
+137231,0x2180F,37,1,13,eActorEnum_candidate,0D
+137286,0x21846,37,1,9,eActorEnum_candidate,09
+137291,0x2184B,37,1,13,eActorEnum_candidate,0D
+137303,0x21857,37,1,13,eActorEnum_candidate,0D
+137318,0x21866,37,1,13,eActorEnum_candidate,0D
+137333,0x21875,37,1,13,eActorEnum_candidate,0D
+137350,0x21886,37,1,13,eActorEnum_candidate,0D
+137368,0x21898,37,1,13,eActorEnum_candidate,0D
+137391,0x218AF,37,1,13,eActorEnum_candidate,0D
+137407,0x218BF,37,1,13,eActorEnum_candidate,0D
+137415,0x218C7,37,1,13,eActorEnum_candidate,0D
+137422,0x218CE,39,3,6490377,,63 09 09
+137426,0x218D2,37,1,9,eActorEnum_candidate,09
+137431,0x218D7,37,1,13,eActorEnum_candidate,0D
+137443,0x218E3,37,1,13,eActorEnum_candidate,0D
+137453,0x218ED,38,2,3086,,0C 0E
+137466,0x218FA,37,1,14,eActorEnum_candidate,0E
+137483,0x2190B,37,1,14,eActorEnum_candidate,0E
+137509,0x21925,37,1,14,eActorEnum_candidate,0E
+137575,0x21967,37,1,14,eActorEnum_candidate,0E
+137586,0x21972,38,2,3342,,0D 0E
+137599,0x2197F,37,1,14,eActorEnum_candidate,0E
+137610,0x2198A,65,2,2023,,07 E7
+137613,0x2198D,37,1,14,eActorEnum_candidate,0E
+137637,0x219A5,37,1,14,eActorEnum_candidate,0E
+137650,0x219B2,37,1,14,eActorEnum_candidate,0E
+137660,0x219BC,65,2,551,eActorEnum_candidate,02 27
+137663,0x219BF,37,1,14,eActorEnum_candidate,0E
+137733,0x21A05,37,1,14,eActorEnum_candidate,0E
+137744,0x21A10,65,2,300,eActorEnum_candidate,01 2C
+137747,0x21A13,37,1,14,eActorEnum_candidate,0E
+137758,0x21A1E,37,1,14,eActorEnum_candidate,0E
+137773,0x21A2D,37,1,14,eActorEnum_candidate,0E
+137799,0x21A47,37,1,14,eActorEnum_candidate,0E
+137826,0x21A62,37,1,14,eActorEnum_candidate,0E
+137842,0x21A72,37,1,14,eActorEnum_candidate,0E
+137897,0x21AA9,37,1,9,eActorEnum_candidate,09
+137902,0x21AAE,37,1,14,eActorEnum_candidate,0E
+137914,0x21ABA,37,1,14,eActorEnum_candidate,0E
+137929,0x21AC9,37,1,14,eActorEnum_candidate,0E
+137944,0x21AD8,37,1,14,eActorEnum_candidate,0E
+137961,0x21AE9,37,1,14,eActorEnum_candidate,0E
+137979,0x21AFB,37,1,14,eActorEnum_candidate,0E
+138002,0x21B12,37,1,14,eActorEnum_candidate,0E
+138018,0x21B22,37,1,14,eActorEnum_candidate,0E
+138026,0x21B2A,37,1,14,eActorEnum_candidate,0E
+138033,0x21B31,39,3,6490377,,63 09 09
+138037,0x21B35,37,1,9,eActorEnum_candidate,09
+138042,0x21B3A,37,1,14,eActorEnum_candidate,0E
+138054,0x21B46,37,1,14,eActorEnum_candidate,0E
+138206,0x21BDE,65,2,2019,,07 E3
+138253,0x21C0D,65,2,545,eActorEnum_candidate,02 21
+138265,0x21C19,65,2,312,eActorEnum_candidate,01 38
+138438,0x21CC6,37,1,9,eActorEnum_candidate,09
+138563,0x21D43,39,3,6490377,,63 09 09
+138567,0x21D47,37,1,9,eActorEnum_candidate,09
+138734,0x21DEE,65,2,2023,,07 E7
+138791,0x21E27,65,2,303,eActorEnum_candidate,01 2F
+138966,0x21ED6,37,1,9,eActorEnum_candidate,09
+139091,0x21F53,39,3,6490377,,63 09 09
+139095,0x21F57,37,1,9,eActorEnum_candidate,09
+139120,0x21F70,38,2,2056,,08 08
+139133,0x21F7D,37,1,8,eActorEnum_candidate,08
+139152,0x21F90,37,1,8,eActorEnum_candidate,08
+139180,0x21FAC,37,1,8,eActorEnum_candidate,08
+139250,0x21FF2,37,1,8,eActorEnum_candidate,08
+139262,0x21FFE,37,1,8,eActorEnum_candidate,08
+139274,0x2200A,37,1,8,eActorEnum_candidate,08
+139285,0x22015,65,2,2019,,07 E3
+139288,0x22018,37,1,8,eActorEnum_candidate,08
+139312,0x22030,37,1,8,eActorEnum_candidate,08
+139325,0x2203D,37,1,8,eActorEnum_candidate,08
+139336,0x22048,37,1,8,eActorEnum_candidate,08
+139407,0x2208F,37,1,8,eActorEnum_candidate,08
+139418,0x2209A,65,2,312,eActorEnum_candidate,01 38
+139421,0x2209D,37,1,8,eActorEnum_candidate,08
+139432,0x220A8,37,1,8,eActorEnum_candidate,08
+139447,0x220B7,37,1,8,eActorEnum_candidate,08
+139473,0x220D1,37,1,8,eActorEnum_candidate,08
+139500,0x220EC,37,1,8,eActorEnum_candidate,08
+139516,0x220FC,37,1,8,eActorEnum_candidate,08
+139583,0x2213F,37,1,9,eActorEnum_candidate,09
+139588,0x22144,37,1,8,eActorEnum_candidate,08
+139600,0x22150,37,1,8,eActorEnum_candidate,08
+139615,0x2215F,37,1,8,eActorEnum_candidate,08
+139630,0x2216E,37,1,8,eActorEnum_candidate,08
+139647,0x2217F,37,1,8,eActorEnum_candidate,08
+139665,0x22191,37,1,8,eActorEnum_candidate,08
+139690,0x221AA,37,1,8,eActorEnum_candidate,08
+139706,0x221BA,37,1,8,eActorEnum_candidate,08
+139714,0x221C2,37,1,8,eActorEnum_candidate,08
+139721,0x221C9,39,3,6490377,,63 09 09
+139725,0x221CD,37,1,9,eActorEnum_candidate,09
+139730,0x221D2,37,1,8,eActorEnum_candidate,08
+139742,0x221DE,37,1,8,eActorEnum_candidate,08
+139752,0x221E8,38,2,2057,,08 09
+139765,0x221F5,37,1,9,eActorEnum_candidate,09
+139784,0x22208,37,1,9,eActorEnum_candidate,09
+139812,0x22224,37,1,9,eActorEnum_candidate,09
+139882,0x2226A,37,1,9,eActorEnum_candidate,09
+139893,0x22275,38,2,2057,,08 09
+139906,0x22282,37,1,9,eActorEnum_candidate,09
+139917,0x2228D,65,2,2023,,07 E7
+139920,0x22290,37,1,9,eActorEnum_candidate,09
+139944,0x222A8,37,1,9,eActorEnum_candidate,09
+139957,0x222B5,37,1,9,eActorEnum_candidate,09
+139968,0x222C0,37,1,9,eActorEnum_candidate,09
+139978,0x222CA,65,2,311,eActorEnum_candidate,01 37
+139981,0x222CD,37,1,9,eActorEnum_candidate,09
+139992,0x222D8,37,1,9,eActorEnum_candidate,09
+140007,0x222E7,37,1,9,eActorEnum_candidate,09
+140033,0x22301,37,1,9,eActorEnum_candidate,09
+140060,0x2231C,37,1,9,eActorEnum_candidate,09
+140076,0x2232C,37,1,9,eActorEnum_candidate,09
+140143,0x2236F,37,1,9,eActorEnum_candidate,09
+140148,0x22374,37,1,9,eActorEnum_candidate,09
+140160,0x22380,37,1,9,eActorEnum_candidate,09
+140170,0x2238A,37,1,9,eActorEnum_candidate,09
+140180,0x22394,65,2,1024,eActorEnum_candidate,04 00
+140191,0x2239F,37,1,9,eActorEnum_candidate,09
+140206,0x223AE,37,1,9,eActorEnum_candidate,09
+140223,0x223BF,37,1,9,eActorEnum_candidate,09
+140241,0x223D1,37,1,9,eActorEnum_candidate,09
+140266,0x223EA,37,1,9,eActorEnum_candidate,09
+140282,0x223FA,37,1,9,eActorEnum_candidate,09
+140290,0x22402,37,1,9,eActorEnum_candidate,09
+140297,0x22409,39,3,6490377,,63 09 09
+140301,0x2240D,37,1,9,eActorEnum_candidate,09
+140306,0x22412,37,1,9,eActorEnum_candidate,09
+140318,0x2241E,37,1,9,eActorEnum_candidate,09
+140328,0x22428,38,2,2058,,08 0A
+140341,0x22435,37,1,10,eActorEnum_candidate,0A
+140360,0x22448,37,1,10,eActorEnum_candidate,0A
+140388,0x22464,37,1,10,eActorEnum_candidate,0A
+140458,0x224AA,37,1,10,eActorEnum_candidate,0A
+140469,0x224B5,38,2,2314,,09 0A
+140482,0x224C2,37,1,10,eActorEnum_candidate,0A
+140493,0x224CD,65,2,2019,,07 E3
+140496,0x224D0,37,1,10,eActorEnum_candidate,0A
+140520,0x224E8,37,1,10,eActorEnum_candidate,0A
+140533,0x224F5,37,1,10,eActorEnum_candidate,0A
+140544,0x22500,37,1,10,eActorEnum_candidate,0A
+140623,0x2254F,37,1,10,eActorEnum_candidate,0A
+140634,0x2255A,65,2,311,eActorEnum_candidate,01 37
+140637,0x2255D,37,1,10,eActorEnum_candidate,0A
+140648,0x22568,37,1,10,eActorEnum_candidate,0A
+140663,0x22577,37,1,10,eActorEnum_candidate,0A
+140689,0x22591,37,1,10,eActorEnum_candidate,0A
+140716,0x225AC,37,1,10,eActorEnum_candidate,0A
+140732,0x225BC,37,1,10,eActorEnum_candidate,0A
+140743,0x225C7,37,1,10,eActorEnum_candidate,0A
+140758,0x225D6,37,1,10,eActorEnum_candidate,0A
+140773,0x225E5,37,1,10,eActorEnum_candidate,0A
+140790,0x225F6,37,1,10,eActorEnum_candidate,0A
+140808,0x22608,37,1,10,eActorEnum_candidate,0A
+140833,0x22621,37,1,10,eActorEnum_candidate,0A
+140849,0x22631,37,1,10,eActorEnum_candidate,0A
+140857,0x22639,37,1,10,eActorEnum_candidate,0A
+140864,0x22640,39,3,6490377,,63 09 09
+140868,0x22644,37,1,9,eActorEnum_candidate,09
+140873,0x22649,37,1,10,eActorEnum_candidate,0A
+140885,0x22655,37,1,10,eActorEnum_candidate,0A
+140895,0x2265F,38,2,2059,,08 0B
+140908,0x2266C,37,1,11,eActorEnum_candidate,0B
+140927,0x2267F,37,1,11,eActorEnum_candidate,0B
+140955,0x2269B,37,1,11,eActorEnum_candidate,0B
+141025,0x226E1,37,1,11,eActorEnum_candidate,0B
+141036,0x226EC,38,2,2571,,0A 0B
+141049,0x226F9,37,1,11,eActorEnum_candidate,0B
+141060,0x22704,65,2,2019,,07 E3
+141063,0x22707,37,1,11,eActorEnum_candidate,0B
+141087,0x2271F,37,1,11,eActorEnum_candidate,0B
+141100,0x2272C,37,1,11,eActorEnum_candidate,0B
+141111,0x22737,37,1,11,eActorEnum_candidate,0B
+141121,0x22741,65,2,311,eActorEnum_candidate,01 37
+141124,0x22744,37,1,11,eActorEnum_candidate,0B
+141135,0x2274F,37,1,11,eActorEnum_candidate,0B
+141150,0x2275E,37,1,11,eActorEnum_candidate,0B
+141176,0x22778,37,1,11,eActorEnum_candidate,0B
+141203,0x22793,37,1,11,eActorEnum_candidate,0B
+141219,0x227A3,37,1,11,eActorEnum_candidate,0B
+141288,0x227E8,37,1,9,eActorEnum_candidate,09
+141293,0x227ED,37,1,11,eActorEnum_candidate,0B
+141305,0x227F9,37,1,11,eActorEnum_candidate,0B
+141320,0x22808,37,1,11,eActorEnum_candidate,0B
+141335,0x22817,37,1,11,eActorEnum_candidate,0B
+141352,0x22828,37,1,11,eActorEnum_candidate,0B
+141370,0x2283A,37,1,11,eActorEnum_candidate,0B
+141395,0x22853,37,1,11,eActorEnum_candidate,0B
+141411,0x22863,37,1,11,eActorEnum_candidate,0B
+141419,0x2286B,37,1,11,eActorEnum_candidate,0B
+141426,0x22872,39,3,6490377,,63 09 09
+141430,0x22876,37,1,9,eActorEnum_candidate,09
+141435,0x2287B,37,1,11,eActorEnum_candidate,0B
+141447,0x22887,37,1,11,eActorEnum_candidate,0B
+141615,0x2292F,65,2,2023,,07 E7
+141749,0x229B5,65,2,411,eActorEnum_candidate,01 9B
+141900,0x22A4C,37,1,9,eActorEnum_candidate,09
+141934,0x22A6E,65,2,1024,eActorEnum_candidate,04 00
+142044,0x22ADC,39,3,6490377,,63 09 09
+142048,0x22AE0,37,1,9,eActorEnum_candidate,09
+142231,0x22B97,65,2,2023,,07 E7
+142365,0x22C1D,65,2,525,gang_actor,02 0D
+142516,0x22CB4,37,1,9,eActorEnum_candidate,09
+142550,0x22CD6,65,2,1024,eActorEnum_candidate,04 00
+142660,0x22D44,39,3,6490377,,63 09 09
+142664,0x22D48,37,1,9,eActorEnum_candidate,09
+142689,0x22D61,38,2,3855,,0F 0F
+142702,0x22D6E,37,1,15,eActorEnum_candidate,0F
+142720,0x22D80,37,1,15,eActorEnum_candidate,0F
+142747,0x22D9B,37,1,15,eActorEnum_candidate,0F
+142815,0x22DDF,37,1,15,eActorEnum_candidate,0F
+142827,0x22DEB,37,1,15,eActorEnum_candidate,0F
+142839,0x22DF7,37,1,15,eActorEnum_candidate,0F
+142850,0x22E02,65,2,2019,,07 E3
+142853,0x22E05,37,1,15,eActorEnum_candidate,0F
+142877,0x22E1D,37,1,15,eActorEnum_candidate,0F
+142890,0x22E2A,37,1,15,eActorEnum_candidate,0F
+142900,0x22E34,65,2,547,eActorEnum_candidate,02 23
+142903,0x22E37,37,1,15,eActorEnum_candidate,0F
+142913,0x22E41,65,2,411,eActorEnum_candidate,01 9B
+142916,0x22E44,37,1,15,eActorEnum_candidate,0F
+142927,0x22E4F,37,1,15,eActorEnum_candidate,0F
+142942,0x22E5E,37,1,15,eActorEnum_candidate,0F
+142968,0x22E78,37,1,15,eActorEnum_candidate,0F
+142995,0x22E93,37,1,15,eActorEnum_candidate,0F
+143011,0x22EA3,37,1,15,eActorEnum_candidate,0F
+143076,0x22EE4,37,1,9,eActorEnum_candidate,09
+143081,0x22EE9,37,1,15,eActorEnum_candidate,0F
+143093,0x22EF5,37,1,15,eActorEnum_candidate,0F
+143108,0x22F04,37,1,15,eActorEnum_candidate,0F
+143123,0x22F13,37,1,15,eActorEnum_candidate,0F
+143140,0x22F24,37,1,15,eActorEnum_candidate,0F
+143158,0x22F36,37,1,15,eActorEnum_candidate,0F
+143182,0x22F4E,37,1,15,eActorEnum_candidate,0F
+143198,0x22F5E,37,1,15,eActorEnum_candidate,0F
+143206,0x22F66,37,1,15,eActorEnum_candidate,0F
+143213,0x22F6D,39,3,6490377,,63 09 09
+143217,0x22F71,37,1,9,eActorEnum_candidate,09
+143222,0x22F76,37,1,15,eActorEnum_candidate,0F
+143234,0x22F82,37,1,15,eActorEnum_candidate,0F
+143244,0x22F8C,38,2,3856,,0F 10
+143257,0x22F99,37,1,16,eActorEnum_candidate,10
+143275,0x22FAB,37,1,16,eActorEnum_candidate,10
+143302,0x22FC6,37,1,16,eActorEnum_candidate,10
+143370,0x2300A,37,1,16,eActorEnum_candidate,10
+143381,0x23015,38,2,3856,,0F 10
+143394,0x23022,37,1,16,eActorEnum_candidate,10
+143405,0x2302D,65,2,2023,,07 E7
+143408,0x23030,37,1,16,eActorEnum_candidate,10
+143432,0x23048,37,1,16,eActorEnum_candidate,10
+143445,0x23055,37,1,16,eActorEnum_candidate,10
+143455,0x2305F,38,2,30224,,76 10
+143466,0x2306A,65,2,304,eActorEnum_candidate,01 30
+143469,0x2306D,37,1,16,eActorEnum_candidate,10
+143480,0x23078,37,1,16,eActorEnum_candidate,10
+143495,0x23087,37,1,16,eActorEnum_candidate,10
+143521,0x230A1,37,1,16,eActorEnum_candidate,10
+143548,0x230BC,37,1,16,eActorEnum_candidate,10
+143564,0x230CC,37,1,16,eActorEnum_candidate,10
+143629,0x2310D,37,1,9,eActorEnum_candidate,09
+143634,0x23112,37,1,16,eActorEnum_candidate,10
+143646,0x2311E,37,1,16,eActorEnum_candidate,10
+143661,0x2312D,37,1,16,eActorEnum_candidate,10
+143676,0x2313C,37,1,16,eActorEnum_candidate,10
+143693,0x2314D,37,1,16,eActorEnum_candidate,10
+143711,0x2315F,37,1,16,eActorEnum_candidate,10
+143735,0x23177,37,1,16,eActorEnum_candidate,10
+143751,0x23187,37,1,16,eActorEnum_candidate,10
+143759,0x2318F,37,1,16,eActorEnum_candidate,10
+143766,0x23196,39,3,6490377,,63 09 09
+143770,0x2319A,37,1,9,eActorEnum_candidate,09
+143775,0x2319F,37,1,16,eActorEnum_candidate,10
+143787,0x231AB,37,1,16,eActorEnum_candidate,10
+143797,0x231B5,38,2,3857,,0F 11
+143810,0x231C2,37,1,17,eActorEnum_candidate,11
+143828,0x231D4,37,1,17,eActorEnum_candidate,11
+143855,0x231EF,37,1,17,eActorEnum_candidate,11
+143923,0x23233,37,1,17,eActorEnum_candidate,11
+143934,0x2323E,38,2,4113,,10 11
+143947,0x2324B,37,1,17,eActorEnum_candidate,11
+143958,0x23256,65,2,2019,,07 E3
+143961,0x23259,37,1,17,eActorEnum_candidate,11
+143985,0x23271,37,1,17,eActorEnum_candidate,11
+143998,0x2327E,37,1,17,eActorEnum_candidate,11
+144008,0x23288,65,2,1236,eActorEnum_candidate,04 D4
+144011,0x2328B,37,1,17,eActorEnum_candidate,11
+144021,0x23295,65,2,304,eActorEnum_candidate,01 30
+144024,0x23298,37,1,17,eActorEnum_candidate,11
+144035,0x232A3,37,1,17,eActorEnum_candidate,11
+144050,0x232B2,37,1,17,eActorEnum_candidate,11
+144076,0x232CC,37,1,17,eActorEnum_candidate,11
+144103,0x232E7,37,1,17,eActorEnum_candidate,11
+144119,0x232F7,37,1,17,eActorEnum_candidate,11
+144176,0x23330,37,1,9,eActorEnum_candidate,09
+144181,0x23335,37,1,17,eActorEnum_candidate,11
+144193,0x23341,37,1,17,eActorEnum_candidate,11
+144208,0x23350,37,1,17,eActorEnum_candidate,11
+144223,0x2335F,37,1,17,eActorEnum_candidate,11
+144240,0x23370,37,1,17,eActorEnum_candidate,11
+144258,0x23382,37,1,17,eActorEnum_candidate,11
+144282,0x2339A,37,1,17,eActorEnum_candidate,11
+144298,0x233AA,37,1,17,eActorEnum_candidate,11
+144306,0x233B2,37,1,17,eActorEnum_candidate,11
+144313,0x233B9,39,3,6490377,,63 09 09
+144317,0x233BD,37,1,9,eActorEnum_candidate,09
+144322,0x233C2,37,1,17,eActorEnum_candidate,11
+144334,0x233CE,37,1,17,eActorEnum_candidate,11
+144344,0x233D8,38,2,3858,,0F 12
+144357,0x233E5,37,1,18,eActorEnum_candidate,12
+144375,0x233F7,37,1,18,eActorEnum_candidate,12
+144402,0x23412,37,1,18,eActorEnum_candidate,12
+144470,0x23456,37,1,18,eActorEnum_candidate,12
+144481,0x23461,38,2,4370,,11 12
+144494,0x2346E,37,1,18,eActorEnum_candidate,12
+144505,0x23479,65,2,2019,,07 E3
+144508,0x2347C,37,1,18,eActorEnum_candidate,12
+144532,0x23494,37,1,18,eActorEnum_candidate,12
+144545,0x234A1,37,1,18,eActorEnum_candidate,12
+144555,0x234AB,65,2,547,eActorEnum_candidate,02 23
+144558,0x234AE,37,1,18,eActorEnum_candidate,12
+144568,0x234B8,65,2,304,eActorEnum_candidate,01 30
+144571,0x234BB,37,1,18,eActorEnum_candidate,12
+144582,0x234C6,37,1,18,eActorEnum_candidate,12
+144597,0x234D5,37,1,18,eActorEnum_candidate,12
+144623,0x234EF,37,1,18,eActorEnum_candidate,12
+144650,0x2350A,37,1,18,eActorEnum_candidate,12
+144666,0x2351A,37,1,18,eActorEnum_candidate,12
+144723,0x23553,37,1,9,eActorEnum_candidate,09
+144728,0x23558,37,1,18,eActorEnum_candidate,12
+144740,0x23564,37,1,18,eActorEnum_candidate,12
+144755,0x23573,37,1,18,eActorEnum_candidate,12
+144770,0x23582,37,1,18,eActorEnum_candidate,12
+144787,0x23593,37,1,18,eActorEnum_candidate,12
+144805,0x235A5,37,1,18,eActorEnum_candidate,12
+144829,0x235BD,37,1,18,eActorEnum_candidate,12
+144845,0x235CD,37,1,18,eActorEnum_candidate,12
+144853,0x235D5,37,1,18,eActorEnum_candidate,12
+144860,0x235DC,39,3,6490377,,63 09 09
+144864,0x235E0,37,1,9,eActorEnum_candidate,09
+144869,0x235E5,37,1,18,eActorEnum_candidate,12
+144881,0x235F1,37,1,18,eActorEnum_candidate,12
+144891,0x235FB,38,2,4883,,13 13
+144904,0x23608,37,1,19,eActorEnum_candidate,13
+144922,0x2361A,37,1,19,eActorEnum_candidate,13
+144949,0x23635,37,1,19,eActorEnum_candidate,13
+145017,0x23679,37,1,19,eActorEnum_candidate,13
+145028,0x23684,38,2,2323,,09 13
+145041,0x23691,37,1,19,eActorEnum_candidate,13
+145052,0x2369C,65,2,2019,,07 E3
+145055,0x2369F,37,1,19,eActorEnum_candidate,13
+145079,0x236B7,37,1,19,eActorEnum_candidate,13
+145092,0x236C4,37,1,19,eActorEnum_candidate,13
+145103,0x236CF,37,1,19,eActorEnum_candidate,13
+145113,0x236D9,65,2,549,eActorEnum_candidate,02 25
+145116,0x236DC,37,1,19,eActorEnum_candidate,13
+145127,0x236E7,37,1,19,eActorEnum_candidate,13
+145142,0x236F6,37,1,19,eActorEnum_candidate,13
+145168,0x23710,37,1,19,eActorEnum_candidate,13
+145195,0x2372B,37,1,19,eActorEnum_candidate,13
+145211,0x2373B,37,1,19,eActorEnum_candidate,13
+145276,0x2377C,37,1,9,eActorEnum_candidate,09
+145281,0x23781,37,1,19,eActorEnum_candidate,13
+145293,0x2378D,37,1,19,eActorEnum_candidate,13
+145308,0x2379C,37,1,19,eActorEnum_candidate,13
+145323,0x237AB,37,1,19,eActorEnum_candidate,13
+145340,0x237BC,37,1,19,eActorEnum_candidate,13
+145358,0x237CE,37,1,19,eActorEnum_candidate,13
+145382,0x237E6,37,1,19,eActorEnum_candidate,13
+145398,0x237F6,37,1,19,eActorEnum_candidate,13
+145406,0x237FE,37,1,19,eActorEnum_candidate,13
+145413,0x23805,39,3,6490377,,63 09 09
+145417,0x23809,37,1,9,eActorEnum_candidate,09
+145422,0x2380E,37,1,19,eActorEnum_candidate,13
+145434,0x2381A,37,1,19,eActorEnum_candidate,13
+145444,0x23824,38,2,4884,,13 14
+145457,0x23831,37,1,20,eActorEnum_candidate,14
+145475,0x23843,37,1,20,eActorEnum_candidate,14
+145502,0x2385E,37,1,20,eActorEnum_candidate,14
+145570,0x238A2,37,1,20,eActorEnum_candidate,14
+145581,0x238AD,38,2,4884,,13 14
+145594,0x238BA,37,1,20,eActorEnum_candidate,14
+145605,0x238C5,65,2,2019,,07 E3
+145608,0x238C8,37,1,20,eActorEnum_candidate,14
+145632,0x238E0,37,1,20,eActorEnum_candidate,14
+145645,0x238ED,37,1,20,eActorEnum_candidate,14
+145656,0x238F8,37,1,20,eActorEnum_candidate,14
+145666,0x23902,65,2,549,eActorEnum_candidate,02 25
+145669,0x23905,37,1,20,eActorEnum_candidate,14
+145680,0x23910,37,1,20,eActorEnum_candidate,14
+145695,0x2391F,37,1,20,eActorEnum_candidate,14
+145721,0x23939,37,1,20,eActorEnum_candidate,14
+145748,0x23954,37,1,20,eActorEnum_candidate,14
+145764,0x23964,37,1,20,eActorEnum_candidate,14
+145829,0x239A5,37,1,9,eActorEnum_candidate,09
+145834,0x239AA,37,1,20,eActorEnum_candidate,14
+145846,0x239B6,37,1,20,eActorEnum_candidate,14
+145861,0x239C5,37,1,20,eActorEnum_candidate,14
+145876,0x239D4,37,1,20,eActorEnum_candidate,14
+145893,0x239E5,37,1,20,eActorEnum_candidate,14
+145911,0x239F7,37,1,20,eActorEnum_candidate,14
+145935,0x23A0F,37,1,20,eActorEnum_candidate,14
+145951,0x23A1F,37,1,20,eActorEnum_candidate,14
+145959,0x23A27,37,1,20,eActorEnum_candidate,14
+145966,0x23A2E,39,3,6490377,,63 09 09
+145970,0x23A32,37,1,9,eActorEnum_candidate,09
+145975,0x23A37,37,1,20,eActorEnum_candidate,14
+145987,0x23A43,37,1,20,eActorEnum_candidate,14
+145997,0x23A4D,38,2,4885,,13 15
+146010,0x23A5A,37,1,21,eActorEnum_candidate,15
+146028,0x23A6C,37,1,21,eActorEnum_candidate,15
+146055,0x23A87,37,1,21,eActorEnum_candidate,15
+146123,0x23ACB,37,1,21,eActorEnum_candidate,15
+146134,0x23AD6,38,2,4885,,13 15
+146147,0x23AE3,37,1,21,eActorEnum_candidate,15
+146158,0x23AEE,65,2,2023,,07 E7
+146161,0x23AF1,37,1,21,eActorEnum_candidate,15
+146185,0x23B09,37,1,21,eActorEnum_candidate,15
+146198,0x23B16,37,1,21,eActorEnum_candidate,15
+146209,0x23B21,37,1,21,eActorEnum_candidate,15
+146219,0x23B2B,65,2,330,eActorEnum_candidate,01 4A
+146222,0x23B2E,37,1,21,eActorEnum_candidate,15
+146233,0x23B39,37,1,21,eActorEnum_candidate,15
+146248,0x23B48,37,1,21,eActorEnum_candidate,15
+146274,0x23B62,37,1,21,eActorEnum_candidate,15
+146301,0x23B7D,37,1,21,eActorEnum_candidate,15
+146317,0x23B8D,37,1,21,eActorEnum_candidate,15
+146390,0x23BD6,37,1,9,eActorEnum_candidate,09
+146395,0x23BDB,37,1,21,eActorEnum_candidate,15
+146407,0x23BE7,37,1,21,eActorEnum_candidate,15
+146422,0x23BF6,37,1,21,eActorEnum_candidate,15
+146437,0x23C05,37,1,21,eActorEnum_candidate,15
+146454,0x23C16,37,1,21,eActorEnum_candidate,15
+146472,0x23C28,37,1,21,eActorEnum_candidate,15
+146496,0x23C40,37,1,21,eActorEnum_candidate,15
+146512,0x23C50,37,1,21,eActorEnum_candidate,15
+146520,0x23C58,37,1,21,eActorEnum_candidate,15
+146527,0x23C5F,39,3,6490377,,63 09 09
+146531,0x23C63,37,1,9,eActorEnum_candidate,09
+146536,0x23C68,37,1,21,eActorEnum_candidate,15
+146548,0x23C74,37,1,21,eActorEnum_candidate,15
+146558,0x23C7E,38,2,5654,,16 16
+146571,0x23C8B,37,1,22,eActorEnum_candidate,16
+146590,0x23C9E,37,1,22,eActorEnum_candidate,16
+146618,0x23CBA,37,1,22,eActorEnum_candidate,16
+146688,0x23D00,37,1,22,eActorEnum_candidate,16
+146700,0x23D0C,37,1,22,eActorEnum_candidate,16
+146712,0x23D18,37,1,22,eActorEnum_candidate,16
+146723,0x23D23,65,2,2018,,07 E2
+146726,0x23D26,37,1,22,eActorEnum_candidate,16
+146750,0x23D3E,37,1,22,eActorEnum_candidate,16
+146763,0x23D4B,37,1,22,eActorEnum_candidate,16
+146774,0x23D56,37,1,22,eActorEnum_candidate,16
+146784,0x23D60,65,2,411,eActorEnum_candidate,01 9B
+146787,0x23D63,37,1,22,eActorEnum_candidate,16
+146798,0x23D6E,37,1,22,eActorEnum_candidate,16
+146813,0x23D7D,37,1,22,eActorEnum_candidate,16
+146839,0x23D97,37,1,22,eActorEnum_candidate,16
+146866,0x23DB2,37,1,22,eActorEnum_candidate,16
+146882,0x23DC2,37,1,22,eActorEnum_candidate,16
+146955,0x23E0B,37,1,9,eActorEnum_candidate,09
+146960,0x23E10,37,1,22,eActorEnum_candidate,16
+146972,0x23E1C,37,1,22,eActorEnum_candidate,16
+146987,0x23E2B,37,1,22,eActorEnum_candidate,16
+147002,0x23E3A,37,1,22,eActorEnum_candidate,16
+147019,0x23E4B,37,1,22,eActorEnum_candidate,16
+147037,0x23E5D,37,1,22,eActorEnum_candidate,16
+147062,0x23E76,37,1,22,eActorEnum_candidate,16
+147078,0x23E86,37,1,22,eActorEnum_candidate,16
+147086,0x23E8E,37,1,22,eActorEnum_candidate,16
+147093,0x23E95,39,3,6490377,,63 09 09
+147097,0x23E99,37,1,9,eActorEnum_candidate,09
+147102,0x23E9E,37,1,22,eActorEnum_candidate,16
+147114,0x23EAA,37,1,22,eActorEnum_candidate,16
+147124,0x23EB4,38,2,5655,,16 17
+147137,0x23EC1,37,1,23,eActorEnum_candidate,17
+147156,0x23ED4,37,1,23,eActorEnum_candidate,17
+147184,0x23EF0,37,1,23,eActorEnum_candidate,17
+147254,0x23F36,37,1,23,eActorEnum_candidate,17
+147265,0x23F41,38,2,5655,,16 17
+147278,0x23F4E,37,1,23,eActorEnum_candidate,17
+147289,0x23F59,65,2,2019,,07 E3
+147292,0x23F5C,37,1,23,eActorEnum_candidate,17
+147316,0x23F74,37,1,23,eActorEnum_candidate,17
+147329,0x23F81,37,1,23,eActorEnum_candidate,17
+147339,0x23F8B,65,2,558,eActorEnum_candidate,02 2E
+147342,0x23F8E,37,1,23,eActorEnum_candidate,17
+147352,0x23F98,65,2,301,eActorEnum_candidate,01 2D
+147355,0x23F9B,37,1,23,eActorEnum_candidate,17
+147366,0x23FA6,37,1,23,eActorEnum_candidate,17
+147381,0x23FB5,37,1,23,eActorEnum_candidate,17
+147407,0x23FCF,37,1,23,eActorEnum_candidate,17
+147434,0x23FEA,37,1,23,eActorEnum_candidate,17
+147450,0x23FFA,37,1,23,eActorEnum_candidate,17
+147527,0x24047,37,1,9,eActorEnum_candidate,09
+147532,0x2404C,37,1,23,eActorEnum_candidate,17
+147544,0x24058,37,1,23,eActorEnum_candidate,17
+147559,0x24067,37,1,23,eActorEnum_candidate,17
+147574,0x24076,37,1,23,eActorEnum_candidate,17
+147591,0x24087,37,1,23,eActorEnum_candidate,17
+147609,0x24099,37,1,23,eActorEnum_candidate,17
+147634,0x240B2,37,1,23,eActorEnum_candidate,17
+147650,0x240C2,37,1,23,eActorEnum_candidate,17
+147658,0x240CA,37,1,23,eActorEnum_candidate,17
+147667,0x240D3,37,1,30,eActorEnum_candidate,1E
+147673,0x240D9,37,1,23,eActorEnum_candidate,17
+147685,0x240E5,37,1,23,eActorEnum_candidate,17
+147695,0x240EF,38,2,6168,,18 18
+147708,0x240FC,37,1,24,eActorEnum_candidate,18
+147725,0x2410D,37,1,24,eActorEnum_candidate,18
+147751,0x24127,37,1,24,eActorEnum_candidate,18
+147817,0x24169,37,1,24,eActorEnum_candidate,18
+147829,0x24175,37,1,24,eActorEnum_candidate,18
+147841,0x24181,37,1,24,eActorEnum_candidate,18
+147852,0x2418C,65,2,2018,,07 E2
+147855,0x2418F,37,1,24,eActorEnum_candidate,18
+147879,0x241A7,37,1,24,eActorEnum_candidate,18
+147892,0x241B4,37,1,24,eActorEnum_candidate,18
+147902,0x241BE,65,2,613,eActorEnum_candidate,02 65
+147905,0x241C1,37,1,24,eActorEnum_candidate,18
+147915,0x241CB,65,2,312,eActorEnum_candidate,01 38
+147918,0x241CE,37,1,24,eActorEnum_candidate,18
+147929,0x241D9,37,1,24,eActorEnum_candidate,18
+147944,0x241E8,37,1,24,eActorEnum_candidate,18
+147970,0x24202,37,1,24,eActorEnum_candidate,18
+147997,0x2421D,37,1,24,eActorEnum_candidate,18
+148013,0x2422D,37,1,24,eActorEnum_candidate,18
+148086,0x24276,37,1,9,eActorEnum_candidate,09
+148091,0x2427B,37,1,24,eActorEnum_candidate,18
+148103,0x24287,37,1,24,eActorEnum_candidate,18
+148118,0x24296,37,1,24,eActorEnum_candidate,18
+148133,0x242A5,37,1,24,eActorEnum_candidate,18
+148150,0x242B6,37,1,24,eActorEnum_candidate,18
+148168,0x242C8,37,1,24,eActorEnum_candidate,18
+148191,0x242DF,37,1,24,eActorEnum_candidate,18
+148207,0x242EF,37,1,24,eActorEnum_candidate,18
+148215,0x242F7,37,1,24,eActorEnum_candidate,18
+148222,0x242FE,39,3,6490377,,63 09 09
+148226,0x24302,37,1,9,eActorEnum_candidate,09
+148231,0x24307,37,1,24,eActorEnum_candidate,18
+148243,0x24313,37,1,24,eActorEnum_candidate,18
+148253,0x2431D,37,1,24,eActorEnum_candidate,18
+148270,0x2432E,38,2,6169,,18 19
+148283,0x2433B,37,1,25,eActorEnum_candidate,19
+148300,0x2434C,37,1,25,eActorEnum_candidate,19
+148326,0x24366,37,1,25,eActorEnum_candidate,19
+148392,0x243A8,37,1,25,eActorEnum_candidate,19
+148403,0x243B3,38,2,6169,,18 19
+148416,0x243C0,37,1,25,eActorEnum_candidate,19
+148427,0x243CB,65,2,2023,,07 E7
+148430,0x243CE,37,1,25,eActorEnum_candidate,19
+148454,0x243E6,37,1,25,eActorEnum_candidate,19
+148467,0x243F3,37,1,25,eActorEnum_candidate,19
+148477,0x243FD,65,2,613,eActorEnum_candidate,02 65
+148480,0x24400,37,1,25,eActorEnum_candidate,19
+148490,0x2440A,65,2,304,eActorEnum_candidate,01 30
+148493,0x2440D,37,1,25,eActorEnum_candidate,19
+148504,0x24418,37,1,25,eActorEnum_candidate,19
+148519,0x24427,37,1,25,eActorEnum_candidate,19
+148545,0x24441,37,1,25,eActorEnum_candidate,19
+148572,0x2445C,37,1,25,eActorEnum_candidate,19
+148588,0x2446C,37,1,25,eActorEnum_candidate,19
+148683,0x244CB,37,1,9,eActorEnum_candidate,09
+148688,0x244D0,37,1,25,eActorEnum_candidate,19
+148700,0x244DC,37,1,25,eActorEnum_candidate,19
+148715,0x244EB,37,1,25,eActorEnum_candidate,19
+148730,0x244FA,37,1,25,eActorEnum_candidate,19
+148747,0x2450B,37,1,25,eActorEnum_candidate,19
+148765,0x2451D,37,1,25,eActorEnum_candidate,19
+148788,0x24534,37,1,25,eActorEnum_candidate,19
+148804,0x24544,37,1,25,eActorEnum_candidate,19
+148812,0x2454C,37,1,25,eActorEnum_candidate,19
+148819,0x24553,39,3,6490377,,63 09 09
+148823,0x24557,37,1,9,eActorEnum_candidate,09
+148828,0x2455C,37,1,25,eActorEnum_candidate,19
+148840,0x24568,37,1,25,eActorEnum_candidate,19
+148850,0x24572,38,2,6170,,18 1A
+148863,0x2457F,37,1,26,eActorEnum_candidate,1A
+148880,0x24590,37,1,26,eActorEnum_candidate,1A
+148906,0x245AA,37,1,26,eActorEnum_candidate,1A
+148972,0x245EC,37,1,26,eActorEnum_candidate,1A
+148983,0x245F7,38,2,6426,,19 1A
+148996,0x24604,37,1,26,eActorEnum_candidate,1A
+149007,0x2460F,65,2,2023,,07 E7
+149010,0x24612,37,1,26,eActorEnum_candidate,1A
+149034,0x2462A,37,1,26,eActorEnum_candidate,1A
+149047,0x24637,37,1,26,eActorEnum_candidate,1A
+149057,0x24641,65,2,613,eActorEnum_candidate,02 65
+149060,0x24644,37,1,26,eActorEnum_candidate,1A
+149070,0x2464E,65,2,304,eActorEnum_candidate,01 30
+149073,0x24651,37,1,26,eActorEnum_candidate,1A
+149084,0x2465C,37,1,26,eActorEnum_candidate,1A
+149099,0x2466B,37,1,26,eActorEnum_candidate,1A
+149125,0x24685,37,1,26,eActorEnum_candidate,1A
+149152,0x246A0,37,1,26,eActorEnum_candidate,1A
+149168,0x246B0,37,1,26,eActorEnum_candidate,1A
+149263,0x2470F,37,1,9,eActorEnum_candidate,09
+149268,0x24714,37,1,26,eActorEnum_candidate,1A
+149280,0x24720,37,1,26,eActorEnum_candidate,1A
+149295,0x2472F,37,1,26,eActorEnum_candidate,1A
+149310,0x2473E,37,1,26,eActorEnum_candidate,1A
+149327,0x2474F,37,1,26,eActorEnum_candidate,1A
+149345,0x24761,37,1,26,eActorEnum_candidate,1A
+149368,0x24778,37,1,26,eActorEnum_candidate,1A
+149384,0x24788,37,1,26,eActorEnum_candidate,1A
+149392,0x24790,37,1,26,eActorEnum_candidate,1A
+149399,0x24797,39,3,6490377,,63 09 09
+149403,0x2479B,37,1,9,eActorEnum_candidate,09
+149408,0x247A0,37,1,26,eActorEnum_candidate,1A
+149420,0x247AC,37,1,26,eActorEnum_candidate,1A
+149430,0x247B6,38,2,6171,,18 1B
+149443,0x247C3,37,1,27,eActorEnum_candidate,1B
+149460,0x247D4,37,1,27,eActorEnum_candidate,1B
+149486,0x247EE,37,1,27,eActorEnum_candidate,1B
+149552,0x24830,37,1,27,eActorEnum_candidate,1B
+149563,0x2483B,38,2,6683,,1A 1B
+149576,0x24848,37,1,27,eActorEnum_candidate,1B
+149587,0x24853,65,2,2023,,07 E7
+149590,0x24856,37,1,27,eActorEnum_candidate,1B
+149614,0x2486E,37,1,27,eActorEnum_candidate,1B
+149627,0x2487B,37,1,27,eActorEnum_candidate,1B
+149637,0x24885,65,2,613,eActorEnum_candidate,02 65
+149640,0x24888,37,1,27,eActorEnum_candidate,1B
+149650,0x24892,65,2,304,eActorEnum_candidate,01 30
+149653,0x24895,37,1,27,eActorEnum_candidate,1B
+149664,0x248A0,37,1,27,eActorEnum_candidate,1B
+149675,0x248AB,37,1,27,eActorEnum_candidate,1B
+149701,0x248C5,37,1,27,eActorEnum_candidate,1B
+149728,0x248E0,37,1,27,eActorEnum_candidate,1B
+149744,0x248F0,37,1,27,eActorEnum_candidate,1B
+149817,0x24939,37,1,9,eActorEnum_candidate,09
+149822,0x2493E,37,1,27,eActorEnum_candidate,1B
+149834,0x2494A,37,1,27,eActorEnum_candidate,1B
+149849,0x24959,37,1,27,eActorEnum_candidate,1B
+149864,0x24968,37,1,27,eActorEnum_candidate,1B
+149881,0x24979,37,1,27,eActorEnum_candidate,1B
+149899,0x2498B,37,1,27,eActorEnum_candidate,1B
+149922,0x249A2,37,1,27,eActorEnum_candidate,1B
+149938,0x249B2,37,1,27,eActorEnum_candidate,1B
+149946,0x249BA,37,1,27,eActorEnum_candidate,1B
+149953,0x249C1,39,3,6490377,,63 09 09
+149957,0x249C5,37,1,9,eActorEnum_candidate,09
+149962,0x249CA,37,1,27,eActorEnum_candidate,1B
+149974,0x249D6,37,1,27,eActorEnum_candidate,1B
+149984,0x249E0,37,1,27,eActorEnum_candidate,1B
+150001,0x249F1,38,2,7196,,1C 1C
+150014,0x249FE,37,1,28,eActorEnum_candidate,1C
+150031,0x24A0F,37,1,28,eActorEnum_candidate,1C
+150056,0x24A28,37,1,28,eActorEnum_candidate,1C
+150120,0x24A68,37,1,28,eActorEnum_candidate,1C
+150132,0x24A74,37,1,28,eActorEnum_candidate,1C
+150144,0x24A80,37,1,28,eActorEnum_candidate,1C
+150155,0x24A8B,65,2,2022,,07 E6
+150158,0x24A8E,37,1,28,eActorEnum_candidate,1C
+150182,0x24AA6,37,1,28,eActorEnum_candidate,1C
+150195,0x24AB3,37,1,28,eActorEnum_candidate,1C
+150206,0x24ABE,37,1,28,eActorEnum_candidate,1C
+150216,0x24AC8,65,2,314,eActorEnum_candidate,01 3A
+150219,0x24ACB,37,1,28,eActorEnum_candidate,1C
+150230,0x24AD6,37,1,28,eActorEnum_candidate,1C
+150241,0x24AE1,37,1,28,eActorEnum_candidate,1C
+150267,0x24AFB,37,1,28,eActorEnum_candidate,1C
+150294,0x24B16,37,1,28,eActorEnum_candidate,1C
+150310,0x24B26,37,1,28,eActorEnum_candidate,1C
+150321,0x24B31,37,1,28,eActorEnum_candidate,1C
+150336,0x24B40,37,1,28,eActorEnum_candidate,1C
+150351,0x24B4F,37,1,28,eActorEnum_candidate,1C
+150368,0x24B60,37,1,28,eActorEnum_candidate,1C
+150386,0x24B72,37,1,28,eActorEnum_candidate,1C
+150409,0x24B89,37,1,28,eActorEnum_candidate,1C
+150425,0x24B99,37,1,28,eActorEnum_candidate,1C
+150433,0x24BA1,37,1,28,eActorEnum_candidate,1C
+150440,0x24BA8,39,3,6490377,,63 09 09
+150444,0x24BAC,37,1,9,eActorEnum_candidate,09
+150449,0x24BB1,37,1,28,eActorEnum_candidate,1C
+150461,0x24BBD,37,1,28,eActorEnum_candidate,1C
+150471,0x24BC7,38,2,7453,,1D 1D
+150484,0x24BD4,37,1,29,eActorEnum_candidate,1D
+150501,0x24BE5,37,1,29,eActorEnum_candidate,1D
+150527,0x24BFF,37,1,29,eActorEnum_candidate,1D
+150593,0x24C41,37,1,29,eActorEnum_candidate,1D
+150605,0x24C4D,37,1,29,eActorEnum_candidate,1D
+150617,0x24C59,37,1,29,eActorEnum_candidate,1D
+150628,0x24C64,65,2,2022,,07 E6
+150631,0x24C67,37,1,29,eActorEnum_candidate,1D
+150655,0x24C7F,37,1,29,eActorEnum_candidate,1D
+150668,0x24C8C,37,1,29,eActorEnum_candidate,1D
+150679,0x24C97,37,1,29,eActorEnum_candidate,1D
+150689,0x24CA1,65,2,314,eActorEnum_candidate,01 3A
+150692,0x24CA4,37,1,29,eActorEnum_candidate,1D
+150703,0x24CAF,37,1,29,eActorEnum_candidate,1D
+150714,0x24CBA,37,1,29,eActorEnum_candidate,1D
+150740,0x24CD4,37,1,29,eActorEnum_candidate,1D
+150767,0x24CEF,37,1,29,eActorEnum_candidate,1D
+150783,0x24CFF,37,1,29,eActorEnum_candidate,1D
+150794,0x24D0A,37,1,29,eActorEnum_candidate,1D
+150809,0x24D19,37,1,29,eActorEnum_candidate,1D
+150824,0x24D28,37,1,29,eActorEnum_candidate,1D
+150841,0x24D39,37,1,29,eActorEnum_candidate,1D
+150859,0x24D4B,37,1,29,eActorEnum_candidate,1D
+150882,0x24D62,37,1,29,eActorEnum_candidate,1D
+150898,0x24D72,37,1,29,eActorEnum_candidate,1D
+150906,0x24D7A,37,1,29,eActorEnum_candidate,1D
+150913,0x24D81,39,3,6490377,,63 09 09
+150917,0x24D85,37,1,9,eActorEnum_candidate,09
+150922,0x24D8A,37,1,29,eActorEnum_candidate,1D
+150934,0x24D96,37,1,29,eActorEnum_candidate,1D
+150944,0x24DA0,38,2,7454,,1D 1E
+150957,0x24DAD,37,1,30,eActorEnum_candidate,1E
+150974,0x24DBE,37,1,30,eActorEnum_candidate,1E
+151000,0x24DD8,37,1,30,eActorEnum_candidate,1E
+151066,0x24E1A,37,1,30,eActorEnum_candidate,1E
+151077,0x24E25,38,2,7454,,1D 1E
+151090,0x24E32,37,1,30,eActorEnum_candidate,1E
+151101,0x24E3D,65,2,2023,,07 E7
+151104,0x24E40,37,1,30,eActorEnum_candidate,1E
+151128,0x24E58,37,1,30,eActorEnum_candidate,1E
+151141,0x24E65,37,1,30,eActorEnum_candidate,1E
+151152,0x24E70,37,1,30,eActorEnum_candidate,1E
+151162,0x24E7A,65,2,314,eActorEnum_candidate,01 3A
+151165,0x24E7D,37,1,30,eActorEnum_candidate,1E
+151176,0x24E88,37,1,30,eActorEnum_candidate,1E
+151187,0x24E93,37,1,30,eActorEnum_candidate,1E
+151213,0x24EAD,37,1,30,eActorEnum_candidate,1E
+151240,0x24EC8,37,1,30,eActorEnum_candidate,1E
+151256,0x24ED8,37,1,30,eActorEnum_candidate,1E
+151267,0x24EE3,37,1,30,eActorEnum_candidate,1E
+151282,0x24EF2,37,1,30,eActorEnum_candidate,1E
+151297,0x24F01,37,1,30,eActorEnum_candidate,1E
+151314,0x24F12,37,1,30,eActorEnum_candidate,1E
+151332,0x24F24,37,1,30,eActorEnum_candidate,1E
+151355,0x24F3B,37,1,30,eActorEnum_candidate,1E
+151371,0x24F4B,37,1,30,eActorEnum_candidate,1E
+151379,0x24F53,37,1,30,eActorEnum_candidate,1E
+151386,0x24F5A,39,3,6490377,,63 09 09
+151390,0x24F5E,37,1,9,eActorEnum_candidate,09
+151395,0x24F63,37,1,30,eActorEnum_candidate,1E
+151407,0x24F6F,37,1,30,eActorEnum_candidate,1E
+151445,0x24F95,37,1,64,eActorEnum_candidate,40
+151452,0x24F9C,37,1,64,eActorEnum_candidate,40
+151467,0x24FAB,37,1,128,eActorEnum_candidate,80
+151474,0x24FB2,37,1,128,eActorEnum_candidate,80
+151481,0x24FB9,37,1,8,eActorEnum_candidate,08
+151490,0x24FC2,65,2,256,eActorEnum_candidate,01 00
+151498,0x24FCA,65,2,256,eActorEnum_candidate,01 00
+151506,0x24FD2,37,1,16,eActorEnum_candidate,10
+151515,0x24FDB,65,2,512,gang_actor,02 00
+151523,0x24FE3,65,2,512,gang_actor,02 00
+151531,0x24FEB,37,1,32,eActorEnum_candidate,20
+151540,0x24FF4,65,2,1024,eActorEnum_candidate,04 00
+151548,0x24FFC,65,2,1024,eActorEnum_candidate,04 00
+151564,0x2500C,37,1,32,eActorEnum_candidate,20
+151571,0x25013,37,1,32,eActorEnum_candidate,20
+151595,0x2502B,37,1,77,eActorEnum_candidate,4D
+152037,0x251E5,37,1,31,eActorEnum_candidate,1F
+152078,0x2520E,37,1,12,eActorEnum_candidate,0C
+152089,0x25219,37,1,14,eActorEnum_candidate,0E
+152120,0x25238,37,1,8,eActorEnum_candidate,08
+152151,0x25257,37,1,15,eActorEnum_candidate,0F
+152162,0x25262,37,1,18,eActorEnum_candidate,12
+152173,0x2526D,37,1,19,eActorEnum_candidate,13
+152184,0x25278,37,1,21,eActorEnum_candidate,15
+152195,0x25283,37,1,22,eActorEnum_candidate,16
+152206,0x2528E,37,1,23,eActorEnum_candidate,17
+152217,0x25299,37,1,24,eActorEnum_candidate,18
+152228,0x252A4,37,1,25,eActorEnum_candidate,19
+152239,0x252AF,37,1,26,eActorEnum_candidate,1A
+152250,0x252BA,37,1,27,eActorEnum_candidate,1B
+152261,0x252C5,37,1,29,eActorEnum_candidate,1D
+152272,0x252D0,37,1,30,eActorEnum_candidate,1E
+152293,0x252E5,37,1,38,eActorEnum_candidate,26
+152299,0x252EB,37,1,31,eActorEnum_candidate,1F
+152404,0x25354,40,4,1073741824,,40 00 00 00
+152438,0x25376,65,2,275,eActorEnum_candidate,01 13
+152532,0x253D4,37,1,255,eActorEnum_candidate,FF
+152549,0x253E5,37,1,255,eActorEnum_candidate,FF
+152579,0x25403,65,2,275,eActorEnum_candidate,01 13
+152609,0x25421,65,2,275,eActorEnum_candidate,01 13
+152874,0x2552A,65,2,275,eActorEnum_candidate,01 13
+152933,0x25565,37,1,15,eActorEnum_candidate,0F
+152938,0x2556A,37,1,255,eActorEnum_candidate,FF
+152948,0x25574,37,1,255,eActorEnum_candidate,FF
+152951,0x25577,37,1,12,eActorEnum_candidate,0C
+152979,0x25593,37,1,16,eActorEnum_candidate,10
+153004,0x255AC,37,1,8,eActorEnum_candidate,08
+153028,0x255C4,37,1,8,eActorEnum_candidate,08
+153043,0x255D3,37,1,16,eActorEnum_candidate,10
+153185,0x25661,37,1,8,eActorEnum_candidate,08
+153232,0x25690,37,1,8,eActorEnum_candidate,08
+153925,0x25945,37,1,128,eActorEnum_candidate,80
+153994,0x2598A,37,1,200,eActorEnum_candidate,C8
+154054,0x259C6,37,1,128,eActorEnum_candidate,80
+154120,0x25A08,37,1,32,eActorEnum_candidate,20
+154167,0x25A37,37,1,8,eActorEnum_candidate,08
+154599,0x25BE7,37,1,48,eActorEnum_candidate,30
+154626,0x25C02,37,1,48,eActorEnum_candidate,30
+154704,0x25C50,37,1,48,eActorEnum_candidate,30
+159582,0x26F5E,37,1,18,eActorEnum_candidate,12
+159590,0x26F66,37,1,30,eActorEnum_candidate,1E
+159618,0x26F82,37,1,18,eActorEnum_candidate,12
+159626,0x26F8A,37,1,30,eActorEnum_candidate,1E
+159667,0x26FB3,37,1,18,eActorEnum_candidate,12
+159675,0x26FBB,37,1,30,eActorEnum_candidate,1E
+159703,0x26FD7,37,1,18,eActorEnum_candidate,12
+159711,0x26FDF,37,1,30,eActorEnum_candidate,1E
+159739,0x26FFB,37,1,18,eActorEnum_candidate,12
+159747,0x27003,37,1,30,eActorEnum_candidate,1E
+159775,0x2701F,37,1,18,eActorEnum_candidate,12
+159783,0x27027,37,1,30,eActorEnum_candidate,1E
+159811,0x27043,37,1,18,eActorEnum_candidate,12
+159819,0x2704B,37,1,30,eActorEnum_candidate,1E
+159869,0x2707D,37,1,30,eActorEnum_candidate,1E
+159933,0x270BD,37,1,30,eActorEnum_candidate,1E
+159974,0x270E6,37,1,18,eActorEnum_candidate,12
+159982,0x270EE,37,1,30,eActorEnum_candidate,1E
+160014,0x2710E,37,1,18,eActorEnum_candidate,12
+160022,0x27116,37,1,30,eActorEnum_candidate,1E
+160082,0x27152,37,1,18,eActorEnum_candidate,12
+160090,0x2715A,37,1,30,eActorEnum_candidate,1E
+160117,0x27175,37,1,18,eActorEnum_candidate,12
+160125,0x2717D,37,1,30,eActorEnum_candidate,1E
+160167,0x271A7,37,1,18,eActorEnum_candidate,12
+160175,0x271AF,37,1,30,eActorEnum_candidate,1E
+160203,0x271CB,37,1,18,eActorEnum_candidate,12
+160211,0x271D3,37,1,30,eActorEnum_candidate,1E
+160239,0x271EF,37,1,18,eActorEnum_candidate,12
+160247,0x271F7,37,1,30,eActorEnum_candidate,1E
+160289,0x27221,37,1,18,eActorEnum_candidate,12
+160297,0x27229,37,1,30,eActorEnum_candidate,1E
+160325,0x27245,37,1,18,eActorEnum_candidate,12
+160333,0x2724D,37,1,30,eActorEnum_candidate,1E
+160361,0x27269,37,1,18,eActorEnum_candidate,12
+160369,0x27271,37,1,30,eActorEnum_candidate,1E
+160410,0x2729A,37,1,18,eActorEnum_candidate,12
+160418,0x272A2,37,1,30,eActorEnum_candidate,1E
+160446,0x272BE,37,1,18,eActorEnum_candidate,12
+160454,0x272C6,37,1,30,eActorEnum_candidate,1E
+160496,0x272F0,37,1,18,eActorEnum_candidate,12
+160504,0x272F8,37,1,30,eActorEnum_candidate,1E
+160532,0x27314,37,1,18,eActorEnum_candidate,12
+160540,0x2731C,37,1,30,eActorEnum_candidate,1E
+160568,0x27338,37,1,18,eActorEnum_candidate,12
+160576,0x27340,37,1,30,eActorEnum_candidate,1E
+160604,0x2735C,37,1,18,eActorEnum_candidate,12
+160612,0x27364,37,1,30,eActorEnum_candidate,1E
+160640,0x27380,37,1,18,eActorEnum_candidate,12
+160648,0x27388,37,1,30,eActorEnum_candidate,1E
+160676,0x273A4,37,1,18,eActorEnum_candidate,12
+160684,0x273AC,37,1,30,eActorEnum_candidate,1E
+160712,0x273C8,37,1,18,eActorEnum_candidate,12
+160720,0x273D0,37,1,30,eActorEnum_candidate,1E
+160748,0x273EC,37,1,18,eActorEnum_candidate,12
+160756,0x273F4,37,1,30,eActorEnum_candidate,1E
+160784,0x27410,37,1,18,eActorEnum_candidate,12
+160792,0x27418,37,1,30,eActorEnum_candidate,1E
+160820,0x27434,37,1,18,eActorEnum_candidate,12
+160828,0x2743C,37,1,30,eActorEnum_candidate,1E
+160869,0x27465,37,1,18,eActorEnum_candidate,12
+160877,0x2746D,37,1,30,eActorEnum_candidate,1E
+160918,0x27496,37,1,18,eActorEnum_candidate,12
+160926,0x2749E,37,1,30,eActorEnum_candidate,1E
+160981,0x274D5,37,1,18,eActorEnum_candidate,12
+160989,0x274DD,37,1,30,eActorEnum_candidate,1E
+161030,0x27506,37,1,18,eActorEnum_candidate,12
+161038,0x2750E,37,1,30,eActorEnum_candidate,1E
+161079,0x27537,37,1,18,eActorEnum_candidate,12
+161087,0x2753F,37,1,30,eActorEnum_candidate,1E
+161128,0x27568,37,1,18,eActorEnum_candidate,12
+161136,0x27570,37,1,30,eActorEnum_candidate,1E
+161177,0x27599,37,1,18,eActorEnum_candidate,12
+161185,0x275A1,37,1,30,eActorEnum_candidate,1E
+161213,0x275BD,37,1,18,eActorEnum_candidate,12
+161221,0x275C5,37,1,30,eActorEnum_candidate,1E
+161249,0x275E1,37,1,18,eActorEnum_candidate,12
+161257,0x275E9,37,1,30,eActorEnum_candidate,1E
+161298,0x27612,37,1,18,eActorEnum_candidate,12
+161306,0x2761A,37,1,30,eActorEnum_candidate,1E
+161334,0x27636,37,1,18,eActorEnum_candidate,12
+161342,0x2763E,37,1,30,eActorEnum_candidate,1E
+161370,0x2765A,37,1,18,eActorEnum_candidate,12
+161378,0x27662,37,1,30,eActorEnum_candidate,1E
+161406,0x2767E,37,1,18,eActorEnum_candidate,12
+161414,0x27686,37,1,30,eActorEnum_candidate,1E
+161455,0x276AF,37,1,18,eActorEnum_candidate,12
+161463,0x276B7,37,1,30,eActorEnum_candidate,1E
+161491,0x276D3,37,1,18,eActorEnum_candidate,12
+161499,0x276DB,37,1,30,eActorEnum_candidate,1E
+161540,0x27704,37,1,18,eActorEnum_candidate,12
+161548,0x2770C,37,1,30,eActorEnum_candidate,1E
+161602,0x27742,37,1,18,eActorEnum_candidate,12
+161610,0x2774A,37,1,30,eActorEnum_candidate,1E
+161651,0x27773,37,1,18,eActorEnum_candidate,12
+161659,0x2777B,37,1,30,eActorEnum_candidate,1E
+161713,0x277B1,37,1,18,eActorEnum_candidate,12
+161721,0x277B9,37,1,30,eActorEnum_candidate,1E
+161789,0x277FD,37,1,18,eActorEnum_candidate,12
+161797,0x27805,37,1,30,eActorEnum_candidate,1E
+161851,0x2783B,37,1,18,eActorEnum_candidate,12
+161859,0x27843,37,1,30,eActorEnum_candidate,1E
+161887,0x2785F,37,1,18,eActorEnum_candidate,12
+161895,0x27867,37,1,30,eActorEnum_candidate,1E
+161936,0x27890,37,1,18,eActorEnum_candidate,12
+161944,0x27898,37,1,30,eActorEnum_candidate,1E
+161972,0x278B4,37,1,18,eActorEnum_candidate,12
+161980,0x278BC,37,1,30,eActorEnum_candidate,1E
+162021,0x278E5,37,1,18,eActorEnum_candidate,12
+162029,0x278ED,37,1,30,eActorEnum_candidate,1E
+162057,0x27909,37,1,18,eActorEnum_candidate,12
+162065,0x27911,37,1,30,eActorEnum_candidate,1E
+162093,0x2792D,37,1,18,eActorEnum_candidate,12
+162101,0x27935,37,1,30,eActorEnum_candidate,1E
+162129,0x27951,37,1,18,eActorEnum_candidate,12
+162137,0x27959,37,1,30,eActorEnum_candidate,1E
+162165,0x27975,37,1,18,eActorEnum_candidate,12
+162173,0x2797D,37,1,30,eActorEnum_candidate,1E
+162201,0x27999,37,1,18,eActorEnum_candidate,12
+162209,0x279A1,37,1,30,eActorEnum_candidate,1E
+162237,0x279BD,37,1,18,eActorEnum_candidate,12
+162245,0x279C5,37,1,30,eActorEnum_candidate,1E
+162273,0x279E1,37,1,18,eActorEnum_candidate,12
+162281,0x279E9,37,1,30,eActorEnum_candidate,1E
+162322,0x27A12,37,1,18,eActorEnum_candidate,12
+162330,0x27A1A,37,1,30,eActorEnum_candidate,1E
+162358,0x27A36,37,1,18,eActorEnum_candidate,12
+162366,0x27A3E,37,1,30,eActorEnum_candidate,1E
+162394,0x27A5A,37,1,18,eActorEnum_candidate,12
+162402,0x27A62,37,1,30,eActorEnum_candidate,1E
+162430,0x27A7E,37,1,18,eActorEnum_candidate,12
+162438,0x27A86,37,1,30,eActorEnum_candidate,1E
+162466,0x27AA2,37,1,18,eActorEnum_candidate,12
+162474,0x27AAA,37,1,30,eActorEnum_candidate,1E
+162502,0x27AC6,37,1,18,eActorEnum_candidate,12
+162510,0x27ACE,37,1,30,eActorEnum_candidate,1E
+162538,0x27AEA,37,1,18,eActorEnum_candidate,12
+162546,0x27AF2,37,1,30,eActorEnum_candidate,1E
+162601,0x27B29,37,1,18,eActorEnum_candidate,12
+162609,0x27B31,37,1,30,eActorEnum_candidate,1E
+162677,0x27B75,37,1,18,eActorEnum_candidate,12
+162685,0x27B7D,37,1,30,eActorEnum_candidate,1E
+162752,0x27BC0,37,1,18,eActorEnum_candidate,12
+162760,0x27BC8,37,1,30,eActorEnum_candidate,1E
+162815,0x27BFF,37,1,18,eActorEnum_candidate,12
+162823,0x27C07,37,1,30,eActorEnum_candidate,1E
+162855,0x27C27,37,1,18,eActorEnum_candidate,12
+162863,0x27C2F,37,1,30,eActorEnum_candidate,1E
+162895,0x27C4F,37,1,18,eActorEnum_candidate,12
+162903,0x27C57,37,1,30,eActorEnum_candidate,1E
+162940,0x27C7C,37,1,18,eActorEnum_candidate,12
+162948,0x27C84,37,1,30,eActorEnum_candidate,1E
+162976,0x27CA0,37,1,18,eActorEnum_candidate,12
+162984,0x27CA8,37,1,30,eActorEnum_candidate,1E
+163045,0x27CE5,37,1,18,eActorEnum_candidate,12
+163053,0x27CED,37,1,30,eActorEnum_candidate,1E
+163100,0x27D1C,37,1,18,eActorEnum_candidate,12
+163108,0x27D24,37,1,30,eActorEnum_candidate,1E
+172885,0x2A355,37,1,24,eActorEnum_candidate,18
+176678,0x2B226,37,1,8,eActorEnum_candidate,08
+176779,0x2B28B,37,1,57,eActorEnum_candidate,39
+178375,0x2B8C7,37,1,199,eActorEnum_candidate,C7
+178425,0x2B8F9,40,4,3212836864,,BF 80 00 00
+178447,0x2B90F,37,1,23,eActorEnum_candidate,17
+178452,0x2B914,40,4,3212836864,,BF 80 00 00
+178462,0x2B91E,37,1,8,eActorEnum_candidate,08
+178475,0x2B92B,37,1,25,eActorEnum_candidate,19
+178480,0x2B930,40,4,3212836864,,BF 80 00 00
+178490,0x2B93A,65,2,660,eActorEnum_candidate,02 94
+178514,0x2B952,37,1,9,eActorEnum_candidate,09
+178531,0x2B963,40,4,3212836864,,BF 80 00 00
+178541,0x2B96D,37,1,10,eActorEnum_candidate,0A
+178558,0x2B97E,40,4,3212836864,,BF 80 00 00
+178568,0x2B988,37,1,11,eActorEnum_candidate,0B
+178585,0x2B999,40,4,3212836864,,BF 80 00 00
+178595,0x2B9A3,65,2,658,eActorEnum_candidate,02 92
+178619,0x2B9BB,65,2,659,eActorEnum_candidate,02 93
+178643,0x2B9D3,65,2,661,eActorEnum_candidate,02 95
+178667,0x2B9EB,37,1,18,eActorEnum_candidate,12
+178680,0x2B9F8,38,2,3849,,0F 09
+178685,0x2B9FD,40,4,3212836864,,BF 80 00 00
+178695,0x2BA07,37,1,19,eActorEnum_candidate,13
+178708,0x2BA14,38,2,3849,,0F 09
+178713,0x2BA19,40,4,3212836864,,BF 80 00 00
+178723,0x2BA23,37,1,20,eActorEnum_candidate,14
+178736,0x2BA30,38,2,3849,,0F 09
+178741,0x2BA35,40,4,3212836864,,BF 80 00 00
+178751,0x2BA3F,37,1,21,eActorEnum_candidate,15
+178764,0x2BA4C,38,2,3849,,0F 09
+178769,0x2BA51,40,4,3212836864,,BF 80 00 00
+178779,0x2BA5B,37,1,22,eActorEnum_candidate,16
+178792,0x2BA68,38,2,3849,,0F 09
+178797,0x2BA6D,40,4,3212836864,,BF 80 00 00
+178807,0x2BA77,37,1,23,eActorEnum_candidate,17
+178820,0x2BA84,38,2,3849,,0F 09
+178825,0x2BA89,40,4,3212836864,,BF 80 00 00
+178835,0x2BA93,37,1,24,eActorEnum_candidate,18
+178848,0x2BAA0,38,2,3849,,0F 09
+178853,0x2BAA5,40,4,3212836864,,BF 80 00 00
+178863,0x2BAAF,37,1,25,eActorEnum_candidate,19
+178876,0x2BABC,38,2,3849,,0F 09
+178881,0x2BAC1,40,4,3212836864,,BF 80 00 00
+178891,0x2BACB,65,2,472,gang_actor,01 D8
+178908,0x2BADC,38,2,3849,,0F 09
+178913,0x2BAE1,40,4,3212836864,,BF 80 00 00
+178923,0x2BAEB,65,2,656,eActorEnum_candidate,02 90
+178941,0x2BAFD,40,4,3212836864,,BF 80 00 00
+178951,0x2BB07,65,2,662,eActorEnum_candidate,02 96
+178965,0x2BB15,37,1,13,eActorEnum_candidate,0D
+178970,0x2BB1A,40,4,3212836864,,BF 80 00 00
+178980,0x2BB24,65,2,663,eActorEnum_candidate,02 97
+178994,0x2BB32,37,1,13,eActorEnum_candidate,0D
+178999,0x2BB37,40,4,3212836864,,BF 80 00 00
+179009,0x2BB41,65,2,664,eActorEnum_candidate,02 98
+179023,0x2BB4F,37,1,13,eActorEnum_candidate,0D
+179028,0x2BB54,40,4,3212836864,,BF 80 00 00
+179038,0x2BB5E,65,2,665,eActorEnum_candidate,02 99
+179052,0x2BB6C,37,1,13,eActorEnum_candidate,0D
+179057,0x2BB71,40,4,3212836864,,BF 80 00 00
+179067,0x2BB7B,65,2,666,eActorEnum_candidate,02 9A
+179081,0x2BB89,37,1,13,eActorEnum_candidate,0D
+179086,0x2BB8E,40,4,3212836864,,BF 80 00 00
+179096,0x2BB98,65,2,467,gang_actor,01 D3
+179111,0x2BBA7,37,1,9,eActorEnum_candidate,09
+179115,0x2BBAB,40,4,3212836864,,BF 80 00 00
+179125,0x2BBB5,65,2,477,gang_actor,01 DD
+179140,0x2BBC4,37,1,9,eActorEnum_candidate,09
+179144,0x2BBC8,40,4,3212836864,,BF 80 00 00
+179154,0x2BBD2,65,2,478,gang_actor,01 DE
+179169,0x2BBE1,37,1,9,eActorEnum_candidate,09
+179173,0x2BBE5,40,4,3212836864,,BF 80 00 00
+179183,0x2BBEF,65,2,479,gang_actor,01 DF
+179198,0x2BBFE,37,1,9,eActorEnum_candidate,09
+179202,0x2BC02,40,4,3212836864,,BF 80 00 00
+179212,0x2BC0C,65,2,480,gang_actor,01 E0
+179227,0x2BC1B,37,1,9,eActorEnum_candidate,09
+179231,0x2BC1F,40,4,3212836864,,BF 80 00 00
+179241,0x2BC29,65,2,482,gang_actor,01 E2
+179256,0x2BC38,37,1,9,eActorEnum_candidate,09
+179260,0x2BC3C,40,4,3212836864,,BF 80 00 00
+179270,0x2BC46,65,2,483,gang_actor,01 E3
+179285,0x2BC55,37,1,9,eActorEnum_candidate,09
+179289,0x2BC59,40,4,3212836864,,BF 80 00 00
+179299,0x2BC63,65,2,667,eActorEnum_candidate,02 9B
+179314,0x2BC72,37,1,9,eActorEnum_candidate,09
+179318,0x2BC76,40,4,3212836864,,BF 80 00 00
+179328,0x2BC80,65,2,668,eActorEnum_candidate,02 9C
+179343,0x2BC8F,37,1,9,eActorEnum_candidate,09
+179347,0x2BC93,40,4,3212836864,,BF 80 00 00
+179357,0x2BC9D,65,2,669,eActorEnum_candidate,02 9D
+179372,0x2BCAC,37,1,9,eActorEnum_candidate,09
+179376,0x2BCB0,40,4,3212836864,,BF 80 00 00
+179386,0x2BCBA,65,2,670,eActorEnum_candidate,02 9E
+179401,0x2BCC9,37,1,9,eActorEnum_candidate,09
+179405,0x2BCCD,40,4,3212836864,,BF 80 00 00
+179415,0x2BCD7,65,2,405,eActorEnum_candidate,01 95
+179433,0x2BCE9,40,4,3212836864,,BF 80 00 00
+179443,0x2BCF3,65,2,406,eActorEnum_candidate,01 96
+179461,0x2BD05,40,4,3212836864,,BF 80 00 00
+179471,0x2BD0F,65,2,407,eActorEnum_candidate,01 97
+179489,0x2BD21,40,4,3212836864,,BF 80 00 00
+179499,0x2BD2B,65,2,408,eActorEnum_candidate,01 98
+179517,0x2BD3D,40,4,3212836864,,BF 80 00 00
+179527,0x2BD47,65,2,409,eActorEnum_candidate,01 99
+179545,0x2BD59,40,4,3212836864,,BF 80 00 00
+179555,0x2BD63,37,1,26,eActorEnum_candidate,1A
+179572,0x2BD74,40,4,3212836864,,BF 80 00 00
+179582,0x2BD7E,37,1,27,eActorEnum_candidate,1B
+179599,0x2BD8F,40,4,3212836864,,BF 80 00 00
+179609,0x2BD99,65,2,671,eActorEnum_candidate,02 9F
+179627,0x2BDAB,40,4,3212836864,,BF 80 00 00
+179637,0x2BDB5,65,2,672,eActorEnum_candidate,02 A0
+179655,0x2BDC7,40,4,3212836864,,BF 80 00 00
+179665,0x2BDD1,65,2,673,eActorEnum_candidate,02 A1
+179683,0x2BDE3,40,4,3212836864,,BF 80 00 00
+179693,0x2BDED,65,2,674,eActorEnum_candidate,02 A2
+179711,0x2BDFF,40,4,3212836864,,BF 80 00 00
+179721,0x2BE09,65,2,675,eActorEnum_candidate,02 A3
+179739,0x2BE1B,40,4,3212836864,,BF 80 00 00
+179749,0x2BE25,65,2,602,eActorEnum_candidate,02 5A
+179767,0x2BE37,40,4,3212836864,,BF 80 00 00
+179777,0x2BE41,65,2,679,eActorEnum_candidate,02 A7
+179795,0x2BE53,40,4,3212836864,,BF 80 00 00
+179805,0x2BE5D,37,1,50,eActorEnum_candidate,32
+179809,0x2BE61,37,1,49,eActorEnum_candidate,31
+179847,0x2BE87,37,1,11,eActorEnum_candidate,0B
+179873,0x2BEA1,37,1,11,eActorEnum_candidate,0B
+179899,0x2BEBB,37,1,11,eActorEnum_candidate,0B
+179925,0x2BED5,37,1,11,eActorEnum_candidate,0B
+179951,0x2BEEF,37,1,11,eActorEnum_candidate,0B
+179977,0x2BF09,37,1,11,eActorEnum_candidate,0B
+180003,0x2BF23,37,1,11,eActorEnum_candidate,0B
+180029,0x2BF3D,37,1,11,eActorEnum_candidate,0B
+180055,0x2BF57,37,1,11,eActorEnum_candidate,0B
+180081,0x2BF71,37,1,11,eActorEnum_candidate,0B
+180107,0x2BF8B,37,1,11,eActorEnum_candidate,0B
+180133,0x2BFA5,37,1,11,eActorEnum_candidate,0B
+180159,0x2BFBF,37,1,11,eActorEnum_candidate,0B
+180185,0x2BFD9,37,1,11,eActorEnum_candidate,0B
+180211,0x2BFF3,37,1,11,eActorEnum_candidate,0B
+180239,0x2C00F,37,1,11,eActorEnum_candidate,0B
+180265,0x2C029,37,1,11,eActorEnum_candidate,0B
+180291,0x2C043,37,1,11,eActorEnum_candidate,0B
+180317,0x2C05D,37,1,11,eActorEnum_candidate,0B
+180343,0x2C077,37,1,11,eActorEnum_candidate,0B
+180369,0x2C091,37,1,11,eActorEnum_candidate,0B
+180395,0x2C0AB,37,1,11,eActorEnum_candidate,0B
+180421,0x2C0C5,37,1,11,eActorEnum_candidate,0B
+180447,0x2C0DF,37,1,11,eActorEnum_candidate,0B
+180473,0x2C0F9,37,1,11,eActorEnum_candidate,0B
+180499,0x2C113,37,1,11,eActorEnum_candidate,0B
+180525,0x2C12D,37,1,11,eActorEnum_candidate,0B
+180551,0x2C147,37,1,11,eActorEnum_candidate,0B
+180577,0x2C161,37,1,11,eActorEnum_candidate,0B
+180603,0x2C17B,37,1,11,eActorEnum_candidate,0B
+180629,0x2C195,37,1,11,eActorEnum_candidate,0B
+180655,0x2C1AF,37,1,11,eActorEnum_candidate,0B
+180681,0x2C1C9,37,1,11,eActorEnum_candidate,0B
+180707,0x2C1E3,37,1,11,eActorEnum_candidate,0B
+180733,0x2C1FD,37,1,11,eActorEnum_candidate,0B
+180759,0x2C217,37,1,11,eActorEnum_candidate,0B
+180770,0x2C222,37,1,90,eActorEnum_candidate,5A
+180774,0x2C226,37,1,89,eActorEnum_candidate,59
+180787,0x2C233,37,1,15,eActorEnum_candidate,0F
+180792,0x2C238,40,4,3212836864,,BF 80 00 00
+180817,0x2C251,37,1,15,eActorEnum_candidate,0F
+180822,0x2C256,40,4,3212836864,,BF 80 00 00
+180847,0x2C26F,37,1,15,eActorEnum_candidate,0F
+180852,0x2C274,40,4,3212836864,,BF 80 00 00
+180877,0x2C28D,37,1,15,eActorEnum_candidate,0F
+180882,0x2C292,40,4,3212836864,,BF 80 00 00
+180907,0x2C2AB,37,1,15,eActorEnum_candidate,0F
+180912,0x2C2B0,40,4,3212836864,,BF 80 00 00
+180937,0x2C2C9,37,1,15,eActorEnum_candidate,0F
+180942,0x2C2CE,40,4,3212836864,,BF 80 00 00
+180967,0x2C2E7,37,1,15,eActorEnum_candidate,0F
+180972,0x2C2EC,40,4,3212836864,,BF 80 00 00
+180997,0x2C305,37,1,15,eActorEnum_candidate,0F
+181002,0x2C30A,40,4,3212836864,,BF 80 00 00
+181027,0x2C323,37,1,15,eActorEnum_candidate,0F
+181032,0x2C328,40,4,3212836864,,BF 80 00 00
+181057,0x2C341,37,1,15,eActorEnum_candidate,0F
+181062,0x2C346,40,4,3212836864,,BF 80 00 00
+181087,0x2C35F,37,1,15,eActorEnum_candidate,0F
+181092,0x2C364,40,4,3212836864,,BF 80 00 00
+181117,0x2C37D,37,1,15,eActorEnum_candidate,0F
+181122,0x2C382,40,4,3212836864,,BF 80 00 00
+181147,0x2C39B,37,1,15,eActorEnum_candidate,0F
+181152,0x2C3A0,40,4,3212836864,,BF 80 00 00
+181177,0x2C3B9,37,1,15,eActorEnum_candidate,0F
+181182,0x2C3BE,40,4,3212836864,,BF 80 00 00
+181207,0x2C3D7,37,1,15,eActorEnum_candidate,0F
+181212,0x2C3DC,40,4,3212836864,,BF 80 00 00
+181237,0x2C3F5,37,1,15,eActorEnum_candidate,0F
+181242,0x2C3FA,40,4,3212836864,,BF 80 00 00
+181267,0x2C413,37,1,15,eActorEnum_candidate,0F
+181272,0x2C418,40,4,3212836864,,BF 80 00 00
+181297,0x2C431,37,1,15,eActorEnum_candidate,0F
+181302,0x2C436,40,4,3212836864,,BF 80 00 00
+181327,0x2C44F,37,1,15,eActorEnum_candidate,0F
+181332,0x2C454,40,4,3212836864,,BF 80 00 00
+181357,0x2C46D,37,1,15,eActorEnum_candidate,0F
+181362,0x2C472,40,4,3212836864,,BF 80 00 00
+181387,0x2C48B,37,1,15,eActorEnum_candidate,0F
+181392,0x2C490,40,4,3212836864,,BF 80 00 00
+181417,0x2C4A9,37,1,15,eActorEnum_candidate,0F
+181422,0x2C4AE,40,4,3212836864,,BF 80 00 00
+181447,0x2C4C7,37,1,15,eActorEnum_candidate,0F
+181452,0x2C4CC,40,4,3212836864,,BF 80 00 00
+181477,0x2C4E5,37,1,15,eActorEnum_candidate,0F
+181482,0x2C4EA,40,4,3212836864,,BF 80 00 00
+181507,0x2C503,37,1,15,eActorEnum_candidate,0F
+181512,0x2C508,40,4,3212836864,,BF 80 00 00
+181537,0x2C521,37,1,15,eActorEnum_candidate,0F
+181542,0x2C526,40,4,3212836864,,BF 80 00 00
+181567,0x2C53F,37,1,15,eActorEnum_candidate,0F
+181572,0x2C544,40,4,3212836864,,BF 80 00 00
+181597,0x2C55D,37,1,15,eActorEnum_candidate,0F
+181602,0x2C562,40,4,3212836864,,BF 80 00 00
+181627,0x2C57B,37,1,15,eActorEnum_candidate,0F
+181632,0x2C580,40,4,3212836864,,BF 80 00 00
+181657,0x2C599,37,1,15,eActorEnum_candidate,0F
+181662,0x2C59E,40,4,3212836864,,BF 80 00 00
+181687,0x2C5B7,37,1,15,eActorEnum_candidate,0F
+181692,0x2C5BC,40,4,3212836864,,BF 80 00 00
+181717,0x2C5D5,37,1,15,eActorEnum_candidate,0F
+181722,0x2C5DA,40,4,3212836864,,BF 80 00 00
+181747,0x2C5F3,37,1,15,eActorEnum_candidate,0F
+181752,0x2C5F8,40,4,3212836864,,BF 80 00 00
+181777,0x2C611,37,1,15,eActorEnum_candidate,0F
+181782,0x2C616,40,4,3212836864,,BF 80 00 00
+181807,0x2C62F,37,1,15,eActorEnum_candidate,0F
+181812,0x2C634,40,4,3212836864,,BF 80 00 00
+181837,0x2C64D,37,1,15,eActorEnum_candidate,0F
+181842,0x2C652,40,4,3212836864,,BF 80 00 00
+181867,0x2C66B,37,1,15,eActorEnum_candidate,0F
+181872,0x2C670,40,4,3212836864,,BF 80 00 00
+181882,0x2C67A,37,1,129,eActorEnum_candidate,81
+181899,0x2C68B,40,4,3212836864,,BF 80 00 00
+181909,0x2C695,37,1,130,eActorEnum_candidate,82
+181925,0x2C6A5,40,4,3212836864,,BF 80 00 00
+181935,0x2C6AF,37,1,134,eActorEnum_candidate,86
+181951,0x2C6BF,40,4,3212836864,,BF 80 00 00
+181961,0x2C6C9,37,1,135,eActorEnum_candidate,87
+181977,0x2C6D9,40,4,3212836864,,BF 80 00 00
+181987,0x2C6E3,37,1,136,eActorEnum_candidate,88
+182003,0x2C6F3,40,4,3212836864,,BF 80 00 00
+182013,0x2C6FD,37,1,183,eActorEnum_candidate,B7
+182036,0x2C714,40,4,3212836864,,BF 80 00 00
+182065,0x2C731,40,4,3212836864,,BF 80 00 00
+182094,0x2C74E,40,4,3212836864,,BF 80 00 00
+182123,0x2C76B,40,4,3212836864,,BF 80 00 00
+182152,0x2C788,40,4,3212836864,,BF 80 00 00
+182181,0x2C7A5,40,4,3212836864,,BF 80 00 00
+182210,0x2C7C2,40,4,3212836864,,BF 80 00 00
+182239,0x2C7DF,40,4,3212836864,,BF 80 00 00
+182268,0x2C7FC,40,4,3212836864,,BF 80 00 00
+182297,0x2C819,40,4,3212836864,,BF 80 00 00
+182326,0x2C836,40,4,3212836864,,BF 80 00 00
+182355,0x2C853,40,4,3212836864,,BF 80 00 00
+182384,0x2C870,40,4,3212836864,,BF 80 00 00
+182413,0x2C88D,40,4,3212836864,,BF 80 00 00
+182442,0x2C8AA,40,4,3212836864,,BF 80 00 00
+182471,0x2C8C7,40,4,3212836864,,BF 80 00 00
+182500,0x2C8E4,40,4,3212836864,,BF 80 00 00
+182529,0x2C901,40,4,3212836864,,BF 80 00 00
+182558,0x2C91E,40,4,3212836864,,BF 80 00 00
+182587,0x2C93B,40,4,3212836864,,BF 80 00 00
+182616,0x2C958,40,4,3212836864,,BF 80 00 00
+182645,0x2C975,40,4,3212836864,,BF 80 00 00
+182674,0x2C992,40,4,3212836864,,BF 80 00 00
+182703,0x2C9AF,40,4,3212836864,,BF 80 00 00
+182732,0x2C9CC,40,4,3212836864,,BF 80 00 00
+182761,0x2C9E9,40,4,3212836864,,BF 80 00 00
+182790,0x2CA06,40,4,3212836864,,BF 80 00 00
+182819,0x2CA23,40,4,3212836864,,BF 80 00 00
+182848,0x2CA40,40,4,3212836864,,BF 80 00 00
+182877,0x2CA5D,40,4,3212836864,,BF 80 00 00
+182906,0x2CA7A,40,4,3212836864,,BF 80 00 00
+182935,0x2CA97,40,4,3212836864,,BF 80 00 00
+182964,0x2CAB4,40,4,3212836864,,BF 80 00 00
+182993,0x2CAD1,40,4,3212836864,,BF 80 00 00
+183022,0x2CAEE,40,4,3212836864,,BF 80 00 00
+183051,0x2CB0B,40,4,3212836864,,BF 80 00 00
+183061,0x2CB15,37,1,140,eActorEnum_candidate,8C
+183084,0x2CB2C,40,4,3212836864,,BF 80 00 00
+183113,0x2CB49,40,4,3212836864,,BF 80 00 00
+183142,0x2CB66,40,4,3212836864,,BF 80 00 00
+183171,0x2CB83,40,4,3212836864,,BF 80 00 00
+183200,0x2CBA0,40,4,3212836864,,BF 80 00 00
+183229,0x2CBBD,40,4,3212836864,,BF 80 00 00
+183258,0x2CBDA,40,4,3212836864,,BF 80 00 00
+183287,0x2CBF7,40,4,3212836864,,BF 80 00 00
+183316,0x2CC14,40,4,3212836864,,BF 80 00 00
+183345,0x2CC31,40,4,3212836864,,BF 80 00 00
+183374,0x2CC4E,40,4,3212836864,,BF 80 00 00
+183403,0x2CC6B,40,4,3212836864,,BF 80 00 00
+183432,0x2CC88,40,4,3212836864,,BF 80 00 00
+183461,0x2CCA5,40,4,3212836864,,BF 80 00 00
+183490,0x2CCC2,40,4,3212836864,,BF 80 00 00
+183519,0x2CCDF,40,4,3212836864,,BF 80 00 00
+183548,0x2CCFC,40,4,3212836864,,BF 80 00 00
+183577,0x2CD19,40,4,3212836864,,BF 80 00 00
+183606,0x2CD36,40,4,3212836864,,BF 80 00 00
+183635,0x2CD53,40,4,3212836864,,BF 80 00 00
+183664,0x2CD70,40,4,3212836864,,BF 80 00 00
+183693,0x2CD8D,40,4,3212836864,,BF 80 00 00
+183722,0x2CDAA,40,4,3212836864,,BF 80 00 00
+183751,0x2CDC7,40,4,3212836864,,BF 80 00 00
+183780,0x2CDE4,40,4,3212836864,,BF 80 00 00
+183809,0x2CE01,40,4,3212836864,,BF 80 00 00
+183838,0x2CE1E,40,4,3212836864,,BF 80 00 00
+183867,0x2CE3B,40,4,3212836864,,BF 80 00 00
+183896,0x2CE58,40,4,3212836864,,BF 80 00 00
+183925,0x2CE75,40,4,3212836864,,BF 80 00 00
+183954,0x2CE92,40,4,3212836864,,BF 80 00 00
+183983,0x2CEAF,40,4,3212836864,,BF 80 00 00
+184012,0x2CECC,40,4,3212836864,,BF 80 00 00
+184041,0x2CEE9,40,4,3212836864,,BF 80 00 00
+184070,0x2CF06,40,4,3212836864,,BF 80 00 00
+184099,0x2CF23,40,4,3212836864,,BF 80 00 00
+184109,0x2CF2D,37,1,179,eActorEnum_candidate,B3
+184121,0x2CF39,38,2,5129,,14 09
+184126,0x2CF3E,40,4,3212836864,,BF 80 00 00
+184136,0x2CF48,37,1,180,eActorEnum_candidate,B4
+184148,0x2CF54,38,2,5129,,14 09
+184153,0x2CF59,40,4,3212836864,,BF 80 00 00
+184163,0x2CF63,37,1,181,eActorEnum_candidate,B5
+184175,0x2CF6F,38,2,5129,,14 09
+184180,0x2CF74,40,4,3212836864,,BF 80 00 00
+184190,0x2CF7E,37,1,182,eActorEnum_candidate,B6
+184202,0x2CF8A,38,2,5129,,14 09
+184207,0x2CF8F,40,4,3212836864,,BF 80 00 00
+184217,0x2CF99,37,1,42,eActorEnum_candidate,2A
+184234,0x2CFAA,40,4,3212836864,,BF 80 00 00
+184244,0x2CFB4,37,1,44,eActorEnum_candidate,2C
+184261,0x2CFC5,40,4,3212836864,,BF 80 00 00
+184271,0x2CFCF,37,1,47,eActorEnum_candidate,2F
+184288,0x2CFE0,40,4,3212836864,,BF 80 00 00
+184298,0x2CFEA,65,2,676,eActorEnum_candidate,02 A4
+184316,0x2CFFC,40,4,3212836864,,BF 80 00 00
+184326,0x2D006,65,2,677,eActorEnum_candidate,02 A5
+184344,0x2D018,40,4,3212836864,,BF 80 00 00
+184354,0x2D022,65,2,273,eActorEnum_candidate,01 11
+184368,0x2D030,37,1,21,eActorEnum_candidate,15
+184373,0x2D035,40,4,3212836864,,BF 80 00 00
+184383,0x2D03F,65,2,492,gang_actor,01 EC
+184386,0x2D042,65,2,265,eActorEnum_candidate,01 09
+184436,0x2D074,65,2,491,gang_actor,01 EB
+184439,0x2D077,65,2,264,eActorEnum_candidate,01 08
+184489,0x2D0A9,65,2,494,gang_actor,01 EE
+184492,0x2D0AC,65,2,267,eActorEnum_candidate,01 0B
+184542,0x2D0DE,65,2,496,gang_actor,01 F0
+184545,0x2D0E1,65,2,269,eActorEnum_candidate,01 0D
+184595,0x2D113,65,2,493,gang_actor,01 ED
+184598,0x2D116,65,2,266,eActorEnum_candidate,01 0A
+184648,0x2D148,65,2,490,gang_actor,01 EA
+184651,0x2D14B,65,2,263,eActorEnum_candidate,01 07
+184701,0x2D17D,65,2,498,gang_actor,01 F2
+184704,0x2D180,65,2,271,eActorEnum_candidate,01 0F
+184754,0x2D1B2,65,2,497,gang_actor,01 F1
+184757,0x2D1B5,65,2,270,eActorEnum_candidate,01 0E
+184807,0x2D1E7,65,2,495,gang_actor,01 EF
+184810,0x2D1EA,65,2,268,eActorEnum_candidate,01 0C
+184860,0x2D21C,65,2,499,gang_actor,01 F3
+184863,0x2D21F,65,2,272,eActorEnum_candidate,01 10
+184913,0x2D251,65,2,310,eActorEnum_candidate,01 36
+184930,0x2D262,40,4,3212836864,,BF 80 00 00
+184940,0x2D26C,65,2,346,eActorEnum_candidate,01 5A
+184954,0x2D27A,37,1,9,eActorEnum_candidate,09
+184958,0x2D27E,40,4,3212836864,,BF 80 00 00
+184968,0x2D288,65,2,583,eActorEnum_candidate,02 47
+184971,0x2D28B,65,2,310,eActorEnum_candidate,01 36
+185000,0x2D2A8,37,1,9,eActorEnum_candidate,09
+185007,0x2D2AF,65,2,609,eActorEnum_candidate,02 61
+185022,0x2D2BE,37,1,9,eActorEnum_candidate,09
+185026,0x2D2C2,40,4,3212836864,,BF 80 00 00
+185036,0x2D2CC,65,2,614,eActorEnum_candidate,02 66
+185051,0x2D2DB,37,1,9,eActorEnum_candidate,09
+185055,0x2D2DF,40,4,3212836864,,BF 80 00 00
+185065,0x2D2E9,65,2,619,eActorEnum_candidate,02 6B
+185080,0x2D2F8,37,1,9,eActorEnum_candidate,09
+185084,0x2D2FC,40,4,3212836864,,BF 80 00 00
+185094,0x2D306,65,2,624,eActorEnum_candidate,02 70
+185109,0x2D315,37,1,9,eActorEnum_candidate,09
+185113,0x2D319,40,4,3212836864,,BF 80 00 00
+185123,0x2D323,65,2,629,eActorEnum_candidate,02 75
+185138,0x2D332,37,1,9,eActorEnum_candidate,09
+185142,0x2D336,40,4,3212836864,,BF 80 00 00
+185152,0x2D340,65,2,632,eActorEnum_candidate,02 78
+185167,0x2D34F,37,1,9,eActorEnum_candidate,09
+185171,0x2D353,40,4,3212836864,,BF 80 00 00
+185181,0x2D35D,65,2,637,eActorEnum_candidate,02 7D
+185196,0x2D36C,37,1,9,eActorEnum_candidate,09
+185200,0x2D370,40,4,3212836864,,BF 80 00 00
+185210,0x2D37A,65,2,641,eActorEnum_candidate,02 81
+185225,0x2D389,37,1,9,eActorEnum_candidate,09
+185229,0x2D38D,40,4,3212836864,,BF 80 00 00
+185239,0x2D397,65,2,644,eActorEnum_candidate,02 84
+185254,0x2D3A6,37,1,9,eActorEnum_candidate,09
+185258,0x2D3AA,40,4,3212836864,,BF 80 00 00
+185268,0x2D3B4,65,2,646,eActorEnum_candidate,02 86
+185283,0x2D3C3,37,1,9,eActorEnum_candidate,09
+185287,0x2D3C7,40,4,3212836864,,BF 80 00 00
+185297,0x2D3D1,65,2,649,eActorEnum_candidate,02 89
+185311,0x2D3DF,37,1,9,eActorEnum_candidate,09
+185315,0x2D3E3,40,4,3212836864,,BF 80 00 00
+185325,0x2D3ED,65,2,652,eActorEnum_candidate,02 8C
+185340,0x2D3FC,37,1,9,eActorEnum_candidate,09
+185344,0x2D400,40,4,3212836864,,BF 80 00 00
+185354,0x2D40A,65,2,655,eActorEnum_candidate,02 8F
+185369,0x2D419,37,1,9,eActorEnum_candidate,09
+185373,0x2D41D,40,4,3212836864,,BF 80 00 00
+185383,0x2D427,65,2,604,eActorEnum_candidate,02 5C
+185413,0x2D445,37,1,9,eActorEnum_candidate,09
+185420,0x2D44C,65,2,605,eActorEnum_candidate,02 5D
+185450,0x2D46A,37,1,9,eActorEnum_candidate,09
+185457,0x2D471,65,2,606,eActorEnum_candidate,02 5E
+185488,0x2D490,37,1,9,eActorEnum_candidate,09
+185495,0x2D497,65,2,607,eActorEnum_candidate,02 5F
+185525,0x2D4B5,37,1,9,eActorEnum_candidate,09
+185532,0x2D4BC,65,2,608,eActorEnum_candidate,02 60
+185563,0x2D4DB,37,1,9,eActorEnum_candidate,09
+185570,0x2D4E2,65,2,611,eActorEnum_candidate,02 63
+185601,0x2D501,37,1,9,eActorEnum_candidate,09
+185608,0x2D508,65,2,610,eActorEnum_candidate,02 62
+185639,0x2D527,37,1,9,eActorEnum_candidate,09
+185646,0x2D52E,65,2,612,eActorEnum_candidate,02 64
+185677,0x2D54D,37,1,9,eActorEnum_candidate,09
+185684,0x2D554,65,2,613,eActorEnum_candidate,02 65
+185715,0x2D573,37,1,9,eActorEnum_candidate,09
+185722,0x2D57A,65,2,616,eActorEnum_candidate,02 68
+185753,0x2D599,37,1,9,eActorEnum_candidate,09
+185760,0x2D5A0,65,2,617,eActorEnum_candidate,02 69
+185791,0x2D5BF,37,1,9,eActorEnum_candidate,09
+185798,0x2D5C6,65,2,615,eActorEnum_candidate,02 67
+185829,0x2D5E5,37,1,9,eActorEnum_candidate,09
+185836,0x2D5EC,65,2,618,eActorEnum_candidate,02 6A
+185867,0x2D60B,37,1,9,eActorEnum_candidate,09
+185874,0x2D612,65,2,621,eActorEnum_candidate,02 6D
+185905,0x2D631,37,1,9,eActorEnum_candidate,09
+185912,0x2D638,65,2,620,eActorEnum_candidate,02 6C
+185943,0x2D657,37,1,9,eActorEnum_candidate,09
+185950,0x2D65E,65,2,622,eActorEnum_candidate,02 6E
+185981,0x2D67D,37,1,9,eActorEnum_candidate,09
+185988,0x2D684,65,2,623,eActorEnum_candidate,02 6F
+186019,0x2D6A3,37,1,9,eActorEnum_candidate,09
+186026,0x2D6AA,65,2,626,eActorEnum_candidate,02 72
+186057,0x2D6C9,37,1,9,eActorEnum_candidate,09
+186064,0x2D6D0,65,2,625,eActorEnum_candidate,02 71
+186095,0x2D6EF,37,1,9,eActorEnum_candidate,09
+186102,0x2D6F6,65,2,627,eActorEnum_candidate,02 73
+186133,0x2D715,37,1,9,eActorEnum_candidate,09
+186140,0x2D71C,65,2,628,eActorEnum_candidate,02 74
+186171,0x2D73B,37,1,9,eActorEnum_candidate,09
+186178,0x2D742,65,2,630,eActorEnum_candidate,02 76
+186209,0x2D761,37,1,9,eActorEnum_candidate,09
+186216,0x2D768,65,2,631,eActorEnum_candidate,02 77
+186247,0x2D787,37,1,9,eActorEnum_candidate,09
+186254,0x2D78E,65,2,634,eActorEnum_candidate,02 7A
+186285,0x2D7AD,37,1,9,eActorEnum_candidate,09
+186292,0x2D7B4,65,2,633,eActorEnum_candidate,02 79
+186323,0x2D7D3,37,1,9,eActorEnum_candidate,09
+186330,0x2D7DA,65,2,635,eActorEnum_candidate,02 7B
+186361,0x2D7F9,37,1,9,eActorEnum_candidate,09
+186368,0x2D800,65,2,636,eActorEnum_candidate,02 7C
+186399,0x2D81F,37,1,9,eActorEnum_candidate,09
+186406,0x2D826,65,2,639,eActorEnum_candidate,02 7F
+186437,0x2D845,37,1,9,eActorEnum_candidate,09
+186444,0x2D84C,65,2,638,eActorEnum_candidate,02 7E
+186475,0x2D86B,37,1,9,eActorEnum_candidate,09
+186482,0x2D872,65,2,640,eActorEnum_candidate,02 80
+186513,0x2D891,37,1,9,eActorEnum_candidate,09
+186520,0x2D898,65,2,642,eActorEnum_candidate,02 82
+186551,0x2D8B7,37,1,9,eActorEnum_candidate,09
+186558,0x2D8BE,65,2,643,eActorEnum_candidate,02 83
+186589,0x2D8DD,37,1,9,eActorEnum_candidate,09
+186596,0x2D8E4,65,2,645,eActorEnum_candidate,02 85
+186627,0x2D903,37,1,9,eActorEnum_candidate,09
+186634,0x2D90A,65,2,647,eActorEnum_candidate,02 87
+186665,0x2D929,37,1,9,eActorEnum_candidate,09
+186672,0x2D930,65,2,648,eActorEnum_candidate,02 88
+186703,0x2D94F,37,1,9,eActorEnum_candidate,09
+186710,0x2D956,65,2,650,eActorEnum_candidate,02 8A
+186741,0x2D975,37,1,9,eActorEnum_candidate,09
+186748,0x2D97C,65,2,651,eActorEnum_candidate,02 8B
+186779,0x2D99B,37,1,9,eActorEnum_candidate,09
+186786,0x2D9A2,65,2,653,eActorEnum_candidate,02 8D
+186817,0x2D9C1,37,1,9,eActorEnum_candidate,09
+186824,0x2D9C8,65,2,654,eActorEnum_candidate,02 8E
+186855,0x2D9E7,37,1,9,eActorEnum_candidate,09
+186862,0x2D9EE,65,2,357,eActorEnum_candidate,01 65
+186880,0x2DA00,40,4,3212836864,,BF 80 00 00
+186890,0x2DA0A,65,2,587,eActorEnum_candidate,02 4B
+186893,0x2DA0D,65,2,357,eActorEnum_candidate,01 65
+186922,0x2DA2A,37,1,9,eActorEnum_candidate,09
+186929,0x2DA31,65,2,588,eActorEnum_candidate,02 4C
+186932,0x2DA34,65,2,357,eActorEnum_candidate,01 65
+186961,0x2DA51,37,1,9,eActorEnum_candidate,09
+186968,0x2DA58,65,2,589,eActorEnum_candidate,02 4D
+186971,0x2DA5B,65,2,357,eActorEnum_candidate,01 65
+187000,0x2DA78,37,1,9,eActorEnum_candidate,09
+187007,0x2DA7F,65,2,590,eActorEnum_candidate,02 4E
+187010,0x2DA82,65,2,357,eActorEnum_candidate,01 65
+187039,0x2DA9F,37,1,9,eActorEnum_candidate,09
+187046,0x2DAA6,65,2,591,eActorEnum_candidate,02 4F
+187049,0x2DAA9,65,2,357,eActorEnum_candidate,01 65
+187078,0x2DAC6,37,1,9,eActorEnum_candidate,09
+187085,0x2DACD,65,2,657,eActorEnum_candidate,02 91
+187103,0x2DADF,40,4,3212836864,,BF 80 00 00
+187113,0x2DAE9,65,2,372,eActorEnum_candidate,01 74
+187127,0x2DAF7,37,1,24,eActorEnum_candidate,18
+187132,0x2DAFC,40,4,3212836864,,BF 80 00 00
+187142,0x2DB06,65,2,373,eActorEnum_candidate,01 75
+187156,0x2DB14,37,1,24,eActorEnum_candidate,18
+187161,0x2DB19,40,4,3212836864,,BF 80 00 00
+187171,0x2DB23,65,2,374,eActorEnum_candidate,01 76
+187185,0x2DB31,37,1,24,eActorEnum_candidate,18
+187190,0x2DB36,40,4,3212836864,,BF 80 00 00
+187200,0x2DB40,65,2,379,eActorEnum_candidate,01 7B
+187217,0x2DB51,40,4,3212836864,,BF 80 00 00
+187227,0x2DB5B,65,2,380,eActorEnum_candidate,01 7C
+187245,0x2DB6D,40,4,3212836864,,BF 80 00 00
+187255,0x2DB77,65,2,385,eActorEnum_candidate,01 81
+187273,0x2DB89,40,4,3212836864,,BF 80 00 00
+187283,0x2DB93,65,2,387,eActorEnum_candidate,01 83
+187296,0x2DBA0,37,1,24,eActorEnum_candidate,18
+187301,0x2DBA5,40,4,3212836864,,BF 80 00 00
+187311,0x2DBAF,65,2,388,eActorEnum_candidate,01 84
+187325,0x2DBBD,37,1,24,eActorEnum_candidate,18
+187330,0x2DBC2,40,4,3212836864,,BF 80 00 00
+187340,0x2DBCC,65,2,390,eActorEnum_candidate,01 86
+187354,0x2DBDA,37,1,15,eActorEnum_candidate,0F
+187365,0x2DBE5,65,2,391,eActorEnum_candidate,01 87
+187382,0x2DBF6,40,4,3212836864,,BF 80 00 00
+187392,0x2DC00,65,2,392,eActorEnum_candidate,01 88
+187410,0x2DC12,40,4,3212836864,,BF 80 00 00
+187420,0x2DC1C,65,2,394,eActorEnum_candidate,01 8A
+187434,0x2DC2A,37,1,23,eActorEnum_candidate,17
+187439,0x2DC2F,40,4,3212836864,,BF 80 00 00
+187449,0x2DC39,65,2,395,eActorEnum_candidate,01 8B
+187467,0x2DC4B,40,4,3212836864,,BF 80 00 00
+187477,0x2DC55,65,2,398,eActorEnum_candidate,01 8E
+187495,0x2DC67,40,4,3212836864,,BF 80 00 00
+187505,0x2DC71,65,2,389,eActorEnum_candidate,01 85
+187519,0x2DC7F,37,1,24,eActorEnum_candidate,18
+187524,0x2DC84,40,4,3212836864,,BF 80 00 00
+187534,0x2DC8E,65,2,678,eActorEnum_candidate,02 A6
+187552,0x2DCA0,40,4,3212836864,,BF 80 00 00
+187562,0x2DCAA,65,2,456,law_actor,01 C8
+187577,0x2DCB9,37,1,9,eActorEnum_candidate,09
+187581,0x2DCBD,40,4,3212836864,,BF 80 00 00
+187591,0x2DCC7,65,2,457,law_actor,01 C9
+187606,0x2DCD6,37,1,9,eActorEnum_candidate,09
+187610,0x2DCDA,40,4,3212836864,,BF 80 00 00
+187627,0x2DCEB,37,1,179,eActorEnum_candidate,B3
+187644,0x2DCFC,37,1,180,eActorEnum_candidate,B4
+187661,0x2DD0D,37,1,181,eActorEnum_candidate,B5
+187679,0x2DD1F,37,1,182,eActorEnum_candidate,B6
+187694,0x2DD2E,37,1,38,eActorEnum_candidate,26
+187699,0x2DD33,37,1,50,eActorEnum_candidate,32
+187704,0x2DD38,37,1,90,eActorEnum_candidate,5A
+187725,0x2DD4D,38,2,12633,,31 59
+187745,0x2DD61,65,2,372,eActorEnum_candidate,01 74
+187757,0x2DD6D,65,2,373,eActorEnum_candidate,01 75
+187769,0x2DD79,65,2,374,eActorEnum_candidate,01 76
+187781,0x2DD85,65,2,375,eActorEnum_candidate,01 77
+187793,0x2DD91,65,2,376,eActorEnum_candidate,01 78
+187805,0x2DD9D,65,2,377,eActorEnum_candidate,01 79
+187817,0x2DDA9,65,2,378,eActorEnum_candidate,01 7A
+187829,0x2DDB5,65,2,381,eActorEnum_candidate,01 7D
+187840,0x2DDC0,37,1,8,eActorEnum_candidate,08
+187842,0x2DDC2,65,2,382,eActorEnum_candidate,01 7E
+187853,0x2DDCD,37,1,9,eActorEnum_candidate,09
+187855,0x2DDCF,65,2,383,eActorEnum_candidate,01 7F
+187866,0x2DDDA,37,1,10,eActorEnum_candidate,0A
+187868,0x2DDDC,65,2,387,eActorEnum_candidate,01 83
+187879,0x2DDE7,37,1,11,eActorEnum_candidate,0B
+187881,0x2DDE9,65,2,388,eActorEnum_candidate,01 84
+187892,0x2DDF4,37,1,12,eActorEnum_candidate,0C
+187894,0x2DDF6,65,2,394,eActorEnum_candidate,01 8A
+187906,0x2DE02,65,2,385,eActorEnum_candidate,01 81
+187918,0x2DE0E,65,2,379,eActorEnum_candidate,01 7B
+187930,0x2DE1A,65,2,380,eActorEnum_candidate,01 7C
+187942,0x2DE26,37,1,44,eActorEnum_candidate,2C
+187953,0x2DE31,65,2,392,eActorEnum_candidate,01 88
+187965,0x2DE3D,65,2,391,eActorEnum_candidate,01 87
+187977,0x2DE49,65,2,393,eActorEnum_candidate,01 89
+187989,0x2DE55,65,2,395,eActorEnum_candidate,01 8B
+188012,0x2DE6C,65,2,696,eActorEnum_candidate,02 B8
+189097,0x2E2A9,40,4,3212836864,,BF 80 00 00
+189121,0x2E2C1,37,1,107,eActorEnum_candidate,6B
+189386,0x2E3CA,65,2,696,eActorEnum_candidate,02 B8
+190119,0x2E6A7,37,1,20,eActorEnum_candidate,14
+190164,0x2E6D4,37,1,21,eActorEnum_candidate,15
+190212,0x2E704,37,1,11,eActorEnum_candidate,0B
+190266,0x2E73A,37,1,15,eActorEnum_candidate,0F
+190271,0x2E73F,37,1,18,eActorEnum_candidate,12
+190298,0x2E75A,65,2,597,fbi_actor,02 55
+190304,0x2E760,37,1,19,eActorEnum_candidate,13
+190310,0x2E766,37,1,20,eActorEnum_candidate,14
+190316,0x2E76C,37,1,21,eActorEnum_candidate,15
+190322,0x2E772,65,2,603,eActorEnum_candidate,02 5B
+190934,0x2E9D6,37,1,8,eActorEnum_candidate,08
+191150,0x2EAAE,40,4,118549476,,07 10 EB E4
+191158,0x2EAB6,37,1,59,eActorEnum_candidate,3B
+192134,0x2EE86,38,2,13773,,35 CD
+192182,0x2EEB6,38,2,46329,,B4 F9

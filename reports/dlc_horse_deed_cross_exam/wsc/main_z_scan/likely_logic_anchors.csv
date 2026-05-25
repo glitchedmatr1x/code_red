@@ -1,0 +1,2 @@
+term,offset,offset_hex,status,reason
+Initializing deed array,676,0x2A4,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching

@@ -108,6 +108,10 @@ static std::string g_rosterPath = "data/codered/npc_roster.txt";
 static std::string g_actorEnumMapPath = "data/codered/actor_enum_map.csv";
 static std::string g_actionsPath = "data/codered/ai_behavior_actions.csv";
 static std::string g_actionPlanPath = "scratch/codered_ai_action_plan.json";
+static std::string g_statePath = "scratch/codered_ai_state.json";
+static std::string g_overrideRpfPath = "override";
+static std::string g_patchStagePath = "game";
+static std::string g_contentOverrideName = "content.rpf";
 static std::string g_status = "CodeRED AI Menu ready";
 
 static std::vector<std::string> g_roster;
@@ -128,6 +132,7 @@ static std::vector<std::string> g_actions = {
     "side_lawman_immunity_request",
     "side_gang_immunity_request",
     "restore_player_faction_request",
+    "reload_override_rpf_request",
     "dismiss_ai_guest_request",
     "status_request"
 };
@@ -261,11 +266,12 @@ static R nativeInvoke(unsigned long long hash, Args... args) {
     }
 }
 
+
 // BEGIN CODERED_NATIVE_BRIDGE_SELECTED_WRAPPERS
 // Generated candidate block. Do not hand-edit this section in-place.
 // Re-run tools/codered_ai_menu_bridge_integration.py after regenerating native wrappers.
 // Code RED selected native bridge prep
-// Generated: 2026-05-03T09:08:32Z
+// Generated: 2026-05-07T10:52:13Z
 // Profile: ai_trainer_core
 // Include this below the existing nativeInvoke/nativePush helpers in CodeRED_AI_Menu.cpp.
 // This file is bridge prep, not a blind auto-install patch.
@@ -498,6 +504,61 @@ static std::string jsonEscape(const std::string& value) {
     return out.str();
 }
 
+static std::string dirnameOf(const std::string& path) {
+    const size_t slash = path.find_last_of("\\/");
+    if (slash == std::string::npos) return "";
+    return path.substr(0, slash);
+}
+
+static void createDirectoriesForPath(const std::string& path) {
+    std::string current;
+    for (size_t i = 0; i < path.size(); ++i) {
+        char c = path[i];
+        current.push_back(c);
+        if (c != '\\' && c != '/') continue;
+        if (current.size() <= 3 && current.size() >= 2 && current[1] == ':') continue;
+        if (!current.empty()) CreateDirectoryA(current.c_str(), nullptr);
+    }
+    if (!path.empty()) CreateDirectoryA(path.c_str(), nullptr);
+}
+
+static void createParentDirs(const std::string& filePath) {
+    const std::string dir = dirnameOf(filePath);
+    if (!dir.empty()) createDirectoriesForPath(dir);
+}
+
+static std::string joinPath(const std::string& base, const std::string& leaf) {
+    if (base.empty()) return leaf;
+    const char tail = base[base.size() - 1];
+    if (tail == '\\' || tail == '/') return base + leaf;
+    return base + "\\" + leaf;
+}
+
+static bool fileExists(const std::string& path) {
+    const DWORD attr = GetFileAttributesA(path.c_str());
+    return attr != INVALID_FILE_ATTRIBUTES &&
+           (attr & FILE_ATTRIBUTE_DIRECTORY) == 0;
+}
+
+static unsigned long long fileSizeBytes(const std::string& path) {
+    WIN32_FILE_ATTRIBUTE_DATA data = {};
+    if (!GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &data)) {
+        return 0;
+    }
+    if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) return 0;
+    return (static_cast<unsigned long long>(data.nFileSizeHigh) << 32) |
+           static_cast<unsigned long long>(data.nFileSizeLow);
+}
+
+static unsigned long long fileWriteTime(const std::string& path) {
+    WIN32_FILE_ATTRIBUTE_DATA data = {};
+    if (!GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &data)) {
+        return 0;
+    }
+    return (static_cast<unsigned long long>(data.ftLastWriteTime.dwHighDateTime) << 32) |
+           static_cast<unsigned long long>(data.ftLastWriteTime.dwLowDateTime);
+}
+
 static std::string enumHex(int actorEnum) {
     char buffer[32] = {};
     snprintf(buffer, sizeof(buffer), "0x%08X",
@@ -567,12 +628,25 @@ static void loadConfig() {
             g_actionsPath = value;
         } else if (key == "action_plan") {
             g_actionPlanPath = value;
+        } else if (key == "state") {
+            g_statePath = value;
+        } else if (key == "override_rpf" || key == "override_rpf_dir" ||
+                   key == "override_dir") {
+            g_overrideRpfPath = value;
+        } else if (key == "patch_stage" || key == "patch_stage_dir" ||
+                   key == "rpf_patch_stage") {
+            g_patchStagePath = value;
+        } else if (key == "content_override" || key == "content_rpf" ||
+                   key == "content_override_name") {
+            g_contentOverrideName = value;
         }
     }
 
-    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s",
+    writeLog("Config loaded: roster=%s actor_enum_map=%s actions=%s action_plan=%s state=%s override_rpf=%s patch_stage=%s content_override=%s",
              g_rosterPath.c_str(), g_actorEnumMapPath.c_str(),
-             g_actionsPath.c_str(), g_actionPlanPath.c_str());
+             g_actionsPath.c_str(), g_actionPlanPath.c_str(),
+             g_statePath.c_str(), g_overrideRpfPath.c_str(),
+             g_patchStagePath.c_str(), g_contentOverrideName.c_str());
 }
 
 static void loadActorEnumMap() {
@@ -665,6 +739,7 @@ static void ensureDefaultActions() {
         "side_lawman_immunity_request",
         "side_gang_immunity_request",
         "restore_player_faction_request",
+        "reload_override_rpf_request",
         "dismiss_ai_guest_request",
         "status_request"
     };
@@ -1204,6 +1279,428 @@ static void commandSpawnedActors(const std::string& action) {
     writeLog("Unsupported behavior action: %s", action.c_str());
 }
 
+static bool scriptExists(const char* scriptPath) {
+    if (!scriptPath || !scriptPath[0] || !nativeReady()) return false;
+    return nativeInvoke<BOOL>(0xDEAB87AB, scriptPath) != 0;
+}
+
+static int launchScriptPath(const char* scriptPath) {
+    if (!scriptPath || !scriptPath[0] || !nativeReady()) return 0;
+    int handle = nativeInvoke<int>(0x85A30503, scriptPath, 0);
+    if (handle <= 0) {
+        handle = nativeInvoke<int>(0x3F166D0E, scriptPath, 4096);
+    }
+    return handle;
+}
+
+static int launchFirstExistingScript(const char* label, const char* const* paths, size_t count) {
+    int checked = 0;
+    for (size_t i = 0; i < count; ++i) {
+        const char* path = paths[i];
+        if (!path || !path[0]) continue;
+        ++checked;
+        const bool exists = scriptExists(path);
+        writeLog("MP script probe: label=%s path=%s exists=%s",
+                 label, path, exists ? "true" : "false");
+        if (!exists) continue;
+
+        const int handle = launchScriptPath(path);
+        writeLog("MP script launch: label=%s path=%s handle=%d",
+                 label, path, handle);
+        if (handle > 0) {
+            g_status = std::string("MP launch ") + label + " handle " +
+                       std::to_string(handle);
+            return handle;
+        }
+    }
+
+    g_status = std::string("MP script not found: ") + label +
+               " checked " + std::to_string(checked);
+    return 0;
+}
+
+static void mpStatusProbe() {
+    const BOOL wasLastResetForMp = nativeInvoke<BOOL>(0x3B004817);
+    const BOOL simulateStartMp = nativeInvoke<BOOL>(0x9A73C2CD);
+    const BOOL inSession = nativeInvoke<BOOL>(0x8CA54980);
+    const BOOL isHost = nativeInvoke<BOOL>(0xCDAC0F0E);
+
+    const char* const probes[] = {
+        "multiplayer/freemode/freemode",
+        "multiplayer/freemode/freemode.csc",
+        "content/release/multiplayer/freemode/freemode.csc",
+        "release/multiplayer/freemode/freemode.csc",
+        "multiplayer/multiplayer_system_thread",
+        "multiplayer/multiplayer_update_thread",
+        "multiplayer/deathmatch/deathmatch",
+        "multiplayer/ctf/ctf_base_game",
+    };
+    int found = 0;
+    for (const char* path : probes) {
+        if (scriptExists(path)) ++found;
+    }
+
+    g_status = "MP probe reset=" + std::to_string(wasLastResetForMp) +
+               " sim=" + std::to_string(simulateStartMp) +
+               " session=" + std::to_string(inSession) +
+               " scripts=" + std::to_string(found);
+    writeLog("MP status: wasLastResetForMP=%d simulateStartMP=%d inSession=%d isHost=%d scriptProbeFound=%d",
+             wasLastResetForMp, simulateStartMp, inSession, isHost, found);
+}
+
+static void mpEnableMultiplayer() {
+    const int result = nativeInvoke<int>(0x9180FF1C, TRUE);
+    const BOOL inSession = nativeInvoke<BOOL>(0x8CA54980);
+    const BOOL isHost = nativeInvoke<BOOL>(0xCDAC0F0E);
+    g_status = "NET_ENABLE_MULTIPLAYER result=" + std::to_string(result) +
+               " session=" + std::to_string(inSession);
+    writeLog("MP enable: NET_ENABLE_MULTIPLAYER result=%d inSession=%d isHost=%d",
+             result, inSession, isHost);
+}
+
+static void mpEnterNetworkingUi() {
+    const char* const layers[] = {
+        "networking",
+        "net",
+        "pausemenu",
+        "pausemenu_networking",
+        "content/ui/pausemenu/networking.sc.xml",
+    };
+    for (const char* layer : layers) {
+        nativeInvoke<void>(0x594F2657, layer);
+        writeLog("MP UI enter attempted: %s", layer);
+    }
+    g_status = "Requested MP/networking UI layers";
+}
+
+static void mpStartCoreThreads() {
+    const char* const systemThread[] = {
+        "multiplayer/multiplayer_system_thread",
+        "multiplayer/multiplayer_system_thread.csc",
+        "content/release/multiplayer/multiplayer_system_thread.csc",
+        "release/multiplayer/multiplayer_system_thread.csc",
+    };
+    const char* const updateThread[] = {
+        "multiplayer/multiplayer_update_thread",
+        "multiplayer/multiplayer_update_thread.csc",
+        "content/release/multiplayer/multiplayer_update_thread.csc",
+        "release/multiplayer/multiplayer_update_thread.csc",
+    };
+    const int systemHandle = launchFirstExistingScript("mp_system_thread", systemThread, _countof(systemThread));
+    const int updateHandle = launchFirstExistingScript("mp_update_thread", updateThread, _countof(updateThread));
+    g_status = "MP threads sys=" + std::to_string(systemHandle) +
+               " upd=" + std::to_string(updateHandle);
+}
+
+static void mpLaunchFreemode() {
+    const char* const paths[] = {
+        "multiplayer/freemode/freemode",
+        "multiplayer/freemode/freemode.csc",
+        "content/release/multiplayer/freemode/freemode.csc",
+        "release/multiplayer/freemode/freemode.csc",
+        "freemode",
+    };
+    launchFirstExistingScript("freemode", paths, _countof(paths));
+}
+
+static void mpLaunchDeathmatch() {
+    const char* const paths[] = {
+        "multiplayer/deathmatch/deathmatch",
+        "multiplayer/deathmatch/deathmatch.csc",
+        "content/release/multiplayer/deathmatch/deathmatch.csc",
+        "release/multiplayer/deathmatch/deathmatch.csc",
+        "deathmatch",
+    };
+    launchFirstExistingScript("deathmatch", paths, _countof(paths));
+}
+
+static void mpLaunchCtf() {
+    const char* const paths[] = {
+        "multiplayer/ctf/ctf_base_game",
+        "multiplayer/ctf/ctf_base_game.csc",
+        "content/release/multiplayer/ctf/ctf_base_game.csc",
+        "release/multiplayer/ctf/ctf_base_game.csc",
+        "ctf_base_game",
+    };
+    launchFirstExistingScript("ctf", paths, _countof(paths));
+}
+
+struct OverridePatchFile {
+    std::string fileName;
+    std::string sourcePath;
+    std::string stagedPath;
+    unsigned long long size;
+};
+
+static bool isPatchRpfName(const char* name) {
+    if (!name) return false;
+    std::string text = lowerCopy(name);
+    if (text.size() < 10) return false;
+    if (text.rfind("patch", 0) != 0) return false;
+    if (text.compare(text.size() - 4, 4, ".rpf") != 0) return false;
+    for (size_t i = 5; i + 4 < text.size(); ++i) {
+        if (!std::isdigit(static_cast<unsigned char>(text[i]))) return false;
+    }
+    return true;
+}
+
+static int patchNumberFromName(const std::string& fileName) {
+    std::string text = lowerCopy(fileName);
+    if (text.rfind("patch", 0) != 0) return INT_MAX;
+    const size_t dot = text.rfind(".rpf");
+    if (dot == std::string::npos || dot <= 5) return INT_MAX;
+    return std::atoi(text.substr(5, dot - 5).c_str());
+}
+
+static std::vector<OverridePatchFile> findOverridePatchFiles() {
+    loadConfig();
+    createDirectoriesForPath(g_overrideRpfPath);
+
+    std::vector<OverridePatchFile> patches;
+    WIN32_FIND_DATAA data = {};
+    const std::string pattern = joinPath(g_overrideRpfPath, "patch*.rpf");
+    HANDLE find = FindFirstFileA(pattern.c_str(), &data);
+    if (find == INVALID_HANDLE_VALUE) return patches;
+
+    do {
+        if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) continue;
+        if (!isPatchRpfName(data.cFileName)) continue;
+
+        OverridePatchFile patch = {};
+        patch.fileName = data.cFileName;
+        patch.sourcePath = joinPath(g_overrideRpfPath, patch.fileName);
+        patch.stagedPath = joinPath(g_patchStagePath, patch.fileName);
+        patch.size = (static_cast<unsigned long long>(data.nFileSizeHigh) << 32) |
+                     static_cast<unsigned long long>(data.nFileSizeLow);
+        patches.push_back(patch);
+    } while (FindNextFileA(find, &data));
+    FindClose(find);
+
+    std::sort(patches.begin(), patches.end(),
+              [](const OverridePatchFile& a, const OverridePatchFile& b) {
+                  const int an = patchNumberFromName(a.fileName);
+                  const int bn = patchNumberFromName(b.fileName);
+                  if (an != bn) return an < bn;
+                  return lowerCopy(a.fileName) < lowerCopy(b.fileName);
+              });
+    return patches;
+}
+
+static void writeRuntimeState(const std::string& phase,
+                              const std::vector<OverridePatchFile>& patches,
+                              const std::string& result) {
+    createParentDirs(g_statePath);
+
+    std::ofstream file(g_statePath.c_str(), std::ios::trunc);
+    if (!file) {
+        writeLog("Could not write state file: %s", g_statePath.c_str());
+        return;
+    }
+
+    std::time_t now = std::time(nullptr);
+    Actor player = playerActor();
+    Vector3 playerPos = {};
+    const bool hasPlayerPos = player > 0 && actorPosition(player, &playerPos);
+
+    file << "{\n";
+    file << "  \"source\": \"CodeRED_AI_Menu\",\n";
+    file << "  \"phase\": \"" << jsonEscape(phase) << "\",\n";
+    file << "  \"result\": \"" << jsonEscape(result) << "\",\n";
+    file << "  \"timestamp\": " << static_cast<long long>(now) << ",\n";
+    file << "  \"override_rpf_dir\": \"" << jsonEscape(g_overrideRpfPath) << "\",\n";
+    file << "  \"patch_stage_dir\": \"" << jsonEscape(g_patchStagePath) << "\",\n";
+    file << "  \"content_override\": \"" << jsonEscape(g_contentOverrideName) << "\",\n";
+    file << "  \"player_actor\": " << player << ",\n";
+    file << "  \"player_side_faction\": " << g_playerSideFaction << ",\n";
+    if (hasPlayerPos) {
+        file << "  \"player_position\": {\"x\": " << playerPos.x
+             << ", \"y\": " << playerPos.y << ", \"z\": " << playerPos.z << "},\n";
+    } else {
+        file << "  \"player_position\": null,\n";
+    }
+    file << "  \"patches\": [\n";
+    for (size_t i = 0; i < patches.size(); ++i) {
+        const OverridePatchFile& patch = patches[i];
+        file << "    {\"name\": \"" << jsonEscape(patch.fileName)
+             << "\", \"source\": \"" << jsonEscape(patch.sourcePath)
+             << "\", \"staged\": \"" << jsonEscape(patch.stagedPath)
+             << "\", \"size\": " << patch.size << "}";
+        if (i + 1 < patches.size()) file << ",";
+        file << "\n";
+    }
+    file << "  ]\n";
+    file << "}\n";
+}
+
+static bool applyContentOverride(std::string* appliedSource,
+                                 std::string* failure) {
+    const std::string contentSource =
+        joinPath(g_overrideRpfPath, g_contentOverrideName);
+    const std::string patch0Source = joinPath(g_overrideRpfPath, "patch0.rpf");
+    const std::string target = joinPath(g_patchStagePath, "content.rpf");
+    const std::string backup = target + ".codered_original_backup";
+
+    std::string source;
+    if (fileExists(contentSource)) {
+        source = contentSource;
+    } else if (fileExists(patch0Source)) {
+        const unsigned long long patchSize = fileSizeBytes(patch0Source);
+        const unsigned long long targetSize = fileSizeBytes(target);
+        if (patchSize >= 8ULL * 1024ULL * 1024ULL &&
+            (targetSize == 0 ||
+             (patchSize * 10ULL >= targetSize * 7ULL &&
+              patchSize * 10ULL <= targetSize * 13ULL))) {
+            source = patch0Source;
+        }
+    }
+
+    if (source.empty()) return false;
+
+    createDirectoriesForPath(g_patchStagePath);
+    const bool patch0IsContent =
+        lowerCopy(source) == lowerCopy(patch0Source);
+    const std::string stagedPatch0 = joinPath(g_patchStagePath, "patch0.rpf");
+    const unsigned long long sourceSize = fileSizeBytes(source);
+    const unsigned long long targetSize = fileSizeBytes(target);
+    const unsigned long long sourceTime = fileWriteTime(source);
+    const unsigned long long targetTime = fileWriteTime(target);
+    if (sourceSize != 0 && sourceSize == targetSize && targetTime >= sourceTime) {
+        if (patch0IsContent && fileExists(stagedPatch0)) {
+            if (DeleteFileA(stagedPatch0.c_str())) {
+                writeLog("Removed staged patch0 because patch0 is active content override: %s",
+                         stagedPatch0.c_str());
+            } else {
+                writeLog("Could not remove staged patch0 while patch0 is active content override: %s err=%lu",
+                         stagedPatch0.c_str(), GetLastError());
+            }
+        }
+        if (appliedSource) *appliedSource = source;
+        writeLog("Content RPF override already current: %s -> %s size=%llu",
+                 source.c_str(), target.c_str(), sourceSize);
+        return true;
+    }
+
+    if (!fileExists(backup) && fileExists(target)) {
+        if (!CopyFileA(target.c_str(), backup.c_str(), TRUE)) {
+            const DWORD err = GetLastError();
+            if (failure) {
+                *failure = "Content RPF backup failed err " + std::to_string(err);
+            }
+            writeLog("Content RPF backup failed: %s -> %s err=%lu",
+                     target.c_str(), backup.c_str(), err);
+            return false;
+        }
+        writeLog("Content RPF backup created: %s", backup.c_str());
+    }
+
+    if (!CopyFileA(source.c_str(), target.c_str(), FALSE)) {
+        const DWORD err = GetLastError();
+        if (failure) {
+            if (err == ERROR_SHARING_VIOLATION || err == ERROR_LOCK_VIOLATION) {
+                *failure = "Content RPF locked by game; restart to apply override";
+            } else {
+                *failure = "Content RPF override failed err " + std::to_string(err);
+            }
+        }
+        writeLog("Content RPF override failed: %s -> %s err=%lu",
+                 source.c_str(), target.c_str(), err);
+        return false;
+    }
+
+    if (appliedSource) *appliedSource = source;
+    if (patch0IsContent && fileExists(stagedPatch0)) {
+        if (DeleteFileA(stagedPatch0.c_str())) {
+            writeLog("Removed staged patch0 because patch0 is active content override: %s",
+                     stagedPatch0.c_str());
+        } else {
+            writeLog("Could not remove staged patch0 while patch0 is active content override: %s err=%lu",
+                     stagedPatch0.c_str(), GetLastError());
+        }
+    }
+    writeLog("Content RPF override applied: %s -> %s size=%llu",
+             source.c_str(), target.c_str(), fileSizeBytes(source));
+    return true;
+}
+
+static void reloadOverrideRpf() {
+    loadConfig();
+    const std::vector<OverridePatchFile> patches = findOverridePatchFiles();
+    writeRuntimeState("before_override_rpf_reload", patches, "snapshot");
+
+    std::string contentSource;
+    std::string contentFailure;
+    const bool appliedContent = applyContentOverride(&contentSource, &contentFailure);
+    if (!contentFailure.empty()) {
+        g_status = contentFailure;
+        writeRuntimeState("override_rpf_reload_failed", patches, g_status);
+        return;
+    }
+
+    if (patches.empty() && !appliedContent) {
+        g_status = "No override RPF files in " + g_overrideRpfPath;
+        writeRuntimeState("override_rpf_reload_skipped", patches, "no_patch_files");
+        writeLog("Override RPF reload skipped: no content.rpf or patchN.rpf files in %s",
+                 g_overrideRpfPath.c_str());
+        return;
+    }
+    for (size_t i = 0; i < patches.size(); ++i) {
+        const int expected = static_cast<int>(i);
+        const int actual = patchNumberFromName(patches[i].fileName);
+        if (actual != expected) {
+            g_status = "Override RPF names must start at patch0.rpf and be contiguous";
+            writeRuntimeState("override_rpf_reload_failed", patches, "non_contiguous_patch_names");
+            writeLog("Override RPF reload failed: expected patch%d.rpf but found %s",
+                     expected, patches[i].fileName.c_str());
+            return;
+        }
+    }
+
+    createDirectoriesForPath(g_patchStagePath);
+    size_t copied = 0;
+    size_t skipped = 0;
+    for (const OverridePatchFile& patch : patches) {
+        if (appliedContent &&
+            lowerCopy(patch.sourcePath) == lowerCopy(contentSource)) {
+            ++skipped;
+            writeLog("Override RPF patch stage skipped because it is the active content override: %s",
+                     patch.sourcePath.c_str());
+            continue;
+        }
+        if (CopyFileA(patch.sourcePath.c_str(), patch.stagedPath.c_str(), FALSE)) {
+            ++copied;
+            writeLog("Override RPF staged: %s -> %s size=%llu",
+                     patch.sourcePath.c_str(), patch.stagedPath.c_str(), patch.size);
+        } else {
+            const DWORD err = GetLastError();
+            g_status = "RPF stage failed: " + patch.fileName +
+                       " err " + std::to_string(err);
+            writeRuntimeState("override_rpf_reload_failed", patches, g_status);
+            writeLog("Override RPF stage failed: %s -> %s err=%lu",
+                     patch.sourcePath.c_str(), patch.stagedPath.c_str(), err);
+            return;
+        }
+    }
+
+    if (appliedContent) {
+        g_status = "Applied content override";
+        if (copied) {
+            g_status += " and staged " + std::to_string(copied) + " patch RPF(s)";
+        }
+        if (skipped) {
+            g_status += "; skipped active content patch";
+        }
+        g_status += "; restart required";
+    } else {
+        g_status = "Staged " + std::to_string(copied) +
+                   " patch RPF(s); restart required";
+    }
+    writeRuntimeState("after_override_rpf_reload", patches, g_status);
+    writeLog("Override RPF applied: content=%s source=%s patch_copied=%zu patch_skipped=%zu; live remount not called",
+             appliedContent ? "true" : "false",
+             appliedContent ? contentSource.c_str() : "",
+             copied, skipped);
+}
+
 static void executeSelectedAction() {
     const std::string action = selectedAction();
     writeActionPlan();
@@ -1223,6 +1720,22 @@ static void executeSelectedAction() {
         setPlayerFactionSide(FACTION_GENERIC_CRIMINAL, "generic criminal/gang");
     } else if (action == "restore_player_faction_request") {
         restorePlayerFaction();
+    } else if (action == "mp_status_probe_request") {
+        mpStatusProbe();
+    } else if (action == "mp_enable_multiplayer_request") {
+        mpEnableMultiplayer();
+    } else if (action == "mp_enter_networking_ui_request") {
+        mpEnterNetworkingUi();
+    } else if (action == "mp_start_core_threads_request") {
+        mpStartCoreThreads();
+    } else if (action == "mp_launch_freemode_request") {
+        mpLaunchFreemode();
+    } else if (action == "mp_launch_deathmatch_request") {
+        mpLaunchDeathmatch();
+    } else if (action == "mp_launch_ctf_request") {
+        mpLaunchCtf();
+    } else if (action == "reload_override_rpf_request") {
+        reloadOverrideRpf();
     } else if (action == "status_request") {
         pruneSpawnedActors();
         const int actorEnum = selectedActorEnum();
@@ -1238,7 +1751,7 @@ static void executeSelectedAction() {
 }
 
 static void writeActionPlan() {
-    CreateDirectoryA("scratch", nullptr);
+    createParentDirs(g_actionPlanPath);
 
     std::ofstream file(g_actionPlanPath.c_str(), std::ios::trunc);
     if (!file) {
@@ -1264,6 +1777,9 @@ static void writeActionPlan() {
     }
     file << "  \"spawned_actor_count\": " << g_spawnedActors.size() << ",\n";
     file << "  \"player_side_faction\": " << g_playerSideFaction << ",\n";
+    file << "  \"override_rpf_dir\": \"" << jsonEscape(g_overrideRpfPath) << "\",\n";
+    file << "  \"patch_stage_dir\": \"" << jsonEscape(g_patchStagePath) << "\",\n";
+    file << "  \"state_path\": \"" << jsonEscape(g_statePath) << "\",\n";
     file << "  \"status\": \"queued\",\n";
     file << "  \"timestamp\": " << static_cast<long long>(now) << "\n";
     file << "}\n";
@@ -1365,6 +1881,7 @@ static void onKey(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended,
     }
 
     if (key == VK_F5) {
+        g_configLoaded = false;
         g_dirtyRoster = true;
         g_dirtyActorMap = true;
         g_dirtyActions = true;
@@ -1466,7 +1983,7 @@ static void drawMenu() {
         drawTextSafe(rosterX + 0.005f, top + panelH - 0.050f, hint.c_str(), 190, 190, 190, 230, FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
     }
 
-    std::string footer = "F8 close | UP/DOWN action | LEFT/RIGHT roster | SHIFT+LEFT/RIGHT x10 | ENTER run";
+    std::string footer = "F8 close | UP/DOWN action | LEFT/RIGHT roster | F5 reload files | ENTER run";
     drawTextSafe(left + 0.020f, top + panelH - 0.026f, footer.c_str(), 235, 235, 235, 235, FONT_REDEMPTION, 0.015f, JUSTIFY_LEFT);
     if (!g_status.empty()) {
         drawTextSafe(left + 0.020f, top + panelH - 0.005f, g_status.c_str(), 255, 140, 140, 235, FONT_REDEMPTION, 0.014f, JUSTIFY_LEFT);
@@ -1544,6 +2061,18 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID) {
         codered::g_module = module;
         InterlockedExchange(&codered::g_stopRequested, 0);
         codered::writeLog("ASI attached");
+        codered::loadConfig();
+        {
+            std::string source;
+            std::string failure;
+            if (codered::applyContentOverride(&source, &failure)) {
+                codered::writeLog("Startup content override check complete: %s",
+                                  source.c_str());
+            } else if (!failure.empty()) {
+                codered::writeLog("Startup content override check failed: %s",
+                                  failure.c_str());
+            }
+        }
         HANDLE thread = CreateThread(nullptr, 0, codered::registrationThread,
                                      module, 0, nullptr);
         if (thread) {

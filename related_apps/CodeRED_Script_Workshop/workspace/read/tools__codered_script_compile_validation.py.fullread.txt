@@ -196,7 +196,7 @@ def write_build_plan(root: Path, report: ValidationReport) -> Path:
         "Purpose:",
         "- Build or detect SC-CL.exe.",
         "- Compile code_red_script_compile_lab_v1/src/main.c into the vehicle menu probe.",
-        "- Keep existing binary .wsc/.xsc/.sco roundtrip proof-gated until separately proven.",
+        "- Keep existing binary .wsc/.csc/.xsc/.sco roundtrip proof-gated until separately proven.",
         "",
         "Validated files:",
     ]
@@ -287,7 +287,7 @@ def validate(root: Path) -> ValidationReport:
     )
     notes = [
         "This validates the Code RED script compile lab assets and the vehicle-menu probe source.",
-        "It does not claim arbitrary existing .wsc/.xsc/.sco binary roundtrip is solved.",
+        "It does not claim arbitrary existing .wsc/.csc/.xsc/.sco binary roundtrip is solved.",
         "On non-Windows hosts, SC-CL execution is expected to remain unavailable unless a compatible executable/toolchain is staged.",
         "Use the generated Windows build plan for the real compile step when Visual Studio/SC-CL are available.",
     ]

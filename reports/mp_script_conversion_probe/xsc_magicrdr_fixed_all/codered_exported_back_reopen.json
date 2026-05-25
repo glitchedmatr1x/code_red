@@ -1,0 +1,30 @@
+[
+  {
+    "path": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_script_conversion_probe\\magicrdr_import_export_probe\\exported_back\\content\\release64\\multiplayer\\multiplayer_system_thread.wsc",
+    "ok": true,
+    "decoded_size": 73728,
+    "decoded_sha256": "55BE5D4078EE4C6AFCB67CC14253F6F5639CA9EF3E0B0731AC69699948EFD30A",
+    "error": ""
+  },
+  {
+    "path": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_script_conversion_probe\\magicrdr_import_export_probe\\exported_back\\content\\release64\\multiplayer\\multiplayer_update_thread.wsc",
+    "ok": true,
+    "decoded_size": 57344,
+    "decoded_sha256": "2B8D82A41B574D6B9D73669BD158C413FC2F5BC1FE9FABD3F9D8319AD9A9D4BC",
+    "error": ""
+  },
+  {
+    "path": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_script_conversion_probe\\magicrdr_import_export_probe\\exported_back\\content\\release64\\multiplayer\\pr_multiplayer.wsc",
+    "ok": true,
+    "decoded_size": 36864,
+    "decoded_sha256": "A4B9F0C39878E880FDC568BF902D6DA98F7976161BB1DC3481BD5F421CDC9600",
+    "error": ""
+  },
+  {
+    "path": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_script_conversion_probe\\magicrdr_import_export_probe\\exported_back_plus_freemode\\content\\release64\\multiplayer\\freemode\\freemode.wsc",
+    "ok": true,
+    "decoded_size": 114688,
+    "decoded_sha256": "B95809D018FA03C0BCBF8868EE9D0118766C364D70349B1FD95BF75EA2769963",
+    "error": ""
+  }
+]

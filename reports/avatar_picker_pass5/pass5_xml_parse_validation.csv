@@ -1,0 +1,3 @@
+variant,path,install_target,xml_parse_ok,error,bytes,sha1
+variant_E_networking,D:\Games\Red Dead Redemption\Code_RED\build\avatar_picker_access_pass5\variant_E_direct_avatar_plus_clean_cancel\networking.sc.xml,root/content/ui/pausemenu/networking.sc.xml,True,,17746,add3e0059ec503a2979ed20fdcf0d93d48a83ab7
+variant_F_profileeditor,D:\Games\Red Dead Redemption\Code_RED\build\avatar_picker_access_pass5\variant_F_profileeditor_stream_avatar_strings\main.sc.xml,root/content/ui/net/profileeditor/main.sc.xml,True,,17045,e0c063015e7ca67d413bfc94b5887503a3bc5f6e

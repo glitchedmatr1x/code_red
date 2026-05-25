@@ -1,0 +1,352 @@
+string_offset,string_offset_hex,string_text,string_class,reference_instruction_offset,reference_instruction_offset_hex,owner_function_index,owner_function,owner_function_offset_range
+39,0x27,Formations,unknown,37,0x25,0,main,0x0..0x128
+65,0x41,Formations,unknown,63,0x3F,0,main,0x0..0x128
+97,0x61,Failed to create FUI iterator. Script will not receive FUI events,debug/display text,95,0x5F,0,main,0x0..0x128
+336,0x150,generalMenus,unknown,334,0x14E,1,Function_1,0x128..0x19F
+363,0x16B,NetworkingLayerOffline,unknown,361,0x169,1,Function_1,0x128..0x19F
+391,0x187,PauseMenu,unknown,389,0x185,1,Function_1,0x128..0x19F
+425,0x1A9,Param,unknown,423,0x1A7,2,Function_2,0x19F..0x3E8
+433,0x1B1,pauseStart,unknown,431,0x1AF,2,Function_2,0x19F..0x3E8
+452,0x1C4,NetTab_ProfileTitles,unknown,450,0x1C2,2,Function_2,0x19F..0x3E8
+478,0x1DE,NetTab_Profile,unknown,476,0x1DC,2,Function_2,0x19F..0x3E8
+498,0x1F2,Net_titles,unknown,496,0x1F0,2,Function_2,0x19F..0x3E8
+520,0x208,Param,unknown,518,0x206,2,Function_2,0x19F..0x3E8
+528,0x210,Title_Selected,unknown,526,0x20E,2,Function_2,0x19F..0x3E8
+551,0x227,Net_titles,unknown,549,0x225,2,Function_2,0x19F..0x3E8
+576,0x240,MPP_TitleValue,unknown,574,0x23E,2,Function_2,0x19F..0x3E8
+598,0x256,Net_titles,unknown,596,0x254,2,Function_2,0x19F..0x3E8
+621,0x26D,NetworkingLayerOffline,unknown,619,0x26B,2,Function_2,0x19F..0x3E8
+649,0x289,PauseMenu,unknown,647,0x287,2,Function_2,0x19F..0x3E8
+664,0x298,MPProfile,unknown,662,0x296,2,Function_2,0x19F..0x3E8
+685,0x2AD,Param,unknown,683,0x2AB,2,Function_2,0x19F..0x3E8
+693,0x2B5,Prestige,unknown,691,0x2B3,2,Function_2,0x19F..0x3E8
+720,0x2D0,MP_XP_RollOver_Popup,unknown,718,0x2CE,2,Function_2,0x19F..0x3E8
+749,0x2ED,Param,unknown,747,0x2EB,2,Function_2,0x19F..0x3E8
+757,0x2F5,Mount_Selected,unknown,755,0x2F3,2,Function_2,0x19F..0x3E8
+780,0x30C,Net_Profile_Mount_Select,unknown,778,0x30A,2,Function_2,0x19F..0x3E8
+843,0x34B,NetworkingLayerOffline,unknown,841,0x349,2,Function_2,0x19F..0x3E8
+871,0x367,PauseMenu,unknown,869,0x365,2,Function_2,0x19F..0x3E8
+889,0x379,Param,unknown,887,0x377,2,Function_2,0x19F..0x3E8
+897,0x381,Prestige_Opt,unknown,895,0x37F,2,Function_2,0x19F..0x3E8
+918,0x396,Net_Prestige_Opt,unknown,916,0x394,2,Function_2,0x19F..0x3E8
+958,0x3BE,NetworkingLayerOffline,unknown,956,0x3BC,2,Function_2,0x19F..0x3E8
+986,0x3DA,PauseMenu,unknown,984,0x3D8,2,Function_2,0x19F..0x3E8
+1120,0x460,RIDEABLE_ANIMAL_MEX_Mule01,event/task name,1118,0x45E,5,Function_5,0x428..0x554
+1156,0x484,RIDEABLE_ANIMAL_HorseMangy01,event/task name,1154,0x482,5,Function_5,0x428..0x554
+1194,0x4AA,RIDEABLE_ANIMAL_Horse01,event/task name,1192,0x4A8,5,Function_5,0x428..0x554
+1227,0x4CB,RIDEABLE_ANIMAL_Horse03,event/task name,1225,0x4C9,5,Function_5,0x428..0x554
+1260,0x4EC,RIDEABLE_ANIMAL_Horse07,event/task name,1258,0x4EA,5,Function_5,0x428..0x554
+1293,0x50D,RIDEABLE_ANIMAL_Horse04,event/task name,1291,0x50B,5,Function_5,0x428..0x554
+1326,0x52E,RIDEABLE_ANIMAL_Bull01,event/task name,1324,0x52C,5,Function_5,0x428..0x554
+1389,0x56D,MPP_TitleValue,unknown,1387,0x56B,6,Function_6,0x554..0x5D2
+1423,0x58F,_en,unknown,1421,0x58D,6,Function_6,0x554..0x5D2
+1467,0x5BB,MpTitleStringId,unknown,1465,0x5B9,6,Function_6,0x554..0x5D2
+1497,0x5D9,jp,unknown,1495,0x5D7,7,Function_7,0x5D2..0x5E0
+1639,0x667,TITLE_UIID_TO_ID didn't get a valid Title UI ID. Returning -1!,debug/display text,1637,0x665,9,Function_9,0x612..0x6AB
+1733,0x6C5,Poker_Quit_Confirmation_Popup,unknown,1731,0x6C3,11,Function_11,0x6BB..0x1BE7
+1774,0x6EE,Param,unknown,1772,0x6EC,11,Function_11,0x6BB..0x1BE7
+1782,0x6F6,RollOver_Yes,unknown,1780,0x6F4,11,Function_11,0x6BB..0x1BE7
+1809,0x711,bQuitMinigame,unknown,1807,0x70F,11,Function_11,0x6BB..0x1BE7
+1830,0x726,Poker_Quit_Confirmation_Popup,unknown,1828,0x724,11,Function_11,0x6BB..0x1BE7
+1871,0x74F,Param,unknown,1869,0x74D,11,Function_11,0x6BB..0x1BE7
+1879,0x757,RollOver_No,unknown,1877,0x755,11,Function_11,0x6BB..0x1BE7
+1905,0x771,bQuitMinigame,unknown,1903,0x76F,11,Function_11,0x6BB..0x1BE7
+1926,0x786,Poker_Quit_Confirmation_Popup,unknown,1924,0x784,11,Function_11,0x6BB..0x1BE7
+1964,0x7AC,Blackjack_Quit_Confirmation_Popup,unknown,1962,0x7AA,11,Function_11,0x6BB..0x1BE7
+2009,0x7D9,Param,unknown,2007,0x7D7,11,Function_11,0x6BB..0x1BE7
+2017,0x7E1,RollOver_Yes,unknown,2015,0x7DF,11,Function_11,0x6BB..0x1BE7
+2044,0x7FC,bQuitMinigame,unknown,2042,0x7FA,11,Function_11,0x6BB..0x1BE7
+2065,0x811,Blackjack_Quit_Confirmation_Popup,unknown,2063,0x80F,11,Function_11,0x6BB..0x1BE7
+2110,0x83E,Param,unknown,2108,0x83C,11,Function_11,0x6BB..0x1BE7
+2118,0x846,RollOver_No,unknown,2116,0x844,11,Function_11,0x6BB..0x1BE7
+2144,0x860,bQuitMinigame,unknown,2142,0x85E,11,Function_11,0x6BB..0x1BE7
+2165,0x875,Blackjack_Quit_Confirmation_Popup,unknown,2163,0x873,11,Function_11,0x6BB..0x1BE7
+2207,0x89F,Horseshoes_Quit_Confirmation_Popup,unknown,2205,0x89D,11,Function_11,0x6BB..0x1BE7
+2253,0x8CD,Param,unknown,2251,0x8CB,11,Function_11,0x6BB..0x1BE7
+2261,0x8D5,RollOver_Yes,unknown,2259,0x8D3,11,Function_11,0x6BB..0x1BE7
+2288,0x8F0,bQuitMinigame,unknown,2286,0x8EE,11,Function_11,0x6BB..0x1BE7
+2309,0x905,Horseshoes_Quit_Confirmation_Popup,unknown,2307,0x903,11,Function_11,0x6BB..0x1BE7
+2355,0x933,Param,unknown,2353,0x931,11,Function_11,0x6BB..0x1BE7
+2363,0x93B,RollOver_No,unknown,2361,0x939,11,Function_11,0x6BB..0x1BE7
+2389,0x955,bQuitMinigame,unknown,2387,0x953,11,Function_11,0x6BB..0x1BE7
+2410,0x96A,Horseshoes_Quit_Confirmation_Popup,unknown,2408,0x968,11,Function_11,0x6BB..0x1BE7
+2453,0x995,Drinking_Quit_Confirmation_Popup,unknown,2451,0x993,11,Function_11,0x6BB..0x1BE7
+2497,0x9C1,Param,unknown,2495,0x9BF,11,Function_11,0x6BB..0x1BE7
+2505,0x9C9,RollOver_Yes,unknown,2503,0x9C7,11,Function_11,0x6BB..0x1BE7
+2532,0x9E4,bQuitMinigame,unknown,2530,0x9E2,11,Function_11,0x6BB..0x1BE7
+2553,0x9F9,Drinking_Quit_Confirmation_Popup,unknown,2551,0x9F7,11,Function_11,0x6BB..0x1BE7
+2597,0xA25,Param,unknown,2595,0xA23,11,Function_11,0x6BB..0x1BE7
+2605,0xA2D,RollOver_No,unknown,2603,0xA2B,11,Function_11,0x6BB..0x1BE7
+2631,0xA47,bQuitMinigame,unknown,2629,0xA45,11,Function_11,0x6BB..0x1BE7
+2652,0xA5C,Drinking_Quit_Confirmation_Popup,unknown,2650,0xA5A,11,Function_11,0x6BB..0x1BE7
+2693,0xA85,Liarsdice_Quit_Confirmation_Popup,unknown,2691,0xA83,11,Function_11,0x6BB..0x1BE7
+2738,0xAB2,Param,unknown,2736,0xAB0,11,Function_11,0x6BB..0x1BE7
+2746,0xABA,RollOver_Yes,unknown,2744,0xAB8,11,Function_11,0x6BB..0x1BE7
+2773,0xAD5,bQuitMinigame,unknown,2771,0xAD3,11,Function_11,0x6BB..0x1BE7
+2794,0xAEA,Liarsdice_Quit_Confirmation_Popup,unknown,2792,0xAE8,11,Function_11,0x6BB..0x1BE7
+2839,0xB17,Param,unknown,2837,0xB15,11,Function_11,0x6BB..0x1BE7
+2847,0xB1F,RollOver_No,unknown,2845,0xB1D,11,Function_11,0x6BB..0x1BE7
+2873,0xB39,bQuitMinigame,unknown,2871,0xB37,11,Function_11,0x6BB..0x1BE7
+2894,0xB4E,Liarsdice_Quit_Confirmation_Popup,unknown,2892,0xB4C,11,Function_11,0x6BB..0x1BE7
+2936,0xB78,Armwrestling_Quit_Confirmation_Popup,unknown,2934,0xB76,11,Function_11,0x6BB..0x1BE7
+2984,0xBA8,Param,unknown,2982,0xBA6,11,Function_11,0x6BB..0x1BE7
+2992,0xBB0,RollOver_Yes,unknown,2990,0xBAE,11,Function_11,0x6BB..0x1BE7
+3019,0xBCB,bQuitMinigame,unknown,3017,0xBC9,11,Function_11,0x6BB..0x1BE7
+3040,0xBE0,Armwrestling_Quit_Confirmation_Popup,unknown,3038,0xBDE,11,Function_11,0x6BB..0x1BE7
+3088,0xC10,Param,unknown,3086,0xC0E,11,Function_11,0x6BB..0x1BE7
+3096,0xC18,RollOver_No,unknown,3094,0xC16,11,Function_11,0x6BB..0x1BE7
+3122,0xC32,bQuitMinigame,unknown,3120,0xC30,11,Function_11,0x6BB..0x1BE7
+3143,0xC47,Armwrestling_Quit_Confirmation_Popup,unknown,3141,0xC45,11,Function_11,0x6BB..0x1BE7
+3188,0xC74,Fivefingerfillet_Quit_Confirmation_Popup,unknown,3186,0xC72,11,Function_11,0x6BB..0x1BE7
+3240,0xCA8,Param,unknown,3238,0xCA6,11,Function_11,0x6BB..0x1BE7
+3248,0xCB0,RollOver_Yes,unknown,3246,0xCAE,11,Function_11,0x6BB..0x1BE7
+3275,0xCCB,bQuitMinigame,unknown,3273,0xCC9,11,Function_11,0x6BB..0x1BE7
+3296,0xCE0,Fivefingerfillet_Quit_Confirmation_Popup,unknown,3294,0xCDE,11,Function_11,0x6BB..0x1BE7
+3348,0xD14,Param,unknown,3346,0xD12,11,Function_11,0x6BB..0x1BE7
+3356,0xD1C,RollOver_No,unknown,3354,0xD1A,11,Function_11,0x6BB..0x1BE7
+3382,0xD36,bQuitMinigame,unknown,3380,0xD34,11,Function_11,0x6BB..0x1BE7
+3403,0xD4B,Fivefingerfillet_Quit_Confirmation_Popup,unknown,3401,0xD49,11,Function_11,0x6BB..0x1BE7
+3452,0xD7C,Merchant05_Retry_Confirmation_Popup,unknown,3450,0xD7A,11,Function_11,0x6BB..0x1BE7
+3499,0xDAB,Param,unknown,3497,0xDA9,11,Function_11,0x6BB..0x1BE7
+3507,0xDB3,RollOver_Yes,unknown,3505,0xDB1,11,Function_11,0x6BB..0x1BE7
+3534,0xDCE,bRetryMerchant05,unknown,3532,0xDCC,11,Function_11,0x6BB..0x1BE7
+3558,0xDE6,Merchant05_Retry_Confirmation_Popup,unknown,3556,0xDE4,11,Function_11,0x6BB..0x1BE7
+3605,0xE15,Param,unknown,3603,0xE13,11,Function_11,0x6BB..0x1BE7
+3613,0xE1D,RollOver_No,unknown,3611,0xE1B,11,Function_11,0x6BB..0x1BE7
+3639,0xE37,bRetryMerchant05,unknown,3637,0xE35,11,Function_11,0x6BB..0x1BE7
+3663,0xE4F,Merchant05_Retry_Confirmation_Popup,unknown,3661,0xE4D,11,Function_11,0x6BB..0x1BE7
+3707,0xE7B,MP_XP_RollOver_Popup,unknown,3705,0xE79,11,Function_11,0x6BB..0x1BE7
+3739,0xE9B,Param,unknown,3737,0xE99,11,Function_11,0x6BB..0x1BE7
+3747,0xEA3,RollOver_Yes,unknown,3745,0xEA1,11,Function_11,0x6BB..0x1BE7
+3768,0xEB8,MP_XP_RollOver_Popup2,unknown,3766,0xEB6,11,Function_11,0x6BB..0x1BE7
+3795,0xED3,MP_XP_RollOver_Popup,unknown,3793,0xED1,11,Function_11,0x6BB..0x1BE7
+3821,0xEED,MP_XP_RollOver_Popup2,unknown,3819,0xEEB,11,Function_11,0x6BB..0x1BE7
+3854,0xF0E,Param,unknown,3852,0xF0C,11,Function_11,0x6BB..0x1BE7
+3862,0xF16,RollOver_No,unknown,3860,0xF14,11,Function_11,0x6BB..0x1BE7
+3882,0xF2A,MP_XP_RollOver_Popup,unknown,3880,0xF28,11,Function_11,0x6BB..0x1BE7
+3908,0xF44,NetworkingLayerOffline,unknown,3906,0xF42,11,Function_11,0x6BB..0x1BE7
+3936,0xF60,PauseMenu,unknown,3934,0xF5E,11,Function_11,0x6BB..0x1BE7
+3951,0xF6F,pauseStart,unknown,3949,0xF6D,11,Function_11,0x6BB..0x1BE7
+3970,0xF82,MP_XP_RollOver_Popup2,unknown,3968,0xF80,11,Function_11,0x6BB..0x1BE7
+4003,0xFA3,Param,unknown,4001,0xFA1,11,Function_11,0x6BB..0x1BE7
+4011,0xFAB,RollOver_Yes2,unknown,4009,0xFA9,11,Function_11,0x6BB..0x1BE7
+4045,0xFCD,MP_XP_RollOver_Popup2,unknown,4043,0xFCB,11,Function_11,0x6BB..0x1BE7
+4072,0xFE8,NetworkingLayerOffline,unknown,4070,0xFE6,11,Function_11,0x6BB..0x1BE7
+4100,0x1004,PauseMenuScene,unknown,4098,0x1002,11,Function_11,0x6BB..0x1BE7
+4126,0x101E,Param,unknown,4124,0x101C,11,Function_11,0x6BB..0x1BE7
+4134,0x1026,RollOver_No2,unknown,4132,0x1024,11,Function_11,0x6BB..0x1BE7
+4155,0x103B,MP_XP_RollOver_Popup2,unknown,4153,0x1039,11,Function_11,0x6BB..0x1BE7
+4182,0x1056,NetworkingLayerOffline,unknown,4180,0x1054,11,Function_11,0x6BB..0x1BE7
+4210,0x1072,PauseMenu,unknown,4208,0x1070,11,Function_11,0x6BB..0x1BE7
+4225,0x1081,pauseStart,unknown,4223,0x107F,11,Function_11,0x6BB..0x1BE7
+4244,0x1094,MP_AvatarQuit,unknown,4242,0x1092,11,Function_11,0x6BB..0x1BE7
+4269,0x10AD,Param,unknown,4267,0x10AB,11,Function_11,0x6BB..0x1BE7
+4277,0x10B5,RollOver_Yes,unknown,4275,0x10B3,11,Function_11,0x6BB..0x1BE7
+4301,0x10CD,AvatarQuit,unknown,4299,0x10CB,11,Function_11,0x6BB..0x1BE7
+4319,0x10DF,MP_AvatarQuit,unknown,4317,0x10DD,11,Function_11,0x6BB..0x1BE7
+4344,0x10F8,MP_BarkerPosseLeave,unknown,4342,0x10F6,11,Function_11,0x6BB..0x1BE7
+4375,0x1117,Param,unknown,4373,0x1115,11,Function_11,0x6BB..0x1BE7
+4383,0x111F,RollOver_Yes,unknown,4381,0x111D,11,Function_11,0x6BB..0x1BE7
+4407,0x1137,BarkerPosseLeave,unknown,4405,0x1135,11,Function_11,0x6BB..0x1BE7
+4431,0x114F,MP_BarkerPosseLeave,unknown,4429,0x114D,11,Function_11,0x6BB..0x1BE7
+4459,0x116B,MissionFailedMenu,likely logic anchor,4457,0x1169,11,Function_11,0x6BB..0x1BE7
+4488,0x1188,Param,unknown,4486,0x1186,11,Function_11,0x6BB..0x1BE7
+4496,0x1190,Restart,unknown,4494,0x118E,11,Function_11,0x6BB..0x1BE7
+4515,0x11A3,Param,unknown,4513,0x11A1,11,Function_11,0x6BB..0x1BE7
+4523,0x11AB,cancel,unknown,4521,0x11A9,11,Function_11,0x6BB..0x1BE7
+4541,0x11BD,Param,unknown,4539,0x11BB,11,Function_11,0x6BB..0x1BE7
+4549,0x11C5,Jump,unknown,4547,0x11C3,11,Function_11,0x6BB..0x1BE7
+4565,0x11D5,Param,unknown,4563,0x11D3,11,Function_11,0x6BB..0x1BE7
+4573,0x11DD,cancelMission,likely logic anchor,4571,0x11DB,11,Function_11,0x6BB..0x1BE7
+4598,0x11F6,Param,unknown,4596,0x11F4,11,Function_11,0x6BB..0x1BE7
+4606,0x11FE,Jump,unknown,4604,0x11FC,11,Function_11,0x6BB..0x1BE7
+4616,0x1208,Mission_Failed_Jump_Confirmation_Popup,likely logic anchor,4614,0x1206,11,Function_11,0x6BB..0x1BE7
+4665,0x1239,Mission_Failed_Jump_Confirmation_Popup,likely logic anchor,4663,0x1237,11,Function_11,0x6BB..0x1BE7
+4712,0x1268,Param,unknown,4710,0x1266,11,Function_11,0x6BB..0x1BE7
+4724,0x1274,Mission_Failed_Jump_Confirmation_Popup,likely logic anchor,4722,0x1272,11,Function_11,0x6BB..0x1BE7
+4774,0x12A6,Param,unknown,4772,0x12A4,11,Function_11,0x6BB..0x1BE7
+4782,0x12AE,Jump_No,unknown,4780,0x12AC,11,Function_11,0x6BB..0x1BE7
+4801,0x12C1,Param,unknown,4799,0x12BF,11,Function_11,0x6BB..0x1BE7
+4813,0x12CD,Mission_Failed_Jump_Confirmation_Popup,likely logic anchor,4811,0x12CB,11,Function_11,0x6BB..0x1BE7
+4860,0x12FC,Param,unknown,4858,0x12FA,11,Function_11,0x6BB..0x1BE7
+4868,0x1304,Jump_Yes,unknown,4866,0x1302,11,Function_11,0x6BB..0x1BE7
+4893,0x131D,Param,unknown,4891,0x131B,11,Function_11,0x6BB..0x1BE7
+4978,0x1372,Mission_Failed_Jump_Confirmation_Popup,likely logic anchor,4976,0x1370,11,Function_11,0x6BB..0x1BE7
+5022,0x139E,HudSceneOffline,unknown,5020,0x139C,11,Function_11,0x6BB..0x1BE7
+5043,0x13B3,MissionFailedMenu,likely logic anchor,5041,0x13B1,11,Function_11,0x6BB..0x1BE7
+5072,0x13D0,Param,unknown,5070,0x13CE,11,Function_11,0x6BB..0x1BE7
+5080,0x13D8,CancelMissionPrompt,likely logic anchor,5078,0x13D6,11,Function_11,0x6BB..0x1BE7
+5105,0x13F1,Mission_Failed_Cancel_Confirmation_Popup,likely logic anchor,5103,0x13EF,11,Function_11,0x6BB..0x1BE7
+5156,0x1424,Mission_Failed_Cancel_Confirmation_Popup,likely logic anchor,5154,0x1422,11,Function_11,0x6BB..0x1BE7
+5205,0x1455,Param,unknown,5203,0x1453,11,Function_11,0x6BB..0x1BE7
+5217,0x1461,Mission_Failed_Cancel_Confirmation_Popup,likely logic anchor,5215,0x145F,11,Function_11,0x6BB..0x1BE7
+5269,0x1495,Param,unknown,5267,0x1493,11,Function_11,0x6BB..0x1BE7
+5277,0x149D,Cancel_No,unknown,5275,0x149B,11,Function_11,0x6BB..0x1BE7
+5295,0x14AF,Mission_Failed_Cancel_Confirmation_Popup,likely logic anchor,5293,0x14AD,11,Function_11,0x6BB..0x1BE7
+5344,0x14E0,Param,unknown,5342,0x14DE,11,Function_11,0x6BB..0x1BE7
+5359,0x14EF,Param,unknown,5357,0x14ED,11,Function_11,0x6BB..0x1BE7
+5367,0x14F7,Restart,unknown,5365,0x14F5,11,Function_11,0x6BB..0x1BE7
+5383,0x1507,Selected RETRY FROM CHECKPOINT,debug/display text,5381,0x1505,11,Function_11,0x6BB..0x1BE7
+5443,0x1543,_Retry,unknown,5441,0x1541,11,Function_11,0x6BB..0x1BE7
+5538,0x15A2,HudSceneOffline,unknown,5536,0x15A0,11,Function_11,0x6BB..0x1BE7
+5559,0x15B7,MissionFailedMenu,likely logic anchor,5557,0x15B5,11,Function_11,0x6BB..0x1BE7
+5591,0x15D7,Param,unknown,5589,0x15D5,11,Function_11,0x6BB..0x1BE7
+5599,0x15DF,cancelMission,likely logic anchor,5597,0x15DD,11,Function_11,0x6BB..0x1BE7
+5621,0x15F5,Mission_Failed_Cancel_Confirmation_Popup,likely logic anchor,5619,0x15F3,11,Function_11,0x6BB..0x1BE7
+5667,0x1623,Selected CANCEL MISSION,likely logic anchor,5665,0x1621,11,Function_11,0x6BB..0x1BE7
+5769,0x1689,Param,unknown,5767,0x1687,11,Function_11,0x6BB..0x1BE7
+5777,0x1691,InTransitionComplete,unknown,5775,0x168F,11,Function_11,0x6BB..0x1BE7
+5806,0x16AE,MissionFailedPrompts,likely logic anchor,5804,0x16AC,11,Function_11,0x6BB..0x1BE7
+5865,0x16E9,Showing Experience Mode Prompt Screen!,debug/display text,5863,0x16E7,11,Function_11,0x6BB..0x1BE7
+5912,0x1718,MissionFailed_Casual,likely logic anchor,5910,0x1716,11,Function_11,0x6BB..0x1BE7
+5941,0x1735,MissionFailed_Casual,likely logic anchor,5939,0x1733,11,Function_11,0x6BB..0x1BE7
+5973,0x1755,Param,unknown,5971,0x1753,11,Function_11,0x6BB..0x1BE7
+5981,0x175D,ExperienceChange_Yes,unknown,5979,0x175B,11,Function_11,0x6BB..0x1BE7
+6022,0x1786,ExperienceChange,unknown,6020,0x1784,11,Function_11,0x6BB..0x1BE7
+6044,0x179C,MissionFailed_Casual,likely logic anchor,6042,0x179A,11,Function_11,0x6BB..0x1BE7
+6076,0x17BC,Param,unknown,6074,0x17BA,11,Function_11,0x6BB..0x1BE7
+6084,0x17C4,ExperienceChange_No,unknown,6082,0x17C2,11,Function_11,0x6BB..0x1BE7
+6112,0x17E0,ExperienceChange,unknown,6110,0x17DE,11,Function_11,0x6BB..0x1BE7
+6134,0x17F6,ExperienceChangeDenied,unknown,6132,0x17F4,11,Function_11,0x6BB..0x1BE7
+6162,0x1812,ExperienceChange,unknown,6160,0x1810,11,Function_11,0x6BB..0x1BE7
+6187,0x182B,Wanted_Poster,likely logic anchor,6185,0x1829,11,Function_11,0x6BB..0x1BE7
+6212,0x1844,Param,unknown,6210,0x1842,11,Function_11,0x6BB..0x1BE7
+6220,0x184C,cancel,unknown,6218,0x184A,11,Function_11,0x6BB..0x1BE7
+6235,0x185B,Wanted_Poster,likely logic anchor,6233,0x1859,11,Function_11,0x6BB..0x1BE7
+6257,0x1871,DeathScreen,unknown,6255,0x186F,11,Function_11,0x6BB..0x1BE7
+6280,0x1888,Param,unknown,6278,0x1886,11,Function_11,0x6BB..0x1BE7
+6288,0x1890,InTransitionComplete,unknown,6286,0x188E,11,Function_11,0x6BB..0x1BE7
+6433,0x1921,SaveMenuScene,unknown,6431,0x191F,11,Function_11,0x6BB..0x1BE7
+6458,0x193A,Param,unknown,6456,0x1938,11,Function_11,0x6BB..0x1BE7
+6466,0x1942,fileSaveInSelectedSlotBeginNew,unknown,6464,0x1940,11,Function_11,0x6BB..0x1BE7
+6505,0x1969,Param,unknown,6503,0x1967,11,Function_11,0x6BB..0x1BE7
+6513,0x1971,fileSaveInSelectedSlotBeginOverwrite,unknown,6511,0x196F,11,Function_11,0x6BB..0x1BE7
+6642,0x19F2,Param,unknown,6640,0x19F0,11,Function_11,0x6BB..0x1BE7
+6650,0x19FA,fileSaveInSelectedSlotBeginOverwrite,unknown,6648,0x19F8,11,Function_11,0x6BB..0x1BE7
+6695,0x1A27,fileSaveInSelectedSlotOverwrite,unknown,6693,0x1A25,11,Function_11,0x6BB..0x1BE7
+6735,0x1A4F,fileSaveInSelectedSlotNew,unknown,6733,0x1A4D,11,Function_11,0x6BB..0x1BE7
+6772,0x1A74,Param,unknown,6770,0x1A72,11,Function_11,0x6BB..0x1BE7
+6780,0x1A7C,fileSelectedSaveSuccess,unknown,6778,0x1A7A,11,Function_11,0x6BB..0x1BE7
+6812,0x1A9C,Param,unknown,6810,0x1A9A,11,Function_11,0x6BB..0x1BE7
+6820,0x1AA4,CancelSave,unknown,6818,0x1AA2,11,Function_11,0x6BB..0x1BE7
+6840,0x1AB8,Param,unknown,6838,0x1AB6,11,Function_11,0x6BB..0x1BE7
+6848,0x1AC0,fileNoSaveEvent,event/task name,6846,0x1ABE,11,Function_11,0x6BB..0x1BE7
+6945,0x1B21,No valid wake up flag found!,debug/display text,6943,0x1B1F,11,Function_11,0x6BB..0x1BE7
+7034,0x1B7A,SaveMenuScene,unknown,7032,0x1B78,11,Function_11,0x6BB..0x1BE7
+7067,0x1B9B,Param,unknown,7065,0x1B99,11,Function_11,0x6BB..0x1BE7
+7075,0x1BA3,fileSelectedSaveSuccess,unknown,7073,0x1BA1,11,Function_11,0x6BB..0x1BE7
+7116,0x1BCC,Cutscenes,unknown,7114,0x1BCA,11,Function_11,0x6BB..0x1BE7
+7154,0x1BF2,CanSaveNowCamp,unknown,7152,0x1BF0,12,Function_12,0x1BE7..0x1CFD
+7181,0x1C0D,CanSaveNowCamp,unknown,7179,0x1C0B,12,Function_12,0x1BE7..0x1CFD
+7206,0x1C26,CanSaveNowBed,unknown,7204,0x1C24,12,Function_12,0x1BE7..0x1CFD
+7232,0x1C40,CanSaveNowBed,unknown,7230,0x1C3E,12,Function_12,0x1BE7..0x1CFD
+7256,0x1C58,SAVE_restartFlag,unknown,7254,0x1C56,12,Function_12,0x1BE7..0x1CFD
+7285,0x1C75,SAVE_restartFlag,unknown,7283,0x1C73,12,Function_12,0x1BE7..0x1CFD
+7312,0x1C90,CanSaveNowAutoSave,unknown,7310,0x1C8E,12,Function_12,0x1BE7..0x1CFD
+7343,0x1CAF,CanSaveNowAutoSave,unknown,7341,0x1CAD,12,Function_12,0x1BE7..0x1CFD
+7372,0x1CCC,bPlayerSleeping,unknown,7370,0x1CCA,12,Function_12,0x1BE7..0x1CFD
+7400,0x1CE8,bPlayerSleeping,unknown,7398,0x1CE6,12,Function_12,0x1BE7..0x1CFD
+7895,0x1ED7,"For whatever reason, the system thinks we have more than 50 completed quests. This is bad, since the array we save them in only has 20 elements. Capping it and saving. Your save may not include all of the things you like in it.",debug/display text,7893,0x1ED5,17,Function_17,0x1E97..0x202A
+8298,0x206A,"For whatever reason, the system thinks we have more than 20 active quests. This is bad, since the array we save them in only has 20 elements. Capping it and saving. Your save may not include all of the things you like in it.",debug/display text,8296,0x2068,18,Function_18,0x202A..0x21E3
+9237,0x2415,fav_non,unknown,9235,0x2413,21,Function_21,0x240E..0x24B5
+9376,0x24A0,fwep_,unknown,9374,0x249E,21,Function_21,0x240E..0x24B5
+9416,0x24C8,STAT_SET_VALUE_AS_INT_NOW: Attempting to use a Stat out of bounds.,debug/display text,9414,0x24C6,22,Function_22,0x24B5..0x2751
+9503,0x251F,STAT_SET_VALUE_AS_INT_NOW: You cannot set value of this STAT_TYPE_LIFETIME directly: ,debug/display text,9501,0x251D,22,Function_22,0x24B5..0x2751
+9607,0x2587,"STAT_SET_VALUE_AS_INT_NOW: You cannot set value of a STAT_TYPE_LIFETIME directly, use the COLLECTION version instead!",debug/display text,9605,0x2585,22,Function_22,0x24B5..0x2751
+9745,0x2611,STAT_SET_VALUE_AS_INT_NOW: You cannot set value of this STAT_TYPE_COLLECTIBLE directly: ,debug/display text,9743,0x260F,22,Function_22,0x24B5..0x2751
+9852,0x267C,"STAT_SET_VALUE_AS_INT_NOW: You cannot set value of a STAT_TYPE_COLLECTIBLE directly, only increase and decrease operations are allowed",debug/display text,9850,0x267A,22,Function_22,0x24B5..0x2751
+10101,0x2775,,unknown,10099,0x2773,23,Function_23,0x2751..0x2D8F
+10126,0x278E,+,unknown,10124,0x278C,23,Function_23,0x2751..0x2D8F
+10137,0x2799,-,unknown,10135,0x2797,23,Function_23,0x2751..0x2D8F
+10199,0x27D7,$,unknown,10197,0x27D5,23,Function_23,0x2751..0x2D8F
+10284,0x282C,,unknown,10282,0x282A,23,Function_23,0x2751..0x2D8F
+10312,0x2848, lbs,debug/display text,10310,0x2846,23,Function_23,0x2751..0x2D8F
+10377,0x2889, ton,debug/display text,10375,0x2887,23,Function_23,0x2751..0x2D8F
+10531,0x2923, days,debug/display text,10529,0x2921,23,Function_23,0x2751..0x2D8F
+10553,0x2939, day,debug/display text,10551,0x2937,23,Function_23,0x2751..0x2D8F
+10585,0x2959, ,debug/display text,10583,0x2957,23,Function_23,0x2751..0x2D8F
+10616,0x2978, hr,debug/display text,10614,0x2976,23,Function_23,0x2751..0x2D8F
+10647,0x2997, ,debug/display text,10645,0x2995,23,Function_23,0x2751..0x2D8F
+10678,0x29B6, min,debug/display text,10676,0x29B4,23,Function_23,0x2751..0x2D8F
+10710,0x29D6, ,debug/display text,10708,0x29D4,23,Function_23,0x2751..0x2D8F
+10741,0x29F5, sec,debug/display text,10739,0x29F3,23,Function_23,0x2751..0x2D8F
+10781,0x2A1D, min,debug/display text,10779,0x2A1B,23,Function_23,0x2751..0x2D8F
+10820,0x2A44, ,debug/display text,10818,0x2A42,23,Function_23,0x2751..0x2D8F
+10851,0x2A63, sec,debug/display text,10849,0x2A61,23,Function_23,0x2751..0x2D8F
+10886,0x2A86, sec,debug/display text,10884,0x2A84,23,Function_23,0x2751..0x2D8F
+11022,0x2B0E, mi,debug/display text,11020,0x2B0C,23,Function_23,0x2751..0x2D8F
+11042,0x2B22, ft,debug/display text,11040,0x2B20,23,Function_23,0x2751..0x2D8F
+11139,0x2B83, days,debug/display text,11137,0x2B81,23,Function_23,0x2751..0x2D8F
+11161,0x2B99, day,debug/display text,11159,0x2B97,23,Function_23,0x2751..0x2D8F
+11190,0x2BB6,stat_of,unknown,11188,0x2BB4,23,Function_23,0x2751..0x2D8F
+11421,0x2C9D,,unknown,11419,0x2C9B,23,Function_23,0x2751..0x2D8F
+11479,0x2CD7,Common_Null,unknown,11477,0x2CD5,23,Function_23,0x2751..0x2D8F
+11540,0x2D14,,unknown,11538,0x2D12,23,Function_23,0x2751..0x2D8F
+11602,0x2D52,,unknown,11600,0x2D50,23,Function_23,0x2751..0x2D8F
+11643,0x2D7B,,unknown,11641,0x2D79,23,Function_23,0x2751..0x2D8F
+11708,0x2DBC,lvl_,unknown,11706,0x2DBA,26,Function_26,0x2DA9..0x2EA0
+11727,0x2DCF,_icon,unknown,11725,0x2DCD,26,Function_26,0x2DA9..0x2EA0
+11750,0x2DE6,icon_prestige_award_,unknown,11748,0x2DE4,26,Function_26,0x2DA9..0x2EA0
+11794,0x2E12,icon_prestige_,unknown,11792,0x2E10,26,Function_26,0x2DA9..0x2EA0
+11842,0x2E42,icon_prestige_award_4,unknown,11840,0x2E40,26,Function_26,0x2DA9..0x2EA0
+11873,0x2E61,icon_prestige_award_,unknown,11871,0x2E5F,26,Function_26,0x2DA9..0x2EA0
+11917,0x2E8D,_color,unknown,11915,0x2E8B,26,Function_26,0x2DA9..0x2EA0
+12115,0x2F53,STAT_CALCULATE_PROGRESSBAR_VALUES: STAT_INVALID,debug/display text,12113,0x2F51,31,Function_31,0x2F46..0x307A
+12448,0x30A0,STAT_GET_VALUE: STAT_INVALID,debug/display text,12446,0x309E,33,Function_33,0x3089..0x30C2
+12495,0x30CF,STAT_GET_MAX_VALUE: STAT_INVALID,debug/display text,12493,0x30CD,34,Function_34,0x30C2..0x30FF
+12584,0x3128,STAT_CHECK_RANGES: Attempting to decrement a STAT out of its fMaxRange - ,debug/display text,12582,0x3126,35,Function_35,0x30FF..0x3299
+12676,0x3184,STAT_CHECK_RANGES: Attempting to increment a STAT out of its fMaxRange,debug/display text,12674,0x3182,35,Function_35,0x30FF..0x3299
+12786,0x31F2,STAT_CHECK_RANGES: Attempting to decrement a STAT out of its fMinRange - ,debug/display text,12784,0x31F0,35,Function_35,0x30FF..0x3299
+12878,0x324E,STAT_CHECK_RANGES: Attempting to decrement a STAT out of its fMinRange,debug/display text,12876,0x324C,35,Function_35,0x30FF..0x3299
+12972,0x32AC,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to use a Stat out of bounds.,debug/display text,12970,0x32AA,36,Function_36,0x3299..0x34DD
+13080,0x3318,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to use a LifetimeStat out of bounds.,debug/display text,13078,0x3316,36,Function_36,0x3299..0x34DD
+13275,0x33DB,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to increment a LifetimeStat out of its fMaxRange.,debug/display text,13273,0x33D9,36,Function_36,0x3299..0x34DD
+13421,0x346D,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to decrement a LifetimeStat out of its fMinRange.,debug/display text,13419,0x346B,36,Function_36,0x3299..0x34DD
+13546,0x34EA,STAT_GET_VALUE_AS_INT: STAT_INVALID,debug/display text,13544,0x34E8,37,Function_37,0x34DD..0x351E
+13605,0x3525,fav_non,unknown,13603,0x3523,38,Function_38,0x351E..0x35A7
+13711,0x358F,fwep_,unknown,13709,0x358D,38,Function_38,0x351E..0x35A7
+13742,0x35AE,fav_non,unknown,13740,0x35AC,39,Function_39,0x35A7..0x363E
+13862,0x3626,fwep_,unknown,13860,0x3624,39,Function_39,0x35A7..0x363E
+13893,0x3645,fav_non,unknown,13891,0x3643,40,Function_40,0x363E..0x36BD
+13992,0x36A8,fwep_,unknown,13990,0x36A6,40,Function_40,0x363E..0x36BD
+14093,0x370D,STAT_INCREASE_NOW: Attempting to use a Stat out of bounds.,debug/display text,14091,0x370B,42,Function_42,0x36FA..0x3906
+14172,0x375C,STAT_INCREASE_NOW: You cannot increase this STAT_TYPE_LIFETIME directly: ,debug/display text,14170,0x375A,42,Function_42,0x36FA..0x3906
+14264,0x37B8,"STAT_INCREASE_NOW: You cannot increase a STAT_TYPE_LIFETIME directly, use the COLLECTION version instead!",debug/display text,14262,0x37B6,42,Function_42,0x36FA..0x3906
+14384,0x3830,STAT_INCREASE_NOW: fIncreaseValue < 0.0 - I am turning this into a positive number for you!,debug/display text,14382,0x382E,42,Function_42,0x36FA..0x3906
+14723,0x3983,SAVE_restartFlag,unknown,14721,0x3981,45,Function_45,0x3978..0x39B8
+14752,0x39A0,SAVE_restartFlag,unknown,14750,0x399E,45,Function_45,0x3978..0x39B8
+15388,0x3C1C,HAS_GET_GAME_EDITION,unknown,15386,0x3C1A,54,Function_54,0x3C15..0x3C40
+15674,0x3D3A,miss,unknown,15672,0x3D38,62,Function_62,0x3D2C..0x3D66
+15688,0x3D48,ziss,unknown,15686,0x3D46,62,Function_62,0x3D2C..0x3D66
+15705,0x3D59,d,unknown,15703,0x3D57,62,Function_62,0x3D2C..0x3D66
+15824,0x3DD0,STAT_INCREASE_INT_NOW: Attempting to use a Stat out of bounds.,debug/display text,15822,0x3DCE,65,Function_65,0x3DBD..0x3FE5
+15909,0x3E25,STAT_INCREASE_INT_NOW: You cannot increase this STAT_TYPE_LIFETIME directly: ,debug/display text,15907,0x3E23,65,Function_65,0x3DBD..0x3FE5
+16005,0x3E85,"STAT_INCREASE_INT_NOW: You cannot increase a STAT_TYPE_LIFETIME directly, use the COLLECTION version instead!",debug/display text,16003,0x3E83,65,Function_65,0x3DBD..0x3FE5
+16130,0x3F02,STAT_INCREASE_INT_NOW: iIncreaseValue < 0 - I am turning this into a positive number for you!,debug/display text,16128,0x3F00,65,Function_65,0x3DBD..0x3FE5
+16590,0x40CE,MissionFailed_Retry,likely logic anchor,16588,0x40CC,67,Function_67,0x40C7..0x412E
+16612,0x40E4,DeathScreen_Restart,unknown,16610,0x40E2,67,Function_67,0x40C7..0x412E
+16637,0x40FD,MissionFailed_Cancel,likely logic anchor,16635,0x40FB,67,Function_67,0x40C7..0x412E
+16663,0x4117,MissionFailed_Jump,likely logic anchor,16661,0x4115,67,Function_67,0x40C7..0x412E
+16741,0x4165,roam,unknown,16739,0x4163,68,Function_68,0x412E..0x4260
+16754,0x4172,interior,unknown,16752,0x4170,68,Function_68,0x412E..0x4260
+16771,0x4183,horse,unknown,16769,0x4181,68,Function_68,0x412E..0x4260
+16785,0x4191,wagonDefault,unknown,16783,0x418F,68,Function_68,0x412E..0x4260
+16806,0x41A6,wagonShotgun,unknown,16804,0x41A4,68,Function_68,0x412E..0x4260
+16827,0x41BB,wagonShotgun,unknown,16825,0x41B9,68,Function_68,0x412E..0x4260
+16848,0x41D0,GET_GAME_CAMERA_RESET_POSITION_HELPER called with position ,debug/display text,16846,0x41CE,68,Function_68,0x412E..0x4260
+16920,0x4218, and heading ,debug/display text,16918,0x4216,68,Function_68,0x412E..0x4260
+16944,0x4230, and with arc ,debug/display text,16942,0x422E,68,Function_68,0x412E..0x4260
+17016,0x4278,Jump position: ,debug/display text,17014,0x4276,69,Function_69,0x4260..0x42AE
+17077,0x42B5,fav_non,unknown,17075,0x42B3,70,Function_70,0x42AE..0x42DF
+17252,0x4364,gMPScratchLayout,unknown,17250,0x4362,73,Function_73,0x4351..0x4383
+17291,0x438B,SaveLoad,unknown,17289,0x4389,74,Function_74,0x4383..0x440D
+17302,0x4396,"Multiplayer Save Triggered, will be picked up by Multiplayer_update_thread soon enough",debug/display text,17300,0x4394,74,Function_74,0x4383..0x440D
+17521,0x4471,Param,unknown,17519,0x446F,80,Function_80,0x445C..0x4582
+17529,0x4479,LaunchAvatarPicker,unknown,17527,0x4477,80,Function_80,0x445C..0x4582
+17565,0x449D,Param,unknown,17563,0x449B,80,Function_80,0x445C..0x4582
+17573,0x44A5,RequestPosseTeleport,unknown,17571,0x44A3,80,Function_80,0x445C..0x4582
+17611,0x44CB,Param,unknown,17609,0x44C9,80,Function_80,0x445C..0x4582
+17619,0x44D3,net.RequestHardSave,unknown,17617,0x44D1,80,Function_80,0x445C..0x4582
+17661,0x44FD,Param,unknown,17659,0x44FB,80,Function_80,0x445C..0x4582
+17669,0x4505,RequestFRDTeleport,unknown,17667,0x4503,80,Function_80,0x445C..0x4582
+18246,0x4746,"$����B���#,���`���p�9���'fg$;2mB�G��k�������2����8n�(^A��j�sV��>G%���BX�?�c����f]����j��NY��$o����9�B����� _X��z��� ���=��H�m����l���Z=j�=�1_����D�L",debug/display text,18244,0x4744,86,"������9�������1Ng��~��c J\��%��l���d�����3b��k��2�4�gag���`\�N\g����2&b����_",0x4657..0x5000
