@@ -1,0 +1,58 @@
+<scxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://t:\mc4\assets\tune\ui\scxml_mc4.xsd">
+  <!--
+  arg0: id 
+  arg1: features
+  arg2: playmode
+  -->
+  <data name="alert"></data>
+  <data name="priority"></data>
+  <data name="description" expr="mp_newgame_conf"></data>
+  <ifdef expr="ULTIMATE_1">
+    <data name="description" expr="mp_enter_warning_wrongdisc"></data>
+  </ifdef>
+
+  <onshow expr="NetMachine.ResetNewGameWarning(arg2)"></onshow>
+
+  <transition event="auth.fail_NotSignedIn">
+    <action expr="Exit(arg0)"></action>
+    <action expr="NetAlert_NotSignedIn"></action>
+  </transition>
+  <transition event="auth.fail_NoCable">
+    <action expr="Exit(arg0)"></action>
+    <action expr="NetAlert_NoCable"></action>
+  </transition>
+  <transition event="auth.fail_NotOnline">
+    <action expr="Exit(arg0)"></action>
+    <action expr="NetAlert_NotOnline"></action>
+  </transition>
+  <transition event="auth.fail_Privileges">
+    <action expr="Exit(arg0)"></action>
+    <action expr="NetAlert_BlockedMP"></action>
+  </transition>
+  <transition event="auth.success_NoComm" target="NetAlert_NoComm"></transition>
+
+  <ifdef expr="ULTIMATE_1">
+    <transition event="auth.fail_WrongDisc">
+      <action expr="Exit(arg0)"           ></action>
+      <action expr="Enter(NetConf_JoinWishWrongDisc)" ></action>
+    </transition>
+  </ifdef>
+
+  <transition event="auth.success" consume="false">
+    <!-- NOTE: Fight the urge to put a call to Enter(LoadingScreen) here.  
+        While it fixes a fade in one place, it causes infinite fades in others
+	      If you change this, test the following for fade smoothness:
+		      1.) Using pause menu to enter MP from SP
+		      2.) Accepting an invite to MP from SP
+		      3.) Changing from System Link to an Online mode in MP
+		      4.) Changine from public to private mode from the game lobby
+	    -DANC 12/02/09-->
+    <action expr="Exit(arg0)"></action>
+    <action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>
+  </transition>
+
+  <UIPromptStrip>
+    <UIButton text="Common_Yes" icon="action" target="NetMachine.Authenticate(arg1)"></UIButton>
+    <UIButton text="Common_No" icon="cancel" e_cancel_released="Exit(arg0)"         ></UIButton>
+  </UIPromptStrip> 
+</scxml>
