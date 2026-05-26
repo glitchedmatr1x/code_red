@@ -1,0 +1,73 @@
+{
+  "main": {
+    "source_label": "root/content/release64/main.wsc",
+    "status": "patched",
+    "change_count": 2,
+    "changes": [
+      {
+        "source_label": "root/content/release64/main.wsc",
+        "decoded_offset": 2726,
+        "decoded_offset_hex": "0xAA6",
+        "find": "$/content/multiplayer/multiplayer_update_thread",
+        "replace": "$/content/multiplayer/codered_disabled_thread__",
+        "length": 47,
+        "kind": "full_script_path"
+      },
+      {
+        "source_label": "root/content/release64/main.wsc",
+        "decoded_offset": 14493,
+        "decoded_offset_hex": "0x389D",
+        "find": "multiplayer/multiplayer_update_thread",
+        "replace": "multiplayer/codered_disabled_thread__",
+        "length": 37,
+        "kind": "partial_script_path"
+      }
+    ],
+    "decoded_sha1": "1A6F3710AEE62986DA8D51A5A28BF6E19B75B5DD",
+    "output_sha1": "37F096D1643A6C83022DADAA9EBBFBCC3CAB60D9",
+    "output_size": 75695,
+    "repack": {
+      "fit_mode": "zstd-skippable-padding",
+      "codec": "zstd-level-22-no-content-size",
+      "compressed_size": 75606,
+      "payload_capacity": 75679,
+      "padding_size": 73,
+      "output_size": 75695,
+      "output_sha256": "A92958313BE2A8882789D778682D9D21257CD4A64A8B39A7BDD12548A7F2EC5D",
+      "validate_ok": true,
+      "decoded_sha256": "208FA9F7E9D138D57DA71CA2E93112548D9C9CDC15618A22D0F8A314B5C3D46E"
+    },
+    "codered_reopen_ok": true
+  },
+  "rdr2init": {
+    "source_label": "root/content/release64/init/rdr2init.wsc",
+    "status": "patched",
+    "change_count": 1,
+    "changes": [
+      {
+        "source_label": "root/content/release64/init/rdr2init.wsc",
+        "decoded_offset": 769834,
+        "decoded_offset_hex": "0xBBF2A",
+        "find": "$/content/multiplayer/multiplayer_update_thread",
+        "replace": "$/content/multiplayer/codered_disabled_thread__",
+        "length": 47,
+        "kind": "full_script_path"
+      }
+    ],
+    "decoded_sha1": "268B85269F19233EBEF76D883A9DCF206EEA8D87",
+    "output_sha1": "D27ECDF70719861BBEDEE13ECAA1B900CFF641DF",
+    "output_size": 82585,
+    "repack": {
+      "fit_mode": "zstd-skippable-padding",
+      "codec": "zstd-level-22-no-content-size",
+      "compressed_size": 81702,
+      "payload_capacity": 82569,
+      "padding_size": 867,
+      "output_size": 82585,
+      "output_sha256": "45C9D32D8C87BB039D5EDD4576739A83ECA1A3A3BA8AE9F0142DC1461BF651AD",
+      "validate_ok": true,
+      "decoded_sha256": "B2B2E3AB8FFD6B8ABE79A20425D3B4C874EAD150823C4F8AB70DBB5ED0D5E086"
+    },
+    "codered_reopen_ok": true
+  }
+}

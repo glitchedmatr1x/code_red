@@ -1,0 +1,5 @@
+variant,status,output,sha1,notes,entry_count
+V0_zip_as_is_control,pass,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\variants\V0_zip_as_is_control\content.rpf,970BFC26D438CBBDB453BC82ADB0F6AC89DA789F,Direct copy of content zombie mp loading zip content.rpf.,1715
+V1_profile_editor_direct,pass,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\variants\V1_profile_editor_direct\content.rpf,45C7C84E695E150149F35A2C12DFBF6AEB033D39,Avatar picker tab directly enters MP_ProfileEditor and includes ../net/profileeditor/main.sc.xml.,1715
+V2_online_hudscene_direct,pass,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\variants\V2_online_hudscene_direct\content.rpf,8DD5750327AD737F7EE1269FBE05ABBA4E6D1389,Adds a pause-menu CodeRED online HUD label and includes ../net/hudsceneonline.sc.xml.,1715
+V3_profile_plus_hudscene,pass,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\variants\V3_profile_plus_hudscene\content.rpf,CFDD0AC7ED5EE057F66571E04E0F326C52B8DE9C,Combines direct MP_ProfileEditor route with direct HudSceneOnline route.,1715

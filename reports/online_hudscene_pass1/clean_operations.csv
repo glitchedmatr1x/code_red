@@ -1,0 +1,6 @@
+variant,archive_path,local_file,result,decoded_size,stored_size,compressed
+C1_visible_network_only,root/content/ui/pausemenu/pausemenuscene.sc.xml,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\clean_patched_xml\pausemenuscene_visible_network.sc.xml,replace,16586,2867,True
+C2_avatar_send_event,root/content/ui/pausemenu/pausemenuscene.sc.xml,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\clean_patched_xml\pausemenuscene_visible_network.sc.xml,replace,16586,2867,True
+C2_avatar_send_event,root/content/ui/pausemenu/networking.sc.xml,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\clean_patched_xml\networking_offline_avatar_send_event.sc.xml,replace,15997,3126,True
+C3_avatar_goto,root/content/ui/pausemenu/pausemenuscene.sc.xml,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\clean_patched_xml\pausemenuscene_visible_network.sc.xml,replace,16586,2867,True
+C3_avatar_goto,root/content/ui/pausemenu/networking.sc.xml,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\clean_patched_xml\networking_offline_avatar_goto.sc.xml,replace,15995,3125,True

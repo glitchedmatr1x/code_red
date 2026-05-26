@@ -1,0 +1,5 @@
+variant,status,output,sha1,notes,entry_count
+C0_clean_copy_control,pass,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\clean_base_variants\C0_clean_copy_control\content.rpf,E063FBEC79941AD2CA2504BA616596B1BB332B49,Direct copy of clean stock content.rpf.,1636
+C1_visible_network_only,pass,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\clean_base_variants\C1_visible_network_only\content.rpf,2A0C83A61048EC42F486E857D9C2496D1DD1392D,Only exposes the existing NetworkingLayerOffline parent route from the pause menu.,1636
+C2_avatar_send_event,pass,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\clean_base_variants\C2_avatar_send_event\content.rpf,A2DDFFDD6FA975AAC55B4ABE9D14D3EF4A852842,Adds an offline networking avatar button that sends LaunchAvatarPicker; no new includes.,1636
+C3_avatar_goto,pass,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\clean_base_variants\C3_avatar_goto\content.rpf,A18584A1C1FA68D4272C5EB5FBEFA7CB66D02756,Adds an offline networking avatar button that goto(NetConf_AvatarPicker); no new includes.,1636

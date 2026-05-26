@@ -1,0 +1,107 @@
+{
+  "generated_at": "2026-05-25 14:10:07",
+  "clean_rpf": "D:\\Games\\Red Dead Redemption\\game\\clean\\content.rpf",
+  "clean_sha1": "E063FBEC79941AD2CA2504BA616596B1BB332B49",
+  "variants": [
+    {
+      "variant": "C0_clean_copy_control",
+      "status": "pass",
+      "output": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_base_variants\\C0_clean_copy_control\\content.rpf",
+      "sha1": "E063FBEC79941AD2CA2504BA616596B1BB332B49",
+      "notes": "Direct copy of clean stock content.rpf.",
+      "entry_count": 1636,
+      "operations": []
+    },
+    {
+      "variant": "C1_visible_network_only",
+      "status": "pass",
+      "output": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_base_variants\\C1_visible_network_only\\content.rpf",
+      "sha1": "2A0C83A61048EC42F486E857D9C2496D1DD1392D",
+      "notes": "Only exposes the existing NetworkingLayerOffline parent route from the pause menu.",
+      "entry_count": 1636,
+      "operations": [
+        {
+          "archive_path": "root/content/ui/pausemenu/pausemenuscene.sc.xml",
+          "local_file": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_patched_xml\\pausemenuscene_visible_network.sc.xml",
+          "result": "replace",
+          "decoded_size": 16586,
+          "stored_size": 2867,
+          "compressed": true
+        }
+      ]
+    },
+    {
+      "variant": "C2_avatar_send_event",
+      "status": "pass",
+      "output": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_base_variants\\C2_avatar_send_event\\content.rpf",
+      "sha1": "A2DDFFDD6FA975AAC55B4ABE9D14D3EF4A852842",
+      "notes": "Adds an offline networking avatar button that sends LaunchAvatarPicker; no new includes.",
+      "entry_count": 1636,
+      "operations": [
+        {
+          "archive_path": "root/content/ui/pausemenu/pausemenuscene.sc.xml",
+          "local_file": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_patched_xml\\pausemenuscene_visible_network.sc.xml",
+          "result": "replace",
+          "decoded_size": 16586,
+          "stored_size": 2867,
+          "compressed": true
+        },
+        {
+          "archive_path": "root/content/ui/pausemenu/networking.sc.xml",
+          "local_file": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_patched_xml\\networking_offline_avatar_send_event.sc.xml",
+          "result": "replace",
+          "decoded_size": 15997,
+          "stored_size": 3126,
+          "compressed": true
+        }
+      ]
+    },
+    {
+      "variant": "C3_avatar_goto",
+      "status": "pass",
+      "output": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_base_variants\\C3_avatar_goto\\content.rpf",
+      "sha1": "A18584A1C1FA68D4272C5EB5FBEFA7CB66D02756",
+      "notes": "Adds an offline networking avatar button that goto(NetConf_AvatarPicker); no new includes.",
+      "entry_count": 1636,
+      "operations": [
+        {
+          "archive_path": "root/content/ui/pausemenu/pausemenuscene.sc.xml",
+          "local_file": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_patched_xml\\pausemenuscene_visible_network.sc.xml",
+          "result": "replace",
+          "decoded_size": 16586,
+          "stored_size": 2867,
+          "compressed": true
+        },
+        {
+          "archive_path": "root/content/ui/pausemenu/networking.sc.xml",
+          "local_file": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_patched_xml\\networking_offline_avatar_goto.sc.xml",
+          "result": "replace",
+          "decoded_size": 15995,
+          "stored_size": 3125,
+          "compressed": true
+        }
+      ]
+    }
+  ],
+  "xml_validation": [
+    {
+      "file": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_patched_xml\\pausemenuscene_visible_network.sc.xml",
+      "xml_parse": "ok",
+      "sha1": "60E153B4F0EB38D7C3A50489C32A98656D907821",
+      "size": 16586
+    },
+    {
+      "file": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_patched_xml\\networking_offline_avatar_send_event.sc.xml",
+      "xml_parse": "ok",
+      "sha1": "C5C477635568A64ABADE43BC38CB27D1A16C73BE",
+      "size": 15997
+    },
+    {
+      "file": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\online_hudscene_pass1\\clean_patched_xml\\networking_offline_avatar_goto.sc.xml",
+      "xml_parse": "ok",
+      "sha1": "8678B4741E7B44ED9E2C7EB93879057ACB4944D6",
+      "size": 15995
+    }
+  ],
+  "live_content_rpf_edited": false
+}
