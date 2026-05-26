@@ -1,0 +1,11 @@
+{
+  "schema": "codered.bridge.local_player.v1",
+  "source": "CodeRED_Peer_Clone_Game_Bridge_v0_1",
+  "updated_ms": 1779504237977,
+  "x": 348.599,
+  "y": 0,
+  "z": 103.404,
+  "heading": 8.25331,
+  "health": 100,
+  "action": "in_game_bridge"
+}

@@ -1,0 +1,29 @@
+{
+  "family": "RSC85",
+  "normalized_from_xsc": false,
+  "magic_hex": "52 53 43 85",
+  "resource_type": 2,
+  "flag1": 2147483648,
+  "flag2": 2147483673,
+  "header_size": 16,
+  "stored_size": 41594,
+  "payload_size": 41578,
+  "expected_unpacked_size": 102400,
+  "compression": "zstandard",
+  "encryption": "aes-256-ecb-16-pass",
+  "path": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\all_converted_editable_wsc\\playground\\simple_mpplayground.wsc",
+  "source_sha256": "D22DD35281C5DCC33F744D7F5355930F656FD73E89AF1AD4AB2CF07006C94F54",
+  "normalized_sha256": "D22DD35281C5DCC33F744D7F5355930F656FD73E89AF1AD4AB2CF07006C94F54",
+  "decoded_sha256": "9F35470131345AFE895F687A4040A17ACA6CEF1E3EC86674C627E2F44445CF42",
+  "decoded_size": 102400,
+  "key_attempts": [
+    {
+      "method": "rdr_exe",
+      "path": "D:\\Games\\Red Dead Redemption\\RDR.exe",
+      "exists": true,
+      "offset": "0x2293500",
+      "key_sha1": "87862497EE46855372B51C7A324A2BB5CD66F4AF"
+    }
+  ],
+  "decode_error": ""
+}

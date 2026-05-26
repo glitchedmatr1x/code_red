@@ -1,0 +1,13 @@
+index,name,offset,offset_hex,body_offset,parameters,locals,enter_name_length,end_hint
+0,Function_0,48,0x30,53,0,12,0,621
+1,Function_1,621,0x26D,626,0,2,0,642
+2,Function_2,642,0x282,647,0,2,0,714
+3,Function_3,714,0x2CA,719,0,2,0,786
+4,Function_4,786,0x312,791,6,13,0,905
+5,Function_5,905,0x389,910,1,7,0,968
+6,Function_6,968,0x3C8,973,0,2,0,995
+7,Function_7,995,0x3E3,1000,2,4,0,1008
+8,Function_8,1008,0x3F0,1013,3,12,0,1095
+9,Function_9,1095,0x447,1100,2,6,0,1163
+10,Function_10,1163,0x48B,1168,4,9,0,1405
+11,Function_11,1405,0x57D,1410,0,2,0,

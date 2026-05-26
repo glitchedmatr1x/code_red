@@ -1,0 +1,120 @@
+offset,offset_hex,length,text,population_term,string_class
+43,0x2B,18,Multiplayer Online,,debug/display text
+69,0x45,23,blk_saloon_int_Props01x,,unknown
+98,0x62,18,blk_saloon_int_01x,,unknown
+122,0x7A,11,tes_wall02x,,unknown
+139,0x8B,15,mp_tes_coop01ax,,unknown
+160,0xA0,15,mp_tes_coop01bx,,unknown
+181,0xB5,15,mp_tes_coop01cx,,unknown
+202,0xCA,14,mp_tes_coop02x,,unknown
+222,0xDE,14,mp_tes_base01x,,unknown
+242,0xF2,17,mp_gap_mineLid01x,,unknown
+265,0x109,14,mp_fom_coop01x,,unknown
+285,0x11D,21,mp_fom_burntDebris01x,,unknown
+312,0x138,14,mp_wld_base03x,,unknown
+332,0x14C,15,mp_nos_coop01ax,,unknown
+353,0x161,15,mp_nos_coop01bx,,unknown
+374,0x176,15,mp_nos_coop01cx,,unknown
+395,0x18B,15,mp_nos_coop01dx,,unknown
+416,0x1A0,15,mp_nos_coop01ex,,unknown
+437,0x1B5,14,mp_scr_coop01x,,unknown
+457,0x1C9,12,arm_flags01x,,unknown
+475,0x1DB,12,chu_flags01x,,unknown
+493,0x1ED,12,esc_flags01x,,unknown
+511,0x1FF,12,han_flags01x,,unknown
+529,0x211,12,hen_flags01x,,unknown
+547,0x223,12,mtp_flags01x,,unknown
+565,0x235,14,mp_arm_base01x,,unknown
+585,0x249,14,mp_cas_base01x,,unknown
+605,0x25D,14,mp_pik_base01x,,unknown
+625,0x271,14,mp_tes_base01x,,unknown
+645,0x285,14,mp_tum_base01x,,unknown
+665,0x299,13,mp_arm_ffa01x,,unknown
+684,0x2AC,13,mp_chu_ffa01x,,unknown
+703,0x2BF,13,mp_esc_ffa01x,,unknown
+722,0x2D2,13,mp_hen_ffa01x,,unknown
+741,0x2E5,13,mp_lsh_ffa01x,,unknown
+760,0x2F8,13,mp_pik_ffa01x,,unknown
+779,0x30B,13,mp_upr_ffa01x,,unknown
+798,0x31E,19,mp_chu_platforms01x,,unknown
+823,0x337,14,mp_mtp_base01x,,unknown
+843,0x34B,14,mp_fom_base01x,,unknown
+863,0x35F,13,mp_fom_ffa01x,,unknown
+882,0x372,14,mp_wld_base01x,,unknown
+902,0x386,14,mp_chu_base01x,,unknown
+922,0x39A,26,Hiding DLC leaderboards...,,debug/display text
+955,0x3BB,10,LbCat_DLC0,,unknown
+971,0x3CB,10,LbCat_DLC1,,unknown
+987,0x3DB,10,LbCat_DLC2,,unknown
+1003,0x3EB,10,LbCat_DLC3,,unknown
+1019,0x3FB,10,LbCat_DLC4,,unknown
+1035,0x40B,10,LbCat_DLC5,,unknown
+1051,0x41B,10,LbCat_DLC6,,unknown
+1067,0x42B,10,LbCat_DLC7,,unknown
+1088,0x440,13,setupComplete,,unknown
+1111,0x457,15,startScreenExit,,unknown
+1132,0x46C,6,select,,unknown
+1144,0x478,15,net.EnterOnline,,unknown
+1182,0x49E,13,setupComplete,,unknown
+1205,0x4B5,15,startScreenExit,,unknown
+1226,0x4CA,18,simulateStartPress,,unknown
+1286,0x506,57,"o8PressStart.sc - Cache is NOT primed, using fewer shots.",,debug/display text
+1349,0x545,56,";o6PressStart.sc - Cache is primed, all shots available.",,debug/display text
+1538,0x602,12,loadComplete,,unknown
+1556,0x614,13,setupComplete,,unknown
+1703,0x6A7,9,Startpad ,,debug/display text
+1726,0x6BE,16,startPadSelected,,unknown
+1799,0x707,4,asdf,,unknown
+1829,0x725,20,fileDoFreeSpaceCheck,,unknown
+1883,0x75B,25,SaveGame_DoNotInterruptMe,,unknown
+1924,0x784,13,LoadingScreen,,unknown
+1947,0x79B,12,loadComplete,,unknown
+1965,0x7AD,13,setupComplete,,unknown
+2022,0x7E6,23,fileSignedOutPostReboot,,unknown
+2060,0x80C,26,dlc.reboot_content_removed,,unknown
+2107,0x83B,17,SSAlert_BlockedMP,,unknown
+2130,0x852,19,SSAlert_NotSignedIn,,unknown
+2156,0x86C,17,SSAlert_NotOnline,,unknown
+2180,0x884,15,SSAlert_NoCable,,unknown
+2214,0x8A6,10,@UI.ACCEPT,,unknown
+2252,0x8CC,17,SSAlert_BlockedMP,,unknown
+2275,0x8E3,19,SSAlert_NotSignedIn,,unknown
+2300,0x8FC,17,SSAlert_NotOnline,,unknown
+2323,0x913,15,SSAlert_NoCable,,unknown
+2347,0x92B,25,Dialog_PlayerHasSignedOut,,unknown
+2390,0x956,10,@UI.ACCEPT,,unknown
+2428,0x97C,25,Dialog_PlayerHasSignedOut,,unknown
+2487,0x9B7,24,net.EnterOnlineForInvite,,unknown
+2537,0x9E9,34,o!Rebooted for Content controller=,,debug/display text
+2652,0xA5C,5,e`B)?,,debug/display text
+2969,0xB99,4,Z)CR,,unknown
+3009,0xBC1,4,)?|(,,debug/display text
+3155,0xC53,4,#)>L,,unknown
+3297,0xCE1,4,=)>I,,unknown
+3440,0xD70,4,R)>m,,unknown
+3445,0xD75,4,h)??,,debug/display text
+3685,0xE65,5,7L)E4,,unknown
+3866,0xF1A,5,U?})=,,debug/display text
+4115,0x1013,4,7)D],,debug/display text
+4272,0x10B0,8,)A^9X)B&,,unknown
+4295,0x10C7,6,%`B)>u,,debug/display text
+4444,0x115C,4,o)?6,,debug/display text
+4543,0x11BF,5,)E?lR,,debug/display text
+4678,0x1246,12,FB1)B07L)Eh(,,unknown
+4699,0x125B,4,)A?X,,debug/display text
+4724,0x1274,4,^)>S,,unknown
+4730,0x127A,4,)?8Q,,debug/display text
+4822,0x12D6,4,su)B,,unknown
+4827,0x12DB,6,q')EZm,,unknown
+4842,0x12EA,4,)@XQ,,unknown
+4847,0x12EF,4,)BY@,,unknown
+5127,0x1407,4,)AIx,,unknown
+5150,0x141E,9,Z^5)>_;d),,unknown
+5251,0x1483,4,)B2.,,unknown
+5293,0x14AD,4,1')=,,unknown
+5399,0x1517,5,)ExnN,,unknown
+5540,0x15A4,4,y)E),,unknown
+7620,0x1DC4,7,aDoH^.d,,unknown
+7642,0x1DDA,4,;*d@,,unknown
+7686,0x1E06,5,=B9ou,,unknown
+7697,0x1E11,7,j[$3Sx5,,debug/display text

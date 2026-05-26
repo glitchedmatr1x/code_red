@@ -1,0 +1,7 @@
+index,name,offset,offset_hex,body_offset,parameters,locals,enter_name_length,end_hint
+0,Function_0,48,0x30,53,0,2,0,127
+1,Function_1,127,0x7F,132,2,20,0,240
+2,Function_2,240,0xF0,245,7,14,0,363
+3,Function_3,363,0x16B,368,1,7,0,426
+4,Function_4,426,0x1AA,431,0,2,0,453
+5,Function_5,453,0x1C5,458,2,4,0,

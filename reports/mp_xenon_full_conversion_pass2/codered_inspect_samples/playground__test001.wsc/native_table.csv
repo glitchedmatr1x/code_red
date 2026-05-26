@@ -1,0 +1,7 @@
+offset,offset_hex,operand_hex,native_index_bits,returns_flag,param_count_bits
+68,0x44,03 00,3,1,1
+87,0x57,0B 01,267,1,5
+118,0x76,0B 01,267,1,5
+163,0xA3,02 02,514,0,1
+166,0xA6,00 03,768,0,0
+169,0xA9,00 04,1024,0,0

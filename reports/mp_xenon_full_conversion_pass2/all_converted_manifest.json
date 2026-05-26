@@ -1,0 +1,578 @@
+[
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\fort_mercer\\fortmercermp.wsc",
+    "editable_relative": "action_areas/fort_mercer/fortmercermp.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/fort_mercer/fortmercermp.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 28993,
+    "sha1": "D909B5B3C5591C03D15CCC9B9EDFDD4A19EB2F8A"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\gaptooth_breach\\gaptoothbreachmp.wsc",
+    "editable_relative": "action_areas/gaptooth_breach/gaptoothbreachmp.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/gaptooth_breach/gaptoothbreachmp.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 31032,
+    "sha1": "140DF77AB692A600E70B66FABB174C80A7561935"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\genericmp_aa.wsc",
+    "editable_relative": "action_areas/genericmp_aa.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/genericmp_aa.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 2810,
+    "sha1": "F929B4968ECEAA7A6C75A1A9E0CFF8CD8AAA4067"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\nosalida\\nosalidamp.wsc",
+    "editable_relative": "action_areas/nosalida/nosalidamp.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/nosalida/nosalidamp.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 27917,
+    "sha1": "23A6A9F54815FA412460A85C4F459AECB331DA2A"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\pikes_basin\\pikesbasinmp.wsc",
+    "editable_relative": "action_areas/pikes_basin/pikesbasinmp.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/pikes_basin/pikesbasinmp.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 28771,
+    "sha1": "DE70E893D06B72D0441C2E32B9A3C8B3AA5A9FF2"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\solomons_folly\\solomonsfollymp.wsc",
+    "editable_relative": "action_areas/solomons_folly/solomonsfollymp.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/solomons_folly/solomonsfollymp.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 26640,
+    "sha1": "AC212C9737D08E03617AD393BB3A99B755B78989"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\tesoro_azul\\tesoroazulmp.wsc",
+    "editable_relative": "action_areas/tesoro_azul/tesoroazulmp.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/tesoro_azul/tesoroazulmp.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 28522,
+    "sha1": "09C6BEE29B91AE2D5B5DF15B7154ABCD5AC12801"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\tumbleweed\\tumbleweedmp.wsc",
+    "editable_relative": "action_areas/tumbleweed/tumbleweedmp.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/tumbleweed/tumbleweedmp.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 28766,
+    "sha1": "683354A489D659151777BF6A80C06D055B098C33"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\twin_rocks\\twinrocksmp.wsc",
+    "editable_relative": "action_areas/twin_rocks/twinrocksmp.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/twin_rocks/twinrocksmp.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 27632,
+    "sha1": "2192E1909B7007EF2D6F87DA9CE2100AE63C6C3F"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\wilderness\\bearwildernessaa.wsc",
+    "editable_relative": "action_areas/wilderness/bearwildernessaa.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/wilderness/bearwildernessaa.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12670,
+    "sha1": "E29DE0F6038049E93D330F1762289E69A28CD0FA"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\wilderness\\boarwildernessaa.wsc",
+    "editable_relative": "action_areas/wilderness/boarwildernessaa.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/wilderness/boarwildernessaa.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12598,
+    "sha1": "0C8107845B6BA1DEFE102BBF63AB786D718DD4E5"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\wilderness\\cougarwildernessaa.wsc",
+    "editable_relative": "action_areas/wilderness/cougarwildernessaa.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/wilderness/cougarwildernessaa.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12609,
+    "sha1": "75326123AFB9874F39571F8F45A5192182CE98C5"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\action_areas\\wilderness\\wolfwildernessaa.wsc",
+    "editable_relative": "action_areas/wilderness/wolfwildernessaa.wsc",
+    "import_relative": "content/release64/multiplayer/action_areas/wilderness/wolfwildernessaa.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12596,
+    "sha1": "08A4AED06E31C51C59BCFEF8A6D189438292AE61"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\ctf\\ctf_base_game.wsc",
+    "editable_relative": "ctf/ctf_base_game.wsc",
+    "import_relative": "content/release64/multiplayer/ctf/ctf_base_game.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 45643,
+    "sha1": "ECFAEC2531CB933BDE286C2CF2DD41DCBBDBE1D9"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\deathmatch\\deathmatch.wsc",
+    "editable_relative": "deathmatch/deathmatch.wsc",
+    "import_relative": "content/release64/multiplayer/deathmatch/deathmatch.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 34739,
+    "sha1": "318403EA67DECC4E87376D47161B3AB3B693129F"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\deathmatch\\testmatch.wsc",
+    "editable_relative": "deathmatch/testmatch.wsc",
+    "import_relative": "content/release64/multiplayer/deathmatch/testmatch.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 7613,
+    "sha1": "E6535555BABD80346669F5DC5060197D79F7EF04"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\freemode\\freemode.wsc",
+    "editable_relative": "freemode/freemode.wsc",
+    "import_relative": "content/release64/multiplayer/freemode/freemode.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 47932,
+    "sha1": "F2A648E9CD922825E404B58574DF3215CCB69BB6"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\mp_help_barker.wsc",
+    "editable_relative": "mp_help_barker.wsc",
+    "import_relative": "content/release64/multiplayer/mp_help_barker.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 482,
+    "sha1": "8D28716BEA4EEAB3DEDF5FBB0D5447099C3AC4C2"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\mp_idle.wsc",
+    "editable_relative": "mp_idle.wsc",
+    "import_relative": "content/release64/multiplayer/mp_idle.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 41670,
+    "sha1": "93957F823CCB92B254A72AD43F09C5289A9257DB"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\mp_teleport.wsc",
+    "editable_relative": "mp_teleport.wsc",
+    "import_relative": "content/release64/multiplayer/mp_teleport.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 4857,
+    "sha1": "0812A6B68A4F75674FA37F520DAEAC0550EC666F"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\multiplayer_system_thread.wsc",
+    "editable_relative": "multiplayer_system_thread.wsc",
+    "import_relative": "content/release64/multiplayer/multiplayer_system_thread.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 29529,
+    "sha1": "7749E850C76987746BB70EC818BB039B2C6D0143"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\multiplayer_update_thread.wsc",
+    "editable_relative": "multiplayer_update_thread.wsc",
+    "import_relative": "content/release64/multiplayer/multiplayer_update_thread.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 22948,
+    "sha1": "C28C0A26880A6F4B5C8002C75A565685CD15B793"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\playground\\jt_mpplayground.wsc",
+    "editable_relative": "playground/jt_mpplayground.wsc",
+    "import_relative": "content/release64/multiplayer/playground/jt_mpplayground.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 44243,
+    "sha1": "55B0B46F7A9500C85BDBE957827CB936000DEBBF"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\playground\\mpplayground.wsc",
+    "editable_relative": "playground/mpplayground.wsc",
+    "import_relative": "content/release64/multiplayer/playground/mpplayground.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 30584,
+    "sha1": "E926AFB4017DF5C5951DB5E48258F6BB6459531F"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\playground\\simple_mpplayground.wsc",
+    "editable_relative": "playground/simple_mpplayground.wsc",
+    "import_relative": "content/release64/multiplayer/playground/simple_mpplayground.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 41594,
+    "sha1": "CBEA473F8667EF8BB4080D50B0EF7D9D1D3518CC"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\playground\\test001.wsc",
+    "editable_relative": "playground/test001.wsc",
+    "import_relative": "content/release64/multiplayer/playground/test001.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 196,
+    "sha1": "34F665005D1C514ABE665CD5161A0D5F2EBF1FF2"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\pr_multiplayer.wsc",
+    "editable_relative": "pr_multiplayer.wsc",
+    "import_relative": "content/release64/multiplayer/pr_multiplayer.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 14522,
+    "sha1": "E92C01B3463C12455DD18018EF565D4E0B643122"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\coop\\coopbasic.wsc",
+    "editable_relative": "regions/coop/coopbasic.wsc",
+    "import_relative": "content/release64/multiplayer/regions/coop/coopbasic.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 9340,
+    "sha1": "FEACCD1D977513EA40315468110DA9CEB3F4D897"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_arm\\ctf_arm.wsc",
+    "editable_relative": "regions/ctf_arm/ctf_arm.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_arm/ctf_arm.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12684,
+    "sha1": "3A6F6FFE8828F13E14F719C2E8D25C28B40A82FD"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_arm\\ctf_arm_single.wsc",
+    "editable_relative": "regions/ctf_arm/ctf_arm_single.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_arm/ctf_arm_single.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12438,
+    "sha1": "23E9204BBF993E196927279BE8045931089740B4"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_arm\\ctf_arm_sym.wsc",
+    "editable_relative": "regions/ctf_arm/ctf_arm_sym.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_arm/ctf_arm_sym.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12367,
+    "sha1": "F09E8992E0B39676283208746BA5BA260E8C1EDA"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_chu\\ctf_chu.wsc",
+    "editable_relative": "regions/ctf_chu/ctf_chu.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_chu/ctf_chu.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 11424,
+    "sha1": "0E1C43000D703D85B7220CE916ABF1847B741253"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_chu\\ctf_chu_single.wsc",
+    "editable_relative": "regions/ctf_chu/ctf_chu_single.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_chu/ctf_chu_single.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 11447,
+    "sha1": "AA3B011D8156D403CB3252B44567C00A3C7E7528"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_chu\\ctf_chu_sym.wsc",
+    "editable_relative": "regions/ctf_chu/ctf_chu_sym.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_chu/ctf_chu_sym.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 11399,
+    "sha1": "DF404D502A0CADADFCA2FDD4C636FA6B59D73049"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_dzc\\ctf_dzc_sym.wsc",
+    "editable_relative": "regions/ctf_dzc/ctf_dzc_sym.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_dzc/ctf_dzc_sym.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 11737,
+    "sha1": "48AB2B0ACAE44CDB9FFA069CCC9B534EB38E239A"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_hen\\ctf_hen.wsc",
+    "editable_relative": "regions/ctf_hen/ctf_hen.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_hen/ctf_hen.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12297,
+    "sha1": "615CD138A894BB621FBD8D63C1DE0E280A8026EE"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_lsh\\ctf_lsh.wsc",
+    "editable_relative": "regions/ctf_lsh/ctf_lsh.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_lsh/ctf_lsh.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 13278,
+    "sha1": "817F106D394F010B120C8DC5526C05C67A8935EB"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_lsh\\ctf_lsh_sym.wsc",
+    "editable_relative": "regions/ctf_lsh/ctf_lsh_sym.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_lsh/ctf_lsh_sym.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 11387,
+    "sha1": "27F7EE0B3B61780F3D295FCCC6968630952CACA6"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_tes\\ctf_tes_single.wsc",
+    "editable_relative": "regions/ctf_tes/ctf_tes_single.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_tes/ctf_tes_single.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 10769,
+    "sha1": "1810B155C9C03C91F6B90CD7A39962E602270F53"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_tes\\ctf_tes_sym.wsc",
+    "editable_relative": "regions/ctf_tes/ctf_tes_sym.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_tes/ctf_tes_sym.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 10717,
+    "sha1": "B719C5EC2A91EE264D3F760F083DCFBFD3F4F25F"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_tum\\ctf_tum_single.wsc",
+    "editable_relative": "regions/ctf_tum/ctf_tum_single.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_tum/ctf_tum_single.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12209,
+    "sha1": "B2DD72B7216DA7537F8B6B3C7E94ABA2D6182209"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_upr\\ctf_upr.wsc",
+    "editable_relative": "regions/ctf_upr/ctf_upr.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_upr/ctf_upr.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 11583,
+    "sha1": "77CFB255349239164BCE14ADBE2449EB6D6DD8B3"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\ctf_w2\\ctf_w2_single.wsc",
+    "editable_relative": "regions/ctf_w2/ctf_w2_single.wsc",
+    "import_relative": "content/release64/multiplayer/regions/ctf_w2/ctf_w2_single.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 9211,
+    "sha1": "96A08DF393B81FABDC2F50CBF72C238A4B14D5C1"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\dm_arm\\deathmatch_arm.wsc",
+    "editable_relative": "regions/dm_arm/deathmatch_arm.wsc",
+    "import_relative": "content/release64/multiplayer/regions/dm_arm/deathmatch_arm.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12681,
+    "sha1": "1407E51BBB959B1E72A8F4DB4D2C91B281071DBD"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\dm_chu\\deathmatch_chu.wsc",
+    "editable_relative": "regions/dm_chu/deathmatch_chu.wsc",
+    "import_relative": "content/release64/multiplayer/regions/dm_chu/deathmatch_chu.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 11810,
+    "sha1": "52EC459D8C1AEFB45D51D512E44ECF61926A1F18"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\dm_hen\\deathmatch_hen.wsc",
+    "editable_relative": "regions/dm_hen/deathmatch_hen.wsc",
+    "import_relative": "content/release64/multiplayer/regions/dm_hen/deathmatch_hen.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12900,
+    "sha1": "170A040436B54DC38C8AFCB1BFCD285FAF297F82"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\dm_lsh\\deathmatch_lsh.wsc",
+    "editable_relative": "regions/dm_lsh/deathmatch_lsh.wsc",
+    "import_relative": "content/release64/multiplayer/regions/dm_lsh/deathmatch_lsh.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 13002,
+    "sha1": "F1B5A78F6F666A321D3CBCF162E3139593B94A9E"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\dm_tum\\deathmatch_tum.wsc",
+    "editable_relative": "regions/dm_tum/deathmatch_tum.wsc",
+    "import_relative": "content/release64/multiplayer/regions/dm_tum/deathmatch_tum.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 12617,
+    "sha1": "9A8AB6C6E7B930F736B8AA529340709A1D4AA0D6"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\minigames\\liarsdice_sb.wsc",
+    "editable_relative": "regions/minigames/liarsdice_sb.wsc",
+    "import_relative": "content/release64/multiplayer/regions/minigames/liarsdice_sb.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 2578,
+    "sha1": "C24D4D82FA08DC6073E2651BD661BACBDBCF5984"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\regions\\minigames\\poker_sb.wsc",
+    "editable_relative": "regions/minigames/poker_sb.wsc",
+    "import_relative": "content/release64/multiplayer/regions/minigames/poker_sb.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 2594,
+    "sha1": "D9D5F66B9F405E39DD7D2F3E4272488359AB50CB"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\rotations\\gametype_lobby.wsc",
+    "editable_relative": "rotations/gametype_lobby.wsc",
+    "import_relative": "content/release64/multiplayer/rotations/gametype_lobby.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 35716,
+    "sha1": "103F978CF26569FBCE3E6098B4EA14AEFB655275"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\sessionmap.wsc",
+    "editable_relative": "sessionmap.wsc",
+    "import_relative": "content/release64/multiplayer/sessionmap.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 1018,
+    "sha1": "DC4353EBDBFB26B7D4A5791BFF6F58B86425264E"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\spectator\\mp_spectator.wsc",
+    "editable_relative": "spectator/mp_spectator.wsc",
+    "import_relative": "content/release64/multiplayer/spectator/mp_spectator.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 2456,
+    "sha1": "807EAF52DC1481689970F1F2B37CCF93DE64C2BC"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\spectator\\mp_spectatormk2.wsc",
+    "editable_relative": "spectator/mp_spectatormk2.wsc",
+    "import_relative": "content/release64/multiplayer/spectator/mp_spectatormk2.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 3566,
+    "sha1": "83BA71C0EAEFF959302EA7C7ABF7EC6898A343B1"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\support\\mp_actorpicker.wsc",
+    "editable_relative": "support/mp_actorpicker.wsc",
+    "import_relative": "content/release64/multiplayer/support/mp_actorpicker.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 20332,
+    "sha1": "7576CEF1176ABC931303B06788A6A65B1631552D"
+  },
+  {
+    "kind": "named_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\import_ready_wsc_from_xsc_named\\tutorial\\mp_tutorial.wsc",
+    "editable_relative": "tutorial/mp_tutorial.wsc",
+    "import_relative": "content/release64/multiplayer/tutorial/mp_tutorial.wsc",
+    "import_preserves_hash_name": "false",
+    "size": 2747,
+    "sha1": "3EC8B5D81869BF965A12ACB4B43667973FCF86BD"
+  },
+  {
+    "kind": "extensionless_hash_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\converted_extensionless_editable_wsc\\0xD11C2D38.wsc",
+    "editable_relative": "_hash_named_extensionless_editable/0xD11C2D38.wsc",
+    "import_relative": "content/release64/multiplayer/0xD11C2D38",
+    "import_preserves_hash_name": "true",
+    "size": 47875,
+    "sha1": "2B1D15A9F55C1B431BD1F384F8442E0FAB69E293"
+  },
+  {
+    "kind": "extensionless_hash_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\converted_extensionless_editable_wsc\\playground\\0x50C0D3DF.wsc",
+    "editable_relative": "_hash_named_extensionless_editable/playground/0x50C0D3DF.wsc",
+    "import_relative": "content/release64/multiplayer/playground/0x50C0D3DF",
+    "import_preserves_hash_name": "true",
+    "size": 30238,
+    "sha1": "B095509FE9B75FB79417C2F80E07590B8EA0DF06"
+  },
+  {
+    "kind": "extensionless_hash_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\converted_extensionless_editable_wsc\\playground\\0x71CE3778.wsc",
+    "editable_relative": "_hash_named_extensionless_editable/playground/0x71CE3778.wsc",
+    "import_relative": "content/release64/multiplayer/playground/0x71CE3778",
+    "import_preserves_hash_name": "true",
+    "size": 39380,
+    "sha1": "A63D97DEF2B1B553AC709A0C5548A09F18D767B5"
+  },
+  {
+    "kind": "extensionless_hash_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\converted_extensionless_editable_wsc\\playground\\0xCDB7B3CC.wsc",
+    "editable_relative": "_hash_named_extensionless_editable/playground/0xCDB7B3CC.wsc",
+    "import_relative": "content/release64/multiplayer/playground/0xCDB7B3CC",
+    "import_preserves_hash_name": "true",
+    "size": 54463,
+    "sha1": "2A80CC3FFEAD58B2CAD99BE201E3F2870C325DB8"
+  },
+  {
+    "kind": "extensionless_hash_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\converted_extensionless_editable_wsc\\playground\\0xD8E5158A.wsc",
+    "editable_relative": "_hash_named_extensionless_editable/playground/0xD8E5158A.wsc",
+    "import_relative": "content/release64/multiplayer/playground/0xD8E5158A",
+    "import_preserves_hash_name": "true",
+    "size": 174,
+    "sha1": "4FCE912E432C8307220A71CC32623CDB7A086E0D"
+  },
+  {
+    "kind": "extensionless_hash_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\converted_extensionless_editable_wsc\\support\\debug\\0x271BDAE3.wsc",
+    "editable_relative": "_hash_named_extensionless_editable/support/debug/0x271BDAE3.wsc",
+    "import_relative": "content/release64/multiplayer/support/debug/0x271BDAE3",
+    "import_preserves_hash_name": "true",
+    "size": 2519,
+    "sha1": "5E04F15A49F6FD05127D6FFF79187649882C2203"
+  },
+  {
+    "kind": "extensionless_hash_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\converted_extensionless_editable_wsc\\support\\debug\\0x80CD7812.wsc",
+    "editable_relative": "_hash_named_extensionless_editable/support/debug/0x80CD7812.wsc",
+    "import_relative": "content/release64/multiplayer/support/debug/0x80CD7812",
+    "import_preserves_hash_name": "true",
+    "size": 1176,
+    "sha1": "195311D9E66707C2D5E9BABCBEF3221282F9EC69"
+  },
+  {
+    "kind": "extensionless_hash_xsc",
+    "source_converted": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\converted_extensionless_editable_wsc\\support\\debug\\0xD56DFCAA.wsc",
+    "editable_relative": "_hash_named_extensionless_editable/support/debug/0xD56DFCAA.wsc",
+    "import_relative": "content/release64/multiplayer/support/debug/0xD56DFCAA",
+    "import_preserves_hash_name": "true",
+    "size": 5611,
+    "sha1": "299C2A70C66B1DD28200E8DDAFC099C2256CE131"
+  }
+]

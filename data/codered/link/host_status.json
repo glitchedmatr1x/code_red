@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "source": "CodeRED_PeerCompanion",
+  "timestamp_ms": 1779773657039,
+  "phase": "ai_toggled",
+  "native_ready": true,
+  "player_actor_valid": true,
+  "player_actor": 678,
+  "x": 176.599,
+  "y": 0,
+  "z": 111.177,
+  "heading": 8.33004,
+  "health": 100,
+  "companion_actor_valid": true,
+  "companion_actor": 3128,
+  "ai_companion_enabled": false,
+  "peer_control_enabled": false,
+  "peer_link_enabled": false,
+  "last_command": "none",
+  "last_error": ""
+}

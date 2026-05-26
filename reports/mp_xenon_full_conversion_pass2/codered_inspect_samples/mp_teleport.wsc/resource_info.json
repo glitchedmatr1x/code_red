@@ -1,0 +1,29 @@
+{
+  "family": "RSC85",
+  "normalized_from_xsc": false,
+  "magic_hex": "52 53 43 85",
+  "resource_type": 2,
+  "flag1": 2147483648,
+  "flag2": 2147483653,
+  "header_size": 16,
+  "stored_size": 4857,
+  "payload_size": 4841,
+  "expected_unpacked_size": 20480,
+  "compression": "zstandard",
+  "encryption": "aes-256-ecb-16-pass",
+  "path": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\all_converted_editable_wsc\\mp_teleport.wsc",
+  "source_sha256": "00DFE1AC324F421BE9732DD39A9524491B43031A073592D97054CF8814F3A9B5",
+  "normalized_sha256": "00DFE1AC324F421BE9732DD39A9524491B43031A073592D97054CF8814F3A9B5",
+  "decoded_sha256": "2233CB8A8A9B51B4A7FDE98F416933EE982F6B94610B4EB5A17E138A6DABEF4A",
+  "decoded_size": 20480,
+  "key_attempts": [
+    {
+      "method": "rdr_exe",
+      "path": "D:\\Games\\Red Dead Redemption\\RDR.exe",
+      "exists": true,
+      "offset": "0x2293500",
+      "key_sha1": "87862497EE46855372B51C7A324A2BB5CD66F4AF"
+    }
+  ],
+  "decode_error": ""
+}

@@ -1,0 +1,586 @@
+string_offset,string_offset_hex,string_text,string_class,reference_instruction_offset,reference_instruction_offset_hex,owner_function_index,owner_function,owner_function_offset_range
+45,0x2D,net.StartOnline,unknown,43,0x2B,0,main,0x0..0xC77
+106,0x6A,NetAlert_FailedInviteJoin_NoPlaylist,unknown,104,0x68,0,main,0x0..0xC77
+148,0x94,SG_AutoSaveDisabled,likely logic anchor,146,0x92,0,main,0x0..0xC77
+179,0xB3,NetAlert_NatWarning,unknown,177,0xB1,0,main,0x0..0xC77
+283,0x11B,multiplayerUpdateThread,unknown,281,0x119,0,main,0x0..0xC77
+349,0x15D,FREEROAM,unknown,347,0x15B,0,main,0x0..0xC77
+437,0x1B5,playersInSession,unknown,435,0x1B3,0,main,0x0..0xC77
+507,0x1FB,rand_idle_sit_ground_player,unknown,505,0x1F9,0,main,0x0..0xC77
+540,0x21C,locked_footlocker,unknown,538,0x21A,0,main,0x0..0xC77
+563,0x233,old_winch,unknown,561,0x231,0,main,0x0..0xC77
+578,0x242,stand_open_chest,unknown,576,0x240,0,main,0x0..0xC77
+600,0x258,horsehitch,unknown,598,0x256,0,main,0x0..0xC77
+616,0x268,horsehitch2,unknown,614,0x266,0,main,0x0..0xC77
+633,0x279,hitchingpost,unknown,631,0x277,0,main,0x0..0xC77
+651,0x28B,treasure_hunting_1,unknown,649,0x289,0,main,0x0..0xC77
+675,0x2A3,treasure_hunting_2,unknown,673,0x2A1,0,main,0x0..0xC77
+699,0x2BB,treasure_hunting_3,unknown,697,0x2B9,0,main,0x0..0xC77
+723,0x2D3,treasure_hunting_4,unknown,721,0x2D1,0,main,0x0..0xC77
+747,0x2EB,treasure_hunting_5,unknown,745,0x2E9,0,main,0x0..0xC77
+771,0x303,treasure_hunting_6,unknown,769,0x301,0,main,0x0..0xC77
+795,0x31B,treasure_hunting_7,unknown,793,0x319,0,main,0x0..0xC77
+819,0x333,treasure_hunting_8,unknown,817,0x331,0,main,0x0..0xC77
+843,0x34B,treasure_hunting_final,unknown,841,0x349,0,main,0x0..0xC77
+871,0x367,open_big_door,unknown,869,0x365,0,main,0x0..0xC77
+890,0x37A,horse_tend_camp,unknown,888,0x378,0,main,0x0..0xC77
+911,0x38F,horse_stay,unknown,909,0x38D,0,main,0x0..0xC77
+927,0x39F,fake_horseshoe,unknown,925,0x39D,0,main,0x0..0xC77
+947,0x3B3,get_ransom_note,unknown,945,0x3B1,0,main,0x0..0xC77
+968,0x3C8,skin_animal,event/task name,966,0x3C6,0,main,0x0..0xC77
+985,0x3D9,pickup_tnt,unknown,983,0x3D7,0,main,0x0..0xC77
+1474,0x5C2,HAS_GLOBAL_TU2,unknown,1472,0x5C0,0,main,0x0..0xC77
+1506,0x5E2,Achievements are ready... checking if we're viral.,debug/display text,1504,0x5E0,0,main,0x0..0xC77
+1584,0x630,"Yep, we have the viral achievement (Red Dead Rockstar)",debug/display text,1582,0x62E,0,main,0x0..0xC77
+1666,0x682,"Yep, we have the viral achievement (Red Dead Rockstar)",debug/display text,1664,0x680,0,main,0x0..0xC77
+1774,0x6EE,MPDollars,unknown,1772,0x6EC,0,main,0x0..0xC77
+1798,0x706,MPBalance2,unknown,1796,0x704,0,main,0x0..0xC77
+1811,0x713,MPBalance,unknown,1809,0x711,0,main,0x0..0xC77
+1832,0x728,MPBalance2,unknown,1830,0x726,0,main,0x0..0xC77
+1845,0x735,,unknown,1843,0x733,0,main,0x0..0xC77
+1891,0x763,bearWilderness,unknown,1889,0x761,0,main,0x0..0xC77
+1944,0x798,$/content/Multiplayer/Action_Areas/Wilderness/bearWildernessAA,event/task name,1942,0x796,0,main,0x0..0xC77
+2021,0x7E5,boarWilderness,unknown,2019,0x7E3,0,main,0x0..0xC77
+2074,0x81A,$/content/Multiplayer/Action_Areas/Wilderness/boarWildernessAA,event/task name,2072,0x818,0,main,0x0..0xC77
+2151,0x867,cougarWilderness,unknown,2149,0x865,0,main,0x0..0xC77
+2206,0x89E,$/content/Multiplayer/Action_Areas/Wilderness/cougarWildernessAA,event/task name,2204,0x89C,0,main,0x0..0xC77
+2285,0x8ED,wolfWilderness,unknown,2283,0x8EB,0,main,0x0..0xC77
+2338,0x922,$/content/Multiplayer/Action_Areas/Wilderness/wolfWildernessAA,event/task name,2336,0x920,0,main,0x0..0xC77
+2450,0x992,treasure_hunting_1,unknown,2448,0x990,0,main,0x0..0xC77
+2474,0x9AA,treasure_hunting_2,unknown,2472,0x9A8,0,main,0x0..0xC77
+2498,0x9C2,treasure_hunting_3,unknown,2496,0x9C0,0,main,0x0..0xC77
+2522,0x9DA,treasure_hunting_4,unknown,2520,0x9D8,0,main,0x0..0xC77
+2546,0x9F2,treasure_hunting_5,unknown,2544,0x9F0,0,main,0x0..0xC77
+2570,0xA0A,treasure_hunting_6,unknown,2568,0xA08,0,main,0x0..0xC77
+2594,0xA22,treasure_hunting_7,unknown,2592,0xA20,0,main,0x0..0xC77
+2618,0xA3A,treasure_hunting_8,unknown,2616,0xA38,0,main,0x0..0xC77
+2642,0xA52,treasure_hunting_final,unknown,2640,0xA50,0,main,0x0..0xC77
+2670,0xA6E,rand_idle_sit_ground_player,unknown,2668,0xA6C,0,main,0x0..0xC77
+2703,0xA8F,locked_footlocker,unknown,2701,0xA8D,0,main,0x0..0xC77
+2726,0xAA6,old_winch,unknown,2724,0xAA4,0,main,0x0..0xC77
+2741,0xAB5,stand_open_chest,unknown,2739,0xAB3,0,main,0x0..0xC77
+2763,0xACB,horseHitch,unknown,2761,0xAC9,0,main,0x0..0xC77
+2779,0xADB,horseHitch2,unknown,2777,0xAD9,0,main,0x0..0xC77
+2796,0xAEC,hitchingPost,unknown,2794,0xAEA,0,main,0x0..0xC77
+2814,0xAFE,open_big_door,unknown,2812,0xAFC,0,main,0x0..0xC77
+2833,0xB11,horse_tend_camp,unknown,2831,0xB0F,0,main,0x0..0xC77
+2854,0xB26,horse_stay,unknown,2852,0xB24,0,main,0x0..0xC77
+2870,0xB36,fake_horseshoe,unknown,2868,0xB34,0,main,0x0..0xC77
+2890,0xB4A,get_ransom_note,unknown,2888,0xB48,0,main,0x0..0xC77
+2911,0xB5F,skin_animal,event/task name,2909,0xB5D,0,main,0x0..0xC77
+2928,0xB70,pickup_tnt,unknown,2926,0xB6E,0,main,0x0..0xC77
+2944,0xB80,MPSplash,unknown,2942,0xB7E,0,main,0x0..0xC77
+2958,0xB8E,MPSplash,unknown,2956,0xB8C,0,main,0x0..0xC77
+2972,0xB9C,MPReward,unknown,2970,0xB9A,0,main,0x0..0xC77
+2986,0xBAA,MPScoringDisplays,unknown,2984,0xBA8,0,main,0x0..0xC77
+3009,0xBC1,HudMPNoFun,unknown,3007,0xBBF,0,main,0x0..0xC77
+3025,0xBD1,RacePosition,unknown,3023,0xBCF,0,main,0x0..0xC77
+3088,0xC10,multiplayerUpdateThread,unknown,3086,0xC0E,0,main,0x0..0xC77
+3135,0xC3F,LS_,unknown,3133,0xC3D,0,main,0x0..0xC77
+3155,0xC53,LoadingScreenTexture,unknown,3153,0xC51,0,main,0x0..0xC77
+3251,0xCB3,NetEventLayout,event/task name,3249,0xCB1,3,Function_3,0xCAC..0xCE8
+3282,0xCD2,NetEventLayout,event/task name,3280,0xCD0,3,Function_3,0xCAC..0xCE8
+4170,0x104A,"For whatever reason, the system thinks we have more than 50 completed quests. This is bad, since the array we save them in only has 20 elements. Capping it and saving. Your save may not include all of the things you like in it.",debug/display text,4168,0x1048,12,Function_12,0x100A..0x1198
+4568,0x11D8,"For whatever reason, the system thinks we have more than 20 active quests. This is bad, since the array we save them in only has 20 elements. Capping it and saving. Your save may not include all of the things you like in it.",debug/display text,4566,0x11D6,13,Function_13,0x1198..0x134C
+5467,0x155B,fav_non,unknown,5465,0x1559,17,Function_17,0x1554..0x15FA
+5605,0x15E5,fwep_,unknown,5603,0x15E3,17,Function_17,0x1554..0x15FA
+5645,0x160D,STAT_SET_VALUE_AS_INT_NOW: Attempting to use a Stat out of bounds.,debug/display text,5643,0x160B,18,Function_18,0x15FA..0x1895
+5732,0x1664,STAT_SET_VALUE_AS_INT_NOW: You cannot set value of this STAT_TYPE_LIFETIME directly: ,debug/display text,5730,0x1662,18,Function_18,0x15FA..0x1895
+5836,0x16CC,"STAT_SET_VALUE_AS_INT_NOW: You cannot set value of a STAT_TYPE_LIFETIME directly, use the COLLECTION version instead!",debug/display text,5834,0x16CA,18,Function_18,0x15FA..0x1895
+5974,0x1756,STAT_SET_VALUE_AS_INT_NOW: You cannot set value of this STAT_TYPE_COLLECTIBLE directly: ,debug/display text,5972,0x1754,18,Function_18,0x15FA..0x1895
+6081,0x17C1,"STAT_SET_VALUE_AS_INT_NOW: You cannot set value of a STAT_TYPE_COLLECTIBLE directly, only increase and decrease operations are allowed",debug/display text,6079,0x17BF,18,Function_18,0x15FA..0x1895
+6327,0x18B7,,unknown,6325,0x18B5,19,Function_19,0x1895..0x1EC2
+6351,0x18CF,+,unknown,6349,0x18CD,19,Function_19,0x1895..0x1EC2
+6362,0x18DA,-,unknown,6360,0x18D8,19,Function_19,0x1895..0x1EC2
+6424,0x1918,$,unknown,6422,0x1916,19,Function_19,0x1895..0x1EC2
+6508,0x196C,,unknown,6506,0x196A,19,Function_19,0x1895..0x1EC2
+6536,0x1988, lbs,debug/display text,6534,0x1986,19,Function_19,0x1895..0x1EC2
+6600,0x19C8, ton,debug/display text,6598,0x19C6,19,Function_19,0x1895..0x1EC2
+6753,0x1A61, days,debug/display text,6751,0x1A5F,19,Function_19,0x1895..0x1EC2
+6775,0x1A77, day,debug/display text,6773,0x1A75,19,Function_19,0x1895..0x1EC2
+6807,0x1A97, ,debug/display text,6805,0x1A95,19,Function_19,0x1895..0x1EC2
+6838,0x1AB6, hr,debug/display text,6836,0x1AB4,19,Function_19,0x1895..0x1EC2
+6869,0x1AD5, ,debug/display text,6867,0x1AD3,19,Function_19,0x1895..0x1EC2
+6900,0x1AF4, min,debug/display text,6898,0x1AF2,19,Function_19,0x1895..0x1EC2
+6932,0x1B14, ,debug/display text,6930,0x1B12,19,Function_19,0x1895..0x1EC2
+6963,0x1B33, sec,debug/display text,6961,0x1B31,19,Function_19,0x1895..0x1EC2
+7003,0x1B5B, min,debug/display text,7001,0x1B59,19,Function_19,0x1895..0x1EC2
+7042,0x1B82, ,debug/display text,7040,0x1B80,19,Function_19,0x1895..0x1EC2
+7073,0x1BA1, sec,debug/display text,7071,0x1B9F,19,Function_19,0x1895..0x1EC2
+7107,0x1BC3, sec,debug/display text,7105,0x1BC1,19,Function_19,0x1895..0x1EC2
+7242,0x1C4A, mi,debug/display text,7240,0x1C48,19,Function_19,0x1895..0x1EC2
+7262,0x1C5E, ft,debug/display text,7260,0x1C5C,19,Function_19,0x1895..0x1EC2
+7358,0x1CBE, days,debug/display text,7356,0x1CBC,19,Function_19,0x1895..0x1EC2
+7380,0x1CD4, day,debug/display text,7378,0x1CD2,19,Function_19,0x1895..0x1EC2
+7409,0x1CF1,stat_of,unknown,7407,0x1CEF,19,Function_19,0x1895..0x1EC2
+7637,0x1DD5,,unknown,7635,0x1DD3,19,Function_19,0x1895..0x1EC2
+7694,0x1E0E,Common_Null,unknown,7692,0x1E0C,19,Function_19,0x1895..0x1EC2
+7753,0x1E49,,unknown,7751,0x1E47,19,Function_19,0x1895..0x1EC2
+7814,0x1E86,,unknown,7812,0x1E84,19,Function_19,0x1895..0x1EC2
+7854,0x1EAE,,unknown,7852,0x1EAC,19,Function_19,0x1895..0x1EC2
+7917,0x1EED,lvl_,unknown,7915,0x1EEB,22,Function_22,0x1EDB..0x1FD0
+7936,0x1F00,_icon,unknown,7934,0x1EFE,22,Function_22,0x1EDB..0x1FD0
+7959,0x1F17,icon_prestige_award_,unknown,7957,0x1F15,22,Function_22,0x1EDB..0x1FD0
+8003,0x1F43,icon_prestige_,unknown,8001,0x1F41,22,Function_22,0x1EDB..0x1FD0
+8051,0x1F73,icon_prestige_award_4,unknown,8049,0x1F71,22,Function_22,0x1EDB..0x1FD0
+8082,0x1F92,icon_prestige_award_,unknown,8080,0x1F90,22,Function_22,0x1EDB..0x1FD0
+8125,0x1FBD,_color,unknown,8123,0x1FBB,22,Function_22,0x1EDB..0x1FD0
+8319,0x207F,STAT_CALCULATE_PROGRESSBAR_VALUES: STAT_INVALID,debug/display text,8317,0x207D,27,Function_27,0x2072..0x21A2
+8648,0x21C8,STAT_GET_VALUE: STAT_INVALID,debug/display text,8646,0x21C6,29,Function_29,0x21B1..0x21EA
+8695,0x21F7,STAT_GET_MAX_VALUE: STAT_INVALID,debug/display text,8693,0x21F5,30,Function_30,0x21EA..0x2227
+8784,0x2250,STAT_CHECK_RANGES: Attempting to decrement a STAT out of its fMaxRange - ,debug/display text,8782,0x224E,31,Function_31,0x2227..0x23C1
+8876,0x22AC,STAT_CHECK_RANGES: Attempting to increment a STAT out of its fMaxRange,debug/display text,8874,0x22AA,31,Function_31,0x2227..0x23C1
+8986,0x231A,STAT_CHECK_RANGES: Attempting to decrement a STAT out of its fMinRange - ,debug/display text,8984,0x2318,31,Function_31,0x2227..0x23C1
+9078,0x2376,STAT_CHECK_RANGES: Attempting to decrement a STAT out of its fMinRange,debug/display text,9076,0x2374,31,Function_31,0x2227..0x23C1
+9172,0x23D4,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to use a Stat out of bounds.,debug/display text,9170,0x23D2,32,Function_32,0x23C1..0x2605
+9280,0x2440,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to use a LifetimeStat out of bounds.,debug/display text,9278,0x243E,32,Function_32,0x23C1..0x2605
+9475,0x2503,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to increment a LifetimeStat out of its fMaxRange.,debug/display text,9473,0x2501,32,Function_32,0x23C1..0x2605
+9621,0x2595,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to decrement a LifetimeStat out of its fMinRange.,debug/display text,9619,0x2593,32,Function_32,0x23C1..0x2605
+9740,0x260C,fav_non,unknown,9738,0x260A,33,Function_33,0x2605..0x268E
+9846,0x2676,fwep_,unknown,9844,0x2674,33,Function_33,0x2605..0x268E
+9877,0x2695,fav_non,unknown,9875,0x2693,34,Function_34,0x268E..0x2725
+9997,0x270D,fwep_,unknown,9995,0x270B,34,Function_34,0x268E..0x2725
+10028,0x272C,fav_non,unknown,10026,0x272A,35,Function_35,0x2725..0x27A4
+10127,0x278F,fwep_,unknown,10125,0x278D,35,Function_35,0x2725..0x27A4
+10224,0x27F0,STAT_INCREASE_NOW: Attempting to use a Stat out of bounds.,debug/display text,10222,0x27EE,37,Function_37,0x27DD..0x29E7
+10303,0x283F,STAT_INCREASE_NOW: You cannot increase this STAT_TYPE_LIFETIME directly: ,debug/display text,10301,0x283D,37,Function_37,0x27DD..0x29E7
+10395,0x289B,"STAT_INCREASE_NOW: You cannot increase a STAT_TYPE_LIFETIME directly, use the COLLECTION version instead!",debug/display text,10393,0x2899,37,Function_37,0x27DD..0x29E7
+10515,0x2913,STAT_INCREASE_NOW: fIncreaseValue < 0.0 - I am turning this into a positive number for you!,debug/display text,10513,0x2911,37,Function_37,0x27DD..0x29E7
+10934,0x2AB6,DISABLE_HORSE_WHISTLE,likely logic anchor,10932,0x2AB4,44,Function_44,0x2A99..0x2AD2
+11136,0x2B80,"Frontier Region, Hennigan's Stead",debug/display text,11134,0x2B7E,48,Function_48,0x2B05..0x3559
+11172,0x2BA4,Player attempting to fall through hole north of Hennigan's in a canyon by a tree,debug/display text,11170,0x2BA2,48,Function_48,0x2B05..0x3559
+11319,0x2C37,"Frontier Region, Cholla Springs",debug/display text,11317,0x2C35,48,Function_48,0x2B05..0x3559
+11353,0x2C59,Player attempting to fall through world near train tracks in tunnel north of Armadillo,debug/display text,11351,0x2C57,48,Function_48,0x2B05..0x3559
+11506,0x2CF2,"Frontier Region, Cholla Springs",debug/display text,11504,0x2CF0,48,Function_48,0x2B05..0x3559
+11540,0x2D14,Player attempting to get into house at Venter's Place,debug/display text,11538,0x2D12,48,Function_48,0x2B05..0x3559
+11667,0x2D93,"Punta Orgullo, Escalera",debug/display text,11665,0x2D91,48,Function_48,0x2B05..0x3559
+11693,0x2DAD,Player attempting to get underneath the mansion,debug/display text,11691,0x2DAB,48,Function_48,0x2B05..0x3559
+11828,0x2E34,"Tall Trees, Nekoti Rock",debug/display text,11826,0x2E32,48,Function_48,0x2B05..0x3559
+11854,0x2E4E,Player attempting to get between wall and ledge,debug/display text,11852,0x2E4C,48,Function_48,0x2B05..0x3559
+11982,0x2ECE,"Perdido, Chupa Rosa",debug/display text,11980,0x2ECC,48,Function_48,0x2B05..0x3559
+12004,0x2EE4,Player attempting to get into the inn,debug/display text,12002,0x2EE2,48,Function_48,0x2B05..0x3559
+12148,0x2F74,"Great Plains, Blackwater",debug/display text,12146,0x2F72,48,Function_48,0x2B05..0x3559
+12175,0x2F8F,Player attempting to get into the bank,debug/display text,12173,0x2F8D,48,Function_48,0x2B05..0x3559
+12275,0x2FF3,"Great Plains, Blackwater",debug/display text,12273,0x2FF1,48,Function_48,0x2B05..0x3559
+12302,0x300E,Player attempting to get into the doctor's office,debug/display text,12300,0x300C,48,Function_48,0x2B05..0x3559
+12447,0x309F,"Great Plains, Blackwater",debug/display text,12445,0x309D,48,Function_48,0x2B05..0x3559
+12474,0x30BA,Player attempting to get into house at edge of town,debug/display text,12472,0x30B8,48,Function_48,0x2B05..0x3559
+12629,0x3155,"Great Plains, Blackwater",debug/display text,12627,0x3153,48,Function_48,0x2B05..0x3559
+12656,0x3170,Player attempting to get into town hall,debug/display text,12654,0x316E,48,Function_48,0x2B05..0x3559
+12713,0x31A9,/content/DLC/MPFreePack/AD_Instances/AD_BEC/ad_bec,unknown,12711,0x31A7,48,Function_48,0x2B05..0x3559
+12839,0x3227,"Great Plains, Beecher's Hope",debug/display text,12837,0x3225,48,Function_48,0x2B05..0x3559
+12870,0x3246,Player attempting to get into John's House,debug/display text,12868,0x3244,48,Function_48,0x2B05..0x3559
+13035,0x32EB,"Perdidio, Agave Viejo",debug/display text,13033,0x32E9,48,Function_48,0x2B05..0x3559
+13059,0x3303,Player attempting to get into the side window of the large house,debug/display text,13057,0x3301,48,Function_48,0x2B05..0x3559
+13208,0x3398,"Hennigan's Stead, Thieves' Landing",debug/display text,13206,0x3396,48,Function_48,0x2B05..0x3559
+13245,0x33BD,Player attempting to get into the sailor's hostel,debug/display text,13243,0x33BB,48,Function_48,0x2B05..0x3559
+13410,0x3462,"Hennigan's Stead, Thieves' Landing",debug/display text,13408,0x3460,48,Function_48,0x2B05..0x3559
+13447,0x3487,Player attempting to get into the Dixie Rose,debug/display text,13445,0x3485,48,Function_48,0x2B05..0x3559
+13565,0x34FD,"Hennigan's Stead, Thieves' Landing",debug/display text,13563,0x34FB,48,Function_48,0x2B05..0x3559
+13602,0x3522,Player attempting to get into the Saloon back room,debug/display text,13600,0x3520,48,Function_48,0x2B05..0x3559
+13719,0x3597,MUT - Bounds violation detected at ,debug/display text,13717,0x3595,49,Function_49,0x3559..0x370D
+13771,0x35CB,MUT - Location : ,debug/display text,13769,0x35C9,49,Function_49,0x3559..0x370D
+13802,0x35EA,MUT - Description : ,debug/display text,13800,0x35E8,49,Function_49,0x3559..0x370D
+13836,0x360C,MUT - Resolution : Attempting teleport to ,debug/display text,13834,0x360A,49,Function_49,0x3559..0x370D
+13904,0x3650,MUT - Bounds violation detected at ,debug/display text,13902,0x364E,49,Function_49,0x3559..0x370D
+13956,0x3684,MUT - Location : ,debug/display text,13954,0x3682,49,Function_49,0x3559..0x370D
+13987,0x36A3,MUT - Description : ,debug/display text,13985,0x36A1,49,Function_49,0x3559..0x370D
+14021,0x36C5,"MUT - Resolution : Not in free mode, will kill the player now.",debug/display text,14019,0x36C3,49,Function_49,0x3559..0x370D
+14323,0x37F3,STAT_GET_VALUE_AS_INT: STAT_INVALID,debug/display text,14321,0x37F1,57,Function_57,0x37E6..0x3827
+14710,0x3976,_info,unknown,14708,0x3974,62,Function_62,0x3954..0x3A0B
+14738,0x3992,_num,unknown,14736,0x3990,62,Function_62,0x3954..0x3A0B
+14771,0x39B3,PVP_num2,unknown,14769,0x39B1,62,Function_62,0x3954..0x3A0B
+14802,0x39D2,PVP_num3,unknown,14800,0x39D0,62,Function_62,0x3954..0x3A0B
+14952,0x3A68,_,unknown,14950,0x3A66,66,Function_66,0x3A51..0x3A85
+15070,0x3ADE,challenge_01_128,unknown,15068,0x3ADC,69,Function_69,0x3AAC..0x3B12
+15171,0x3B43,SaveLoad,unknown,15169,0x3B41,71,Function_71,0x3B3B..0x3BC4
+15182,0x3B4E,"Multiplayer Save Triggered, will be picked up by Multiplayer_update_thread soon enough",debug/display text,15180,0x3B4C,71,Function_71,0x3B3B..0x3BC4
+15399,0x3C27,CanSaveNowAutoSave,unknown,15397,0x3C25,76,Function_76,0x3BFE..0x3C40
+18230,0x4736,Here's what we're returning as a save spot: ,debug/display text,18228,0x4734,85,Function_85,0x3F4E..0x4775
+18526,0x485E,bPlayerSleeping,unknown,18524,0x485C,89,Function_89,0x47D8..0x487C
+18677,0x48F5,CQueue_X,unknown,18675,0x48F3,91,Function_91,0x48EE..0x490F
+18710,0x4916,CQueue_T,unknown,18708,0x4914,92,Function_92,0x490F..0x4930
+18743,0x4937,CQueue_H,unknown,18741,0x4935,93,Function_93,0x4930..0x4951
+18776,0x4958,CQueue_Count,unknown,18774,0x4956,94,Function_94,0x4951..0x4966
+19046,0x4A66,_des,unknown,19044,0x4A64,99,Function_99,0x4A56..0x4A76
+19085,0x4A8D,_DYNAMIC_TITLE,unknown,19083,0x4A8B,100,Function_100,0x4A76..0x4AA7
+19532,0x4C4C,_INTSLOT,unknown,19530,0x4C4A,102,Function_102,0x4C25..0x4D71
+19602,0x4C92,_FLOATSLOT,unknown,19600,0x4C90,102,Function_102,0x4C25..0x4D71
+19688,0x4CE8,_TIMERSLOT,unknown,19686,0x4CE6,102,Function_102,0x4C25..0x4D71
+19757,0x4D2D,_OBJECTSLOT,unknown,19755,0x4D2B,102,Function_102,0x4C25..0x4D71
+19832,0x4D78,AmbientMissions_Layout,likely logic anchor,19830,0x4D76,103,Function_103,0x4D71..0x4DBE
+19871,0x4D9F,AmbientMissions_Layout,likely logic anchor,19869,0x4D9D,103,Function_103,0x4D71..0x4DBE
+19909,0x4DC5,MP_Revenge_Icon_128,unknown,19907,0x4DC3,104,Function_104,0x4DBE..0x4DDA
+20589,0x506D,ERROR: Trying to get value of TIMER that has not been started!,debug/display text,20587,0x506B,119,Function_119,0x5042..0x510A
+20657,0x50B1,"WARNING: Trying to get value of TIMER that has not been started! Returning 0.0 
+",debug/display text,20655,0x50AF,119,Function_119,0x5042..0x510A
+21292,0x532C,Tried to get bit ,debug/display text,21290,0x532A,130,Function_130,0x530C..0x538D
+21325,0x534D, bit from bad slot ,debug/display text,21323,0x534B,130,Function_130,0x530C..0x538D
+21571,0x5443,DEAD,unknown,21569,0x5441,131,Function_131,0x538D..0x56A6
+21582,0x544E,READY,unknown,21580,0x544C,131,Function_131,0x538D..0x56A6
+21594,0x545A,POKER_FOLDED,unknown,21592,0x5458,131,Function_131,0x538D..0x56A6
+21613,0x546D,RACE_FINISHED,unknown,21611,0x546B,131,Function_131,0x538D..0x56A6
+21633,0x5481,REGION_HOST,unknown,21631,0x547F,131,Function_131,0x538D..0x56A6
+21651,0x5493,ACTOR_HIDDEN,likely logic anchor,21649,0x5491,131,Function_131,0x538D..0x56A6
+21670,0x54A6,VOTE_TO_START,unknown,21668,0x54A4,131,Function_131,0x538D..0x56A6
+21690,0x54BA,VOTE_TO_SKIP,unknown,21688,0x54B8,131,Function_131,0x538D..0x56A6
+21709,0x54CD,VOTE_TO_REPLAY,unknown,21707,0x54CB,131,Function_131,0x538D..0x56A6
+21730,0x54E2,IS_IN_LOBBY,unknown,21728,0x54E0,131,Function_131,0x538D..0x56A6
+21748,0x54F4,GAME_ARBITRATOR,unknown,21746,0x54F2,131,Function_131,0x538D..0x56A6
+21770,0x550A,JOINED_GAME,unknown,21768,0x5508,131,Function_131,0x538D..0x56A6
+21788,0x551C,SKIP_CUTSCENE,unknown,21786,0x551A,131,Function_131,0x538D..0x56A6
+21808,0x5530,START_CUTSCENE,unknown,21806,0x552E,131,Function_131,0x538D..0x56A6
+21829,0x5545,IS_SPECTATOR,unknown,21827,0x5543,131,Function_131,0x538D..0x56A6
+21848,0x5558,DISTRICT_HOST,unknown,21846,0x5556,131,Function_131,0x538D..0x56A6
+21868,0x556C,NEEDS_REVIVAL,unknown,21866,0x556A,131,Function_131,0x538D..0x56A6
+21888,0x5580,MP_BIT_MPLAW_MOSTWANTED,likely logic anchor,21886,0x557E,131,Function_131,0x538D..0x56A6
+21918,0x559E,HAS_VIRAL_ACHIEVEMENT,unknown,21916,0x559C,131,Function_131,0x538D..0x56A6
+21946,0x55BA,COMBATMODE_CASUAL,unknown,21944,0x55B8,131,Function_131,0x538D..0x56A6
+21970,0x55D2,COMBATMODE_EXPERT,unknown,21968,0x55D0,131,Function_131,0x538D..0x56A6
+21994,0x55EA,IN_ACTOR_PICKER,likely logic anchor,21992,0x55E8,131,Function_131,0x538D..0x56A6
+22016,0x5600,MELEE_BLOCKED,unknown,22014,0x55FE,131,Function_131,0x538D..0x56A6
+22036,0x5614,BLIND_FIRE,unknown,22034,0x5612,131,Function_131,0x538D..0x56A6
+22053,0x5625,FREE_MODE_DEFENSE_ACTIVE,unknown,22051,0x5623,131,Function_131,0x538D..0x56A6
+22084,0x5644,PLAYER_IS_GRIEFER,unknown,22082,0x5642,131,Function_131,0x538D..0x56A6
+22108,0x565C,CANNOT_AFFORD_MINIGAME,unknown,22106,0x565A,131,Function_131,0x538D..0x56A6
+22137,0x5679,FREE_MODE_DEFENSE_SPOONHOLDER,unknown,22135,0x5677,131,Function_131,0x538D..0x56A6
+22173,0x569D,UNKNOWN,unknown,22171,0x569B,131,Function_131,0x538D..0x56A6
+22202,0x56BA,TRIED TO USE IS_SLOT_DATA_VALID WITH BAD INDEX ,debug/display text,22200,0x56B8,132,Function_132,0x56A6..0x5747
+22265,0x56F9,!,debug/display text,22263,0x56F7,132,Function_132,0x56A6..0x5747
+22851,0x5943,BoxKiller,unknown,22849,0x5941,140,Function_140,0x5930..0x59A1
+22885,0x5965,locked_footlocker,unknown,22883,0x5963,140,Function_140,0x5930..0x59A1
+23132,0x5A5C,CTFBag_,unknown,23130,0x5A5A,148,Function_148,0x5A39..0x5A8B
+23704,0x5C98,_INTSLOT,unknown,23702,0x5C96,152,Function_152,0x5C88..0x5CFD
+23751,0x5CC7,PVP_STORE_INT: failed to store int value in slot,debug/display text,23749,0x5CC5,152,Function_152,0x5C88..0x5CFD
+23821,0x5D0D,_INTSLOT,unknown,23819,0x5D0B,153,Function_153,0x5CFD..0x5D89
+23881,0x5D49,PVP_RETRIEVE_INT: failed to retrieve int value from layout,debug/display text,23879,0x5D47,153,Function_153,0x5CFD..0x5D89
+23961,0x5D99,challenge_01_128,unknown,23959,0x5D97,154,Function_154,0x5D89..0x5DFF
+24315,0x5EFB,_DYNAMIC_XP,unknown,24313,0x5EF9,158,Function_158,0x5EE4..0x5F12
+24361,0x5F29,_DYNAMIC_GOAL,unknown,24359,0x5F27,159,Function_159,0x5F12..0x5F42
+24393,0x5F49,challenge_04_128,unknown,24391,0x5F47,160,Function_160,0x5F42..0x5F5B
+24539,0x5FDB,mp_MasterHunter_Rank2_Blip,unknown,24537,0x5FD9,163,Function_163,0x5F80..0x613A
+24635,0x603B,mp_MasterHunter_Rank3_Blip,unknown,24633,0x6039,163,Function_163,0x5F80..0x613A
+24731,0x609B,mp_MasterHunter_Rank4_Blip,unknown,24729,0x6099,163,Function_163,0x5F80..0x613A
+24827,0x60FB,mp_MasterHunter_Rank5_Blip,unknown,24825,0x60F9,163,Function_163,0x5F80..0x613A
+24945,0x6171,Asking about a player with an index not = 0. Multiplayer Law Enforcement not yet implemented.,likely logic anchor,24943,0x616F,165,Function_165,0x6162..0x61D8
+25075,0x61F3,NETReplicationItr,unknown,25073,0x61F1,166,Function_166,0x61D8..0x625B
+25263,0x62AF,MPP_TitleValue,unknown,25261,0x62AD,170,Function_170,0x6297..0x633F
+25310,0x62DE,_en,unknown,25308,0x62DC,170,Function_170,0x6297..0x633F
+25385,0x6329,MpTitleStringId,unknown,25383,0x6327,170,Function_170,0x6297..0x633F
+25495,0x6397,Rank,unknown,25493,0x6395,173,Function_173,0x637B..0x63B5
+25507,0x63A3,MpLevel,unknown,25505,0x63A1,173,Function_173,0x637B..0x63B5
+25541,0x63C5,$/content/multiplayer/PR_Disabled000,likely logic anchor,25539,0x63C3,174,Function_174,0x63B5..0x6432
+25595,0x63FB,$/content/multiplayer/disabled_system_threadxxx,likely logic anchor,25593,0x63F9,174,Function_174,0x63B5..0x6432
+26586,0x67DA,Done Streaming,debug/display text,26584,0x67D8,177,Function_177,0x67C9..0x6809
+26719,0x685F,Streaming,unknown,26717,0x685D,180,Function_180,0x6845..0x6887
+26886,0x6906,NETReplicationTrap,unknown,26884,0x6904,183,Function_183,0x68FF..0x692D
+27082,0x69CA,Attempting to set relationship on invalid ACTORSET (first param).,likely logic anchor,27080,0x69C8,185,Function_185,0x69BA..0x6A8A
+27162,0x6A1A,Attempting to set relationship on invalid ACTOR.,likely logic anchor,27160,0x6A18,185,Function_185,0x69BA..0x6A8A
+27383,0x6AF7,ArmUp,unknown,27381,0x6AF5,187,Function_187,0x6A9A..0x6B17
+27404,0x6B0C,ArmUp,unknown,27402,0x6B0A,187,Function_187,0x6A9A..0x6B17
+27526,0x6B86,jp,unknown,27524,0x6B84,193,Function_193,0x6B7F..0x6B8D
+27551,0x6B9F,gMPScratchLayout,unknown,27549,0x6B9D,194,Function_194,0x6B8D..0x6BBC
+27613,0x6BDD,FREEROAM,unknown,27611,0x6BDB,196,Function_196,0x6BD6..0x6BFF
+27913,0x6D09,$/content/scripting/gringo/SimpleGringo/Giveaway_Footlocker,unknown,27911,0x6D07,206,Function_206,0x6D00..0x6EF6
+27983,0x6D4F,$/content/scripting/gringo/CommonScripts/Giveaway_Footlocker,unknown,27981,0x6D4D,206,Function_206,0x6D00..0x6EF6
+28054,0x6D96,$/content/scripting/gringo/SimpleGringo/MP_RezBuddy,unknown,28052,0x6D94,206,Function_206,0x6D00..0x6EF6
+28116,0x6DD4,$/content/multiplayer/PR_Disabled000,likely logic anchor,28114,0x6DD2,206,Function_206,0x6D00..0x6EF6
+28163,0x6E03,$/content/multiplayer/spectator/mp_spectatorMk2,unknown,28161,0x6E01,206,Function_206,0x6D00..0x6EF6
+28221,0x6E3D,$/content/multiplayer/disabled_system_threadxxx,likely logic anchor,28219,0x6E3B,206,Function_206,0x6D00..0x6EF6
+28279,0x6E77,$/content/multiplayer/tutorial/mp_tutorial,unknown,28277,0x6E75,206,Function_206,0x6D00..0x6EF6
+28365,0x6ECD,multiplayer,unknown,28363,0x6ECB,206,Function_206,0x6D00..0x6EF6
+28388,0x6EE4,XP_Titles,unknown,28386,0x6EE2,206,Function_206,0x6D00..0x6EF6
+28413,0x6EFD,p_gen_crateMultiplayerWeapon01x,unknown,28411,0x6EFB,207,Function_207,0x6EF6..0x6F1E
+28453,0x6F25,p_gen_crateMultiplayerItem01x,unknown,28451,0x6F23,208,Function_208,0x6F1E..0x6F44
+28491,0x6F4B,p_gen_crateMultiplayerAmmo01x,unknown,28489,0x6F49,209,Function_209,0x6F44..0x6F6A
+28682,0x700A,Not enough room in the streaming array to fit a template! Raise the array size to fix!,debug/display text,28680,0x7008,211,Function_211,0x6FA2..0x7066
+31672,0x7BB8,INVALID HORSE PASSED IN TO GET_MOUNT_INDEX! GIVING AE_RIDEABLE_ANIMAL_MEX_Mule01,debug/display text,31670,0x7BB6,262,Function_262,0x7B2E..0x7C13
+32788,0x8014,title_xplvl_,unknown,32786,0x8012,273,Function_273,0x800A..0x807D
+32811,0x802B,title_amb_,unknown,32809,0x8029,273,Function_273,0x800A..0x807D
+32832,0x8040,title_weap_,unknown,32830,0x803E,273,Function_273,0x800A..0x807D
+32854,0x8056,title_pvp_,unknown,32852,0x8054,273,Function_273,0x800A..0x807D
+32875,0x806B,title_stat_,unknown,32873,0x8069,273,Function_273,0x800A..0x807D
+33722,0x83BA,SaveGame_DoNotInterruptMe,unknown,33720,0x83B8,285,Function_285,0x83B3..0x845D
+33758,0x83DE,SaveLoad,unknown,33756,0x83DC,285,Function_285,0x83B3..0x845D
+33769,0x83E9,Multiplayer Save Called,debug/display text,33767,0x83E7,285,Function_285,0x83B3..0x845D
+33827,0x8423,net.HardSaveRequested,unknown,33825,0x8421,285,Function_285,0x83B3..0x845D
+33858,0x8442,RDR_MP_Save,unknown,33856,0x8440,285,Function_285,0x83B3..0x845D
+40133,0x9CC5,STAT_SET_BIT: Attempting to use a Stat out of bounds.,debug/display text,40131,0x9CC3,297,Function_297,0x9CB1..0x9D1C
+40240,0x9D30,STAT_SET_BIT: Attempting to use a Stat out of bounds.,debug/display text,40238,0x9D2E,298,Function_298,0x9D1C..0x9D80
+40966,0xA006,challenge_01_128,unknown,40964,0xA004,302,Function_302,0x9FE9..0xA066
+41069,0xA06D,COOP_icon_128,unknown,41067,0xA06B,303,Function_303,0xA066..0xA3B4
+41706,0xA2EA,SC_AA_Pikes_Icon_128,unknown,41704,0xA2E8,303,Function_303,0xA066..0xA3B4
+41734,0xA306,SC_AA_Mercer_Icon_128,unknown,41732,0xA304,303,Function_303,0xA066..0xA3B4
+41763,0xA323,SC_AA_Tesoro_Icon_128,unknown,41761,0xA321,303,Function_303,0xA066..0xA3B4
+41792,0xA340,SC_AA_Gaptooth_Icon_128,unknown,41790,0xA33E,303,Function_303,0xA066..0xA3B4
+41823,0xA35F,SC_AA_TwinRocks_Icon_128,unknown,41821,0xA35D,303,Function_303,0xA066..0xA3B4
+41855,0xA37F,SC_AA_Nosalida_Icon_128,unknown,41853,0xA37D,303,Function_303,0xA066..0xA3B4
+41886,0xA39E,COOP_icon_128,unknown,41884,0xA39C,303,Function_303,0xA066..0xA3B4
+41989,0xA405,DISABLE_HORSE_WHISTLE,likely logic anchor,41987,0xA403,306,Function_306,0xA3E8..0xA441
+42022,0xA426,DISABLE_HORSE_WHISTLE,likely logic anchor,42020,0xA424,306,Function_306,0xA3E8..0xA441
+44986,0xAFBA,_info,unknown,44984,0xAFB8,311,Function_311,0xAF7F..0xB10A
+45014,0xAFD6,_num,unknown,45012,0xAFD4,311,Function_311,0xAF7F..0xB10A
+45047,0xAFF7,PVP_num2,unknown,45045,0xAFF5,311,Function_311,0xAF7F..0xB10A
+45078,0xB016,PVP_num3,unknown,45076,0xB014,311,Function_311,0xAF7F..0xB10A
+45149,0xB05D,_info_mp,unknown,45147,0xB05B,311,Function_311,0xAF7F..0xB10A
+45167,0xB06F,_info,unknown,45165,0xB06D,311,Function_311,0xAF7F..0xB10A
+45185,0xB081,AM_num,unknown,45183,0xB07F,311,Function_311,0xAF7F..0xB10A
+45225,0xB0A9,AM_num,unknown,45223,0xB0A7,311,Function_311,0xAF7F..0xB10A
+45265,0xB0D1,AM_num,unknown,45263,0xB0CF,311,Function_311,0xAF7F..0xB10A
+45357,0xB12D,_,unknown,45355,0xB12B,312,Function_312,0xB10A..0xB17C
+45407,0xB15F,_,unknown,45405,0xB15D,312,Function_312,0xB10A..0xB17C
+45619,0xB233,_mp_des,unknown,45617,0xB231,315,Function_315,0xB217..0xB274
+45654,0xB256,_des,unknown,45652,0xB254,315,Function_315,0xB217..0xB274
+45668,0xB264,_des,unknown,45666,0xB262,315,Function_315,0xB217..0xB274
+45719,0xB297,_DYNAMIC_TITLE,unknown,45717,0xB295,316,Function_316,0xB274..0xB2E0
+45766,0xB2C6,_DYNAMIC_TITLE,unknown,45764,0xB2C4,316,Function_316,0xB274..0xB2E0
+45934,0xB36E,we should have a goal at this point,debug/display text,45932,0xB36C,318,Function_318,0xB2F3..0xB3F0
+46075,0xB3FB,PVDM_1,unknown,46073,0xB3F9,319,Function_319,0xB3F0..0xC783
+46096,0xB410,PVDM_2,unknown,46094,0xB40E,319,Function_319,0xB3F0..0xC783
+46117,0xB425,PVTD_1,unknown,46115,0xB423,319,Function_319,0xB3F0..0xC783
+46138,0xB43A,PVTD_2,unknown,46136,0xB438,319,Function_319,0xB3F0..0xC783
+46159,0xB44F,PVTD_3,unknown,46157,0xB44D,319,Function_319,0xB3F0..0xC783
+46180,0xB464,PVKS_1,unknown,46178,0xB462,319,Function_319,0xB3F0..0xC783
+46201,0xB479,PVKS_2,unknown,46199,0xB477,319,Function_319,0xB3F0..0xC783
+46222,0xB48E,PVKS2_1,unknown,46220,0xB48C,319,Function_319,0xB3F0..0xC783
+46245,0xB4A5,PVKS2_2,unknown,46243,0xB4A3,319,Function_319,0xB3F0..0xC783
+46268,0xB4BC,PVKS2_3,unknown,46266,0xB4BA,319,Function_319,0xB3F0..0xC783
+46291,0xB4D3,PVKS2_4,unknown,46289,0xB4D1,319,Function_319,0xB3F0..0xC783
+46314,0xB4EA,PVKS2_5,unknown,46312,0xB4E8,319,Function_319,0xB3F0..0xC783
+46337,0xB501,PVKD_1,unknown,46335,0xB4FF,319,Function_319,0xB3F0..0xC783
+46359,0xB517,PVKD_2,unknown,46357,0xB515,319,Function_319,0xB3F0..0xC783
+46381,0xB52D,PVKD_3,unknown,46379,0xB52B,319,Function_319,0xB3F0..0xC783
+46403,0xB543,PVUS1_1,unknown,46401,0xB541,319,Function_319,0xB3F0..0xC783
+46426,0xB55A,PVUS1_2,unknown,46424,0xB558,319,Function_319,0xB3F0..0xC783
+46449,0xB571,PVUS1_3,unknown,46447,0xB56F,319,Function_319,0xB3F0..0xC783
+46472,0xB588,PVUS2,unknown,46470,0xB586,319,Function_319,0xB3F0..0xC783
+46493,0xB59D,PVRV_1,unknown,46491,0xB59B,319,Function_319,0xB3F0..0xC783
+46515,0xB5B3,PVRV_2,unknown,46513,0xB5B1,319,Function_319,0xB3F0..0xC783
+46537,0xB5C9,PVRV_3,unknown,46535,0xB5C7,319,Function_319,0xB3F0..0xC783
+46559,0xB5DF,PVTS1_1,unknown,46557,0xB5DD,319,Function_319,0xB3F0..0xC783
+46582,0xB5F6,PVTS1_4,unknown,46580,0xB5F4,319,Function_319,0xB3F0..0xC783
+46605,0xB60D,PVTS1_5,unknown,46603,0xB60B,319,Function_319,0xB3F0..0xC783
+46628,0xB624,PVTS2_1,unknown,46626,0xB622,319,Function_319,0xB3F0..0xC783
+46651,0xB63B,PVHYD_1,unknown,46649,0xB639,319,Function_319,0xB3F0..0xC783
+46674,0xB652,PVHYW_1,unknown,46672,0xB650,319,Function_319,0xB3F0..0xC783
+46697,0xB669,PVHYG_1,unknown,46695,0xB667,319,Function_319,0xB3F0..0xC783
+46720,0xB680,PVHYS_1,unknown,46718,0xB67E,319,Function_319,0xB3F0..0xC783
+46743,0xB697,PVHYO_1,unknown,46741,0xB695,319,Function_319,0xB3F0..0xC783
+46766,0xB6AE,PVHYM_1,unknown,46764,0xB6AC,319,Function_319,0xB3F0..0xC783
+46789,0xB6C5,PVHYC_1,unknown,46787,0xB6C3,319,Function_319,0xB3F0..0xC783
+46812,0xB6DC,PVHYK_1,unknown,46810,0xB6DA,319,Function_319,0xB3F0..0xC783
+46835,0xB6F3,PVGTD_1,unknown,46833,0xB6F1,319,Function_319,0xB3F0..0xC783
+46858,0xB70A,PVGTW_1,unknown,46856,0xB708,319,Function_319,0xB3F0..0xC783
+46881,0xB721,PVGTG_1,unknown,46879,0xB71F,319,Function_319,0xB3F0..0xC783
+46904,0xB738,PVGTS_1,unknown,46902,0xB736,319,Function_319,0xB3F0..0xC783
+46927,0xB74F,PVGTO_1,unknown,46925,0xB74D,319,Function_319,0xB3F0..0xC783
+46950,0xB766,PVGTM_1,unknown,46948,0xB764,319,Function_319,0xB3F0..0xC783
+46973,0xB77D,PVGTC_1,unknown,46971,0xB77B,319,Function_319,0xB3F0..0xC783
+46996,0xB794,PVFFD_1,unknown,46994,0xB792,319,Function_319,0xB3F0..0xC783
+47019,0xB7AB,PVFFW_1,unknown,47017,0xB7A9,319,Function_319,0xB3F0..0xC783
+47042,0xB7C2,PVFFG_1,unknown,47040,0xB7C0,319,Function_319,0xB3F0..0xC783
+47065,0xB7D9,PVHWC,unknown,47063,0xB7D7,319,Function_319,0xB3F0..0xC783
+47086,0xB7EE,PVHWG,unknown,47084,0xB7EC,319,Function_319,0xB3F0..0xC783
+47107,0xB803,PVHMC,unknown,47105,0xB801,319,Function_319,0xB3F0..0xC783
+47128,0xB818,PVHCC,unknown,47126,0xB816,319,Function_319,0xB3F0..0xC783
+47149,0xB82D,OC_SU,unknown,47147,0xB82B,319,Function_319,0xB3F0..0xC783
+47170,0xB842,OC_W2_1,unknown,47168,0xB840,319,Function_319,0xB3F0..0xC783
+47193,0xB859,OC_W2_2,unknown,47191,0xB857,319,Function_319,0xB3F0..0xC783
+47216,0xB870,OC_W2_3,unknown,47214,0xB86E,319,Function_319,0xB3F0..0xC783
+47239,0xB887,CA,unknown,47237,0xB885,319,Function_319,0xB3F0..0xC783
+47257,0xB899,CAKD,unknown,47255,0xB897,319,Function_319,0xB3F0..0xC783
+47277,0xB8AD,CAND,unknown,47275,0xB8AB,319,Function_319,0xB3F0..0xC783
+47297,0xB8C1,CASL,unknown,47295,0xB8BF,319,Function_319,0xB3F0..0xC783
+47317,0xB8D5,CAMK,unknown,47315,0xB8D3,319,Function_319,0xB3F0..0xC783
+47337,0xB8E9,CAMN,unknown,47335,0xB8E7,319,Function_319,0xB3F0..0xC783
+47357,0xB8FD,CAGN,unknown,47355,0xB8FB,319,Function_319,0xB3F0..0xC783
+47377,0xB911,COR1,unknown,47375,0xB90F,319,Function_319,0xB3F0..0xC783
+47397,0xB925,COR10,unknown,47395,0xB923,319,Function_319,0xB3F0..0xC783
+47418,0xB93A,COR50,unknown,47416,0xB938,319,Function_319,0xB3F0..0xC783
+47439,0xB94F,COR250,unknown,47437,0xB94D,319,Function_319,0xB3F0..0xC783
+47461,0xB965,COD1,unknown,47459,0xB963,319,Function_319,0xB3F0..0xC783
+47481,0xB979,COD10,unknown,47479,0xB977,319,Function_319,0xB3F0..0xC783
+47502,0xB98E,COD50,unknown,47500,0xB98C,319,Function_319,0xB3F0..0xC783
+47523,0xB9A3,COD250,unknown,47521,0xB9A1,319,Function_319,0xB3F0..0xC783
+47545,0xB9B9,COA1,unknown,47543,0xB9B7,319,Function_319,0xB3F0..0xC783
+47565,0xB9CD,COA10,unknown,47563,0xB9CB,319,Function_319,0xB3F0..0xC783
+47586,0xB9E2,COA50,unknown,47584,0xB9E0,319,Function_319,0xB3F0..0xC783
+47607,0xB9F7,COA250,unknown,47605,0xB9F5,319,Function_319,0xB3F0..0xC783
+47629,0xBA0D,CSPKTM1,unknown,47627,0xBA0B,319,Function_319,0xB3F0..0xC783
+47652,0xBA24,CSPKTM2,unknown,47650,0xBA22,319,Function_319,0xB3F0..0xC783
+47675,0xBA3B,CSPKTM3,unknown,47673,0xBA39,319,Function_319,0xB3F0..0xC783
+47698,0xBA52,CSPKKS1,unknown,47696,0xBA50,319,Function_319,0xB3F0..0xC783
+47721,0xBA69,CSPKKS2,unknown,47719,0xBA67,319,Function_319,0xB3F0..0xC783
+47744,0xBA80,CSPKKS3,unknown,47742,0xBA7E,319,Function_319,0xB3F0..0xC783
+47767,0xBA97,CSPKKL1,unknown,47765,0xBA95,319,Function_319,0xB3F0..0xC783
+47790,0xBAAE,CSPKKL2,unknown,47788,0xBAAC,319,Function_319,0xB3F0..0xC783
+47813,0xBAC5,CSPKKL3,unknown,47811,0xBAC3,319,Function_319,0xB3F0..0xC783
+47836,0xBADC,CSPKND,unknown,47834,0xBADA,319,Function_319,0xB3F0..0xC783
+47858,0xBAF2,CSPKNN,unknown,47856,0xBAF0,319,Function_319,0xB3F0..0xC783
+47880,0xBB08,CSPKCW1,unknown,47878,0xBB06,319,Function_319,0xB3F0..0xC783
+47903,0xBB1F,CSPKCW2,unknown,47901,0xBB1D,319,Function_319,0xB3F0..0xC783
+47926,0xBB36,CSPKCW3,unknown,47924,0xBB34,319,Function_319,0xB3F0..0xC783
+47949,0xBB4D,CSFMTM1,unknown,47947,0xBB4B,319,Function_319,0xB3F0..0xC783
+47972,0xBB64,CSFMTM2,unknown,47970,0xBB62,319,Function_319,0xB3F0..0xC783
+47995,0xBB7B,CSFMTM3,unknown,47993,0xBB79,319,Function_319,0xB3F0..0xC783
+48018,0xBB92,CSFMKS1,unknown,48016,0xBB90,319,Function_319,0xB3F0..0xC783
+48041,0xBBA9,CSFMKS2,unknown,48039,0xBBA7,319,Function_319,0xB3F0..0xC783
+48064,0xBBC0,CSFMKS3,unknown,48062,0xBBBE,319,Function_319,0xB3F0..0xC783
+48087,0xBBD7,CSFMKL1,unknown,48085,0xBBD5,319,Function_319,0xB3F0..0xC783
+48110,0xBBEE,CSFMKL2,unknown,48108,0xBBEC,319,Function_319,0xB3F0..0xC783
+48133,0xBC05,CSFMKL3,unknown,48131,0xBC03,319,Function_319,0xB3F0..0xC783
+48156,0xBC1C,CSFMND,unknown,48154,0xBC1A,319,Function_319,0xB3F0..0xC783
+48178,0xBC32,CSFMNN,unknown,48176,0xBC30,319,Function_319,0xB3F0..0xC783
+48200,0xBC48,CSFMGT1,unknown,48198,0xBC46,319,Function_319,0xB3F0..0xC783
+48223,0xBC5F,CSFMGT2,unknown,48221,0xBC5D,319,Function_319,0xB3F0..0xC783
+48246,0xBC76,CSFMGT3,unknown,48244,0xBC74,319,Function_319,0xB3F0..0xC783
+48269,0xBC8D,CSTSTM1,unknown,48267,0xBC8B,319,Function_319,0xB3F0..0xC783
+48292,0xBCA4,CSTSTM2,unknown,48290,0xBCA2,319,Function_319,0xB3F0..0xC783
+48315,0xBCBB,CSTSTM3,unknown,48313,0xBCB9,319,Function_319,0xB3F0..0xC783
+48338,0xBCD2,CSTSKS1,unknown,48336,0xBCD0,319,Function_319,0xB3F0..0xC783
+48361,0xBCE9,CSTSKS2,unknown,48359,0xBCE7,319,Function_319,0xB3F0..0xC783
+48384,0xBD00,CSTSKS3,unknown,48382,0xBCFE,319,Function_319,0xB3F0..0xC783
+48407,0xBD17,CSTSKL1,unknown,48405,0xBD15,319,Function_319,0xB3F0..0xC783
+48430,0xBD2E,CSTSKL2,unknown,48428,0xBD2C,319,Function_319,0xB3F0..0xC783
+48453,0xBD45,CSTSKL3,unknown,48451,0xBD43,319,Function_319,0xB3F0..0xC783
+48476,0xBD5C,CSTSND,unknown,48474,0xBD5A,319,Function_319,0xB3F0..0xC783
+48498,0xBD72,CSTSNN,unknown,48496,0xBD70,319,Function_319,0xB3F0..0xC783
+48520,0xBD88,CSTSGT1,unknown,48518,0xBD86,319,Function_319,0xB3F0..0xC783
+48543,0xBD9F,CSTSGT2,unknown,48541,0xBD9D,319,Function_319,0xB3F0..0xC783
+48566,0xBDB6,CSTSGT3,unknown,48564,0xBDB4,319,Function_319,0xB3F0..0xC783
+48589,0xBDCD,CSGPTM1,unknown,48587,0xBDCB,319,Function_319,0xB3F0..0xC783
+48612,0xBDE4,CSGPTM2,unknown,48610,0xBDE2,319,Function_319,0xB3F0..0xC783
+48635,0xBDFB,CSGPTM3,unknown,48633,0xBDF9,319,Function_319,0xB3F0..0xC783
+48658,0xBE12,CSGPKS1,unknown,48656,0xBE10,319,Function_319,0xB3F0..0xC783
+48681,0xBE29,CSGPKS2,unknown,48679,0xBE27,319,Function_319,0xB3F0..0xC783
+48704,0xBE40,CSGPKS3,unknown,48702,0xBE3E,319,Function_319,0xB3F0..0xC783
+48727,0xBE57,CSGPKL1,unknown,48725,0xBE55,319,Function_319,0xB3F0..0xC783
+48750,0xBE6E,CSGPKL2,unknown,48748,0xBE6C,319,Function_319,0xB3F0..0xC783
+48773,0xBE85,CSGPKL3,unknown,48771,0xBE83,319,Function_319,0xB3F0..0xC783
+48796,0xBE9C,CSGPND,unknown,48794,0xBE9A,319,Function_319,0xB3F0..0xC783
+48818,0xBEB2,CSGPNN,unknown,48816,0xBEB0,319,Function_319,0xB3F0..0xC783
+48840,0xBEC8,CSGPBG1,unknown,48838,0xBEC6,319,Function_319,0xB3F0..0xC783
+48863,0xBEDF,CSGPBG2,unknown,48861,0xBEDD,319,Function_319,0xB3F0..0xC783
+48886,0xBEF6,CSGPBG3,unknown,48884,0xBEF4,319,Function_319,0xB3F0..0xC783
+48909,0xBF0D,CSTMTM1,unknown,48907,0xBF0B,319,Function_319,0xB3F0..0xC783
+48932,0xBF24,CSTMTM2,unknown,48930,0xBF22,319,Function_319,0xB3F0..0xC783
+48955,0xBF3B,CSTMTM3,unknown,48953,0xBF39,319,Function_319,0xB3F0..0xC783
+48978,0xBF52,CSTMKS1,unknown,48976,0xBF50,319,Function_319,0xB3F0..0xC783
+49001,0xBF69,CSTMKS2,unknown,48999,0xBF67,319,Function_319,0xB3F0..0xC783
+49024,0xBF80,CSTMKS3,unknown,49022,0xBF7E,319,Function_319,0xB3F0..0xC783
+49047,0xBF97,CSTMKL1,unknown,49045,0xBF95,319,Function_319,0xB3F0..0xC783
+49070,0xBFAE,CSTMKL2,unknown,49068,0xBFAC,319,Function_319,0xB3F0..0xC783
+49093,0xBFC5,CSTMKL3,unknown,49091,0xBFC3,319,Function_319,0xB3F0..0xC783
+49116,0xBFDC,CSTMND,unknown,49114,0xBFDA,319,Function_319,0xB3F0..0xC783
+49138,0xBFF2,CSTMNN,unknown,49136,0xBFF0,319,Function_319,0xB3F0..0xC783
+49210,0xC03A,CSTMCK1,unknown,49208,0xC038,319,Function_319,0xB3F0..0xC783
+49233,0xC051,CSTMCK2,unknown,49231,0xC04F,319,Function_319,0xB3F0..0xC783
+49256,0xC068,CSTMCK3,unknown,49254,0xC066,319,Function_319,0xB3F0..0xC783
+49279,0xC07F,CSNSTM1,unknown,49277,0xC07D,319,Function_319,0xB3F0..0xC783
+49302,0xC096,CSNSTM2,unknown,49300,0xC094,319,Function_319,0xB3F0..0xC783
+49325,0xC0AD,CSNSTM3,unknown,49323,0xC0AB,319,Function_319,0xB3F0..0xC783
+49348,0xC0C4,CSNSKS1,unknown,49346,0xC0C2,319,Function_319,0xB3F0..0xC783
+49371,0xC0DB,CSNSKS2,unknown,49369,0xC0D9,319,Function_319,0xB3F0..0xC783
+49394,0xC0F2,CSNSKS3,unknown,49392,0xC0F0,319,Function_319,0xB3F0..0xC783
+49417,0xC109,CSNSKL1,unknown,49415,0xC107,319,Function_319,0xB3F0..0xC783
+49440,0xC120,CSNSKL2,unknown,49438,0xC11E,319,Function_319,0xB3F0..0xC783
+49463,0xC137,CSNSKL3,unknown,49461,0xC135,319,Function_319,0xB3F0..0xC783
+49486,0xC14E,CSNSND,unknown,49484,0xC14C,319,Function_319,0xB3F0..0xC783
+49508,0xC164,CSNSNN,unknown,49506,0xC162,319,Function_319,0xB3F0..0xC783
+49530,0xC17A,CSNSHT1,unknown,49528,0xC178,319,Function_319,0xB3F0..0xC783
+49553,0xC191,CSNSHT2,unknown,49551,0xC18F,319,Function_319,0xB3F0..0xC783
+49576,0xC1A8,CSNSHT3,unknown,49574,0xC1A6,319,Function_319,0xB3F0..0xC783
+49599,0xC1BF,CAA,unknown,49597,0xC1BD,319,Function_319,0xB3F0..0xC783
+49618,0xC1D2,CAAKD,unknown,49616,0xC1D0,319,Function_319,0xB3F0..0xC783
+49639,0xC1E7,CAAND,unknown,49637,0xC1E5,319,Function_319,0xB3F0..0xC783
+49660,0xC1FC,CAAMK,unknown,49658,0xC1FA,319,Function_319,0xB3F0..0xC783
+49681,0xC211,CAASL,unknown,49679,0xC20F,319,Function_319,0xB3F0..0xC783
+49702,0xC226,CAAMN,unknown,49700,0xC224,319,Function_319,0xB3F0..0xC783
+49723,0xC23B,CAAGN,unknown,49721,0xC239,319,Function_319,0xB3F0..0xC783
+49744,0xC250,CAACU,unknown,49742,0xC24E,319,Function_319,0xB3F0..0xC783
+49765,0xC265,CAPKTM1,unknown,49763,0xC263,319,Function_319,0xB3F0..0xC783
+49788,0xC27C,CAPKTM2,unknown,49786,0xC27A,319,Function_319,0xB3F0..0xC783
+49811,0xC293,CAPKTM3,unknown,49809,0xC291,319,Function_319,0xB3F0..0xC783
+49834,0xC2AA,CAFMTM1,unknown,49832,0xC2A8,319,Function_319,0xB3F0..0xC783
+49857,0xC2C1,CAFMTM2,unknown,49855,0xC2BF,319,Function_319,0xB3F0..0xC783
+49880,0xC2D8,CAFMTM3,unknown,49878,0xC2D6,319,Function_319,0xB3F0..0xC783
+49903,0xC2EF,CATSTM1,unknown,49901,0xC2ED,319,Function_319,0xB3F0..0xC783
+49926,0xC306,CATSTM2,unknown,49924,0xC304,319,Function_319,0xB3F0..0xC783
+49949,0xC31D,CATSTM3,unknown,49947,0xC31B,319,Function_319,0xB3F0..0xC783
+49972,0xC334,CAGPTM1,unknown,49970,0xC332,319,Function_319,0xB3F0..0xC783
+49995,0xC34B,CAGPTM2,unknown,49993,0xC349,319,Function_319,0xB3F0..0xC783
+50018,0xC362,CAGPTM3,unknown,50016,0xC360,319,Function_319,0xB3F0..0xC783
+50041,0xC379,CATMTM1,unknown,50039,0xC377,319,Function_319,0xB3F0..0xC783
+50064,0xC390,CATMTM2,unknown,50062,0xC38E,319,Function_319,0xB3F0..0xC783
+50087,0xC3A7,CATMTM3,unknown,50085,0xC3A5,319,Function_319,0xB3F0..0xC783
+50110,0xC3BE,CANSTM1,unknown,50108,0xC3BC,319,Function_319,0xB3F0..0xC783
+50133,0xC3D5,CANSTM2,unknown,50131,0xC3D3,319,Function_319,0xB3F0..0xC783
+50156,0xC3EC,CANSTM3,unknown,50154,0xC3EA,319,Function_319,0xB3F0..0xC783
+50179,0xC403,WP_REP,unknown,50177,0xC401,319,Function_319,0xB3F0..0xC783
+50201,0xC419,WP_VOL,unknown,50199,0xC417,319,Function_319,0xB3F0..0xC783
+50223,0xC42F,WP_WIN,unknown,50221,0xC42D,319,Function_319,0xB3F0..0xC783
+50245,0xC445,WP_SCH,unknown,50243,0xC443,319,Function_319,0xB3F0..0xC783
+50267,0xC45B,WP_PMP,unknown,50265,0xC459,319,Function_319,0xB3F0..0xC783
+50289,0xC471,WP_SPR,unknown,50287,0xC46F,319,Function_319,0xB3F0..0xC783
+50311,0xC487,WP_DBL,unknown,50309,0xC485,319,Function_319,0xB3F0..0xC783
+50333,0xC49D,WP_SAW,unknown,50331,0xC49B,319,Function_319,0xB3F0..0xC783
+50355,0xC4B3,WP_ROL,unknown,50353,0xC4B1,319,Function_319,0xB3F0..0xC783
+50377,0xC4C9,WP_SEMP,unknown,50375,0xC4C7,319,Function_319,0xB3F0..0xC783
+50400,0xC4E0,WP_SEMS,unknown,50398,0xC4DE,319,Function_319,0xB3F0..0xC783
+50423,0xC4F7,WP_CAR,unknown,50421,0xC4F5,319,Function_319,0xB3F0..0xC783
+50445,0xC50D,WP_BUF,unknown,50443,0xC50B,319,Function_319,0xB3F0..0xC783
+50467,0xC523,WP_HEN,unknown,50465,0xC521,319,Function_319,0xB3F0..0xC783
+50489,0xC539,WP_HPW,unknown,50487,0xC537,319,Function_319,0xB3F0..0xC783
+50511,0xC54F,WP_DBB,unknown,50509,0xC54D,319,Function_319,0xB3F0..0xC783
+50533,0xC565,WP_BLT,unknown,50531,0xC563,319,Function_319,0xB3F0..0xC783
+50555,0xC57B,WP_EVN,unknown,50553,0xC579,319,Function_319,0xB3F0..0xC783
+50577,0xC591,WP_LMT,unknown,50575,0xC58F,319,Function_319,0xB3F0..0xC783
+50599,0xC5A7,WP_MSR,unknown,50597,0xC5A5,319,Function_319,0xB3F0..0xC783
+50621,0xC5BD,WP_REP2,unknown,50619,0xC5BB,319,Function_319,0xB3F0..0xC783
+50644,0xC5D4,WP_VOL2,unknown,50642,0xC5D2,319,Function_319,0xB3F0..0xC783
+50667,0xC5EB,WP_WIN2,unknown,50665,0xC5E9,319,Function_319,0xB3F0..0xC783
+50690,0xC602,WP_SCH2,unknown,50688,0xC600,319,Function_319,0xB3F0..0xC783
+50713,0xC619,WP_PMP2,unknown,50711,0xC617,319,Function_319,0xB3F0..0xC783
+50736,0xC630,WP_SPR2,unknown,50734,0xC62E,319,Function_319,0xB3F0..0xC783
+50759,0xC647,WP_DBL2,unknown,50757,0xC645,319,Function_319,0xB3F0..0xC783
+50782,0xC65E,WP_SAW2,unknown,50780,0xC65C,319,Function_319,0xB3F0..0xC783
+50805,0xC675,WP_ROL2,unknown,50803,0xC673,319,Function_319,0xB3F0..0xC783
+50828,0xC68C,WP_SAP2,unknown,50826,0xC68A,319,Function_319,0xB3F0..0xC783
+50851,0xC6A3,WP_SAS2,unknown,50849,0xC6A1,319,Function_319,0xB3F0..0xC783
+50874,0xC6BA,WP_CAR2,unknown,50872,0xC6B8,319,Function_319,0xB3F0..0xC783
+50897,0xC6D1,WP_BUF2,unknown,50895,0xC6CF,319,Function_319,0xB3F0..0xC783
+50920,0xC6E8,WP_HEN2,unknown,50918,0xC6E6,319,Function_319,0xB3F0..0xC783
+50943,0xC6FF,WP_HPW2,unknown,50941,0xC6FD,319,Function_319,0xB3F0..0xC783
+50966,0xC716,WP_DBB2,unknown,50964,0xC714,319,Function_319,0xB3F0..0xC783
+50989,0xC72D,WP_BLT2,unknown,50987,0xC72B,319,Function_319,0xB3F0..0xC783
+51012,0xC744,WP_EVN2,unknown,51010,0xC742,319,Function_319,0xB3F0..0xC783
+51035,0xC75B,WP_LMT2,unknown,51033,0xC759,319,Function_319,0xB3F0..0xC783
+51058,0xC772,WP_MSR2,unknown,51056,0xC770,319,Function_319,0xB3F0..0xC783
+51082,0xC78A,challenge_01lvl2,unknown,51080,0xC788,320,Function_320,0xC783..0xC79C
+51107,0xC7A3,challenge_01,unknown,51105,0xC7A1,321,Function_321,0xC79C..0xC7B1
+51128,0xC7B8,COOP_advanced_icon,unknown,51126,0xC7B6,322,Function_322,0xC7B1..0xC7CC
+51155,0xC7D3,SC_AA_Nosalida_Icon,unknown,51153,0xC7D1,323,Function_323,0xC7CC..0xC7E8
+51183,0xC7EF,SC_AA_TwinRocks_Icon,unknown,51181,0xC7ED,324,Function_324,0xC7E8..0xC805
+51212,0xC80C,SC_AA_Gaptooth_Icon,unknown,51210,0xC80A,325,Function_325,0xC805..0xC821
+51240,0xC828,SC_AA_Tesoro_Icon,unknown,51238,0xC826,326,Function_326,0xC821..0xC83B
+51266,0xC842,SC_AA_Mercer_Icon,unknown,51264,0xC840,327,Function_327,0xC83B..0xC855
+51292,0xC85C,SC_AA_Pikes_Icon,unknown,51290,0xC85A,328,Function_328,0xC855..0xC86E
+51317,0xC875,COOP_icon,unknown,51315,0xC873,329,Function_329,0xC86E..0xC880
+51335,0xC887,challenge_04lvl2,unknown,51333,0xC885,330,Function_330,0xC880..0xC899
+51360,0xC8A0,challenge_04,unknown,51358,0xC89E,331,Function_331,0xC899..0xC8AE
+51381,0xC8B5,MP_HeavyWeapons_Icon,unknown,51379,0xC8B3,332,Function_332,0xC8AE..0xC8CB
+51410,0xC8D2,MP_Goldrush_icon,unknown,51408,0xC8D0,333,Function_333,0xC8CB..0xC8E4
+51435,0xC8EB,MP_GrabTheBagII_icon,unknown,51433,0xC8E9,334,Function_334,0xC8E4..0xC901
+51464,0xC908,MP_GrabTheBag_Icon,unknown,51462,0xC906,335,Function_335,0xC901..0xC91C
+51491,0xC923,MP_HoldYourOwn_Icon,unknown,51489,0xC921,336,Function_336,0xC91C..0xC938
+51519,0xC93F,MP_TrickShot_Icon,unknown,51517,0xC93D,337,Function_337,0xC938..0xC952
+51545,0xC959,MP_Revenge_Icon,unknown,51543,0xC957,338,Function_338,0xC952..0xC96A
+51569,0xC971,MP_Unstoppable_Icon,unknown,51567,0xC96F,339,Function_339,0xC96A..0xC986
+51597,0xC98D,MP_KDR_Icon,unknown,51595,0xC98B,340,Function_340,0xC986..0xC99A
+51617,0xC9A1,KillStreakII_Icon,unknown,51615,0xC99F,341,Function_341,0xC99A..0xC9B4
+51643,0xC9BB,MP_KillStreak_Icon,unknown,51641,0xC9B9,342,Function_342,0xC9B4..0xC9CF
+51670,0xC9D6,MP_TDM_Icon,unknown,51668,0xC9D4,343,Function_343,0xC9CF..0xC9E3
+52024,0xCB38,SC_Travel_Icon,unknown,52022,0xCB36,346,Function_346,0xCB31..0xCB48
+52067,0xCB63,MP_DM_Icon,unknown,52065,0xCB61,348,Function_348,0xCB5C..0xCB6F
+52140,0xCBAC,NHIL,unknown,52138,0xCBAA,350,Function_350,0xCB93..0xCBCF
+52158,0xCBBE,NHIL,unknown,52156,0xCBBC,350,Function_350,0xCB93..0xCBCF

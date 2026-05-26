@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "player_id": "remote_1",
+  "name": "Remote Player",
+  "timestamp_ms": 1779604744594,
+  "world": "rdr_sp",
+  "x": 3.067,
+  "y": 3.949,
+  "z": 0.0,
+  "heading": 217.838,
+  "speed": 3.25,
+  "state": "test_orbit",
+  "valid": true
+}

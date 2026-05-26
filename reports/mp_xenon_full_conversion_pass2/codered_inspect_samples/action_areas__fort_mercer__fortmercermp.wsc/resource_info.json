@@ -1,0 +1,29 @@
+{
+  "family": "RSC85",
+  "normalized_from_xsc": false,
+  "magic_hex": "52 53 43 85",
+  "resource_type": 2,
+  "flag1": 2147483648,
+  "flag2": 2147483665,
+  "header_size": 16,
+  "stored_size": 28993,
+  "payload_size": 28977,
+  "expected_unpacked_size": 69632,
+  "compression": "zstandard",
+  "encryption": "aes-256-ecb-16-pass",
+  "path": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\all_converted_editable_wsc\\action_areas\\fort_mercer\\fortmercermp.wsc",
+  "source_sha256": "8C60B7FDE64255B41510D4C54295A9D1A0F70B9E82AC40E93B4803A9798153CA",
+  "normalized_sha256": "8C60B7FDE64255B41510D4C54295A9D1A0F70B9E82AC40E93B4803A9798153CA",
+  "decoded_sha256": "EF7A10310C9811F134F194C1925917067698B2314FD49D76E7FC3F08F5615B84",
+  "decoded_size": 69632,
+  "key_attempts": [
+    {
+      "method": "rdr_exe",
+      "path": "D:\\Games\\Red Dead Redemption\\RDR.exe",
+      "exists": true,
+      "offset": "0x2293500",
+      "key_sha1": "87862497EE46855372B51C7A324A2BB5CD66F4AF"
+    }
+  ],
+  "decode_error": ""
+}

@@ -1,0 +1,4 @@
+term,offset,offset_hex,status,reason
+multiplayer_update_thread,2748,0xABC,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
+multiplayer_update_thread,14505,0x38A9,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
+SaveLoad,45372,0xB13C,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching

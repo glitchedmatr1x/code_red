@@ -1,0 +1,12 @@
+{
+  "source": "CodeRED_AI_Menu",
+  "action": "dismiss_ai_guest_request",
+  "model": "ACTOR_mpplayer_dlc31",
+  "actor_enum_resolved": true,
+  "actor_enum": 970,
+  "actor_enum_hex": "0x000003CA",
+  "spawned_actor_count": 0,
+  "player_side_faction": 2,
+  "status": "queued",
+  "timestamp": 1778164360
+}

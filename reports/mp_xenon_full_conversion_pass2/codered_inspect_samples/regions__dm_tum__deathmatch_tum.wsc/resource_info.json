@@ -1,0 +1,29 @@
+{
+  "family": "RSC85",
+  "normalized_from_xsc": false,
+  "magic_hex": "52 53 43 85",
+  "resource_type": 2,
+  "flag1": 2147483648,
+  "flag2": 2147483655,
+  "header_size": 16,
+  "stored_size": 12617,
+  "payload_size": 12601,
+  "expected_unpacked_size": 28672,
+  "compression": "zstandard",
+  "encryption": "aes-256-ecb-16-pass",
+  "path": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\mp_xenon_full_conversion_pass2\\all_converted_editable_wsc\\regions\\dm_tum\\deathmatch_tum.wsc",
+  "source_sha256": "09A4CE65B586443300D9D6D4D6EFEB174C2CF937F3CA41250E8DE3F4380017ED",
+  "normalized_sha256": "09A4CE65B586443300D9D6D4D6EFEB174C2CF937F3CA41250E8DE3F4380017ED",
+  "decoded_sha256": "5B98EA56807BE6BD75A8ED29A1999AC73387F15C765B9340217979243457C7DA",
+  "decoded_size": 28672,
+  "key_attempts": [
+    {
+      "method": "rdr_exe",
+      "path": "D:\\Games\\Red Dead Redemption\\RDR.exe",
+      "exists": true,
+      "offset": "0x2293500",
+      "key_sha1": "87862497EE46855372B51C7A324A2BB5CD66F4AF"
+    }
+  ],
+  "decode_error": ""
+}

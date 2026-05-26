@@ -1,0 +1,567 @@
+string_offset,string_offset_hex,string_text,string_class,reference_instruction_offset,reference_instruction_offset_hex,owner_function_index,owner_function,owner_function_offset_range
+19,0x13,noMPFlash,unknown,17,0x11,0,main,0x0..0x1E5
+98,0x62,MultSysThread,unknown,96,0x60,0,main,0x0..0x1E5
+308,0x134,Slot,unknown,306,0x132,0,main,0x0..0x1E5
+441,0x1B9,top,unknown,439,0x1B7,0,main,0x0..0x1E5
+462,0x1CE,MPReward,unknown,460,0x1CC,0,main,0x0..0x1E5
+586,0x24A,MP_Ticker,unknown,584,0x248,4,Function_4,0x230..0x339
+601,0x259,Reticle,unknown,599,0x257,4,Function_4,0x230..0x339
+614,0x266,WeaponAmmo,unknown,612,0x264,4,Function_4,0x230..0x339
+630,0x276,Reticle,unknown,628,0x274,4,Function_4,0x230..0x339
+643,0x283,WeaponAmmo,unknown,641,0x281,4,Function_4,0x230..0x339
+678,0x2A6,Splash_Message,unknown,676,0x2A4,4,Function_4,0x230..0x339
+698,0x2BA,Splash_Objective,unknown,696,0x2B8,4,Function_4,0x230..0x339
+720,0x2D0,Subtitle_Enabler,likely logic anchor,718,0x2CE,4,Function_4,0x230..0x339
+750,0x2EE,Splash_Message,unknown,748,0x2EC,4,Function_4,0x230..0x339
+778,0x30A,Splash_Objective,unknown,776,0x308,4,Function_4,0x230..0x339
+800,0x320,Subtitle_Enabler,likely logic anchor,798,0x31E,4,Function_4,0x230..0x339
+849,0x351,MPReward,unknown,847,0x34F,6,Function_6,0x34A..0x36B
+1580,0x62C,miss,unknown,1578,0x62A,15,Function_15,0x61E..0x65D
+1594,0x63A,ziss,unknown,1592,0x638,15,Function_15,0x61E..0x65D
+1611,0x64B,_short,unknown,1609,0x649,15,Function_15,0x61E..0x65D
+1748,0x6D4,MPSplash,unknown,1746,0x6D2,18,Function_18,0x686..0x6E7
+2184,0x888,UseCase,unknown,2182,0x886,26,Function_26,0x7FF..0x96C
+2194,0x892,ActivationRadius,unknown,2192,0x890,26,Function_26,0x7FF..0x96C
+2252,0x8CC,crateMultiplayer_close,unknown,2250,0x8CA,26,Function_26,0x7FF..0x96C
+2291,0x8F3,LOCKER_OPEN_QUICK_MASTER,unknown,2289,0x8F1,26,Function_26,0x7FF..0x96C
+3277,0xCCD,PackedWeapon,unknown,3275,0xCCB,43,Function_43,0xCC6..0xCDB
+3325,0xCFD,PackedMetadata,unknown,3323,0xCFB,46,Function_46,0xCF6..0xD0D
+3348,0xD14,ResetTime,unknown,3346,0xD12,47,Function_47,0xD0D..0xD1F
+3377,0xD31,gMP_OpenedPickupSet,unknown,3375,0xD2F,48,Function_48,0xD1F..0xD57
+3433,0xD69,gMPScratchLayout,unknown,3431,0xD67,49,Function_49,0xD57..0xD86
+3535,0xDCF,title_xplvl_0_ui,unknown,3533,0xDCD,50,Function_50,0xD86..0x10A9
+3835,0xEFB,net_player_joined,unknown,3833,0xEF9,50,Function_50,0xD86..0x10A9
+3995,0xF9B,NoMelee,unknown,3993,0xF99,50,Function_50,0xD86..0x10A9
+4035,0xFC3,NoMelee,unknown,4033,0xFC1,50,Function_50,0xD86..0x10A9
+4097,0x1001,ArmUp,unknown,4095,0xFFF,50,Function_50,0xD86..0x10A9
+4114,0x1012,ArmUp,unknown,4112,0x1010,50,Function_50,0xD86..0x10A9
+4154,0x103A,ArmUp,unknown,4152,0x1038,50,Function_50,0xD86..0x10A9
+4320,0x10E0,UseCase,unknown,4318,0x10DE,51,Function_51,0x10A9..0x132A
+4390,0x1126,mp_needs_rez,unknown,4388,0x1124,51,Function_51,0x10A9..0x132A
+4430,0x114E,mp_needs_rez_big,unknown,4428,0x114C,51,Function_51,0x10A9..0x132A
+4487,0x1187,MPCOOP_PLAYERDOWN,unknown,4485,0x1185,51,Function_51,0x10A9..0x132A
+4514,0x11A2,UN_Narr2_Pdown,unknown,4512,0x11A0,51,Function_51,0x10A9..0x132A
+4576,0x11E0,rezMe,unknown,4574,0x11DE,51,Function_51,0x10A9..0x132A
+4584,0x11E8,$/content/scripting/gringo/simplegringo/mp_rezBuddy,unknown,4582,0x11E6,51,Function_51,0x10A9..0x132A
+4686,0x124E,spine00,unknown,4684,0x124C,51,Function_51,0x10A9..0x132A
+5022,0x139E,Tried to get genfloat from not-yet-valid slot ,debug/display text,5020,0x139C,54,Function_54,0x1380..0x13E9
+5131,0x140B,,unknown,5129,0x1409,56,Function_56,0x13F9..0x1439
+5159,0x1427,NARRATOR,unknown,5157,0x1425,56,Function_56,0x13F9..0x1439
+5287,0x14A7,MPPlayerNameColored_0,unknown,5285,0x14A5,57,Function_57,0x1439..0x164D
+5312,0x14C0,MPPlayerNameColored_1,unknown,5310,0x14BE,57,Function_57,0x1439..0x164D
+5337,0x14D9,MPPlayerNameColored_2,unknown,5335,0x14D7,57,Function_57,0x1439..0x164D
+5362,0x14F2,MPPlayerNameColored_3,unknown,5360,0x14F0,57,Function_57,0x1439..0x164D
+5387,0x150B,MPPlayerNameColored_4,unknown,5385,0x1509,57,Function_57,0x1439..0x164D
+5412,0x1524,MPPlayerNameColored_5,unknown,5410,0x1522,57,Function_57,0x1439..0x164D
+5437,0x153D,MPPlayerNameColored_6,unknown,5435,0x153B,57,Function_57,0x1439..0x164D
+5462,0x1556,MPPlayerNameColored_7,unknown,5460,0x1554,57,Function_57,0x1439..0x164D
+5487,0x156F,MPPlayerNameColored_8,unknown,5485,0x156D,57,Function_57,0x1439..0x164D
+5512,0x1588,MPPlayerNameColored_9,unknown,5510,0x1586,57,Function_57,0x1439..0x164D
+5537,0x15A1,MPPlayerNameColored_10,unknown,5535,0x159F,57,Function_57,0x1439..0x164D
+5563,0x15BB,MPPlayerNameColored_11,unknown,5561,0x15B9,57,Function_57,0x1439..0x164D
+5589,0x15D5,MPPlayerNameColored_12,unknown,5587,0x15D3,57,Function_57,0x1439..0x164D
+5615,0x15EF,MPPlayerNameColored_13,unknown,5613,0x15ED,57,Function_57,0x1439..0x164D
+5641,0x1609,MPPlayerNameColored_14,unknown,5639,0x1607,57,Function_57,0x1439..0x164D
+5667,0x1623,MPPlayerNameColored_15,unknown,5665,0x1621,57,Function_57,0x1439..0x164D
+5693,0x163D,UNHANDLED SLOT,debug/display text,5691,0x163B,57,Function_57,0x1439..0x164D
+5873,0x16F1,Tried to get title from bad slot #,debug/display text,5871,0x16EF,62,Function_62,0x16B1..0x1757
+5932,0x172C,Common_Null,unknown,5930,0x172A,62,Function_62,0x16B1..0x1757
+5999,0x176F,jp,unknown,5997,0x176D,64,Function_64,0x1768..0x1776
+6034,0x1792,Tried to get title from bad slot #,debug/display text,6032,0x1790,65,Function_65,0x1776..0x17CD
+6144,0x1800,g,unknown,6142,0x17FE,68,Function_68,0x17F9..0x180D
+6214,0x1846,Tried to get bit ,debug/display text,6212,0x1844,70,Function_70,0x1826..0x18A7
+6247,0x1867, bit from bad slot ,debug/display text,6245,0x1865,70,Function_70,0x1826..0x18A7
+6493,0x195D,DEAD,unknown,6491,0x195B,71,Function_71,0x18A7..0x1BC0
+6504,0x1968,READY,unknown,6502,0x1966,71,Function_71,0x18A7..0x1BC0
+6516,0x1974,POKER_FOLDED,unknown,6514,0x1972,71,Function_71,0x18A7..0x1BC0
+6535,0x1987,RACE_FINISHED,unknown,6533,0x1985,71,Function_71,0x18A7..0x1BC0
+6555,0x199B,REGION_HOST,unknown,6553,0x1999,71,Function_71,0x18A7..0x1BC0
+6573,0x19AD,ACTOR_HIDDEN,likely logic anchor,6571,0x19AB,71,Function_71,0x18A7..0x1BC0
+6592,0x19C0,VOTE_TO_START,unknown,6590,0x19BE,71,Function_71,0x18A7..0x1BC0
+6612,0x19D4,VOTE_TO_SKIP,unknown,6610,0x19D2,71,Function_71,0x18A7..0x1BC0
+6631,0x19E7,VOTE_TO_REPLAY,unknown,6629,0x19E5,71,Function_71,0x18A7..0x1BC0
+6652,0x19FC,IS_IN_LOBBY,unknown,6650,0x19FA,71,Function_71,0x18A7..0x1BC0
+6670,0x1A0E,GAME_ARBITRATOR,unknown,6668,0x1A0C,71,Function_71,0x18A7..0x1BC0
+6692,0x1A24,JOINED_GAME,unknown,6690,0x1A22,71,Function_71,0x18A7..0x1BC0
+6710,0x1A36,SKIP_CUTSCENE,unknown,6708,0x1A34,71,Function_71,0x18A7..0x1BC0
+6730,0x1A4A,START_CUTSCENE,unknown,6728,0x1A48,71,Function_71,0x18A7..0x1BC0
+6751,0x1A5F,IS_SPECTATOR,unknown,6749,0x1A5D,71,Function_71,0x18A7..0x1BC0
+6770,0x1A72,DISTRICT_HOST,unknown,6768,0x1A70,71,Function_71,0x18A7..0x1BC0
+6790,0x1A86,NEEDS_REVIVAL,unknown,6788,0x1A84,71,Function_71,0x18A7..0x1BC0
+6810,0x1A9A,MP_BIT_MPLAW_MOSTWANTED,likely logic anchor,6808,0x1A98,71,Function_71,0x18A7..0x1BC0
+6840,0x1AB8,HAS_VIRAL_ACHIEVEMENT,unknown,6838,0x1AB6,71,Function_71,0x18A7..0x1BC0
+6868,0x1AD4,COMBATMODE_CASUAL,unknown,6866,0x1AD2,71,Function_71,0x18A7..0x1BC0
+6892,0x1AEC,COMBATMODE_EXPERT,unknown,6890,0x1AEA,71,Function_71,0x18A7..0x1BC0
+6916,0x1B04,IN_ACTOR_PICKER,likely logic anchor,6914,0x1B02,71,Function_71,0x18A7..0x1BC0
+6938,0x1B1A,MELEE_BLOCKED,unknown,6936,0x1B18,71,Function_71,0x18A7..0x1BC0
+6958,0x1B2E,BLIND_FIRE,unknown,6956,0x1B2C,71,Function_71,0x18A7..0x1BC0
+6975,0x1B3F,FREE_MODE_DEFENSE_ACTIVE,unknown,6973,0x1B3D,71,Function_71,0x18A7..0x1BC0
+7006,0x1B5E,PLAYER_IS_GRIEFER,unknown,7004,0x1B5C,71,Function_71,0x18A7..0x1BC0
+7030,0x1B76,CANNOT_AFFORD_MINIGAME,unknown,7028,0x1B74,71,Function_71,0x18A7..0x1BC0
+7059,0x1B93,FREE_MODE_DEFENSE_SPOONHOLDER,unknown,7057,0x1B91,71,Function_71,0x18A7..0x1BC0
+7095,0x1BB7,UNKNOWN,unknown,7093,0x1BB5,71,Function_71,0x18A7..0x1BC0
+7124,0x1BD4,TRIED TO USE IS_SLOT_DATA_VALID WITH BAD INDEX ,debug/display text,7122,0x1BD2,72,Function_72,0x1BC0..0x1C61
+7187,0x1C13,!,debug/display text,7185,0x1C11,72,Function_72,0x1BC0..0x1C61
+7448,0x1D18,net_posse_led,unknown,7446,0x1D16,80,Function_80,0x1CFE..0x1EB9
+7502,0x1D4E,net_posse_left,unknown,7500,0x1D4C,80,Function_80,0x1CFE..0x1EB9
+7552,0x1D80,Slot,unknown,7550,0x1D7E,80,Function_80,0x1CFE..0x1EB9
+7612,0x1DBC,net_posse_joined,unknown,7610,0x1DBA,80,Function_80,0x1CFE..0x1EB9
+7663,0x1DEF,net_posse_member_added,unknown,7661,0x1DED,80,Function_80,0x1CFE..0x1EB9
+7769,0x1E59,Slot,unknown,7767,0x1E57,80,Function_80,0x1CFE..0x1EB9
+7822,0x1E8E,net_posse_member_removed,unknown,7820,0x1E8C,80,Function_80,0x1CFE..0x1EB9
+7943,0x1F07,net.posse_prompt_teleport,unknown,7941,0x1F05,82,Function_82,0x1EDA..0x1F28
+8094,0x1F9E,ArmUp,unknown,8092,0x1F9C,85,Function_85,0x1F41..0x1FBE
+8115,0x1FB3,ArmUp,unknown,8113,0x1FB1,85,Function_85,0x1F41..0x1FBE
+8541,0x215D,generateRandomLifetimeScore,unknown,8539,0x215B,102,Function_102,0x2156..0x218C
+8642,0x21C2,DISABLE_HORSE_WHISTLE,likely logic anchor,8640,0x21C0,104,Function_104,0x21A5..0x21DE
+8938,0x22EA,PosseGPSPath,unknown,8936,0x22E8,110,Function_110,0x2293..0x2333
+9216,0x2400,Playerlayout,unknown,9214,0x23FE,114,Function_114,0x23F9..0x2480
+9351,0x2487,Playerlayout,unknown,9349,0x2485,115,Function_115,0x2480..0x2656
+9482,0x250A,state,unknown,9480,0x2508,115,Function_115,0x2480..0x2656
+9503,0x251F,state,unknown,9501,0x251D,115,Function_115,0x2480..0x2656
+9520,0x2530,state,unknown,9518,0x252E,115,Function_115,0x2480..0x2656
+9541,0x2545,state,unknown,9539,0x2543,115,Function_115,0x2480..0x2656
+9593,0x2579,timer,unknown,9591,0x2577,115,Function_115,0x2480..0x2656
+9615,0x258F,state,unknown,9613,0x258D,115,Function_115,0x2480..0x2656
+9633,0x25A1,timer,unknown,9631,0x259F,115,Function_115,0x2480..0x2656
+9665,0x25C1,state,unknown,9663,0x25BF,115,Function_115,0x2480..0x2656
+9780,0x2634,Playerlayout,unknown,9778,0x2632,115,Function_115,0x2480..0x2656
+10047,0x273F,duel,unknown,10045,0x273D,118,Function_118,0x2698..0x27B5
+10716,0x29DC,DroppedItem,likely logic anchor,10714,0x29DA,119,Function_119,0x27B5..0x32F9
+10738,0x29F2,DroppedItem,likely logic anchor,10736,0x29F0,119,Function_119,0x27B5..0x32F9
+10895,0x2A8F,DroppedWeapon,likely logic anchor,10893,0x2A8D,119,Function_119,0x27B5..0x32F9
+10919,0x2AA7,DroppedWeapon,likely logic anchor,10917,0x2AA5,119,Function_119,0x27B5..0x32F9
+11125,0x2B75,Weapon,unknown,11123,0x2B73,119,Function_119,0x27B5..0x32F9
+11191,0x2BB7,Headshot,unknown,11189,0x2BB5,119,Function_119,0x27B5..0x32F9
+11241,0x2BE9,KillBonus,unknown,11239,0x2BE7,119,Function_119,0x27B5..0x32F9
+11942,0x2EA6,GENMESS_GUARDIANANGEL,unknown,11940,0x2EA4,119,Function_119,0x27B5..0x32F9
+11973,0x2EC5,UN_Narr2_Gangel,likely logic anchor,11971,0x2EC3,119,Function_119,0x27B5..0x32F9
+12192,0x2FA0,GENMESS_EYE4EYE,unknown,12190,0x2F9E,119,Function_119,0x27B5..0x32F9
+12217,0x2FB9,UN_Narr2_Posthumous,unknown,12215,0x2FB7,119,Function_119,0x27B5..0x32F9
+12764,0x31DC,mp_assist,unknown,12762,0x31DA,119,Function_119,0x27B5..0x32F9
+12795,0x31FB,mp_assist_npc,unknown,12793,0x31F9,119,Function_119,0x27B5..0x32F9
+13096,0x3328,_,unknown,13094,0x3326,120,Function_120,0x32F9..0x3368
+13132,0x334C,_,unknown,13130,0x334A,120,Function_120,0x32F9..0x3368
+13173,0x3375,_count,unknown,13171,0x3373,121,Function_121,0x3368..0x338B
+13311,0x33FF,Killstreak_End,unknown,13309,0x33FD,123,Function_123,0x33C6..0x342C
+13339,0x341B,Killstreak,unknown,13337,0x3419,123,Function_123,0x33C6..0x342C
+13388,0x344C,XpComboTimer,unknown,13386,0x344A,124,Function_124,0x342C..0x347D
+13414,0x3466,XpComboTimer,unknown,13412,0x3464,124,Function_124,0x342C..0x347D
+13712,0x3590,STAT_INCREASE_INT_NOW: Attempting to use a Stat out of bounds.,debug/display text,13710,0x358E,130,Function_130,0x357D..0x379D
+13797,0x35E5,STAT_INCREASE_INT_NOW: You cannot increase this STAT_TYPE_LIFETIME directly: ,debug/display text,13795,0x35E3,130,Function_130,0x357D..0x379D
+13893,0x3645,"STAT_INCREASE_INT_NOW: You cannot increase a STAT_TYPE_LIFETIME directly, use the COLLECTION version instead!",debug/display text,13891,0x3643,130,Function_130,0x357D..0x379D
+14018,0x36C2,STAT_INCREASE_INT_NOW: iIncreaseValue < 0 - I am turning this into a positive number for you!,debug/display text,14016,0x36C0,130,Function_130,0x357D..0x379D
+14271,0x37BF,,unknown,14269,0x37BD,131,Function_131,0x379D..0x3DCA
+14295,0x37D7,+,unknown,14293,0x37D5,131,Function_131,0x379D..0x3DCA
+14306,0x37E2,-,unknown,14304,0x37E0,131,Function_131,0x379D..0x3DCA
+14368,0x3820,$,unknown,14366,0x381E,131,Function_131,0x379D..0x3DCA
+14452,0x3874,,unknown,14450,0x3872,131,Function_131,0x379D..0x3DCA
+14480,0x3890, lbs,debug/display text,14478,0x388E,131,Function_131,0x379D..0x3DCA
+14544,0x38D0, ton,debug/display text,14542,0x38CE,131,Function_131,0x379D..0x3DCA
+14697,0x3969, days,debug/display text,14695,0x3967,131,Function_131,0x379D..0x3DCA
+14719,0x397F, day,debug/display text,14717,0x397D,131,Function_131,0x379D..0x3DCA
+14751,0x399F, ,debug/display text,14749,0x399D,131,Function_131,0x379D..0x3DCA
+14782,0x39BE, hr,debug/display text,14780,0x39BC,131,Function_131,0x379D..0x3DCA
+14813,0x39DD, ,debug/display text,14811,0x39DB,131,Function_131,0x379D..0x3DCA
+14844,0x39FC, min,debug/display text,14842,0x39FA,131,Function_131,0x379D..0x3DCA
+14876,0x3A1C, ,debug/display text,14874,0x3A1A,131,Function_131,0x379D..0x3DCA
+14907,0x3A3B, sec,debug/display text,14905,0x3A39,131,Function_131,0x379D..0x3DCA
+14947,0x3A63, min,debug/display text,14945,0x3A61,131,Function_131,0x379D..0x3DCA
+14986,0x3A8A, ,debug/display text,14984,0x3A88,131,Function_131,0x379D..0x3DCA
+15017,0x3AA9, sec,debug/display text,15015,0x3AA7,131,Function_131,0x379D..0x3DCA
+15051,0x3ACB, sec,debug/display text,15049,0x3AC9,131,Function_131,0x379D..0x3DCA
+15186,0x3B52, mi,debug/display text,15184,0x3B50,131,Function_131,0x379D..0x3DCA
+15206,0x3B66, ft,debug/display text,15204,0x3B64,131,Function_131,0x379D..0x3DCA
+15302,0x3BC6, days,debug/display text,15300,0x3BC4,131,Function_131,0x379D..0x3DCA
+15324,0x3BDC, day,debug/display text,15322,0x3BDA,131,Function_131,0x379D..0x3DCA
+15353,0x3BF9,stat_of,unknown,15351,0x3BF7,131,Function_131,0x379D..0x3DCA
+15581,0x3CDD,,unknown,15579,0x3CDB,131,Function_131,0x379D..0x3DCA
+15638,0x3D16,Common_Null,unknown,15636,0x3D14,131,Function_131,0x379D..0x3DCA
+15697,0x3D51,,unknown,15695,0x3D4F,131,Function_131,0x379D..0x3DCA
+15758,0x3D8E,,unknown,15756,0x3D8C,131,Function_131,0x379D..0x3DCA
+15798,0x3DB6,,unknown,15796,0x3DB4,131,Function_131,0x379D..0x3DCA
+15861,0x3DF5,lvl_,unknown,15859,0x3DF3,134,Function_134,0x3DE3..0x3ED8
+15880,0x3E08,_icon,unknown,15878,0x3E06,134,Function_134,0x3DE3..0x3ED8
+15903,0x3E1F,icon_prestige_award_,unknown,15901,0x3E1D,134,Function_134,0x3DE3..0x3ED8
+15947,0x3E4B,icon_prestige_,unknown,15945,0x3E49,134,Function_134,0x3DE3..0x3ED8
+15995,0x3E7B,icon_prestige_award_4,unknown,15993,0x3E79,134,Function_134,0x3DE3..0x3ED8
+16026,0x3E9A,icon_prestige_award_,unknown,16024,0x3E98,134,Function_134,0x3DE3..0x3ED8
+16069,0x3EC5,_color,unknown,16067,0x3EC3,134,Function_134,0x3DE3..0x3ED8
+16238,0x3F6E,STAT_CALCULATE_PROGRESSBAR_VALUES: STAT_INVALID,debug/display text,16236,0x3F6C,138,Function_138,0x3F61..0x4091
+16567,0x40B7,STAT_GET_VALUE: STAT_INVALID,debug/display text,16565,0x40B5,140,Function_140,0x40A0..0x40D9
+16614,0x40E6,STAT_GET_MAX_VALUE: STAT_INVALID,debug/display text,16612,0x40E4,141,Function_141,0x40D9..0x4116
+16703,0x413F,STAT_CHECK_RANGES: Attempting to decrement a STAT out of its fMaxRange - ,debug/display text,16701,0x413D,142,Function_142,0x4116..0x42B0
+16795,0x419B,STAT_CHECK_RANGES: Attempting to increment a STAT out of its fMaxRange,debug/display text,16793,0x4199,142,Function_142,0x4116..0x42B0
+16905,0x4209,STAT_CHECK_RANGES: Attempting to decrement a STAT out of its fMinRange - ,debug/display text,16903,0x4207,142,Function_142,0x4116..0x42B0
+16997,0x4265,STAT_CHECK_RANGES: Attempting to decrement a STAT out of its fMinRange,debug/display text,16995,0x4263,142,Function_142,0x4116..0x42B0
+17091,0x42C3,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to use a Stat out of bounds.,debug/display text,17089,0x42C1,143,Function_143,0x42B0..0x44F4
+17199,0x432F,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to use a LifetimeStat out of bounds.,debug/display text,17197,0x432D,143,Function_143,0x42B0..0x44F4
+17394,0x43F2,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to increment a LifetimeStat out of its fMaxRange.,debug/display text,17392,0x43F0,143,Function_143,0x42B0..0x44F4
+17540,0x4484,STAT_UPDATE_MY_LIFETIME_STAT: Attempting to decrement a LifetimeStat out of its fMinRange.,debug/display text,17538,0x4482,143,Function_143,0x42B0..0x44F4
+18680,0x48F8,challenge_04_128,unknown,18678,0x48F6,148,Function_148,0x48C0..0x492C
+18781,0x495D,SaveLoad,unknown,18779,0x495B,150,Function_150,0x4955..0x49DE
+18792,0x4968,"Multiplayer Save Triggered, will be picked up by Multiplayer_update_thread soon enough",debug/display text,18790,0x4966,150,Function_150,0x4955..0x49DE
+19369,0x4BA9,"For whatever reason, the system thinks we have more than 50 completed quests. This is bad, since the array we save them in only has 20 elements. Capping it and saving. Your save may not include all of the things you like in it.",debug/display text,19367,0x4BA7,154,Function_154,0x4B69..0x4CF7
+19767,0x4D37,"For whatever reason, the system thinks we have more than 20 active quests. This is bad, since the array we save them in only has 20 elements. Capping it and saving. Your save may not include all of the things you like in it.",debug/display text,19765,0x4D35,155,Function_155,0x4CF7..0x4EAB
+20657,0x50B1,fav_non,unknown,20655,0x50AF,158,Function_158,0x50AA..0x5150
+20795,0x513B,fwep_,unknown,20793,0x5139,158,Function_158,0x50AA..0x5150
+20835,0x5163,STAT_SET_VALUE_AS_INT_NOW: Attempting to use a Stat out of bounds.,debug/display text,20833,0x5161,159,Function_159,0x5150..0x53EB
+20922,0x51BA,STAT_SET_VALUE_AS_INT_NOW: You cannot set value of this STAT_TYPE_LIFETIME directly: ,debug/display text,20920,0x51B8,159,Function_159,0x5150..0x53EB
+21026,0x5222,"STAT_SET_VALUE_AS_INT_NOW: You cannot set value of a STAT_TYPE_LIFETIME directly, use the COLLECTION version instead!",debug/display text,21024,0x5220,159,Function_159,0x5150..0x53EB
+21164,0x52AC,STAT_SET_VALUE_AS_INT_NOW: You cannot set value of this STAT_TYPE_COLLECTIBLE directly: ,debug/display text,21162,0x52AA,159,Function_159,0x5150..0x53EB
+21271,0x5317,"STAT_SET_VALUE_AS_INT_NOW: You cannot set value of a STAT_TYPE_COLLECTIBLE directly, only increase and decrease operations are allowed",debug/display text,21269,0x5315,159,Function_159,0x5150..0x53EB
+21496,0x53F8,STAT_GET_VALUE_AS_INT: STAT_INVALID,debug/display text,21494,0x53F6,160,Function_160,0x53EB..0x542C
+21555,0x5433,fav_non,unknown,21553,0x5431,161,Function_161,0x542C..0x54B5
+21661,0x549D,fwep_,unknown,21659,0x549B,161,Function_161,0x542C..0x54B5
+21692,0x54BC,fav_non,unknown,21690,0x54BA,162,Function_162,0x54B5..0x554C
+21812,0x5534,fwep_,unknown,21810,0x5532,162,Function_162,0x54B5..0x554C
+21843,0x5553,fav_non,unknown,21841,0x5551,163,Function_163,0x554C..0x55CB
+21942,0x55B6,fwep_,unknown,21940,0x55B4,163,Function_163,0x554C..0x55CB
+22039,0x5617,STAT_INCREASE_NOW: Attempting to use a Stat out of bounds.,debug/display text,22037,0x5615,165,Function_165,0x5604..0x580E
+22118,0x5666,STAT_INCREASE_NOW: You cannot increase this STAT_TYPE_LIFETIME directly: ,debug/display text,22116,0x5664,165,Function_165,0x5604..0x580E
+22210,0x56C2,"STAT_INCREASE_NOW: You cannot increase a STAT_TYPE_LIFETIME directly, use the COLLECTION version instead!",debug/display text,22208,0x56C0,165,Function_165,0x5604..0x580E
+22330,0x573A,STAT_INCREASE_NOW: fIncreaseValue < 0.0 - I am turning this into a positive number for you!,debug/display text,22328,0x5738,165,Function_165,0x5604..0x580E
+22613,0x5855,CanSaveNowAutoSave,unknown,22611,0x5853,168,Function_168,0x582C..0x586E
+25442,0x6362,Here's what we're returning as a save spot: ,debug/display text,25440,0x6360,177,Function_177,0x5B7C..0x63A1
+25698,0x6462,bPlayerSleeping,unknown,25696,0x6460,179,Function_179,0x63DC..0x6480
+25869,0x650D,CQueue_X,unknown,25867,0x650B,182,Function_182,0x6506..0x6527
+25902,0x652E,CQueue_T,unknown,25900,0x652C,183,Function_183,0x6527..0x6548
+25935,0x654F,CQueue_H,unknown,25933,0x654D,184,Function_184,0x6548..0x6569
+25968,0x6570,CQueue_Count,unknown,25966,0x656E,185,Function_185,0x6569..0x657E
+26005,0x6595,_,unknown,26003,0x6593,186,Function_186,0x657E..0x65B2
+26180,0x6644,_des,unknown,26178,0x6642,188,Function_188,0x6634..0x6654
+26219,0x666B,_DYNAMIC_TITLE,unknown,26217,0x6669,189,Function_189,0x6654..0x6685
+26779,0x689B,_INTSLOT,unknown,26777,0x6899,194,Function_194,0x6874..0x69C0
+26849,0x68E1,_FLOATSLOT,unknown,26847,0x68DF,194,Function_194,0x6874..0x69C0
+26935,0x6937,_TIMERSLOT,unknown,26933,0x6935,194,Function_194,0x6874..0x69C0
+27004,0x697C,_OBJECTSLOT,unknown,27002,0x697A,194,Function_194,0x6874..0x69C0
+27079,0x69C7,AmbientMissions_Layout,likely logic anchor,27077,0x69C5,195,Function_195,0x69C0..0x6A0D
+27118,0x69EE,AmbientMissions_Layout,likely logic anchor,27116,0x69EC,195,Function_195,0x69C0..0x6A0D
+27192,0x6A38,_FLOATSLOT,unknown,27190,0x6A36,196,Function_196,0x6A0D..0x6AA7
+27243,0x6A6B,PVP_STORE_FLOAT: failed to store float value in slot,debug/display text,27241,0x6A69,196,Function_196,0x6A0D..0x6AA7
+27341,0x6ACD,_FLOATSLOT,unknown,27339,0x6ACB,197,Function_197,0x6AA7..0x6B4D
+27403,0x6B0B,PVP_RETRIEVE_FLOAT: failed to retrieve float value from slot,debug/display text,27401,0x6B09,197,Function_197,0x6AA7..0x6B4D
+27503,0x6B6F,_info,unknown,27501,0x6B6D,198,Function_198,0x6B4D..0x6C41
+27537,0x6B91,_num,unknown,27535,0x6B8F,198,Function_198,0x6B4D..0x6C41
+27580,0x6BBC,_num2,unknown,27578,0x6BBA,198,Function_198,0x6B4D..0x6C41
+27624,0x6BE8,_num3,unknown,27622,0x6BE6,198,Function_198,0x6B4D..0x6C41
+27668,0x6C14,_num4,unknown,27666,0x6C12,198,Function_198,0x6B4D..0x6C41
+27777,0x6C81,challenge_04_128,unknown,27775,0x6C7F,201,Function_201,0x6C71..0x6D01
+28137,0x6DE9,_DYNAMIC_XP,unknown,28135,0x6DE7,204,Function_204,0x6DD2..0x6E00
+28183,0x6E17,_DYNAMIC_GOAL,unknown,28181,0x6E15,205,Function_205,0x6E00..0x6E30
+28240,0x6E50,UN_UNDEADTEAMPLAYER_64,unknown,28238,0x6E4E,207,Function_207,0x6E44..0x6E86
+28269,0x6E6D,UN_UNDEADTEAMPLAYER_128,unknown,28267,0x6E6B,207,Function_207,0x6E44..0x6E86
+28347,0x6EBB,_INTSLOT,unknown,28345,0x6EB9,210,Function_210,0x6EAB..0x6F20
+28394,0x6EEA,PVP_STORE_INT: failed to store int value in slot,debug/display text,28392,0x6EE8,210,Function_210,0x6EAB..0x6F20
+28676,0x7004,ERROR: Trying to get value of TIMER that has not been started!,debug/display text,28674,0x7002,216,Function_216,0x6FD9..0x70A1
+28744,0x7048,"WARNING: Trying to get value of TIMER that has not been started! Returning 0.0 
+",debug/display text,28742,0x7046,216,Function_216,0x6FD9..0x70A1
+29422,0x72EE,UN_UNDEADKILLCHAIN_64,unknown,29420,0x72EC,220,Function_220,0x72E2..0x7322
+29450,0x730A,UN_UNDEADKILLCHAIN_128,unknown,29448,0x7308,220,Function_220,0x72E2..0x7322
+30440,0x76E8,UN_UNDEADKILLS_64,unknown,30438,0x76E6,223,Function_223,0x76DC..0x7714
+30464,0x7700,UN_UNDEADKILLS_128,unknown,30462,0x76FE,223,Function_223,0x76DC..0x7714
+30739,0x7813,Zombie,unknown,30737,0x7811,229,Function_229,0x77F5..0x7831
+30756,0x7824,Zombie,unknown,30754,0x7822,229,Function_229,0x77F5..0x7831
+31455,0x7ADF,DEATH_EFFECT_HS_MASTER,unknown,31453,0x7ADD,232,Function_232,0x7AB7..0x7B2E
+31510,0x7B16,DEATH_EFFECT_MASTER,unknown,31508,0x7B14,232,Function_232,0x7AB7..0x7B2E
+31774,0x7C1E,_info,unknown,31772,0x7C1C,238,Function_238,0x7BFC..0x7CB3
+31802,0x7C3A,_num,unknown,31800,0x7C38,238,Function_238,0x7BFC..0x7CB3
+31835,0x7C5B,PVP_num2,unknown,31833,0x7C59,238,Function_238,0x7BFC..0x7CB3
+31866,0x7C7A,PVP_num3,unknown,31864,0x7C78,238,Function_238,0x7BFC..0x7CB3
+31973,0x7CE5,Drowned,unknown,31971,0x7CE3,239,Function_239,0x7CB3..0x7D94
+32017,0x7D11,BledOut,unknown,32015,0x7D0F,239,Function_239,0x7CB3..0x7D94
+32204,0x7DCC, ,debug/display text,32202,0x7DCA,240,Function_240,0x7D94..0x7DDB
+32261,0x7E05,XpHud,unknown,32259,0x7E03,241,Function_241,0x7DDB..0x7E4B
+32293,0x7E25,XpHud,unknown,32291,0x7E23,241,Function_241,0x7DDB..0x7E4B
+32497,0x7EF1,xp_wanted_combo,likely logic anchor,32495,0x7EEF,242,Function_242,0x7E4B..0x7F1B
+32667,0x7F9B,XPMultiplier,unknown,32665,0x7F99,244,Function_244,0x7F39..0x8030
+32685,0x7FAD,XPComboTimer,unknown,32683,0x7FAB,244,Function_244,0x7F39..0x8030
+32703,0x7FBF,XpComboSpin,unknown,32701,0x7FBD,244,Function_244,0x7F39..0x8030
+32728,0x7FD8,XpComboSpin,unknown,32726,0x7FD6,244,Function_244,0x7F39..0x8030
+32770,0x8002,HUD_MP_KILL_RISER_MASTER,unknown,32768,0x8000,244,Function_244,0x7F39..0x8030
+32833,0x8041,KillBonus,unknown,32831,0x803F,245,Function_245,0x8030..0x80BF
+32862,0x805E,KillBonusClass,unknown,32860,0x805C,245,Function_245,0x8030..0x80BF
+32892,0x807C,,unknown,32890,0x807A,245,Function_245,0x8030..0x80BF
+32905,0x8089,XP_class_special,unknown,32903,0x8087,245,Function_245,0x8030..0x80BF
+33000,0x80E8,Common_Null,unknown,32998,0x80E6,246,Function_246,0x80BF..0x8102
+33136,0x8170,KillBonus,unknown,33134,0x816E,252,Function_252,0x8164..0x835D
+33402,0x827A,xp_combo,unknown,33400,0x8278,252,Function_252,0x8164..0x835D
+33428,0x8294,KillBonusClass,unknown,33426,0x8292,252,Function_252,0x8164..0x835D
+33458,0x82B2,,unknown,33456,0x82B0,252,Function_252,0x8164..0x835D
+33471,0x82BF,XP_class_special,unknown,33469,0x82BD,252,Function_252,0x8164..0x835D
+33526,0x82F6,Generic_Dbuffer32_0,unknown,33524,0x82F4,252,Function_252,0x8164..0x835D
+33548,0x830C,XP_Class_headshot,unknown,33546,0x830A,252,Function_252,0x8164..0x835D
+33594,0x833A,Generic_Dbuffer32_0,unknown,33592,0x8338,252,Function_252,0x8164..0x835D
+34260,0x85D4,challenge_01_128,unknown,34258,0x85D2,256,Function_256,0x85B7..0x8634
+34363,0x863B,COOP_icon_128,unknown,34361,0x8639,257,Function_257,0x8634..0x8982
+35000,0x88B8,SC_AA_Pikes_Icon_128,unknown,34998,0x88B6,257,Function_257,0x8634..0x8982
+35028,0x88D4,SC_AA_Mercer_Icon_128,unknown,35026,0x88D2,257,Function_257,0x8634..0x8982
+35057,0x88F1,SC_AA_Tesoro_Icon_128,unknown,35055,0x88EF,257,Function_257,0x8634..0x8982
+35086,0x890E,SC_AA_Gaptooth_Icon_128,unknown,35084,0x890C,257,Function_257,0x8634..0x8982
+35117,0x892D,SC_AA_TwinRocks_Icon_128,unknown,35115,0x892B,257,Function_257,0x8634..0x8982
+35149,0x894D,SC_AA_Nosalida_Icon_128,unknown,35147,0x894B,257,Function_257,0x8634..0x8982
+35180,0x896C,COOP_icon_128,unknown,35178,0x896A,257,Function_257,0x8634..0x8982
+35209,0x8989,MULTIPLAYER_THUNK_MASTER,unknown,35207,0x8987,258,Function_258,0x8982..0x89FA
+35239,0x89A7,mp_hud,unknown,35237,0x89A5,258,Function_258,0x8982..0x89FA
+35248,0x89B0,Reticle.Hit,unknown,35246,0x89AE,258,Function_258,0x8982..0x89FA
+35267,0x89C3,mp_hud,unknown,35265,0x89C1,258,Function_258,0x8982..0x89FA
+35276,0x89CC,Reticle.Refresh,unknown,35274,0x89CA,258,Function_258,0x8982..0x89FA
+35299,0x89E3,mp_hud,unknown,35297,0x89E1,258,Function_258,0x8982..0x89FA
+35308,0x89EC,Refresh,unknown,35306,0x89EA,258,Function_258,0x8982..0x89FA
+35865,0x8C19,xp_disarm,unknown,35863,0x8C17,265,Function_265,0x8BFF..0x8C45
+35894,0x8C36,xp_disarm,unknown,35892,0x8C34,265,Function_265,0x8BFF..0x8C45
+36064,0x8CE0,xp_hatshot,unknown,36062,0x8CDE,268,Function_268,0x8CC6..0x8D0E
+36094,0x8CFE,xp_hatshot,unknown,36092,0x8CFC,268,Function_268,0x8CC6..0x8D0E
+36534,0x8EB6,Formations,unknown,36532,0x8EB4,275,Function_275,0x8EA5..0x8F16
+36556,0x8ECC,Formations,unknown,36554,0x8ECA,275,Function_275,0x8EA5..0x8F16
+36801,0x8FC1,MPReward,unknown,36799,0x8FBF,277,Function_277,0x8F73..0x9524
+36899,0x9023,MPRewardItem.s1,unknown,36897,0x9021,277,Function_277,0x8F73..0x9524
+36922,0x903A,MPRewardTitle,unknown,36920,0x9038,277,Function_277,0x8F73..0x9524
+37071,0x90CF,left,unknown,37069,0x90CD,277,Function_277,0x8F73..0x9524
+37201,0x9151,MPRewardItem.s1,unknown,37199,0x914F,277,Function_277,0x8F73..0x9524
+37244,0x917C,MPRankTexture,unknown,37242,0x917A,277,Function_277,0x8F73..0x9524
+37265,0x9191,MPRankTexture,unknown,37263,0x918F,277,Function_277,0x8F73..0x9524
+37284,0x91A4,MPRewardTitle,unknown,37282,0x91A2,277,Function_277,0x8F73..0x9524
+37320,0x91C8,HUD_MENU_RESUME_MASTER,unknown,37318,0x91C6,277,Function_277,0x8F73..0x9524
+37440,0x9240,XP_Weapon_Unlock,unknown,37438,0x923E,277,Function_277,0x8F73..0x9524
+37542,0x92A6,XP_Horse_Unlock,unknown,37540,0x92A4,277,Function_277,0x8F73..0x9524
+37680,0x9330,XP_Playlist_Unlock,unknown,37678,0x932E,277,Function_277,0x8F73..0x9524
+37773,0x938D,XP_Playlist_Unlock,unknown,37771,0x938B,277,Function_277,0x8F73..0x9524
+37837,0x93CD,XP_PVP_Challenge_Unlock,unknown,37835,0x93CB,277,Function_277,0x8F73..0x9524
+37905,0x9411,XP_FM_Challenge_Unlock,unknown,37903,0x940F,277,Function_277,0x8F73..0x9524
+38003,0x9473,XP_Avatar_Unlock,unknown,38001,0x9471,277,Function_277,0x8F73..0x9524
+38067,0x94B3,XP_PassingIntoLegend,unknown,38065,0x94B1,277,Function_277,0x8F73..0x9524
+38116,0x94E4,HUD_MP_OUTRO_MASTER,unknown,38114,0x94E2,277,Function_277,0x8F73..0x9524
+38141,0x94FD,top,unknown,38139,0x94FB,277,Function_277,0x8F73..0x9524
+38398,0x95FE,,unknown,38396,0x95FC,282,Function_282,0x95DB..0x960B
+38418,0x9612,HUD_MP_UNLOCK_MASTER,unknown,38416,0x9610,283,Function_283,0x960B..0x96C9
+38452,0x9634,Generic_Dbuffer128_1,unknown,38450,0x9632,283,Function_283,0x960B..0x96C9
+38490,0x965A,MPRewardItem.s0,unknown,38488,0x9658,283,Function_283,0x960B..0x96C9
+38508,0x966C,Generic_Dbuffer128_1,unknown,38506,0x966A,283,Function_283,0x960B..0x96C9
+38537,0x9689,MPRewardItem.s0,unknown,38535,0x9687,283,Function_283,0x960B..0x96C9
+38560,0x96A0,MPRewardItem.s0,unknown,38558,0x969E,283,Function_283,0x960B..0x96C9
+38581,0x96B5,MPRewardItem.s0,unknown,38579,0x96B3,283,Function_283,0x960B..0x96C9
+38649,0x96F9,DISABLE_HORSE_WHISTLE,likely logic anchor,38647,0x96F7,285,Function_285,0x96DC..0x9735
+38682,0x971A,DISABLE_HORSE_WHISTLE,likely logic anchor,38680,0x9718,285,Function_285,0x96DC..0x9735
+38786,0x9782,ERROR: Trying to UNPAUSE a TIMER that has not been started!,debug/display text,38784,0x9780,287,Function_287,0x9751..0x9818
+38851,0x97C3,"WARNING: Trying to UNPAUSE a TIMER that has not been started! IGNORING COMMAND.
+",debug/display text,38849,0x97C1,287,Function_287,0x9751..0x9818
+39039,0x987F,POD2ST1,unknown,39037,0x987D,289,Function_289,0x982F..0x98EB
+39050,0x988A,POD2ST2,unknown,39048,0x9888,289,Function_289,0x982F..0x98EB
+39061,0x9895,POD2ST3,unknown,39059,0x9893,289,Function_289,0x982F..0x98EB
+39072,0x98A0,POD2ST4,unknown,39070,0x989E,289,Function_289,0x982F..0x98EB
+39083,0x98AB,POD2ST5,unknown,39081,0x98A9,289,Function_289,0x982F..0x98EB
+39094,0x98B6,POD2ST6,unknown,39092,0x98B4,289,Function_289,0x982F..0x98EB
+39105,0x98C1,POD2ST7,unknown,39103,0x98BF,289,Function_289,0x982F..0x98EB
+39116,0x98CC,POD2ST8,unknown,39114,0x98CA,289,Function_289,0x982F..0x98EB
+39127,0x98D7,POD2ST9,unknown,39125,0x98D5,289,Function_289,0x982F..0x98EB
+39138,0x98E2,POD2ST0,unknown,39136,0x98E0,289,Function_289,0x982F..0x98EB
+39168,0x9900,XP_Unlock_Level,unknown,39166,0x98FE,290,Function_290,0x98EB..0x99AB
+39195,0x991B,XP_Unlock_LevelCap,unknown,39193,0x9919,290,Function_290,0x98EB..0x99AB
+39221,0x9935,MPSplash,unknown,39219,0x9933,290,Function_290,0x98EB..0x99AB
+39245,0x994D,Common_Null,unknown,39243,0x994B,290,Function_290,0x98EB..0x99AB
+39259,0x995B,HUD_MP_LEVEL_UP_MASTER,unknown,39257,0x9959,290,Function_290,0x98EB..0x99AB
+39291,0x997B,MPRewardItem.s1,unknown,39289,0x9979,290,Function_290,0x98EB..0x99AB
+39319,0x9997,MPRewardItem.s1,unknown,39317,0x9995,290,Function_290,0x98EB..0x99AB
+39352,0x99B8,MPRankTexture,unknown,39350,0x99B6,291,Function_291,0x99AB..0x9ABC
+39376,0x99D0,MPRankTexture,unknown,39374,0x99CE,291,Function_291,0x99AB..0x9ABC
+39397,0x99E5,MPRewardTitle,unknown,39395,0x99E3,291,Function_291,0x99AB..0x9ABC
+39424,0x9A00,MPRewardItem.s0,unknown,39422,0x99FE,291,Function_291,0x99AB..0x9ABC
+39450,0x9A1A,MPRewardItem.s0,unknown,39448,0x9A18,291,Function_291,0x99AB..0x9ABC
+39473,0x9A31,MPReward,unknown,39471,0x9A2F,291,Function_291,0x99AB..0x9ABC
+39487,0x9A3F,MPRewardItem.s0,unknown,39485,0x9A3D,291,Function_291,0x99AB..0x9ABC
+39508,0x9A54,MPRewardTitle,unknown,39506,0x9A52,291,Function_291,0x99AB..0x9ABC
+39529,0x9A69,MPRewardItem.s0,unknown,39527,0x9A67,291,Function_291,0x99AB..0x9ABC
+39550,0x9A7E,MPRewardItem.s1,unknown,39548,0x9A7C,291,Function_291,0x99AB..0x9ABC
+39571,0x9A93,MPRewardItem.s1,unknown,39569,0x9A91,291,Function_291,0x99AB..0x9ABC
+39589,0x9AA5,Common_Null,unknown,39587,0x9AA3,291,Function_291,0x99AB..0x9ABC
+39657,0x9AE9,ERROR: Trying to PAUSE a TIMER that has not been started!,debug/display text,39655,0x9AE7,292,Function_292,0x9ABC..0x9B7B
+39720,0x9B28,"WARNING: Trying to PAUSE a TIMER that has not been started! IGNORING COMMAND.
+",debug/display text,39718,0x9B26,292,Function_292,0x9ABC..0x9B7B
+39832,0x9B98,HudSceneOnline,unknown,39830,0x9B96,293,Function_293,0x9B7B..0x9BF5
+39995,0x9C3B,MPReward,unknown,39993,0x9C39,295,Function_295,0x9C06..0x9E19
+40071,0x9C87,CQueue_Count,unknown,40069,0x9C85,295,Function_295,0x9C06..0x9E19
+40215,0x9D17,ignoreMe,unknown,40213,0x9D15,295,Function_295,0x9C06..0x9E19
+40226,0x9D22,mp_challengeComplete,unknown,40224,0x9D20,295,Function_295,0x9C06..0x9E19
+40249,0x9D39,ignoreMe,unknown,40247,0x9D37,295,Function_295,0x9C06..0x9E19
+40260,0x9D44,HUD_MP_CHALLENGE_MASTER,unknown,40258,0x9D42,295,Function_295,0x9C06..0x9E19
+40446,0x9DFE,HUD_MP_OUTRO_MASTER,unknown,40444,0x9DFC,295,Function_295,0x9C06..0x9E19
+40629,0x9EB5,CQueue_Count,unknown,40627,0x9EB3,299,Function_299,0x9E59..0x9F21
+40677,0x9EE5,CQueue_Count,unknown,40675,0x9EE3,299,Function_299,0x9E59..0x9F21
+40715,0x9F0B,CQueue_Count,unknown,40713,0x9F09,299,Function_299,0x9E59..0x9F21
+40848,0x9F90,HudSceneOnline,unknown,40846,0x9F8E,301,Function_301,0x9F33..0x9FAA
+41615,0xA28F,AM_MAPHLP,unknown,41613,0xA28D,308,Function_308,0xA225..0xA2AC
+41672,0xA2C8,_mp_des,unknown,41670,0xA2C6,309,Function_309,0xA2AC..0xA309
+41707,0xA2EB,_des,unknown,41705,0xA2E9,309,Function_309,0xA2AC..0xA309
+41721,0xA2F9,_des,unknown,41719,0xA2F7,309,Function_309,0xA2AC..0xA309
+41772,0xA32C,_,unknown,41770,0xA32A,310,Function_310,0xA309..0xA37B
+41822,0xA35E,_,unknown,41820,0xA35C,310,Function_310,0xA309..0xA37B
+41886,0xA39E,_DYNAMIC_TITLE,unknown,41884,0xA39C,311,Function_311,0xA37B..0xA3E7
+41933,0xA3CD,_DYNAMIC_TITLE,unknown,41931,0xA3CB,311,Function_311,0xA37B..0xA3E7
+42078,0xA45E,_INTSLOT,unknown,42076,0xA45C,314,Function_314,0xA44E..0xA4C2
+42125,0xA48D,AM_STORE_INT: failed to store int value in slot,debug/display text,42123,0xA48B,314,Function_314,0xA44E..0xA4C2
+42185,0xA4C9,AmbientMissions_Layout,likely logic anchor,42183,0xA4C7,315,Function_315,0xA4C2..0xA50F
+42224,0xA4F0,AmbientMissions_Layout,likely logic anchor,42222,0xA4EE,315,Function_315,0xA4C2..0xA50F
+45086,0xB01E,Rank,unknown,45084,0xB01C,356,Function_356,0xB002..0xB03C
+45098,0xB02A,MpLevel,unknown,45096,0xB028,356,Function_356,0xB002..0xB03C
+45399,0xB157,INVALID HORSE PASSED IN TO GET_MOUNT_INDEX! GIVING AE_RIDEABLE_ANIMAL_MEX_Mule01,debug/display text,45397,0xB155,361,Function_361,0xB0CD..0xB1B2
+45985,0xB3A1,XPComboSpin,unknown,45983,0xB39F,374,Function_374,0xB388..0xB4AD
+46011,0xB3BB,XpComboTimer,unknown,46009,0xB3B9,374,Function_374,0xB388..0xB4AD
+46037,0xB3D5,XpComboTimer,unknown,46035,0xB3D3,374,Function_374,0xB388..0xB4AD
+46055,0xB3E7,XPComboLevel,unknown,46053,0xB3E5,374,Function_374,0xB388..0xB4AD
+46192,0xB470,XPMultiplier,unknown,46190,0xB46E,374,Function_374,0xB388..0xB4AD
+46210,0xB482,HUD_MP_KILL_CHAIN_MASTER,unknown,46208,0xB480,374,Function_374,0xB388..0xB4AD
+46295,0xB4D7,NetEventLayout,event/task name,46293,0xB4D5,377,Function_377,0xB4D0..0xB50C
+46326,0xB4F6,NetEventLayout,event/task name,46324,0xB4F4,377,Function_377,0xB4D0..0xB50C
+46452,0xB574,net_aa_completed,unknown,46450,0xB572,379,Function_379,0xB542..0xB590
+46520,0xB5B8,INVALID REGION,debug/display text,46518,0xB5B6,381,Function_381,0xB5B1..0xB66E
+46644,0xB634,v_region,unknown,46642,0xB632,381,Function_381,0xB5B1..0xB66E
+46779,0xB6BB,net_player_entered,unknown,46777,0xB6B9,383,Function_383,0xB684..0xB6D9
+46886,0xB726,mp_killstreak_ended,unknown,46884,0xB724,385,Function_385,0xB6E8..0xB7E3
+46935,0xB757,GENMESS_SWEETJUST,unknown,46933,0xB755,385,Function_385,0xB6E8..0xB7E3
+46983,0xB787,mp_killstreak_level1,unknown,46981,0xB785,385,Function_385,0xB6E8..0xB7E3
+47014,0xB7A6,mp_killstreak_level2,unknown,47012,0xB7A4,385,Function_385,0xB6E8..0xB7E3
+47045,0xB7C5,mp_killstreak_level3,unknown,47043,0xB7C3,385,Function_385,0xB6E8..0xB7E3
+47223,0xB877,deathmsg_suicide,unknown,47221,0xB875,388,Function_388,0xB83F..0xC22A
+47395,0xB923,deathmsg_bledout,unknown,47393,0xB921,388,Function_388,0xB83F..0xC22A
+47427,0xB943,deathmsg_drowned,unknown,47425,0xB941,388,Function_388,0xB83F..0xC22A
+47459,0xB963,deathmsg_cactused,unknown,47457,0xB961,388,Function_388,0xB83F..0xC22A
+47492,0xB984,deathmsg_exploded,unknown,47490,0xB982,388,Function_388,0xB83F..0xC22A
+47525,0xB9A5,deathmsg_fired,unknown,47523,0xB9A3,388,Function_388,0xB83F..0xC22A
+47567,0xB9CF,Defended,unknown,47565,0xB9CD,388,Function_388,0xB83F..0xC22A
+47583,0xB9DF,mp_defended,unknown,47581,0xB9DD,388,Function_388,0xB83F..0xC22A
+47625,0xBA09,Vengeance,unknown,47623,0xBA07,388,Function_388,0xB83F..0xC22A
+47642,0xBA1A,mp_vengeance,unknown,47640,0xBA18,388,Function_388,0xB83F..0xC22A
+47688,0xBA48,deathmsg_sniped,likely logic anchor,47686,0xBA46,388,Function_388,0xB83F..0xC22A
+47750,0xBA86,deathmsg_teamkilled,unknown,47748,0xBA84,388,Function_388,0xB83F..0xC22A
+47805,0xBABD,deathmsg_stabbed,unknown,47803,0xBABB,388,Function_388,0xB83F..0xC22A
+47851,0xBAEB,deathmsg_throw,unknown,47849,0xBAE9,388,Function_388,0xB83F..0xC22A
+47895,0xBB17,deathmsg,unknown,47893,0xBB15,388,Function_388,0xB83F..0xC22A
+47982,0xBB6E,deathmsg_pistol,unknown,47980,0xBB6C,388,Function_388,0xB83F..0xC22A
+48013,0xBB8D,deathmsg_rifle,unknown,48011,0xBB8B,388,Function_388,0xB83F..0xC22A
+48043,0xBBAB,deathmsg,unknown,48041,0xBBA9,388,Function_388,0xB83F..0xC22A
+48077,0xBBCD,deathmsg_head,unknown,48075,0xBBCB,388,Function_388,0xB83F..0xC22A
+48111,0xBBEF,deathmsg,unknown,48109,0xBBED,388,Function_388,0xB83F..0xC22A
+49128,0xBFE8,GENMESS_LOCALKILLSMW,unknown,49126,0xBFE6,388,Function_388,0xB83F..0xC22A
+49418,0xC10A,deathmsg_ko,unknown,49416,0xC108,388,Function_388,0xB83F..0xC22A
+49458,0xC132,mp_assist,unknown,49456,0xC130,388,Function_388,0xB83F..0xC22A
+49480,0xC148,GENMESS_BADBLOOD,unknown,49478,0xC146,388,Function_388,0xB83F..0xC22A
+49713,0xC231,MP_PlayerNameCM_,unknown,49711,0xC22F,389,Function_389,0xC22A..0xC2D1
+49750,0xC256,mp_death_expert,unknown,49748,0xC254,389,Function_389,0xC22A..0xC2D1
+49773,0xC26D,mp_death_casual,unknown,49771,0xC26B,389,Function_389,0xC22A..0xC2D1
+49805,0xC28D,<0xAA3311>WWWWWWWWWWWWWWWW</0x>,unknown,49803,0xC28B,389,Function_389,0xC22A..0xC2D1
+49880,0xC2D8,MP_PlayerNameMounted_,unknown,49878,0xC2D6,390,Function_390,0xC2D1..0xC3AD
+49924,0xC304,mp_death_mule,unknown,49922,0xC302,390,Function_390,0xC2D1..0xC3AD
+49952,0xC320,mp_death_horse,unknown,49950,0xC31E,390,Function_390,0xC2D1..0xC3AD
+49981,0xC33D,mp_death_bull,unknown,49979,0xC33B,390,Function_390,0xC2D1..0xC3AD
+50002,0xC352,mp_death_mount,unknown,50000,0xC350,390,Function_390,0xC2D1..0xC3AD
+50039,0xC377,WWWWWWWWWWWWWWWW,unknown,50037,0xC375,390,Function_390,0xC2D1..0xC3AD
+50334,0xC49E,challenge_01_128,unknown,50332,0xC49C,394,Function_394,0xC46C..0xC4D2
+50393,0xC4D9,MP_Revenge_Icon_128,unknown,50391,0xC4D7,395,Function_395,0xC4D2..0xC4EE
+50494,0xC53E,challenge_04_128,unknown,50492,0xC53C,397,Function_397,0xC537..0xC550
+50818,0xC682,challenge_01_128,unknown,50816,0xC680,399,Function_399,0xC672..0xC6E8
+51188,0xC7F4,Kill,unknown,51186,0xC7F2,401,Function_401,0xC7ED..0xC83A
+51200,0xC800,Kill_meth,unknown,51198,0xC7FE,401,Function_401,0xC7ED..0xC83A
+51217,0xC811,Kill_MyPos,unknown,51215,0xC80F,401,Function_401,0xC7ED..0xC83A
+51237,0xC825,Kill_ViPos,unknown,51235,0xC823,401,Function_401,0xC7ED..0xC83A
+51267,0xC843,X,unknown,51265,0xC841,402,Function_402,0xC83A..0xC878
+51282,0xC852,Y,unknown,51280,0xC850,402,Function_402,0xC83A..0xC878
+51299,0xC863,Z,unknown,51297,0xC861,402,Function_402,0xC83A..0xC878
+51386,0xC8BA,challenge_01lvl2_128,unknown,51384,0xC8B8,404,Function_404,0xC8B3..0xD051
+51411,0xC8D3,challenge_01_128,unknown,51409,0xC8D1,404,Function_404,0xC8B3..0xD051
+53742,0xD1EE,_info,unknown,53740,0xD1EC,408,Function_408,0xD1B3..0xD33E
+53770,0xD20A,_num,unknown,53768,0xD208,408,Function_408,0xD1B3..0xD33E
+53803,0xD22B,PVP_num2,unknown,53801,0xD229,408,Function_408,0xD1B3..0xD33E
+53834,0xD24A,PVP_num3,unknown,53832,0xD248,408,Function_408,0xD1B3..0xD33E
+53905,0xD291,_info_mp,unknown,53903,0xD28F,408,Function_408,0xD1B3..0xD33E
+53923,0xD2A3,_info,unknown,53921,0xD2A1,408,Function_408,0xD1B3..0xD33E
+53941,0xD2B5,AM_num,unknown,53939,0xD2B3,408,Function_408,0xD1B3..0xD33E
+53981,0xD2DD,AM_num,unknown,53979,0xD2DB,408,Function_408,0xD1B3..0xD33E
+54021,0xD305,AM_num,unknown,54019,0xD303,408,Function_408,0xD1B3..0xD33E
+54129,0xD371,Divide by zero attempt in MP_WEAPON_CHALLENGE_LEVEL_START.... ya thats bad bail out,debug/display text,54127,0xD36F,409,Function_409,0xD33E..0xD3E3
+54267,0xD3FB,challenge_01_128,unknown,54265,0xD3F9,410,Function_410,0xD3E3..0xD442
+54475,0xD4CB,_INTSLOT,unknown,54473,0xD4C9,414,Function_414,0xD4A4..0xD664
+54545,0xD511,_FLOATSLOT,unknown,54543,0xD50F,414,Function_414,0xD4A4..0xD664
+54660,0xD584,_TIMERSLOT,unknown,54658,0xD582,414,Function_414,0xD4A4..0xD664
+54729,0xD5C9,_OBJECTSLOT,unknown,54727,0xD5C7,414,Function_414,0xD4A4..0xD664
+54941,0xD69D,challenge_01_128,unknown,54939,0xD69B,415,Function_415,0xD664..0xD6C8
+55122,0xD752,_DYNAMIC_GOAL,unknown,55120,0xD750,417,Function_417,0xD73B..0xD76B
+55657,0xD969,Divide by zero attempt in MP_WEAPON_CHALLENGE_LEVEL_START.... ya thats bad bail out,debug/display text,55655,0xD967,422,Function_422,0xD92F..0xD9D4
+55788,0xD9EC,challenge_01_128,unknown,55786,0xD9EA,423,Function_423,0xD9D4..0xDA32
+55916,0xDA6C,challenge_01_128,unknown,55914,0xDA6A,424,Function_424,0xDA32..0xDA97
+56693,0xDD75,MP_HeavyWeapons_Icon_128,unknown,56691,0xDD73,427,Function_427,0xDD6E..0xDD8F
+58094,0xE2EE,MP_TrickShot_Icon_128,unknown,58092,0xE2EC,433,Function_433,0xE2E7..0xE305
+59091,0xE6D3,MP_TDM2_Icon_128,unknown,59089,0xE6D1,437,Function_437,0xE6CC..0xE6E5
+59548,0xE89C,Killstreak2_icon_128,unknown,59546,0xE89A,440,Function_440,0xE895..0xE8B2
+60693,0xED15,MP_GrabtheBag2_Icon_128,unknown,60691,0xED13,444,Function_444,0xED0E..0xED2E
+60906,0xEDEA,MP_HoldYourOwn_Icon_128,unknown,60904,0xEDE8,446,Function_446,0xEDE3..0xEE03
+62378,0xF3AA,MP_KillStreak_Icon_128,unknown,62376,0xF3A8,452,Function_452,0xF3A3..0xF3C2
+62436,0xF3E4,mp_killstreak_personal,unknown,62434,0xF3E2,453,Function_453,0xF3C2..0xF48E
+62497,0xF421,GENMESS_TRIGRHAP,unknown,62495,0xF41F,453,Function_453,0xF3C2..0xF48E
+62532,0xF444,GENMESS_BIGGUNS,unknown,62530,0xF442,453,Function_453,0xF3C2..0xF48E
+62566,0xF466,GENMESS_STONECOLDKILLA,unknown,62564,0xF464,453,Function_453,0xF3C2..0xF48E
+62718,0xF4FE,deathmsg_ZOMBIE,unknown,62716,0xF4FC,455,Function_455,0xF4E7..0xF8C1
+62948,0xF5E4,deathmsg_ARMADILLO,unknown,62946,0xF5E2,455,Function_455,0xF4E7..0xF8C1
+62973,0xF5FD,deathmsg_BAT,unknown,62971,0xF5FB,455,Function_455,0xF4E7..0xF8C1
+62992,0xF610,deathmsg_BEAR,unknown,62990,0xF60E,455,Function_455,0xF4E7..0xF8C1
+63012,0xF624,deathmsg_BEAVER,unknown,63010,0xF622,455,Function_455,0xF4E7..0xF8C1
+63034,0xF63A,deathmsg_BIGHORN,unknown,63032,0xF638,455,Function_455,0xF4E7..0xF8C1
+63057,0xF651,deathmsg_BOAR,unknown,63055,0xF64F,455,Function_455,0xF4E7..0xF8C1
+63077,0xF665,deathmsg_BOBCAT,unknown,63075,0xF663,455,Function_455,0xF4E7..0xF8C1
+63099,0xF67B,deathmsg_BUFFALO,unknown,63097,0xF679,455,Function_455,0xF4E7..0xF8C1
+63122,0xF692,deathmsg_BULL,unknown,63120,0xF690,455,Function_455,0xF4E7..0xF8C1
+63142,0xF6A6,deathmsg_CHICKEN,unknown,63140,0xF6A4,455,Function_455,0xF4E7..0xF8C1
+63165,0xF6BD,deathmsg_COUGAR,unknown,63163,0xF6BB,455,Function_455,0xF4E7..0xF8C1
+63187,0xF6D3,deathmsg_COW,unknown,63185,0xF6D1,455,Function_455,0xF4E7..0xF8C1
+63206,0xF6E6,deathmsg_COYOTE,unknown,63204,0xF6E4,455,Function_455,0xF4E7..0xF8C1
+63228,0xF6FC,deathmsg_CROW,unknown,63226,0xF6FA,455,Function_455,0xF4E7..0xF8C1
+63248,0xF710,deathmsg_DEER,unknown,63246,0xF70E,455,Function_455,0xF4E7..0xF8C1
+63268,0xF724,deathmsg_DOG,unknown,63266,0xF722,455,Function_455,0xF4E7..0xF8C1
+63287,0xF737,deathmsg_DUCK,unknown,63285,0xF735,455,Function_455,0xF4E7..0xF8C1
+63307,0xF74B,deathmsg_EAGLE,unknown,63305,0xF749,455,Function_455,0xF4E7..0xF8C1
+63328,0xF760,deathmsg_ELK,unknown,63326,0xF75E,455,Function_455,0xF4E7..0xF8C1
+63347,0xF773,deathmsg_FOX,unknown,63345,0xF771,455,Function_455,0xF4E7..0xF8C1
+63366,0xF786,deathmsg_GOAT,unknown,63364,0xF784,455,Function_455,0xF4E7..0xF8C1
+63386,0xF79A,deathmsg_HAWK,unknown,63384,0xF798,455,Function_455,0xF4E7..0xF8C1
+63406,0xF7AE,deathmsg_HORSE,unknown,63404,0xF7AC,455,Function_455,0xF4E7..0xF8C1
+63427,0xF7C3,deathmsg_MULE,unknown,63425,0xF7C1,455,Function_455,0xF4E7..0xF8C1
+63447,0xF7D7,deathmsg_OWL,unknown,63445,0xF7D5,455,Function_455,0xF4E7..0xF8C1
+63466,0xF7EA,deathmsg_PIG,unknown,63464,0xF7E8,455,Function_455,0xF4E7..0xF8C1
+63485,0xF7FD,deathmsg_RABBIT,unknown,63483,0xF7FB,455,Function_455,0xF4E7..0xF8C1
+63507,0xF813,deathmsg_RACCOON,unknown,63505,0xF811,455,Function_455,0xF4E7..0xF8C1
+63530,0xF82A,deathmsg_SKUNK,unknown,63528,0xF828,455,Function_455,0xF4E7..0xF8C1
+63551,0xF83F,deathmsg_SNAKE,unknown,63549,0xF83D,455,Function_455,0xF4E7..0xF8C1
+63572,0xF854,deathmsg_SONGBIRD,unknown,63570,0xF852,455,Function_455,0xF4E7..0xF8C1
+63596,0xF86C,deathmsg_STREETDOG,unknown,63594,0xF86A,455,Function_455,0xF4E7..0xF8C1
+63621,0xF885,deathmsg_VULTURE,unknown,63619,0xF883,455,Function_455,0xF4E7..0xF8C1
+63644,0xF89C,deathmsg_WOLF,unknown,63642,0xF89A,455,Function_455,0xF4E7..0xF8C1
+63664,0xF8B0,deathmsg_animal,event/task name,63662,0xF8AE,455,Function_455,0xF4E7..0xF8C1
+63718,0xF8E6,deathmsg_ZOMBIE,unknown,63716,0xF8E4,456,Function_456,0xF8C1..0xFB4C
+63852,0xF96C,deathmsg_BOUNTY_HUNTER,unknown,63850,0xF96A,456,Function_456,0xF8C1..0xFB4C
+63881,0xF989,deathmsg_BYSTANDER,unknown,63879,0xF987,456,Function_456,0xF8C1..0xFB4C
+63906,0xF9A2,deathmsg_INDIAN_BYSTANDER,unknown,63904,0xF9A0,456,Function_456,0xF8C1..0xFB4C
+63938,0xF9C2,deathmsg_MEXICAN_BYSTANDER,unknown,63936,0xF9C0,456,Function_456,0xF8C1..0xFB4C
+63971,0xF9E3,deathmsg_U_S_BYSTANDER,unknown,63969,0xF9E1,456,Function_456,0xF8C1..0xFB4C
+64000,0xFA00,deathmsg_CATTLE_RUSTLER,unknown,63998,0xF9FE,456,Function_456,0xF8C1..0xFB4C
+64030,0xFA1E,deathmsg_DRUNK_N_DIRTY,unknown,64028,0xFA1C,456,Function_456,0xF8C1..0xFB4C
+64059,0xFA3B,deathmsg_GENERIC_CRIMINAL,unknown,64057,0xFA39,456,Function_456,0xF8C1..0xFB4C
+64091,0xFA5B,deathmsg_MEXICAN_BANDITO,unknown,64089,0xFA59,456,Function_456,0xF8C1..0xFB4C
+64122,0xFA7A,deathmsg_SMUGGLERS,unknown,64120,0xFA78,456,Function_456,0xF8C1..0xFB4C
+64147,0xFA93,deathmsg_TREASURE_HUNTER,unknown,64145,0xFA91,456,Function_456,0xF8C1..0xFB4C
+64178,0xFAB2,deathmsg_INDIAN_RAIDER,unknown,64176,0xFAB0,456,Function_456,0xF8C1..0xFB4C
+64207,0xFACF,deathmsg_LAW,likely logic anchor,64205,0xFACD,456,Function_456,0xF8C1..0xFB4C
+64226,0xFAE2,deathmsg_MEXICAN_LAW,likely logic anchor,64224,0xFAE0,456,Function_456,0xF8C1..0xFB4C
+64253,0xFAFD,deathmsg_MEXICAN_REBEL,unknown,64251,0xFAFB,456,Function_456,0xF8C1..0xFB4C
+64282,0xFB1A,deathmsg_MEXICAN_SOLDIER,unknown,64280,0xFB18,456,Function_456,0xF8C1..0xFB4C
+64313,0xFB39,deathmsg_somebody,unknown,64311,0xFB37,456,Function_456,0xF8C1..0xFB4C
+64513,0xFC01,crateMultiplayer_open,unknown,64511,0xFBFF,461,Function_461,0xFBC1..0xFC92
+64567,0xFC37,LOCKER_OPEN_QUICK_MASTER,unknown,64565,0xFC35,461,Function_461,0xFBC1..0xFC92
+64752,0xFCF0,MPItemGiver,unknown,64750,0xFCEE,464,Function_464,0xFCE9..0xFCFD
+65070,0xFE2E,net_player_found_xpbonus,unknown,65068,0xFE2C,468,Function_468,0xFE11..0xFE4D
+65141,0xFE75,DLC_AA_award,unknown,65139,0xFE73,469,Function_469,0xFE4D..0xFE91
+65423,0xFF8F,Rezzing,unknown,65421,0xFF8D,477,Function_477,0xFF77..0x1088F
+65433,0xFF99,"Emergency Revival recv'd from Player #%s (%s), for #%s (%s)",debug/display text,65431,0xFF97,477,Function_477,0xFF77..0x1088F
+69465,0x10F59,GENERAL MP,debug/display text,69463,0x10F57,480,Function_480,0x10F48..0x10FAB
+69478,0x10F66,"############ DITCH ORDER RECEIVED FROM #%s, %s!",debug/display text,69476,0x10F64,480,Function_480,0x10F48..0x10FAB
+69554,0x10FB2,title_xplvl_0_ui,unknown,69552,0x10FB0,481,Function_481,0x10FAB..0x1105B
+69732,0x11064,blah,unknown,69730,0x11062,482,Function_482,0x1105B..0x12000

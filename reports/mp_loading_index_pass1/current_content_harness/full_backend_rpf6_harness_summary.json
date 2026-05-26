@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-05-26 11:41:54",
+  "archive": "D:\\Games\\Red Dead Redemption\\game\\content.rpf",
+  "backend_ok": true,
+  "backend_kwargs": {
+    "include_hashes": "False",
+    "include_extract": "False"
+  },
+  "backend_attempts": [
+    {
+      "kwargs": {
+        "include_hashes": "False",
+        "include_extract": "False",
+        "extract_root": "D:\\Games\\Red Dead Redemption\\Code_RED\\reports\\mp_loading_index_pass1\\current_content_harness\\extracted"
+      },
+      "error": "TypeError: audit_rpf6_archive() got an unexpected keyword argument 'extract_root'"
+    }
+  ],
+  "filters": {
+    "init_only": false,
+    "exclude_prefixes": []
+  },
+  "hit_count": 9059,
+  "selected_hit_count": 4389,
+  "category_counts": {
+    "init_script_entry": 112,
+    "init_signal": 11,
+    "script_entry": 4266,
+    "mp_signal": 249,
+    "other": 14,
+    "script_signal": 4407
+  },
+  "selected_category_counts": {
+    "init_script_entry": 112,
+    "init_signal": 11,
+    "script_entry": 4266
+  },
+  "extracted_script_count": 0,
+  "selected_extracted_script_count": 0,
+  "init_extracted_script_count": 0,
+  "non_z_init_extracted_script_count": 0,
+  "decrypt_extract_status": "not_confirmed_non_z_init_scripts_extracted",
+  "decompile_attempt": {
+    "ran": false,
+    "reason": "not requested"
+  }
+}

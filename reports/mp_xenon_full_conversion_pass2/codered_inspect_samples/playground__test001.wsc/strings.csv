@@ -1,0 +1,4 @@
+offset,offset_hex,length,text,population_term
+55,0x37,12,PlayerLayout,
+95,0x5F,5,1++%o,
+121,0x79,41,+o'================= YAY ================,
