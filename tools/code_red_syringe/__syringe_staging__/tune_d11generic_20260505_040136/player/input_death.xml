@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<sagPlayerInputFile>
-	<sagPlayerInput Name="Config1">
-		<sagPlayerMapper Name="Death">
-			<Map Value="Fire" Source="IOMS_PAD_ANALOGBUTTON" Parameter="ANALOG_R2" Port="-1" Inverted="F"/>
-		</sagPlayerMapper>
-	</sagPlayerInput>
-</sagPlayerInputFile>

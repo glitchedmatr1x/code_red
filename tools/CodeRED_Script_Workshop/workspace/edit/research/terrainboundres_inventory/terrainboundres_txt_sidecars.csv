@@ -1,3 +1,0 @@
-archive,archive_path,entry_index,entry_path,name,extension,territory,name_hash,base_hash,offset,stored_size,resource,compressed,resource_type,decoded_total_size
-terrainboundres.rpf,D:\Games\Red Dead Redemption\game\terrainboundres.rpf,851,root/terrainboundres/territory_swall_noid/validinstance_monkeypostexport.txt,validinstance_monkeypostexport.txt,.txt,territory_swall_noid,0x28F030A1,0x43B23970,212406136,3392,False,True,,59194
-terrainboundres.rpf,D:\Games\Red Dead Redemption\game\terrainboundres.rpf,926,root/terrainboundres/territory_swall_noid/validinstance_rdr2.txt,validinstance_rdr2.txt,.txt,territory_swall_noid,0x2CB1F12F,0xB471D612,212409536,3392,False,True,,59194

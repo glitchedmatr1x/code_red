@@ -1,8 +1,0 @@
-reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_chair01x.mb
-transform 0.3190840583 0 0.2689156276 0 269.6795964 0
-attribute rstarGringoGeneric rstarGringoGeneric_Type string sitArmWrestle
-reference T:/rdr2/Art/Worlds/territory/shared/models/props/p_gen_chair01x.mb
-transform 0.2635207401 0 0.8424152823 0 89.67959642 0
-attribute rstarGringoGeneric rstarGringoGeneric_Type string sitArmWrestle
-reference T:/rdr2/Art/Worlds/territory/shared/models/inst/i_gen_table34x.mb
-transform 0 0 0 0 0 0

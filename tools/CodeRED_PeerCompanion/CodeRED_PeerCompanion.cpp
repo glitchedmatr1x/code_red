@@ -56,22 +56,22 @@ struct Config {
     bool debugLogging = true;
     bool overlayEnabled = true;
     bool taskNativesEnabled = false;
-    bool postSpawnActionsEnabled = false;
+    bool postSpawnPositionNativeEnabled = false;
+    bool teleportCommandEnabled = false;
+    bool spawnUseXZGroundPlane = true;
     bool giveWeaponEnabled = true;
     bool clearWeaponsEnabled = true;
     DWORD startupDelayMs = 15000;
     DWORD commandPollMs = 200;
     DWORD heartbeatMs = 5000;
-    int companionActorEnum = 369;
-    int fallbackActorEnum = 111;
+    int companionActorEnum = 111;
     int friendlyFaction = 0;
     int neutralFaction = 0;
     int hostileFaction = 0;
     int basicWeaponEnum = 4;
     float basicWeaponAmmo = 60.0f;
-    float spawnDistance = 3.0f;
-    float spawnHeightOffset = 0.0f;
-    float spawnHeadingOffset = 0.0f;
+    float spawnDistance = 2.5f;
+    float spawnZOffset = 0.35f;
     std::string logPath = "logs\\codered_peer_companion.log";
     std::string statusPath = "data\\codered\\link\\host_status.json";
     std::string commandInboxPath = "data\\codered\\link\\peer_command_inbox.json";
@@ -297,23 +297,22 @@ static void loadConfig() {
         else if (key == "debug_logging") g_config.debugLogging = parseBool(value, g_config.debugLogging);
         else if (key == "overlay_enabled") g_config.overlayEnabled = parseBool(value, g_config.overlayEnabled);
         else if (key == "task_natives_enabled") g_config.taskNativesEnabled = parseBool(value, g_config.taskNativesEnabled);
-        else if (key == "post_spawn_actions_enabled") g_config.postSpawnActionsEnabled = parseBool(value, g_config.postSpawnActionsEnabled);
+        else if (key == "post_spawn_position_native_enabled") g_config.postSpawnPositionNativeEnabled = parseBool(value, g_config.postSpawnPositionNativeEnabled);
+        else if (key == "teleport_command_enabled") g_config.teleportCommandEnabled = parseBool(value, g_config.teleportCommandEnabled);
+        else if (key == "spawn_use_xz_ground_plane") g_config.spawnUseXZGroundPlane = parseBool(value, g_config.spawnUseXZGroundPlane);
         else if (key == "give_weapon_enabled") g_config.giveWeaponEnabled = parseBool(value, g_config.giveWeaponEnabled);
         else if (key == "clear_weapons_enabled") g_config.clearWeaponsEnabled = parseBool(value, g_config.clearWeaponsEnabled);
         else if (key == "startup_delay_ms") g_config.startupDelayMs = static_cast<DWORD>(std::max(0, std::atoi(value.c_str())));
         else if (key == "command_poll_ms") g_config.commandPollMs = static_cast<DWORD>(std::max(100, std::atoi(value.c_str())));
         else if (key == "heartbeat_ms") g_config.heartbeatMs = static_cast<DWORD>(std::max(1000, std::atoi(value.c_str())));
         else if (key == "companion_actor_enum") g_config.companionActorEnum = std::atoi(value.c_str());
-        else if (key == "fallback_actor_enum") g_config.fallbackActorEnum = std::atoi(value.c_str());
         else if (key == "friendly_faction") g_config.friendlyFaction = std::atoi(value.c_str());
         else if (key == "neutral_faction") g_config.neutralFaction = std::atoi(value.c_str());
         else if (key == "hostile_faction") g_config.hostileFaction = std::atoi(value.c_str());
         else if (key == "basic_weapon_enum") g_config.basicWeaponEnum = std::atoi(value.c_str());
         else if (key == "basic_weapon_ammo") g_config.basicWeaponAmmo = static_cast<float>(std::atof(value.c_str()));
         else if (key == "spawn_distance") g_config.spawnDistance = static_cast<float>(std::max(1.0, std::atof(value.c_str())));
-        else if (key == "spawn_height_offset") g_config.spawnHeightOffset = static_cast<float>(std::atof(value.c_str()));
-        else if (key == "spawn_z_offset") g_config.spawnHeightOffset = static_cast<float>(std::atof(value.c_str()));
-        else if (key == "spawn_heading_offset") g_config.spawnHeadingOffset = static_cast<float>(std::atof(value.c_str()));
+        else if (key == "spawn_z_offset") g_config.spawnZOffset = static_cast<float>(std::atof(value.c_str()));
         else if (key == "log_path") g_config.logPath = value;
         else if (key == "status_path") g_config.statusPath = value;
         else if (key == "command_inbox_path") g_config.commandInboxPath = value;
@@ -421,12 +420,6 @@ static bool companionValid() {
     return ok;
 }
 
-static std::string vectorString(const Vector3& pos) {
-    std::ostringstream out;
-    out << pos.x << "," << pos.y << "," << pos.z;
-    return out.str();
-}
-
 static Layout companionLayout() {
     if (g_layout > 0) return g_layout;
     g_layout = nativeInvoke<Layout>(0x5699DE7EULL, "CodeREDPeerCompanion");
@@ -467,6 +460,39 @@ static void writeStatus(const char* phase) {
     writeText(rootPath(g_config.statusPath), out.str());
 }
 
+
+static Vector3 companionPointNearPlayer(const Vector3& playerPos, float heading, float distance, float heightOffset) {
+    // Observed RDR PC actor coordinates from logs look like X/Z = ground plane and Y = height.
+    // The older build used X/Y as ground plane. That can place the actor at the wrong spot.
+    // This helper keeps the clone close to the player's reported coordinate system.
+    float rad = heading * (PI / 180.0f);
+    if (g_config.spawnUseXZGroundPlane) {
+        return Vector3{
+            playerPos.x + std::sin(rad) * distance,
+            playerPos.y + heightOffset,
+            playerPos.z + std::cos(rad) * distance
+        };
+    }
+    return Vector3{
+        playerPos.x + std::sin(rad) * distance,
+        playerPos.y + std::cos(rad) * distance,
+        playerPos.z + heightOffset
+    };
+}
+
+static void logPlayerAndSpawnPoint(const char* stage, const Vector3& playerPos, float heading, const Vector3& dest) {
+    std::ostringstream line;
+    line << stage
+         << " player_xyz=" << playerPos.x << "," << playerPos.y << "," << playerPos.z
+         << " heading=" << heading
+         << " spawn_xyz=" << dest.x << "," << dest.y << "," << dest.z
+         << " distance=" << g_config.spawnDistance
+         << " height_offset=" << g_config.spawnZOffset
+         << " xz_ground_plane=" << (g_config.spawnUseXZGroundPlane ? "true" : "false");
+    logLine(line.str());
+}
+
+
 static bool spawnCompanionNearPlayer() {
     logEnter("spawn_companion");
     if (!g_config.companionSpawnEnabled) {
@@ -486,11 +512,7 @@ static bool spawnCompanionNearPlayer() {
     Vector3 playerPos = {};
     float heading = 0.0f;
     Actor player = playerActor(&playerPos, &heading, nullptr);
-    const bool playerValid = actorValid(player);
-    logLine(std::string("player_valid=") + (playerValid ? "true" : "false"));
-    logLine("player_xyz=" + vectorString(playerPos));
-    logLine("heading=" + std::to_string(heading));
-    if (!playerValid) {
+    if (!actorValid(player)) {
         g_lastError = "player unavailable";
         logExit("spawn_companion", "FAILED reason=player_unavailable");
         return false;
@@ -501,58 +523,50 @@ static bool spawnCompanionNearPlayer() {
         logExit("spawn_companion", "FAILED reason=layout_unavailable");
         return false;
     }
-    float rad = heading * (PI / 180.0f);
-    Vector2 spawnXY = {
-        playerPos.x + std::sin(rad) * g_config.spawnDistance,
-        playerPos.y + std::cos(rad) * g_config.spawnDistance
-    };
-    const float spawnZ = playerPos.z + g_config.spawnHeightOffset;
-    const float spawnHeading = heading + g_config.spawnHeadingOffset;
-    Vector2 orientXY = {0.0f, 1.0f};
+    Vector3 dest = companionPointNearPlayer(playerPos, heading, g_config.spawnDistance, g_config.spawnZOffset);
+    logPlayerAndSpawnPoint("spawn_point", playerPos, heading, dest);
+
+    // CREATE_ACTOR_IN_LAYOUT is kept as the only required placement native.
+    // The previous visibility nudge/teleport path could crash, so post-spawn position writes
+    // are disabled by default and must be explicitly enabled in the INI.
+    Vector2 spawnPlane = g_config.spawnUseXZGroundPlane
+        ? Vector2{dest.x, dest.z}
+        : Vector2{dest.x, dest.y};
+    const float spawnHeight = g_config.spawnUseXZGroundPlane ? dest.y : dest.z;
+    Vector2 orientPlane = {0.0f, 1.0f};
     std::ostringstream name;
     name << "codered_peer_companion_" << ++g_spawnCounter;
-
-    auto createActor = [&](int actorEnum, const char* methodName) -> Actor {
-        logLine("spawn_xyz=" + vectorString({spawnXY.x, spawnXY.y, spawnZ}));
-        logLine("actor_enum=" + std::to_string(actorEnum));
-        logLine(std::string("using_spawn_method=") + methodName);
-        Actor created = nativeInvoke<Actor>(0x8D67F397ULL, layout, name.str().c_str(),
-                                            actorEnum, spawnXY, spawnZ,
-                                            orientXY, spawnHeading);
-        logLine("create_actor_return=" + std::to_string(created));
-        logLine(std::string("is_actor_valid_after_create=") + (actorValid(created) ? "true" : "false"));
-        return created;
-    };
-
-    Actor actor = createActor(g_config.companionActorEnum, "CodeRED_AI_Menu::spawnSelectedNpc");
-    int usedActorEnum = g_config.companionActorEnum;
-    if (!actorValid(actor) && g_config.fallbackActorEnum > 0 &&
-        g_config.fallbackActorEnum != g_config.companionActorEnum) {
-        std::ostringstream fallbackName;
-        fallbackName << "codered_peer_companion_fallback_" << g_spawnCounter;
-        name.str("");
-        name.clear();
-        name << fallbackName.str();
-        logLine("primary_spawn_failed_trying_fallback_actor_enum=" + std::to_string(g_config.fallbackActorEnum));
-        actor = createActor(g_config.fallbackActorEnum, "CodeRED_AI_Menu::spawnSelectedNpc:fallback");
-        usedActorEnum = g_config.fallbackActorEnum;
-    }
-
+    Actor actor = nativeInvoke<Actor>(0x8D67F397ULL, layout, name.str().c_str(),
+                                      g_config.companionActorEnum, spawnPlane, spawnHeight,
+                                      orientPlane, heading);
     if (!actorValid(actor)) {
         g_lastError = "CREATE_ACTOR_IN_LAYOUT returned invalid actor";
         logExit("spawn_companion", "FAILED reason=create_actor_invalid");
         return false;
     }
     g_companion = actor;
-    g_companionPos = {spawnXY.x, spawnXY.y, spawnZ};
-    if (g_config.postSpawnActionsEnabled) {
-        nativeInvoke<void>(0xECE8520BULL, g_companion, spawnHeading, TRUE);
+    g_companionPos = dest;
+    if (g_config.postSpawnPositionNativeEnabled) {
+        nativeInvoke<void>(0x2D54B916ULL, g_companion, &g_companionPos, TRUE, TRUE, TRUE);
+        logLine("post_spawn_position_native called");
+    } else {
+        logLine("post_spawn_position_native skipped: disabled_by_config");
+    }
+    nativeInvoke<void>(0xECE8520BULL, g_companion, heading, TRUE);
+    if (g_config.taskNativesEnabled) {
+        nativeInvoke<void>(0x16876A25ULL, g_companion);
+    }
+    if (g_aiMode && g_config.taskNativesEnabled) {
+        nativeInvoke<void>(0x12F0911AULL, g_companion, player);
+    } else if (g_config.taskNativesEnabled) {
+        nativeInvoke<void>(0x6F80965DULL, g_companion, -1.0f, 0, 0);
     }
     std::ostringstream ok;
-    ok << "OK actor=" << g_companion << " enum=" << usedActorEnum
-       << " x=" << g_companionPos.x << " y=" << g_companionPos.y << " z=" << g_companionPos.z;
+    ok << "OK actor=" << g_companion << " enum=" << g_config.companionActorEnum
+       << " x=" << g_companionPos.x << " y=" << g_companionPos.y << " z=" << g_companionPos.z
+       << " note=create_actor_only_near_player_no_teleport_default";
     setOverlay("Spawned companion actor=" + std::to_string(g_companion) +
-               " enum=" + std::to_string(usedActorEnum));
+               " enum=" + std::to_string(g_config.companionActorEnum));
     logExit("spawn_companion", ok.str().c_str());
     return true;
 }
@@ -626,16 +640,17 @@ static void drawOverlay() {
 
 static void teleportCompanionToPlayer() {
     logEnter("teleport_companion");
+    if (!g_config.teleportCommandEnabled) {
+        setOverlay("Teleport command disabled for crash isolation");
+        logExit("teleport_companion", "SKIPPED disabled_by_config");
+        return;
+    }
     Vector3 pos = {};
     float heading = 0.0f;
     Actor player = playerActor(&pos, &heading, nullptr);
     if (actorValid(player) && ensureCompanionForCommand()) {
-        float rad = heading * (PI / 180.0f);
-        Vector3 dest = {
-            pos.x + std::sin(rad) * 2.5f,
-            pos.y + std::cos(rad) * 2.5f,
-            pos.z
-        };
+        Vector3 dest = companionPointNearPlayer(pos, heading, g_config.spawnDistance, g_config.spawnZOffset);
+        logPlayerAndSpawnPoint("teleport_point", pos, heading, dest);
         nativeInvoke<void>(0x2D54B916ULL, g_companion, &dest, TRUE, TRUE, TRUE);
         nativeInvoke<void>(0xECE8520BULL, g_companion, heading, TRUE);
         g_companionPos = dest;
@@ -774,14 +789,18 @@ static void snapshot() {
     float heading = 0.0f;
     float health = 0.0f;
     Actor player = playerActor(&pos, &heading, &health);
+    const bool compOk = actorValid(g_companion);
+    Vector3 compPos = {};
+    if (compOk) nativeInvoke<void>(0x99BD9D6FULL, g_companion, &compPos);
     std::ostringstream line;
     line << "snapshot player_valid=" << (actorValid(player) ? "true" : "false")
          << " player=" << player
-         << " x=" << pos.x << " y=" << pos.y << " z=" << pos.z
+         << " player_xyz=" << pos.x << "," << pos.y << "," << pos.z
          << " heading=" << heading
          << " health=" << health
-         << " companion_valid=" << (actorValid(g_companion) ? "true" : "false")
+         << " companion_valid=" << (compOk ? "true" : "false")
          << " companion=" << g_companion
+         << " companion_xyz=" << compPos.x << "," << compPos.y << "," << compPos.z
          << " ai_mode=" << (g_aiMode ? "true" : "false")
          << " peer_mode=" << (g_peerMode ? "true" : "false");
     logLine(line.str());
@@ -816,8 +835,7 @@ static void tick() {
     }
 }
 
-static void keyboardHandler(DWORD key, WORD, BYTE, BOOL, BOOL, BOOL wasDown, BOOL upNow) {
-    if (upNow || wasDown) return;
+static void keyboardHandler(DWORD key, WORD, BYTE, BOOL, BOOL, BOOL, BOOL) {
     DWORD now = GetTickCount();
     if (key < 256) {
         if (now - g_lastHotkeyTick[key] < 400) return;
