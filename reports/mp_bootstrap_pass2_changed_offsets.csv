@@ -1,2 +1,0 @@
-archive_path,decoded_offset,decoded_offset_hex,original,replacement,length,before_sha1,after_sha1,patch_type,reason
-content/release64/scripting/designerdefined/long_update_thread.wsc,183753,0x2CDC9,$/content/scripting/DesignerDefined/Traffic/trafficDebugThread,content/scripting/DesignerDefined/codered_mp_bootstrap_minimal,62,21CC655F327E33FDDB860333ED5567C9DC8E97F1,C2C7D70E1E54B435A0D656AA1FE4DB3EF2A64D7C,same_length_pushstring_path_replace,route long_update_thread script launch path to CodeRED MP bootstrap WSC

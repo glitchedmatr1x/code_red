@@ -1,3 +1,0 @@
-Open scratch/faction_wars/fw1/FW1_PATCH_PLAN.md
-Patch only the first staged candidate first.
-Use copied-archive proof before install.

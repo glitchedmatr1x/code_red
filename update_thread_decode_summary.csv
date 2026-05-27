@@ -1,7 +1,0 @@
-script,decoded_size,string_count,morning,morningstar,star,blackwater,black,blk,bwm,mor_,hotel,saloon,bank,cityhall,police,theatre,church,freight,generalstore,tailor,trainstation,gunshop,zombie,fire,debris,flags,sector,enable,disable
-long_update_thread_z.wsc,196608,2673,5,0,5,14,20,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,120,49,0,0,0,2,7
-medium_update_thread.wsc,143360,2140,5,5,12,0,3,58,0,4,3,4,4,3,5,3,2,3,4,3,4,3,3,2,1,6,0,5,3
-medium_update_thread_z.wsc,86016,1488,5,5,5,0,3,68,0,4,5,4,5,3,5,3,2,3,6,5,4,3,137,59,59,8,0,2,3
-short_update_thread.wsc,102400,1456,0,0,5,0,0,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,5,4,0,0,0,0,1
-short_update_thread_z.wsc,126976,1576,0,0,8,0,0,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,66,5,0,0,0,0,1
-long_update_thread.wsc,225280,3163,5,0,5,0,6,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,2,0,0,0,3,8
