@@ -1,6 +1,0 @@
-variant,status,rpf,sha1,notes
-A0_pass2_repack_control,built,D:\Games\Red Dead Redemption\Code_RED\build\sp_freemode_sector_graft_pass2\A0_pass2_repack_control.rpf,07DC7DC10EAAEF121EFA75C3A274CDA8E43B771E,Base resource replacement/readback control; no decoded change.
-A1_pass2_callsite_noop_control,built,D:\Games\Red Dead Redemption\Code_RED\build\sp_freemode_sector_graft_pass2\A1_pass2_callsite_noop_control.rpf,07DC7DC10EAAEF121EFA75C3A274CDA8E43B771E,No-op repack through selected callsite lane: MAIN_ENABLE_CHILD_RWF_BARN_PROPS01.
-A2_tes_single_sector,built,D:\Games\Red Dead Redemption\Code_RED\build\sp_freemode_sector_graft_pass2\A2_tes_single_sector.rpf,22D140491496060458CA4561DDBC4A471CA43CAA,Replaces rwf_barn01xprops01x slot with mp_tes_coop01ax.
-A3_tes_single_sector_with_sp_counterpart_unload,skipped,,,Skipped: sector_overlap_map has no clear TES SP counterpart to disable safely.
-A4_tes_small_set,built,D:\Games\Red Dead Redemption\Code_RED\build\sp_freemode_sector_graft_pass2\A4_tes_small_set.rpf,47AC72ECBAB54274672449BD0455F6AD88B119BD,Replaces four SP child-sector slots with TES coop sector names.

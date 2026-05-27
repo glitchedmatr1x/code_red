@@ -1,6 +1,0 @@
-term,offset,offset_hex,status,reason
-catacombs,55818,0xDA0A,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-catacombs,55844,0xDA24,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-dlc_beh_catacombs01x,55810,0xDA02,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-dlc_beh_catacombs01props01x,55836,0xDA1C,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-load,73187,0x11DE3,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching

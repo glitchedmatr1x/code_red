@@ -1,2 +1,0 @@
-term,offset,offset_hex,status,reason
-Initializing deed array,1117,0x45D,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching

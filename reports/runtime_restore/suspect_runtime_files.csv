@@ -1,5 +1,0 @@
-﻿"Path","Status","Reason","SHA1"
-"D:\Games\Red Dead Redemption\content.rpf","left_in_place","Potential live content archive; hard rule says do not touch content.rpf before clean launch","E063FBEC79941AD2CA2504BA616596B1BB332B49"
-"D:\Games\Red Dead Redemption\game\content.rpf","left_in_place","Main game content archive; not modified","E063FBEC79941AD2CA2504BA616596B1BB332B49"
-"D:\Games\Red Dead Redemption\game\content pass 1.rpf","left_in_place","Loose test archive in game folder but not named content.rpf","E0C19C0BD85D5E0A6720B96CD8916037780ADD37"
-"D:\Games\Red Dead Redemption\game\gent.xml","left_in_place","Loose XML in game folder, not a known runtime root path; not moved until clean launch baseline","2E560D5CA32752CEF4C937C53AE2F40CE7107DD8"

@@ -1,6 +1,0 @@
-{
-  "command": "C:\\Users\\glitc\\AppData\\Local\\Programs\\Python\\Python312\\python.exe D:\\Games\\Red Dead Redemption\\Code_RED\\tools\\codered_magicrdr_wsc_compat.py --source D:\\Games\\Red Dead Redemption\\Code_RED\\build\\sp_freemode_sector_graft_pass2\\magicrdr_validation_inputs --out D:\\Games\\Red Dead Redemption\\Code_RED\\reports\\sp_freemode_sector_graft_pass2\\magicrdr_wsc_open --title SP FreeMode Sector Graft Pass 2 MagicRDR WSC Open",
-  "returncode": 0,
-  "stdout": "{\n  \"tested\": 4,\n  \"passed\": 4,\n  \"failed\": 0,\n  \"out\": \"D:\\\\Games\\\\Red Dead Redemption\\\\Code_RED\\\\reports\\\\sp_freemode_sector_graft_pass2\\\\magicrdr_wsc_open\"\n}",
-  "stderr": ""
-}

@@ -1,9 +1,0 @@
-void Function_453(var uParam0) //Position: 0x14A48
-{
-    if (!IS_VEHICLE_ENGINE_RUNNING(&uParam0) || !IS_VEHICLE_ALLOWED_TO_DRIVE(&uParam0))
-    {
-        START_VEHICLE(&uParam0);
-        SET_VEHICLE_ENGINE_RUNNING(&uParam0, 1);
-    }
-    return;
-}

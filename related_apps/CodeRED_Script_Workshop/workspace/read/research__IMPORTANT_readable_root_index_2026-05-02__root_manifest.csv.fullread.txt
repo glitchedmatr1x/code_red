@@ -1,5 +1,0 @@
-root_id,path,file_count,readable_count,total_bytes
-root_01,D:\Games\Red Dead Redemption\Code_RED\related_apps\codered_ui_settings_menu_patch_v1\loose_patch_root\root,2,2,20856
-root_02,D:\Games\Red Dead Redemption\Code_RED\research - Scan\menu resources\root,10,10,244262
-root_03,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\RDR_CRACKED_JEDIJOSH_R1\root,10,10,244262
-root_04,D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\root,5626,5598,442097701

@@ -1,8 +1,0 @@
-# Code RED source/decompiled export
-# Source: research/CodeRED_Cutscene_Placement_Pass15_Build/RUN_CUTSCENE_PLACEMENT_SCAN.bat
-# SHA1: 38acc3a6cbda0d077c38545b93108ce603ea9bed
-
-@echo off
-setlocal
-python tools\build_cutscene_placement_pass15.py
-pause

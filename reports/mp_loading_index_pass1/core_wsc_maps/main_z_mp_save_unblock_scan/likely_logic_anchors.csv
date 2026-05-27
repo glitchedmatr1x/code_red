@@ -1,2 +1,0 @@
-term,offset,offset_hex,status,reason
-SaveLoad,57467,0xE07B,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching

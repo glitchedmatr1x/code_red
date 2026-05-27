@@ -1,5 +1,0 @@
-variant,archive_path,local_file,result,decoded_size,stored_size,compressed
-V1_profile_editor_direct,root/content/ui/pausemenu/networking.sc.xml,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\patched_xml\networking_profile_editor_direct.sc.xml,replace,15935,3168,True
-V2_online_hudscene_direct,root/content/ui/pausemenu/pausemenuscene.sc.xml,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\patched_xml\pausemenuscene_online_hud_direct.sc.xml,replace,17265,2957,True
-V3_profile_plus_hudscene,root/content/ui/pausemenu/networking.sc.xml,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\patched_xml\networking_combined.sc.xml,replace,15935,3168,True
-V3_profile_plus_hudscene,root/content/ui/pausemenu/pausemenuscene.sc.xml,D:\Games\Red Dead Redemption\Code_RED\build\online_hudscene_pass1\patched_xml\pausemenuscene_combined.sc.xml,replace,17265,2957,True

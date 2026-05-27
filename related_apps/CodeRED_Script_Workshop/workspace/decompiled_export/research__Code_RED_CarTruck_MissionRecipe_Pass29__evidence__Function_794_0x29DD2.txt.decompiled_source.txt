@@ -1,8 +1,0 @@
-# Code RED source/decompiled export
-# Source: research/Code_RED_CarTruck_MissionRecipe_Pass29/evidence/Function_794_0x29DD2.txt
-# SHA1: 07f2feeb25576cc232bac40f554d940f2c95527c
-
-var Function_794(var uParam0, struct<2> Param1, var uParam3, var uParam4, var uParam5) //Position: 0x29DD2
-{
-    return GET_RAND_ACTORENUM_FROM_POPULATION_NATIVE(&uParam0, &uParam3, &uParam4, &uParam5, 1, Param1);
-}

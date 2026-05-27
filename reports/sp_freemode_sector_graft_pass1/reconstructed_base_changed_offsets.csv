@@ -1,4 +1,0 @@
-source_label,decoded_offset,decoded_offset_hex,find,replace,length,kind
-root/content/release64/main.wsc,2726,0xAA6,$/content/multiplayer/multiplayer_update_thread,$/content/multiplayer/codered_disabled_thread__,47,full_script_path
-root/content/release64/main.wsc,14493,0x389D,multiplayer/multiplayer_update_thread,multiplayer/codered_disabled_thread__,37,partial_script_path
-root/content/release64/init/rdr2init.wsc,769834,0xBBF2A,$/content/multiplayer/multiplayer_update_thread,$/content/multiplayer/codered_disabled_thread__,47,full_script_path

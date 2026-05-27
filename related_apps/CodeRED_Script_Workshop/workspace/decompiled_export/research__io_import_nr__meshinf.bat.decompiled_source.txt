@@ -1,8 +1,0 @@
-# Code RED source/decompiled export
-# Source: research/io_import_nr/meshinf.bat
-# SHA1: b8d70ec5eb237d749b48855d1c7f9ac7b01e3038
-
-cd /D "C:\Python38"
-python "C:\Projects\ninjaripper2\importers\io_import_nr\meshinfo.py"
-cmd
-

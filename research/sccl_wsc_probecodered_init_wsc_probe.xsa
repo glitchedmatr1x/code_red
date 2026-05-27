@@ -1,0 +1,27 @@
+//> Default Static Information
+SetStaticsCount 0
+//<
+
+:__builtin__entryPoint//>
+Function 0 2
+Call @main
+Return 0 0
+//<
+
+:main//>
+Function 0 2
+Push_1
+JumpFalse @__while_end_0
+
+:__while_body_0
+Push_0
+CallNative WAIT 1 0 //0x7715C03B
+
+:__while_cond_0
+Push_1
+Not
+JumpFalse @__while_body_0
+
+:__while_end_0
+Return 0 0
+//<

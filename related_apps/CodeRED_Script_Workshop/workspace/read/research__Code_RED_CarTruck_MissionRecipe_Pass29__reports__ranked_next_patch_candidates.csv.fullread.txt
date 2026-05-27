@@ -1,6 +1,0 @@
-rank,candidate,target,why,safe_next_action
-1,Runtime/native spawn proof,Spawn ACTOR_VEHICLE_Car01/Truck01 near player camp/player,Uses confirmed enum values and avoids raw WSC offset guessing,Build tiny source-only runtime controller or use existing actor spawn menu with corrected actor_enum_map
-2,PlayerCar gringo route,inventory.xml CAMP -> CommonScripts\PlayerCar plus template_VehicleCar01,Already a readable XML route; combine with confirmed carSettings recipe,Test Pass22 XML-only injection
-3,Population native return override,Function_646/794 / population .sco decode,Decompile confirms popset returns actor enum directly,Decode SCR02/SCO enough to replace wagon enum with 1194/1193
-4,Mission script raw patch,RSC85 fbi02/fbi04 constants,Car/truck constants are real but raw offsets are not mapped to decompile positions,Do not patch until decompile-position to raw-offset bridge exists
-5,More tune template morphing,wagon/stagecoach templates,Likely bypassed when script returns direct actor enum,Stop expanding unless a specific template is proven active

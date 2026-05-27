@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<VehicleLocationSet>
-  <Locations/>
-  <RopeRotateLocalX value="0.0"/>
-  <RopeRotateLocalY value="0.0"/>
-  <RopeRotateLocalZ value="0.0"/>
-</VehicleLocationSet>

@@ -1,0 +1,109 @@
+{
+  "generated_utc": "2026-05-07T08:26:50Z",
+  "root": "D:\\Games\\Red Dead Redemption\\Code_RED",
+  "archives_checked": 3,
+  "ok_count": 3,
+  "fail_count": 0,
+  "archives": [
+    {
+      "archive": "D:\\Games\\Red Dead Redemption\\game\\act.rpf",
+      "inventory": {
+        "archive": "D:\\Games\\Red Dead Redemption\\game\\act.rpf",
+        "entry_count": 1035,
+        "file_count": 1026,
+        "dir_count": 9,
+        "resolved_count": 1035,
+        "encrypted": true,
+        "inventory_csv": "logs/file_io_validation/act/rpf_inventory.csv",
+        "inventory_json": "logs/file_io_validation/act/rpf_inventory.json"
+      },
+      "sample_extract": {
+        "archive": "D:\\Games\\Red Dead Redemption\\game\\act.rpf",
+        "out_dir": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\file_io_validation\\act\\sample_extract",
+        "requested_entry": "3",
+        "all_entries": false,
+        "count": 1,
+        "ok_count": 1,
+        "fail_count": 0,
+        "rows": [
+          {
+            "index": 3,
+            "path": "root/act/list.txt",
+            "output": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\file_io_validation\\act\\sample_extract\\act\\list.txt",
+            "size": 6542,
+            "ok": true,
+            "error": ""
+          }
+        ]
+      },
+      "ok": true
+    },
+    {
+      "archive": "D:\\Games\\Red Dead Redemption\\game\\animationres.rpf",
+      "inventory": {
+        "archive": "D:\\Games\\Red Dead Redemption\\game\\animationres.rpf",
+        "entry_count": 1352,
+        "file_count": 1347,
+        "dir_count": 5,
+        "resolved_count": 1352,
+        "encrypted": true,
+        "inventory_csv": "logs/file_io_validation/animationres/rpf_inventory.csv",
+        "inventory_json": "logs/file_io_validation/animationres/rpf_inventory.json"
+      },
+      "sample_extract": {
+        "archive": "D:\\Games\\Red Dead Redemption\\game\\animationres.rpf",
+        "out_dir": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\file_io_validation\\animationres\\sample_extract",
+        "requested_entry": "5",
+        "all_entries": false,
+        "count": 1,
+        "ok_count": 1,
+        "fail_count": 0,
+        "rows": [
+          {
+            "index": 5,
+            "path": "root/animationres/ast/clipres/stand_yelling.was",
+            "output": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\file_io_validation\\animationres\\sample_extract\\animationres\\ast\\clipres\\stand_yelling.was",
+            "size": 70133,
+            "ok": true,
+            "error": ""
+          }
+        ]
+      },
+      "ok": true
+    },
+    {
+      "archive": "D:\\Games\\Red Dead Redemption\\game\\audio_d11generic.rpf",
+      "inventory": {
+        "archive": "D:\\Games\\Red Dead Redemption\\game\\audio_d11generic.rpf",
+        "entry_count": 2071,
+        "file_count": 2041,
+        "dir_count": 30,
+        "resolved_count": 2071,
+        "encrypted": true,
+        "inventory_csv": "logs/file_io_validation/audio_d11generic/rpf_inventory.csv",
+        "inventory_json": "logs/file_io_validation/audio_d11generic/rpf_inventory.json"
+      },
+      "sample_extract": {
+        "archive": "D:\\Games\\Red Dead Redemption\\game\\audio_d11generic.rpf",
+        "out_dir": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\file_io_validation\\audio_d11generic\\sample_extract",
+        "requested_entry": "30",
+        "all_entries": false,
+        "count": 1,
+        "ok_count": 1,
+        "fail_count": 0,
+        "rows": [
+          {
+            "index": 30,
+            "path": "root/audio/d11generic/sfx/dlc5/narrator03.awc",
+            "output": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\file_io_validation\\audio_d11generic\\sample_extract\\audio\\d11generic\\sfx\\dlc5\\narrator03.awc",
+            "size": 6064966,
+            "ok": true,
+            "error": ""
+          }
+        ]
+      },
+      "ok": true
+    }
+  ],
+  "status": "PASS"
+}

@@ -1,8 +1,0 @@
-term,offset,offset_hex,status,reason
-FREEROAM,349,0x15D,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-FREEROAM,27613,0x6BDD,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-multiplayer_update_thread,15231,0x3B7F,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-SaveLoad,15171,0x3B43,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-SaveLoad,33758,0x83DE,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-LoadingScreen,3155,0xC53,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-SESSION,446,0x1BE,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching

@@ -1,7 +1,0 @@
-# Code RED source/decompiled export
-# Source: research/terrainboundres_probe/layer_summary.csv
-# SHA1: 7c4ae0ec472898a7114e617434bfbf4e8fd24b80
-
-archive,layer,count
-terrainboundres.rpf,plain_text,2
-terrainboundres.rpf,terrain_bounds_wtb,5376

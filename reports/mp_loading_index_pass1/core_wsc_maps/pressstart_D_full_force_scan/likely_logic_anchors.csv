@@ -1,4 +1,0 @@
-term,offset,offset_hex,status,reason
-net.EnterOnline,1144,0x478,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-net.EnterOnline,2487,0x9B7,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching
-LoadingScreen,1924,0x784,manual_review_required,decoded string or byte anchor; inspect nearby code and callers before patching

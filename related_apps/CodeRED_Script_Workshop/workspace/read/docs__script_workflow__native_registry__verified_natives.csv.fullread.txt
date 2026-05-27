@@ -1,4 +1,0 @@
-native_or_wrapper,source,lane,status,verified_signature_or_usage,proof,notes
-_CLEAR_PRINTS,SC-CL real headers / minimal proof,SC-CL proof,verified,void usage in minimal proof,CodeREDProof compiled,Keep as proof-only until installed safely
-_PRINT_SUBTITLE,SC-CL real headers / minimal proof,SC-CL proof,verified,"_PRINT_SUBTITLE(\"CODE RED PROOF\", 3000.0f, true, 1, 0, 0, 0, 0)",CodeREDProof compiled,Old full menu used the wrong argument count
-WAIT,SC-CL real headers / minimal proof,SC-CL proof,verified,WAIT(0),CodeREDProof compiled,Used in minimal loop

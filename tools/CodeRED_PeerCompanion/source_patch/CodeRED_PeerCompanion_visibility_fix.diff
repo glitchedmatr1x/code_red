@@ -1,0 +1,139 @@
+--- CodeRED_PeerCompanion.cpp.orig
++++ CodeRED_PeerCompanion.cpp.visibility_fix
+@@ -61,14 +61,17 @@
+     DWORD startupDelayMs = 15000;
+     DWORD commandPollMs = 200;
+     DWORD heartbeatMs = 5000;
+-    int companionActorEnum = 111;
++    DWORD visibilityHoldMs = 12000;
++    DWORD visibilityNudgeMs = 750;
++    bool visibilityNudgeEnabled = true;
++    int companionActorEnum = 369;
+     int friendlyFaction = 0;
+     int neutralFaction = 0;
+     int hostileFaction = 0;
+     int basicWeaponEnum = 4;
+     float basicWeaponAmmo = 60.0f;
+-    float spawnDistance = 2.5f;
+-    float spawnZOffset = 0.35f;
++    float spawnDistance = 4.0f;
++    float spawnZOffset = 1.0f;
+     std::string logPath = "logs\\codered_peer_companion.log";
+     std::string statusPath = "data\\codered\\link\\host_status.json";
+     std::string commandInboxPath = "data\\codered\\link\\peer_command_inbox.json";
+@@ -110,6 +113,8 @@
+ static DWORD g_lastCommandPollTick = 0;
+ static DWORD g_lastHeartbeatTick = 0;
+ static DWORD g_lastStatusTick = 0;
++static DWORD g_lastVisibilityNudgeTick = 0;
++static ULONGLONG g_spawnTick = 0;
+ static DWORD g_lastHotkeyTick[256] = {};
+ 
+ static constexpr float PI = 3.14159265358979323846f;
+@@ -299,6 +304,9 @@
+         else if (key == "startup_delay_ms") g_config.startupDelayMs = static_cast<DWORD>(std::max(0, std::atoi(value.c_str())));
+         else if (key == "command_poll_ms") g_config.commandPollMs = static_cast<DWORD>(std::max(100, std::atoi(value.c_str())));
+         else if (key == "heartbeat_ms") g_config.heartbeatMs = static_cast<DWORD>(std::max(1000, std::atoi(value.c_str())));
++        else if (key == "visibility_hold_ms") g_config.visibilityHoldMs = static_cast<DWORD>(std::max(0, std::atoi(value.c_str())));
++        else if (key == "visibility_nudge_ms") g_config.visibilityNudgeMs = static_cast<DWORD>(std::max(250, std::atoi(value.c_str())));
++        else if (key == "visibility_nudge_enabled") g_config.visibilityNudgeEnabled = parseBool(value, g_config.visibilityNudgeEnabled);
+         else if (key == "companion_actor_enum") g_config.companionActorEnum = std::atoi(value.c_str());
+         else if (key == "friendly_faction") g_config.friendlyFaction = std::atoi(value.c_str());
+         else if (key == "neutral_faction") g_config.neutralFaction = std::atoi(value.c_str());
+@@ -314,7 +322,11 @@
+     }
+     g_aiMode = g_config.aiCompanionEnabled;
+     g_peerMode = g_config.peerControlEnabled;
+-    logLine("load_config path=" + cfgPath);
++    logLine("load_config path=" + cfgPath +
++            " companion_actor_enum=" + std::to_string(g_config.companionActorEnum) +
++            " spawn_distance=" + std::to_string(g_config.spawnDistance) +
++            " spawn_z_offset=" + std::to_string(g_config.spawnZOffset) +
++            " visibility_nudge_enabled=" + (g_config.visibilityNudgeEnabled ? std::string("true") : std::string("false")));
+ }
+ 
+ static FARPROC resolveExport(const char* plain, const char* decorated) {
+@@ -454,6 +466,39 @@
+     writeText(rootPath(g_config.statusPath), out.str());
+ }
+ 
++static bool nudgeCompanionInFrontOfPlayer(const char* reason) {
++    logEnter("visibility_nudge");
++    if (!g_config.visibilityNudgeEnabled) {
++        logExit("visibility_nudge", "SKIPPED config_disabled");
++        return false;
++    }
++    if (!actorValid(g_companion)) {
++        logExit("visibility_nudge", "FAILED reason=invalid_companion");
++        return false;
++    }
++    Vector3 playerPos = {};
++    float heading = 0.0f;
++    Actor player = playerActor(&playerPos, &heading, nullptr);
++    if (!actorValid(player)) {
++        logExit("visibility_nudge", "FAILED reason=invalid_player");
++        return false;
++    }
++    float rad = heading * (PI / 180.0f);
++    Vector3 dest = {
++        playerPos.x + std::sin(rad) * g_config.spawnDistance,
++        playerPos.y + std::cos(rad) * g_config.spawnDistance,
++        playerPos.z + g_config.spawnZOffset
++    };
++    nativeInvoke<void>(0x2D54B916ULL, g_companion, &dest, TRUE, TRUE, TRUE);
++    nativeInvoke<void>(0xECE8520BULL, g_companion, heading, TRUE);
++    g_companionPos = dest;
++    std::ostringstream ok;
++    ok << "OK reason=" << reason << " actor=" << g_companion
++       << " x=" << dest.x << " y=" << dest.y << " z=" << dest.z;
++    logExit("visibility_nudge", ok.str().c_str());
++    return true;
++}
++
+ static bool spawnCompanionNearPlayer() {
+     logEnter("spawn_companion");
+     if (!g_config.companionSpawnEnabled) {
+@@ -502,9 +547,12 @@
+         return false;
+     }
+     g_companion = actor;
++    g_spawnTick = GetTickCount64();
++    g_lastVisibilityNudgeTick = 0;
+     g_companionPos = {spawnXY.x, spawnXY.y, spawnZ};
+     nativeInvoke<void>(0x2D54B916ULL, g_companion, &g_companionPos, TRUE, TRUE, TRUE);
+     nativeInvoke<void>(0xECE8520BULL, g_companion, heading, TRUE);
++    nudgeCompanionInFrontOfPlayer("spawn_confirm");
+     if (g_config.taskNativesEnabled) {
+         nativeInvoke<void>(0x16876A25ULL, g_companion);
+     }
+@@ -529,6 +577,7 @@
+         nativeInvoke<void>(0x8BD21869ULL, g_companion);
+     }
+     g_companion = 0;
++    g_spawnTick = 0;
+     setOverlay("Companion despawned");
+     logLine(std::string("despawn reason=") + reason);
+     logExit("despawn_companion");
+@@ -579,7 +628,8 @@
+     line << "CodeRED Peer Companion | F8 spawn F9 despawn F10 AI F11 peer | "
+          << (companion ? "COMPANION OK" : "NO COMPANION")
+          << " | AI " << (g_aiMode ? "ON" : "OFF")
+-         << " | PEER " << (g_peerMode ? "ON" : "OFF");
++         << " | PEER " << (g_peerMode ? "ON" : "OFF")
++         << " | enum " << g_config.companionActorEnum;
+     g_drawText(0.030f, 0.080f, line.str().c_str(), 255, 50, 50, 235, 0, 0.018f, 0);
+     if (!g_overlayLine.empty()) {
+         const bool flash = static_cast<int>(g_overlayFlashUntil - GetTickCount()) > 0;
+@@ -774,6 +824,12 @@
+     if (now - g_lastStatusTick >= g_config.heartbeatMs) {
+         g_lastStatusTick = now;
+         writeStatus("heartbeat");
++    }
++    if (g_config.visibilityNudgeEnabled && g_spawnTick != 0 && actorValid(g_companion) &&
++        (GetTickCount64() - g_spawnTick) <= g_config.visibilityHoldMs &&
++        now - g_lastVisibilityNudgeTick >= g_config.visibilityNudgeMs) {
++        g_lastVisibilityNudgeTick = now;
++        nudgeCompanionInFrontOfPlayer("visibility_hold");
+     }
+     if (now - g_lastCommandPollTick >= g_config.commandPollMs) {
+         g_lastCommandPollTick = now;

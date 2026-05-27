@@ -1,5 +1,0 @@
-label,rpf,archive_path,expected_sha1,actual_sha1,expected_size,actual_size,match
-A0_pass2_repack_control,D:\Games\Red Dead Redemption\Code_RED\build\sp_freemode_sector_graft_pass2\A0_pass2_repack_control.rpf,root/content/release64/main.wsc,37F096D1643A6C83022DADAA9EBBFBCC3CAB60D9,37F096D1643A6C83022DADAA9EBBFBCC3CAB60D9,75695,75695,True
-A1_pass2_callsite_noop_control,D:\Games\Red Dead Redemption\Code_RED\build\sp_freemode_sector_graft_pass2\A1_pass2_callsite_noop_control.rpf,root/content/release64/main.wsc,37F096D1643A6C83022DADAA9EBBFBCC3CAB60D9,37F096D1643A6C83022DADAA9EBBFBCC3CAB60D9,75695,75695,True
-A2_tes_single_sector,D:\Games\Red Dead Redemption\Code_RED\build\sp_freemode_sector_graft_pass2\A2_tes_single_sector.rpf,root/content/release64/main.wsc,36FC44D122D0E5C8FC2771DC7CD082A830377106,36FC44D122D0E5C8FC2771DC7CD082A830377106,75695,75695,True
-A4_tes_small_set,D:\Games\Red Dead Redemption\Code_RED\build\sp_freemode_sector_graft_pass2\A4_tes_small_set.rpf,root/content/release64/main.wsc,1D8BAB041DD269098949D315C841BF4C69A397EE,1D8BAB041DD269098949D315C841BF4C69A397EE,75695,75695,True

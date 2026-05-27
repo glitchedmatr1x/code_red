@@ -1,6 +1,0 @@
-# Code RED source/decompiled export
-# Source: research/terrainboundres_probe/archive_layers.csv
-# SHA1: fca3584613ebe0932654b230d97006fc2f5e33fc
-
-archive,archive_path,entry_count,file_count,dir_count,encrypted_toc,extensions_json
-terrainboundres.rpf,D:\Games\Red Dead Redemption\game\terrainboundres.rpf,5381,5378,3,True,"{"".txt"": 2, "".wtb"": 5376}"

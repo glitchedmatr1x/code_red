@@ -1,0 +1,63 @@
+﻿{
+    "generated_at":  "2026-05-06T22:20:22",
+    "reason":  "Move legacy/regressed Code RED launchers out of the RDR.exe game root while preserving source for reference.",
+    "game_root":  "D:\\Games\\Red Dead Redemption",
+    "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506",
+    "moved":  [
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\APPLY_DROPIN_PATCH.bat",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\APPLY_DROPIN_PATCH.bat"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Dependency_Installer.bat",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Dependency_Installer.bat"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Dependency_Installer.ps1",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Dependency_Installer.ps1"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Dependency_Installer.py",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Dependency_Installer.py"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_External_Recommendations.txt",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_External_Recommendations.txt"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Launcher.bat",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Launcher.bat"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Launcher.cs",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Launcher.cs"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Launcher.ps1",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Launcher.ps1"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Launcher.py",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Launcher.py"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Launcher_manifest.json",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Launcher_manifest.json"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Launcher_README.txt",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Launcher_README.txt"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Code_RED_Pristine_Lite_Report.txt",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Code_RED_Pristine_Lite_Report.txt"
+                  },
+                  {
+                      "source":  "D:\\Games\\Red Dead Redemption\\Red_Bridge_Guide.txt",
+                      "destination":  "D:\\Games\\Red Dead Redemption\\Code_RED\\related_apps\\Legacy_GameRoot_CodeRED_Launchers_20260506\\Red_Bridge_Guide.txt"
+                  }
+              ],
+    "skipped":  [
+
+                ]
+}

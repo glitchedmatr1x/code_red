@@ -1,0 +1,135 @@
+--- /mnt/data/peer_inspect2/CodeRED_PeerCompanion.cpp	2026-05-25 21:31:02.000000000 +0000
++++ /mnt/data/CodeRED_PeerCompanion_axis_visibility_fix.cpp	2026-05-26 05:08:02.296577482 +0000
+@@ -98,6 +98,8 @@
+ static Actor g_companion = 0;
+ static Vector3 g_companionPos = {};
+ static int g_spawnCounter = 0;
++static ULONGLONG g_spawnTick = 0;
++static DWORD g_lastVisibilityNudgeTick = 0;
+ static bool g_aiMode = true;
+ static bool g_peerMode = false;
+ static bool g_peerConnected = false;
+@@ -454,6 +456,46 @@
+     writeText(rootPath(g_config.statusPath), out.str());
+ }
+ 
++
++static Vector3 companionPointInFront(const Vector3& playerPos, float heading, float distance, float yOffset) {
++    // RDR PC positions observed in logs use X/Z as the ground plane and Y as height.
++    // Older build incorrectly moved on X/Y, which can place the clone above/below the player
++    // instead of visibly in front. Keep Y as vertical height and move forward on X/Z.
++    float rad = heading * (PI / 180.0f);
++    Vector3 dest = {
++        playerPos.x + std::sin(rad) * distance,
++        playerPos.y + yOffset,
++        playerPos.z + std::cos(rad) * distance
++    };
++    return dest;
++}
++
++static bool nudgeCompanionInFrontOfPlayer(const char* reason) {
++    logEnter("visibility_nudge");
++    if (!actorValid(g_companion)) {
++        logExit("visibility_nudge", "FAILED reason=invalid_companion");
++        return false;
++    }
++    Vector3 playerPos = {};
++    float heading = 0.0f;
++    Actor player = playerActor(&playerPos, &heading, nullptr);
++    if (!actorValid(player)) {
++        logExit("visibility_nudge", "FAILED reason=invalid_player");
++        return false;
++    }
++    Vector3 dest = companionPointInFront(playerPos, heading, g_config.spawnDistance, g_config.spawnZOffset);
++    nativeInvoke<void>(0x2D54B916ULL, g_companion, &dest, TRUE, TRUE, TRUE);
++    nativeInvoke<void>(0xECE8520BULL, g_companion, heading, TRUE);
++    g_companionPos = dest;
++    std::ostringstream ok;
++    ok << "OK reason=" << reason << " actor=" << g_companion
++       << " player=" << playerPos.x << "," << playerPos.y << "," << playerPos.z
++       << " dest=" << dest.x << "," << dest.y << "," << dest.z
++       << " heading=" << heading;
++    logExit("visibility_nudge", ok.str().c_str());
++    return true;
++}
++
+ static bool spawnCompanionNearPlayer() {
+     logEnter("spawn_companion");
+     if (!g_config.companionSpawnEnabled) {
+@@ -484,27 +526,29 @@
+         logExit("spawn_companion", "FAILED reason=layout_unavailable");
+         return false;
+     }
+-    float rad = heading * (PI / 180.0f);
+-    Vector2 spawnXY = {
+-        playerPos.x + std::sin(rad) * g_config.spawnDistance,
+-        playerPos.y + std::cos(rad) * g_config.spawnDistance
+-    };
+-    const float spawnZ = playerPos.z + g_config.spawnZOffset;
+-    Vector2 orientXY = {0.0f, 1.0f};
++    Vector3 dest = companionPointInFront(playerPos, heading, g_config.spawnDistance, g_config.spawnZOffset);
++    // CREATE_ACTOR_IN_LAYOUT in this native lane uses the observed RDR layout convention:
++    // ground plane packed as X/Z plus vertical Y as the following float.
++    Vector2 spawnXZ = {dest.x, dest.z};
++    const float spawnY = dest.y;
++    Vector2 orientXZ = {0.0f, 1.0f};
+     std::ostringstream name;
+     name << "codered_peer_companion_" << ++g_spawnCounter;
+     Actor actor = nativeInvoke<Actor>(0x8D67F397ULL, layout, name.str().c_str(),
+-                                      g_config.companionActorEnum, spawnXY, spawnZ,
+-                                      orientXY, heading);
++                                      g_config.companionActorEnum, spawnXZ, spawnY,
++                                      orientXZ, heading);
+     if (!actorValid(actor)) {
+         g_lastError = "CREATE_ACTOR_IN_LAYOUT returned invalid actor";
+         logExit("spawn_companion", "FAILED reason=create_actor_invalid");
+         return false;
+     }
+     g_companion = actor;
+-    g_companionPos = {spawnXY.x, spawnXY.y, spawnZ};
++    g_spawnTick = GetTickCount64();
++    g_lastVisibilityNudgeTick = 0;
++    g_companionPos = dest;
+     nativeInvoke<void>(0x2D54B916ULL, g_companion, &g_companionPos, TRUE, TRUE, TRUE);
+     nativeInvoke<void>(0xECE8520BULL, g_companion, heading, TRUE);
++    nudgeCompanionInFrontOfPlayer("spawn_confirm");
+     if (g_config.taskNativesEnabled) {
+         nativeInvoke<void>(0x16876A25ULL, g_companion);
+     }
+@@ -515,7 +559,8 @@
+     }
+     std::ostringstream ok;
+     ok << "OK actor=" << g_companion << " enum=" << g_config.companionActorEnum
+-       << " x=" << g_companionPos.x << " y=" << g_companionPos.y << " z=" << g_companionPos.z;
++       << " x=" << g_companionPos.x << " y=" << g_companionPos.y << " z=" << g_companionPos.z
++       << " note=axis_fixed_xz_ground_y_height";
+     setOverlay("Spawned companion actor=" + std::to_string(g_companion) +
+                " enum=" + std::to_string(g_config.companionActorEnum));
+     logExit("spawn_companion", ok.str().c_str());
+@@ -595,12 +640,7 @@
+     float heading = 0.0f;
+     Actor player = playerActor(&pos, &heading, nullptr);
+     if (actorValid(player) && ensureCompanionForCommand()) {
+-        float rad = heading * (PI / 180.0f);
+-        Vector3 dest = {
+-            pos.x + std::sin(rad) * 2.5f,
+-            pos.y + std::cos(rad) * 2.5f,
+-            pos.z
+-        };
++        Vector3 dest = companionPointInFront(pos, heading, g_config.spawnDistance, g_config.spawnZOffset);
+         nativeInvoke<void>(0x2D54B916ULL, g_companion, &dest, TRUE, TRUE, TRUE);
+         nativeInvoke<void>(0xECE8520BULL, g_companion, heading, TRUE);
+         g_companionPos = dest;
+@@ -775,6 +815,12 @@
+         g_lastStatusTick = now;
+         writeStatus("heartbeat");
+     }
++    if (g_spawnTick != 0 && actorValid(g_companion) && (GetTickCount64() - g_spawnTick) <= 12000) {
++        if (now - g_lastVisibilityNudgeTick >= 1000) {
++            g_lastVisibilityNudgeTick = now;
++            nudgeCompanionInFrontOfPlayer("visibility_hold");
++        }
++    }
+     if (now - g_lastCommandPollTick >= g_config.commandPollMs) {
+         g_lastCommandPollTick = now;
+         pollPeerCommand();
