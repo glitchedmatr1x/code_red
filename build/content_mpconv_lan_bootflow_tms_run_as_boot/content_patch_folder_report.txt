@@ -1,0 +1,16 @@
+Code RED Archive Patch Folder Report
+==================================
+
+Archive source: build/content_mpconv_lan_bootflow/content.rpf
+Working copy: build/content_mpconv_lan_bootflow_tms_run_as_boot/content.rpf
+Patch folder: build/mp_ui_lan_bootflow_tms_run_as_boot_patch
+Patch files scanned: 1
+Applied: 1
+Applied with relocation: 0
+Identical: 0
+Blocked: 0
+Unmatched: 0
+
+Patch results:
+- [archive_copy_replace_verified] tms_boot_360.sco -> root/content/release64/dlc/titlestorage/tms_boot_360.sco | match=internal-path | reason=Patched a copied archive and re-read the target entry successfully.
+    note: Plain archive entry size changed (3,300 vs 14,997); relocation-to-appended-span will be required in the archive copy.
