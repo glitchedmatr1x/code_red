@@ -14,7 +14,7 @@ It scans an extracted RPF workspace for:
 It does not modify archives, game files, or the extracted workspace.
 
 Usage from repo root:
-  py -3 tools/codered_camp_car_workbench.py --root "C:\\Users\\glitc\\OneDrive\\Desktop\\CodeRED_RPF_Extracts"
+  py -3 tools/codered_camp_car_workbench.py --root "%LOCAL_PATH%"
 """
 
 from __future__ import annotations

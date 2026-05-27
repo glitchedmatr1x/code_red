@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OVERLAY_TOOL = ROOT / "tools" / "codered_content_convert_overlay_builder.py"
 XSC_SWAP_TOOL = ROOT / "tools" / "codered_xsc_to_wsc_candidate.py"
 DECODED_UI = ROOT / "logs" / "content_mp_scxml_zstd_probe" / "decoded"
-LIVE_CONTENT = Path(r"D:\Games\Red Dead Redemption\game\content.rpf")
+LIVE_CONTENT = Path(r"%RDR_GAME_DIR%")
 BUILD_ROOT = ROOT / "build" / "mp_content_restore_pass4"
 REPORT_FIELDS = [
     "source_kind",

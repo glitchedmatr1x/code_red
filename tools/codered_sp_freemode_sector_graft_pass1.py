@@ -32,7 +32,7 @@ SOURCE_EXTRACT = BUILD_ROOT / "source_wsc_extract"
 PASS5_BASE = ROOT / "build" / "mp_content_restore_pass5" / "content_mp_restore_pass5_access_trainer_sectors.rpf"
 TARGET_BASE_SHA1 = "91304EBA24B3759AE206783EBE4CA42EA0F2A134"
 MAGIC_PS1 = ROOT / "tools" / "codered_magicrdr_wsc_compat.ps1"
-POWERSHELL32 = Path(os.environ.get("WINDIR", r"C:\Windows")) / "SysWOW64" / "WindowsPowerShell" / "v1.0" / "powershell.exe"
+POWERSHELL32 = Path(os.environ.get("WINDIR", r"%LOCAL_PATH%")) / "SysWOW64" / "WindowsPowerShell" / "v1.0" / "powershell.exe"
 
 SP_FILES = {
     "release64/pressstart.wsc": SOURCE_EXTRACT / "content" / "release64" / "pressstart.wsc",

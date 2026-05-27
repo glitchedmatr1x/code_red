@@ -1,8 +1,8 @@
 param(
     [switch]$DryRun,
     [switch]$SwapIn,
-    [string]$CodeRedRoot = "D:\Games\Red Dead Redemption\Code_RED",
-    [string]$SourceRpf = "D:\Games\Red Dead Redemption\game\content.rpf",
+    [string]$CodeRedRoot = "%RDR_GAME_DIR%",
+    [string]$SourceRpf = "%RDR_GAME_DIR%",
     [string]$DropIn = ""
 )
 

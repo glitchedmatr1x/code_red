@@ -1,0 +1,34 @@
+Code RED Mod Workbench v0.3 self-test notes
+===========================================
+
+Sandbox tests performed:
+
+1. Sector scan on medium_update_thread.wsc
+   Command:
+     python codered_mod_workbench.py sector-scan /mnt/data/medium_update_thread.wsc --out test_sector_scan
+   Result:
+     Sector candidates: 207
+     Call counts:
+       DISABLE_CHILD_SECTOR: 58
+       ENABLE_CHILD_SECTOR: 142
+       ENABLE_WORLD_SECTOR: 7
+
+2. Enable esc_villaWall04x
+   Command:
+     sector-patch medium_update_thread.wsc --sector esc_villaWall04x --set-state enabled --all
+   Result:
+     2 matching entries patched F8 -> F9
+     repack/reopen/decode validation passed
+
+3. Rename beh_grave01x to dlc02x and convert to world/enabled
+   Command:
+     sector-patch medium_update_thread.wsc --sector beh_grave01x --replace-with dlc02x --set-type world --set-state enabled --all
+   Result:
+     2 matching entries patched to ENABLE_WORLD_SECTOR("dlc02x")
+     clean string literal length set to 7 with null padding
+     repack/reopen/decode validation passed
+
+Limitations:
+  - This is not a WSC compiler.
+  - It does not add new code or rewrite branches/natives.
+  - It uses the proven sector marker pattern and same-slot string edits.

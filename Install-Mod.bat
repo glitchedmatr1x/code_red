@@ -6,8 +6,8 @@ set TOOL=%APP%CodeRED_RPF_Patcher_Lite.py
 echo CodeRED RPF Patcher Lite
 echo.
 set /p MODDIR=Drag/type the mod folder path: 
-set /p GAMEDIR=Game folder [D:\Games\Red Dead Redemption\game]: 
-if "%GAMEDIR%"=="" set GAMEDIR=D:\Games\Red Dead Redemption\game
+set /p GAMEDIR=Game folder [%RDR_GAME_DIR%]: 
+if "%GAMEDIR%"=="" set GAMEDIR=%RDR_GAME_DIR%
 
 echo.
 echo 1. Dry run only

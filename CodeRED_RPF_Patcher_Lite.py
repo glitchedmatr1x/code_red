@@ -297,7 +297,7 @@ def verify_readback(utils, output_rpf: Path, items: list[dict]) -> list[dict]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Patch RDR PC RPFs from folder-based drop-ins.")
     parser.add_argument("--mod-dir", required=True)
-    parser.add_argument("--game-dir", default=r"D:\Games\Red Dead Redemption\game")
+    parser.add_argument("--game-dir", default=r"%RDR_GAME_DIR%")
     parser.add_argument("--build-root", default="")
     parser.add_argument("--target-rpf", default="")
     parser.add_argument("--allow-add", action="store_true")

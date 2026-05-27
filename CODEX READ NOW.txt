@@ -1,0 +1,47 @@
+Do not stop the pass just because the exact A_disable_update_thread_refs.rpf filename is missing.
+
+First search for the known SHA:
+
+91304EBA24B3759AE206783EBE4CA42EA0F2A134
+
+Search these locations recursively:
+%RDR_GAME_DIR%
+%RDR_GAME_DIR%
+%RDR_GAME_DIR%
+%RDR_GAME_DIR%
+%RDR_GAME_DIR%
+
+Look for:
+A_disable_update_thread_refs.rpf
+content loading passed.zip
+content_loading_passed.zip
+content.rpf
+*.rpf with SHA1 91304EBA24B3759AE206783EBE4CA42EA0F2A134
+
+If the exact SHA is found, use that as the base.
+
+If the exact SHA is not found, do NOT silently substitute. Instead:
+
+1. Continue the sector/content inventory reports from the best available extracted/RPF resources.
+2. For build variants, reconstruct the loading-passed base from the nearest available content.rpf by applying the A_disable_update_thread_refs change again:
+   - disable/reroute main.wsc and rdr2init.wsc references to:
+     $/content/multiplayer/multiplayer_update_thread
+   - do not call net.EnterOnline
+   - do not call TriggerMultiplayerLoad
+   - do not launch freemode.wsc
+   - do not launch multiplayer_update_thread.wsc
+3. Name the reconstructed base:
+   reconstructed_A_disable_update_thread_refs_from_<source_sha>.rpf
+4. Put a warning in the report:
+   "Exact tested base SHA was missing; reconstructed A_disable_update_thread_refs from source SHA <sha>."
+
+Still execute SP FreeMode Sector Graft Pass 1:
+- sector inventory
+- SP/MP sector counterpart map
+- A0 repack/reconstructed control
+- A1 SP WSC no-op/probe if safe
+- A2 one MP sector only
+- A3 one MP sector + one SP counterpart unload
+- A4 small region set
+
+This remains a sector/content graft pass only. Do not activate multiplayer mode.

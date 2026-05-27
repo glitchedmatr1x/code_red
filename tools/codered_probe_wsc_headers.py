@@ -6,7 +6,7 @@ Read-only probe for exact .wsc leads. This prints byte headers, ASCII headers,
 size, SHA1, and a small string sample for the camp/vehicle gringo WSC files.
 
 Usage from repo root:
-  py -3 tools/codered_probe_wsc_headers.py --root "C:\\Users\\glitc\\OneDrive\\Desktop\\CodeRED_RPF_Extracts"
+  py -3 tools/codered_probe_wsc_headers.py --root "%LOCAL_PATH%"
 
 Optional:
   py -3 tools/codered_probe_wsc_headers.py --root "..." --match playercamp01_gringo --match vehicle_generator

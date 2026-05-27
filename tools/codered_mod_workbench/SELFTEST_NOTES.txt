@@ -1,0 +1,23 @@
+Self-test summary from ChatGPT sandbox:
+
+1) Text scan tested on savegame.sc.xml:
+   - Files scanned: 1
+   - String candidates: 1085
+
+2) RSC85 info tested on medium_update_thread.wsc:
+   - Mode: RSC85
+   - Compression: zstd
+   - Decoded size: 143,360
+   - Decoded string candidates: 4432
+
+3) RSC85 string replacement tested:
+   - beh_grave01x -> dlc02x
+   - Replacements: 2
+   - Repack/reopen/decode validation: passed
+
+4) RSC85 integer scan tested:
+   - long_update_thread.wsc
+   - find-int 1166, width 2, little-endian
+   - Matches: 1
+
+These tests prove the package starts and the main scan/string/int lanes operate on the uploaded Code RED sample files in this environment.

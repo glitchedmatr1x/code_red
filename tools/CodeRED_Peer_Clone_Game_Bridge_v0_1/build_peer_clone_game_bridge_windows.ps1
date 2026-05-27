@@ -39,10 +39,10 @@ function Find-VsDevCmd {
     }
 
     $fallbacks = @(
-        "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat",
-        "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsDevCmd.bat",
-        "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+        "%LOCAL_PATH% Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat",
+        "%LOCAL_PATH% Files\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat",
+        "%LOCAL_PATH% Files\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsDevCmd.bat",
+        "%LOCAL_PATH% Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
     )
     foreach ($path in $fallbacks) {
         if (Test-Path $path) { return $path }

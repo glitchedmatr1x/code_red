@@ -1,0 +1,7 @@
+# Code RED example settings
+# Copy this to Settings.txt in your private dev kit, not in the public repo.
+
+RDR_GAME_DIR=%RDR_GAME_DIR%
+CODERED_DEVKIT=%CODERED_DEVKIT%
+OUTPUT_DIR=%CODERED_DEVKIT%\output
+BACKUP_DIR=%CODERED_DEVKIT%\backups

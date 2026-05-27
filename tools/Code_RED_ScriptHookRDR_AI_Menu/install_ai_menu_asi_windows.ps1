@@ -9,7 +9,7 @@ This copies only:
 It does not edit RPF archives.
 
 Run from repo root, replacing GameRoot with your real game folder:
-  powershell -ExecutionPolicy Bypass -File related_apps\Code_RED_ScriptHookRDR_AI_Menu\install_ai_menu_asi_windows.ps1 -GameRoot "D:\Games\Red Dead Redemption"
+  powershell -ExecutionPolicy Bypass -File related_apps\Code_RED_ScriptHookRDR_AI_Menu\install_ai_menu_asi_windows.ps1 -GameRoot "%RDR_GAME_DIR%"
 #>
 
 param(

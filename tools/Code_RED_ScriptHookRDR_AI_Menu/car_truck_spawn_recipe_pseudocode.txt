@@ -1,0 +1,25 @@
+Code RED Pass 29 - Car/Truck Spawn Recipe Pseudocode
+====================================================
+
+Confirmed actor enum values from the MagicRDR decompiled mission script:
+- Truck01: 1193 / 0x000004A9
+- Car01:   1194 / 0x000004AA
+
+Mission-side pattern from decompile:
+- Mission vehicle actor handle: Local_6 + 1184[02]
+- Engine start helper: Function_453
+- Seat/enter helpers: Function_408, Function_428, Function_452
+- Car settings helper: Function_956
+- carSettings default mask built by Function_956: 1017
+
+Runtime/native pseudocode:
+
+    vehicle_enum = 1194  # Car01; use 1193 for Truck01
+    vehicle = CREATE_ACTOR/CREATE_ACTOR_IN_LAYOUT(vehicle_enum, near_player_or_camp_position)
+    DECOR_SET_INT(vehicle, "carSettings", 1017)
+    START_VEHICLE(vehicle)
+    SET_VEHICLE_ENGINE_RUNNING(vehicle, 1)
+    SET_VEHICLE_EJECTION_ENABLED(vehicle, 0)
+    SET_ACTOR_IN_VEHICLE(player, vehicle, 0)
+
+Do not raw-patch FBI02/FBI04 RSC85 yet. MagicRDR decompile positions are not raw archive offsets.

@@ -66,7 +66,7 @@ py -3 code_red_syringe.py --init-config
 ```json
 "writer": {
   "enabled": true,
-  "executable": "D:/Path/To/HeadlessRpfWriter.exe",
+  "executable": "%LOCAL_PATH%",
   "command_template": "{writer} -replace {rpf} {internal_dir} {import_dir} -current"
 }
 ```

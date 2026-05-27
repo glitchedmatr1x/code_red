@@ -113,7 +113,7 @@ script_compiling\sccl\compile_vehicle_menu_probe_windows.bat
 If `SC-CL.exe` is somewhere else, set:
 
 ```bat
-set SCCL_EXE=C:\path\to\SC-CL.exe
+set SCCL_EXE=%LOCAL_PATH%
 ```
 
 Do not build the full Code RED menu through SC-CL until native signatures are verified one at a time.

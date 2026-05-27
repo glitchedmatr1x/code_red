@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set CODE_RED=D:\Games\Red Dead Redemption\Code_RED
+set CODE_RED=%RDR_GAME_DIR%
 set INSTALLER=%CODE_RED%\tools\codered_mp_freeroam_pass3_installer.py
 
 echo Code RED MP Free Roam Pass 3 Installer

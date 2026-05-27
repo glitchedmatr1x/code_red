@@ -159,7 +159,7 @@ def clean(root: Path, source: Path, apply: bool) -> CleanReport:
             report.warnings.append("Suspicious in-source build artifacts found. Re-run with --apply to quarantine them.")
     report.next_steps = [
         "Use CMake 3.x if current CMake reports CMP0051 OLD behavior errors.",
-        "Then run: py -3 tools\\codered_sccl_build_from_source.py --source \"D:\\Games\\Red Dead Redemption\\Code_RED\\SC-CL-master\" --adopt",
+        "Then run: py -3 tools\\codered_sccl_build_from_source.py --source \"%LOCAL_PATH% Dead Redemption\\Code_RED\\SC-CL-master\" --adopt",
     ]
     write_outputs(root, report)
     return report

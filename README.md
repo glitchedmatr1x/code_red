@@ -412,4 +412,3 @@ All trademarks and game content belong to their respective owners.
 This repository is intended for educational, archival, research, and modding-tool development purposes only.
 
 
-Wire `INativeBridge` to the real Code RED/RDR native invoker and compile the Windows ASI.

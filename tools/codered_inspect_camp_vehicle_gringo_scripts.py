@@ -16,7 +16,7 @@ It extracts printable strings, keyword hit windows, and hashes so the next
 step can be evidence-based without modifying archives or game files.
 
 Usage from repo root:
-  py -3 tools/codered_inspect_camp_vehicle_gringo_scripts.py --root "C:\\Users\\glitc\\OneDrive\\Desktop\\CodeRED_RPF_Extracts"
+  py -3 tools/codered_inspect_camp_vehicle_gringo_scripts.py --root "%LOCAL_PATH%"
 """
 
 from __future__ import annotations

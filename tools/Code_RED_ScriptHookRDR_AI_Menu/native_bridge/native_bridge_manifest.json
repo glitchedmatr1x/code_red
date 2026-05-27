@@ -10,8 +10,8 @@
     "native_database_entries": 26
   },
   "sources": {
-    "native_database": "D:\\Games\\Red Dead Redemption\\Code_RED\\data\\codered\\native_database.json",
-    "sdk_natives": "D:\\Games\\Red Dead Redemption\\Code_RED\\data\\ScriptHookRDR\\sdk\\inc\\natives.h"
+    "native_database": "%LOCAL_PATH% Dead Redemption\\Code_RED\\data\\codered\\native_database.json",
+    "sdk_natives": "%LOCAL_PATH% Dead Redemption\\Code_RED\\data\\ScriptHookRDR\\sdk\\inc\\natives.h"
   },
   "entries": [
     {

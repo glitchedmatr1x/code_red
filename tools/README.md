@@ -21,7 +21,7 @@ py -3 .\fix_pass3_installer_resource_replace.py
 Then rerun:
 
 ```powershell
-cd "D:\Games\Red Dead Redemption\Code_RED"
+cd "%RDR_GAME_DIR%"
 $env:PYTHONPATH='.'
 py -3 tools\codered_mp_freeroam_pass3_installer.py
 ```

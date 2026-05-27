@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory=$true)][string]$InputPath,
-    [string]$MagicRdrDir = "D:\Games\Red Dead Redemption\game\BACKUP BEFORE MODDING\rdr1\mods\Magic-RDR-main",
+    [string]$MagicRdrDir = "%RDR_GAME_DIR% BEFORE MODDING\rdr1\mods\Magic-RDR-main",
     [ValidateSet("Switch","Xbox","PS3")][string]$Platform = "Switch",
     [ValidateSet("Auto","Little","Big")][string]$ReaderEndian = "Auto",
     [string]$DecompiledOut = ""

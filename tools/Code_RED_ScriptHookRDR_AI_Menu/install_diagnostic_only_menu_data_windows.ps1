@@ -6,7 +6,7 @@ but disables actor creation, vehicle creation, movement tasks, combat tasks, and
 faction edits.
 
 Run from repo root:
-  powershell -ExecutionPolicy Bypass -File related_apps\Code_RED_ScriptHookRDR_AI_Menu\install_diagnostic_only_menu_data_windows.ps1 -GameRoot "D:\Games\Red Dead Redemption"
+  powershell -ExecutionPolicy Bypass -File related_apps\Code_RED_ScriptHookRDR_AI_Menu\install_diagnostic_only_menu_data_windows.ps1 -GameRoot "%RDR_GAME_DIR%"
 #>
 
 param(

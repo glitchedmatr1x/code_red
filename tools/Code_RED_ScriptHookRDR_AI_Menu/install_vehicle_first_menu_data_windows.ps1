@@ -6,7 +6,7 @@ This script backs up the existing game-root data/codered files, then writes a
 small spawn-safe probe roster and safe action list.
 
 Run from repo root:
-  powershell -ExecutionPolicy Bypass -File related_apps\Code_RED_ScriptHookRDR_AI_Menu\install_vehicle_first_menu_data_windows.ps1 -GameRoot "D:\Games\Red Dead Redemption"
+  powershell -ExecutionPolicy Bypass -File related_apps\Code_RED_ScriptHookRDR_AI_Menu\install_vehicle_first_menu_data_windows.ps1 -GameRoot "%RDR_GAME_DIR%"
 #>
 
 param(

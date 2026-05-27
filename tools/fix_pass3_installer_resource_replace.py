@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 
-installer = Path(r"D:\Games\Red Dead Redemption\Code_RED\tools\codered_mp_freeroam_pass3_installer.py")
+installer = Path(r"%RDR_GAME_DIR%")
 if not installer.exists():
     raise SystemExit(f"Installer not found: {installer}")
 
@@ -23,7 +23,7 @@ else:
 
 print(r"""
 Now run:
-cd "D:\Games\Red Dead Redemption\Code_RED"
+cd "%RDR_GAME_DIR%"
 $env:PYTHONPATH='.'
 py -3 tools\codered_mp_freeroam_pass3_installer.py
 """)
