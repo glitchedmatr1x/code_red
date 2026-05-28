@@ -209,7 +209,7 @@ def write_build_plan(root: Path, report: ValidationReport) -> Path:
         "run_build_then_compile_vehicle_menu_probe.bat",
         "",
         "Already-built compiler option:",
-        "set SCCL_EXE=%LOCAL_PATH%",
+        "set SCCL_EXE=C:\\full\\path\\to\\SC-CL.exe",
         "compile_vehicle_menu_probe_windows.bat",
         "",
         "Proof expectations:",

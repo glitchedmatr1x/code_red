@@ -1,14 +1,9 @@
 # Downloads
 
-Large or compiled release assets should be attached to GitHub Releases instead of committed to the default branch.
+## Release Asset Policy
 
-Suggested asset names:
+Large packages should be attached to GitHub Releases rather than committed to the default branch.
+Release assets must still be public-safe. Do not upload raw RPF archives, extracted retail scripts, Rockstar-owned assets, third-party mods without permission, or private logs.
 
-```text
-CodeRED-v0.1.x-tools.zip
-CodeRED-v0.1.x-research.zip
-CodeRED-v0.1.x-reports.zip
-CodeRED-v0.1.x-build-public.zip
-```
+Compiled helper binaries may be release assets only when they are clearly built from the source in this repository and do not bundle game content.
 
-Before uploading assets, run the release checklist and confirm no raw game files, extracted scripts, private logs, local paths, or unreviewed binaries are included.

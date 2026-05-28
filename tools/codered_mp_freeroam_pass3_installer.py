@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Code RED MP Free Roam Pass 3 Installer
 
@@ -19,8 +19,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-DEFAULT_CODE_RED = Path(r"%RDR_GAME_DIR%")
-DEFAULT_GAME_CONTENT = Path(r"%RDR_GAME_DIR%")
+DEFAULT_CODE_RED = Path(r"%RDR_GAME_DIR%\Code_RED")
+DEFAULT_GAME_CONTENT = Path(r"%RDR_GAME_DIR%\game\content.rpf")
 
 
 def sha1_bytes(data: bytes) -> str:

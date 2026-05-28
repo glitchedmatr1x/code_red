@@ -58,14 +58,14 @@ python tools\codered_trainer_ai_controller_v1.py defend
 Scan a fragment archive or text list for more names:
 
 ```bat
-python tools\codered_trainer_ai_controller_v1.py npc-scan "%LOCAL_PATH%"
+python tools\codered_trainer_ai_controller_v1.py npc-scan "D:\path\to\fragments.rpf"
 ```
 
 Roster tool directly:
 
 ```bat
 python tools\codered_npc_roster.py list --filter amb
-python tools\codered_npc_roster.py scan "%LOCAL_PATH%" --out scratch/codered_npc_roster_scan.json --merge
+python tools\codered_npc_roster.py scan "D:\path\to\fragments.rpf" --out scratch/codered_npc_roster_scan.json --merge
 python tools\codered_npc_roster.py validate
 ```
 

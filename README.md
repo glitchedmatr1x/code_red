@@ -412,3 +412,9 @@ All trademarks and game content belong to their respective owners.
 This repository is intended for educational, archival, research, and modding-tool development purposes only.
 
 
+Wire `INativeBridge` to the real Code RED/RDR native invoker and compile the Windows ASI.
+
+## Agent / Automation Safety
+
+AI agents and automation should read `AGENTS.md` before changing this repository. The public branch must stay free of game archives, extracted retail scripts, compiled build output, private logs, and machine-specific paths.
+

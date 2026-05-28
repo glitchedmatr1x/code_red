@@ -346,8 +346,8 @@ def write_reports(summary: dict[str, Any], manifest: list[dict[str, Any]], valid
     test_steps = [
         "# MP Latest Candidate Test Steps",
         "",
-        "1. Back up `%LOCAL_PATH% Dead Redemption\\game\\content.rpf`.",
-        "2. Copy `%LOCAL_PATH% Dead Redemption\\game\\content_mp_latest_unlock_all_sectors_candidate.rpf` to `content.rpf` for testing.",
+        "1. Back up `%RDR_GAME_DIR%\\game\\content.rpf`.",
+        "2. Copy `%RDR_GAME_DIR%\\game\\content_mp_latest_unlock_all_sectors_candidate.rpf` to `content.rpf` for testing.",
         "3. Launch the original Red Dead Redemption PC install, not the Steam/RDR remaster folder.",
         "4. If the game closes in under 2 minutes, treat this candidate as failed and restore the backup.",
         "5. If it boots, test Zombie/Multiplayer/Free Roam route and note whether it reaches loading, online HUD/menu, or a new error.",

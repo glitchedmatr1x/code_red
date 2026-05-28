@@ -2,33 +2,29 @@
 
 Rules for AI agents and automation working on Code RED.
 
-## Repository Boundary
+## Hard Rules
 
-Code RED public repo material must stay source-based and public-safe. The private dev kit may contain raw game files, extracted scripts, generated logs, and patch experiments, but those files do not belong in this repository.
+- Do not commit game files.
+- Do not commit full RPF archives.
+- Do not commit extracted retail WSC, SCO, or CSC scripts.
+- Do not commit Rockstar-owned models, textures, audio, maps, or other assets.
+- Do not commit third-party mods unless permission and licensing are documented.
+- Do not commit local logs, build folders, backup folders, caches, or private scan output.
+- Do not commit compiled ASI, DLL, EXE, OBJ, PDB, or LIB files to the source tree.
 
-## Never Commit
+## Preferred Public Work
 
-- Full RPF archives or other game archives
-- Extracted retail WSC/SCO/CSC/XSC scripts
-- Rockstar-owned models, textures, audio, video, string tables, or assets
-- Third-party mods without explicit permission and license notes
-- Compiled ASI/DLL/EXE/OBJ/PDB files in the default branch
-- Private logs, machine paths, cache folders, build folders, or giant zip dumps
-- Files from `private_input/`, `extracted/`, `working/`, `output/`, or `logs/`
+Commit public-safe source, docs, manifests, schemas, validators, and patch-builder logic.
+Use examples with dummy data or user-supplied local paths only.
+Keep changes small, reversible, and documented.
 
-## Preferred Contributions
+## WSC / RPF Research
 
-- Original source code
-- Patch-builder logic
-- Validators and reports that do not include raw game data
-- Public-safe manifests and schemas
-- Documentation and clean-room research summaries
-- Reversible workflows with backup/restore notes
+Document research as notes, pseudocode, reports, or tool logic.
+Do not include extracted retail scripts or raw game archive contents.
+When adding a patch workflow, include validation notes and backup/revert guidance.
 
-## WSC / Script Research Rule
+## Path Hygiene
 
-Do not commit extracted retail script files. Public documentation may describe behavior, paths, enum observations, and clean-room pseudocode, but should not include raw decompiled game script payloads.
-
-## Validation Expectations
-
-Before committing, run a public-safety scan for blocked extensions and local paths. If unsure whether a file is safe, keep it out of the repo and document how users can generate it locally from their own files.
+Use placeholders such as `%RDR_GAME_DIR%`, `%CODERED_DEVKIT%`, and `%USERPROFILE%`.
+Do not hardcode personal paths.

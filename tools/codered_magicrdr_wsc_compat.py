@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PS1 = ROOT / "tools" / "codered_magicrdr_wsc_compat.ps1"
 DEFAULT_MAGIC = ROOT.parent / "game" / "BACKUP BEFORE MODDING" / "rdr1" / "mods" / "Magic-RDR-main"
 DEFAULT_OUT = ROOT / "reports" / "mp_script_conversion_probe" / "magicrdr_wsc_compat"
-POWERSHELL32 = Path(__import__("os").environ.get("WINDIR", r"%LOCAL_PATH%")) / "SysWOW64" / "WindowsPowerShell" / "v1.0" / "powershell.exe"
+POWERSHELL32 = Path(__import__("os").environ.get("WINDIR", r"C:\Windows")) / "SysWOW64" / "WindowsPowerShell" / "v1.0" / "powershell.exe"
 
 
 def collect_wsc(source: Path) -> list[Path]:

@@ -8,7 +8,7 @@ support files are present, whether an ASI/ScriptHook loader appears present,
 and whether CodeRED_AI_Menu.log exists.
 
 Run from repo root:
-  py -3 tools\codered_ai_menu_install_doctor.py --game-root "%LOCAL_PATH% Dead Redemption"
+  py -3 tools\codered_ai_menu_install_doctor.py --game-root "%RDR_GAME_DIR%"
 """
 
 from __future__ import annotations

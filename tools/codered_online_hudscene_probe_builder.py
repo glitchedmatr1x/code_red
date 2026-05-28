@@ -256,7 +256,7 @@ def main() -> int:
         "source_sha1": sha1(SOURCE_RPF),
         "variants": variants,
         "xml_validation": xml_rows,
-        "steamgg_used": False,
+        "private_game_root_used": False,
         "live_content_rpf_edited": False,
     }
     (REPORT_ROOT / "pass_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
@@ -265,7 +265,7 @@ def main() -> int:
         "",
         f"- source zip: `{SOURCE_ZIP}`",
         f"- source RPF SHA1: `{report['source_sha1']}`",
-        "- SteamGG path used: `false`",
+        "- private game-root path used: `false`",
         "- live content.rpf edited by builder: `false`",
         "",
         "## Variants",

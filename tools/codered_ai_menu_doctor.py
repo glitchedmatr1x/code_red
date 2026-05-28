@@ -10,7 +10,7 @@ Run from repo root:
   py -3 tools\codered_ai_menu_doctor.py
 
 Optional:
-  py -3 tools\codered_ai_menu_doctor.py --root "%LOCAL_PATH% Dead Redemption\\Code_RED"
+  py -3 tools\codered_ai_menu_doctor.py --root "%RDR_GAME_DIR%\\Code_RED"
 """
 
 from __future__ import annotations

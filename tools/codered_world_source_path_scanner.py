@@ -5,14 +5,14 @@ Code RED world/source-path scanner.
 Scans raw files and zip-contained files for RDR/RAGE world-source path hints,
 WSV/WSI markers, refGroups, territory paths, and developer-drive paths like:
 
-  %LOCAL_PATH%
+  T:/rdr2/Art/Worlds/territory/shared/models/props/
 
 This is a read-only scanner. It does not extract/modify RPF contents beyond reading
 files from disk/zip entries.
 
 Examples:
   py -3 tools\codered_world_source_path_scanner.py --source imports --source scratch --source game --out logs\world_source_path_scan
-  py -3 tools\codered_world_source_path_scanner.py --source "%RDR_GAME_DIR%" --term "%LOCAL_PATH%" --out logs\props_path_scan
+  py -3 tools\codered_world_source_path_scanner.py --source "%RDR_GAME_DIR%\Code_RED\game" --term "T:/rdr2/Art/Worlds/territory/shared/models/props/" --out logs\props_path_scan
 """
 
 from __future__ import annotations
@@ -29,8 +29,8 @@ from pathlib import Path
 from typing import Iterable
 
 DEFAULT_TERMS = [
-    "%LOCAL_PATH%",
-    "%LOCAL_PATH%",
+    "T:/rdr2/Art/Worlds/territory/shared/models/props/",
+    "T:/rdr2/Art/Worlds",
     "rdr2/Art/Worlds",
     "Art/Worlds/territory",
     "Worlds/territory/shared",

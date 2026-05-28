@@ -302,8 +302,8 @@ def inject_archive(source_archive: Path, reference_mp_root: Path, output_archive
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Create a copied content.rpf with reference MP scripts added.")
-    parser.add_argument("--source", default=str(Path(r"%RDR_GAME_DIR%")))
-    parser.add_argument("--reference-mp-root", default=str(Path(r"%RDR_GAME_DIR% BEFORE MODDING\rdr1\mods\root\content\release\multiplayer")))
+    parser.add_argument("--source", default=str(Path(r"%RDR_GAME_DIR%\game\content.rpf")))
+    parser.add_argument("--reference-mp-root", default=str(Path(r"%RDR_GAME_DIR%\game\BACKUP BEFORE MODDING\rdr1\mods\root\content\release\multiplayer")))
     parser.add_argument("--output", default=str(ROOT / "build" / "content_mp_singleplayer" / "content_mp_singleplayer.rpf"))
     parser.add_argument("--log-dir", default=str(ROOT / "logs" / "content_rpf_mp_singleplayer_injection"))
     parser.add_argument("--no-release64-mirror", action="store_true", help="Only add root/content/release/multiplayer.")

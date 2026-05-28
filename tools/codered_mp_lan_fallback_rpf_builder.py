@@ -25,7 +25,7 @@ except Exception:
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKBENCH = ROOT / "python_workbench.py"
-DEFAULT_SOURCE = Path(r"%RDR_GAME_DIR%")
+DEFAULT_SOURCE = Path(r"%RDR_GAME_DIR%\game\content.rpf")
 DEFAULT_CANDIDATE_DIR = ROOT / "logs" / "content_mp_lan_fallback_candidate"
 DEFAULT_OUT_RPF = ROOT / "build" / "content_mp_lan_fallback_test" / "content.rpf"
 DEFAULT_LOG_DIR = ROOT / "logs" / "content_mp_lan_fallback_candidate"
@@ -168,7 +168,7 @@ def build_dry_run(source: Path, candidate_dir: Path, output_rpf: Path, log_dir: 
         "source_archive": str(source),
         "candidate_dir": str(candidate_dir),
         "output_target_later": str(output_rpf),
-        "install_target": r"%RDR_GAME_DIR%",
+        "install_target": r"%RDR_GAME_DIR%\game\content.rpf",
         "auto_install": False,
         "entry_count": info.get("entry_count"),
         "file_count": info.get("file_count"),
@@ -204,9 +204,9 @@ def build_dry_run(source: Path, candidate_dir: Path, output_rpf: Path, log_dir: 
         "",
         f"Status: `{status}`",
         "",
-        r"- backup: `%RDR_GAME_DIR%",
+        r"- backup: `%RDR_GAME_DIR%\game\content.rpf`",
         f"- candidate: `{output_rpf}`",
-        r"- install target: `%RDR_GAME_DIR%",
+        r"- install target: `%RDR_GAME_DIR%\game\content.rpf`",
         "- auto-copy/install: `false`",
         "",
     ]
@@ -362,7 +362,7 @@ def write_copied_rpf(source: Path, candidate_dir: Path, output_rpf: Path, log_di
         "",
         f"- source: `{source}`",
         f"- output: `{output_rpf}`",
-        r"- install target later: `%RDR_GAME_DIR%",
+        r"- install target later: `%RDR_GAME_DIR%\game\content.rpf`",
         "- auto-copy/install: `false`",
         "",
         "## Appended Replacements",

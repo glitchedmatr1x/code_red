@@ -1,0 +1,107 @@
+## Safety
+
+Source/text files can be edited through safe workspace copies. Compiled script binaries are read/exported but remain blocked from bytecode roundtrip until Windows compiler/decompiler proof exists.
+
+# Code RED Script Compile Validation Report
+
+Generated UTC: `2026-05-03T11:20:59Z`
+Result: **FAIL**
+
+## Summary
+
+- Lab root: `%RDR_GAME_DIR%\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1`
+- Build kit root: `%RDR_GAME_DIR%\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1`
+- Missing lab files: 7
+- Missing build-kit files: 6
+- Bundled validator exit: 1
+- Missing native symbols: 24
+- Missing constants: 3
+
+## Toolchain
+
+- sccl_exe: `None`
+- cl_exe: `None`
+- gcc: `None`
+- python: `%USERPROFILE%\AppData\Local\Programs\Python\Python312\python.exe`
+- windows_host: `True`
+
+## Source Checks
+
+- source_exists: `False`
+
+## Missing Lab Files
+
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\src\main.c`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\types.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\constants.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\intrinsics.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\natives.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\natives32.h`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\include\RDR\consts32.h`
+
+## Missing Build Kit Files
+
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.bat`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\build_sccl_windows.ps1`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.bat`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\compile_vehicle_menu_probe_windows.ps1`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\run_build_then_compile_vehicle_menu_probe.bat`
+- `related_apps\code_red_sccl_attempt_bundle_v1\code_red_sccl_windows_build_kit_v1\README_SCCL_DETECTION_V3.txt`
+
+## Missing Native Symbols
+
+- `_CLEAR_PRINTS`
+- `_PRINT_SUBTITLE`
+- `_IS_KEY_PRESSED`
+- `GET_PLAYER_ACTOR`
+- `_IS_LAYOUT_VALID`
+- `CREATE_LAYOUT`
+- `FIND_ACTOR_IN_LAYOUT`
+- `DESTROY_ACTOR`
+- `STREAMING_REQUEST_ACTOR`
+- `CREATE_ACTOR_IN_LAYOUT`
+- `IS_ACTOR_VALID`
+- `IS_ACTOR_VEHICLE`
+- `ENABLE_VEHICLE_SEAT`
+- `SET_VEHICLE_ALLOWED_TO_DRIVE`
+- `SET_VEHICLE_ENGINE_RUNNING`
+- `VEHICLE_SET_HANDBRAKE`
+- `START_VEHICLE`
+- `SET_ACTOR_IN_VEHICLE`
+- `SET_ACTOR_MAX_SPEED`
+- `SET_ACTOR_MAX_SPEED_ABSOLUTE`
+- `SET_ACTOR_SPEED`
+- `ADD_PERSISTENT_SCRIPT`
+- `_GET_ID_OF_THIS_SCRIPT`
+- `WAIT`
+
+## Missing Constants
+
+- `ACTOR_VEHICLE_Car01`
+- `ACTOR_VEHICLE_Truck01`
+- `KEY_F5`
+
+## Bundled Validator Output
+
+```text
+
+Traceback (most recent call last):
+  File "%RDR_GAME_DIR%\Code_RED\related_apps\code_red_sccl_attempt_bundle_v1\code_red_script_compile_lab_v1\scripts\validate_vehicle_menu_probe.py", line 9, in <module>
+    text = src.read_text(encoding='utf-8')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '%RDR_GAME_DIR%\\Code_RED\\related_apps\\code_red_sccl_attempt_bundle_v1\\code_red_script_compile_lab_v1\\src\\main.c'
+```
+
+## Notes
+
+- This validates the Code RED script compile lab assets and the vehicle-menu probe source.
+- It does not claim arbitrary existing .wsc/.xsc/.sco binary roundtrip is solved.
+- On non-Windows hosts, SC-CL execution is expected to remain unavailable unless a compatible executable/toolchain is staged.
+- Use the generated Windows build plan for the real compile step when Visual Studio/SC-CL are available.
+PS %RDR_GAME_DIR%\Code_RED>

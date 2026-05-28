@@ -1,34 +1,27 @@
 # Contributing to Code RED
 
-Thanks for helping improve Code RED.
+Code RED is a public-safe modding research and tooling project.
 
-## Public-Safe Contributions Only
+## Before Opening a Pull Request
 
-This repository does not accept game files, extracted retail scripts, third-party mod bundles, or private build artifacts. Submit original source, documentation, schemas, examples, validators, and research summaries only.
+Confirm your change does not include:
 
-## Pull Request Checklist
+- `.rpf`, `.wsc`, `.sco`, `.csc`, `.xtd`, `.wtd`, `.wtx`, `.wft`, `.wfd`, `.wvd`, `.xsf`, `.wsf`
+- Compiled `.asi`, `.dll`, `.exe`, `.obj`, `.pdb`, `.lib`, `.ilk`, `.exp`
+- Game assets, extracted retail scripts, third-party mods, private logs, cache folders, or build folders
+- Personal absolute paths
 
-Before opening a pull request:
+## What To Add
 
-1. Confirm no `.rpf`, `.wsc`, `.sco`, `.csc`, `.xsc`, `.xtd`, `.wft`, audio, texture, model, or game archive files are included.
-2. Confirm no `.asi`, `.dll`, `.exe`, `.obj`, `.pdb`, build folders, or logs are included unless the maintainers explicitly requested a release asset.
-3. Replace local paths with placeholders such as `%RDR_GAME_DIR%`, `%CODERED_DEVKIT%`, or `%LOCAL_PATH%`.
-4. Keep tool changes small and reversible.
-5. Add or update documentation for any changed workflow.
-6. Include validation steps for patch-builder or injector logic.
+Good contributions include:
 
-## Recommended Local Layout
+- Original source code
+- Public-safe documentation
+- Manifests and schemas that do not redistribute game content
+- Patch-builder logic requiring the user to supply their own files
+- Validators and reports
+- Dummy/sample inputs
 
-Keep private material outside the repo:
+## Testing
 
-```text
-Code_RED_DevKit/
-├─ private_input/
-├─ extracted/
-├─ working/
-├─ output/
-├─ logs/
-└─ backups/
-```
-
-The public repo should contain source and docs. The private dev kit should contain test inputs and generated artifacts.
+Include the command you ran and the result. If a tool writes files, test it on a disposable copy and document backup/revert behavior.

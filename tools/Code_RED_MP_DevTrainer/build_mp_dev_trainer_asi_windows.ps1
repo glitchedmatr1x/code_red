@@ -27,10 +27,10 @@ function Find-VsDevCmd {
         }
     }
     foreach ($path in @(
-        "%LOCAL_PATH% Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat",
-        "%LOCAL_PATH% Files\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "%LOCAL_PATH% Files\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsDevCmd.bat",
-        "%LOCAL_PATH% Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+        "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat",
+        "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat",
+        "C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsDevCmd.bat",
+        "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
     )) {
         if (Test-Path $path) { return $path }
     }

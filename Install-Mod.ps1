@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory=$true)]
     [string]$ModDir,
-    [string]$GameDir = "%RDR_GAME_DIR%",
+    [string]$GameDir = "%RDR_GAME_DIR%\game",
     [switch]$DryRun,
     [switch]$SwapIn,
     [switch]$AllowAdd

@@ -1,91 +1,87 @@
-# Python cache / build output
+# Python caches
 __pycache__/
 *.py[cod]
 *$py.class
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.cache/
-
-# Virtual environments
 .venv/
 venv/
 env/
 ENV/
 
-# Distribution / packaging
+# Build/package output
 build/
 dist/
-downloads/
 *.egg-info/
-.eggs/
-wheels/
 *.spec
 *.manifest
-
-# Logs / temporary output
-logs/
-*.log
-crash_reports/
-temp/
-tmp/
-scratch/
-output/
-exports/
-backups/
-CodeRED_Backups/
-
-# Code RED private/generated game-material lanes
-private_input/
-private_output/
-extracted/
-working/
-imports/
-game/
-combine updates/
-Settings/Settings.txt
-Settings/ImportedFileNames.txt
-*_patched_copy.rpf
-*_runtime_patch*/
-*_syringe_manifest.csv
-
-# Game archives / retail-derived assets / compiled script payloads
-*.rpf
-*.rpf.*
-*.img
-*.iso
-*.xex
-*.wsc
-*.sco
-*.csc
-*.xsc
-*.xtd
-*.wtd
-*.wft
-*.awc
-*.strtbl
-*.bk2
-
-# Compiled binaries: publish source in repo; attach vetted builds to Releases only
-*.asi
-*.dll
-*.exe
 *.obj
 *.pdb
 *.lib
-*.so
+*.ilk
+*.exp
+*.exe
+*.dll
+*.asi
 
-# Compressed private dumps
+# Logs, reports, and generated runtime output
+logs/
+tools/logs/
+*.log
+*.tmp
+*.bak
+*.bak_*
+*_backup/
+CodeRED_Backups/
+*_patched_copy.rpf
+*_runtime_patch*/
+PUBLIC_RELEASE_MANIFEST.sha256.txt
+PUBLIC_RELEASE_CLEANUP_REPORT.md
+PUBLIC_RELEASE_PASS2_REPORT.md
+
+# Private/local game files and archives
+*.rpf
+*.rpf.*
+*.wsc
+*.sco
+*.csc
+*.xtd
+*.wtd
+*.wtx
+*.wft
+*.wfd
+*.wvd
+*.xsf
+*.wsf
+*.xex
+*.iso
+*.img
 *.zip
 *.7z
 *.rar
 *.z[0-9][0-9]
+imports/
+game/
+private_input/
+extracted/
+working/
+output/
+backups/
+combine updates/
 
-# Local/editor files
+# Generated game-derived manifests / private scans
+Settings/ImportedFileNames.txt
+Settings/Settings.txt
+data/codered/script_pipeline_manifest.*
+data/codered/script_workshop_decode_manifest.*
+data/codered/script_workshop_extension_manifest.*
+data/codered/script_workshop_compile_candidates.json
+tools/code_red_syringe/*_syringe_manifest.csv
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
-.idea/
-.vscode/
-*.swp
-*.swo
-.pypirc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/

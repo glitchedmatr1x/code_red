@@ -8,7 +8,7 @@ same-content hash groups so we do not guess whether a .wsc is interchangeable
 with .xsc/.sco.
 
 Usage from repo root:
-  py -3 tools/codered_classify_script_artifacts.py --root "%LOCAL_PATH%"
+  py -3 tools/codered_classify_script_artifacts.py --root "%CODERED_DEVKIT%\\extracts"
 
 Also classify Code RED compile outputs:
   py -3 tools/codered_classify_script_artifacts.py --root script_compiling\\sccl\\output --out logs\\sccl_output_script_artifact_classification

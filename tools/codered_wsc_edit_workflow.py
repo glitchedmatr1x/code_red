@@ -38,7 +38,7 @@ OVERLAY_BUILDER = ROOT / "tools" / "codered_content_convert_overlay_builder.py"
 XSC_TO_WSC = ROOT / "tools" / "codered_xsc_to_wsc_candidate.py"
 PROTECTED_WRITE_ROOTS = [
     ROOT.parent / "game",
-    ROOT.parent / "RDR-SteamGG.NET",
+    ROOT.parent / "PRIVATE_GAME_ROOT_DO_NOT_COMMIT",
 ]
 ADVANCED_SOURCE_REQUIREMENTS = [
     "WSC/RSC85 internal section table parser with validated offsets, lengths, alignment, and checksums",

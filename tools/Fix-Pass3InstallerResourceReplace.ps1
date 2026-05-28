@@ -1,5 +1,5 @@
 param(
-    [string]$CodeRedRoot = "%RDR_GAME_DIR%"
+    [string]$CodeRedRoot = "%RDR_GAME_DIR%\Code_RED"
 )
 
 $ErrorActionPreference = "Stop"

@@ -292,9 +292,9 @@ def run(decoded: Path, out: Path) -> dict:
         "zstd_roundtrip_report": str(out / "zstd_roundtrip_report.json"),
         "archive_path_map": {Path(item.source_decoded).name: item.archive_path for item in candidates},
         "rpf_test_prep": {
-            "backup": r"%RDR_GAME_DIR%",
+            "backup": r"%RDR_GAME_DIR%\game\content.rpf",
             "candidate": str(ROOT / "build" / "content_mp_lan_fallback_test" / "content.rpf"),
-            "install_target": r"%RDR_GAME_DIR%",
+            "install_target": r"%RDR_GAME_DIR%\game\content.rpf",
             "auto_install": False,
         },
         "first_rpf_test_questions": [
@@ -333,9 +333,9 @@ def run(decoded: Path, out: Path) -> dict:
             "",
             "## RPF Test Prep",
             "",
-            r"- backup: `%RDR_GAME_DIR%",
+            r"- backup: `%RDR_GAME_DIR%\game\content.rpf`",
             f"- candidate: `{ROOT / 'build' / 'content_mp_lan_fallback_test' / 'content.rpf'}`",
-            r"- install target: `%RDR_GAME_DIR%",
+            r"- install target: `%RDR_GAME_DIR%\game\content.rpf`",
             "- Auto-copy/install: `false`",
         ]
     )

@@ -17,7 +17,7 @@ Optional broader scan:
 
     python tools/codered_mp_gate_hunt.py \
       --source logs/content_mp_singleplayer_build_probe \
-      --source %RDR_GAME_DIR% \
+      --source %RDR_GAME_DIR%/game \
       --out logs/content_mp_gate_hunt
 
 It does not patch files, launch the game, or mutate archives.

@@ -367,9 +367,9 @@ def write_reports(results: list[dict[str, Any]]) -> None:
     test_steps = [
         "# MP Auth Free Roam Candidate Test Steps",
         "",
-        "1. Back up `%LOCAL_PATH% Dead Redemption\\game\\content.rpf`.",
+        "1. Back up `%RDR_GAME_DIR%\\game\\content.rpf`.",
         "2. Test only one candidate at a time by copying it over `content.rpf`.",
-        "3. Start with `%LOCAL_PATH% Dead Redemption\\game\\mp_auth_freeroam_pass1\\A_auth1_keep_skip_control.rpf`.",
+        "3. Start with `%RDR_GAME_DIR%\\game\\mp_auth_freeroam_pass1\\A_auth1_keep_skip_control.rpf`.",
         "4. Then test `B_auth1_execute.rpf`.",
         "5. Then test `C_auth1_execute_direct_freeroam_xml.rpf`.",
         "6. Finally test `D_auth1_execute_direct_xml_zombie_entry_freeroam.rpf` if C still does not reach a later MP state.",

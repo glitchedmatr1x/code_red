@@ -10,7 +10,7 @@ This does not modify archives or game files.
 
 Usage from repo root:
   py -3 tools/codered_scan_camp_car_import_candidates.py --root .
-  py -3 tools/codered_scan_camp_car_import_candidates.py --root "%LOCAL_PATH% Dead Redemption\\Code_RED"
+  py -3 tools/codered_scan_camp_car_import_candidates.py --root "%RDR_GAME_DIR%\\Code_RED"
 """
 
 from __future__ import annotations

@@ -403,8 +403,8 @@ def write_reports(summaries: list[dict[str, Any]]) -> None:
     test = [
         "# MP Loading Trace Test Steps",
         "",
-        "1. Back up `%LOCAL_PATH% Dead Redemption\\game\\content.rpf`.",
-        f"2. Copy either `{GAME_COPY}` or `{GAME_COPY_NO_BOOT}` to `%LOCAL_PATH% Dead Redemption\\game\\content.rpf`.",
+        "1. Back up `%RDR_GAME_DIR%\\game\\content.rpf`.",
+        f"2. Copy either `{GAME_COPY}` or `{GAME_COPY_NO_BOOT}` to `%RDR_GAME_DIR%\\game\\content.rpf`.",
         "3. Launch the original Red Dead Redemption PC install.",
         "4. Wait at least two minutes. If it closes before then, this candidate failed at boot/startup.",
         "5. Try the visible MP/Free Roam route and the start-screen Zombie/Free Roam route.",

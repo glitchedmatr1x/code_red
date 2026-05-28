@@ -17,7 +17,7 @@ Use this after the WSC/SCO inspector shows that scripts are mostly compiled and
 not string-readable.
 
 Usage from repo root:
-  py -3 tools/codered_scan_gringo_descriptors.py --root "%LOCAL_PATH%"
+  py -3 tools/codered_scan_gringo_descriptors.py --root "%CODERED_DEVKIT%\\extracts"
 """
 
 from __future__ import annotations
