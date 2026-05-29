@@ -1,0 +1,16 @@
+{
+  "pass": "Code RED public GUI Pass 7 - nested direct RPF-in-ISO patching",
+  "timestamp": "2026-05-29 07:29:19",
+  "python_files": 160,
+  "compile_failures": [],
+  "xiso_selftest": "passed",
+  "gui_selftest": "passed",
+  "nested_patch_selftest": "passed",
+  "blocked_game_or_binary_files": [],
+  "blocked_dirs": [],
+  "notes": [
+    "Direct nested patch mode writes only to copied output ISOs.",
+    "Old bytes must match before writing and new bytes must be same length.",
+    "This does not rebuild RPF or XDVDFS tables."
+  ]
+}

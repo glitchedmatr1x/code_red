@@ -1,0 +1,15 @@
+{
+  "pass": "public-gui-xiso-safe-rpf-pass6",
+  "python_compile_checked": 160,
+  "python_compile_failures": 0,
+  "gui_self_test": "passed",
+  "xiso_self_test": "passed",
+  "xiso_safe_replace_self_test": "passed",
+  "blocked_game_files_in_public_package": 0,
+  "notes": [
+    "No original ISO mutation path is exposed.",
+    "Safe copy-write writes to a copied output ISO only.",
+    "Smaller replacements are padded to the original XDVDFS file size.",
+    "Larger replacements are refused and routed to overlay/rebuild guidance."
+  ]
+}

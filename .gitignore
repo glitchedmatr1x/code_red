@@ -23,6 +23,7 @@ dist/
 *.asi
 
 # Logs, reports, and generated runtime output
+reports/public_workbench/
 logs/
 tools/logs/
 *.log

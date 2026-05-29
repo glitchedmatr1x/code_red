@@ -418,3 +418,29 @@ Wire `INativeBridge` to the real Code RED/RDR native invoker and compile the Win
 
 AI agents and automation should read `AGENTS.md` before changing this repository. The public branch must stay free of game archives, extracted retail scripts, compiled build output, private logs, and machine-specific paths.
 
+
+---
+
+## Xbox / Xenia ISO Workflow
+
+Code RED includes an Xbox/Xenia research lane for user-owned local ISO images.
+
+The tool stack is:
+
+```text
+Xbox ISO
+└─ XDVDFS file tree
+   └─ layer_0.rpf / layer_1.rpf / content.rpf
+      └─ Code RED layer resolver, Script Lab, or MagicRDR workflow
+```
+
+Use:
+
+```bat
+python tools\codered_xiso_tool.py index "D:\Games\RDR_DISC2.iso" --out reports\xiso
+python tools\codered_xiso_tool.py extract "D:\Games\RDR_DISC2.iso" --path "layer_0.rpf" --out extracted_iso_files
+```
+
+See `docs/XISO_XDVDFS_TOOL.md`.
+
+The original ISO is never modified in-place. ISO replacement is copy-first. Exact-size replacements are safest; smaller replacements are padded to the original XDVDFS size; larger replacements are refused and should use an extracted Xenia overlay or future full XDVDFS rebuild pass.

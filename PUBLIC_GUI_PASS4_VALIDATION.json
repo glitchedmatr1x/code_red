@@ -1,0 +1,12 @@
+{
+  "pass": "public-gui-xbox-layer-pass4",
+  "blocked_file_hits": [],
+  "blocked_dir_hits": [],
+  "python_files_compile_checked": 159,
+  "python_compile_failures": [],
+  "required_files_present": {
+    "tools/codered_xbox_layer_resolver.py": true,
+    "docs/XBOX_LAYER_RESOLVER.md": true,
+    "PUBLIC_GUI_PASS4_XBOX_LAYER_REPORT.md": true
+  }
+}

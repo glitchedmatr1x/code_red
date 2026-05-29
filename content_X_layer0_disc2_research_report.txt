@@ -1,0 +1,381 @@
+# content X.zip / Disc 2 layer_0 research report
+
+Zip: content X.zip
+Size: 27,369,684 bytes
+SHA256: b925bb9fc34e847e29bdb3c914f78c60c538ca7389e8183e75b420b90ca7c31c
+Entries: 1992 files
+Uncompressed bytes: 33,418,151
+
+## File type summary
+- .xst: 1062
+- .xsc: 710
+- .xml: 94
+- [noext]: 83
+- .tr: 24
+- .sco: 9
+- .strtbl: 5
+- .txt: 1
+- .csv: 1
+- .weap: 1
+- .clist: 1
+- .xlist: 1
+
+## Top content buckets
+- content/release/scripting: 245
+- content/release/ambient: 103
+- content/release/frontier: 97
+- content/release/rcm: 77
+- content/release/mexico: 67
+- content/release/multiplayer: 64
+- content/release/init: 56
+- content/release/north: 51
+- content/ui/pausemenu: 38
+- content/ui/net: 14
+- content/release/systemtest: 12
+- content/ui/transitions: 12
+- content/release/mini_games: 9
+- content/ai/unalertedai: 8
+- content/ai/oldunused: 2
+- content/init/inventory: 2
+- content/release/dlc: 2
+- content/release/homestead: 2
+- content/ai/animal_alert.tr: 1
+- content/ai/animal_birds.tr: 1
+- content/ai/animal_common_rules.tr: 1
+- content/ai/animal_eat.tr: 1
+- content/ai/animal_fight.tr: 1
+- content/ai/animal_hunt.tr: 1
+- content/ai/animal_main.tr: 1
+- content/ai/animal_play.tr: 1
+- content/ai/animal_species_rules.tr: 1
+- content/ai/animal_static.tr: 1
+- content/ai/animal_task.tr: 1
+- content/ai/audio.tr: 1
+
+## Important interpretation
+- This is not just generic PC content; it is a strong Disc 2/layer_0 slice: XSC/SCO scripts, multiplayer scripts, profile/avatar UI XML, init files, stringtables, DLC inventory, and Ultimate Disc 1 descriptor.
+- It explains why the PC package felt messy: features that look like normal menu/profile/networking systems are split across disc/layer content and DLC-style descriptors.
+- Code RED should treat this as an Xbox-layer research input, not as public repo material.
+
+## Major discovery: DLC inventory already references ZombiePack resources
+- dlc_inventory.xml item count: 64
+- ZombiePack string refs in dlc_inventory.xml: 10
+
+| Item | Display | Gringo/resource path |
+|---|---|---|
+| HORSE_WAR_Z | HORSE_WAR_Z | $\content\DLC\ZombiePack\gringos\Horse_Deed_War_Z |
+| HORSE_DEATH_Z | HORSE_DEATH_Z | $\content\DLC\ZombiePack\gringos\Horse_Deed_Death_Z |
+| HORSE_FAMINE_Z | HORSE_FAMINE_Z | $\content\DLC\ZombiePack\gringos\Horse_Deed_Famine_Z |
+| HORSE_PESTILENCE_Z | HORSE_PESTILENCE_Z | $\content\DLC\ZombiePack\gringos\Horse_Deed_Pestilence_Z |
+| BLUNDERBUSS_PARTS | BLUNDERBUSS_PARTS |  |
+| PHOSPHOROUS_KIT | Phosphorous_Kit | $\content\DLC\ZombiePack\gringos\Phosphorous |
+| ZOMBIE_BAIT_KIT | Zombie_Bait_Kit | $\content\DLC\ZombiePack\gringos\ZombieBaitKit |
+| ZOMBIE_BOOM_KIT | Zombie_Boom_Kit | $\content\DLC\ZombiePack\gringos\ZombieBoomKit |
+| BLUNDERBUSS_AMMO_KIT | Blunderbuss_Ammo_Kit | $\content\DLC\ZombiePack\gringos\BlunderbussAmmoKit |
+| HOLY_RELIC | HOLYRELIC | $\content\DLC\ZombiePack\gringos\HOLYRELIC |
+| MISSING_PERSONS_POSTER | Missing Person | $\content\DLC\ZombiePack\gringos\Missing_Persons_Poster |
+| sn_z_t | ZOMBIE_TEETH |  |
+| sn_z_e | ZOMBIE_EYES |  |
+| sn_z_to | ZOMBIE_TONGUES |  |
+| sn_z_r | ZOMBIE_RIBS |  |
+| sn_z_ea | ZOMBIE_EARS |  |
+| sn_zb_t | ZOMBIE_BEAR_TEETH |  |
+| sn_zb_e | ZOMBIE_BEAR_EYES |  |
+| sn_zb_c | ZOMBIE_BEAR_CLAWS |  |
+| sn_zb_h | ZOMBIE_BEAR_HEARTS |  |
+| sn_zc_t | ZOMBIE_COUGAR_TEETH |  |
+| sn_zc_e | ZOMBIE_COUGAR_EYES |  |
+| sn_zc_c | ZOMBIE_COUGAR_CLAWS |  |
+| sn_zc_h | ZOMBIE_COUGAR_HEARTS |  |
+| sn_zy_t | ZOMBIE_COYOTE_TEETH |  |
+| sn_zy_e | ZOMBIE_COYOTE_EYES |  |
+| sn_zy_c | ZOMBIE_COYOTE_CLAWS |  |
+| sn_zy_h | ZOMBIE_COYOTE_HEARTS |  |
+| sn_zw_t | ZOMBIE_WOLF_TEETH |  |
+| sn_zw_e | ZOMBIE_WOLF_EYES |  |
+| sn_zw_c | ZOMBIE_WOLF_CLAWS |  |
+| sn_zw_h | ZOMBIE_WOLF_HEARTS |  |
+| sn_zh_e | ZOMBIE_HORSE_EYES |  |
+| sn_zh_h | ZOMBIE_HORSE_HEARTS |  |
+| sn_zbat | ZOMBIE_BAT_WINGS |  |
+| sn_zd_t | ZOMBIE_DOG_TEETH |  |
+| sn_zd_e | ZOMBIE_DOG_EYES |  |
+| sn_zbuH | ZOMBIE_BULL_HORNS |  |
+| sn_zbuE | ZOMBIE_BULL_EYES |  |
+| sn_zboT | ZOMBIE_BOAR_TUSK |  |
+| sn_zboE | ZOMBIE_BOAR_EYEs |  |
+| AM_BLBS | AM_BLBS |  |
+| AM_ZBAIT | AM_ZBAIT |  |
+| AM_ZBAIT_EX | AM_ZBAIT_EX |  |
+
+## Avatar/profile/lobby evidence
+- Avatar stringtables are present: mp_avatarpicker and mp_avatarpicker_ps3 entries exist in stringtable lists.
+- Profile editor UI is present under content/ui/net/profileeditor/main.sc.xml.
+- Lobby route sends LaunchAvatarPicker and pushes HudSceneOnline.
+- Offline networking routes to NetOfflineTabs on net.modeSingle, while the avatar picker tab is in NetTabs.
+
+### networking.sc.xml hits
+- L2: <UILayer id="NetworkingLayerOffline" movie="list">
+- L10: <onhide       expr="Exit(NetConf_AvatarPicker)"></onhide>
+- L16: <ifdef expr="XENON">
+- L20: <onfocused expr="NetMachine.SendNetModeEvent(NetworkingLayerOffline)"></onfocused>
+- L24: <action expr="Enter(NetTabs)"></action>
+- L29: <action expr="Enter(NetTabs)"></action>
+- L34: <action expr="Enter(NetTabs)"></action>
+- L36: <transition event="net.modeSingle" target="Enter(NetOfflineTabs)"></transition>
+- L76: <onunfocused expr="Exit(NetTabs)"></onunfocused>
+- L77: <NetMenu id="NetTabs"  AllowWrap="true" movie="pause_main" flashObject="menu.elements[6]">
+- L84: <UIButton desc="mp_fe_avatarpicker_tab">
+- L87: <action expr="goto(NetConf_AvatarPicker)"></action>
+- L109: <action expr="Focus(NetTabs)"></action>
+- L114: <action expr="Unfocus(NetTabs)"></action>
+- L124: <ifdef expr="XENON">
+- L140: <onunfocused expr="Exit(NetOfflineTabs)"></onunfocused>
+- L141: <NetMenu id="NetOfflineTabs"  AllowWrap="true" movie="pause_main" flashObject="menu.elements[6]">
+- L170: <action expr="Enter(NetOfflineTabs)"></action>
+- L176: <action expr="Unfocus(NetOfflineTabs)"></action>
+- L186: <ifdef expr="XENON">
+- L210: <action expr="Exit(NetworkingLayerOffline)"></action>
+- L246: <ifdef expr="XENON">
+- L247: <UIButton text="Common_ChangeProfile" icon="action" e_action_released="NetMachine.ShowSignInUI(true)" ></UIButton>
+- L258: <onshow expr="NetMachine.ShowSignInUI(true)"></onshow>
+- L293: <onshow expr="NetMachine.ShowSignInUI(true)"></onshow>
+
+### lobby/main.sc.xml hits
+- L147: <onhide expr="Exit(NetConf_AvatarPicker)"></onhide>
+- L148: <UIMessageBox id="NetConf_AvatarPicker">
+- L155: <action expr="Exit(NetConf_AvatarPicker)" ></action>
+- L157: <action expr="NetMachine.SendScriptEvent('LaunchAvatarPicker')"></action>
+- L158: <action expr="stackPush(HudSceneOnline)"       ></action>
+- L161: <UIButton text="Common_No" icon="cancel" e_cancel_released="Exit(NetConf_AvatarPicker)"></UIButton>
+- L174: <action expr="StackPush(HudSceneOnline)"></action>
+- L283: <UIButton icon="left"   text="mp_fe_avatarpicker">
+- L286: <action expr="goto(NetConf_AvatarPicker)"></action>
+
+## Profile/sign-in and wrong-disc clues
+- ULTIMATE_1 wrong-disc checks exist in boot/task/playMP confirmation UI. This supports the idea that Disc 2/layer content is involved in MP/profile flow.
+- plaympconf.sc.xml is especially interesting because several auth failure paths still call NetMachine.TriggerMultiplayerLoad(arg2).
+
+### boot.sc.xml hits
+- L9: <ifdef expr="ULTIMATE_1">
+- L18: <transition event="auth.success_NoComm" target="AddDelayedEvent('auth.success_NoComm',2.0)" ></transition>
+- L34: <transition event="auth.success_NoComm" target="AddDelayedEvent('auth.success_NoComm',2.0)" ></transition>
+- L68: <transition event="net.EnterOnlineForInvite">
+- L70: <action expr="SendEvent('net.EnterOnlineForInvite')"></action>
+- L79: <ifdef expr="ULTIMATE_1">
+- L95: <ifdef expr="ULTIMATE_1">
+- L126: <transition event="auth.success">
+- L144: <onshow expr="NetMachine.ShowSignInUI(true)"></onshow>
+- L173: <onshow expr="NetMachine.ShowSignInUI(true)"></onshow>
+- L234: <transition event="auth.success"          target="SendEvent('net.EnterOnline')"></transition>
+- L235: <transition event="net.EnterOnline" >
+- L244: <ifdef expr="ULTIMATE_1">
+- L245: <transition event="net.EnterOnlineForInvite" target="SSConf_JoinWish"></transition>
+- L248: <transition event="net.EnterOnlineForInvite" >
+- L544: <onshow expr="NetMachine.ShowSignInUI(true)"></onshow>
+- L563: <transition event="auth.success"  target="Exit(SSAlert_NotSignedIn)"></transition>
+- L571: <UIButton id="SSAlert_NotSignedIn_SignIn" e_action_released="NetMachine.ShowSignInUI(true)" icon="action" text="Common_SignIn"></UIButton>
+- L581: <onshow expr="NetMachine.ShowSignInUI(true)"></onshow>
+- L666: <ifdef expr="ULTIMATE_1">
+- L690: <ifdef expr="ULTIMATE_1">
+- L691: <transition event="auth.fail_WrongDisc">
+- L697: <transition event="auth.success">
+- L699: <action expr="SendEvent('net.EnterOnlineForInvite')"></action>
+- L721: <action expr="SendEvent('fileUserWantsToSignIn')"></action>
+
+### plaympconf.sc.xml hits
+- L10: <ifdef expr="ULTIMATE_1">
+- L11: <data name="description" expr="mp_enter_warning_wrongdisc"></data>
+- L16: <transition event="auth.fail_NotSignedIn">
+- L18: <action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>
+- L20: <transition event="auth.fail_NoCable">
+- L22: <action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>
+- L24: <transition event="auth.fail_NotOnline">
+- L26: <action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>
+- L28: <transition event="auth.fail_Privileges">
+- L30: <action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>
+- L32: <transition event="auth.success_NoComm" target="NetAlert_NoComm"></transition>
+- L34: <ifdef expr="ULTIMATE_1">
+- L35: <transition event="auth.fail_WrongDisc">
+- L37: <action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>
+- L41: <transition event="auth.success" consume="false">
+- L43: <action expr="NetMachine.TriggerMultiplayerLoad(arg2)"></action>
+- L47: <UIButton text="Common_Yes" icon="action" target="NetMachine.Authenticate(arg1)"></UIButton>
+
+## Init files present
+- content/init/astsequences.csv
+- content/init/inventory/dlc_inventory.xml
+- content/init/inventory/inventory.xml
+- content/release/init/initpopulation.xsc
+- content/release/init/pop/agv_population.xsc
+- content/release/init/pop/arm_population.xsc
+- content/release/init/pop/beh_population.xsc
+- content/release/init/pop/ben_population.xsc
+- content/release/init/pop/blk_population.xsc
+- content/release/init/pop/cas_population.xsc
+- content/release/init/pop/cho_population.xsc
+- content/release/init/pop/chu_population.xsc
+- content/release/init/pop/coc_population.xsc
+- content/release/init/pop/coo_population.xsc
+- content/release/init/pop/dzc_population.xsc
+- content/release/init/pop/emt_population.xsc
+- content/release/init/pop/esc_population.xsc
+- content/release/init/pop/fod_population.xsc
+- content/release/init/pop/fom_population.xsc
+- content/release/init/pop/fro_ghost_town.xsc
+- content/release/init/pop/fro_population.xsc
+- content/release/init/pop/gap_population.xsc
+- content/release/init/pop/grt_population.xsc
+- content/release/init/pop/gtr_population.xsc
+- content/release/init/pop/hen_population.xsc
+- content/release/init/pop/hgn_population.xsc
+- content/release/init/pop/lsh_population.xsc
+- content/release/init/pop/mex_ghost_town.xsc
+- content/release/init/pop/mtp_population.xsc
+- content/release/init/pop/nor_ghost_town.xsc
+- content/release/init/pop/nos_population.xsc
+- content/release/init/pop/pik_population.xsc
+- content/release/init/pop/pln_population.xsc
+- content/release/init/pop/prd_population.xsc
+- content/release/init/pop/pun_population.xsc
+- content/release/init/pop/rat_population.xsc
+- content/release/init/pop/rio_population.xsc
+- content/release/init/pop/rwf_population.xsc
+- content/release/init/pop/ser_population.xsc
+- content/release/init/pop/sol_population.xsc
+- content/release/init/pop/tal_population.xsc
+- content/release/init/pop/tes_population.xsc
+- content/release/init/pop/thi_population.xsc
+- content/release/init/pop/tor_population.xsc
+- content/release/init/pop/tum_population.xsc
+- content/release/init/pop/twr_population.xsc
+- content/release/init/pop/upr_population.xsc
+- content/release/init/rdr2combatclasses.sco
+- content/release/init/rdr2combatclasses.xsc
+- content/release/init/rdr2init.sco
+- content/release/init/rdr2init.xsc
+- content/release/init/rdr2init_each_load.sco
+- content/release/init/rdr2init_each_load.xsc
+- content/release/init/rdr2init_gringo_fro.sco
+- content/release/init/rdr2init_gringo_fro.xsc
+- content/release/init/rdr2init_gringo_mex.sco
+- content/release/init/rdr2init_gringo_mex.xsc
+- content/release/init/rdr2init_gringo_nor.sco
+- content/release/init/rdr2init_gringo_nor.xsc
+
+## Multiplayer scripts present
+- content/release/multiplayer/0xD11C2D38
+- content/release/multiplayer/action_areas/fort_mercer/fortmercermp.xsc
+- content/release/multiplayer/action_areas/gaptooth_breach/gaptoothbreachmp.xsc
+- content/release/multiplayer/action_areas/genericmp_aa.xsc
+- content/release/multiplayer/action_areas/nosalida/nosalidamp.xsc
+- content/release/multiplayer/action_areas/pikes_basin/pikesbasinmp.xsc
+- content/release/multiplayer/action_areas/solomons_folly/solomonsfollymp.xsc
+- content/release/multiplayer/action_areas/tesoro_azul/tesoroazulmp.xsc
+- content/release/multiplayer/action_areas/tumbleweed/tumbleweedmp.xsc
+- content/release/multiplayer/action_areas/twin_rocks/twinrocksmp.xsc
+- content/release/multiplayer/action_areas/wilderness/bearwildernessaa.xsc
+- content/release/multiplayer/action_areas/wilderness/boarwildernessaa.xsc
+- content/release/multiplayer/action_areas/wilderness/cougarwildernessaa.xsc
+- content/release/multiplayer/action_areas/wilderness/wolfwildernessaa.xsc
+- content/release/multiplayer/ctf/ctf_base_game.xsc
+- content/release/multiplayer/deathmatch/deathmatch.xsc
+- content/release/multiplayer/deathmatch/testmatch.xsc
+- content/release/multiplayer/freemode/freemode.xsc
+- content/release/multiplayer/mp_help_barker.xsc
+- content/release/multiplayer/mp_idle.xsc
+- content/release/multiplayer/mp_teleport.xsc
+- content/release/multiplayer/multiplayer_system_thread.xsc
+- content/release/multiplayer/multiplayer_update_thread.xsc
+- content/release/multiplayer/playground/0x50C0D3DF
+- content/release/multiplayer/playground/0x71CE3778
+- content/release/multiplayer/playground/0xCDB7B3CC
+- content/release/multiplayer/playground/0xD8E5158A
+- content/release/multiplayer/playground/jt_mpplayground.xsc
+- content/release/multiplayer/playground/mpplayground.xsc
+- content/release/multiplayer/playground/simple_mpplayground.xsc
+- content/release/multiplayer/playground/test001.xsc
+- content/release/multiplayer/pr_multiplayer.xsc
+- content/release/multiplayer/regions/coop/coopbasic.xsc
+- content/release/multiplayer/regions/ctf_arm/ctf_arm.xsc
+- content/release/multiplayer/regions/ctf_arm/ctf_arm_single.xsc
+- content/release/multiplayer/regions/ctf_arm/ctf_arm_sym.xsc
+- content/release/multiplayer/regions/ctf_chu/ctf_chu.xsc
+- content/release/multiplayer/regions/ctf_chu/ctf_chu_single.xsc
+- content/release/multiplayer/regions/ctf_chu/ctf_chu_sym.xsc
+- content/release/multiplayer/regions/ctf_dzc/ctf_dzc_sym.xsc
+- content/release/multiplayer/regions/ctf_hen/ctf_hen.xsc
+- content/release/multiplayer/regions/ctf_lsh/ctf_lsh.xsc
+- content/release/multiplayer/regions/ctf_lsh/ctf_lsh_sym.xsc
+- content/release/multiplayer/regions/ctf_tes/ctf_tes_single.xsc
+- content/release/multiplayer/regions/ctf_tes/ctf_tes_sym.xsc
+- content/release/multiplayer/regions/ctf_tum/ctf_tum_single.xsc
+- content/release/multiplayer/regions/ctf_upr/ctf_upr.xsc
+- content/release/multiplayer/regions/ctf_w2/ctf_w2_single.xsc
+- content/release/multiplayer/regions/dm_arm/deathmatch_arm.xsc
+- content/release/multiplayer/regions/dm_chu/deathmatch_chu.xsc
+- content/release/multiplayer/regions/dm_hen/deathmatch_hen.xsc
+- content/release/multiplayer/regions/dm_lsh/deathmatch_lsh.xsc
+- content/release/multiplayer/regions/dm_tum/deathmatch_tum.xsc
+- content/release/multiplayer/regions/minigames/liarsdice_sb.xsc
+- content/release/multiplayer/regions/minigames/poker_sb.xsc
+- content/release/multiplayer/rotations/gametype_lobby.xsc
+- content/release/multiplayer/sessionmap.xsc
+- content/release/multiplayer/spectator/mp_spectator.xsc
+- content/release/multiplayer/spectator/mp_spectatormk2.xsc
+- content/release/multiplayer/support/debug/0x271BDAE3
+- content/release/multiplayer/support/debug/0x80CD7812
+- content/release/multiplayer/support/debug/0xD56DFCAA
+- content/release/multiplayer/support/mp_actorpicker.xsc
+- content/release/multiplayer/tutorial/mp_tutorial.xsc
+
+## Avatar/profile/network file list
+- content/release/multiplayer/rotations/gametype_lobby.xsc
+- content/stringtable/mp_avatarpicker-de.xst
+- content/stringtable/mp_avatarpicker-en.xst
+- content/stringtable/mp_avatarpicker-es.xst
+- content/stringtable/mp_avatarpicker-fr.xst
+- content/stringtable/mp_avatarpicker-it.xst
+- content/stringtable/mp_avatarpicker-jp.xst
+- content/stringtable/mp_avatarpicker_ps3-de.xst
+- content/stringtable/mp_avatarpicker_ps3-en.xst
+- content/stringtable/mp_avatarpicker_ps3-es.xst
+- content/stringtable/mp_avatarpicker_ps3-fr.xst
+- content/stringtable/mp_avatarpicker_ps3-it.xst
+- content/stringtable/mp_avatarpicker_ps3-jp.xst
+- content/stringtable/mp_lobby-de.xst
+- content/stringtable/mp_lobby-en.xst
+- content/stringtable/mp_lobby-es.xst
+- content/stringtable/mp_lobby-fr.xst
+- content/stringtable/mp_lobby-it.xst
+- content/stringtable/mp_lobby-jp.xst
+- content/stringtable/mp_lobby_ps3-de.xst
+- content/stringtable/mp_lobby_ps3-en.xst
+- content/stringtable/mp_lobby_ps3-es.xst
+- content/stringtable/mp_lobby_ps3-fr.xst
+- content/stringtable/mp_lobby_ps3-it.xst
+- content/stringtable/mp_lobby_ps3-jp.xst
+- content/ui/net/profileeditor/main.sc.xml
+- content/ui/net/profileeditor/titles/ambient.sc.xml
+- content/ui/net/profileeditor/titles/dlc1.sc.xml
+- content/ui/net/profileeditor/titles/dlc2.sc.xml
+- content/ui/net/profileeditor/titles/dlc3.sc.xml
+- content/ui/net/profileeditor/titles/dlc4.sc.xml
+- content/ui/net/profileeditor/titles/pvp.sc.xml
+- content/ui/net/profileeditor/titles/stat.sc.xml
+- content/ui/net/profileeditor/titles/weapon.sc.xml
+- content/ui/net/profileeditor/titles/xp.sc.xml
+- content/ui/net/profileeditor/titles.sc.xml
+- content/ui/pausemenu/lobby/currentgamers.sc.xml
+- content/ui/pausemenu/lobby/friends.sc.xml
+- content/ui/pausemenu/lobby/main.sc.xml
+- content/ui/pausemenu/lobby/netplayercontextmenu.sc.xml
+- content/ui/pausemenu/lobby/recentgamers.sc.xml
+- content/ui/pausemenu/networking.sc.xml
+- content/ui/pausemenu/net_profile.sc.xml
+
+## Recommended next Code RED pass
+1. Add an Xbox layer resolver: base disc/layer_0, layer_1/update, effective path winner.
+2. Add XSC/SCO adapter detection: CSR/SCR headers, readable XML inventory/stringtable parsing, MagicRDR handoff for import/export.
+3. Build a Disc 2 profile packet: networking.sc.xml, lobby/main.sc.xml, profileeditor/main.sc.xml, taskmachine.sc.xml, boot.sc.xml, plaympconf.sc.xml, dlc_inventory.xml, rdr2init.xsc/.sco, multiplayer_system_thread.xsc.
+4. Research local/offline/Xenia profile flow only; do not target official Xbox Live authentication bypass.

@@ -1,0 +1,14 @@
+{
+  "pass": "public-gui-xiso-pass5",
+  "validated_at": "2026-05-29 07:15:22",
+  "python_files": 160,
+  "blocked_hits": [],
+  "blocked_hit_count": 0,
+  "new_files": [
+    "tools/codered_xiso_tool.py",
+    "docs/XISO_XDVDFS_TOOL.md",
+    "Run_XISO_Tool.bat",
+    "PUBLIC_GUI_PASS5_XISO_REPORT.md"
+  ],
+  "policy": "No user ISO/RPF/XEX/game files are included. Tool is copy-first and exact-size for ISO write-back."
+}

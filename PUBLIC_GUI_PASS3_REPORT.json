@@ -1,0 +1,39 @@
+{
+  "pass": "GUI Redesign Pass 3",
+  "version": "public-gui-script-rpf-pass3",
+  "main_changed_files": [
+    "python_workbench.py",
+    "README_START_HERE.md",
+    "docs/GUI_REDESIGN_PASS3.md",
+    "requirements.txt",
+    ".gitignore"
+  ],
+  "legacy_preserved": "python_workbench_legacy_button_sprawl.py",
+  "top_level_actions": [
+    "Open Script",
+    "Open RPF/ZIP",
+    "Open Folder",
+    "Inspect",
+    "Save Patch Copy",
+    "Export GPT Packet"
+  ],
+  "tabs": [
+    "Script Lab",
+    "RPF Browser",
+    "Recipe",
+    "GPT Packet",
+    "Log"
+  ],
+  "safety": {
+    "rpf_gui_mode": "read-only inventory/report only",
+    "script_patch_mode": "same-size copy output; original untouched",
+    "public_repo_rule": "no raw game files or extracted retail scripts bundled"
+  },
+  "validation": {
+    "python_files": 158,
+    "python_compile_failures": [],
+    "blocked_file_hits": [],
+    "blocked_dir_hits": [],
+    "file_count": 337
+  }
+}
