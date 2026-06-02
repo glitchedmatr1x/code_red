@@ -1,0 +1,30 @@
+{
+  "name": "rdr2init_index_272_probe_report_only",
+  "description": "Report-only probes for the normal init/update-thread candidate. No risky mission blocking.",
+  "target": {
+    "index": 272
+  },
+  "allow_rsc85_growth": false,
+  "patches": [
+    {
+      "type": "native_call_report_only",
+      "search_strings": [
+        "$/content/init/rdr2init_each_load",
+        "$/content/scripting/DesignerDefined/short_update_thread",
+        "$/content/scripting/DesignerDefined/medium_update_thread",
+        "$/content/scripting/DesignerDefined/long_update_thread",
+        "$/content/scripting/DesignerDefined/UI/FuiEventMonitor",
+        "init/rdr2init_script.sc"
+      ]
+    },
+    {
+      "type": "string_replace_same_size",
+      "old": "rdr2init_each_load",
+      "new": "rdr2init_each_load",
+      "encoding": "utf-8",
+      "report_only": true,
+      "allow_many": true,
+      "required": false
+    }
+  ]
+}

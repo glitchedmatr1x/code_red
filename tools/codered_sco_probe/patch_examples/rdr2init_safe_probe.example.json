@@ -1,0 +1,23 @@
+{
+  "description": "Placeholder examples only. Do not assume these strings exist in a real file.",
+  "patches": [
+    {
+      "old": "FBI04",
+      "new": "CRB04",
+      "encoding": "utf-8",
+      "max_replacements": 1
+    },
+    {
+      "old": "player_car",
+      "new": "player_crx",
+      "encoding": "utf-8",
+      "max_replacements": 1
+    },
+    {
+      "old": "PlayerCar",
+      "new": "PlayerCrx",
+      "encoding": "utf-8",
+      "max_replacements": 1
+    }
+  ]
+}

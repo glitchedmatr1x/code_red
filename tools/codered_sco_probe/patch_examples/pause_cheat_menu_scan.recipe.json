@@ -1,0 +1,22 @@
+{
+  "name": "pause_cheat_menu_scan_report_only",
+  "description": "Report-only scan for pause/cheat menu dispatchers. Does not patch.",
+  "allow_rsc85_growth": false,
+  "patches": [
+    {
+      "type": "native_call_report_only",
+      "search_strings": [
+        "cheat",
+        "Cheat",
+        "Beastmaster",
+        "FACTION",
+        "vehicle",
+        "spawn",
+        "PlayerCar",
+        "ACTOR",
+        "give",
+        "weapon"
+      ]
+    }
+  ]
+}

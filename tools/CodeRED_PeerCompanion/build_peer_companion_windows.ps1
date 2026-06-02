@@ -2,7 +2,7 @@
 Build CodeRED_PeerCompanion.asi.
 
 Run from repo root:
-  powershell -ExecutionPolicy Bypass -File related_apps\CodeRED_PeerCompanion\build_peer_companion_windows.ps1
+  powershell -ExecutionPolicy Bypass -File tools\CodeRED_PeerCompanion\build_peer_companion_windows.ps1
 #>
 
 param(
@@ -12,7 +12,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = (Resolve-Path $RepoRoot).Path
-$AppDir = Join-Path $RepoRoot "related_apps\CodeRED_PeerCompanion"
+$AppDir = Join-Path $RepoRoot "tools\CodeRED_PeerCompanion"
 $Source = Join-Path $AppDir "CodeRED_PeerCompanion.cpp"
 $BuildDir = Join-Path $AppDir "build"
 $ObjDir = Join-Path $BuildDir "obj"

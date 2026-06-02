@@ -1,0 +1,105 @@
+{
+  "name": "playercar_index_885_safe_probe",
+  "description": "Same-size PlayerCar gringo probe. Active edits are string-only; numeric and guard probes report hits first.",
+  "target": {
+    "index": 885,
+    "candidate_note": "Best current playercar RSC85 candidate from bulk-scan-rpf-scripts."
+  },
+  "allow_rsc85_growth": true,
+  "patches": [
+    {
+      "type": "string_replace_same_size",
+      "old": "Gringo_PropInUse",
+      "new": "CRingo_PropInUse",
+      "encoding": "utf-8",
+      "max_hits": 4,
+      "required": false,
+      "note": "Same-size probe to break the prop-in-use condition name without changing string table length."
+    },
+    {
+      "type": "string_replace_same_size",
+      "old": "Obstructed",
+      "new": "CRstructed",
+      "encoding": "utf-8",
+      "max_hits": 4,
+      "required": false,
+      "note": "Same-size probe for obstruction gate string."
+    },
+    {
+      "type": "float_replace",
+      "old_float": 1.5,
+      "new_float": 9999.0,
+      "context_strings": ["MoveAllowance"],
+      "report_only": true,
+      "required": false
+    },
+    {
+      "type": "float_replace",
+      "old_float": 10.0,
+      "new_float": 9999.0,
+      "context_strings": ["StartingPhaseTimeout"],
+      "report_only": true,
+      "required": false
+    },
+    {
+      "type": "float_replace",
+      "old_float": 0.0,
+      "new_float": 5.0,
+      "context_strings": ["UseLocationTolerance"],
+      "report_only": true,
+      "required": false
+    },
+    {
+      "type": "float_replace",
+      "old_float": 2.0,
+      "new_float": 5.0,
+      "context_strings": ["ActivationRadius"],
+      "report_only": true,
+      "required": false
+    },
+    {
+      "type": "float_replace",
+      "old_float": 15.0,
+      "new_float": 0.0,
+      "context_strings": ["ReuseDelay"],
+      "report_only": true,
+      "required": false
+    },
+    {
+      "type": "guard_decor_remove_by_string",
+      "real_key": "DenyDamageTermination",
+      "dummy_key_same_length": "CenyDamageTermination",
+      "report_only": true,
+      "required": false
+    },
+    {
+      "type": "guard_decor_remove_by_string",
+      "real_key": "DoNotCleanUpUserSettings",
+      "dummy_key_same_length": "CrNotCleanUpUserSettings",
+      "report_only": true,
+      "required": false
+    },
+    {
+      "type": "guard_decor_remove_by_string",
+      "real_key": "DisableResetProp",
+      "dummy_key_same_length": "CrsableResetProp",
+      "report_only": true,
+      "required": false
+    },
+    {
+      "type": "guard_decor_remove_by_string",
+      "real_key": "MaintainPosture",
+      "dummy_key_same_length": "CrintainPosture",
+      "report_only": true,
+      "required": false
+    },
+    {
+      "type": "native_call_report_only",
+      "search_strings": [
+        "SET_PHYSINST_FROZEN",
+        "SUSPEND_MOVER",
+        "SET_MOVER_FROZEN"
+      ]
+    }
+  ]
+}
