@@ -1,8 +1,8 @@
 <#
-Build CodeRED_PeerCompanion.asi.
+Build CodeRED_AlliedSquadTrainer.asi.
 
-Run from repo root:
-  powershell -ExecutionPolicy Bypass -File tools\CodeRED_PeerCompanion\build_peer_companion_windows.ps1
+Run from Code_RED repo root:
+  powershell -ExecutionPolicy Bypass -File tools\CodeRED_AlliedSquadTrainer\build_allied_squad_trainer_windows.ps1
 #>
 
 param(
@@ -12,15 +12,18 @@ param(
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = (Resolve-Path $RepoRoot).Path
-$AppDir = Join-Path $RepoRoot "tools\CodeRED_PeerCompanion"
-$Source = Join-Path $AppDir "CodeRED_PeerCompanion.cpp"
+$AppDir = Join-Path $RepoRoot "tools\CodeRED_AlliedSquadTrainer"
+$Source = Join-Path $AppDir "CodeRED_AlliedSquadTrainer.cpp"
 $BuildDir = Join-Path $AppDir "build"
 $ObjDir = Join-Path $BuildDir "obj"
-$OutAsi = Join-Path $BuildDir "CodeRED_PeerCompanion.asi"
+$OutAsi = Join-Path $BuildDir "CodeRED_AlliedSquadTrainer.asi"
 $BuildLog = Join-Path $BuildDir "build_log.txt"
-$SourceIni = Join-Path $AppDir "data\codered\peer_companion.ini"
+$SourceIni = Join-Path $AppDir "data\codered\allied_squad_trainer.ini"
 $InstallPackage = Join-Path $BuildDir "install_package"
 $InstallDataDir = Join-Path $InstallPackage "data\codered"
+$SdkRoot = "D:\Games\Red Dead Redemption\ScriptHookRDR\sdk"
+$SdkInc = Join-Path $SdkRoot "inc"
+$SdkLib = Join-Path $SdkRoot "lib\ScriptHookRDR.lib"
 
 function Require-File($Path, $Label) {
     if (-not (Test-Path $Path)) {
@@ -48,8 +51,11 @@ function Find-VsDevCmd {
     return $null
 }
 
-Require-File $Source "CodeRED Peer Companion source"
-Require-File $SourceIni "CodeRED Peer Companion INI"
+Require-File $Source "CodeRED Allied Squad Trainer source"
+Require-File $SourceIni "CodeRED Allied Squad Trainer INI"
+Require-File $SdkLib "ScriptHookRDR import library"
+Require-File (Join-Path $SdkInc "main.h") "ScriptHookRDR main.h"
+Require-File (Join-Path $SdkInc "natives.h") "ScriptHookRDR natives.h"
 New-Item -ItemType Directory -Force -Path $BuildDir | Out-Null
 New-Item -ItemType Directory -Force -Path $ObjDir | Out-Null
 
@@ -59,16 +65,18 @@ if (-not $vsDevCmd) {
 }
 
 $defineFlags = "/DWIN32 /D_WINDOWS /D_USRDLL /D_CRT_SECURE_NO_WARNINGS"
-$commonFlags = "/nologo /std:c++17 /EHsc /LD /O2 /MT $defineFlags"
-$linkFlags = "/link /DLL /NOLOGO user32.lib /OUT:`"$OutAsi`""
+$commonFlags = "/nologo /std:c++20 /EHsc /LD /O2 /MT $defineFlags /I`"$SdkInc`""
+$linkFlags = "/link /DLL /NOLOGO user32.lib `"$SdkLib`" /OUT:`"$OutAsi`""
 $cmd = "call `"$vsDevCmd`" -arch=amd64 -host_arch=amd64 >nul && cd /d `"$AppDir`" && cl.exe $commonFlags /Fo`"$ObjDir\\`" /Fe`"$OutAsi`" `"$Source`" $linkFlags"
 
-"# CodeRED_PeerCompanion build" | Set-Content -Path $BuildLog -Encoding UTF8
+"# CodeRED_AlliedSquadTrainer build" | Set-Content -Path $BuildLog -Encoding UTF8
 "Source: $Source" | Add-Content -Path $BuildLog -Encoding UTF8
 "Output: $OutAsi" | Add-Content -Path $BuildLog -Encoding UTF8
+"SDK include: $SdkInc" | Add-Content -Path $BuildLog -Encoding UTF8
+"SDK lib: $SdkLib" | Add-Content -Path $BuildLog -Encoding UTF8
 "VsDevCmd: $vsDevCmd" | Add-Content -Path $BuildLog -Encoding UTF8
 
-Write-Host "# CodeRED_PeerCompanion ASI Build"
+Write-Host "# CodeRED_AlliedSquadTrainer ASI Build"
 Write-Host "Source:" $Source
 Write-Host "Output:" $OutAsi
 Write-Host "VsDevCmd:" $vsDevCmd
@@ -80,8 +88,8 @@ if ($exitCode -ne 0) { exit $exitCode }
 if (-not (Test-Path $OutAsi)) { throw "Build completed but output .asi was not found: $OutAsi" }
 
 New-Item -ItemType Directory -Force -Path $InstallDataDir | Out-Null
-Copy-Item -Force -Path $OutAsi -Destination (Join-Path $InstallPackage "CodeRED_PeerCompanion.asi")
-Copy-Item -Force -Path $SourceIni -Destination (Join-Path $InstallDataDir "peer_companion.ini")
+Copy-Item -Force -Path $OutAsi -Destination (Join-Path $InstallPackage "CodeRED_AlliedSquadTrainer.asi")
+Copy-Item -Force -Path $SourceIni -Destination (Join-Path $InstallDataDir "allied_squad_trainer.ini")
 
 $hash = Get-FileHash -Path $OutAsi -Algorithm SHA1
 $iniHash = Get-FileHash -Path $SourceIni -Algorithm SHA1
@@ -94,9 +102,11 @@ $report = [ordered]@{
     ini = $SourceIni
     ini_sha1 = $iniHash.Hash
     configuration = $Configuration
+    sdk_inc = $SdkInc
+    sdk_lib = $SdkLib
     built = (Get-Date).ToString('s')
 }
-$reportPath = Join-Path $BuildDir "CodeRED_PeerCompanion_build_report.json"
+$reportPath = Join-Path $BuildDir "CodeRED_AlliedSquadTrainer_build_report.json"
 $report | ConvertTo-Json -Depth 5 | Set-Content -Path $reportPath -Encoding UTF8
 
 Write-Host "Built:" $OutAsi

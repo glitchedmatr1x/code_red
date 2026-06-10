@@ -1,0 +1,4 @@
+﻿moved	D:\Games\Red Dead Redemption\CodeRED_AlliedSquadTrainer.asi	DCDED13910A4E2EB78E9C808C251106B074A936E	D:\Games\Red Dead Redemption\Code_RED\quarantine\allied_squad_soft_crash_20260603_024616\CodeRED_AlliedSquadTrainer.asi
+moved	D:\Games\Red Dead Redemption\data\codered\allied_squad_trainer.ini	1C84289B28D4E5161A094ADB9B9FADE55A3D5979	D:\Games\Red Dead Redemption\Code_RED\quarantine\allied_squad_soft_crash_20260603_024616\data_codered_allied_squad_trainer.ini
+installed	D:\Games\Red Dead Redemption\CodeRED_AlliedSquadTrainer.asi	AFE48D3023822494EEC66A82BEAB771223067CB5
+installed	D:\Games\Red Dead Redemption\data\codered\allied_squad_trainer.ini	167B80B22601760964BFF10C75768BE42C8E45DA

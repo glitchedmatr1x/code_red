@@ -1,0 +1,17 @@
+{
+  "source": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\binary_long_update_thread\\original\\content\\release64\\scripting\\designerdefined\\long_update_thread.wsc",
+  "strings": [
+    {
+      "offset": 100,
+      "offset_hex": "0x64",
+      "length": 6,
+      "text": "ihpQP_"
+    },
+    {
+      "offset": 176,
+      "offset_hex": "0xB0",
+      "length": 4,
+      "text": "0VMg"
+    }
+  ]
+}

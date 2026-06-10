@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "created_utc": "2026-05-08T07:58:51Z",
+  "name": "codered_wait_probe",
+  "workspace": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe",
+  "source_rpf": "D:\\Games\\Red Dead Redemption\\game\\content.rpf",
+  "archive_path": "root/content/release64/init/initpopulation.wsc",
+  "source": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\src\\main.c",
+  "original_wsc": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\original\\content\\release64\\init\\initpopulation.wsc",
+  "original_sha1": "F432DCA2D244C7FA670DD4123BECFEAE58DD8B49",
+  "include_dir": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\src\\include",
+  "compiled_dir": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\compiled",
+  "packed_rpf": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\packed\\content.rpf",
+  "status": "pack_dry_run",
+  "compiled_wsc": "build\\wsc_edit\\codered_wait_probe\\compiled\\codered_wait_probe.wsc",
+  "compiled_xsc": "build\\wsc_edit\\codered_wait_probe\\compiled\\codered_wait_probe.xsc",
+  "compiled_xsa": "build\\wsc_edit\\codered_wait_probe\\compiled\\codered_wait_probe.xsa",
+  "pack_report": "D:\\Games\\Red Dead Redemption\\Code_RED\\logs\\wsc_edit\\codered_wait_probe\\manual_wsc_codered_wait_probe_overlay_report.json"
+}

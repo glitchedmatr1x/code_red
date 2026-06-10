@@ -1,0 +1,21 @@
+{
+  "status": "compiled",
+  "source": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\src\\main.c",
+  "xsc": "build\\wsc_edit\\codered_wait_probe\\compiled\\codered_wait_probe.xsc",
+  "xsa": "build\\wsc_edit\\codered_wait_probe\\compiled\\codered_wait_probe.xsa",
+  "wsc": "build\\wsc_edit\\codered_wait_probe\\compiled\\codered_wait_probe.wsc",
+  "xsc_sha1": "10A5E199F3A6E0FBF7338D6DCE4E62EA272A7683",
+  "wsc_sha1": "0806E5B49EACA462E10CFDFCF73C85CB977D260A",
+  "wsc_inspection": {
+    "size": 194,
+    "sha1": "0806E5B49EACA462E10CFDFCF73C85CB977D260A",
+    "head_hex_32": "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80 34 9D 65 17 5D B9 DD 28 ED FE 5F D6 11 D3 7A F0",
+    "looks_like_wsc_rsc85": true,
+    "looks_like_xsc_swapped": false,
+    "strings_preview": [
+      "ihpQP_",
+      "0VMg"
+    ],
+    "boundary": "No proven bytecode-to-source decompiler is used. This is binary inspection only."
+  }
+}

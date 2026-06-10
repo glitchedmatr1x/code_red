@@ -1,0 +1,16 @@
+{
+  "version": "2.0.0",
+  "mode": "binary_edit",
+  "created_utc": "2026-05-08T09:21:28Z",
+  "name": "binary_long_update_thread",
+  "workspace": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\binary_long_update_thread",
+  "source_rpf": "D:\\Games\\Red Dead Redemption\\game\\content.rpf",
+  "archive_path": "root/content/release64/scripting/designerdefined/long_update_thread.wsc",
+  "original_wsc": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\binary_long_update_thread\\original\\content\\release64\\scripting\\designerdefined\\long_update_thread.wsc",
+  "edited_wsc": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\binary_long_update_thread\\edited\\long_update_thread.wsc",
+  "active_wsc": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\binary_long_update_thread\\edited\\long_update_thread.wsc",
+  "original_sha1": "0806E5B49EACA462E10CFDFCF73C85CB977D260A",
+  "edited_sha1": "0806E5B49EACA462E10CFDFCF73C85CB977D260A",
+  "packed_rpf": "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\binary_long_update_thread\\packed\\content.rpf",
+  "status": "binary_edit_initialized"
+}

@@ -1,0 +1,23 @@
+{
+  "command": [
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\script_compiling\\sccl\\output\\SC-CL.exe",
+    "-target=RDR_#SC",
+    "-platform=X360",
+    "-emit-asm",
+    "-out-dir=build\\wsc_edit\\codered_wait_probe\\compiled\\",
+    "-name=codered_wait_probe",
+    "-extra-arg=-ID:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\src\\include",
+    "D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\src\\main.c"
+  ],
+  "returncode": 0,
+  "stdout": [],
+  "stderr": [
+    "Starting SC-CL ALPHA 0.7.3.5 running Clang 3.8.1",
+    "Error while trying to load a compilation database:",
+    "Could not auto-detect compilation database for file \"D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\src\\main.c\"",
+    "No compilation database found in D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\src or any parent directory",
+    "json-compilation-database: Error while opening JSON database: no such file or directory",
+    "Running without flags.",
+    "Compiling: D:\\Games\\Red Dead Redemption\\Code_RED\\build\\wsc_edit\\codered_wait_probe\\src\\main.c"
+  ]
+}

@@ -1,0 +1,4 @@
+﻿moved	D:\Games\Red Dead Redemption\SilentVirtues.asi	1E6AC15A518394214C0FDF5EE52729138EC37DCE	D:\Games\Red Dead Redemption\Code_RED\quarantine\clean_launch_disable_remaining_asi_20260603_033411\SilentVirtues.asi
+moved	D:\Games\Red Dead Redemption\!CarAudio.asi	F238228DB4CE5AA2B029CA547EFB26E693D0CD71	D:\Games\Red Dead Redemption\Code_RED\quarantine\clean_launch_disable_remaining_asi_20260603_033411\!CarAudio.asi
+moved	D:\Games\Red Dead Redemption\silent_virtues.ini	DD67B4B4BCA67AB5743DA9A5C951D5800AC190F6	D:\Games\Red Dead Redemption\Code_RED\quarantine\clean_launch_disable_remaining_asi_20260603_033411\silent_virtues.ini
+moved	D:\Games\Red Dead Redemption\SilentVirtues.ini	1A47C5633EC3E755282893D11B86555384F68435	D:\Games\Red Dead Redemption\Code_RED\quarantine\clean_launch_disable_remaining_asi_20260603_033411\SilentVirtues.ini

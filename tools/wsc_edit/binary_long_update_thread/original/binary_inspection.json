@@ -1,0 +1,75 @@
+{
+  "size": 194,
+  "sha1": "0806E5B49EACA462E10CFDFCF73C85CB977D260A",
+  "head_hex_32": "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80 34 9D 65 17 5D B9 DD 28 ED FE 5F D6 11 D3 7A F0",
+  "looks_like_wsc_rsc85": true,
+  "looks_like_xsc_swapped": false,
+  "header": {
+    "magic_hex": "52 53 43 85",
+    "magic_ascii": "RSC",
+    "u32_be": [
+      1381188485,
+      33554432,
+      128,
+      16777344
+    ],
+    "u32_le": [
+      2235781970,
+      2,
+      2147483648,
+      2147483649
+    ]
+  },
+  "body": {
+    "offset": 16,
+    "offset_hex": "0x10",
+    "size": 178,
+    "sha1": "01F3D92CBBA610F24C0354C1DA51B9D52EFBC8F7"
+  },
+  "section_candidates": [
+    {
+      "name": "rsc85_header",
+      "offset": 0,
+      "offset_hex": "0x0",
+      "size": 16,
+      "sha1": "873C85F99013CE5A52A6D6ED0F42CD5245734C2F",
+      "note": "Known outer resource header bytes only; not a source-code section."
+    },
+    {
+      "name": "resource_body",
+      "offset": 16,
+      "offset_hex": "0x10",
+      "size": 178,
+      "sha1": "01F3D92CBBA610F24C0354C1DA51B9D52EFBC8F7",
+      "note": "Remaining WSC payload. Internal bytecode layout is not rebuilt by this tool."
+    },
+    {
+      "name": "page_0000",
+      "offset": 0,
+      "offset_hex": "0x0",
+      "size": 194,
+      "sha1": "0806E5B49EACA462E10CFDFCF73C85CB977D260A",
+      "nonzero_bytes": 183,
+      "note": "4KB page candidate for navigation and diffs; not a proven script section."
+    }
+  ],
+  "strings": [
+    {
+      "offset": 100,
+      "offset_hex": "0x64",
+      "length": 6,
+      "text": "ihpQP_"
+    },
+    {
+      "offset": 176,
+      "offset_hex": "0xB0",
+      "length": 4,
+      "text": "0VMg"
+    }
+  ],
+  "strings_preview": [
+    "ihpQP_",
+    "0VMg"
+  ],
+  "boundary": "No proven bytecode-to-source decompiler is used. This is binary inspection only."
+}

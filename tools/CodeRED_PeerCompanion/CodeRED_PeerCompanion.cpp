@@ -59,7 +59,7 @@ struct Config {
     bool taskNativesEnabled = false;
     bool postSpawnPositionNativeEnabled = false;
     bool teleportCommandEnabled = false;
-    bool spawnUseXZGroundPlane = true;
+    bool spawnUseXZGroundPlane = false;
     bool giveWeaponEnabled = true;
     bool clearWeaponsEnabled = true;
     bool companionControllerEnabled = true;
@@ -72,6 +72,7 @@ struct Config {
     bool taskPriorityEnabled = false;
     bool squadRouteEnabled = false;
     bool fallbackFollowEnabled = true;
+    bool applyStateAfterSpawn = false;
     bool allowAnyTarget = false;
     bool debugAdoptOnly = false;
     DWORD startupDelayMs = 15000;
@@ -334,6 +335,7 @@ static void loadConfig() {
         else if (key == "task_priority_enabled") g_config.taskPriorityEnabled = parseBool(value, g_config.taskPriorityEnabled);
         else if (key == "squad_route_enabled") g_config.squadRouteEnabled = parseBool(value, g_config.squadRouteEnabled);
         else if (key == "fallback_follow_enabled") g_config.fallbackFollowEnabled = parseBool(value, g_config.fallbackFollowEnabled);
+        else if (key == "apply_state_after_spawn") g_config.applyStateAfterSpawn = parseBool(value, g_config.applyStateAfterSpawn);
         else if (key == "enable_set_faction") g_config.setCompanionFactionEnabled = parseBool(value, g_config.setCompanionFactionEnabled);
         else if (key == "enable_set_companion") g_config.setCompanionFlagEnabled = parseBool(value, g_config.setCompanionFlagEnabled);
         else if (key == "enable_task_follow") g_config.fallbackFollowEnabled = parseBool(value, g_config.fallbackFollowEnabled);
@@ -593,6 +595,30 @@ static bool nativeNoThrowCreateActorInLayout(Layout layout, const char* name, in
     return true;
 }
 
+static bool nativeNoThrowSetActorHeading(Actor actor, float heading, DWORD* exceptionCode) {
+    if (exceptionCode) *exceptionCode = 0;
+    DWORD code = 0;
+    __try {
+        nativeInvoke<void>(0xECE8520BULL, actor, heading, TRUE);
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+        code = GetExceptionCode();
+    }
+    if (exceptionCode) *exceptionCode = code;
+    return code == 0;
+}
+
+static bool nativeNoThrowDestroyActor(Actor actor, DWORD* exceptionCode) {
+    if (exceptionCode) *exceptionCode = 0;
+    DWORD code = 0;
+    __try {
+        nativeInvoke<void>(0x8BD21869ULL, actor);
+    } __except(EXCEPTION_EXECUTE_HANDLER) {
+        code = GetExceptionCode();
+    }
+    if (exceptionCode) *exceptionCode = code;
+    return code == 0;
+}
+
 static bool safeGetTargetActor(Actor* out) {
     if (!out) return false;
     *out = 0;
@@ -784,9 +810,10 @@ static void writeStatus(const char* phase) {
 
 
 static Vector3 companionPointNearPlayer(const Vector3& playerPos, float heading, float distance, float heightOffset) {
-    // Observed RDR PC actor coordinates from logs look like X/Z = ground plane and Y = height.
-    // The older build used X/Y as ground plane. That can place the actor at the wrong spot.
-    // This helper keeps the clone close to the player's reported coordinate system.
+    // The ScriptHookRDR SDK overload packs Vector3 as Vector2(x,y) plus z.
+    // Keep that SDK/AI-menu convention as the default. X/Z-ground-plane is left as
+    // an explicit INI diagnostic mode because one previous pass tried it while
+    // investigating invisible spawns.
     float rad = heading * (PI / 180.0f);
     if (g_config.spawnUseXZGroundPlane) {
         return Vector3{
@@ -810,7 +837,8 @@ static void logPlayerAndSpawnPoint(const char* stage, const Vector3& playerPos, 
          << " spawn_xyz=" << dest.x << "," << dest.y << "," << dest.z
          << " distance=" << g_config.spawnDistance
          << " height_offset=" << g_config.spawnZOffset
-         << " xz_ground_plane=" << (g_config.spawnUseXZGroundPlane ? "true" : "false");
+         << " xz_ground_plane=" << (g_config.spawnUseXZGroundPlane ? "true" : "false")
+         << " coordinate_mode=" << (g_config.spawnUseXZGroundPlane ? "alternate_xz_ground_y_height" : "sdk_xy_ground_z_height");
     logLine(line.str());
 }
 
@@ -941,7 +969,23 @@ static bool spawnCompanionNearPlayer() {
     } else {
         logLine("post_spawn_position_native skipped: disabled_by_config");
     }
-    nativeInvoke<void>(0xECE8520BULL, g_companion, heading, TRUE);
+    DWORD headingException = 0;
+    if (!nativeNoThrowSetActorHeading(g_companion, heading, &headingException)) {
+        std::ostringstream line;
+        line << "spawn_stage_set_heading exception=0x" << std::hex << headingException;
+        logLine(line.str());
+    }
+    Vector3 actualPos = {};
+    if (actorPosition(g_companion, &actualPos)) {
+        std::ostringstream actual;
+        actual << "spawn_stage actual_actor_xyz=" << actualPos.x << "," << actualPos.y << "," << actualPos.z
+               << " requested_xyz=" << dest.x << "," << dest.y << "," << dest.z
+               << " distance_to_player=" << distance3(actualPos, playerPos)
+               << " distance_to_requested=" << distance3(actualPos, dest);
+        logLine(actual.str());
+    } else {
+        logLine("spawn_stage actual_actor_position_unavailable");
+    }
     if (g_config.taskNativesEnabled) {
         nativeInvoke<void>(0x16876A25ULL, g_companion);
     }
@@ -958,6 +1002,12 @@ static bool spawnCompanionNearPlayer() {
                " enum=" + std::to_string(actorEnumToSpawn));
     logLine(ok.str());
 
+    if (!g_config.applyStateAfterSpawn) {
+        logLine("spawn_companion apply_state_after_spawn=false; F7 stopped after visible actor create");
+        logExit("spawn_companion", "OK spawned_only");
+        return true;
+    }
+
     bool adopted = applyCompanion638State(player, "F7_spawned_actor_638");
     logExit("spawn_companion", adopted ? "OK spawned_and_adopted" : "OK spawned_follow_failed");
     return adopted;
@@ -971,8 +1021,14 @@ static void despawnCompanion(const char* reason) {
             safeSetActorIsCompanion(g_companion, FALSE);
         }
         if (g_companionOwnedByCode) {
-            nativeInvoke<void>(0x8BD21869ULL, g_companion);
-            logLine("despawn destroyed CodeRED-owned spawned companion");
+            DWORD destroyException = 0;
+            if (nativeNoThrowDestroyActor(g_companion, &destroyException)) {
+                logLine("despawn destroyed CodeRED-owned spawned companion");
+            } else {
+                std::ostringstream line;
+                line << "despawn destroy exception=0x" << std::hex << destroyException;
+                logLine(line.str());
+            }
         } else {
             logLine("despawn skipped destroy for adopted retail actor");
         }
@@ -1260,7 +1316,7 @@ static void drawOverlay() {
     if (!g_config.overlayEnabled || !g_drawText) return;
     const bool companion = g_nativeReady && actorValid(g_companion);
     std::ostringstream line;
-    line << "CodeRED Companion 638 | F7 spawn/adopt F9 wait F10 regroup Backspace release | "
+    line << "CodeRED Companion 638 | F7 spawn F10 follow F9 wait Backspace release | "
          << (companion ? "COMPANION OK" : "NO COMPANION")
          << " | enum638 " << (g_companionAdopted638 ? "ADOPTED" : "not adopted")
          << " | PEER " << (g_peerMode ? "ON" : "OFF");
@@ -1514,8 +1570,8 @@ static void keyboardHandler(DWORD key, WORD, BYTE, BOOL, BOOL, BOOL, BOOL) {
         setOverlay(std::string("Peer control ") + (g_peerMode ? "ON" : "OFF"));
         writeStatus("peer_control_toggled");
     } else if (key == VK_F12) {
-        logLine("help F6=snapshot F7=spawn/adopt actor638 F8=nearest-skip F9=guard/wait F10=regroup/follow F11=peer-control Backspace=release F12=help");
-        setOverlay("F7 spawn/adopt 638 | F9 wait | F10 regroup | Backspace release");
+        logLine("help F6=snapshot F7=spawn actor638 F8=nearest-skip F9=guard/wait F10=regroup/follow F11=peer-control Backspace=release F12=help");
+        setOverlay("F7 spawn 638 | F10 follow | F9 wait | Backspace release");
         writeStatus("help");
     } else if (key == VK_BACK) {
         despawnCompanion("backspace");

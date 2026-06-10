@@ -1,0 +1,20 @@
+{
+  "size": 1183,
+  "sha1": "F432DCA2D244C7FA670DD4123BECFEAE58DD8B49",
+  "head_hex_32": "52 53 43 85 02 00 00 00 00 00 00 80 01 00 00 80 53 65 86 62 AC 7B C4 FE EB A6 8F 00 F2 94 B4 84",
+  "looks_like_wsc_rsc85": true,
+  "looks_like_xsc_swapped": false,
+  "strings_preview": [
+    "e#||Y",
+    "'5*o",
+    "gsW>C",
+    "D?]y_",
+    "e1G\"",
+    " -OO",
+    "b}{f",
+    "<=U`",
+    "'0w~",
+    "amm\\"
+  ],
+  "boundary": "No proven bytecode-to-source decompiler is used. This is binary inspection only."
+}
